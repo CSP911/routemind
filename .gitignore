@@ -1,0 +1,11 @@
+# Your own ontology and everything derived from it. `data/repo` is a git repository in its own right —
+# it is the thing to back up, and it is not this repository's to carry. A copy of the example that
+# ships here is in examples/.
+/data/
+
+# Written by install.sh from .env.example, and it holds this machine's uid/gid.
+.env
+
+__pycache__/
+*.py[cod]
+.DS_Store

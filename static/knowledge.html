@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Knowledge</title>
+  <link rel="stylesheet" href="/static/theme.css?v=0.1.0">
+  <script src="/static/theme.js?v=0.1.0"></script>
+  <link rel="stylesheet" href="/static/iris_ui.css?v=0.1.0">
+  <link rel="stylesheet" href="/static/knowledge.css?v=0.1.0">
+</head>
+<body>
+  <main class="kn-shell">
+    <header class="kn-head">
+      <div>
+        <div class="eyebrow">KNOWLEDGE</div>
+        <h1 data-i18n="knowledge.title">Knowledge</h1>
+        <p class="kn-sub" data-i18n="knowledge.sub">What the agent is handed at each step, in the words it is handed.</p>
+      </div>
+    </header>
+
+    <!-- Shown only when something is wrong, with the one button that fixes it. -->
+    <section class="kn-bar" id="knBar" hidden>
+      <div class="kn-state-row" id="knState" aria-live="polite"></div>
+      <div class="kn-bar-actions">
+        <button type="button" id="knValidate" class="kn-btn" data-i18n="knowledge.showFailures" hidden>Show what fails</button>
+        <button type="button" id="knPublish" class="kn-btn kn-primary" data-i18n="knowledge.publishCore" hidden>Publish</button>
+      </div>
+    </section>
+
+    <!-- The map is the screen. What a click hands the agent opens over it, because it is a transcript
+         to read and close, not a panel to keep half-visible beside the thing it describes. -->
+    <section class="panel kn-map-panel">
+      <div class="kn-panel-head">
+        <div>
+          <span class="eyebrow">MAP</span>
+          <h2 data-i18n="knowledge.topology">Topology</h2>
+        </div>
+        <div class="kn-legend">
+          <span><i class="kn-dot is-bb"></i>CORE</span>
+          <span><i class="kn-dot is-as"></i>AUTONOMOUS SYSTEM</span>
+          <span><i class="kn-dot is-data"></i>DATA</span>
+          <span><i class="kn-dot is-flag"></i>ROUTING REQUEST</span>
+          <span><i class="kn-dot is-vrf"></i>VRF</span>
+        </div>
+      </div>
+      <div class="kn-topo-wrap"><svg id="knTopo" class="kn-topo" role="img" aria-label="Knowledge topology"></svg></div>
+      <p class="kn-hint" data-i18n="knowledge.mapHint2">Click a Region or node to open what hangs off it. The routing table the agent is handed is the ▤ button on that rack; a DATA tile opens the file it would read.</p>
+    </section>
+
+  </main>
+
+  <dialog id="knRawDialog" class="kn-raw-dialog" aria-labelledby="knRawTitle">
+    <div class="kn-raw-head">
+      <div class="kn-raw-ident">
+        <span class="kn-chip-kind" id="knRawKind">BACKBONE</span>
+        <h2 id="knRawTitle" data-i18n="knowledge.pickOnMap">Pick something on the map</h2>
+        <p id="knRawPath" class="kn-path"></p>
+        <p id="knRawAddr" class="kn-addr"></p>
+        <span id="knRawMeta" class="kn-raw-meta"></span>
+      </div>
+      <div class="kn-raw-tools">
+        <div id="knActions" class="kn-actions" role="group" aria-label="actions"></div>
+        <button type="button" id="knRawClose" class="kn-btn kn-icon kn-quiet" aria-label="Close" title="Close">×</button>
+      </div>
+    </div>
+    <p id="knBanner" class="kn-banner" hidden></p>
+    <!-- Copy sits on the text it copies, the way a code block's does. In the header it read as one more
+         action on the object, beside "New AS", when all it touches is this transcript. -->
+    <div id="knRawWrap" class="kn-raw-wrap">
+      <pre id="knRaw" class="kn-raw" tabindex="0"></pre>
+      <button type="button" id="knCopy" class="kn-copy" data-i18n-label="knowledge.copy" aria-label="Copy" title="Copy">
+        <svg class="kn-copy-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="9" rx="1.6"/><path d="M3.5 10.5h-.4a1.6 1.6 0 0 1-1.6-1.6V3.1a1.6 1.6 0 0 1 1.6-1.6h5.8a1.6 1.6 0 0 1 1.6 1.6v.4"/></svg>
+        <svg class="kn-copy-done" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>
+      </button>
+    </div>
+    <div id="knEdit" class="kn-edit" hidden></div>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script src="/static/i18n.js?v=0.1.0"></script>
+  <script src="/static/knowledge.js?v=0.1.0"></script>
+</body>
+</html>

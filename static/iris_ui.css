@@ -1,0 +1,204 @@
+
+/* IRIS v3.5.8 shared shell: LIVE guard, language selector, contextual navigation */
+.iris-language-control{display:inline-flex;align-items:center;gap:6px;color:var(--muted,#667386);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.iris-language-control select{width:auto!important;min-width:82px;margin:0!important;padding:8px 28px 8px 9px!important;border:1px solid var(--line,#2b3b4b)!important;border-radius:9px!important;background:var(--panel2,#152231)!important;color:var(--text,#edf5fb)!important}
+.iris-language-floating{position:fixed;right:18px;top:16px;z-index:10020;padding:7px 9px;border:1px solid var(--line,#cbd5df);border-radius:10px;background:var(--panel,#fff);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.iris-coming-backdrop{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:rgba(3,10,18,.7);z-index:10050}
+.iris-coming-dialog{width:min(460px,94vw);padding:24px;border:1px solid var(--line,#34465a);border-radius:18px;background:var(--panel,#101b26);color:var(--text,#edf5fb);box-shadow:0 30px 100px rgba(0,0,0,.4)}
+.iris-coming-dialog .eyebrow{font-size:10px;font-weight:850;letter-spacing:.15em;color:var(--cyan,#65d4d8)}
+.iris-coming-dialog h2{margin:8px 0 0;font-size:26px}.iris-coming-dialog p{margin:10px 0 20px;color:var(--muted,#8fa0b3);line-height:1.6}
+.iris-coming-dialog button{width:100%;padding:11px 14px;border:1px solid var(--line,#34465a);border-radius:10px;background:var(--panel2,#152231);color:var(--text,#edf5fb);font-weight:800;cursor:pointer}
+.iris-live-banner{position:fixed;left:0;right:0;top:0;z-index:11000;display:none;align-items:center;justify-content:center;gap:12px;min-height:46px;padding:8px 18px;background:repeating-linear-gradient(135deg,#b42318 0,#b42318 18px,#d92d20 18px,#d92d20 36px);color:#ffd84d;border-bottom:2px solid #7a271a;box-shadow:0 6px 22px rgba(122,39,26,.4);font-weight:900;letter-spacing:.04em;text-align:center}
+.iris-live-banner .live-mark{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff;color:#b42318!important;font-size:16px;flex:0 0 auto}.iris-live-banner strong,.iris-live-banner small{color:#ffd84d!important}.iris-live-banner>span:not(.live-mark),.iris-live-banner>span:not(.live-mark) *{color:#ffd84d!important;font-weight:900!important;opacity:1!important}.iris-live-banner small{letter-spacing:0}
+body.iris-live-active{padding-top:46px!important}
+body.iris-live-frame-active{box-shadow:inset 0 4px 0 #d92d20,inset 0 -4px 0 #d92d20!important}
+body.iris-live-frame-active::before,body.iris-live-frame-active::after{content:"";position:fixed;top:46px;bottom:0;width:16px;z-index:10990;pointer-events:none;background:repeating-linear-gradient(135deg,#b42318 0,#b42318 12px,#d92d20 12px,#d92d20 24px);box-shadow:0 0 18px rgba(122,39,26,.26)}
+body.iris-live-frame-active::before{left:0}
+body.iris-live-frame-active::after{right:0}
+body.iris-live-active .iris-live-banner{display:flex}
+html[data-theme="light"] .iris-coming-dialog{background:#fff;color:#182331;border-color:#c4d0dc}
+@media(max-width:720px){.iris-live-banner{font-size:12px}.iris-live-banner small{display:none}}
+
+/* IRIS v5.1.1 FIXED22 fixed language-control width */
+.iris-language-control{
+  box-sizing:border-box!important;
+  flex:0 0 156px!important;
+  width:156px!important;
+  min-width:156px!important;
+  max-width:156px!important;
+}
+.iris-language-control select{
+  box-sizing:border-box!important;
+  flex:0 0 94px!important;
+  width:94px!important;
+  min-width:94px!important;
+  max-width:94px!important;
+}
+
+/* IRIS v5.1.1 FIXED24 overflow-safe language control */
+.iris-language-control{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 94px!important;
+  align-items:center!important;
+  column-gap:10px!important;
+  flex:0 0 200px!important;
+  width:200px!important;
+  min-width:200px!important;
+  max-width:200px!important;
+  padding-left:10px!important;
+  padding-right:8px!important;
+  overflow:hidden!important;
+}
+.iris-language-control>span{
+  min-width:0!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.iris-language-control select{
+  box-sizing:border-box!important;
+  justify-self:end!important;
+  width:94px!important;
+  min-width:94px!important;
+  max-width:94px!important;
+  margin:0!important;
+}
+@media(max-width:520px){
+  .iris-language-control{
+    flex:1 1 100%!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+}
+
+/* IRIS v5.1.1 FIXED25 locale-stable language control */
+.iris-language-control,
+.pb-language-control,
+.pb-head-actions>.pb-language-control{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(88px,1fr) 104px!important;
+  align-items:center!important;
+  column-gap:12px!important;
+  flex:0 0 232px!important;
+  width:232px!important;
+  min-width:232px!important;
+  max-width:232px!important;
+  padding:6px 10px 6px 12px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+}
+.iris-language-control>span,
+.pb-language-control>span,
+.pb-head-actions>.pb-language-control>span{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.iris-language-control select,
+.pb-language-control select,
+.pb-language-control .pb-language-select,
+#irisLanguageSelect{
+  box-sizing:border-box!important;
+  justify-self:end!important;
+  flex:0 0 104px!important;
+  width:104px!important;
+  min-width:104px!important;
+  max-width:104px!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  margin:0!important;
+}
+@media(max-width:560px){
+  .iris-language-control,
+  .pb-language-control,
+  .pb-head-actions>.pb-language-control{
+    flex:1 1 100%!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+}
+
+/* Playbooks: where the run starts, and what the agent reads. */
+/* `[hidden] { display: none }` is user-agent origin and loses to any author `display:`, so the chip
+   below stayed on screen with nothing in it whenever no root was pinned. Same fault as the Knowledge
+   screen's card on 2026-09-10; stated once here so the next `display:` cannot reopen it. */
+.pb-root[hidden] { display: none !important; }
+/* The row that holds the selected areas. It used to be the single chip itself, so it kept the chip's
+   pill — and once it held chips there were two identical pills, one inside the other, which reads as a
+   mistake because it is one. The row is a label and a list; only the chips are pills. */
+.pb-root { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.pb-root-label { font: 700 9.5px ui-monospace, Menlo, Consolas, monospace; letter-spacing: .12em; color: var(--cyan); }
+.pb-root > code { font: 11.5px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); overflow-wrap: anywhere; }
+/* Removal is a small act inside a chip, not one of the page's buttons. Bare, muted, and only coloured
+   on hover — the same weight as a "clear" affordance anywhere else. */
+.pb-root-x { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px;
+  line-height: 1; padding: 0 4px; border-radius: 999px; }
+.pb-root-x:hover { color: var(--red); background: color-mix(in srgb, var(--red) 12%, transparent); }
+
+/* The pin moved out of the composer into the context card — it is the decision the map already made,
+   and it belongs where a person looks first rather than under everything else. */
+.pb-root strong { font-size: 13px; color: var(--text); }
+.pb-root.is-empty { }
+.pb-root.is-empty strong { color: var(--muted); font-weight: 500; }
+.pb-root-pick { font-size: 11.5px; color: var(--cyan); text-decoration: none; }
+.pb-root-pick:hover { text-decoration: underline; }
+
+/* The left column holds the evidence plane. The heading says so, and links to where the other half —
+   the ontology — is drawn, because otherwise the two screens read as unrelated. */
+.pb-reads-head { display: grid; gap: 4px; padding: 0 0 10px; margin-bottom: 10px; border-bottom: 1px solid var(--line); }
+.pb-reads-link { font-size: 12px; color: var(--cyan); text-decoration: none; }
+.pb-reads-link:hover { text-decoration: underline; }
+.pb-reads-sub { font-size: 11.5px; color: var(--muted); }
+
+/* ── where an answer came from ────────────────────────────────────────────── */
+/* Hangs off the answer, because that is where the question is asked. The Reference Workspace column
+   this replaces answered "what exists" instead, which the Knowledge map answers better. */
+.pb-evidence-bar { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--line); }
+.pb-evidence-button { border: 1px solid var(--line); border-radius: 999px; background: var(--panel2);
+  color: var(--cyan); font: 11.5px ui-monospace, Menlo, Consolas, monospace; padding: 3px 11px; cursor: pointer; }
+.pb-evidence-button:hover { border-color: var(--cyan); }
+.pb-evidence-none { font: 11.5px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+
+.pb-ev-dialog { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--text);
+  padding: 18px 20px; width: min(900px, calc(100vw - 48px)); max-height: calc(100vh - 80px); }
+.pb-ev-dialog::backdrop { background: rgba(0,0,0,.58); }
+.pb-ev-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.pb-ev-head h2 { margin: 3px 0 0; font-size: 17px; }
+.pb-ev-meta { margin: 5px 0 0; font: 11.5px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+.pb-ev-list { display: grid; gap: 6px; max-height: calc(100vh - 220px); overflow: auto; }
+/* Order is the point, so the number leads and the columns line up down the list. */
+.pb-ev-row { display: grid; grid-template-columns: 28px 68px 110px 1fr auto; gap: 10px; align-items: baseline;
+  padding: 8px 11px; border: 1px solid var(--line); border-left-width: 3px; border-radius: 8px; background: var(--bg); }
+.pb-ev-row.is-knowledge { border-left-color: var(--cyan); }
+.pb-ev-row.is-evidence { border-left-color: var(--green); }
+.pb-ev-row.is-error { border-left-color: var(--orange); }
+.pb-ev-row.is-pending { border-left-color: var(--muted); }
+.pb-ev-n { font: 700 11px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pb-ev-plane { font: 10px ui-monospace, Menlo, Consolas, monospace; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+.pb-ev-tool { font: 11.5px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+.pb-ev-what { font: 12.5px ui-monospace, Menlo, Consolas, monospace; color: var(--text); overflow-wrap: anywhere; }
+.pb-ev-where, .pb-ev-state { font: 11px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+.pb-ev-row.is-error .pb-ev-state { color: var(--orange); }
+@media (max-width: 720px) { .pb-ev-row { grid-template-columns: 24px 1fr; } .pb-ev-plane, .pb-ev-tool { grid-column: 2; } }
+
+/* The approvals panel keeps its look; only its host changed. */
+.pb-approvals-host:empty { display: none; }
+/* The reason the agent gave for a call, on its own line under the address it asked for. */
+.pb-ev-why { grid-column: 2 / -1; margin: 3px 0 0; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+/* The selected areas. Each removable on its own — a selection you can only clear wholesale is one
+   people stop trimming, and then they start runs with a set they did not mean. */
+.pb-root-list { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pb-root-chip { display: inline-flex; align-items: baseline; gap: 8px; padding: 4px 6px 4px 11px;
+  border: 1px solid var(--line); border-left: 3px solid var(--cyan); border-radius: 7px; background: var(--panel2); }
+.pb-root-chip strong { font-size: 12.5px; color: var(--text); }
+.pb-root-chip code { font: 11px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+.pb-no-service { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; margin: 0;
+  font-size: 12.5px; color: var(--orange); }
+.pb-no-service a { color: var(--cyan); font-size: 11.5px; }
+.pb-no-service[hidden] { display: none !important; }

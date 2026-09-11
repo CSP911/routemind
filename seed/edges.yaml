@@ -1,0 +1,2 @@
+# Edges. `from` and `to` are node ids; `rel` must be one of the relations in vocab.yaml.
+[]

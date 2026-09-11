@@ -1,0 +1,78 @@
+# Your domain's vocabulary — this file IS your domain.
+#
+# The kinds and relations below are a starting point, not a schema. Replace them with the words your
+# domain actually uses. A node's `kind` and an edge's `rel` must appear here, so until you edit this
+# file your first node is refused.
+#
+# `template` and `inverse` are how the graph reads back as sentences. `{from}` and `{to}` are filled
+# with node names.
+
+budgets:
+  kinds: 12                 # more kinds than this and it has stopped being a classification
+  entities: 120             # every addressable thing. Was `nodes: 70` when a file had no address —
+                            # flattening made files addressable without adding knowledge, so the
+                            # unit changed and the number is restated, not raised.
+  children_per_entity: 25   # one listing, read at once. The old budget could not see this: a
+                            # representative with 16 files under it counted as one node.
+  relations_per_group: 8
+  edge_note_max_lines: 6
+
+# What a node's kind is when nobody chose one and there is no LLM to. Nothing reads a kind until you
+# declare `edge_rules` below, so this keeps the screen from asking for a value with no effect.
+default_kind: system
+
+kinds:
+- id: system
+  desc: something we build and run — a service, a daemon, an application
+- id: tool
+  desc: something we did not build but operate — a product, a SaaS, a CI server
+- id: store
+  desc: where the bytes actually sit — a repository, a database, a bucket
+- id: host
+  desc: where a process runs — a server, an instance, a cluster
+- id: channel
+  desc: a route to the outside — delivery, publishing, notification
+- id: task
+  desc: a named piece of work that recurs
+- id: party
+  desc: a person, a team, an outside organisation
+
+relations:
+- group: composition
+  rels:
+  - id: CONSISTS_OF
+    template: '{from} consists of {to}'
+    inverse: '{to} is part of {from}'
+    desc: what something is made of
+  - id: RUNS_ON
+    template: '{from} runs on {to}'
+    inverse: '{to} runs {from}'
+    desc: where something runs
+  - id: PROVIDED_BY
+    template: '{from} is provided by {to}'
+    inverse: '{to} provides {from}'
+    desc: who supplies it
+- group: flow
+  rels:
+  - id: SENDS_TO
+    template: '{from} sends to {to}'
+    inverse: '{to} receives from {from}'
+    desc: what goes where
+  - id: READS_FROM
+    template: '{from} reads from {to}'
+    inverse: '{to} is read by {from}'
+    desc: where something is read
+  - id: TRIGGERS
+    template: '{from} triggers {to}'
+    inverse: '{to} is triggered by {from}'
+    desc: what starts what
+- group: responsibility
+  rels:
+  - id: OWNED_BY
+    template: '{from} is owned by {to}'
+    inverse: '{to} owns {from}'
+    desc: who is responsible
+  - id: TOUCHES
+    template: '{from} touches {to}'
+    inverse: '{to} is touched by {from}'
+    desc: what a named piece of work reaches into

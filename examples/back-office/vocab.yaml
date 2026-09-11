@@ -1,0 +1,95 @@
+# The vocabulary of back-office (corporate support) work — this file IS the domain.
+#
+# A node's `kind` and an edge's `rel` must appear here; anything else is refused at the write.
+# `template` and `inverse` are how the graph reads back as sentences: `{from}` and `{to}` are filled
+# with node names.
+
+budgets:
+  kinds: 12
+  entities: 120
+  children_per_entity: 25
+  relations_per_group: 8
+  edge_note_max_lines: 6
+
+# What a node's kind is when nobody chose one. A place made without thinking about it is a grouping,
+# so that is the honest default.
+default_kind: topic
+
+kinds:
+- id: topic
+  desc: a place that only groups what is under it — nothing to read in itself
+- id: rule
+  desc: what is allowed and what is not — a company policy, or the law behind one
+- id: procedure
+  desc: an ordered way of doing something — who does what, and in what order
+- id: form
+  desc: a document you submit — a template, and the fields it asks for
+- id: table
+  desc: a table of values — amounts, caps, rates, day counts
+- id: case
+  desc: a situation the rules did not settle, and what was actually done about it
+- id: system
+  desc: where the work is recorded — the ERP, the groupware, the accounting system
+- id: role
+  desc: a person, a team, or an approval authority
+- id: deadline
+  desc: something pinned to a date — a filing deadline, a submission cut-off, a retention period
+
+relations:
+- group: composition
+  rels:
+  - id: CONSISTS_OF
+    template: '{from} consists of {to}'
+    inverse: '{to} is part of {from}'
+    desc: what something is made of
+  - id: DEFINED_BY
+    template: '{from} is defined by {to}'
+    inverse: '{to} defines {from}'
+    desc: where the authority for this is written down
+- group: flow
+  rels:
+  - id: NEXT_STEP
+    template: '{from} is followed by {to}'
+    inverse: '{to} comes after {from}'
+    desc: the order work moves in
+  - id: SUBMITTED_TO
+    template: '{from} is submitted to {to}'
+    inverse: '{to} receives {from}'
+    desc: where a document goes
+  - id: RECORDED_IN
+    template: '{from} is recorded in {to}'
+    inverse: '{to} holds the record of {from}'
+    desc: which system keeps the record
+- group: responsibility
+  rels:
+  - id: APPROVED_BY
+    template: '{from} is approved by {to}'
+    inverse: '{to} approves {from}'
+    desc: who signs it off
+  - id: OWNED_BY
+    template: '{from} is owned by {to}'
+    inverse: '{to} owns {from}'
+    desc: who to ask when the rule runs out
+- group: constraint
+  rels:
+  - id: LIMITED_BY
+    template: '{from} is limited by {to}'
+    inverse: '{to} caps {from}'
+    desc: where the ceiling on an amount or a count is written
+  - id: DUE_BY
+    template: '{from} is due by {to}'
+    inverse: '{to} is the deadline for {from}'
+    desc: when it has to be done
+  - id: EXCEPTION_OF
+    template: '{from} is an exception to {to}'
+    inverse: '{to} has an exception: {from}'
+    desc: where the general rule did not hold
+
+# Judgments that give the kinds meaning. An edge matching one of these fails validation.
+edge_rules:
+- rel: DEFINED_BY
+  to_kind: form
+  error: a form is not an authority — point at a rule or a law (a form is what you submit, not what decides)
+- rel: APPROVED_BY
+  to_kind: system
+  error: a system does not approve anything — an approval chain points at a role

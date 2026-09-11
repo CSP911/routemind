@@ -1,0 +1,400 @@
+/* Knowledge — a map on the left, the agent's own words on the right.
+   The raw pane is monospace and unstyled inside on purpose: it is a transcript, not a rendering. */
+:root { --kn-mono: ui-monospace, Menlo, Consolas, monospace; }
+
+[hidden] { display: none !important; }
+
+.kn-shell { max-width: 1560px; margin: 0 auto; padding: 28px 32px 40px; }
+.kn-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 16px; }
+.kn-head h1 { font-size: 30px; margin: 4px 0 0; }
+.kn-sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+.eyebrow { font: 700 10px var(--kn-mono); letter-spacing: .12em; color: var(--blue); }
+
+.kn-bar { display: flex; justify-content: flex-start; padding: 10px 16px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--panel); margin-bottom: 16px; }
+.kn-state-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--muted); }
+.kn-state-item strong { color: var(--text); font-weight: 600; margin-left: 5px; font-family: var(--kn-mono); }
+
+.panel { border: 1px solid var(--line); background: var(--panel); border-radius: 12px;
+  padding: 16px 18px; display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.kn-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 10px; }
+.kn-panel-head h2 { margin: 3px 0 0; font-size: 17px; }
+.kn-panel-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.kn-hint, .kn-invariant { margin: 10px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.kn-invariant { padding: 9px 12px; border-left: 2px solid var(--purple); background: var(--panel2); border-radius: 0 8px 8px 0; }
+.kn-addr { margin: 5px 0 0; font: 11.5px var(--kn-mono); color: var(--cyan); overflow-wrap: anywhere; }
+.kn-raw-meta { font: 11px var(--kn-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+
+/* ── map — drawn as a wiring diagram ─────────────────────────────────────── */
+.kn-topo-wrap { overflow-x: auto; margin: 0 -4px; padding: 10px 4px 6px; }
+.kn-topo { display: block; margin: 0 auto; max-width: none; }
+
+/* Wires are orthogonal and one weight; the bus is heavier because everything hangs off it. */
+.kn-wire { fill: none; stroke: var(--line); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: square; }
+.kn-wire.is-bus { stroke-width: 3; }
+.kn-wire.is-on { stroke: var(--cyan); stroke-width: 2; }
+
+.kn-dev { cursor: pointer; }
+.kn-dev rect { fill: var(--panel2); stroke: var(--line); stroke-width: 1.3; transition: stroke .12s, fill .12s; }
+.kn-dev:hover rect { stroke: var(--cyan); }
+.kn-dev:focus { outline: none; }
+.kn-dev:focus-visible rect, .kn-dev.is-sel rect { stroke: var(--cyan); stroke-width: 2; }
+.kn-dev.is-open rect { stroke: var(--cyan); }
+.kn-dev.is-core rect { fill: var(--panel); stroke: var(--blue); stroke-width: 1.8; }
+.kn-dev.is-mgmt > rect { stroke-dasharray: 3 3; }
+.kn-dev.is-as rect { fill: var(--panel); }
+.kn-dev.is-host rect { stroke: var(--green); }
+.kn-dev.is-sw rect { fill: var(--panel); }
+.kn-port { fill: var(--line); }
+.kn-dev.is-sel .kn-port, .kn-dev.is-open .kn-port, .kn-dev:hover .kn-port { fill: var(--cyan); }
+.kn-led { fill: var(--green); }
+.kn-dev-title { font: 600 11.5px var(--kn-mono); fill: var(--text); }
+.kn-dev.is-core .kn-dev-title { fill: var(--blue); font-size: 12.5px; }
+.kn-dev.is-host .kn-dev-title { font-weight: 500; }
+.kn-dev-sub { font: 10.5px var(--kn-mono); fill: var(--muted); }
+.kn-dev-badge { font: 10px var(--kn-mono); fill: var(--muted); }
+
+.kn-rack rect { fill: color-mix(in srgb, var(--panel) 70%, transparent); stroke: var(--line); stroke-width: 1.2; }
+.kn-rack-rule { stroke: var(--line); stroke-width: 1; }
+
+/* Moving an entity. What can be dragged says so with the cursor; while one is in hand, everything it
+   may land on is marked, and the one under the pointer is filled. Nothing else changes colour, so a
+   place it cannot go is simply a place that did not light up. */
+.kn-dev.is-movable { cursor: grab; }
+body.kn-dragging, body.kn-dragging .kn-dev, body.kn-dragging .kn-rack-btn { cursor: grabbing; }
+body.kn-dragging { user-select: none; }
+.kn-dev.is-dragging { opacity: .35; }
+.kn-rack.is-drop-ok > rect, .kn-dev.is-drop-ok > rect { stroke: var(--cyan); stroke-width: 2; }
+.kn-rack.is-drop-hover > rect { fill: color-mix(in srgb, var(--cyan) 12%, var(--panel)); stroke-dasharray: none; }
+.kn-dev.is-drop-hover > rect { fill: color-mix(in srgb, var(--cyan) 22%, var(--panel)); }
+.kn-drag-ghost { position: fixed; z-index: 1000; pointer-events: none; transform: translate(12px, 10px);
+  padding: 6px 11px; border: 1px solid var(--cyan); border-radius: 7px; background: var(--panel);
+  color: var(--text); font: 600 11.5px var(--kn-mono); box-shadow: 0 6px 18px rgba(0, 0, 0, .28); white-space: nowrap; }
+.kn-drag-ghost .kn-drag-to { display: block; margin-top: 3px; font-weight: 500; color: var(--kn-muted); }
+.kn-drag-ghost.is-ok .kn-drag-to { color: var(--cyan); }
+.kn-rack-title { font: 700 11.5px var(--kn-mono); letter-spacing: .1em; fill: var(--blue); }
+.kn-rack-kind { font-weight: 600; letter-spacing: .06em; fill: var(--muted); }
+.kn-rack-name { font-size: 13.5px; font-weight: 700; letter-spacing: .02em; fill: var(--blue); }
+.kn-rack-note { font: 11px var(--kn-mono); fill: var(--muted); }
+
+.kn-legend { display: flex; gap: 14px; font: 10.5px var(--kn-mono); color: var(--muted); align-items: center; }
+.kn-legend span { display: flex; align-items: center; gap: 6px; }
+.kn-dot { width: 10px; height: 8px; border-radius: 2px; border: 1.2px solid var(--line); background: var(--panel2); }
+.kn-dot.is-bb { border-color: var(--blue); }
+.kn-dot.is-data { border-color: var(--green); }
+
+/* ── the transcript, over the map. No prettifying, no wrapping surprises. ─── */
+.kn-raw-dialog { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--text);
+  padding: 20px 24px; width: min(980px, calc(100vw - 48px)); max-height: calc(100vh - 80px); }
+.kn-raw-dialog.is-form { width: min(720px, calc(100vw - 48px)); }
+.kn-raw-dialog::backdrop { background: rgba(0, 0, 0, .58); }
+.kn-raw-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 20px;
+  margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--kn-line); }
+.kn-raw-head h2 { margin: 6px 0 0; font-size: 18px; line-height: 1.25; }
+.kn-raw-ident { min-width: 0; }
+.kn-raw-tools { display: flex; align-items: center; gap: 8px; }
+.kn-raw-tools .kn-actions { gap: 8px; }
+/* The diagnostic line — status, size, revision. Useful to someone debugging, so it stays; it is not
+   an action, so it no longer sits in the row of things you can press. */
+.kn-raw-meta { display: block; margin-top: 6px; font: 11px var(--kn-mono); color: var(--kn-muted); opacity: .8; }
+.kn-raw-meta:empty { display: none; }
+.kn-raw { margin: 0; min-height: 300px; max-height: calc(100vh - 220px); overflow: auto;
+  padding: 14px 16px; border: 1px solid var(--line); border-left-width: 3px; border-radius: 10px;
+  background: var(--bg); color: var(--text); font: 12.5px/1.65 var(--kn-mono);
+  white-space: pre-wrap; overflow-wrap: anywhere; }
+.kn-raw.is-ok { border-left-color: var(--green); }
+.kn-raw.is-bad { border-left-color: var(--orange); }
+.kn-raw.is-loading { border-left-color: var(--line); color: var(--muted); }
+.kn-raw::-webkit-scrollbar { width: 10px; }
+.kn-raw::-webkit-scrollbar-thumb { background: var(--line); border-radius: 10px; }
+/* Copy, on the corner of the text it copies. Clear of the scrollbar, and the first lines of the
+   transcript are short headers, so the corner is empty where the button sits. */
+.kn-raw-wrap { position: relative; }
+.kn-copy { position: absolute; top: 10px; right: 20px; display: grid; place-items: center; width: 30px; height: 30px;
+  padding: 0; border: 1px solid var(--kn-line); border-radius: 8px; background: var(--panel); color: var(--kn-muted);
+  cursor: pointer; opacity: .75; transition: opacity .12s, color .12s, border-color .12s; }
+.kn-raw-wrap:hover .kn-copy, .kn-copy:focus-visible { opacity: 1; }
+.kn-copy:hover, .kn-copy:focus-visible { color: var(--kn-accent); border-color: var(--kn-accent); outline: none; }
+.kn-copy svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.kn-copy .kn-copy-done { display: none; }
+.kn-copy.is-done { color: var(--green); border-color: var(--green); opacity: 1; }
+.kn-copy.is-done .kn-copy-icon { display: none; }
+.kn-copy.is-done .kn-copy-done { display: block; stroke-width: 1.8; }
+
+/* ── curator proposals ───────────────────────────────────────────────────── */
+.kn-workspace { display: grid; gap: 16px; margin-top: 16px; }
+.kn-scroll { overflow-y: auto; min-height: 0; max-height: 62vh; padding-right: 4px; }
+.kn-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+.kn-tab { padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel2);
+  color: var(--muted); font-size: 12px; cursor: pointer; }
+.kn-tab[aria-selected="true"] { color: var(--text); border-color: var(--cyan); }
+.kn-tab .kn-count { margin-left: 6px; font-variant-numeric: tabular-nums; }
+.kn-list { display: grid; gap: 12px; align-content: start; }
+.kn-card { border: 1px solid var(--line); border-left-width: 3px; border-radius: 12px; background: var(--panel2);
+  padding: 12px 14px; display: grid; gap: 8px; }
+.kn-card.is-draft { border-left-color: var(--purple); }
+.kn-card.is-question { border-left-color: var(--orange); }
+.kn-card.is-conflict { border-left-color: var(--red); }
+.kn-card.is-note { border-left-color: var(--line); }
+.kn-card h3 { margin: 0; font-size: 15px; }
+.kn-card p { margin: 0; }
+.kn-card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.kn-type { font: 700 10px var(--kn-mono); letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px;
+  border: 1px solid var(--line); border-radius: 6px; color: var(--muted); }
+.kn-when { margin-left: auto; font: 11px var(--kn-mono); color: var(--muted); }
+.kn-note { font-size: 12px; color: var(--muted); }
+.kn-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.kn-actions input { flex: 1; min-width: 200px; padding: 8px 11px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; font-size: 13px; }
+.kn-empty { padding: 36px 20px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 12px; }
+
+@media (max-width: 1240px) {
+  .kn-shell { padding: 20px; }
+  .kn-raw-dialog { width: calc(100vw - 24px); padding: 14px; }
+  .kn-raw { max-height: 62vh; }
+  .kn-raw-head { grid-template-columns: 1fr; gap: 10px; }
+  .kn-head h1 { font-size: 24px; }
+}
+
+/* ── the record, in the same dialog as the transcript ─────────────────────── */
+/* A form here is not a page of its own: it opens where the reading opened, so a person can check what
+   the agent is handed and then change it without losing the place they were looking at. */
+.kn-edit { display: grid; gap: 0; max-height: calc(100vh - 220px); overflow: auto; }
+.kn-form { display: grid; gap: 16px; align-content: start; padding: 2px; }
+.kn-fpath { margin: 0; font: 11.5px var(--kn-mono); color: var(--cyan); overflow-wrap: anywhere; }
+.kn-fnote, .kn-fhint { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.kn-fsection { margin: 8px 0 0; padding-top: 10px; border-top: 1px solid var(--line);
+  font: 700 10px var(--kn-mono); letter-spacing: .12em; color: var(--blue); text-transform: uppercase; }
+.kn-err { margin: 0; color: var(--orange); font-size: 12px; }
+.kn-frow { display: grid; gap: 6px; }
+.kn-flabel { font-size: 12.5px; font-weight: 600; color: var(--kn-text); }
+/* border-box: without it a 100%-wide field is 100% plus its padding, and every form scrolled sideways. */
+.kn-input, .kn-area { box-sizing: border-box; width: 100%; padding: 9px 12px; border: 1px solid var(--kn-line); border-radius: 8px;
+  background: var(--bg); color: var(--text); font: inherit; font-size: 13px; }
+.kn-area { font: 12.5px/1.6 var(--kn-mono); resize: vertical; }
+.kn-input:focus-visible, .kn-area:focus-visible { outline: none; border-color: var(--kn-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--kn-accent) 18%, transparent); }
+.kn-input:disabled { color: var(--muted); }
+.kn-form-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center;
+  margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--kn-line); }
+.kn-form-actions > .kn-danger { margin-right: auto; }
+
+.kn-bar-actions { display: flex; gap: 8px; margin-left: auto; align-items: center; }
+.kn-bar { justify-content: space-between; align-items: center; gap: 16px; }
+
+@media (max-width: 1240px) {
+  .kn-bar { flex-wrap: wrap; }
+}
+
+
+/* ── cards ───────────────────────────────────────────────────────────────── */
+.kn-path { margin: 5px 0 0; font: 11.5px var(--kn-mono); color: var(--muted); }
+.kn-banner { margin: 0 0 10px; padding: 9px 12px; border-left: 3px solid var(--green); background: var(--panel2);
+  border-radius: 0 8px 8px 0; font-size: 12.5px; }
+.kn-card-form { display: grid; gap: 18px; padding: 2px 2px 4px; }
+.kn-cf-title { margin: 0; font-size: 18px; }
+.kn-cf-lead { margin: -10px 0 0; color: var(--kn-muted); font-size: 13.5px; line-height: 1.55; }
+/* The pull-up tucks a lead under its card title. With no title above it — the move card, whose title is
+   the dialog's own — it pulled the first line up under the pane's edge and cut it off. */
+.kn-card-form > .kn-cf-lead:first-child { margin-top: 0; }
+.kn-input.is-mono { font: 12.5px var(--kn-mono); }
+.kn-rack-btn { cursor: pointer; }
+.kn-rack-btn rect { fill: var(--panel2); stroke: var(--line); stroke-width: 1.2; }
+.kn-rack-btn text { font: 600 11.5px var(--kn-mono); fill: var(--text); }
+.kn-rack-btn:hover rect, .kn-rack-btn:focus-visible rect { stroke: var(--cyan); fill: var(--panel); }
+.kn-rack-btn:focus { outline: none; }
+/* A one-file node is a node. Node shape, node colour — the one file it holds is the badge under it.
+   It used to have a green border, and green meant "data, promote me" everywhere else on the map. */
+.kn-dev.is-leaf rect { fill: var(--panel); }
+.kn-dev.is-leaf .kn-dev-badge { fill: var(--green); }
+
+/* ── popup header: identity on the left, tools on the right ─────────────── */
+.kn-raw-tools .kn-actions:empty { display: none; }
+.kn-chip-kind { display: inline-block; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--line);
+  font: 700 10px var(--kn-mono); letter-spacing: .12em; color: var(--muted); background: var(--panel2); }
+.kn-chip-kind.is-backbone, .kn-chip-kind.is-core { color: var(--blue); border-color: var(--blue); }
+.kn-chip-kind.is-as { color: var(--text); border-color: var(--text); }
+.kn-chip-kind.is-node, .kn-chip-kind.is-region { color: var(--cyan); border-color: var(--cyan); }
+.kn-chip-kind.is-file { color: var(--green); border-color: var(--green); }
+.kn-chip-kind.is-service { color: var(--purple); border-color: var(--purple); }
+
+
+/* ── a routing proposal: the sentence now, and the sentence proposed ─────── */
+.kn-card.is-route { border-left-color: var(--cyan); }
+.kn-scope { font: 10.5px var(--kn-mono); color: var(--muted); }
+.kn-ba { display: grid; gap: 7px; }
+.kn-ba-head { margin: 0; font: 10.5px var(--kn-mono); letter-spacing: .06em; color: var(--muted); }
+.kn-ba-pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: stretch; }
+.kn-ba-box { display: grid; gap: 4px; align-content: start; padding: 9px 11px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--bg); font-size: 12.5px; line-height: 1.55; }
+.kn-ba-box p { margin: 0; }
+.kn-ba-box.is-after { border-color: var(--cyan); }
+.kn-ba-label { font: 700 9.5px var(--kn-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.kn-ba-box.is-after .kn-ba-label { color: var(--cyan); }
+.kn-ba-arrow { align-self: center; color: var(--cyan); font-size: 17px; }
+@media (max-width: 720px) {
+  .kn-ba-pair { grid-template-columns: 1fr; }
+  .kn-ba-arrow { transform: rotate(90deg); justify-self: center; }
+}
+.kn-rack-btn.is-primary rect { border: 0; fill: var(--panel); stroke: var(--cyan); }
+.kn-rack-btn.is-primary text { fill: var(--cyan); }
+
+/* ── a pending routing request, shown on the thing it would change ───────── */
+/* Warning colour, not error: a request waiting is work to do, not something broken. */
+.kn-dev.is-flagged rect { stroke: var(--orange); stroke-width: 1.8; }
+.kn-flag-dot { fill: var(--orange); }
+.kn-flag-count { font: 700 10px var(--kn-mono); fill: var(--bg); }
+.kn-rack-btn.is-flag rect { fill: var(--orange); stroke: var(--orange); }
+.kn-rack-btn.is-flag text { fill: var(--bg); }
+.kn-rack-btn.is-flag:hover rect, .kn-rack-btn.is-flag:focus-visible rect { fill: var(--panel); stroke: var(--orange); }
+.kn-rack-btn.is-flag:hover text, .kn-rack-btn.is-flag:focus-visible text { fill: var(--orange); }
+.kn-review { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--line);
+  border-left: 3px solid var(--orange); border-radius: 10px; background: var(--panel2); }
+.kn-review .kn-card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; }
+.kn-legend .kn-dot.is-flag { border-color: var(--orange); background: var(--orange); }
+/* A refusal, kept beside the fields it is about — the API's own words. */
+.kn-err-box { display: grid; gap: 4px; padding: 10px 12px; border: 1px solid var(--orange);
+  border-left-width: 3px; border-radius: 8px; background: var(--panel2); color: var(--orange);
+  font: 12.5px/1.6 var(--kn-mono); overflow-wrap: anywhere; }
+.kn-err-box p { margin: 0; }
+/* What a creation did: two facts and what can still be changed about them. */
+.kn-facts { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; align-items: baseline;
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.kn-fact-k { font: 11px var(--kn-mono); color: var(--muted); }
+.kn-fact-v { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.kn-fact-v code { font: 12.5px var(--kn-mono); color: var(--text); overflow-wrap: anywhere; }
+.kn-fact-n { font-size: 11px; color: var(--muted); }
+.kn-uncovered { display: grid; gap: 7px; padding: 11px 13px; border: 1px solid var(--orange);
+  border-left-width: 3px; border-radius: 10px; background: var(--panel2); }
+.kn-uncovered .kn-chip { color: var(--text); border-color: var(--orange); cursor: default; }
+/* Choosing areas for a run — a second, smaller target on a device, because selecting is not opening. */
+.kn-pick { cursor: pointer; }
+.kn-pick rect { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
+.kn-pick:hover rect, .kn-pick:focus-visible rect { stroke: var(--cyan); }
+.kn-pick:focus { outline: none; }
+.kn-pick.is-on rect { fill: var(--cyan); stroke: var(--cyan); }
+.kn-pick-tick { fill: none; stroke: var(--bg); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.kn-dev.is-picked rect { stroke: var(--cyan); }
+
+.kn-picked-bar, .kn-picked-clear { cursor: pointer; }
+.kn-picked-bar rect, .kn-picked-clear rect { fill: var(--cyan); stroke: var(--cyan); }
+.kn-picked-bar text, .kn-picked-clear text { font: 600 11.5px var(--kn-mono); fill: var(--bg); }
+.kn-picked-bar:hover rect, .kn-picked-clear:hover rect { fill: var(--panel); }
+.kn-picked-bar:hover text, .kn-picked-clear:hover text { fill: var(--cyan); }
+.kn-picked-bar:focus, .kn-picked-clear:focus { outline: none; }
+/* The hop-0 row as it will read. Shown in the table's own shape because "would I pick this row" is
+   not a question prose can be tried on. */
+.kn-hop0-preview { margin: 0; padding: 11px 13px; border: 1px solid var(--line); border-left: 3px solid var(--blue);
+  border-radius: 8px; background: var(--bg); color: var(--text);
+  font: 12px/1.7 var(--kn-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* The signature field in the header. Sized to a name, not to the column it sits in. */
+
+
+/* The read-only state. Orange rather than red: nothing is broken, and everything still reads. */
+.kn-state-item.is-stuck { color: var(--warn, #c77700); }
+.kn-state-item.is-stuck strong { font-weight: 500; opacity: .85; }
+
+
+
+/* A rack action that removes something. Outlined rather than filled: it sits in a row of ordinary
+   actions and must read as different without shouting over the one that is primary. */
+.kn-rack-btn.is-danger rect { fill: none; stroke: var(--danger, #b3261e); stroke-width: 1; }
+.kn-rack-btn.is-danger text { fill: var(--danger, #b3261e); }
+.kn-rack-icon path { fill: none; stroke: var(--danger, #b3261e); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.kn-rack-btn.is-danger:hover rect { fill: color-mix(in srgb, var(--danger, #b3261e) 10%, transparent); }
+
+
+
+
+/* ── components ──────────────────────────────────────────────────────────────
+   This page's own buttons, under its own name. The shared sheets it inherits restyle `.button` with
+   `!important` and never gave it a base, so buttons here rendered as the browser's default control —
+   grey squares of every size. A name those sheets do not know is how this page gets a button system
+   without fighting them. */
+:root {
+  --kn-accent: var(--cyan, #087f85);
+  --kn-danger: var(--red, #b42335);
+  --kn-line: var(--line, #cbd5df);
+  --kn-text: var(--text, #111827);
+  --kn-muted: var(--muted, #5b6b7d);
+  --kn-surface: var(--panel, #ffffff);
+  --kn-surface-2: var(--panel2, #f4f7fa);
+  --kn-on-accent: #ffffff;
+}
+.kn-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 34px; padding: 0 14px; border-radius: 8px;
+  border: 1px solid var(--kn-line); background: var(--kn-surface); color: var(--kn-text);
+  font: 500 13px/1 system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: .005em;
+  white-space: nowrap; cursor: pointer;
+  transition: background-color .12s, border-color .12s, color .12s, box-shadow .12s;
+}
+.kn-btn:hover { background: var(--kn-surface-2); border-color: color-mix(in srgb, var(--kn-line) 55%, var(--kn-text)); }
+.kn-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--kn-accent) 30%, transparent); }
+.kn-btn:disabled, .kn-btn[aria-busy="true"] { opacity: .55; cursor: default; }
+
+.kn-btn.kn-primary { background: var(--kn-accent); border-color: var(--kn-accent); color: var(--kn-on-accent); }
+.kn-btn.kn-primary:hover { background: color-mix(in srgb, var(--kn-accent) 88%, #000); border-color: transparent; }
+
+.kn-btn.kn-danger { background: var(--kn-danger); border-color: var(--kn-danger); color: var(--kn-on-accent); }
+.kn-btn.kn-danger:hover { background: color-mix(in srgb, var(--kn-danger) 88%, #000); border-color: transparent; }
+
+/* The way out, and helpers. Present, but not competing with the action a form is for. */
+.kn-btn.kn-quiet { background: transparent; border-color: transparent; color: var(--kn-muted); }
+.kn-btn.kn-quiet:hover { background: var(--kn-surface-2); color: var(--kn-text); }
+
+.kn-btn.kn-small { height: 28px; padding: 0 11px; font-size: 12px; border-radius: 7px; }
+.kn-btn.kn-icon { width: 34px; padding: 0; font-size: 20px; line-height: 1; }
+
+/* A helper inside a field's row sits under the field, at its right edge — reachable, and plainly not
+   the save. Full width, it read as the form's main button. */
+.kn-frow > .kn-inline-act { justify-self: end; margin-top: -2px; }
+
+/* The upload row: this page's button and the chosen file's name, in place of the browser's control. */
+.kn-file-line { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.kn-file-chosen { font: 12px var(--kn-mono); color: var(--kn-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The address a file name becomes, shown as it is typed. */
+.kn-addr-preview { font: 12px var(--kn-mono); color: var(--kn-accent); }
+.kn-addr-preview.is-bad { color: var(--kn-danger); }
+
+/* How new data arrives: two choices, one of them always on. Native radios, drawn as a segmented
+   control — the choice is the first thing on the form and has to read as one. */
+.kn-seg { display: inline-flex; width: fit-content; padding: 3px; gap: 3px; border: 1px solid var(--kn-line);
+  border-radius: 10px; background: var(--panel2); }
+.kn-seg-opt { position: relative; display: block; cursor: pointer; }
+.kn-seg-opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.kn-seg-opt span { display: block; padding: 7px 14px; border-radius: 7px; font-size: 13px; color: var(--kn-muted); }
+.kn-seg-opt input:checked + span { background: var(--panel); color: var(--kn-text); font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+.kn-seg-opt input:focus-visible + span { outline: 2px solid var(--kn-accent); outline-offset: 1px; }
+.kn-upload-preview { margin: 4px 0 0; max-height: 220px; overflow: auto; padding: 10px 12px; border: 1px solid var(--kn-line);
+  border-radius: 8px; background: var(--bg); color: var(--text); font: 12px/1.6 var(--kn-mono);
+  white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Overlays (VRF): one colour, used for nothing else on the map. A member is outlined; an area switch
+   that holds a member is marked lightly, so a closed rack still says "something of this is in here". */
+.kn-dev.is-vrf > rect { stroke: var(--purple); stroke-width: 2.2; }
+.kn-dev.is-vrf-in > rect { stroke: var(--purple); stroke-dasharray: 4 3; }
+.kn-vrf-chip { cursor: pointer; }
+.kn-vrf-chip rect { fill: var(--panel); stroke: var(--purple); stroke-width: 1.2; }
+.kn-vrf-chip text { font: 600 11px var(--kn-mono); fill: var(--purple); }
+.kn-vrf-chip.is-sel rect { fill: var(--purple); }
+.kn-vrf-chip.is-sel text { fill: var(--bg); }
+.kn-vrf-chip:focus { outline: none; }
+.kn-vrf-chip:focus-visible rect { stroke-width: 2; }
+.kn-picked-bar.is-second rect { fill: var(--panel); }
+.kn-picked-bar.is-second text { fill: var(--cyan); }
+.kn-chip-kind.is-vrf { color: var(--purple); border-color: var(--purple); }
+.kn-dot.is-vrf { border-color: var(--purple); }
+
+/* How to write a routing line: folded under its field, quiet until opened. */
+.kn-guide { margin-top: -8px; font-size: 12.5px; color: var(--kn-muted); }
+.kn-guide summary { cursor: pointer; width: fit-content; font-size: 12px; color: var(--kn-accent); }
+.kn-guide summary:focus-visible { outline: 2px solid var(--kn-accent); outline-offset: 2px; border-radius: 4px; }
+.kn-guide p { margin: 6px 0 0; line-height: 1.55; }
+.kn-guide p:nth-of-type(n+3) { font: 12px var(--kn-mono); color: var(--kn-text); }
+/* A Suggest with no LLM behind it: visible, so the field is not a mystery, and plainly off. */
+.kn-inline-act:disabled { opacity: .45; cursor: not-allowed; }

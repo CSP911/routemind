@@ -1,0 +1,309 @@
+:root {
+  --iris-accent: #46cbd0;
+  --iris-danger: #d74d5a;
+}
+
+/* IRIS v2.15.0: light mode is a first-class palette, not only per-widget overrides. */
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg:#f3f6f9;
+  --panel:#ffffff;
+  --panel2:#f4f7fa;
+  --panel-2:#f4f7fa;
+  --line:#b8c4d1;
+  --text:#111827;
+  --muted:#4b5b6d;
+  --blue:#1769aa;
+  --cyan:#087f85;
+  --orange:#9a5700;
+  --red:#b42335;
+  --green:#176b47;
+  --purple:#6842a5;
+}
+.theme-control { display:flex; align-items:center; gap:7px; font-size:11px; color:#8e9aaa; }
+.theme-control span { font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.theme-control select { min-width:92px; padding:8px 28px 8px 10px; border-radius:9px; }
+
+html[data-theme="light"] body {
+  background:#f4f7fa !important;
+  color:#182331 !important;
+}
+html[data-theme="light"] .shell,
+html[data-theme="light"] .app-shell { color:#182331; }
+html[data-theme="light"] .topbar p,
+html[data-theme="light"] .subtle,
+html[data-theme="light"] small,
+html[data-theme="light"] .path-meta,
+html[data-theme="light"] .config-meta,
+html[data-theme="light"] .availability-hint,
+html[data-theme="light"] .source-text,
+html[data-theme="light"] .theme-control { color:#667386 !important; }
+html[data-theme="light"] .eyebrow { color:#278b90 !important; }
+
+html[data-theme="light"] .card,
+html[data-theme="light"] .metric,
+html[data-theme="light"] .status-card,
+html[data-theme="light"] .table-card,
+html[data-theme="light"] .entity-card,
+html[data-theme="light"] .relation,
+html[data-theme="light"] .scope-strip,
+html[data-theme="light"] .drawer-section,
+html[data-theme="light"] .inspector-management,
+html[data-theme="light"] .path-row,
+html[data-theme="light"] .analysis-env,
+html[data-theme="light"] .mapping-item,
+html[data-theme="light"] .mold-metric,
+html[data-theme="light"] .candidate-row,
+html[data-theme="light"] .env-context,
+html[data-theme="light"] .health-nav,
+html[data-theme="light"] .filter-bar,
+html[data-theme="light"] .tabs {
+  background:#ffffff !important;
+  border-color:#d7dfe8 !important;
+  color:#182331 !important;
+  box-shadow:none !important;
+}
+
+html[data-theme="light"] select,
+html[data-theme="light"] input,
+html[data-theme="light"] textarea {
+  background:#ffffff !important;
+  border-color:#c8d2dd !important;
+  color:#17212d !important;
+}
+html[data-theme="light"] select:focus,
+html[data-theme="light"] input:focus,
+html[data-theme="light"] textarea:focus {
+  border-color:#42aeb4 !important;
+  box-shadow:0 0 0 2px rgba(66,174,180,.14) !important;
+}
+
+html[data-theme="light"] .button,
+html[data-theme="light"] .secondary-button,
+html[data-theme="light"] .mini-button,
+html[data-theme="light"] .icon-button,
+html[data-theme="light"] .tab,
+html[data-theme="light"] .view-button,
+html[data-theme="light"] .health-filter,
+html[data-theme="light"] .swap-button {
+  background:#f8fafc !important;
+  border-color:#cbd5df !important;
+  color:#263344 !important;
+}
+html[data-theme="light"] .button:hover,
+html[data-theme="light"] .secondary-button:hover,
+html[data-theme="light"] .mini-button:hover,
+html[data-theme="light"] .view-button:hover { background:#eef4f7 !important; }
+html[data-theme="light"] .primary,
+html[data-theme="light"] .primary-button,
+html[data-theme="light"] .view-button.active,
+html[data-theme="light"] .tab.active,
+html[data-theme="light"] .health-filter.active {
+  background:#dff5f6 !important;
+  border-color:#76cbd0 !important;
+  color:#166c72 !important;
+}
+html[data-theme="light"] .danger-button { color:#a92f3c !important; border-color:#e3a9b0 !important; }
+
+html[data-theme="light"] .drawer,
+html[data-theme="light"] .mold-modal,
+html[data-theme="light"] .path-browser-dialog,
+html[data-theme="light"] .confirm-dialog {
+  background:#f9fbfd !important;
+  border-color:#cbd6e1 !important;
+  color:#182331 !important;
+  box-shadow:0 24px 80px rgba(41,55,72,.24) !important;
+}
+html[data-theme="light"] .drawer-head,
+html[data-theme="light"] .mold-modal-head,
+html[data-theme="light"] .path-browser-head,
+html[data-theme="light"] .path-browser-footer,
+html[data-theme="light"] .drawer-section-head {
+  background:#ffffff !important;
+  border-color:#dbe3eb !important;
+}
+html[data-theme="light"] .backdrop,
+html[data-theme="light"] .drawer-backdrop,
+html[data-theme="light"] .mold-modal-backdrop,
+html[data-theme="light"] .path-browser-backdrop,
+html[data-theme="light"] .confirm-backdrop { background:rgba(30,42,56,.34) !important; }
+
+html[data-theme="light"] .path-browser-entry,
+html[data-theme="light"] .generated-item,
+html[data-theme="light"] .issue-row,
+html[data-theme="light"] .candidate-impact {
+  background:#ffffff !important;
+  border-color:#d9e1ea !important;
+  color:#243142 !important;
+}
+html[data-theme="light"] .path-browser-entry:hover { background:#eef7f8 !important; }
+
+html[data-theme="light"] .code-viewer,
+html[data-theme="light"] .diff-viewer,
+html[data-theme="light"] .candidate-diff,
+html[data-theme="light"] pre,
+html[data-theme="light"] code {
+  background:#f7f9fc !important;
+  color:#1d2938 !important;
+  border-color:#d7e0e9 !important;
+}
+html[data-theme="light"] table { color:#1d2938 !important; }
+html[data-theme="light"] th { background:#edf2f7 !important; color:#526174 !important; }
+html[data-theme="light"] td { border-color:#e0e6ed !important; }
+html[data-theme="light"] tr:hover td { background:#f5f8fb !important; }
+
+html[data-theme="light"] .notice { background:#fff8e8 !important; border-color:#eacb8b !important; color:#74521b !important; }
+html[data-theme="light"] .toast { background:#263443 !important; color:#fff !important; }
+html[data-theme="light"] .workflow-status.ready,
+html[data-theme="light"] .badge,
+html[data-theme="light"] .source-badge { color:#19704e !important; }
+
+/* Higher-contrast text and hard-coded dark-surface overrides for Light mode. */
+html[data-theme="light"] p,
+html[data-theme="light"] label,
+html[data-theme="light"] .metric span,
+html[data-theme="light"] .chip,
+html[data-theme="light"] .relation-name span,
+html[data-theme="light"] .file-meta,
+html[data-theme="light"] .drawer-section-head p,
+html[data-theme="light"] .credential-note,
+html[data-theme="light"] .workflow-message,
+html[data-theme="light"] .path-browser-footer span,
+html[data-theme="light"] .path-browser-meta { color:#4b5b6d !important; }
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3,
+html[data-theme="light"] strong,
+html[data-theme="light"] .entity-title strong,
+html[data-theme="light"] .relation-name strong,
+html[data-theme="light"] .relation-name.server-name strong,
+html[data-theme="light"] .relation-name.component-name strong,
+html[data-theme="light"] .file-name,
+html[data-theme="light"] .detail-grid dd,
+html[data-theme="light"] .code-line-text { color:#111827 !important; }
+html[data-theme="light"] .entity-card.selected { background:#eef8f8 !important; }
+html[data-theme="light"] .relation-row:hover { background:#f0f7f8 !important; }
+html[data-theme="light"] .relation-row.selected { background:#e4f3f4 !important; }
+html[data-theme="light"] .relation-row.related { background:#edf4fb !important; }
+html[data-theme="light"] .relation-row:after { background:#ffffff !important; }
+html[data-theme="light"] .drawer-section,
+html[data-theme="light"] .mold-modal .drawer-section { background:#ffffff !important; }
+html[data-theme="light"] .mold-modal-head,
+html[data-theme="light"] .tool-modal-head,
+html[data-theme="light"] .file-head { background:#f4f7fa !important; }
+html[data-theme="light"] .action-dialog,
+html[data-theme="light"] .tool-modal,
+html[data-theme="light"] .path-browser-dialog { background:#ffffff !important; }
+html[data-theme="light"] .source-line code,
+html[data-theme="light"] .source-code code,
+html[data-theme="light"] .diff-text { color:#182433 !important; }
+html[data-theme="light"] .mapped-value { color:#0f4f82 !important; background:#e7f1fb !important; border-color:#5792c2 !important; }
+html[data-theme="light"] .diff-pane,
+html[data-theme="light"] .diff-viewer,
+html[data-theme="light"] .code-viewer { background:#ffffff !important; }
+html[data-theme="light"] .diff-pane-head { background:#eef3f7 !important; color:#445467 !important; }
+html[data-theme="light"] .code-line-number { background:#f2f5f8 !important; color:#657386 !important; }
+html[data-theme="light"] .diff-row.same .code-line-number { background:#e8f4ed !important; color:#356149 !important; }
+html[data-theme="light"] .diff-row.changed .code-line-number { background:#fff1df !important; color:#8a510d !important; }
+html[data-theme="light"] .diff-row.removed .code-line-number { background:#fdebed !important; color:#a52d3c !important; }
+html[data-theme="light"] .diff-row.added .code-line-number { background:#e6f4eb !important; color:#256443 !important; }
+html[data-theme="light"] .status.missing,
+html[data-theme="light"] .chip.missing-chip { color:#566679 !important; }
+html[data-theme="light"] .workflow-status,
+html[data-theme="light"] .cap-pill { color:#46566a; }
+
+
+/* IRIS v2.18.0 Light mode separator clarity */
+html[data-theme="light"] .controls,
+html[data-theme="light"] .scope-strip,
+html[data-theme="light"] .metric,
+html[data-theme="light"] .entity-card,
+html[data-theme="light"] .table-card,
+html[data-theme="light"] .drawer-section,
+html[data-theme="light"] .action-dialog,
+html[data-theme="light"] .tool-modal,
+html[data-theme="light"] .mold-modal,
+html[data-theme="light"] .path-browser-dialog {
+  border-color:#c4d0dc !important;
+  box-shadow:0 10px 28px rgba(33,47,61,.08) !important;
+}
+html[data-theme="light"] .controls,
+html[data-theme="light"] .scope-strip,
+html[data-theme="light"] .summary-grid .metric,
+html[data-theme="light"] .entity-card,
+html[data-theme="light"] .table-toolbar,
+html[data-theme="light"] .action-head,
+html[data-theme="light"] .tool-modal-head,
+html[data-theme="light"] .mold-modal-head,
+html[data-theme="light"] .drawer-head,
+html[data-theme="light"] .drawer-section-head,
+html[data-theme="light"] .path-browser-head,
+html[data-theme="light"] .path-browser-footer,
+html[data-theme="light"] .file-head {
+  border-color:#cbd6e1 !important;
+}
+html[data-theme="light"] .relations,
+html[data-theme="light"] .relation-row,
+html[data-theme="light"] .relation-row:before,
+html[data-theme="light"] .detail-grid dt,
+html[data-theme="light"] .detail-grid dd,
+html[data-theme="light"] .candidate-row,
+html[data-theme="light"] .generated-item,
+html[data-theme="light"] .path-browser-entry,
+html[data-theme="light"] .diff-mode-card {
+  border-color:#d4dee8 !important;
+}
+html[data-theme="light"] .relation-row { border-bottom-color:#d6e0ea !important; }
+html[data-theme="light"] .relation-row:before { border-left-color:#8bb9bf !important; }
+html[data-theme="light"] .relation-row:after { border-color:#2e97a0 !important; }
+html[data-theme="light"] .view-switch,
+html[data-theme="light"] .view-button,
+html[data-theme="light"] .controls select,
+html[data-theme="light"] .controls input,
+html[data-theme="light"] .action-file-label select,
+html[data-theme="light"] .diff-mode-card,
+html[data-theme="light"] .button,
+html[data-theme="light"] .mini-button,
+html[data-theme="light"] .secondary-button,
+html[data-theme="light"] .icon-button,
+html[data-theme="light"] .page-button,
+html[data-theme="light"] .tab,
+html[data-theme="light"] .env-chip,
+html[data-theme="light"] .chip {
+  border-color:#c4d0dc !important;
+}
+html[data-theme="light"] .entity-head:hover,
+html[data-theme="light"] .relation-row:hover,
+html[data-theme="light"] tbody tr:hover td,
+html[data-theme="light"] .path-browser-entry:hover {
+  background:#eef5f8 !important;
+}
+html[data-theme="light"] .metric strong,
+html[data-theme="light"] #serverCount,
+html[data-theme="light"] #componentCount,
+html[data-theme="light"] #deploymentCount,
+html[data-theme="light"] #diffCount,
+html[data-theme="light"] #overrideCount,
+html[data-theme="light"] #noConfigCount { color:#0f1728 !important; }
+html[data-theme="light"] .diff-mode-card.emphasis-card { background:linear-gradient(180deg, #f1fbfc, #f7fbff) !important; }
+
+html[data-theme="light"] .diff-mode-card.deployed-card { background:linear-gradient(180deg,#f0faf5,#f7fbfa) !important; }
+
+/* IRIS v3.3.0: Config Diff endpoint surfaces follow Light mode and keep legends clear. */
+html[data-theme="light"] .endpoint {
+  background:#f7fafc !important;
+  border-color:#b9c7d5 !important;
+}
+html[data-theme="light"] .endpoint legend {
+  background:#f7fafc !important;
+}
+html[data-theme="light"] .source-endpoint legend { color:#087f85 !important; }
+html[data-theme="light"] .target-endpoint legend { color:#6842a5 !important; }
+
+/* IRIS v3.6.7: Remote Path volume search input in Light theme */
+html[data-theme="light"] .path-browser-search input {
+  background:#ffffff !important;
+  color:#1d2938 !important;
+  border-color:#c4d0dc !important;
+}
+html[data-theme="light"] .path-browser-search input:focus { border-color:#2e97a0 !important; }
