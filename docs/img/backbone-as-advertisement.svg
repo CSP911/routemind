@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1000" width="1240" height="1000" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="1240" height="1000" fill="#f7f8fa"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9aa4b0"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2d6a5f"/>
+    </marker>
+  </defs>
+
+  <!-- ─── header ─── -->
+  <text x="38" y="44" font-size="12" font-weight="700" letter-spacing="2.2" fill="#2d6a5f">FROM DYNAMIC ROUTING TO ROUTEMIND</text>
+  <text x="38" y="82" font-size="27" font-weight="700" fill="#1c2530">Backbone, AS, and route advertisement</text>
+  <text x="38" y="107" font-size="14.5" fill="#6b7684">How an area summarizes itself into one line, and how an agent routes on that line instead of searching.</text>
+  <text x="1202" y="52" font-size="12.5" font-style="italic" fill="#8a94a0" text-anchor="end">Different areas.</text>
+  <text x="1202" y="72" font-size="12.5" font-style="italic" fill="#8a94a0" text-anchor="end">One backbone.</text>
+  <text x="1202" y="92" font-size="12.5" font-style="italic" fill="#8a94a0" text-anchor="end">Fewer hops to the answer.</text>
+
+  <!-- ═══ 1 — areas own what they hold ═══ -->
+  <rect x="38" y="130" width="576" height="292" rx="14" fill="#ffffff" stroke="#dfe4ea"/>
+  <circle cx="66" cy="160" r="13" fill="#2d6a5f"/>
+  <text x="66" y="165" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+  <text x="90" y="165" font-size="16" font-weight="700" fill="#1c2530">An area is an autonomous system</text>
+  <text x="90" y="187" font-size="12.5" fill="#6b7684">It owns its own structure, its own words, and everything under it.</text>
+
+  <rect x="58" y="204" width="174" height="198" rx="10" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="74" y="230" font-size="14" font-weight="700" fill="#1c2530">Expense</text>
+  <text x="74" y="248" font-size="10.5" letter-spacing="0.8" fill="#8a94a0">AUTONOMOUS SYSTEM</text>
+  <line x1="74" y1="260" x2="216" y2="260" stroke="#eceff3"/>
+  <text x="74" y="282" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">corp-card</text>
+  <text x="74" y="306" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">evidence</text>
+  <text x="74" y="330" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">travel-expense</text>
+  <text x="74" y="354" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">expense-overview</text>
+  <text x="74" y="378" font-size="12" fill="#b3bcc7">…</text>
+
+  <rect x="248" y="204" width="174" height="198" rx="10" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="264" y="230" font-size="14" font-weight="700" fill="#1c2530">Payroll</text>
+  <text x="264" y="248" font-size="10.5" letter-spacing="0.8" fill="#8a94a0">AUTONOMOUS SYSTEM</text>
+  <line x1="264" y1="260" x2="406" y2="260" stroke="#eceff3"/>
+  <text x="264" y="282" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">payslip</text>
+  <text x="264" y="306" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">insurance</text>
+  <text x="264" y="330" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">year-end-tax</text>
+  <text x="264" y="354" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">payroll-overview</text>
+  <text x="264" y="378" font-size="12" fill="#b3bcc7">…</text>
+
+  <rect x="438" y="204" width="166" height="198" rx="10" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="454" y="230" font-size="14" font-weight="700" fill="#1c2530">Procurement</text>
+  <text x="454" y="248" font-size="10.5" letter-spacing="0.8" fill="#8a94a0">AUTONOMOUS SYSTEM</text>
+  <line x1="454" y1="260" x2="588" y2="260" stroke="#eceff3"/>
+  <text x="454" y="282" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">purchase-request</text>
+  <text x="454" y="306" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">vendor</text>
+  <text x="454" y="330" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">contract-custody</text>
+  <text x="454" y="354" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">procurement-overview</text>
+  <text x="454" y="378" font-size="12" fill="#b3bcc7">…</text>
+
+  <!-- ═══ 2 — summarization and advertisement ═══ -->
+  <rect x="632" y="130" width="570" height="292" rx="14" fill="#ffffff" stroke="#dfe4ea"/>
+  <circle cx="660" cy="160" r="13" fill="#2d6a5f"/>
+  <text x="660" y="165" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+  <text x="684" y="165" font-size="16" font-weight="700" fill="#1c2530">Each one advertises a single route</text>
+  <text x="684" y="187" font-size="12.5" fill="#6b7684">Not its contents — the questions it is the right place for.</text>
+
+  <rect x="652" y="204" width="128" height="52" rx="8" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="668" y="228" font-size="12.5" font-weight="700" fill="#1c2530">Expense</text>
+  <text x="668" y="245" font-size="10.5" fill="#8a94a0">many documents</text>
+  <rect x="652" y="270" width="128" height="52" rx="8" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="668" y="294" font-size="12.5" font-weight="700" fill="#1c2530">Payroll</text>
+  <text x="668" y="311" font-size="10.5" fill="#8a94a0">many documents</text>
+  <rect x="652" y="336" width="128" height="52" rx="8" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="668" y="360" font-size="12.5" font-weight="700" fill="#1c2530">Procurement</text>
+  <text x="668" y="377" font-size="10.5" fill="#8a94a0">many documents</text>
+
+  <path d="M784 230 L826 262" stroke="#9aa4b0" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <path d="M784 296 L826 296" stroke="#9aa4b0" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <path d="M784 362 L826 330" stroke="#9aa4b0" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+  <text x="806" y="274" font-size="9.5" fill="#8a94a0" text-anchor="middle">summarize</text>
+
+  <rect x="832" y="248" width="112" height="96" rx="10" fill="#1f4f47"/>
+  <text x="888" y="282" font-size="13.5" font-weight="700" fill="#ffffff" text-anchor="middle">Backbone</text>
+  <text x="888" y="300" font-size="11" fill="#9dc3ba" text-anchor="middle">hop 0</text>
+  <text x="888" y="322" font-size="10" fill="#9dc3ba" text-anchor="middle">one line from</text>
+  <text x="888" y="335" font-size="10" fill="#9dc3ba" text-anchor="middle">each area</text>
+
+  <path d="M948 296 L982 296" stroke="#9aa4b0" stroke-width="1.4" fill="none" marker-end="url(#a)"/>
+
+  <rect x="988" y="204" width="196" height="188" rx="10" fill="#f1f6f5" stroke="#cddedb"/>
+  <text x="1004" y="226" font-size="11.5" font-weight="700" letter-spacing="0.6" fill="#2d6a5f">THE ROUTING TABLE</text>
+  <text x="1004" y="252" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2a5d8f">/v1/regions/expense</text>
+  <text x="1004" y="268" font-size="10.5" fill="#6b7684">receipts · corporate card · trips</text>
+  <line x1="1004" y1="280" x2="1168" y2="280" stroke="#dde7e5"/>
+  <text x="1004" y="300" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2a5d8f">/v1/regions/payroll</text>
+  <text x="1004" y="316" font-size="10.5" fill="#6b7684">payslip lines · tax free · year end</text>
+  <line x1="1004" y1="328" x2="1168" y2="328" stroke="#dde7e5"/>
+  <text x="1004" y="348" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2a5d8f">/v1/regions/procurement</text>
+  <text x="1004" y="364" font-size="10.5" fill="#6b7684">approval limits · vendors · quotes</text>
+  <text x="1004" y="384" font-size="10.5" fill="#b3bcc7">… one row per area, and no more</text>
+
+  <!-- ═══ 3 — how an agent routes ═══ -->
+  <rect x="38" y="440" width="1164" height="298" rx="14" fill="#ffffff" stroke="#dfe4ea"/>
+  <circle cx="66" cy="470" r="13" fill="#2d6a5f"/>
+  <text x="66" y="475" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+  <text x="90" y="475" font-size="16" font-weight="700" fill="#1c2530">An agent routes on the advertisement, then reads</text>
+  <text x="90" y="497" font-size="12.5" fill="#6b7684">Three hops to the document, whether the ontology holds eighty entities or eight thousand.</text>
+
+  <rect x="58" y="516" width="212" height="200" rx="10" fill="#fbfaf7" stroke="#e8e2d6"/>
+  <text x="74" y="540" font-size="11" font-weight="700" letter-spacing="0.8" fill="#a08a5b">THE QUESTION</text>
+  <text x="74" y="570" font-size="13.5" fill="#1c2530">“Can I put a client</text>
+  <text x="74" y="590" font-size="13.5" fill="#1c2530">dinner on the</text>
+  <text x="74" y="610" font-size="13.5" fill="#1c2530">corporate card,</text>
+  <text x="74" y="630" font-size="13.5" fill="#1c2530">and who signs it?”</text>
+  <text x="74" y="664" font-size="11" fill="#8a94a0">Nobody said which area.</text>
+  <text x="74" y="681" font-size="11" fill="#8a94a0">That is the whole problem.</text>
+
+  <path d="M278 616 L306 616" stroke="#2d6a5f" stroke-width="1.6" fill="none" marker-end="url(#ag)"/>
+
+  <rect x="312" y="516" width="270" height="200" rx="10" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <circle cx="336" cy="544" r="11" fill="#2d6a5f"/>
+  <text x="336" y="548" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+  <text x="356" y="548" font-size="14" font-weight="700" fill="#1c2530">Read hop 0</text>
+  <text x="332" y="574" font-size="11.5" fill="#556070">The whole list, and the one line</text>
+  <text x="332" y="591" font-size="11.5" fill="#556070">each area is chosen by.</text>
+  <rect x="332" y="604" width="230" height="26" rx="6" fill="#f1f3f7" stroke="#e2e6ec"/>
+  <text x="344" y="622" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2a5d8f">knowledge_table()</text>
+  <text x="332" y="654" font-size="11" fill="#8a94a0">Five rows here. It is the size of</text>
+  <text x="332" y="671" font-size="11" fill="#8a94a0">the list that stays small — never</text>
+  <text x="332" y="688" font-size="11" fill="#8a94a0">the size of what it points at.</text>
+
+  <path d="M590 616 L618 616" stroke="#2d6a5f" stroke-width="1.6" fill="none" marker-end="url(#ag)"/>
+
+  <rect x="624" y="516" width="270" height="200" rx="10" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <circle cx="648" cy="544" r="11" fill="#2d6a5f"/>
+  <text x="648" y="548" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+  <text x="668" y="548" font-size="14" font-weight="700" fill="#1c2530">Pick every area it belongs to</text>
+  <rect x="644" y="566" width="230" height="40" rx="6" fill="#eef6f3" stroke="#b7d6cd"/>
+  <text x="656" y="582" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2a5d8f">/v1/regions/expense</text>
+  <text x="656" y="598" font-size="10.5" fill="#6b7684">the card, and what it may cover</text>
+  <rect x="644" y="612" width="230" height="40" rx="6" fill="#eef6f3" stroke="#b7d6cd"/>
+  <text x="656" y="628" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2a5d8f">/v1/regions/approval</text>
+  <text x="656" y="644" font-size="10.5" fill="#6b7684">who signs, and at what amount</text>
+  <text x="644" y="674" font-size="11" fill="#8a94a0">Two, because the question is two</text>
+  <text x="644" y="691" font-size="11" fill="#8a94a0">questions. Picking one loses half.</text>
+
+  <path d="M902 616 L930 616" stroke="#2d6a5f" stroke-width="1.6" fill="none" marker-end="url(#ag)"/>
+
+  <rect x="936" y="516" width="246" height="200" rx="10" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <circle cx="960" cy="544" r="11" fill="#2d6a5f"/>
+  <text x="960" y="548" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+  <text x="980" y="548" font-size="14" font-weight="700" fill="#1c2530">Read only those</text>
+  <text x="956" y="576" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">corp-card</text>
+  <text x="956" y="593" font-size="10.5" fill="#8a94a0">caps, and what the card is for</text>
+  <text x="956" y="615" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">evidence</text>
+  <text x="956" y="632" font-size="10.5" fill="#8a94a0">what has to be attached</text>
+  <text x="956" y="654" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#43506a">approval-line</text>
+  <text x="956" y="671" font-size="10.5" fill="#8a94a0">who signs at this amount</text>
+  <text x="956" y="695" font-size="11" fill="#8a94a0">Three documents. Not the corpus.</text>
+
+  <!-- ═══ 4 — what it borrows, and the one rule ═══ -->
+  <rect x="38" y="756" width="1164" height="150" rx="14" fill="#ffffff" stroke="#dfe4ea"/>
+  <circle cx="66" cy="786" r="13" fill="#2d6a5f"/>
+  <text x="66" y="791" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+  <text x="90" y="791" font-size="16" font-weight="700" fill="#1c2530">What this borrows from dynamic routing</text>
+  <text x="90" y="813" font-size="12.5" fill="#6b7684">A router does not hold a map of every host. It holds what its neighbours advertise, and forwards.</text>
+
+  <rect x="58" y="830" width="268" height="58" rx="9" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="74" y="852" font-size="12.5" font-weight="700" fill="#1c2530">Advertise destinations</text>
+  <text x="74" y="872" font-size="11" fill="#6b7684">A route, not an inventory of every node.</text>
+
+  <rect x="340" y="830" width="268" height="58" rx="9" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="356" y="852" font-size="12.5" font-weight="700" fill="#1c2530">Each AS owns its interior</text>
+  <text x="356" y="872" font-size="11" fill="#6b7684">Rename anything inside; hop 0 does not move.</text>
+
+  <rect x="622" y="830" width="268" height="58" rx="9" fill="#fcfcfd" stroke="#e2e6ec"/>
+  <text x="638" y="852" font-size="12.5" font-weight="700" fill="#1c2530">Summarization scales</text>
+  <text x="638" y="872" font-size="11" fill="#6b7684">The table grows with areas, not with documents.</text>
+
+  <rect x="904" y="830" width="280" height="58" rx="9" fill="#fdf6ee" stroke="#e8d5bb"/>
+  <text x="920" y="852" font-size="12.5" font-weight="700" fill="#8a6a33">Only hop 0 may claim absence</text>
+  <text x="920" y="872" font-size="11" fill="#94764a">Inside one area, “not here” is never “nowhere”.</text>
+
+  <!-- ─── glossary ─── -->
+  <text x="38" y="946" font-size="11.5" font-weight="700" letter-spacing="0.6" fill="#8a94a0">AS</text>
+  <text x="66" y="946" font-size="11.5" fill="#8a94a0">an area that governs itself</text>
+  <text x="248" y="946" font-size="11.5" font-weight="700" letter-spacing="0.6" fill="#8a94a0">BACKBONE</text>
+  <text x="332" y="946" font-size="11.5" fill="#8a94a0">hop 0, where every advertisement meets</text>
+  <text x="620" y="946" font-size="11.5" font-weight="700" letter-spacing="0.6" fill="#8a94a0">ADVERTISEMENT</text>
+  <text x="736" y="946" font-size="11.5" fill="#8a94a0">the one line an area is chosen by (`use_when`)</text>
+  <text x="1202" y="946" font-size="11.5" fill="#b3bcc7" text-anchor="end">RouteMind</text>
+</svg>

@@ -14,9 +14,10 @@ with the routing table each one hands an agent one button away.](docs/img/map.jp
 
 ## How it works
 
-![Areas summarize themselves into one advertised route each; an agent reads that list at hop 0, picks
-the areas whose advertised purpose matches the question, and only then reads
-documents.](docs/img/backbone-as-advertisement.png)
+![Each area summarizes itself into one advertised route; the backbone holds one row per area, and no
+more. An agent reads that list at hop 0, picks every area the question belongs to — a client dinner on
+the corporate card is expense and approval, not one of them — and only then reads
+documents.](docs/img/backbone-as-advertisement.svg)
 
 The shape is borrowed from dynamic routing on a network, and the borrowed part is the useful one:
 **an area advertises where it is relevant, rather than exposing everything it holds.** An agent reads

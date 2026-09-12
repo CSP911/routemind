@@ -13,6 +13,13 @@ FAILS=0
 say() { if [ "$2" = "$3" ]; then printf '%-52s %s\n' "ok   $1" "$2"
         else printf '%-52s %s   ← expected %s\n' "FAIL $1" "$2" "$3"; FAILS=$((FAILS+1)); fi; }
 post() { curl -s -o /tmp/llmout -w '%{http_code}' -H 'Content-Type: application/json' -X POST "$@"; }
+# **Cleanup is an assertion, not a courtesy.** Unlike every other check here this one writes into a
+# live install, so what it leaves behind is somebody's ontology. The three deletes used to be
+# `curl -s -o /dev/null -X DELETE` with the status thrown away, and on 2026-09-12 one of them failed:
+# the run printed `both LLM paths ok` while leaving an uncommitted deletion in the working tree, and
+# every write to that install was refused from then on with "someone edited the repository by hand" —
+# which nobody had. An unchecked cleanup is how a check hands you a broken install and a clean report.
+drop() { say "  cleaned up $1" "$(curl -s -o /tmp/llmdel -w '%{http_code}' -X DELETE "$W/nodes/$1")" 200; }
 field() { python3 -c "import json,sys; print(json.load(open('/tmp/llmout')).get('$1'))"; }
 
 derives=$(curl -fsS "$BASE/api/app-config" | python3 -c 'import json,sys; print(json.load(sys.stdin)["derives"])')
@@ -30,7 +37,7 @@ if [ "$derives" = "True" ]; then
   say "a node with no kind is created" "$code" 200
   say "  a kind was chosen" "$( [ -n "$(field kind)" ] && echo yes || echo no )" yes
   say "  and it says it chose it" "$(field kind_generated)" True
-  curl -s -o /dev/null -X DELETE "$W/nodes/$n"
+  drop "$n"
 
   # A description written by the LLM causes `described_by: knowledge` to be added to the file, and
   # that write must not eat the body. `set_frontmatter` once returned the text after the *match*, and
@@ -56,7 +63,7 @@ if [ "$derives" = "True" ]; then
   # type the entity's frontmatter is written from the entity's own fields, so any other key in the
   # content is replaced. That is reported to the Knowledge unit as a question rather than pinned here
   # — a check that is permanently red is noise, and one asserting the wrong model is worse.
-  curl -s -o /dev/null -X DELETE "$W/nodes/$area-fmprobe"
+  drop "$area-fmprobe"
 
   # Drafting the one line an agent routes on.
   code=$(post "$W/suggest/use-when" -d '{"name":"Billing","one_liner":"where a payment goes until it settles"}')
@@ -71,12 +78,25 @@ else
   code=$(post "$W/nodes" -d "{\"id\":\"$n\",\"name\":\"Check Node\",\"region\":\"$area\",\"one_liner\":\"made by a check\"}")
   say "a node with no kind is still created" "$code" 200
   say "  the default kind was used" "$(field kind_generated)" True
-  curl -s -o /dev/null -X DELETE "$W/nodes/$n"
+  drop "$n"
 
   # And drafting says why it cannot, rather than failing vaguely.
   code=$(post "$W/suggest/use-when" -d '{"name":"Billing","one_liner":"x"}')
   say "drafting says it needs an LLM" "$code" 503
 fi
 
+# The install has to be left the way it was found. Every delete above can answer 200 and the tree
+# still end up dirty — a write that commits nothing, a publish that half-ran — and dirty is not a
+# cosmetic state: it is the one in which the ontology refuses every subsequent write. So it is read
+# back from the service rather than inferred from the statuses, and the recovery is printed here
+# rather than left for whoever meets the refusal an hour later with no idea what touched it.
+curl -fsS "$W/state" -o /tmp/llmstate 2>/dev/null || : > /tmp/llmstate
+dirty=$(python3 -c "
+import json
+try: print(json.load(open('/tmp/llmstate')).get('uncommitted') or '')
+except Exception: print('unreadable')" )
+say "the install is as it was found" "${dirty:-clean}" clean
+[ -z "$dirty" ] || printf '\n  %s is uncommitted. Until that is settled every write to this install is\n  refused as a hand edit — whether this check left it or it was already there.\n  To discard it:\n\n      git -C <your data/repo> checkout -- .\n\n' "$dirty"
+
 [ "$FAILS" -eq 0 ] || { printf '\n%s failed\n' "$FAILS"; exit 1; }
-printf '\nboth LLM paths ok (derives=%s)\n' "$derives"
+printf '\nboth LLM paths ok, and the install is unchanged (derives=%s)\n' "$derives"
