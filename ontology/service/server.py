@@ -557,12 +557,12 @@ def overlay_table(ov: dict) -> list[dict]:
             continue
         if got["kind"] == "area":
             r = got["region"]; rep = store.node(r["representative"]) if r.get("representative") else None
-            rows = [_advert_child(c) for c in store.children_of(r["representative"])] if rep else []
+            rows = [_advert_child(c) for c in advertised(r["representative"])] if rep else []
             out.append({"member": m["address"], "why": m["why"], "title": r.get("title") or r["dir"], "rows": rows})
         elif got["kind"] == "entity":
             n = got["node"]
             out.append({"member": m["address"], "why": m["why"], "title": n["name"],
-                        "rows": [_advert_child(c) for c in store.children_of(n["id"])]})
+                        "rows": [_advert_child(c) for c in advertised(n["id"])]})
         else:
             n = got["node"]
             out.append({"member": m["address"], "why": m["why"], "title": n["name"],
@@ -576,6 +576,26 @@ def overlay_out(ov: dict) -> dict:
             # The renderer decides how to print it; what it must not do is leave it off. An overlay
             # read as an inventory is the one way this feature becomes a lie.
             "absence": "Not finding it here means go back to hop 0 — it does not mean it does not exist."}
+
+
+def advertised(node_id: str) -> list[dict]:
+    """What a caller is told this thing holds — its children, minus the drafts.
+
+    `status: draft` is how the curator writes something a person has not accepted yet, and the whole
+    point of it is stated on the screen: *"A draft node is invisible to the agent. Accepting publishes
+    it; rejecting deletes it. That is what keeps the curator's own writing from returning as
+    evidence."* `create_draft` says the same thing in one line — visible to people, invisible to an
+    agent.
+
+    It was not true. `derive.py` drops drafts from `regions.json`, but every advertised listing here
+    was built straight from `store.children_of`, which filters nothing — so a draft appeared in the
+    area table an agent is handed, and the curator's unreviewed writing came back as evidence, which
+    is the one thing the invariant exists to prevent.
+
+    Filtering belongs here rather than in `store.children_of`: deletion walks the children to take a
+    subtree with it, and validation counts them against the budget. Both have to see a draft.
+    """
+    return [c for c in store.children_of(node_id) if c.get("status") != "draft"]
 
 
 def _advert_child(c: dict) -> dict:
@@ -700,7 +720,7 @@ class Handler(BaseHTTPRequestHandler):
             def entries_of(rep_id):
                 rep = next((n for n in store.nodes() if n["id"] == rep_id), None)
                 if not rep: return []
-                return [_advert_child(c) for c in store.children_of(rep_id)]
+                return [_advert_child(c) for c in advertised(rep_id)]
             return self._send(200, {"revision": head(DATA), "schema": rj.get("schema"), "regions": [
                 {"id": r["id"], "source": r["source"], "title": r["title"], "description": r.get("description", ""),
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
@@ -723,7 +743,7 @@ class Handler(BaseHTTPRequestHandler):
                     "dir": r["dir"], "key": r["key"], "representative": r["representative"],
                     "use_when": r.get("use_when") or "",     # should I come here — the same value the listing gave
                     "advertises": r["advertises"],           # how the representative describes itself (one_liner)
-                    "entries": [_advert_child(c) for c in store.children_of(r["representative"])],
+                    "entries": [_advert_child(c) for c in advertised(r["representative"])],
 })
                     # `path`, `data_kind`, `authority`, `nodes` and `docs` are kept out of the
                     # advertisement. A path invites someone to build an address from it — someone did.
@@ -753,7 +773,7 @@ class Handler(BaseHTTPRequestHandler):
             # Listing `files` as well would advertise everything twice, at two addresses, for one
             # thing — which is what made a single-file node draw itself as a node on the map.
             return self._send(200, {**{k: v for k, v in n.items() if k not in _NODE_INTERNAL},
-                                    "entries": [_advert_child(c) for c in store.children_of(parts[1])],
+                                    "entries": [_advert_child(c) for c in advertised(parts[1])],
                                     "body": n.get("body") or ""})
         if len(parts) == 3 and parts[0] == "nodes" and parts[2] == "body":
             # One entity, two things you can ask for: what it holds (a table) and what it says (a
