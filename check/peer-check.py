@@ -144,5 +144,130 @@ check("a write across the link is refused", code == 405, str(code))
 check("the local hop 0 still lists every area",
       len(get("/regions")[1].get("regions") or []) == len(areas), str(len(areas)))
 
+
+# ══ two backbones, linked both ways ═══════════════════════════════════════════
+# Everything above is one install deciding what to show. This is the link itself: what an agent at A
+# sees of B, and — the part that matters — what A is entitled to say when B cannot be reached.
+PORT_B = PORT + 1
+TOKEN_B = "peer-check-token-b"
+repo_b = os.path.join(T, "repo-b")
+shutil.copytree(seed, repo_b)
+
+# B shares a different area, so a row appearing at A can only have come across the link.
+areas_b = sorted(d for d in os.listdir(os.path.join(repo_b, "regions"))
+                 if os.path.isdir(os.path.join(repo_b, "regions", d)))
+SHARED_B = areas_b[-1] if areas_b[-1] != SHARED else areas_b[0]
+EXPORT_B = "what the other office may ask us · the questions we answer for them"
+for f in sorted(os.listdir(os.path.join(repo_b, "regions", SHARED_B))):
+    q = os.path.join(repo_b, "regions", SHARED_B, f)
+    text = open(q, encoding="utf-8").read()
+    if "\nrole: representative\n" in text and "\nparent:" not in text:
+        open(q, "w", encoding="utf-8").write(
+            text.replace("\nrole: representative\n", f"\nrole: representative\nuse_when_export: {EXPORT_B}\n", 1))
+        break
+
+# Each declares the other. `peers.yaml` lives in the repository because who a backbone is linked to
+# is part of what it is; the token comes from the environment, the way the LLM key does.
+def link(where, name, port, token_env):
+    open(os.path.join(where, "peers.yaml"), "w", encoding="utf-8").write(
+        f"peers:\n  - name: {name}\n    label: {name.upper()}\n"
+        f"    url: http://127.0.0.1:{port}\n    token_env: {token_env}\n")
+
+link(repo, "bee", PORT_B, "PEERTOK_B")
+link(repo_b, "ay", PORT, "PEERTOK_A")
+regenerate(Store(repo_b))
+for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=peer", "-c", "user.email=p@l", "commit", "-qm", "seed"]):
+    subprocess.run(["git", "-C", repo_b, *a], check=True)
+subprocess.run(["git", "-C", repo, "add", "-A"], check=True)
+subprocess.run(["git", "-C", repo, "-c", "user.name=peer", "-c", "user.email=p@l", "commit", "-qm", "link"], check=True)
+
+tokens = {"PEERTOK_A": TOKEN, "PEERTOK_B": TOKEN_B}
+env_b = {**os.environ, **tokens, "ONTOLOGY_DATA": repo_b, "PORT": str(PORT_B),
+         "ONTOLOGY_PUBLISH": os.path.join(T, "publish-b"), "ONTOLOGY_PEER_TOKEN": TOKEN_B,
+         "ONTOLOGY_PEER_TTL": "0"}
+for k in [k for k in env_b if k.startswith("ONTOLOGY_LLM_")]: env_b.pop(k)
+b = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
+                     env=env_b, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+procs.append(b)
+
+# A is restarted so it reads the peers.yaml it now has, and with the token B expects.
+procs[0].terminate(); time.sleep(0.6)
+env_a = {**env, **tokens, "ONTOLOGY_PEER_TTL": "0"}
+procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
+                              env=env_a, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
+for port in (PORT, PORT_B):
+    for _ in range(80):
+        try: urllib.request.urlopen(f"http://127.0.0.1:{port}/healthz", timeout=1); break
+        except Exception: time.sleep(0.25)
+
+
+def at(port, path):
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/v1{path}", timeout=20) as x:
+            return x.status, json.loads(x.read() or b"{}")
+    except urllib.error.HTTPError as e:
+        body = e.read()
+        try: return e.code, json.loads(body or b"{}")
+        except Exception: return e.code, {"raw": body.decode(errors="replace")[:120]}
+    except Exception as e: return 0, {"raw": f"{type(e).__name__}"}
+
+
+st, hop0 = at(PORT, "/regions")
+remote = [r for r in (hop0.get("regions") or []) if r.get("peer")]
+check("A's hop 0 carries B's shared area", len(remote) == 1, json.dumps([r.get("source") for r in remote]))
+check("  under an address of A's own, not B's",
+      remote and str(remote[0]["fetch"]).startswith("/v1/peers/bee/"), remote[0]["fetch"] if remote else "")
+check("  with the line B wrote for a peer", remote and remote[0]["use_when"] == EXPORT_B)
+check("  and B's revision, so staleness is visible",
+      remote and len(str(remote[0].get("peer_revision") or "")) == 40)
+check("A's own areas are all still there",
+      len([r for r in hop0["regions"] if not r.get("peer")]) == len(areas))
+
+# The document itself, fetched by A on the agent's behalf. The agent never holds B's credential.
+if remote:
+    st, tbl = at(PORT, remote[0]["fetch"][3:])
+    check("A relays B's area table", st == 200, str(st))
+    ent = (tbl.get("entries") or [])
+    check("  and rewrites the addresses inside it back to A",
+          ent and all(str(e.get("fetch") or "/v1/peers/bee").startswith("/v1/peers/bee/") for e in ent),
+          json.dumps([e.get("fetch") for e in ent[:2]]))
+    if ent:
+        st, doc = at(PORT, ent[0]["fetch"][3:])
+        check("  and relays a document behind it", st == 200, str(st))
+
+# Both ways. A link that only works in the direction it was built is not a link.
+st, hop0b = at(PORT_B, "/regions")
+check("B's hop 0 carries A's shared area",
+      len([r for r in (hop0b.get("regions") or []) if r.get("peer")]) == 1)
+
+# ── the sentence ──────────────────────────────────────────────────────────────
+check("with the link up, absence is claimed over both backbones",
+      "BEE" in (hop0.get("absence") or "") and "may say something is absent" in (hop0.get("absence") or ""),
+      (hop0.get("absence") or "")[:80])
+
+# ── and with it down ──────────────────────────────────────────────────────────
+# The whole design rests on "only hop 0 may say something is not here", and that is true because hop
+# 0 is the whole world. A link that cannot be read makes it false. There is no smaller honest claim.
+b.terminate(); time.sleep(0.8)
+st, down = at(PORT, "/regions")
+check("with the link down, A still answers", st == 200, str(st))
+check("  and still serves its own areas",
+      len([r for r in (down.get("regions") or []) if not r.get("peer")]) == len(areas))
+check("  and drops the rows it can no longer stand behind",
+      len([r for r in (down.get("regions") or []) if r.get("peer")]) == 0)
+check("  and says the list is incomplete", "incomplete" in (down.get("absence") or "").lower(),
+      (down.get("absence") or "")[:70])
+check("  and forbids claiming absence", "do not say anything is absent" in (down.get("absence") or ""))
+check("  and names which link, and why",
+      any(not l["reachable"] and l["error"] for l in (down.get("links") or [])),
+      json.dumps([(l["name"], l["error"]) for l in (down.get("links") or [])])[:100])
+
+# A relayed read now fails as unreachable — which is nobody's claim, and must not read as a 404.
+if remote:
+    st, err = at(PORT, remote[0]["fetch"][3:])
+    check("a read across a dead link is not a 404", st != 404, str(st))
+    check("  and says the peer could not be reached, not that it said no",
+          err.get("reason") == "peer_unreachable", json.dumps(err)[:90])
+
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

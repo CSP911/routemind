@@ -147,12 +147,19 @@ def hop0(api: Api) -> str:
     rows = [{"kind": KIND["table"], "address": r.get("fetch") or f"/v1/regions/{r.get('source')}",
              "why": r.get("use_when") or r.get("description") or r.get("title") or ""}
             for r in (d.get("regions") or [])]
+    # The API supplies this sentence when it is not the plain one — when this backbone is linked to
+    # others, and above all when a link is down. Whether the list is still the whole world is not
+    # something this side can know: only the thing that just tried to read every peer knows, and
+    # printing the confident sentence over an incomplete list is the one failure this table must
+    # never have. See _absence in ontology/service/server.py.
+    absence = d.get("absence") or (
+        "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
+        "something is absent — no smaller table is.")
     return _table(
         rows,
         "ROUTEMIND — the areas of this domain",
         "Pick the row whose condition matches the question, then fetch it. One step, then read.",
-        "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
-        "something is absent — no smaller table is.",
+        absence,
     )
 
 

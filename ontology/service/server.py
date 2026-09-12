@@ -27,6 +27,7 @@ from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E4
 from service.service_store import ServiceStore              # noqa: E402
 from service.validate_service import validate_services      # noqa: E402
 from service.write_service import ServiceWriter             # noqa: E402
+from service import peers as peering                        # noqa: E402
 from service import overlays                                # noqa: E402
 from service import curator                                 # noqa: E402
 
@@ -661,7 +662,16 @@ class Handler(BaseHTTPRequestHandler):
     server_version = "iris-ontology/0.3"
 
     # ---- plumbing ----
+    # Set for the duration of an export read. `_export` answers the last two of its paths by
+    # delegating to the ordinary reader, which is what keeps one shape of answer on both surfaces —
+    # but that reader prints local addresses (`/v1/nodes/x`), and a peer following one of those
+    # resolves it against **its own** ontology. With ids that collide it does not even fail: it
+    # silently reads a different node with the same name. So every address leaving on this surface is
+    # moved onto it, once, here, where nothing can route around it.
+    _as_peer = False
+
     def _send(self, code: int, payload, ctype="application/json; charset=utf-8"):
+        if self._as_peer and isinstance(payload, dict): payload = _to_export(payload)
         body = payload.encode("utf-8") if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False, indent=1).encode("utf-8")
         self.send_response(code); self.send_header("Content-Type", ctype); self.send_header("Content-Length", str(len(body)))
         self.send_header("Access-Control-Allow-Origin", "*"); self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -737,6 +747,17 @@ class Handler(BaseHTTPRequestHandler):
             if parts[:1] == ["export"]:
                 if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
                 return self._export(parts[1:])
+            if parts[:1] == ["peers"]:
+                if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
+                if len(parts) < 3: return self._err(404, "unknown peer path")
+                try:
+                    return self._send(200, peering.relay(DATA, parts[1], parts[2:]))
+                except peering.PeerError as e:
+                    # The peer's own status is passed through when it answered, and 504 when it did
+                    # not. A relayed 404 means that backbone does not hold the thing — which is its
+                    # claim to make. A timeout is nobody's claim and must not arrive looking like one.
+                    return self._err(e.status, str(e), reason=("peer_said_no" if e.reachable else "peer_unreachable"),
+                                     data={"peer": parts[1], "reachable": e.reachable})
             if method == "GET": return self._get(parts)
             return self._write(method, parts)
         except WriteError as e:
@@ -792,6 +813,7 @@ class Handler(BaseHTTPRequestHandler):
 
         if len(parts) == 2 and parts[0] == "regions":
             if parts[1] not in shared: return self._err(404, f"no exported area {parts[1]}")
+            self._as_peer = True
             return self._get(["regions", parts[1]])
 
         if len(parts) >= 2 and parts[0] == "nodes":
@@ -800,6 +822,7 @@ class Handler(BaseHTTPRequestHandler):
             # something the peer has no business learning. The two answers must be indistinguishable.
             if not n or (n.get("region") or "") not in {r["source"] for r in shared.values()}:
                 return self._err(404, f"no exported node {parts[1]}")
+            self._as_peer = True
             return self._get(parts)
 
         return self._err(404, "unknown export path")
@@ -823,12 +846,16 @@ class Handler(BaseHTTPRequestHandler):
                 rep = next((n for n in store.nodes() if n["id"] == rep_id), None)
                 if not rep: return []
                 return [_advert_child(c) for c in advertised(rep_id)]
-            return self._send(200, {"revision": head(DATA), "schema": rj.get("schema"), "regions": [
+            mine = [
                 {"id": r["id"], "source": r["source"], "title": r["title"], "description": r.get("description", ""),
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
                  "fetch": f"/v1/regions/{r['source'].replace('_', '-')}",
                  **({"entries": entries_of(r.get("representative"))} if expand else {})}
-                for r in rj.get("regions", [])]})
+                for r in rj.get("regions", [])]
+            theirs, links = peering.rows(DATA)
+            return self._send(200, {"revision": head(DATA), "schema": rj.get("schema"),
+                                    "regions": mine + theirs,
+                                    **({"links": links, "absence": _absence(links)} if links else {})})
         if len(parts) == 2 and parts[0] == "regions":
             # SPEC-v2 §1.1 — an area is a namespace. The substance of this response is **what the
             # representative advertises**: what it is (advertises), the data it holds (files), and what
@@ -1051,6 +1078,49 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[0] == "services" and parts[2] == "fragment" and method == "PUT":
             return self._send(200, writer.put_fragment(parts[1], parts[3], body.get("content", "")))
         return self._err(405, "method not allowed for this path")
+
+
+def _to_export(payload):
+    """Move every address in an answer onto the export surface.
+
+    Only `fetch` — the field every table states is the one way to go, and the only one a caller is
+    told to use. Rewriting anything that merely looks like a path would catch prose, ids and the
+    `path` field the validator keeps for its own bookkeeping.
+    """
+    if isinstance(payload, dict):
+        return {k: (f"/v1/export{v[len('/v1'):]}"
+                    if k == "fetch" and isinstance(v, str) and v.startswith("/v1/") and not v.startswith("/v1/export/")
+                    else _to_export(v))
+                for k, v in payload.items()}
+    if isinstance(payload, list): return [_to_export(v) for v in payload]
+    return payload
+
+
+def _absence(links) -> str:
+    """What this backbone is entitled to claim, given the state of its links.
+
+    The absence rule is the load-bearing sentence of the whole design — *only hop 0 may say something
+    is not here* — and it is true because hop 0 is the whole world. A link makes that false: the world
+    is now this list plus what the peers advertise. So the sentence is computed rather than written
+    down, because the only thing that knows whether it still holds is the thing that just tried to
+    read every peer.
+
+    With a link down there is no honest version of it. The answer is not a smaller claim, it is no
+    claim: a table that is missing rows cannot be the grounds for saying anything is missing. Saying
+    so out loud is the difference between an agent that reports what it could not see and one that
+    reports that something does not exist.
+    """
+    named = ", ".join(l["label"] for l in links)
+    down = [l for l in links if not l["reachable"]]
+    if not down:
+        return (f"Nothing outside this list exists in RouteMind or in the backbones it is linked to "
+                f"({named}). This list is the grounds on which you may say something is absent — no "
+                f"smaller table is.")
+    why = "; ".join(f"{l['label']}: {l['error']}" for l in down)
+    return ("**This list is incomplete.** " + ("A link" if len(down) == 1 else "Links") +
+            f" could not be read ({why}), so areas that exist may be missing from it. Answer from what "
+            f"is here if you can, and say what you could not reach — but do not say anything is absent "
+            f"while a link is down. Nobody has spoken for what is behind it.")
 
 
 def store_published():
