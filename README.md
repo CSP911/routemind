@@ -123,6 +123,17 @@ install-time setting would serve everyone whatever the installer happened to spe
 What the agent is handed stays English on purpose, and the ontology stays in whatever words you wrote
 it in. [docs/I18N.md](docs/I18N.md) says why, and how to add a language.
 
+### More than one backbone
+
+Two RouteMinds that must not become one, with a wire between them — head office and a subsidiary, a
+company and its supplier. An area crosses by writing the line it wants to show in the *other*
+backbone's hop 0, and by nothing else; documents are relayed, so no agent holds a peer's credential.
+
+The part worth reading is what absence means once there is a link: hop 0 can only claim something is
+missing while every link is up, and says so itself when one is not.
+[docs/PEERING.md](docs/PEERING.md), and `docker compose -f docker-compose.yml -f
+docker-compose.peer.yml up -d` to try one.
+
 ### One command
 
 ```sh
