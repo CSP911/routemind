@@ -14,7 +14,7 @@ asks about costs nothing by being stale, and the one moment staleness matters is
 read. If this ever seems to need a background job, something above it went wrong.
 """
 from __future__ import annotations
-import json, re, time
+import calendar, json, re, time
 from pathlib import Path
 
 ID_RE = re.compile(r"^ov_\d{4}-\d{2}-\d{2}_[0-9a-f]{4,8}$")
@@ -42,9 +42,18 @@ def _age_hours(stamp: str) -> float:
     Both spellings of the same instant are accepted, because only the `Z` form is written here and a
     caller reaching for `datetime.isoformat()` — which writes `+00:00` — would otherwise make every
     record it touched immortal, silently and with no error anywhere.
+
+    `calendar.timegm`, because the stamp is UTC. It was `time.mktime(...) - time.timezone`, and those
+    two do not cancel: `time.timezone` is the zone's *standard* offset, while `mktime` applies DST when
+    the instant it is handed falls inside it. Measured on 2026-09-12 against a stamp exactly ten hours
+    old — an hour out in Europe/London and America/New_York, exactly right in Asia/Seoul and
+    Australia/Sydney, which is the signature of summer time rather than of an offset. The containers
+    run UTC so a deployed install was never wrong, but check/overlay-check.py and check/scenarios.py
+    start this service on the host, where a contributor in a summer-time zone would have watched
+    overlays expire an hour early and had no way to see why.
     """
     for fmt in ("%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z"):
-        try: t = time.mktime(time.strptime(stamp, fmt)) - time.timezone
+        try: t = calendar.timegm(time.strptime(stamp, fmt))
         except Exception: continue
         return max(0.0, (time.time() - t) / 3600.0)
     return float("inf")

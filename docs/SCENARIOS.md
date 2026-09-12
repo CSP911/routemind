@@ -76,6 +76,14 @@ reach — not an error case.
 | G2 | The screen is told **which** files, whole. It named the first one a character short: porcelain puts the path at column 3, and stripping the whole output ate the leading space of the first line only — so with one file dirty, the usual case, it named a file that does not exist |
 | G3 | Reverting makes it writable again, with nothing left over |
 
+## H — the clock expiry runs on
+
+An overlay's age must not depend on where the service happens to be running.
+
+| | What it proves |
+|---|---|
+| H | The same UTC stamp is the same age in UTC, Seoul, London, New York and Sydney — and that age is right. It was an hour out wherever summer time was in force: `time.mktime(...) - time.timezone` mixes a standard offset with a value that carries DST, and they cancel only outside it. Invisible in deployment, because the containers run UTC; visible to anyone who ran these checks on their own machine in July |
+
 ## Deliberately not here
 
 **D — moves and containment** (`write-paths.sh` already moves a node within an area, across areas,

@@ -264,4 +264,24 @@ with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: health = j
 check("G3 reverting makes it writable again", health.get("writable") is True and not health.get("uncommitted"),
       repr(health.get("uncommitted")))
 
+# ── H. the clock the expiry runs on ───────────────────────────────────────────
+# Overlay stamps are UTC, and the age of one must not depend on where the service happens to run.
+# It did: `time.mktime(...) - time.timezone` mixes a standard offset with a value that carries DST,
+# and the two cancel only outside summer time — an hour out in Europe/London and America/New_York,
+# exactly right in Asia/Seoul, which is the signature. The containers run UTC, so this was invisible
+# in deployment and visible only to whoever ran these checks on their own machine in July.
+sys.path.insert(0, os.path.join(ROOT, "ontology"))
+from service.overlays import _age_hours as _age                     # noqa: E402
+_stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 10 * 3600))
+_was = os.environ.get("TZ")
+_ages = {}
+for _tz in ("UTC", "Asia/Seoul", "Europe/London", "America/New_York", "Australia/Sydney"):
+    os.environ["TZ"] = _tz; time.tzset()
+    _ages[_tz] = round(_age(_stamp), 2)
+if _was is None: os.environ.pop("TZ", None)
+else: os.environ["TZ"] = _was
+time.tzset()
+check("H  a stamp is the same age in every timezone", len(set(_ages.values())) == 1, json.dumps(_ages))
+check("H    and that age is right", all(abs(v - 10) < 0.05 for v in _ages.values()), json.dumps(_ages))
+
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)
