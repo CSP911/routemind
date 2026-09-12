@@ -378,7 +378,12 @@ def decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply, 
 # representative or by CORE.md. `entity` is one row in a table — the line any entity shows in its
 # parent's listing. One type is why it can exist at all: a row is an entity like any other, so the
 # line it shows is edited the same way an area's is, through the same queue.
-ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "core": "core_row", "entity": "one_liner"}
+# `peer` is `bb` pointed at somebody else's backbone: the line this area shows in a *peer's* hop 0.
+# It goes through this queue and not through a direct write for the reason every other advertisement
+# does — what an area says about itself is the one thing the whole system routes on, and it is worth
+# a second pair of eyes. Across a link that is not a nicety: the reader is another organisation.
+ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "core": "core_row", "entity": "one_liner",
+                "peer": "use_when_export"}
 SCOPE_ALIAS = {"dr": "as"}          # the old value is still accepted; the new name is what gets stored
 
 

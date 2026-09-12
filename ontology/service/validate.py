@@ -209,10 +209,30 @@ def validate(store: Store) -> dict:
                 warnings.append(f"node {n['id']}: a representative with no use_when — the advertisement's 'should I come here' goes out blank")
             elif (n.get("use_when") or "").strip() == (n.get("one_liner") or "").strip():
                 errors.append(f"node {n['id']}: use_when is identical to one_liner — a description is not a 'when to come here'")
+            # `use_when_export` is the same sentence written for a *different* backbone's hop 0 — see
+            # docs/PEERING.md. It is checked, not required: an area with none is simply not advertised
+            # across a link, which is how export stays opt-in and in writing rather than a default.
+            #
+            # Identical to `use_when` is fine and will be the common case between backbones of one
+            # organisation. Identical to `one_liner` is the same mistake as above, arriving by the same
+            # route — someone filled the field by copying the description.
+            exp = (n.get("use_when_export") or "").strip()
+            if exp:
+                if n.get("parent"):
+                    errors.append(f"node {n['id']}: only an area's top representative can carry use_when_export — "
+                                  f"an inner node is not what a peer chooses")
+                if exp == (n.get("one_liner") or "").strip():
+                    errors.append(f"node {n['id']}: use_when_export is identical to one_liner — a description is not a 'when to come here'")
+                # It becomes one cell of another backbone's routing table, exactly like use_when.
+                if "|" in exp or "\n" in exp:
+                    errors.append(f"node {n['id']}: use_when_export is one table cell — `|` and newlines are not allowed")
             if not n.get("parent"):
                 if n["region"] in tops:
                     errors.append(f"region {n['region']}: two top representatives ({tops[n['region']]}, {n['id']}) — an area has one face. Give one of them a parent")
                 tops[n["region"]] = n["id"]
+        elif (n.get("use_when_export") or "").strip():
+            errors.append(f"node {n['id']}: use_when_export on a node that does not represent an area — "
+                          f"a peer chooses areas, not nodes")
     # A representative that carries nothing and has no expands_in cannot be told apart, from the
     # listing alone, as **empty** or as a **boundary**. If that distinction lives only in a document
     # body, neither the screen nor an agent can use it — and both will state something they cannot know.

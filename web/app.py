@@ -543,7 +543,10 @@ def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, An
         "core_description": str(data["core_description"]).strip(),
         # `id` and `kind` are Knowledge's to derive, as they are for a node. Anything a person did
         # supply is passed through; nothing is invented here.
-        "representative": {k: str(rep[k]).strip() for k in ("name", "one_liner", "use_when", "kind", "id")
+        # `use_when_export` is optional and its absence is meaningful: an area with none does not
+        # cross a link at all. Passed through like the rest — the decision is the ontology's.
+        "representative": {k: str(rep[k]).strip()
+                           for k in ("name", "one_liner", "use_when", "use_when_export", "kind", "id")
                            if str(rep.get(k) or "").strip()},
     }
     if isinstance(data.get("edges"), list) and data["edges"]:

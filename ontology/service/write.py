@@ -648,6 +648,9 @@ class Writer:
             write_node_index(self.store, {"id": nid, "name": rep["name"], "kind": kind, "region": src,
                                           "holds": "content", "injected_by": None, "status": None,
                                           "role": "representative", "use_when": rep["use_when"],
+                                          # Optional, and absent means this area crosses no link. Export
+                                          # is opt-in per area and in writing — see docs/PEERING.md.
+                                          "use_when_export": (rep.get("use_when_export") or "").strip() or None,
                                           "aliases": [], "one_liner": rep["one_liner"], "body": "",
                                           "path": str(base.relative_to(self.root))})
             end = anchor.end()

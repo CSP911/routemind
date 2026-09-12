@@ -157,6 +157,9 @@ class Store:
                 "kind": fm.get("kind"), "region": region, "aliases": fm.get("aliases") or [],
                 "holds": fm.get("holds") or "content", "injected_by": fm.get("injected_by"),
                 "status": fm.get("status") or "published", "use_when": fm.get("use_when"),
+                # What this area says about itself to *another backbone*. Absent means it is not
+                # advertised across a link at all — export is opt-in, per area, in writing.
+                "use_when_export": fm.get("use_when_export"),
                 "role": fm.get("role"), "parent": fm.get("parent"),
                 "expands_in": fm.get("expands_in"), "one_liner": fm.get("one_liner") or "",
                 "order": order, "path": str(f.relative_to(self.root)), "body": m.group(2),
@@ -212,6 +215,7 @@ class Store:
                         "representative": top["id"] if top else None,
                         "advertises": top["one_liner"] if top else None,
                         "use_when": (top.get("use_when") if top else None),
+                        "use_when_export": (top.get("use_when_export") if top else None),
                         "nodes": [n["id"] for n in mine]})
         return out
 

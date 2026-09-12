@@ -33,6 +33,10 @@ from service import curator                                 # noqa: E402
 DATA = Path(os.environ.get("ONTOLOGY_DATA", "/data"))
 PUBLISH = Path(os.environ["ONTOLOGY_PUBLISH"]) if os.environ.get("ONTOLOGY_PUBLISH") else None
 FRAGMENTS = Path(os.environ["ONTOLOGY_FRAGMENTS"]) if os.environ.get("ONTOLOGY_FRAGMENTS") else None
+# The shared secret a peer backbone presents to read /v1/export. Unset means this backbone has no
+# link and that whole surface answers 501 — which is the right default: opening one is a decision,
+# not something an install drifts into. See docs/PEERING.md.
+PEER_TOKEN = (os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
 SERVICES = Path(os.environ["ONTOLOGY_SERVICES"]) if os.environ.get("ONTOLOGY_SERVICES") else None
 SERVICE_PUBLISH = Path(os.environ["ONTOLOGY_SERVICE_PUBLISH"]) if os.environ.get("ONTOLOGY_SERVICE_PUBLISH") else None
 # Its own path, never under ONTOLOGY_PUBLISH: Pi mounts that read-only and it is a git checkout
@@ -471,7 +475,11 @@ def apply_proposal(p: dict, actor: str):
         r = next((x for x in store.regions() if x["dir"] == region or x["key"] == region.upper()), None)
         if not r or not r.get("representative"): return {"ok": False, "error": f"region {region} has no representative"}
         rep = store.node(r["representative"])
-        field = "one_liner" if curator.SCOPE_ALIAS.get(scope, scope) == "as" else "use_when"
+        # From the table, not from a two-way if. It read `"one_liner" if scope == "as" else "use_when"`,
+        # which is correct for exactly the two scopes that existed and writes the wrong field for any
+        # third — a `peer` proposal would have silently overwritten the area's own `use_when`.
+        field = curator.ROUTE_SCOPES.get(curator.SCOPE_ALIAS.get(scope, scope))
+        if not field: return {"ok": False, "error": f"unknown route scope {scope!r}"}
         cur = (rep.get(field) or "")
         if p.get("before") and cur != p["before"]:
             return {"ok": False, "error": "conflict", "code": 409, "field": field,
@@ -722,6 +730,13 @@ class Handler(BaseHTTPRequestHandler):
                                         "published": (PUBLISH / "REVISION").read_text().strip() if PUBLISH and (PUBLISH / "REVISION").exists() else None})
             if parts[:1] != ["v1"]: return self._err(404, "unknown path")
             parts = parts[1:]
+            # Before anything else, and read-only. A link carries advertisements and documents in one
+            # direction: writes go to the backbone that owns the area, through its own screen and its
+            # own review queue. That is not a limitation to lift later — it is the reason the link
+            # exists. Two ontologies that write to each other have been merged.
+            if parts[:1] == ["export"]:
+                if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
+                return self._export(parts[1:])
             if method == "GET": return self._get(parts)
             return self._write(method, parts)
         except WriteError as e:
@@ -737,6 +752,57 @@ class Handler(BaseHTTPRequestHandler):
     def do_PATCH(self): self._route("PATCH")
     def do_DELETE(self): self._route("DELETE")
     def do_OPTIONS(self): self._route("OPTIONS")
+
+    # ---- what crosses a link ----
+    def _export(self, parts):
+        """The only surface a peer backbone can read. See docs/PEERING.md.
+
+        **It is a separate surface, not the ordinary one behind a check.** An area reaches a peer only
+        by having written `use_when_export`, and every handler here starts from that set — so there is
+        no path through this code, and no bug in a token check, that can serve an area nobody decided
+        to share. A filter applied on the way out would have to be right every time; a surface built
+        from the exported set is right by construction.
+
+        The line a peer sees is `use_when_export`, never `use_when`. An advertisement written for one
+        backbone's hop 0 has no reason to be true in another's — a subsidiary's "needs head-office
+        approval" means nothing read at head office. So each is written for its reader, and the one
+        for the outside goes through the review queue like every other advertisement (scope `peer`).
+        """
+        if not PEER_TOKEN:
+            return self._err(501, "this backbone advertises to no peer — set ONTOLOGY_PEER_TOKEN to open a link")
+        if self.headers.get("X-Peer-Token") != PEER_TOKEN:
+            return self._err(401, "peer token missing or wrong")
+
+        rj = store.regions_json()
+        shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", [])
+                  if (r.get("use_when_export") or "").strip()}
+        # The revision the peer is being told about. It is what makes staleness visible on the other
+        # side: git already numbers every state this repository has been in, so a link needs no clock.
+        rev = head(DATA)
+
+        if parts == ["regions"]:
+            return self._send(200, {"revision": rev, "schema": rj.get("schema"), "regions": [
+                {"id": r["id"], "source": r["source"], "title": r["title"],
+                 "description": r.get("description", ""),
+                 # Named `use_when` because that is what it is to the reader: the line it chooses by.
+                 # Which side of the link it was written for is our business, not theirs.
+                 "use_when": r["use_when_export"], "representative": r.get("representative"),
+                 "fetch": f"/v1/export/regions/{src}"}
+                for src, r in sorted(shared.items())]})
+
+        if len(parts) == 2 and parts[0] == "regions":
+            if parts[1] not in shared: return self._err(404, f"no exported area {parts[1]}")
+            return self._get(["regions", parts[1]])
+
+        if len(parts) >= 2 and parts[0] == "nodes":
+            n = store.node(parts[1])
+            # 404 and not 403: whether this backbone holds a thing it has not shared is itself
+            # something the peer has no business learning. The two answers must be indistinguishable.
+            if not n or (n.get("region") or "") not in {r["source"] for r in shared.values()}:
+                return self._err(404, f"no exported node {parts[1]}")
+            return self._get(parts)
+
+        return self._err(404, "unknown export path")
 
     # ---- reads ----
     def _get(self, parts):

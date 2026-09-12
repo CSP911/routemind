@@ -64,6 +64,8 @@ command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/env-check.py" | s
 # And what a checkout on another operating system has to survive. Everything else here runs on a
 # machine where line endings and the exec bit already hold, so nothing else can see either.
 command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/eol-check.py" | sed 's/^/  /'
+# Not run here: check/peer-check.py starts two backbones of its own and needs pyyaml on this python,
+# the way write-paths.sh does. `./check/peer-check.py`.
 
 say "== an agent =="
 if command -v python3 >/dev/null 2>&1; then

@@ -35,6 +35,8 @@ def regenerate(store: Store) -> list[str]:
         regs.append({"id": region_label(r), "source": r.replace("-", "_"),
                      "title": (top["name"] if top else r), "description": core_rows.get(region_label(r), ""),
                      "use_when": ((top.get("use_when") or "") if top else ""),
+                     # Empty is not the same as absent here: "" means this area is not exported.
+                     "use_when_export": ((top.get("use_when_export") or "") if top else ""),
                      "nodes": [n["id"] for n in nodes if n["region"] == r and n.get("status") != "draft"],
                      "representative": (top["id"] if top else None),
                      "fetch": f"/v1/regions/{r}"})
@@ -48,8 +50,10 @@ def regenerate(store: Store) -> list[str]:
 # `expands_in` were missing from the serialisation list, so writing a single file to a node silently
 # dropped them. They come from one place now: a field absent here is not stored, and only a field
 # that is here and in EDITABLE can be changed.
-NODE_FIELDS = ("holds", "injected_by", "status", "role", "parent", "use_when", "expands_in", "aliases")
-EDITABLE = ("name", "kind", "one_liner", "aliases", "holds", "status", "use_when", "expands_in", "parent")
+NODE_FIELDS = ("holds", "injected_by", "status", "role", "parent", "use_when", "use_when_export",
+               "expands_in", "aliases")
+EDITABLE = ("name", "kind", "one_liner", "aliases", "holds", "status", "use_when", "use_when_export",
+            "expands_in", "parent")
 
 
 def write_node_index(store: Store, node: dict) -> None:
@@ -66,6 +70,7 @@ def write_node_index(store: Store, node: dict) -> None:
     if node.get("role") == "representative": fm.append("role: representative")
     if node.get("parent"): fm.append(f"parent: {node['parent']}")
     if node.get("use_when"): fm.append(f"use_when: {node['use_when']}")
+    if node.get("use_when_export"): fm.append(f"use_when_export: {node['use_when_export']}")
     if node.get("expands_in"): fm.append(f"expands_in: {node['expands_in']}")
     if node.get("aliases"):
         fm.append("aliases: [" + ", ".join(
