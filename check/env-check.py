@@ -22,7 +22,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 env_text = (ROOT / ".env.example").read_text(encoding="utf-8")
-compose = (ROOT / "docker-compose.yml").read_text(encoding="utf-8")
+# Every compose file, not just the main one. The overlays that add a second backbone and an exchange
+# read settings too, and a setting only they name is exactly as dead as one nothing names — it was
+# only ever checked in the file that happened to exist when this was written.
+COMPOSE = sorted(ROOT.glob("docker-compose*.yml"))
+compose = "\n".join(p.read_text(encoding="utf-8") for p in COMPOSE)
 
 # Both the set and the commented-out forms: a commented default is still a documented setting.
 documented = {m.group(1) for m in re.finditer(r"^#?\s*([A-Z][A-Z0-9_]*)=", env_text, re.M)}
@@ -43,11 +47,11 @@ for v in stale: print(f"--   {v} is in UNDOCUMENTED but no longer needs to be; d
 bad = False
 if dead:
     bad = True
-    print("FAIL .env.example documents settings docker-compose.yml never passes to a container:\n  " +
+    print("FAIL .env.example documents settings no compose file passes to a container:\n  " +
           "\n  ".join(dead) + "\n  Someone sets these and nothing reads them, with no error anywhere.")
 if hidden:
     bad = True
-    print("FAIL docker-compose.yml reads settings .env.example never mentions:\n  " +
+    print("FAIL a compose file reads settings .env.example never mentions:\n  " +
           "\n  ".join(hidden) + "\n  Either document them, or add them to UNDOCUMENTED here with the reason.")
 if bad: sys.exit(1)
-print(f"ok   {len(documented)} settings documented, every one reaching a container")
+print(f"ok   {len(documented)} settings documented, every one reaching a container ({len(COMPOSE)} compose files)")

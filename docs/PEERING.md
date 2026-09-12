@@ -135,16 +135,65 @@ failed link look exactly like an install that never had one.
 
 ## Checks
 
-`./check/peer-check.py` — 34 assertions on two throwaway backbones linked both ways, including
+`./check/peer-check.py` — 36 assertions on two throwaway backbones linked both ways, including
 killing one mid-run to watch the survivor stop claiming absence. Mostly negative: things that exist,
 read fine locally, and must still come back 404 across the link.
+
+## An exchange, when there are more than two
+
+Two backbones peer directly and that is the simplest thing that works. Six that all want to see each
+other need fifteen links. An **exchange** is where they meet instead: everybody names it, nobody names
+anybody else, and six links do what fifteen did. The seventh backbone costs one link, not six.
+
+```sh
+mkdir -p data/exchange && cp examples/exchange/members.yaml data/exchange/
+#  then point each backbone's peers.yaml at the exchange instead of at each other
+docker compose -f docker-compose.yml -f docker-compose.peer.yml -f docker-compose.exchange.yml up -d
+```
+
+`members.yaml` lives under `data/` because it is this installation's, the way `data/repo` is — the
+copy in `examples/` is a starting point, not a default.
+
+**It is not a backbone and cannot become one.** No repository, no areas, no vocabulary, no
+`/v1/regions` — so no hop 0, and the sentence everything rests on has no third kind of thing to be
+confused about. That is why it is called an exchange: an IX carries no prefixes of its own and nobody
+mistakes one for a network. Calling it "backbone zero" would have invited the next person to give it
+areas.
+
+To a backbone it is indistinguishable from any other peer — same `/v1/export`, same token, same
+read-only rule. **No backbone has any code that knows what an exchange is.**
+
+It does not decide what is shared. It reads what each member published and can no more widen that
+than any other peer can; `use_when_export` stays in each ontology, through each review queue.
+
+**One secret per member, used both ways.** The exchange presents it when reading that member, and the
+member presents it when reading the exchange. There is no shared password and no observer role, so
+every caller has a name — which is what makes the next paragraph possible.
+
+**Split horizon.** A member is never handed back what it advertised. Without it every backbone would
+see its own areas twice, once locally and once reflected, and the second copy would look like somebody
+else's.
+
+**The path.** Every reflected row carries the members it came through, nearest last. An agent can see
+how far away a piece of knowledge is — two hops is somebody else's somebody else — and a row whose
+path already names this exchange is dropped. Backbones never re-advertise what they learn, so one
+exchange cannot loop; two exchanges peering can, and this is what stops it. BGP's AS_PATH, for BGP's
+reason.
+
+The address carries the path too: `/v1/peers/ix/peers/branch/regions/payroll` reads as *through the
+exchange, to the branch, its payroll*. Everything that reads an address peels **every** prefix, not
+one.
+
+`./check/exchange-check.py` — 22 assertions on three backbones and an exchange, including reading a
+document two backbones away and killing a member to watch the others carry on without it.
 
 ## Not done
 
 * **One export line for all peers.** Per-peer lines, and per-peer visibility, are a policy layer worth
   designing whole rather than smuggling in as a map.
-* **One hop.** Two backbones cannot yet learn a third through each other. When they can, the rows need
-  the path they came by — BGP's AS_PATH, for BGP's reason.
+* **Exchanges do not peer with each other yet.** The path attribute that makes it safe is there and is
+  checked; what is missing is a member entry that points at another exchange, and the thought about
+  who is allowed to enrol whom.
 * **No withdraw.** A peer's rows go when it stops advertising them or stops answering; there is no
   message that says so.
 * **Two vocabularies.** A peer's areas are described by the peer's `vocab.yaml`, and this backbone's

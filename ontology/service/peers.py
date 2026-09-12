@@ -182,13 +182,22 @@ def rows(root: Path) -> tuple[list[dict], list[dict]]:
             state.update(reachable=False, error=str(e)); links.append(state); continue
         state["revision"] = adv.get("revision")
         for r in (adv.get("regions") or []):
-            src = str(r.get("source") or "").replace("_", "-")
-            if not src: continue
+            # From the peer's own `fetch`, not rebuilt from `source`. Rebuilding assumed the thing was
+            # one hop away and always produced `/v1/peers/<peer>/regions/<src>` — which is right for a
+            # backbone and drops the middle of `/v1/export/peers/gamma/regions/x`, the shape an
+            # exchange prints for something behind it. The address is the peer's to compose; this end
+            # only moves it onto its own surface, the same rule `_rewrite` applies coming back.
+            tail = str(r.get("fetch") or "")
+            if not tail.startswith("/v1/export"): continue
             out.append({**{k: r.get(k) for k in ("id", "source", "title", "description", "use_when",
                                                  "representative")},
                         "peer": peer["name"], "peer_label": peer["label"],
-                        "peer_revision": adv.get("revision"),
-                        "fetch": f"/v1/peers/{peer['name']}/regions/{src}"})
+                        "peer_revision": r.get("origin_revision") or adv.get("revision"),
+                        # How far away, and through whom. Nearest last, this end prepended — so a row
+                        # reads as the trail it actually travelled.
+                        "path": [peer["name"], *(r.get("path") or [])],
+                        "origin": r.get("origin") or peer["name"],
+                        "fetch": f"/v1/peers/{peer['name']}" + tail[len("/v1/export"):]})
         state["areas"] = len(adv.get("regions") or [])
         links.append(state)
     return out, links

@@ -301,13 +301,20 @@ TABLE_ROUTES = (
 # peer's name is an ordinary address, so the shape tests below run against that and the fetch runs
 # against the whole thing. Rendering is identical on purpose: an area is an area, and which backbone
 # it came from is already visible in the address the table printed.
-_PEER = re.compile(r"^/v1/peers/[a-z][a-z0-9-]{0,30}(/v1)?")
+_PEER = re.compile(r"^/v1/peers/[a-z][a-z0-9-]{0,30}(?=/)")
 
 
 def _local(p: str) -> str:
-    """The address with any peer prefix taken off, for deciding what kind of thing it is."""
-    m = _PEER.match(p)
-    return ("/v1" + p[m.end():]) if m and not p[m.end():].startswith("/v1/") else (p[m.end():] if m else p)
+    """The address with every peer prefix taken off, for deciding what kind of thing it is.
+
+    Every, not one. Knowledge two backbones away arrives as `/v1/peers/ix/peers/branch/regions/x` —
+    the path it came by, written into the address. Peeling one prefix leaves something that is still
+    not a local shape, and the client then refuses to follow a row its own hop 0 printed.
+    """
+    while True:
+        m = _PEER.match(p)
+        if not m: return p
+        p = "/v1" + p[m.end():]
 
 
 def table_for(api: Api, path: str) -> str:

@@ -1,0 +1,13 @@
+# Who meets here. The token for each is in the environment, not in this file.
+#
+# This is the exchange's half of the declaration; each backbone names the exchange in its own
+# peers.yaml. Both halves are needed, so nobody is enrolled by one side alone.
+members:
+  - name: hq
+    label: HQ
+    url: http://ontology:8100
+    token_env: EXCHANGE_TOKEN_HQ
+  - name: branch
+    label: BRANCH
+    url: http://ontology-b:8100
+    token_env: EXCHANGE_TOKEN_BRANCH

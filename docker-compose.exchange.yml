@@ -1,0 +1,46 @@
+# An exchange, and the two backbones meeting at it.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.peer.yml -f docker-compose.exchange.yml up -d
+#
+# Use it instead of pointing the backbones at each other. Two backbones can peer directly and it is
+# the simplest thing that works; the arithmetic is why this exists. Six backbones that all want to see
+# each other need fifteen links, and through here they need six. Adding the seventh costs one link
+# rather than six.
+#
+# Both sides still declare each other: every backbone names the exchange in its own `peers.yaml`, and
+# `data/exchange/members.yaml` names every backbone. Nobody is enrolled by one side alone — for a room
+# that separate companies meet in, that is not a formality.
+#
+# One secret per member, used both ways: the exchange presents it when reading that backbone and the
+# backbone presents it when reading the exchange. So every caller has a name, which is what lets the
+# exchange spare a member its own advertisement coming back at it.
+services:
+  exchange:
+    build:
+      context: .
+      dockerfile: exchange/Dockerfile
+    image: routemind-exchange:0.1.0
+    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
+    environment:
+      EXCHANGE_NAME: "${EXCHANGE_NAME:-ix}"
+      EXCHANGE_MEMBERS: /data/members.yaml
+      # One per member named in members.yaml, upper-cased. Absent means that member is listed as
+      # unreachable with the variable named in the answer, rather than quietly missing from the room.
+      EXCHANGE_TOKEN_HQ: "${ONTOLOGY_PEER_TOKEN:-try-a-link-a}"
+      EXCHANGE_TOKEN_BRANCH: "${ONTOLOGY_PEER_TOKEN_B:-try-a-link-b}"
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+      ONTOLOGY_PEER_TIMEOUT: "${ONTOLOGY_PEER_TIMEOUT:-}"
+    volumes:
+      - type: bind
+        source: ${KNOWLEDGE_EXCHANGE_DIR:-./data/exchange}
+        target: /data
+    restart: unless-stopped
+
+  # Each backbone needs the token it presents to the exchange. Which backbones it can then see is not
+  # decided here — it is whatever the exchange reflects, which is whatever the others exported.
+  ontology:
+    environment:
+      ONTOLOGY_PEER_TOKEN_IX: "${ONTOLOGY_PEER_TOKEN:-try-a-link-a}"
+  ontology-b:
+    environment:
+      ONTOLOGY_PEER_TOKEN_IX: "${ONTOLOGY_PEER_TOKEN_B:-try-a-link-b}"
