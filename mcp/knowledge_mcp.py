@@ -297,15 +297,30 @@ TABLE_ROUTES = (
 )
 
 
+# `/v1/peers/<backbone>/…` is an address on another backbone, relayed by this one. What follows the
+# peer's name is an ordinary address, so the shape tests below run against that and the fetch runs
+# against the whole thing. Rendering is identical on purpose: an area is an area, and which backbone
+# it came from is already visible in the address the table printed.
+_PEER = re.compile(r"^/v1/peers/[a-z][a-z0-9-]{0,30}(/v1)?")
+
+
+def _local(p: str) -> str:
+    """The address with any peer prefix taken off, for deciding what kind of thing it is."""
+    m = _PEER.match(p)
+    return ("/v1" + p[m.end():]) if m and not p[m.end():].startswith("/v1/") else (p[m.end():] if m else p)
+
+
 def table_for(api: Api, path: str) -> str:
     p = (path or "/v1/regions").strip()
     if not p.startswith("/"): p = "/" + p
     if p in ("/v1/regions", "/v1/regions/", "/", ""): return hop0(api)
+    shape = _local(p)
     for prefix, fn in TABLE_ROUTES[1:]:
-        if p.startswith(prefix) and len(p) > len(prefix):
+        if shape.startswith(prefix) and len(shape) > len(prefix):
             return fn(api, p)
     raise ApiError(f"{p} is not a table address. Tables are /v1/regions, /v1/regions/<area>, "
-                   f"/v1/nodes/<id> and /v1/services/<id>. Use an address a table printed.")
+                   f"/v1/nodes/<id>, /v1/services/<id>, and any of those behind /v1/peers/<backbone>/. "
+                   f"Use an address a table printed.")
 
 
 # The addresses that are tables. Reading is defined as "not one of these" rather than as a document
@@ -327,7 +342,7 @@ def read_for(api: Api, path: str) -> str:
     p = (path or "").strip()
     if not p.startswith("/v1/"):
         raise ApiError(f"{p!r} is not an address from Knowledge. Use one a table printed.")
-    if any(rx.match(p) for rx in TABLE_SHAPES):
+    if any(rx.match(_local(p)) for rx in TABLE_SHAPES):
         raise ApiError(f"{p} is a table, not a document — call knowledge_table with it.")
     return api.text(p)
 

@@ -1,0 +1,72 @@
+# A second backbone, for trying a link out.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
+#   →  http://localhost:8080  (this office)      http://localhost:8081  (the other one)
+#
+# It is a separate file because one backbone is the ordinary shape and two is a thing you go and do.
+#
+# **Two services, not one service with two data directories.** That costs a container and buys the
+# only thing worth buying: this *is* the remote case, with a shorter cable. When the two are in
+# different companies, nothing here changes but the URL and who holds the token. Modelling in-org
+# peering as two directories inside one process would work today and teach nothing.
+#
+# Both are real installs. Each has its own repository, its own review queue, its own vocabulary, and
+# writes to each go through its own screen — which is the whole point of a link rather than a merge.
+services:
+  ontology-b:
+    build:
+      context: .
+      dockerfile: ontology/Dockerfile
+    image: knowledge-ontology:0.1.0
+    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
+    environment:
+      ONTOLOGY_DATA: /data/repo
+      ONTOLOGY_PUBLISH: /data/publish
+      ONTOLOGY_OVERLAYS: /data/overlays
+      ONTOLOGY_HARNESS: /data/harness
+      # What this one accepts from its peer, and what it presents to it. In a real pair of installs
+      # these are two different secrets held by two different people; here they are two lines in .env.
+      ONTOLOGY_PEER_TOKEN: "${ONTOLOGY_PEER_TOKEN_B:-try-a-link-b}"
+      ONTOLOGY_PEER_TOKEN_HQ: "${ONTOLOGY_PEER_TOKEN:-try-a-link-a}"
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+      ONTOLOGY_LLM_PROVIDER: "${ONTOLOGY_LLM_PROVIDER:-litellm}"
+      ONTOLOGY_LLM_BASE_URL: "${ONTOLOGY_LLM_BASE_URL:-}"
+      ONTOLOGY_LLM_API_KEY: "${ONTOLOGY_LLM_API_KEY:-}"
+      ONTOLOGY_LLM_MODEL: "${ONTOLOGY_LLM_MODEL:-}"
+    volumes:
+      - type: bind
+        source: ${KNOWLEDGE_B_DATA_DIR:-./data-b/repo}
+        target: /data/repo
+      - type: bind
+        source: ${KNOWLEDGE_B_PUBLISH_DIR:-./data-b/publish}
+        target: /data/publish
+      - type: bind
+        source: ${KNOWLEDGE_B_OVERLAYS_DIR:-./data-b/overlays}
+        target: /data/overlays
+      - type: bind
+        source: ${KNOWLEDGE_B_HARNESS_DIR:-./data-b/harness}
+        target: /data/harness
+    restart: unless-stopped
+
+  web-b:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    image: knowledge-web:0.1.0
+    depends_on:
+      ontology-b:
+        condition: service_healthy
+    environment:
+      KNOWLEDGE_API_URL: http://ontology-b:8100
+      KNOWLEDGE_ACTOR: "${KNOWLEDGE_ACTOR_B:-web-b}"
+    ports:
+      - "${WEB_PORT_B:-8081}:8080"
+    restart: unless-stopped
+
+  # The first backbone learns the token its peer expects. Everything else about the link — that there
+  # is one, and where it is — is in data/repo/peers.yaml, which is versioned and reviewed like the
+  # rest of what this backbone is.
+  ontology:
+    environment:
+      ONTOLOGY_PEER_TOKEN: "${ONTOLOGY_PEER_TOKEN:-try-a-link-a}"
+      ONTOLOGY_PEER_TOKEN_BRANCH: "${ONTOLOGY_PEER_TOKEN_B:-try-a-link-b}"

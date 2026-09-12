@@ -32,6 +32,17 @@ services:
       # one is. One ontology per directory is the rule; the lock is what makes breaking it merely slow
       # instead of destructive. Documented in .env.example, so it has to arrive here to be real.
       ONTOLOGY_LOCK_WAIT: "${ONTOLOGY_LOCK_WAIT:-}"
+      # The shared secret a *peer* backbone presents to read /v1/export. Unset — the default —
+      # makes that whole surface answer 501, which is right: opening a link is a decision.
+      # Everything a link needs beyond this is in peers.yaml, in the data repository, because
+      # who this backbone is linked to belongs in git and a secret does not. docs/PEERING.md.
+      ONTOLOGY_PEER_TOKEN: "${ONTOLOGY_PEER_TOKEN:-}"
+      # Tokens this backbone presents to its own peers, one per peer named in peers.yaml.
+      # Passed through as a block so adding a peer does not mean editing this file.
+      ONTOLOGY_PEER_TOKEN_HQ: "${ONTOLOGY_PEER_TOKEN_HQ:-}"
+      ONTOLOGY_PEER_TOKEN_BRANCH: "${ONTOLOGY_PEER_TOKEN_BRANCH:-}"
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+      ONTOLOGY_PEER_TIMEOUT: "${ONTOLOGY_PEER_TIMEOUT:-}"
       # Set these three and Knowledge derives a node's id, kind and description from its name. Leave
       # them out and those are typed by hand — the screen asks for them only in that case.
       # `litellm` is the default because it is what the client always spoke — an existing install

@@ -475,6 +475,25 @@ def api_knowledge_region(region_dir: str, request: Request) -> dict[str, Any]:
     return _ontology_proxy("GET", "/v1/regions/" + quote(region_dir, safe=""), _knowledge_actor(request))
 
 
+# ── what a linked backbone holds ──────────────────────────────────────────────
+# One route with a wildcard tail, and deliberately not one per shape. Everything under /v1/peers/ is
+# the ontology relaying somebody else's answer, and this layer has no opinion about what shape that
+# answer has — inventing one here would mean a second place to update every time the addresses on the
+# other side change, and the whole discipline is that addresses come from the table that printed them.
+#
+# Read-only, because a link is. The proxy has no write route for this and the ontology answers 405.
+_PEER_SEG = _iris_re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$")
+
+
+@_iris_route("GET", "/api/knowledge/peers/{peer}/{rest:path}")
+def api_knowledge_peer(peer: str, rest: str, request: Request) -> dict[str, Any]:
+    parts = [p for p in (rest or "").split("/") if p]
+    if not _PEER_SEG.match(peer or "") or not parts or not all(_PEER_SEG.match(p) for p in parts):
+        raise HTTPException(status_code=404, detail="not an address a table printed")
+    path = "/v1/peers/" + "/".join(quote(p, safe="") for p in [peer, *parts])
+    return _ontology_proxy("GET", path, _knowledge_actor(request))
+
+
 @_iris_route("GET", "/api/knowledge/vocab")
 def api_knowledge_vocab(request: Request) -> dict[str, Any]:
     # Kinds and relations are Knowledge's vocabulary; the editor offers only these and never a free-text kind.
