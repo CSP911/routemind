@@ -8,7 +8,22 @@ const collection = (arr) => { const c = Object.create(null); arr.forEach((x,i)=>
 class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.attrs={};this.dataset={};this.__kids=[];this.textContent="";this.className="";this.hidden=false;this.value="";this.listeners={};}
   setAttribute(k,v){this.attrs[k]=String(v);} append(...n){this.__kids.push(...n);} replaceChildren(...n){this.__kids=n;}
   addEventListener(t,f){(this.listeners[t]||=[]).push(f);} click(){for(const f of this.listeners.click||[]) f({stopPropagation(){},preventDefault(){}});}
-  focus(){} get children(){return collection(this.__kids);} get firstElementChild(){return this.__kids[0]||null;} querySelector(sel){ const m=/^:scope > \.([\w-]+)$/.exec(sel||""); if(!m) return null; return this.__kids.find((c)=>new RegExp("(^| )"+m[1]+"( |$)").test(c.className||""))||null; } remove(){ for(const p of N.__all) { const i=p.__kids.indexOf(this); if(i>=0) p.__kids.splice(i,1); } } get classList(){const s=this;return{add(c){s.className+=" "+c;},remove(){}};} }
+  focus(){} get children(){return collection(this.__kids);} get firstElementChild(){return this.__kids[0]||null;} querySelector(sel){ const m=/^:scope > \.([\w-]+)$/.exec(sel||""); if(!m) return null; return this.__kids.find((c)=>new RegExp("(^| )"+m[1]+"( |$)").test(c.className||""))||null; } remove(){ for(const p of N.__all) { const i=p.__kids.indexOf(this); if(i>=0) p.__kids.splice(i,1); } }
+  // A real `classList`. It used to be `add` and a `remove` that did nothing, with no `contains` and no
+  // `toggle` — and `actions()` calls `contains` while `showEditor()` calls `toggle`, so every form on
+  // this screen threw before it rendered. Node creation, file creation, delete, move, propose and Draw
+  // VRF have therefore never been exercised by this check; the bug that made two addresses render as
+  // one lived in a card none of it could open.
+  get classList(){ const s=this;
+    const list=()=>String(s.className||"").split(/\s+/).filter(Boolean);
+    const set=(a)=>{ s.className=[...new Set(a)].join(" "); };
+    return {
+      add(...c){ set([...list(),...c]); },
+      remove(...c){ set(list().filter((x)=>!c.includes(x))); },
+      contains(c){ return list().includes(c); },
+      toggle(c,force){ const on=force===undefined?!list().includes(c):!!force;
+        on?this.add(c):this.remove(c); return on; },
+    }; } }
 globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
 const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions"]) byId[id]=new N(id);
 let opens=0; byId.knRawDialog.open=false; byId.knRawDialog.showModal=function(){this.open=true;opens++;}; byId.knRawDialog.close=function(){this.open=false;};
@@ -21,7 +36,7 @@ globalThis.fetch = async (url, opts) => {
   const res = await realFetch(BASE + String(url), opts);
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text() };
 };
-new Function(src.replace('if (document.readyState === "loading")','globalThis.__kn = { state, loadEntries, loadFiles, draw, agentContext };\n  if (document.readyState === "loading")'))();
+new Function(src.replace('if (document.readyState === "loading")','globalThis.__kn = { state, loadEntries, loadFiles, draw, agentContext, newRegionForm, newNodeForm, newFileForm, submitCard, drawVrfCard, deleteNodeCard, reviewFlags };\n  if (document.readyState === "loading")'))();
 const kn = globalThis.__kn; const { state, loadEntries, loadFiles, draw } = kn;
 const settle = async () => { for (let i = 0; i < 40; i++) await new Promise((r) => setTimeout(r, 5)); };
 
@@ -30,7 +45,10 @@ const settle = async () => { for (let i = 0; i < 40; i++) await new Promise((r) 
 await settle(); await settle();
 const results = []; const check = (n, c) => results.push(`${c ? "ok  " : "FAIL"} ${n}`);
 const find = (n, pred, acc = []) => { if (pred(n)) acc.push(n); for (const c of [...(n.children || [])]) find(c, pred, acc); return acc; };
-const cls = (n) => String(n.attrs.class || "").split(/\s+/);
+// Both, because the screen builds two kinds of element: `svgEl` sets an attribute and `el` sets
+// `className`. Reading only the attribute made every HTML element look unclassed, so a check
+// looking for `.kn-primary` or `.kn-err-box` in a card silently matched nothing.
+const cls = (n) => `${n.attrs.class || ""} ${n.className || ""}`.split(/\s+/).filter(Boolean);
 const texts = () => find(byId.knTopo, (n) => n.textContent).map((n) => n.textContent);
 
 check("the map drew", find(byId.knTopo, (n) => cls(n).includes("kn-dev")).length > 0);
@@ -161,6 +179,79 @@ else {
     state.curatorOn = was; draw();
     check("advertise-upstream is offered where there is a curator", seen[true] > 0);
     check("and not offered where there is none", seen[false] === 0);
+  }
+}
+
+// Every form on this screen, opened and then submitted empty.
+//
+// None of this could run until 2026-09-12. The fake DOM's `classList` was `add` and a `remove` that
+// did nothing — no `contains`, no `toggle` — and `actions()` calls one while `showEditor()` calls the
+// other, so every card threw before it rendered. Node creation, file creation, delete, propose and
+// Draw VRF had therefore never been exercised by any check, and the bug that made two addresses
+// render as one string lived in a card none of them could open.
+//
+// Submitting empty is the part worth automating: it is the only interaction that is safe to repeat
+// against a live install, and it proves the three things that matter — the card renders, the guard
+// rail holds, and nothing is written when it does.
+{
+  const txt = (n) => { let s = n.textContent || ""; for (const c of [...(n.children || [])]) s += " " + txt(c); return s; };
+  const inEdit = (pred) => find(byId.knEdit, pred);
+  const count = async () => {
+    const r = await (await realFetch(BASE + "/api/knowledge/regions")).json();
+    const g = await (await realFetch(BASE + "/api/knowledge/graph")).json();
+    return { areas: (r.regions || []).length, nodes: (g.nodes || []).length };
+  };
+  const area = areas[0] || "";
+  const node = (state.nodes.find((n) => n.region_dir === area || n.region === area) || state.nodes[0] || {}).id;
+  if (!area || !node) {
+    results.push("--   no areas yet; the forms need one to open against");
+  } else {
+    // A label that renders as its own dictionary key is a string nobody translated, and it reaches the
+    // screen looking like `knowledge.bb.useWhen`.
+    const RAWKEY = /\b(?:knowledge|common)\.[a-zA-Z][\w.]*/g;
+    const opens = [
+      ["new AS", () => kn.newRegionForm()],
+      ["new node", () => kn.newNodeForm(area, null)],
+      ["new data", () => kn.newFileForm(node)],
+      ["advertise an area", () => kn.submitCard(area, "as")],
+      ["advertise a row", () => kn.submitCard(area, "entity", { entity: node })],
+      ["draw a VRF", () => { state.picked.add("/v1/regions/" + area); return kn.drawVrfCard(); }],
+      ["delete a node", () => kn.deleteNodeCard(node)],
+      ["the review queue", () => kn.reviewFlags("__bb", "Back-Bone", "")],
+    ];
+    let broken = 0, keyed = 0, dead = 0;
+    for (const [name, run] of opens) {
+      byId.knEdit.replaceChildren();
+      try { await run(); await settle(); } catch { broken++; continue; }
+      const body = txt(byId.knEdit);
+      if (!body.trim()) { broken++; continue; }
+      if ((body.match(RAWKEY) || []).length) keyed++;
+      if (inEdit((n) => n.tag === "button").some((b) => !(b.listeners.click || []).length)) dead++;
+    }
+    check(`every form opens (${opens.length})`, broken === 0);
+    check("no label renders as its own dictionary key", keyed === 0);
+    check("no button is drawn without a handler", dead === 0);
+
+    const before = await count();
+    let refused = 0, silent = 0;
+    const submits = opens.slice(0, 6);
+    for (const [, run] of submits) {
+      byId.knEdit.replaceChildren();
+      state.picked.clear();
+      try { await run(); await settle(); } catch { silent++; continue; }
+      const btns = inEdit((n) => n.tag === "button");
+      const primary = btns.find((b) => cls(b).includes("kn-primary")) || btns[btns.length - 1];
+      if (!primary) { silent++; continue; }
+      try { primary.click(); } catch { silent++; continue; }
+      await settle(); await settle();
+      if (inEdit((n) => cls(n).includes("kn-err-box")).length) refused++; else silent++;
+    }
+    const after = await count();
+    check(`an empty form refuses and says why (${refused}/${submits.length})`, silent === 0);
+    check("and writes nothing when it does",
+      before.areas === after.areas && before.nodes === after.nodes);
+    byId.knEdit.replaceChildren();
+    state.picked.clear();
   }
 }
 
