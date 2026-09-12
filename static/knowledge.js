@@ -56,7 +56,27 @@
   };
   const openArea = (key) => { if (key && !isOpen(key)) state.open = [...state.open, key]; };
   const regionOf = (n) => n.region_dir || n.region;
-  const when = (v) => (v ? String(v).slice(0, 16).replace("T", " ") : "—");
+  /** A stamp, in the reader's own clock.
+   *
+   *  It used to slice the first sixteen characters off the string and swap the `T` for a space, which
+   *  is the whole of the bug: every stamp the API writes is UTC, and what came out carried no `Z` and
+   *  no offset, so it read as local time and was not. A VRF drawn a moment ago in Seoul showed 11:18
+   *  when the clock on the wall said 20:18, and nothing on the screen said which one it meant.
+   *
+   *  A stamp with no zone marker is UTC — that is what this API writes — and `new Date` would read it
+   *  as local, which is the same mistake with more steps. Both spellings arrive: overlays write
+   *  `…Z`, the curator writes `…+00:00`.
+   *
+   *  Fixed width rather than `toLocaleString`, because the overlay trail lays these out in a column
+   *  and a locale-native string is a different length every time. Local, correct, and still aligned. */
+  const when = (v) => {
+    if (!v) return "—";
+    const raw = String(v);
+    const d = new Date(/[Zz]$|[+-]\d\d:?\d\d$/.test(raw) ? raw : raw + "Z");
+    if (Number.isNaN(d.getTime())) return raw.slice(0, 16).replace("T", " ");
+    const p = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  };
 
   function toast(message) {
     const box = $("toast");
@@ -195,8 +215,11 @@
    *  averaging them — which is what `length * 7` did — sized a Korean label as if it were English and
    *  left the text touching the pill. Nothing here needs to be exact; it needs to be wrong in the
    *  generous direction. */
-  const textWidth = (text) => [...String(text || "")]
-    .reduce((n, ch) => n + (/[\u1100-\u11FF\u3000-\u9FFF\uAC00-\uD7AF\uFF00-\uFFEF]/.test(ch) ? 12.5 : 7), 0);
+  /** How wide a string draws. `px` is the width of one latin character in the face being measured;
+   *  a CJK glyph is about 1.79 of those, which is why counting characters and multiplying gets a
+   *  Korean or Japanese label badly wrong in a layout that has to reserve room before it draws. */
+  const textWidth = (text, px = 7) => [...String(text || "")]
+    .reduce((n, ch) => n + (/[\u1100-\u11FF\u3000-\u9FFF\uAC00-\uD7AF\uFF00-\uFFEF]/.test(ch) ? px * 1.79 : px), 0);
 
   function draw() {
     const canvas = $("knTopo");
@@ -582,7 +605,11 @@
     const innerW = cols * DEV.host.w + (cols - 1) * RACK.gap;
     const acts = actions || [];
     // The kind in the small letter-spaced face, the name larger and bold.
-    const titleW = t("knowledge.asTitle").length * 7.8 + (title.length + 3) * 9 + 24;
+    // Measured, not counted. The line beside this one already knew a CJK glyph is nearly twice as
+    // wide; this one multiplied character count by a fixed number, so a Korean or Japanese name came
+    // out about 28% short — and this width is exactly what stops the header colliding with its own
+    // buttons, the collision the comment below describes.
+    const titleW = textWidth(t("knowledge.asTitle"), 7.8) + textWidth(title + "   ", 9) + 24;
     const barW = acts.reduce((n, a) => n + btnW(a) + 14, 0);
     const headW = RACK.pad + titleW + barW + textWidth(note) + RACK.pad + 20;
     const bareW = RACK.pad + titleW + textWidth(note) + RACK.pad + 20;
