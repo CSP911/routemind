@@ -113,6 +113,16 @@ Under WSL, keep the clone inside the WSL filesystem rather than under `/mnt/c`. 
 runs as a fixed uid:gid and commits into `data/repo` through a bind mount, and a Windows-mounted path
 does not model POSIX ownership the way that needs.
 
+### Languages
+
+The screen speaks English, 한국어, 日本語 and 简体中文, chosen from the menu in the top-right corner. It
+changes instantly, it is remembered in that browser, and a first visit follows the browser's own
+language — **per viewer, not per install**, because one install is a team's ontology and an
+install-time setting would serve everyone whatever the installer happened to speak.
+
+What the agent is handed stays English on purpose, and the ontology stays in whatever words you wrote
+it in. [docs/I18N.md](docs/I18N.md) says why, and how to add a language.
+
 ### One command
 
 ```sh

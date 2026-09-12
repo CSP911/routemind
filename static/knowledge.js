@@ -4,6 +4,10 @@
    screen that formatted those itself would be a second implementation of the prompt. */
 (() => {
   const t = (key) => window.IRISI18N?.t(key) || key;
+  // The same lookup, with values. `t` was written to take a key alone and a dozen call sites rely on
+  // that shape, so the interpolating form is its own name rather than an optional second argument
+  // nobody would remember to pass.
+  const tv = (key, vars) => window.IRISI18N?.t(key, vars) || key;
   const $ = (id) => document.getElementById(id);
   const SVGNS = "http://www.w3.org/2000/svg";
   // `open` is the Region whose nodes are fanned out; `openNode` is the node whose files are fanned out
@@ -610,7 +614,7 @@
     g.append(label);
     if (shape === "core") {
       const sub = svgEl("text", { x, y: y + 14, class: "kn-dev-sub", "text-anchor": "middle" });
-      sub.textContent = `${state.regions.length} AS · ${state.nodes.length} node`;
+      sub.textContent = tv("knowledge.counts", { as: state.regions.length, nodes: state.nodes.length });
       g.append(sub);
     }
     if (row.badge) {
@@ -2259,7 +2263,51 @@
     if (!dialog.open) dialog.showModal();
   }
 
+  /** The language picker.
+   *
+   *  Built from the dictionaries that actually loaded rather than from a written-out list, so it can
+   *  never offer a language that is not there — and if one fails to load, the menu shrinks instead of
+   *  handing someone a choice that does nothing.
+   *
+   *  Redrawing afterwards is not cosmetic. `apply()` refills every element carrying `data-i18n`, but
+   *  the map's tiles and an open transcript are built in JavaScript with `t()` already resolved into
+   *  their text, so they would keep the old language until something else happened to rebuild them.
+   *  The transcript is replayed the way refreshFromKnowledge does it, from what it is showing —
+   *  every `title` it is ever called with is an entity's own name, which is data and does not
+   *  translate. Everything open stays open: this changes the words, not where anyone is.
+   *
+   *  Nothing is sent anywhere. The choice lives in this browser's localStorage, because one install is
+   *  a team's ontology and the person at the next desk keeps theirs. */
+  function languagePicker() {
+    const sel = $("knLang");
+    if (!sel || !window.IRISI18N) return;
+    const codes = window.IRISI18N.languages();
+    // One language is not a choice, and a menu with a single entry is furniture that does nothing.
+    if (codes.length < 2) { sel.closest(".kn-lang")?.setAttribute("hidden", ""); return; }
+    sel.replaceChildren(...codes.map((code) => {
+      const opt = el("option", null, window.IRISI18N.nameOf(code));
+      opt.value = code;
+      return opt;
+    }));
+    sel.value = window.IRISI18N.language();
+    sel.addEventListener("change", () => {
+      // Read the transcript's title BEFORE switching. `knRawTitle` carries a `data-i18n` for the
+      // empty state, so `apply()` inside setLanguage overwrites whatever entity name is in it with
+      // "Pick something on the map" — and replaying afterwards would put that placeholder up as the
+      // title of a card that is plainly showing an area. Caught by switching language with a routing
+      // table open, which is exactly the case the replay exists for.
+      const open = $("knRawDialog").open && state.selected;
+      const title = open ? $("knRawTitle").textContent : "";
+      if (!window.IRISI18N.setLanguage(sel.value)) return;
+      draw();
+      if (open) {
+        showRaw({ kind: state.selected.kind, title, address: state.selected.address || "" }).catch(() => {});
+      }
+    });
+  }
+
   function boot() {
+    languagePicker();
     $("knCopy").addEventListener("click", async (e) => {
       const b = e.currentTarget;
       try {

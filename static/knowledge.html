@@ -17,6 +17,13 @@
         <h1 data-i18n="knowledge.title">RouteMind</h1>
         <p class="kn-sub" data-i18n="knowledge.sub">What the agent is handed at each step, in the words it is handed.</p>
       </div>
+      <!-- Filled from the dictionaries that actually loaded, so it can never offer one that is not
+           there. It changes only what this browser shows: nothing is sent, nothing is written, and
+           the person at the next desk keeps theirs. -->
+      <label class="kn-lang">
+        <span class="kn-lang-label" data-i18n-label="knowledge.language">Language</span>
+        <select id="knLang" data-i18n-label="knowledge.language"></select>
+      </label>
     </header>
 
     <!-- Shown only when something is wrong, with the one button that fixes it. -->
@@ -37,11 +44,11 @@
           <h2 data-i18n="knowledge.topology">Topology</h2>
         </div>
         <div class="kn-legend">
-          <span><i class="kn-dot is-bb"></i>CORE</span>
-          <span><i class="kn-dot is-as"></i>AUTONOMOUS SYSTEM</span>
-          <span><i class="kn-dot is-data"></i>DATA</span>
-          <span><i class="kn-dot is-flag"></i>ROUTING REQUEST</span>
-          <span><i class="kn-dot is-vrf"></i>VRF</span>
+          <span><i class="kn-dot is-bb"></i><span data-i18n="knowledge.legend.core">CORE</span></span>
+          <span><i class="kn-dot is-as"></i><span data-i18n="knowledge.legend.as">AUTONOMOUS SYSTEM</span></span>
+          <span><i class="kn-dot is-data"></i><span data-i18n="knowledge.legend.data">DATA</span></span>
+          <span><i class="kn-dot is-flag"></i><span data-i18n="knowledge.legend.flag">ROUTING REQUEST</span></span>
+          <span><i class="kn-dot is-vrf"></i><span data-i18n="knowledge.legend.vrf">VRF</span></span>
         </div>
       </div>
       <div class="kn-topo-wrap"><svg id="knTopo" class="kn-topo" role="img" aria-label="RouteMind topology"></svg></div>
@@ -78,6 +85,13 @@
   </dialog>
 
   <div id="toast" class="toast"></div>
+  <!-- The dictionaries load before the machinery that reads them. Plain scripts rather than a fetch:
+       `t()` stays a synchronous pure function, which everything below depends on, and switching
+       language costs no round trip. Four languages is ~85 KB against a service on localhost. -->
+  <script src="/static/i18n/en.js?v=0.1.0"></script>
+  <script src="/static/i18n/ko.js?v=0.1.0"></script>
+  <script src="/static/i18n/ja.js?v=0.1.0"></script>
+  <script src="/static/i18n/zh.js?v=0.1.0"></script>
   <script src="/static/i18n.js?v=0.1.0"></script>
   <script src="/static/knowledge.js?v=0.1.0"></script>
 </body>

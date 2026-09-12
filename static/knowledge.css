@@ -432,3 +432,19 @@ body.kn-dragging { user-select: none; }
   transform: translate(-50%, 0);
   transition: opacity .18s ease, transform .18s ease, visibility 0s;
 }
+
+/* The language picker, top-right of the header. `kn-head` was one column; it is a row now, with the
+   picker pushed to the far end and allowed to wrap under the title on a narrow screen rather than
+   squeezing the subtitle. */
+.kn-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; }
+.kn-lang { display: inline-flex; align-items: center; gap: 6px; }
+/* The label is for a screen reader and for `title`; the menu shows each language in its own script,
+   which is the only label a person scanning for theirs actually needs. */
+.kn-lang-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.kn-lang select {
+  font: inherit; font-size: 12.5px; color: var(--fg, #1c2530);
+  background: var(--panel, #fff); border: 1px solid var(--line, #dfe4ea);
+  border-radius: 7px; padding: 4px 8px; cursor: pointer;
+}
+.kn-lang select:hover { border-color: var(--line-strong, #c7cfd8); }
+.kn-lang select:focus-visible { outline: 2px solid var(--accent, #2d6a5f); outline-offset: 1px; }
