@@ -105,8 +105,26 @@ def slug_id(name: str) -> str | None:
 
 
 class WriteError(Exception):
-    def __init__(self, status: int, message: str, details=None):
-        super().__init__(message); self.status, self.details = status, details or []
+    """A refusal, with a reason. `code` and `data` make that reason readable in another language.
+
+    The message stays the whole sentence in English and stays the thing that is sent: it is what an
+    agent gets, what a `curl` gets, and what the screen falls back to for anything it does not
+    recognise. `code` is a stable name for *which* refusal this is, and `data` the values inside it.
+
+    They are separate because half these sentences interpolate — `node {nid} exists` — so a code alone
+    would leave the screen unable to say which node. And a translation must be able to put the value
+    somewhere else in the sentence, which slicing the English apart would never allow.
+
+    Only the refusals a person actually meets carry one. The rest are for agents and for `curl`, which
+    read English, and inventing a code for each of the seventy-seven would be a dictionary nobody
+    reads. check/i18n-check.mjs holds the two halves together: a code emitted here with no string on
+    the screen is an error that stays English forever, and it fails on that.
+    """
+
+    def __init__(self, status: int, message: str, details=None, *, code: str | None = None, data=None):
+        super().__init__(message)
+        self.status, self.details = status, details or []
+        self.code, self.data = code, data or {}
 
 
 def _git(root: Path, *args, check=True) -> str:
@@ -118,6 +136,26 @@ def _git(root: Path, *args, check=True) -> str:
 def head(root: Path) -> str | None:
     try: return _git(root, "rev-parse", "HEAD")
     except WriteError: return None
+
+
+def _dirty(root) -> str:
+    """The uncommitted paths in the data repository, as one short line, or "" when it is clean.
+
+    Lives here rather than in server.py because the refusal that reports it is raised here, and a
+    second copy over there would be the two drifting apart. The screen's read-only banner and this
+    refusal now say the same thing because they are the same function.
+
+    Not `.stdout.strip()`: porcelain puts two status columns and a space before the path, so the path
+    begins at index 3 — and stripping the whole output eats the leading space of the *first* line
+    only. Every path after it survived; the first one always arrived a character short, and with one
+    file dirty, which is the usual case, the screen named a file that does not exist.
+    """
+    out = subprocess.run(["git", "-C", str(root), "status", "--porcelain"],
+                         capture_output=True, text=True, timeout=10).stdout
+    if not out.strip(): return ""
+    names = [l[3:].strip() for l in out.splitlines() if len(l) > 3]
+    head = ", ".join(names[:3])
+    return head + (f" and {len(names) - 3} more" if len(names) > 3 else "")
 
 
 def _restore(root: Path):
@@ -200,8 +238,11 @@ class Writer:
         nid = (given or "").strip()
         if nid:
             if not ID_RE.match(nid): raise WriteError(400, "id must be ASCII kebab-case")
-            if (why := name_too_long(nid, suffix=".md")): raise WriteError(400, f"id: {why}")
-            if self.store.node(nid): raise WriteError(409, f"node {nid} exists")
+            if (why := name_too_long(nid, suffix=".md")):
+                raise WriteError(400, f"id: {why}", code="name_too_long",
+                                 data={"field": "id", "n": len(nid.encode()) + 3, "max": NAME_MAX})
+            if self.store.node(nid):
+                raise WriteError(409, f"node {nid} exists", code="id_taken", data={"id": nid})
             return nid, False
         # **Do not ask a model a question the name already answers.** The reason an LLM is here at
         # all is that a non-Latin name cannot be slugged by a regex — it yields "" or, worse,
@@ -211,7 +252,8 @@ class Writer:
         slug = slug_id(name)
         if slug and (why := name_too_long(slug, suffix=".md")):
             # The name is the caller's, so the refusal names the name and not the slug it made.
-            raise WriteError(400, f"the name {name!r} gives an id of {len(slug)} characters — {why}")
+            raise WriteError(400, f"the name {name!r} gives an id of {len(slug)} characters — {why}",
+                             code="name_too_long", data={"field": "name", "n": len(slug) + 3, "max": NAME_MAX})
         if slug:
             if not self.store.node(slug): return slug, False
             # **The collision is refused before any model is asked, configured or not.** Asking one
@@ -222,9 +264,11 @@ class Writer:
             # The deeper reason is that a model cannot solve this. The name collides, so there is no
             # id for it to find — only a disguise for one. The person has called a thing what another
             # thing is already called, and only they can settle that.
-            raise WriteError(409, f"the name {name!r} gives the id {slug}, which is taken — choose another name, or supply an id")
+            raise WriteError(409, f"the name {name!r} gives the id {slug}, which is taken — choose another name, or supply an id",
+                             code="name_taken", data={"name": name, "id": slug})
         if not (self.suggest_id_configured and self.suggest_id_configured()):
-            raise WriteError(503, "id is required — this name gives none on its own and no LLM is configured to translate it (ONTOLOGY_LLM_*)")
+            raise WriteError(503, "id is required — this name gives none on its own and no LLM is configured to translate it (ONTOLOGY_LLM_*)",
+                             code="no_llm", data={"field": "id"})
         taken = [n["id"] for n in self.store.nodes()]
         nid = (self.suggest_id(name=name, kind=kind, one_liner=one_liner, region=region, taken=taken) or "").strip()
         if not nid or not ID_RE.match(nid):
@@ -251,7 +295,7 @@ class Writer:
         fallback = str((self.store.vocab().get("default_kind") or "")).strip()
         if fallback: return fallback, True
         raise WriteError(503, "kind is required — no LLM is configured to decide one (ONTOLOGY_LLM_*), "
-                              "and vocab.yaml declares no default_kind")
+                              "and vocab.yaml declares no default_kind", code="no_llm", data={"field": "kind"})
 
     # ---- the one write path ----
     def entity_path(self, region: str, eid: str) -> Path:
@@ -285,12 +329,18 @@ class Writer:
     def transact(self, message: str, actor: str, mutate) -> dict:
         with _lock, repo_lock(self.root):
             if not (self.root / ".git").exists(): raise WriteError(500, "data directory is not a git repository")
-            if _git(self.root, "status", "--porcelain"): raise WriteError(409, "working tree is dirty — someone edited the repository by hand; commit or revert it first")
+            if (dirty := _dirty(self.root)):
+                raise WriteError(409, "working tree is dirty — someone edited the repository by hand; commit or revert it first",
+                                 code="tree_dirty", data={"files": dirty})
             try:
                 mutate()
                 sync_region_node_lists(self.store); regenerate(self.store)
                 res = validate(self.store)
-                if not res["ok"]: raise WriteError(422, "validation failed — nothing was written", res["errors"])
+                if not res["ok"]:
+                    # The details stay English: they are 52 different diagnostics for someone fixing
+                    # data, and a dictionary of those is one nobody would read or keep current.
+                    raise WriteError(422, "validation failed — nothing was written", res["errors"],
+                                     code="validation_failed", data={"n": len(res["errors"])})
                 _git(self.root, "add", "-A")
                 if not _git(self.root, "status", "--porcelain"): raise WriteError(200, "no change")
                 _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@iris.local", "commit", "-q", "-m", message)
@@ -327,7 +377,8 @@ class Writer:
     def create_node(self, body: dict, actor: str) -> dict:
         region = body.get("region")
         if not region: raise WriteError(400, "region is required — every Data area lives in a Region (core-nodes/ was retired 2026-09-08)")
-        if not (self.root / "regions" / region).is_dir(): raise WriteError(400, f"region {region} does not exist")   # SPEC-v2 §1.1 — an area exists because nodes/ does
+        if not (self.root / "regions" / region).is_dir():   # SPEC-v2 §1.1 — an area exists because nodes/ does
+            raise WriteError(400, f"region {region} does not exist", code="region_missing", data={"region": region})
         holds = body.get("holds") or "content"
         if holds not in ("content", "pointers"): raise WriteError(400, "holds must be content | pointers")
         files = body.get("files") or []                      # [{name, description, content}] — pointer files for a pointer node
@@ -342,7 +393,7 @@ class Writer:
         nid, id_generated = self._resolve_id(body.get("id"), name=body["name"], kind=kind,
                                              one_liner=body["one_liner"], region=region)
         base = self.entity_path(region, nid)
-        if base.exists(): raise WriteError(409, f"entity {nid} exists")
+        if base.exists(): raise WriteError(409, f"entity {nid} exists", code="id_taken", data={"id": nid})
         new_edges = body.get("edges") or []          # a node must relate to something — create it with its first edge(s)
         for e in new_edges:
             for k in ("from", "rel", "to"):
@@ -471,7 +522,8 @@ class Writer:
         if blockers:
             raise WriteError(409, f"{nid} holds {', '.join(blockers)} — "
                                   f"{'these are nodes' if len(blockers) > 1 else 'that is a node'}, not a document. "
-                                  f"Move or delete {'them' if len(blockers) > 1 else 'it'} first")
+                                  f"Move or delete {'them' if len(blockers) > 1 else 'it'} first",
+                             code="holds_children", data={"id": nid, "n": len(blockers), "held": ", ".join(blockers)})
         gone = {nid, *kids}
         edges = self.store.edges(); refs = [e for e in edges if e["from"] in gone or e["to"] in gone]
         by_id = {x["id"]: x for x in self.store.nodes()}
@@ -498,7 +550,9 @@ class Writer:
         n = self.store.node(nid)
         if not n: raise WriteError(404, f"node {nid} not found")
         if not re.fullmatch(r"[a-z0-9][a-z0-9._-]*\.md", name) or name == "INDEX.md": raise WriteError(400, "file name must be <ascii-kebab>.md and not INDEX.md")
-        if (why := name_too_long(name)): raise WriteError(400, f"file name: {why}")
+        if (why := name_too_long(name)):
+            raise WriteError(400, f"file name: {why}", code="name_too_long",
+                             data={"field": "file_name", "n": len(name.encode()), "max": NAME_MAX})
         if "content" not in body: raise WriteError(400, "content is required")
         desc = (body.get("description") or "").strip()
         existing = next((f["description"] for f in n["files"] if f["name"] == name), None)
@@ -506,7 +560,8 @@ class Writer:
         generated = False
         if not desc and existing is None:                       # a new file with no description
             if not (self.describe_configured and self.describe_configured()):
-                raise WriteError(503, "description is required — no LLM is configured to write one (ONTOLOGY_LLM_*)")
+                raise WriteError(503, "description is required — no LLM is configured to write one (ONTOLOGY_LLM_*)",
+                                 code="no_llm", data={"field": "description"})
             desc = (self.describe(name, content) or "").strip()
             if not desc: raise WriteError(422, "description could not be generated — nothing could be drawn from the body. Supply one, or write the body")
             generated = True
@@ -555,7 +610,9 @@ class Writer:
         filled, so **both are required**."""
         src = str(body.get("source") or "").strip()
         if not re.fullmatch(r"[a-z][a-z0-9-]*", src or ""): raise WriteError(400, "source must be lowercase ascii-kebab (it is the area directory name)")
-        if (why := name_too_long(src)): raise WriteError(400, f"source: {why}")
+        if (why := name_too_long(src)):
+            raise WriteError(400, f"source: {why}", code="name_too_long",
+                             data={"field": "source", "n": len(src.encode()), "max": NAME_MAX})
         if (self.root / "regions" / src).exists(): raise WriteError(409, f"region {src} exists")
         rep = body.get("representative") or {}
         for k in ("name", "one_liner", "use_when"):

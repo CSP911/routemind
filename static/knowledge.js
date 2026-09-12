@@ -61,7 +61,24 @@
     if (!res.ok) {
       // The reason a write was refused lives in `details[]`; `error` is only the headline. Showing the
       // headline alone told a person "validation failed" and nothing about what to fix.
-      const head = data.detail || data.error || `HTTP ${res.status}`;
+      //
+      // A refusal a person can actually meet also carries `reason` — a stable name for which refusal
+      // it is — and `values`, what is inside it. Those get said in the reader's language; everything
+      // else falls through to the server's English sentence, which is still sent and is still the
+      // whole answer. That fallback is the point: the API stays one language, agents keep reading
+      // exactly what they read before, and a reason this screen has never heard of degrades to a
+      // correct English sentence rather than to a dotted identifier or a blank.
+      const key = data.reason ? `knowledge.err.${data.reason}` : null;
+      const known = key && window.IRISI18N?.t(key) !== key;
+      let vals = data.values || {};
+      // `field` names which field was refused, and it arrives as a token rather than as an English
+      // word for exactly this reason: dropping "file name" into the middle of a Korean sentence is a
+      // half-translated sentence, which reads worse than an English one.
+      if (vals.field) {
+        const fk = `knowledge.errfield.${vals.field}`;
+        if (window.IRISI18N?.t(fk) !== fk) vals = { ...vals, field: t(fk) };
+      }
+      const head = known ? tv(key, vals) : (data.detail || data.error || `HTTP ${res.status}`);
       const why = Array.isArray(data.details) ? data.details.filter(Boolean) : [];
       const error = new Error(why.length ? `${head}\n${why.map((d) => `· ${d}`).join("\n")}` : head);
       error.status = res.status;

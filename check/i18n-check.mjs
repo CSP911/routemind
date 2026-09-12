@@ -100,6 +100,37 @@ if (unknown.length) {
     `as their own identifier:\n  ` + unknown.join("\n  "));
 }
 
+// Every refusal the API names, against a string the screen can say it with.
+//
+// These keys are built at runtime — `knowledge.err.${data.reason}` — so the scan above cannot see
+// them, and a reason with no string is invisible in exactly the way the whole error path is: it
+// still renders, correctly, in English, on a screen the reader set to something else. The two halves
+// are held together here or not at all.
+//
+// The reverse is checked too. A `knowledge.err.*` string with no refusal behind it is one nobody will
+// ever be shown, which usually means the code was renamed on one side only.
+const py = ["ontology/service/write.py", "ontology/service/write_service.py", "web/app.py"]
+  .map((f) => readFileSync(new URL("../" + f, import.meta.url), "utf8")).join("\n");
+const reasons = new Set([...py.matchAll(/\b(?:code|reason)=\"([a-z_]+)\"/g)].map((m) => m[1]));
+const fields = new Set([...py.matchAll(/\"field\":\s*\"([a-z_]+)\"/g)].map((m) => m[1]));
+const missingReasons = [...reasons].filter((r) => !base.has(`knowledge.err.${r}`)).sort();
+const missingFields = [...fields].filter((f) => !base.has(`knowledge.errfield.${f}`)).sort();
+const orphanErrs = [...base].filter((k) => k.startsWith("knowledge.err.") &&
+  !reasons.has(k.slice("knowledge.err.".length))).sort();
+if (missingReasons.length || missingFields.length || orphanErrs.length) {
+  bad = true;
+  if (missingReasons.length) console.log(`FAIL the API names ${missingReasons.length} refusal(s) the screen ` +
+    `has no string for — they stay English in every language:\n  ` +
+    missingReasons.map((r) => `${r}  →  add "knowledge.err.${r}"`).join("\n  "));
+  if (missingFields.length) console.log(`FAIL ${missingFields.length} field token(s) with no string — they ` +
+    `land as a bare token inside a translated sentence:\n  ` +
+    missingFields.map((f) => `${f}  →  add "knowledge.errfield.${f}"`).join("\n  "));
+  if (orphanErrs.length) console.log(`FAIL ${orphanErrs.length} error string(s) no refusal produces:\n  ` +
+    orphanErrs.join("\n  ") + `\n  Either the code was renamed, or these can go.`);
+} else {
+  console.log(`ok   ${reasons.size} refusals and ${fields.size} field names, every one translatable`);
+}
+
 // Text sitting in the HTML with no `data-i18n` on it. This is how a string escapes the whole system:
 // it renders, it looks right in English, and no dictionary has ever heard of it. The map legend —
 // CORE, AUTONOMOUS SYSTEM, DATA, ROUTING REQUEST, VRF — was five of them, found only by looking at a

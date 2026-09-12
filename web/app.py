@@ -82,15 +82,23 @@ class KnowledgeError(HTTPException):
     It subclasses HTTPException so that every `except HTTPException` already in this file still
     catches it, and the handler below wins because Starlette matches the most specific class first.
     """
-    def __init__(self, status_code: int, detail: str, details: list[str] | None = None):
+    def __init__(self, status_code: int, detail: str, details: list[str] | None = None,
+                 reason: str | None = None, values: dict[str, Any] | None = None):
         super().__init__(status_code=status_code, detail=detail)
         self.details = [str(d) for d in (details or []) if str(d).strip()]
+        # `detail` is the sentence and stays the whole answer. `reason` names which refusal this is
+        # and `values` holds what is inside it, so a screen can say the same thing in its own
+        # language — see WriteError in ontology/service/write.py. Both are optional and most
+        # refusals carry neither.
+        self.reason, self.values = reason, values or {}
 
 
 @app.exception_handler(KnowledgeError)
 async def _knowledge_error(request: Request, exc: KnowledgeError) -> JSONResponse:
     body: dict[str, Any] = {"detail": exc.detail}
     if exc.details: body["details"] = exc.details
+    if exc.reason: body["reason"] = exc.reason
+    if exc.values: body["values"] = exc.values
     return JSONResponse(status_code=exc.status_code, content=body)
 
 
@@ -130,13 +138,18 @@ def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = N
     try:
         with _iris_playbook_urlopen(proxy_request, timeout=180) as response: raw = response.read()
     except _IrisPlaybookHTTPError as exc:
-        detail, details = None, []
+        detail, details, reason, values = None, [], None, None
         try:
             answer = _iris_playbook_json.loads(exc.read().decode("utf-8"))
             detail = answer.get("error")
             # The reasons, not just the headline. Dropping these left every refused write reading
             # "validation failed — nothing was written", which is exactly as useful as silence.
             if isinstance(answer.get("details"), list): details = answer["details"]
+            # Carried through untouched, and not interpreted here. This layer has no opinion about
+            # what a refusal means; it only has to not lose it on the way past. Deciding here which
+            # reasons are worth forwarding is how the screen ends up unable to translate one.
+            reason = answer.get("reason") or None
+            if isinstance(answer.get("values"), dict): values = answer["values"]
         except Exception: pass
         # The API's own 4xx are answers, not transport failures: "no such fragment" is a 404 and "already
         # exists" is a 409. Collapsing them into 502 makes the status line lie while the sentence tells the
@@ -148,7 +161,8 @@ def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = N
         # this", and the only status it does not mean is its own 500. 501 is one it means as well — "this
         # install has no overlay store" — and a consumer deciding whether overlays exist branches on it.
         status = exc.code if (400 <= exc.code < 500 or exc.code in (501, 503)) else 502
-        raise KnowledgeError(status, detail or f"RouteMind API returned HTTP {exc.code}.", details) from exc
+        raise KnowledgeError(status, detail or f"RouteMind API returned HTTP {exc.code}.", details,
+                             reason=reason, values=values) from exc
     except (_IrisPlaybookURLError, TimeoutError) as exc:
         raise _IrisPlaybookHTTPException(status_code=503, detail=f"RouteMind API unavailable: {exc}") from exc
     try: data = _iris_playbook_json.loads(raw.decode("utf-8"))
@@ -633,7 +647,8 @@ def api_knowledge_delete_node(node_id: str, request: Request) -> dict[str, Any]:
     record = _ontology_proxy("GET", "/v1/nodes/" + quote(node_id, safe=""), actor)
     held = [str(e.get("id")) for e in (record.get("entries") or []) if e.get("type") in ("dr", "empty")]
     if held:
-        raise KnowledgeError(409, f"{node_id} holds {len(held)} node(s) — delete or move them out first.", held)
+        raise KnowledgeError(409, f"{node_id} holds {len(held)} node(s) — delete or move them out first.", held,
+                             reason="holds_children", values={"id": node_id, "n": len(held), "held": ", ".join(held)})
     return _ontology_proxy("DELETE", "/v1/nodes/" + quote(node_id, safe=""), actor)
 
 

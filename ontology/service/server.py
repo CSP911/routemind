@@ -23,7 +23,7 @@ from urllib.parse import urlparse, unquote
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from service.store import Store                     # noqa: E402
 from service.validate import validate               # noqa: E402
-from service.write import Writer, WriteError, publish, head   # noqa: E402
+from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E402
 from service.service_store import ServiceStore              # noqa: E402
 from service.validate_service import validate_services      # noqa: E402
 from service.write_service import ServiceWriter             # noqa: E402
@@ -659,7 +659,18 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*"); self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Actor"); self.end_headers(); self.wfile.write(body)
 
-    def _err(self, code, msg, details=None): self._send(code, {"error": msg, **({"details": details} if details else {})})
+    def _err(self, status, msg, details=None, reason=None, data=None):
+        """`error` is the sentence; `reason` and `values` are the same refusal as something a screen
+        can translate. The sentence is always sent and is always the whole answer on its own — an
+        agent, a `curl` and any client that does not know a reason read exactly what they read
+        before. Only refusals a person meets carry one; see WriteError in write.py.
+
+        The parameter was called `code`, which was the HTTP status. Adding a second, different thing
+        also called a code to the same function is how the wrong one ends up in the wrong field."""
+        self._send(status, {"error": msg,
+                            **({"details": details} if details else {}),
+                            **({"reason": reason} if reason else {}),
+                            **({"values": data} if data else {})})
 
     def _body(self):
         n = int(self.headers.get("Content-Length") or 0)
@@ -715,7 +726,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._write(method, parts)
         except WriteError as e:
             if e.status == 200: return self._send(200, {"ok": True, "message": str(e)})
-            return self._err(e.status, str(e), e.details)
+            return self._err(e.status, str(e), e.details, reason=e.code, data=e.data)
         except FileNotFoundError as e: return self._err(404, str(e))
         except Exception:
             traceback.print_exc(); return self._err(500, "internal error")
@@ -974,21 +985,6 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[0] == "services" and parts[2] == "fragment" and method == "PUT":
             return self._send(200, writer.put_fragment(parts[1], parts[3], body.get("content", "")))
         return self._err(405, "method not allowed for this path")
-
-
-def _dirty(root) -> str:
-    """The uncommitted paths in the data repository, as one short line, or "" when it is clean."""
-    import subprocess
-    # Not `.stdout.strip()`: porcelain puts two status columns and a space before the path, so the
-    # path begins at index 3 — and stripping the whole output eats the leading space of the *first*
-    # line only. Every path after it survived; the first one always arrived a character short, and
-    # with one file dirty, which is the usual case, the screen named a file that does not exist.
-    out = subprocess.run(["git", "-C", str(root), "status", "--porcelain"],
-                         capture_output=True, text=True, timeout=10).stdout
-    if not out.strip(): return ""
-    names = [l[3:].strip() for l in out.splitlines() if len(l) > 3]
-    head = ", ".join(names[:3])
-    return head + (f" and {len(names) - 3} more" if len(names) > 3 else "")
 
 
 def store_published():

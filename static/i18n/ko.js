@@ -127,6 +127,20 @@ window.IRISI18N_DICTS.ko = {
   "knowledge.emptyEntity": "아직 아무것도 없습니다",
   "knowledge.emptyNode": "비어 있음",
   "knowledge.emptyPending": "심사할 것이 없습니다 — 큐레이터가 조용합니다.",
+  "knowledge.err.holds_children": "{id} 안에 노드 {n}개가 있습니다 — {held}. 먼저 옮기거나 지우세요. 품은 것을 따라가는 것은 문서뿐입니다.",
+  "knowledge.err.id_taken": "{id} — 이미 있는 주소입니다. 주소는 영구적이라 다시 쓸 수 없으니 다른 것으로 하세요.",
+  "knowledge.err.name_taken": "이름 “{name}”에서 나온 주소 {id} — 이미 쓰이고 있습니다. 이름을 바꾸거나, 주소를 직접 적으세요.",
+  "knowledge.err.name_too_long": "{field}: {n}바이트라 파일 이름이 되지 못합니다. 경로 한 조각의 한계는 {max}바이트입니다.",
+  "knowledge.err.no_llm": "LLM이 설정되어 있지 않아 직접 써야 하는 항목입니다: {field}. 초안을 받으려면 .env에 ONTOLOGY_LLM_*를 넣으세요.",
+  "knowledge.err.region_missing": "{region} — 그런 이름의 영역이 없습니다.",
+  "knowledge.err.tree_dirty": "아무것도 쓰이지 않았습니다. 데이터 저장소에 커밋되지 않은 변경이 있습니다 ({files}). 먼저 커밋하거나 되돌리세요.",
+  "knowledge.err.validation_failed": "검증에서 거절되어 아무것도 쓰이지 않았습니다. 문제 {n}건:",
+  "knowledge.errfield.description": "설명",
+  "knowledge.errfield.file_name": "파일 이름",
+  "knowledge.errfield.id": "주소",
+  "knowledge.errfield.kind": "종류",
+  "knowledge.errfield.name": "이름",
+  "knowledge.errfield.source": "영역 이름",
   "knowledge.expandsIn": "다른 곳에서 이어집니다",
   "knowledge.expandsInNote": "이 노드 아래에 있는 것은 온톨로지에 없습니다. {where}가 품고 있습니다 — 여기서 못 찾았다고 없는 것은 아닙니다.",
   "knowledge.externalNote": "이 출처는 온톨로지가 아니라 Pi의 근거 평면에 있습니다. 여기서는 고칠 수 없습니다.",
@@ -335,3 +349,10 @@ window.IRISI18N_DICTS.ko = {
   "knowledge.weight": "가중치",
   "knowledge.working": "처리 중…",
 };
+// 조사 주의 — a note for whoever writes the next Korean string.
+//
+// Korean particles agree with the last sound of the word before them: 는 after a vowel, 은 after a
+// consonant. An interpolated value can be either, and it can be Latin text where the rule is not even
+// settled, so "{id}는" is wrong half the time and "{id}은(는)" is a form nobody wants to read.
+// The fix is not a smarter formatter — it is writing sentences where a value is never followed by a
+// particle. A dash, a colon, or a noun of your own after it all work: "{id} — 이미 있는 주소입니다".

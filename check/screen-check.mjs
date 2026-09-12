@@ -28,7 +28,7 @@ globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
 const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions"]) byId[id]=new N(id);
 let opens=0; byId.knRawDialog.open=false; byId.knRawDialog.showModal=function(){this.open=true;opens++;}; byId.knRawDialog.close=function(){this.open=false;};
 globalThis.document={readyState:"complete",visibilityState:"visible",getElementById:(i)=>byId[i],createElement:(t)=>new N(t),createElementNS:(_,t)=>new N(t),addEventListener(){}};
-globalThis.__nav=[]; globalThis.window={addEventListener(){},IRISI18N:{t:(k)=>dict[k] ?? k},location:{search:"",set href(v){globalThis.__nav.push(v);},get href(){return "";}}}; globalThis.navigator={}; globalThis.location={origin:BASE}; globalThis.confirm=()=>false; globalThis.setInterval=()=>1;
+globalThis.__nav=[]; globalThis.window={addEventListener(){},IRISI18N:{t:(k,v)=>String(dict[k] ?? k).replace(/\{(\w+)\}/g,(_,n)=>(v&&v[n]!=null?v[n]:`{${n}}`))},location:{search:"",set href(v){globalThis.__nav.push(v);},get href(){return "";}}}; globalThis.navigator={}; globalThis.location={origin:BASE}; globalThis.confirm=()=>false; globalThis.setInterval=()=>1;
 // setTimeout is left real. The IRIS harness stubs it away to stop the revision watcher, but this
 // check talks to a live server and node's own fetch schedules its socket timeouts through it — a
 // no-op setTimeout takes undici down inside the first request.
@@ -252,6 +252,33 @@ else {
       before.areas === after.areas && before.nodes === after.nodes);
     byId.knEdit.replaceChildren();
     state.picked.clear();
+  }
+}
+
+// A refusal that carries a `reason` has to reach the card as the *screen's* sentence, not the API's.
+// Everything else about this path can be right — the server naming the refusal, the proxy forwarding
+// it, the dictionary holding a string for it — and the screen still print the English one, because
+// the three lines that choose between them are the only place the two ever meet. The harness reads
+// the English dictionary, so what this distinguishes is not language but *which sentence*: the API
+// says "node corp-card exists"; `knowledge.err.id_taken` says "corp-card already exists. An address
+// is permanent…". Nothing else would tell those apart.
+{
+  const held = (await (await realFetch(BASE + "/api/knowledge/regions")).json()).regions || [];
+  const area = held.length ? String(held[0].fetch).split("/").pop() : null;
+  const entries = area ? ((await (await realFetch(BASE + `/api/knowledge/regions/${area}`)).json()).entries || []) : [];
+  const taken = entries.map((e) => e.id).find(Boolean);
+  if (!taken) {
+    results.push("--   no entity here to collide with; the refusal path is unchecked");
+  } else {
+    const res = await realFetch(BASE + "/api/knowledge/nodes", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: taken, name: "Screen Check", region: area, one_liner: "x", content: "y" }),
+    });
+    const body = await res.json();
+    check("a refusal the API names comes back named", !res.ok && body.reason === "id_taken");
+    check("  with the values the sentence needs", (body.values || {}).id === taken);
+    const own = globalThis.window.IRISI18N.t("knowledge.err.id_taken", body.values || {});
+    check("  and the screen has its own sentence for it", own.includes(taken) && own !== body.detail);
   }
 }
 
