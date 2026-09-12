@@ -267,6 +267,15 @@ body.kn-dragging { user-select: none; }
 .kn-fact-n { font-size: 11px; color: var(--muted); }
 .kn-uncovered { display: grid; gap: 7px; padding: 11px 13px; border: 1px solid var(--orange);
   border-left-width: 3px; border-radius: 10px; background: var(--panel2); }
+/* A row of chips: an address, an id, a sentence that is not covered. Five places build this markup
+   and none of it was styled — `.kn-chip-kind` is a different class, and the rule below set a
+   border-colour on a border that did not exist. So the chips rendered as bare text with nothing
+   between them, and two addresses read as one: `/v1/regions/expense` beside `/v1/regions/payroll`
+   came out as `/v1/regions/expense/v1/regions/payroll`. In a product whose every table ends with
+   "use the address exactly as printed", inventing an address in the UI is the wrong bug to have. */
+.kn-chiprow { display: flex; flex-wrap: wrap; gap: 6px; }
+.kn-chip { display: inline-block; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--line);
+  font: 12px var(--kn-mono); color: var(--muted); background: var(--panel2); overflow-wrap: anywhere; }
 .kn-uncovered .kn-chip { color: var(--text); border-color: var(--orange); cursor: default; }
 /* Choosing areas for a run — a second, smaller target on a device, because selecting is not opening. */
 .kn-pick { cursor: pointer; }
