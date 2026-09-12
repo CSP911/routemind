@@ -167,7 +167,7 @@ def area(api: Api, path: str) -> str:
     head = f"{d.get('key') or path} — {d.get('advertises') or ''}".strip(" —")
     lead = (f"When to be here: {d['use_when']}" if d.get("use_when") else "") or "What this area holds:"
     return _table(rows, head, lead,
-                  "This lists what this area holds. It is not a claim about the rest of Knowledge —\n"
+                  "This lists what this area holds. It is not a claim about the rest of RouteMind —\n"
                   "if what you need is not here, go back to /v1/regions.")
 
 
