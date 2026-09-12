@@ -65,6 +65,17 @@ An overlay names addresses in a tree that keeps changing. Nothing has ever teste
 | F1 | An overlay whose member area is deleted afterwards. Reading it must not crash, and must not claim the deleted area still holds things |
 | F2 | An overlay's rows are read at read time, not frozen at create time |
 
+## G — the repository edited by hand
+
+The README tells you to edit `vocab.yaml` and commit, so a dirty working tree is a state real people
+reach — not an error case.
+
+| | What it proves |
+|---|---|
+| G1 | Writes are refused there, and the refusal says why rather than failing somewhere further in |
+| G2 | The screen is told **which** files, whole. It named the first one a character short: porcelain puts the path at column 3, and stripping the whole output ate the leading space of the first line only — so with one file dirty, the usual case, it named a file that does not exist |
+| G3 | Reverting makes it writable again, with nothing left over |
+
 ## Deliberately not here
 
 **D — moves and containment** (`write-paths.sh` already moves a node within an area, across areas,

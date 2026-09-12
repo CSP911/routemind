@@ -979,9 +979,13 @@ class Handler(BaseHTTPRequestHandler):
 def _dirty(root) -> str:
     """The uncommitted paths in the data repository, as one short line, or "" when it is clean."""
     import subprocess
+    # Not `.stdout.strip()`: porcelain puts two status columns and a space before the path, so the
+    # path begins at index 3 — and stripping the whole output eats the leading space of the *first*
+    # line only. Every path after it survived; the first one always arrived a character short, and
+    # with one file dirty, which is the usual case, the screen named a file that does not exist.
     out = subprocess.run(["git", "-C", str(root), "status", "--porcelain"],
-                         capture_output=True, text=True, timeout=10).stdout.strip()
-    if not out: return ""
+                         capture_output=True, text=True, timeout=10).stdout
+    if not out.strip(): return ""
     names = [l[3:].strip() for l in out.splitlines() if len(l) > 3]
     head = ", ".join(names[:3])
     return head + (f" and {len(names) - 3} more" if len(names) > 3 else "")

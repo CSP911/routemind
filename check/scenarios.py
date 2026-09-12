@@ -238,4 +238,30 @@ if check("F  an overlay is created over an area", st in (200, 201), json.dumps(o
     else:
         note("F1", f"the overlay answers {st} once its only member is gone")
 
+# ── G. the repository edited by hand ──────────────────────────────────────────
+# README tells you to edit `vocab.yaml` and commit, so a dirty working tree is a state real people
+# reach. Writes are refused there, and the screen names the files — which it did a character short:
+# the porcelain path starts at column 3, and stripping the whole output ate the leading space of the
+# first line only, so with one file dirty, the usual case, it named a file that does not exist.
+# F deleted the last area, and a write into an area that does not exist is refused before the dirty
+# check ever runs — so there has to be somewhere for the blocked write to aim at.
+make_area("delta", "Delta", "a delta question", "the delta area")
+open(os.path.join(repo, "vocab.yaml"), "a", encoding="utf-8").write("\n# edited by hand\n")
+st, body = call("POST", "/nodes", {"id": "zz-blocked", "name": "Blocked", "kind": "system",
+                                   "region": "delta", "one_liner": "must not be created"})
+check("G1 a hand-edited repository refuses writes", st == 409, str(st))
+check("G1   and says why, in words", "dirty" in json.dumps(body).lower(), json.dumps(body)[:120])
+import urllib.request as _u2
+with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: health = json.load(r)
+check("G2 it names the file, whole", health.get("uncommitted") == "vocab.yaml",
+      repr(health.get("uncommitted")))
+open(os.path.join(repo, "CORE.md"), "a", encoding="utf-8").write("\n")
+with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: health = json.load(r)
+check("G2   and every file when there are several", health.get("uncommitted") == "CORE.md, vocab.yaml",
+      repr(health.get("uncommitted")))
+subprocess.run(["git", "-C", repo, "checkout", "--", "vocab.yaml", "CORE.md"], check=True)
+with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: health = json.load(r)
+check("G3 reverting makes it writable again", health.get("writable") is True and not health.get("uncommitted"),
+      repr(health.get("uncommitted")))
+
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)
