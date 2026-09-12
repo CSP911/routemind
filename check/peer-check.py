@@ -264,6 +264,70 @@ check("with the link up, absence is claimed over both backbones",
       "BEE" in (hop0.get("absence") or "") and "may say something is absent" in (hop0.get("absence") or ""),
       (hop0.get("absence") or "")[:80])
 
+# ── advertising and withdrawing while everything is running ───────────────────
+# Everything above is a steady state that was arranged before anything started. This is the part that
+# makes it dynamic routing rather than a static file: an area that begins to advertise appears at the
+# far end without anyone restarting anything, and one that stops advertising **goes**, including the
+# documents behind it. A withdraw that only hides the row would leave every address still readable —
+# which is not a withdraw, it is a missing menu item.
+def set_export(where, area, line):
+    """Give an area an export line, or take it away. Written the way a person's edit lands: the
+    frontmatter, then the derived file, then a commit — the same three steps the API does."""
+    for f in sorted(os.listdir(os.path.join(where, "regions", area))):
+        q = os.path.join(where, "regions", area, f)
+        text = open(q, encoding="utf-8").read()
+        if "\nrole: representative\n" not in text or "\nparent:" in text: continue
+        out = [l for l in text.splitlines(True) if not l.startswith("use_when_export:")]
+        if line:
+            at = next(i for i, l in enumerate(out) if l.strip() == "role: representative")
+            out.insert(at + 1, f"use_when_export: {line}\n")
+        open(q, "w", encoding="utf-8").write("".join(out))
+        break
+    regenerate(Store(where))
+    subprocess.run(["git", "-C", where, "add", "-A"], check=True)
+    subprocess.run(["git", "-C", where, "-c", "user.name=peer", "-c", "user.email=p@l",
+                    "commit", "-qm", f"{'advertise' if line else 'withdraw'} {area}"], check=True)
+
+
+def remote_at_a():
+    return {str(r["source"]).replace("_", "-"): r
+            for r in (at(PORT, "/regions")[1].get("regions") or []) if r.get("peer")}
+
+
+SECOND = next((a for a in areas_b if a != SHARED_B), None)
+if SECOND:
+    check("before it advertises, B's second area is not at A", SECOND not in remote_at_a())
+    set_export(repo_b, SECOND, "the second area, now speaking to the other office")
+    time.sleep(0.4)
+    now = remote_at_a()
+    check("an area that starts advertising reaches A with no restart", SECOND in now,
+          json.dumps(sorted(now)))
+    check("  carrying the line it just wrote",
+          SECOND in now and "second area" in (now[SECOND]["use_when"] or ""))
+    # It is not enough for the row to appear: what it points at has to be readable, or the
+    # advertisement is a promise the link cannot keep.
+    if SECOND in now:
+        check("  and what it points at is readable straight away",
+              at(PORT, now[SECOND]["fetch"][3:])[0] == 200)
+
+    # Withdraw. The row goes — and so does the reach. An export surface built from the shared set
+    # cannot serve what is no longer in it, which is what makes this a real withdrawal and not a
+    # hidden menu entry.
+    gone_fetch = now.get(SECOND, {}).get("fetch")
+    set_export(repo_b, SECOND, None)
+    time.sleep(0.4)
+    after = remote_at_a()
+    check("an area that stops advertising leaves A's hop 0", SECOND not in after,
+          json.dumps(sorted(after)))
+    check("  and the area it shared is still there at B, locally",
+          at(PORT_B, f"/regions/{SECOND}")[0] == 200)
+    if gone_fetch:
+        st, body = at(PORT, gone_fetch[3:])
+        check("  but is no longer readable across the link", st == 404, str(st))
+        check("    and that 404 is B saying no, not a link that failed",
+              body.get("reason") == "peer_said_no", json.dumps(body)[:90])
+    check("  while everything B never stopped advertising is untouched", SHARED_B in after)
+
 # ── and with it down ──────────────────────────────────────────────────────────
 # The whole design rests on "only hop 0 may say something is not here", and that is true because hop
 # 0 is the whole world. A link that cannot be read makes it false. There is no smaller honest claim.
@@ -287,6 +351,33 @@ if remote:
     check("a read across a dead link is not a 404", st != 404, str(st))
     check("  and says the peer could not be reached, not that it said no",
           err.get("reason") == "peer_unreachable", json.dumps(err)[:90])
+
+# ── and back up ───────────────────────────────────────────────────────────────
+# A link that comes back has to come back on its own. Nothing restarts A, nobody presses anything, and
+# the claim it stopped making has to return — a backbone that stayed cautious for ever after one blip
+# would be as wrong as one that never noticed, and the second failure is the harder one to see because
+# everything still works.
+procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
+                              env=env_b, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
+for _ in range(80):
+    try: urllib.request.urlopen(f"http://127.0.0.1:{PORT_B}/healthz", timeout=1); break
+    except Exception: time.sleep(0.25)
+time.sleep(0.5)
+st, back = at(PORT, "/regions")
+check("a link that comes back is used again, unprompted",
+      len([r for r in (back.get("regions") or []) if r.get("peer")]) == 1,
+      json.dumps([r.get("source") for r in (back.get("regions") or []) if r.get("peer")]))
+check("  and the link reads as up", all(l["reachable"] for l in (back.get("links") or [])))
+# The one that matters. Refusing to claim absence is right while a link is down and wrong once it is
+# back: a table that is whole again is the grounds for saying something is missing, and staying quiet
+# would leave every later answer weaker than the data supports.
+check("  and absence may be claimed over both backbones again",
+      "may say something is absent" in (back.get("absence") or "")
+      and "incomplete" not in (back.get("absence") or "").lower(),
+      (back.get("absence") or "")[:80])
+check("  and a read across it works again",
+      at(PORT, [r for r in back["regions"] if r.get("peer")][0]["fetch"][3:])[0] == 200
+      if any(r.get("peer") for r in back.get("regions") or []) else False)
 
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

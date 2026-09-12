@@ -211,5 +211,66 @@ st, hop2 = get(PORTS["alpha"], "/v1/regions")
 check("  while alpha still answers, with beta still reachable",
       st == 200 and len([r for r in hop2.get("regions") or [] if r.get("peer")]) == 1, str(st))
 
+# ── advertising through the exchange, and withdrawing again ───────────────────
+# The same transition as a direct link, one hop further. It is worth its own assertions because an
+# exchange holds a cache and a split-horizon rule between the two backbones, and either could turn a
+# withdrawal into something that stays visible — the failure that looks exactly like everything
+# working.
+def set_export(where, area, line):
+    for f in sorted(os.listdir(os.path.join(where, "regions", area))):
+        q = os.path.join(where, "regions", area, f)
+        text = open(q, encoding="utf-8").read()
+        if "\nrole: representative\n" not in text or "\nparent:" in text: continue
+        out = [l for l in text.splitlines(True) if not l.startswith("use_when_export:")]
+        if line:
+            at_i = next(i for i, l in enumerate(out) if l.strip() == "role: representative")
+            out.insert(at_i + 1, f"use_when_export: {line}\n")
+        open(q, "w", encoding="utf-8").write("".join(out))
+        break
+    regenerate(Store(where))
+    subprocess.run(["git", "-C", where, "add", "-A"], check=True)
+    subprocess.run(["git", "-C", where, "-c", "user.name=x", "-c", "user.email=x@l",
+                    "commit", "-qm", "flip"], check=True)
+
+
+def at_alpha():
+    return {str(r["source"]).replace("_", "-"): r
+            for r in (get(PORTS["alpha"], "/v1/regions")[1].get("regions") or []) if r.get("peer")}
+
+
+SECOND_B = next((a for a in areas_all if a != SHARE["beta"]), None)
+if SECOND_B:
+    check("before beta advertises it, alpha does not see it", SECOND_B not in at_alpha())
+    set_export(repos["beta"], SECOND_B, "beta's second area, now open to the others")
+    time.sleep(0.5)
+    now = at_alpha()
+    check("an area advertised at beta reaches alpha through the exchange", SECOND_B in now,
+          json.dumps(sorted(now)))
+    check("  still named as beta's, not the exchange's",
+          SECOND_B in now and now[SECOND_B].get("origin") == "beta",
+          (now.get(SECOND_B) or {}).get("origin"))
+    check("  and readable two hops away",
+          SECOND_B in now and get(PORTS["alpha"], now[SECOND_B]["fetch"])[0] == 200)
+    # And it must not come back to the one that sent it, cache or no cache. By **origin**, not by
+    # name: alpha shares an area with the same name, so a row called that is legitimately at beta —
+    # it is alpha's. Asserting on the name made split horizon look broken when it was working, which
+    # is a good illustration of why the two backbones in this check share different areas by default.
+    beta_sees = get(IX_PORT, "/v1/export/regions", TOKENS["beta"])[1].get("regions") or []
+    check("  and nothing of beta's own is offered back to beta",
+          all(r.get("origin") != "beta" for r in beta_sees),
+          json.dumps([(r.get("source"), r.get("origin")) for r in beta_sees]))
+
+    gone = now.get(SECOND_B, {}).get("fetch")
+    set_export(repos["beta"], SECOND_B, None)
+    time.sleep(0.5)
+    check("withdrawing it removes it from alpha", SECOND_B not in at_alpha())
+    if gone:
+        st, body = get(PORTS["alpha"], gone)
+        check("  and it stops being readable through the exchange", st == 404, str(st))
+        check("    as somebody saying no, not as a link that failed",
+              body.get("reason") == "peer_said_no", json.dumps(body)[:80])
+    check("  and what beta never stopped advertising is untouched",
+          SHARE["beta"] in at_alpha())
+
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

@@ -149,9 +149,18 @@ this picture must not make.
 
 ## Checks
 
-`./check/peer-check.py` — 36 assertions on two throwaway backbones linked both ways, including
-killing one mid-run to watch the survivor stop claiming absence. Mostly negative: things that exist,
-read fine locally, and must still come back 404 across the link.
+`./check/peer-check.py` — 49 assertions on two throwaway backbones linked both ways. Mostly negative:
+things that exist, read fine locally, and must still come back 404 across the link.
+
+Half of those are **steady states**; the other half are the transitions, which is what makes this
+dynamic routing rather than a config file that happens to be read over HTTP:
+
+| | |
+|---|---|
+| an area starts advertising | it reaches the other backbone with nothing restarted, and what it points at is readable straight away — a row that appears without its documents is a promise the link cannot keep |
+| an area stops advertising | the row goes **and so does the reach**. A withdrawal that only hid the row would leave every address still readable, which is a missing menu item, not a withdrawal. The 404 is the other backbone saying no, not a link that failed |
+| the link goes down | the rows it can no longer stand behind are dropped, and absence stops being claimed |
+| **the link comes back** | it is used again unprompted, and **absence may be claimed again**. A backbone that stayed cautious for ever after one blip would be as wrong as one that never noticed, and harder to see, because everything still works |
 
 ## An exchange, when there are more than two
 
@@ -198,8 +207,11 @@ The address carries the path too: `/v1/peers/ix/peers/branch/regions/payroll` re
 exchange, to the branch, its payroll*. Everything that reads an address peels **every** prefix, not
 one.
 
-`./check/exchange-check.py` — 22 assertions on three backbones and an exchange, including reading a
-document two backbones away and killing a member to watch the others carry on without it.
+`./check/exchange-check.py` — 31 assertions on three backbones and an exchange: reading a document two
+backbones away, killing a member to watch the others carry on, and the same advertise/withdraw
+transitions one hop further out. Those are worth repeating here because an exchange holds a cache and
+a split-horizon rule in between, and either could turn a withdrawal into something that stays
+visible — the failure that looks exactly like everything working.
 
 ## Not done
 
