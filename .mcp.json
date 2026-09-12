@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "knowledge": {
+      "command": "python3",
+      "args": [
+        "mcp/knowledge_mcp.py",
+        "--api", "http://localhost:8080/api/knowledge",
+        "--actor", "claude-code"
+      ]
+    }
+  }
+}
