@@ -78,12 +78,39 @@ Docker, with `docker compose`. That is all the service itself needs — the cont
 git. The checks that run at the end use the host's `curl` and `python3`, and the screen half also uses
 `node` if it is there; without those the install still comes up, it just verifies less.
 
-**On Windows**, run the install from WSL or Git Bash: `install.sh` and everything in `check/` are
-POSIX shell. The two containers are Linux either way, so the service itself is the same everywhere.
-The MCP server is the one piece that runs on your own machine rather than in a container, and it is
-stdlib-only python that works anywhere python does — but Windows spells the interpreter `python`, not
-`python3`, so use that in the client configs below (`python3` there is usually not a program at all;
-it is an alias that opens the Microsoft Store).
+### Where it runs
+
+macOS, Linux and Windows. The service is two Linux containers, so it is identical on every host
+Docker runs on; what differs is the handful of pieces that run on your own machine instead.
+
+| | macOS | Linux | Windows |
+|---|---|---|---|
+| The two containers | yes | yes | yes — Docker Desktop, WSL2 backend |
+| The map, in a browser | yes | yes | yes |
+| `mcp/knowledge_mcp.py` | yes | yes | yes, natively — no WSL needed |
+| `install.sh`, `check/*` | yes | yes | from WSL or Git Bash |
+
+The MCP server is one file, stdlib only, and runs on **any python 3.7 or newer** — checked against
+3.7, 3.8, 3.9, 3.11, 3.12 and 3.14. That includes Windows python, with no WSL and nothing to install.
+
+#### Windows, in particular
+
+Three things differ, and only the first one bites during normal use.
+
+1. **Write `python`, not `python3`,** in every MCP config below. On Windows `python3` is usually not
+   a program at all: it is an alias that opens the Microsoft Store. Give the script an absolute path
+   too, unless your client lets you set a working directory.
+2. **Run `install.sh` and anything in `check/` from WSL or Git Bash.** They are POSIX shell and there
+   is no PowerShell port. Docker Desktop itself is driven normally from either.
+3. **Let git give you the repository's own line endings.** `.gitattributes` pins them to LF, so a
+   plain `git clone` is right even with `core.autocrlf=true` set globally. Unpacking a zip made on
+   Windows, or overriding those attributes, turns `ontology/entrypoint.sh` into CRLF — and the
+   container then refuses to start with `no such file or directory` naming a file that is plainly
+   there, because the kernel read its shebang as `/bin/sh\r`.
+
+Under WSL, keep the clone inside the WSL filesystem rather than under `/mnt/c`. The ontology container
+runs as a fixed uid:gid and commits into `data/repo` through a bind mount, and a Windows-mounted path
+does not model POSIX ownership the way that needs.
 
 ### One command
 
@@ -206,6 +233,8 @@ docker compose up -d --build
 |---|---|---|
 | `./install.sh: Permission denied` | The tree arrived without its exec bits — a zip, or a share that does not carry them | `chmod +x install.sh check/*.sh check/*.py check/*.mjs`. The container's ENTRYPOINT no longer needs this: the Dockerfile chmods it during the build |
 | `FATAL: /data/repo is not writable by uid …`, then a restart loop | Docker invented the bind-mount path as root | Remove it, `mkdir -p data/repo data/publish data/overlays`, check `KNOWLEDGE_UID`/`KNOWLEDGE_GID` in `.env` against `id -u` / `id -g`, and start again |
+| `exec /app/entrypoint.sh: no such file or directory`, on a file that is plainly there | Its line endings are CRLF, so the kernel read the shebang as `/bin/sh\r`. A zip made on Windows, or `core.autocrlf` overriding `.gitattributes` | Re-clone with `git clone`, which honours the repository's `eol=lf`. To repair in place: `git add --renormalize . && git checkout -- .`, then `docker compose up -d --build` |
+| The MCP server dies at startup on Windows with `UnicodeEncodeError`, before any tool is called | An old copy from before this was fixed. Python uses the locale code page for a pipe, and cp1252/cp949/cp932 cannot encode `—` or `→` — both are in the area list sent with the `initialize` reply | Pull. If you must run an old copy, set `PYTHONUTF8=1` in the client's env |
 | `port is already allocated` | Something else holds 8080 | Set `WEB_PORT=9000` in `.env`, then `docker compose up -d` |
 | The map draws, but every write is refused **read-only** | `data/repo` has uncommitted changes — someone edited it by hand | Commit or revert them in `data/repo`, then `curl -X POST -H 'Content-Type: application/json' -d '{}' localhost:8080/api/knowledge/publish` |
 | A change to `static/` or `ontology/` does nothing | Both are `COPY`ed into the image, not bind-mounted | `docker compose up -d --build` |
