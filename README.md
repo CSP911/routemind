@@ -7,6 +7,9 @@ that structure as a wiring diagram, and one click shows you **the exact text an 
 The domain is not in this code. The vocabulary and the areas are data, and the data is your own git
 repository.
 
+![The RouteMind map: a backbone carrying five areas, two of them opened to show the nodes they hold,
+with the routing table each one hands an agent one button away.](docs/img/map.jpg)
+
 ---
 
 ## How it works
