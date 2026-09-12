@@ -8,7 +8,7 @@ Publication layout (the volume Pi mounts read-only, SPEC-v2 §5):
 Pi may read through `current/` (fixed root) or pin to REVISION; both never see a half-applied state.
 """
 from __future__ import annotations
-import os, re, shutil, subprocess, tempfile, threading
+import contextlib, os, re, shutil, subprocess, sys, tempfile, threading, time
 from pathlib import Path
 import yaml
 from .store import Store, set_frontmatter, FM_RE
@@ -21,6 +21,57 @@ from .derive import regenerate, write_node_index, sync_region_node_lists, EDITAB
 CONTENT_DECLARED = ("scope", "described_by")
 
 _lock = threading.Lock()
+
+try: import fcntl
+except ImportError: fcntl = None                # not POSIX; the containers are, so this only relaxes checks run elsewhere
+
+REPO_LOCK_WAIT = float(os.environ.get("ONTOLOGY_LOCK_WAIT") or 20.0)
+
+
+@contextlib.contextmanager
+def repo_lock(root: Path, wait: float = REPO_LOCK_WAIT):
+    """One writer per data directory, across processes.
+
+    `_lock` above is a threading lock, so it holds only inside one process — and the whole
+    transaction below is a sequence of git commands on a shared working tree. Two processes on one
+    data directory (`--scale ontology=2`, a second install pointed at the same mount, a stale
+    container left behind by a rebuild) tear each other apart, and none of the damage looks like a
+    race. Measured with twelve concurrent creates split across two processes:
+
+      * eight were refused with "someone edited the repository by hand" — nobody had. The dirty-tree
+        guard cannot tell another writer's half-finished transaction from a person's hand edit, so it
+        sends the operator to `git status` looking for something that is not there.
+      * two returned 500 from git's own index.lock.
+      * two callers were told their write failed while it was committed anyway: `git add -A` stages
+        the whole tree, so one process committed the other's files under its own message.
+      * the run ended with the tree dirty and a file staged but never committed — a state in which
+        *every* subsequent write is refused until a human runs git by hand. The service wedges itself.
+
+    The worst of those is `_restore`: `git checkout -- . && git clean -fdq` on a failure throws away
+    whatever is uncommitted, which includes the other process's in-flight write.
+
+    The lock file lives in `.git/`, which is never part of the tree — nothing to commit, nothing to
+    add to .gitignore, and no way for the lock itself to make the working tree dirty.
+
+    It waits rather than refusing, because the thing on the other side is a transaction and those are
+    short. But it waits with a bound: a writer wedged for good must not turn every later request into
+    a hung connection. What comes back then says a process is holding it, which is a different thing
+    to go and look at than a hand edit."""
+    if fcntl is None or not (root / ".git").is_dir():
+        yield; return
+    with open(root / ".git" / "routemind-write.lock", "a+") as f:
+        deadline = time.monotonic() + wait
+        while True:
+            try:
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB); break
+            except OSError:
+                if time.monotonic() >= deadline:
+                    raise WriteError(503, f"another process is writing to {root} and has held it for more than "
+                                          f"{wait:g}s — one writer per data directory. If nothing else should be "
+                                          f"running, look for a second ontology on this mount.")
+                time.sleep(0.05)
+        try: yield
+        finally: fcntl.flock(f, fcntl.LOCK_UN)
 
 
 def name_from_file(stem: str) -> str:
@@ -232,7 +283,7 @@ class Writer:
         return out
 
     def transact(self, message: str, actor: str, mutate) -> dict:
-        with _lock:
+        with _lock, repo_lock(self.root):
             if not (self.root / ".git").exists(): raise WriteError(500, "data directory is not a git repository")
             if _git(self.root, "status", "--porcelain"): raise WriteError(409, "working tree is dirty — someone edited the repository by hand; commit or revert it first")
             try:
@@ -248,8 +299,29 @@ class Writer:
             except Exception as e:
                 _restore(self.root); raise WriteError(500, f"{type(e).__name__}: {e}")
             sha = head(self.root)
-            if self.publish_dir: publish(self.root, self.publish_dir, sha, keep=(self.keep_provider() if self.keep_provider else None))
-            return {"ok": True, "revision": sha, "message": message, "warnings": res["warnings"], "stats": res["stats"]}
+            # **Publishing is downstream of the write, so its failure is not the write's failure.**
+            # The commit above is already in the repository and every read here serves the repository,
+            # not the checkout — the entity exists and answers the moment this returns. This used to
+            # propagate, so a publish that could not write (a full disk, a read-only mount, a checkout
+            # directory owned by another uid) answered `500 internal error` for a write that had fully
+            # succeeded. An agent told that retries and gets `409 exists`; a person presses Submit
+            # again. Both are then acting on a lie about what is in the ontology, which is the one
+            # thing this codebase cannot afford to be wrong about.
+            #
+            # It is a warning rather than a silence because the checkout really is behind, and it
+            # catches up on its own: the next successful write publishes the new HEAD, which carries
+            # this commit, and a restart republishes. Nothing is lost and nothing needs undoing — but
+            # anything reading the published tree is stale until then, and only this can say so.
+            warnings = list(res["warnings"])
+            if self.publish_dir:
+                try:
+                    publish(self.root, self.publish_dir, sha, keep=(self.keep_provider() if self.keep_provider else None))
+                except Exception as e:
+                    sys.stderr.write(f"publish failed after committing {sha}: {type(e).__name__}: {e}\n")
+                    warnings.append(f"committed as {sha[:8]}, but the published checkout could not be written "
+                                    f"({type(e).__name__}: {e}) and is still behind. The write itself is safe: "
+                                    f"the next successful write, or a restart, publishes it.")
+            return {"ok": True, "revision": sha, "message": message, "warnings": warnings, "stats": res["stats"]}
 
     # ---- nodes ----
     def create_node(self, body: dict, actor: str) -> dict:

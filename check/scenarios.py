@@ -323,4 +323,105 @@ st, _ = call("POST", "/nodes", {"id": "y" * 253, "name": "Over", "region": "name
                                 "one_liner": "p", "content": "x"})
 check("I5 one byte over is refused", st == 400, str(st))
 
+# ── J. the publish that fails after the commit ────────────────────────────────
+# The commit is inside the transaction; publishing is after it, and publishing can fail on its own —
+# a full disk, a read-only mount, a checkout directory owned by another uid. It used to propagate, so
+# a write that had fully succeeded answered `500 internal error`. An agent told that retries and gets
+# `409 exists`; a person presses Submit again. Both then act on a lie about what is in the ontology.
+#
+# The state was never in danger, and that is the point: publishing is downstream, every read here
+# serves the repository, and the next successful write publishes a HEAD that carries this commit. Only
+# the report was wrong, which is the kind of bug no amount of checking the data will find.
+_pub = os.path.join(T, "publish")
+if os.geteuid() == 0:
+    note("J", "skipped — running as root, which walks through the directory permission this needs")
+else:
+    _before = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    os.chmod(_pub, 0o555)
+    try:
+        st, b = call("POST", "/nodes", {"id": "pubfail", "name": "Pub Fail", "region": "names",
+                                        "kind": "system", "one_liner": "x", "content": "y"})
+        _after = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+        check("J1 a write whose publish fails is not reported as failed", st in (200, 201), f"{st} {b}")
+        check("J1   and it says the checkout is behind",
+              any("behind" in str(w) for w in (b.get("warnings") or [])),
+              json.dumps(b.get("warnings") or [])[-160:])
+        check("J2 the commit stands", _after != _before, f"{_before[:8]} -> {_after[:8]}")
+        check("J2   and the entity reads back straight away", call("GET", "/nodes/pubfail")[0] == 200)
+        with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: _h = json.load(r)
+        # The one operator-facing signal: the screen's bar reads exactly this comparison.
+        check("J3 healthz shows the published tree behind the repository",
+              _h.get("head") and _h.get("head") != _h.get("published"),
+              f"head={str(_h.get('head'))[:8]} published={str(_h.get('published'))[:8]}")
+    finally:
+        os.chmod(_pub, 0o755)
+    call("POST", "/nodes", {"id": "pubok", "name": "Pub Ok", "region": "names",
+                            "kind": "system", "one_liner": "x", "content": "y"})
+    with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: _h = json.load(r)
+    check("J4 the next successful write catches the checkout up",
+          _h.get("head") == _h.get("published"),
+          f"head={str(_h.get('head'))[:8]} published={str(_h.get('published'))[:8]}")
+
+# ── K. two processes on one data directory ────────────────────────────────────
+# The writer's lock was a threading lock, so it held only inside one process, while the transaction it
+# guards is a sequence of git commands on a shared working tree. Twelve concurrent creates split
+# across two processes, before: eight refused as "someone edited the repository by hand" (nobody had —
+# the dirty-tree guard cannot tell another writer's half-finished transaction from a hand edit), two
+# 500s from git's own index.lock, two callers told their write failed while `git add -A` committed it
+# under the other process's message, and the tree left dirty with a file staged and never committed —
+# a state in which every later write is refused until a human runs git. The service wedges itself.
+#
+# Nobody is meant to run two. They will: `--scale ontology=2`, a second install on the same mount, a
+# container left behind by a rebuild. None of the damage above looks like a race from the outside.
+import concurrent.futures as _cf                                          # noqa: E402
+from collections import Counter as _Counter                               # noqa: E402
+
+_P2 = PORT + 1
+_env2 = {**env, "PORT": str(_P2), "ONTOLOGY_PUBLISH": os.path.join(T, "publish2")}
+procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
+                              env=_env2, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
+for _ in range(80):
+    try: _u2.urlopen(f"http://127.0.0.1:{_P2}/healthz", timeout=1); break
+    except Exception: time.sleep(0.25)
+
+
+def _call_on(port, body):
+    req = urllib.request.Request(f"http://127.0.0.1:{port}/v1/nodes", data=json.dumps(body).encode(),
+                                 method="POST", headers={"Content-Type": "application/json",
+                                                         "X-Actor": f"p{port}"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r: return r.status
+    except urllib.error.HTTPError as e: e.read(); return e.code
+    except Exception: return 0
+
+
+_N = 12
+with _cf.ThreadPoolExecutor(max_workers=_N) as _ex:
+    _out = list(_ex.map(lambda i: _call_on(PORT if i % 2 == 0 else _P2,
+                                           {"id": f"race-{i}", "name": f"Race {i}", "region": "names",
+                                            "kind": "system", "one_liner": "x", "content": "y"}), range(_N)))
+_said_ok = sum(1 for st in _out if st in (200, 201))
+_on_disk = len([f for f in os.listdir(os.path.join(repo, "regions", "names")) if f.startswith("race-")])
+_dirty = subprocess.run(["git", "-C", repo, "status", "--porcelain"], capture_output=True, text=True).stdout.strip()
+check("K1 every write across two processes succeeds", _said_ok == _N, f"{dict(_Counter(_out))}")
+# The one that matters. A caller told "failed" for a write that was committed is the same lie as the
+# publish case, and here it was the *other* process's `git add -A` that committed it.
+check("K1   and what was reported matches what is on disk", _said_ok == _on_disk,
+      f"said ok {_said_ok}, on disk {_on_disk}")
+check("K2 the tree is not left dirty", _dirty == "", _dirty[:80])
+check("K2   and the repository is still valid", call("POST", "/validate", {})[1].get("ok") is True)
+
+# Waiting is bounded: a writer wedged for good must not turn every later request into a hung socket.
+sys.path.insert(0, os.path.join(ROOT, "ontology"))
+from service.write import repo_lock, WriteError as _WE                    # noqa: E402
+with repo_lock(__import__("pathlib").Path(repo)):
+    _t0 = time.monotonic()
+    try:
+        with repo_lock(__import__("pathlib").Path(repo), wait=0.5): _msg = None
+    except _WE as e: _msg = str(e)
+    _took = time.monotonic() - _t0
+check("K3 a held lock gives up rather than hanging", _msg is not None and _took < 5, f"{_took:.2f}s")
+check("K3   and says a process is holding it, not that someone edited by hand",
+      _msg and "another process" in _msg, repr(_msg)[:100])
+
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

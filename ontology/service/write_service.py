@@ -11,7 +11,7 @@ from pathlib import Path
 from .service_store import ServiceStore, SERVICE_RE, CONTENT_SUFFIXES
 from .derive_service import write_service_index, regenerate
 from .validate_service import validate_services
-from .write import WriteError, _git, _restore, _lock, head, publish
+from .write import WriteError, _git, _restore, _lock, repo_lock, head, publish
 
 FRONTMATTER_FIELDS = ("core_revision", "publisher", "game_line", "regions", "updated")
 
@@ -32,7 +32,8 @@ class ServiceWriter:
 
     # ---- the one write path ----
     def transact(self, message: str, actor: str, mutate) -> dict:
-        with _lock:
+        # Its own repository, so its own lock — see repo_lock in write.py.
+        with _lock, repo_lock(self.root):
             if not (self.root / ".git").exists(): raise WriteError(500, "fragment directory is not a git repository")
             if _git(self.root, "status", "--porcelain"): raise WriteError(409, "working tree is dirty — someone edited the repository by hand; commit or revert it first")
             try:
