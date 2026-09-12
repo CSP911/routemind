@@ -1,0 +1,22 @@
+# Line endings. Everything here is read by Linux, whatever it was written on.
+#
+# Git's default on Windows is core.autocrlf=true, which rewrites LF to CRLF on checkout. Two files
+# then stop working, and neither says why:
+#
+#   * ontology/entrypoint.sh is the container's ENTRYPOINT and is COPYed into the image. The kernel
+#     reads its shebang as `/bin/sh\r`, which does not exist, so the container fails to start with
+#     `no such file or directory` — naming a file that is plainly there. Verified: a CRLF script in
+#     this image answers `sh: /tmp/crlf.sh: not found` while `ls` shows it, executable.
+#   * install.sh and check/*.sh fail the same way under Git Bash or WSL.
+#
+# `eol=lf` settles it in the working tree on every platform, so a Windows contributor's clone builds
+# and their commits do not carry CRLF back. Nothing here needs CRLF: the shell scripts are POSIX, the
+# Python and Node both read LF, and Windows editors have handled LF for a decade.
+* text=auto eol=lf
+
+# Never touched, never diffed as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary

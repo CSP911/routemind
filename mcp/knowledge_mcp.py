@@ -474,9 +474,34 @@ class Server:
         return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32601, "message": f"Unknown method: {method}"}}
 
 
+def _utf8_stdio() -> None:
+    """This stream is UTF-8 in both directions, whatever the machine's locale says.
+
+    Python picks the *locale* encoding for a pipe, and an MCP server's stdout is always a pipe. On
+    Windows that is the ANSI code page — cp1252 on a Western install, cp949 on a Korean one, cp932 on
+    a Japanese one — and none of the three can encode `—` or `→`. Both appear in the text this server
+    sends before it has answered anything: the area list travels in `instructions`, which goes out
+    with the `initialize` reply. So on any Windows with Python 3.14 or older (UTF-8 mode became the
+    default only in 3.15) this died on the MCP handshake with a UnicodeEncodeError, before a single
+    tool call — and it is not about Korean data, an English install fails on the same two characters.
+    Reading has the same problem in reverse: a client sending a non-ASCII `question` or `why` for an
+    overlay would arrive as mojibake or not decode at all.
+
+    `newline="\n"` on the way out because text mode on Windows turns every `\n` into `\r\n`, and the
+    framing here is one JSON object per line. Most clients tolerate the stray `\r`; the protocol does
+    not promise they will, and there is nothing to gain by sending it.
+
+    Wrapped, because a caller may hand `serve()` its own streams — the checks do — and those are not
+    required to be reconfigurable."""
+    for stream, kw in ((sys.stdin, {}), (sys.stdout, {"newline": "\n"})):
+        try: stream.reconfigure(encoding="utf-8", **kw)
+        except Exception: pass
+
+
 def serve(api: Api, stdin=sys.stdin, stdout=sys.stdout) -> None:
     """One JSON object per line, in and out. Anything this process writes to stdout that is not a
     response corrupts the stream, so every diagnostic goes to stderr."""
+    if stdin is sys.stdin and stdout is sys.stdout: _utf8_stdio()
     server = Server(api)
     for line in stdin:
         line = line.strip()

@@ -61,6 +61,9 @@ command -v node >/dev/null 2>&1 && node "$(dirname "$0")/css-check.mjs" | sed 's
 # never passes is read by nothing, with no error to say so. ONTOLOGY_HARNESS was exactly that, and the
 # review queue had never worked on any install made from that file.
 command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/env-check.py" | sed 's/^/  /'
+# And what a checkout on another operating system has to survive. Everything else here runs on a
+# machine where line endings and the exec bit already hold, so nothing else can see either.
+command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/eol-check.py" | sed 's/^/  /'
 
 say "== an agent =="
 if command -v python3 >/dev/null 2>&1; then

@@ -78,6 +78,13 @@ Docker, with `docker compose`. That is all the service itself needs — the cont
 git. The checks that run at the end use the host's `curl` and `python3`, and the screen half also uses
 `node` if it is there; without those the install still comes up, it just verifies less.
 
+**On Windows**, run the install from WSL or Git Bash: `install.sh` and everything in `check/` are
+POSIX shell. The two containers are Linux either way, so the service itself is the same everywhere.
+The MCP server is the one piece that runs on your own machine rather than in a container, and it is
+stdlib-only python that works anywhere python does — but Windows spells the interpreter `python`, not
+`python3`, so use that in the client configs below (`python3` there is usually not a program at all;
+it is an alias that opens the Microsoft Store).
+
 ### One command
 
 ```sh
@@ -197,7 +204,7 @@ docker compose up -d --build
 
 | What you see | Why | What to do |
 |---|---|---|
-| `./install.sh: Permission denied` | The tree arrived without its exec bits — a zip, or a share that does not carry them. `ontology/entrypoint.sh` is the container's ENTRYPOINT, and the Dockerfile's `chmod -R a+rX` only keeps an `x` that is already there | `chmod +x install.sh ontology/entrypoint.sh check/*.sh check/*.py check/*.mjs` |
+| `./install.sh: Permission denied` | The tree arrived without its exec bits — a zip, or a share that does not carry them | `chmod +x install.sh check/*.sh check/*.py check/*.mjs`. The container's ENTRYPOINT no longer needs this: the Dockerfile chmods it during the build |
 | `FATAL: /data/repo is not writable by uid …`, then a restart loop | Docker invented the bind-mount path as root | Remove it, `mkdir -p data/repo data/publish data/overlays`, check `KNOWLEDGE_UID`/`KNOWLEDGE_GID` in `.env` against `id -u` / `id -g`, and start again |
 | `port is already allocated` | Something else holds 8080 | Set `WEB_PORT=9000` in `.env`, then `docker compose up -d` |
 | The map draws, but every write is refused **read-only** | `data/repo` has uncommitted changes — someone edited it by hand | Commit or revert them in `data/repo`, then `curl -X POST -H 'Content-Type: application/json' -d '{}' localhost:8080/api/knowledge/publish` |
@@ -290,6 +297,9 @@ One file, stdlib only: no install, no virtualenv, nothing to build. `--api` is t
 proxy at `/api/knowledge` (use this) or an ontology directly at `.../v1`. `--actor NAME` sets the name
 recorded on anything the connection writes; it defaults to `mcp`. Both also read `KNOWLEDGE_API` and
 `KNOWLEDGE_ACTOR` from the environment.
+
+Every config below writes `python3`. On Windows write `python` — and if your client offers no way to
+set a working directory, give the script an absolute path.
 
 Point `--api` at another host and it works the same — the agent does not have to be where RouteMind is.
 

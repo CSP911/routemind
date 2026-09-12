@@ -333,7 +333,8 @@ check("I5 one byte over is refused", st == 400, str(st))
 # serves the repository, and the next successful write publishes a HEAD that carries this commit. Only
 # the report was wrong, which is the kind of bug no amount of checking the data will find.
 _pub = os.path.join(T, "publish")
-if os.geteuid() == 0:
+# `geteuid` is POSIX-only; on a platform without it there is no root to be, so nobody is.
+if getattr(os, "geteuid", lambda: 1)() == 0:
     note("J", "skipped — running as root, which walks through the directory permission this needs")
 else:
     _before = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
