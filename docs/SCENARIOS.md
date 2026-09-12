@@ -97,6 +97,35 @@ directory, an attached file name is the file. Every filesystem stops one path co
 | I4 | The longest name that fits is still written — 252 characters, because `.md` makes it exactly 255. A bound nobody has watched permit the longest legal name drifts down to whatever the first refusal happened to be |
 | I5 | One byte over is refused |
 
+## J — the publish that fails after the commit
+
+The commit is inside the transaction; publishing is after it, and publishing can fail on its own.
+
+| | What it proves |
+|---|---|
+| J1 | A write whose publish fails is not reported as failed, and says the checkout is behind. It used to answer `500 internal error` for a write that had fully succeeded — an agent told that retries and gets `409 exists`, a person presses Submit again, and both then act on a lie about what is in the ontology |
+| J2 | The commit stands and the entity reads back straight away. Reads serve the repository, not the checkout |
+| J3 | `/healthz` shows the published tree behind the repository — the exact comparison the screen's bar makes |
+| J4 | The next successful write catches the checkout up. Nothing needs undoing |
+
+## K — two processes on one data directory
+
+Nobody is meant to run two. They will: `--scale ontology=2`, a second install on the same mount, a
+container left behind by a rebuild. The writer's lock was a threading lock and held only inside one
+process, while the transaction it guards is a sequence of git commands on a shared working tree.
+
+Twelve concurrent creates split across two processes, before: eight refused as "someone edited the
+repository by hand" (nobody had), two 500s out of git's own `index.lock`, two callers told their
+write failed while `git add -A` committed it under the other process's message, and the tree left
+dirty with a file staged and never committed — the state in which every later write is refused until
+a human runs git. None of that looks like a race from outside.
+
+| | What it proves |
+|---|---|
+| K1 | Every write across two processes succeeds, **and what was reported matches what is on disk**. The second half is the one that matters |
+| K2 | The tree is not left dirty, and the repository is still valid |
+| K3 | A held lock gives up rather than hanging, and says a process is holding it — not that someone edited by hand |
+
 ## Deliberately not here
 
 **D — moves and containment** (`write-paths.sh` already moves a node within an area, across areas,

@@ -28,6 +28,10 @@ services:
       # worked on any install made from this file. Its own directory, for the overlays' reason: a
       # commit per proposal would bury the ontology.
       ONTOLOGY_HARNESS: /data/harness
+      # How long a write waits for another process holding this data directory before it answers that
+      # one is. One ontology per directory is the rule; the lock is what makes breaking it merely slow
+      # instead of destructive. Documented in .env.example, so it has to arrive here to be real.
+      ONTOLOGY_LOCK_WAIT: "${ONTOLOGY_LOCK_WAIT:-}"
       # Set these three and Knowledge derives a node's id, kind and description from its name. Leave
       # them out and those are typed by hand — the screen asks for them only in that case.
       # `litellm` is the default because it is what the client always spoke — an existing install

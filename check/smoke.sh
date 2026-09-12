@@ -57,6 +57,10 @@ command -v node >/dev/null 2>&1 && node "$(dirname "$0")/i18n-check.mjs" | sed '
 # Static, so it runs here rather than in the screen half: a class with no rule is a bug the API
 # cannot see and the fake DOM does not render.
 command -v node >/dev/null 2>&1 && node "$(dirname "$0")/css-check.mjs" | sed 's/^/  /'
+# Also static, and also invisible to every other check: a setting .env.example documents that compose
+# never passes is read by nothing, with no error to say so. ONTOLOGY_HARNESS was exactly that, and the
+# review queue had never worked on any install made from that file.
+command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/env-check.py" | sed 's/^/  /'
 
 say "== an agent =="
 if command -v python3 >/dev/null 2>&1; then
