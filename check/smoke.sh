@@ -54,6 +54,9 @@ if [ "$mv" = 404 ] && [ "$bad" = 422 ]; then say "ok   a move reaches Knowledge"
 else say "FAIL a move: expected 404 from Knowledge and 422 for a bad id, got $mv and $bad"; exit 1; fi
 
 command -v node >/dev/null 2>&1 && node "$(dirname "$0")/i18n-check.mjs" | sed 's/^/  /'
+# Static, so it runs here rather than in the screen half: a class with no rule is a bug the API
+# cannot see and the fake DOM does not render.
+command -v node >/dev/null 2>&1 && node "$(dirname "$0")/css-check.mjs" | sed 's/^/  /'
 
 say "== an agent =="
 if command -v python3 >/dev/null 2>&1; then

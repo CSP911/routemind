@@ -407,3 +407,28 @@ body.kn-dragging { user-select: none; }
 .kn-guide p:nth-of-type(n+3) { font: 12px var(--kn-mono); color: var(--kn-text); }
 /* A Suggest with no LLM behind it: visible, so the field is not a mystery, and plainly off. */
 .kn-inline-act:disabled { opacity: .45; cursor: not-allowed; }
+
+/* The toast. It had a colour in theme.css and nothing else: no position, no z-index, no hidden
+   state, and no rule at all for `.show` — which is the one class knowledge.js adds and removes to
+   raise and dismiss it. So every message the screen has ever shown rendered as a line of text in
+   the page flow, shifted the map down by its own height, and then stayed there: removing a class
+   that styles nothing changes nothing. "Created", "Deleted", "Copied", "VRF drawn" and every error
+   `guarded()` raises outside a card all went through it.
+   Found by checking every class the screen uses against the stylesheets, after the same shape of
+   bug turned up in `.kn-chip`. */
+.toast {
+  position: fixed; left: 50%; bottom: 26px; z-index: 60;
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 10px 16px; border-radius: 999px;
+  background: #263443; color: #fff;
+  font-size: 13px; line-height: 1.45;
+  box-shadow: 0 6px 24px rgb(0 0 0 / .28);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+.toast.show {
+  opacity: 1; visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity .18s ease, transform .18s ease, visibility 0s;
+}
