@@ -751,7 +751,11 @@ class Handler(BaseHTTPRequestHandler):
                 if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
                 if len(parts) < 3: return self._err(404, "unknown peer path")
                 try:
-                    return self._send(200, peering.relay(DATA, parts[1], parts[2:]))
+                    payload, ctype = peering.relay(DATA, parts[1], parts[2:])
+                    # Sent as whatever it is. A document body is Markdown on this backbone and is
+                    # Markdown across a link too — a caller should not be able to tell, from the shape
+                    # of an answer, which side of a link it came from.
+                    return self._send(200, payload, ctype)
                 except peering.PeerError as e:
                     # The peer's own status is passed through when it answered, and 504 when it did
                     # not. A relayed 404 means that backbone does not hold the thing — which is its

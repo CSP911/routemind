@@ -486,11 +486,17 @@ _PEER_SEG = _iris_re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$")
 
 
 @_iris_route("GET", "/api/knowledge/peers/{peer}/{rest:path}")
-def api_knowledge_peer(peer: str, rest: str, request: Request) -> dict[str, Any]:
+def api_knowledge_peer(peer: str, rest: str, request: Request):
     parts = [p for p in (rest or "").split("/") if p]
     if not _PEER_SEG.match(peer or "") or not parts or not all(_PEER_SEG.match(p) for p in parts):
         raise HTTPException(status_code=404, detail="not an address a table printed")
     path = "/v1/peers/" + "/".join(quote(p, safe="") for p in [peer, *parts])
+    # A document body is Markdown on both sides of a link, so this route cannot assume JSON any more
+    # than the local one can. Which it is follows the address, exactly as it does locally: `/body`
+    # and a fragment file are text, everything else is a table.
+    if parts[-1] == "body" or parts[-1].endswith((".md", ".yaml", ".yml")):
+        return PlainTextResponse(_ontology_text(path, _knowledge_actor(request)),
+                                 media_type="text/markdown; charset=utf-8")
     return _ontology_proxy("GET", path, _knowledge_actor(request))
 
 

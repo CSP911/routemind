@@ -20,10 +20,14 @@ success. Documents are not cached at all — a cache of somebody else's ontology
 copy is the thing a link exists to avoid; the moment this service can answer from a copy, two
 installs that were meant to stay separate have quietly become one with a replication lag.
 
-**"The peer said no" and "I could not reach the peer" are different answers.** Only a backbone's own
-hop 0 may say something is not there. A 404 relayed from a peer is that backbone speaking; a timeout
-is nobody speaking, and must never be dressed as an absence. Everything below keeps them apart, and
-`unreachable` is what makes hop 0 stop claiming absence at all.
+**"The peer said no", "I could not reach the peer", and "I could not use what it sent" are three
+answers, not two.** Only a backbone's own hop 0 may say something is not there. A 404 relayed from a
+peer is that backbone speaking; a timeout is nobody speaking and must never be dressed as an absence;
+and a reply this code could not parse is **our** failure, not the link's. Collapsing the third into
+the second is how a bug here gets reported as somebody else's outage — and it did: a document body is
+Markdown, this module assumed JSON, and every remote document came back as "peer is unreachable"
+while the peer was answering perfectly. `reachable` is the flag hop 0 stops claiming absence on, so
+mislabelling one of these suspends the absence rule for a reason that is not true.
 """
 from __future__ import annotations
 
@@ -94,13 +98,20 @@ def declared(root: Path) -> list[dict]:
 _cache: dict[str, tuple[float, dict | None, str]] = {}
 
 
-def _fetch(peer: dict, path: str) -> dict:
+def _fetch(peer: dict, path: str) -> tuple[bytes, str]:
+    """The bytes a peer sent, and what it says they are. Not parsed here.
+
+    A backbone answers JSON for tables and `text/markdown` for a document body, and which one is a
+    property of the address, not of the link. Deciding here would mean this module knowing the shape
+    of every answer the other side can give — a second place to update whenever that changes, and the
+    place a Markdown body was being fed to a JSON parser.
+    """
     url = peer["url"] + path
-    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+    req = urllib.request.Request(url, headers={"Accept": "application/json, text/markdown, */*"})
     if peer["token"]: req.add_header("X-Peer-Token", peer["token"])
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-            return json.loads(r.read() or b"{}")
+            return r.read(), (r.headers.get("Content-Type") or "application/json")
     except urllib.error.HTTPError as e:
         # The peer answered. Whatever it said is its own answer and is carried through as one —
         # a 404 from over there means *that* backbone does not have it, which is a fact worth having.
@@ -108,6 +119,17 @@ def _fetch(peer: dict, path: str) -> dict:
     except Exception as e:
         raise PeerError(f"peer {peer['name']} is unreachable: {type(e).__name__}", status=504,
                         reachable=False) from e
+
+
+def _fetch_json(peer: dict, path: str) -> dict:
+    raw, _ = _fetch(peer, path)
+    try:
+        return json.loads(raw or b"{}")
+    except Exception as e:
+        # Reachable, on purpose. The peer answered; this side could not read it. Saying "unreachable"
+        # would take the absence rule down over a bug in here.
+        raise PeerError(f"peer {peer['name']} sent something this backbone could not read: "
+                        f"{type(e).__name__}", status=502, reachable=True) from e
 
 
 def advertisement(peer: dict) -> dict:
@@ -123,7 +145,7 @@ def advertisement(peer: dict) -> dict:
         if hit[1] is not None: return hit[1]
         raise PeerError(hit[2], status=504, reachable=False)
     try:
-        d = _fetch(peer, "/v1/export/regions")
+        d = _fetch_json(peer, "/v1/export/regions")
     except PeerError as e:
         _cache[peer["name"]] = (time.monotonic(), None, str(e))
         raise
@@ -172,18 +194,30 @@ def rows(root: Path) -> tuple[list[dict], list[dict]]:
     return out, links
 
 
-def relay(root: Path, name: str, rest: list[str]) -> dict:
-    """Fetch one thing from a peer, on behalf of a caller who never sees the credential."""
+def relay(root: Path, name: str, rest: list[str]) -> tuple[object, str]:
+    """Fetch one thing from a peer, on behalf of a caller who never sees the credential.
+
+    Returns what came and what it is. A table comes back as a dict with its addresses rewritten; a
+    document body comes back as the text it is, untouched — there is nothing in a document to rewrite
+    and re-encoding somebody else's prose as JSON would be this backbone editing it.
+    """
     peer = next((p for p in declared(root) if p["name"] == name), None)
     if not peer: raise PeerError(f"no peer {name}", status=404, reachable=True)
     if not peer["token"]: raise PeerError(f"peer {name} has no token — set {peer['token_env']}", status=503)
     path = "/v1/export/" + "/".join(urllib.parse.quote(p, safe="") for p in rest)
-    d = _fetch(peer, path)
+    raw, ctype = _fetch(peer, path)
+    if "json" not in ctype.lower():
+        return raw.decode("utf-8", "replace"), ctype
+    try:
+        d = json.loads(raw or b"{}")
+    except Exception as e:
+        raise PeerError(f"peer {name} sent something this backbone could not read: {type(e).__name__}",
+                        status=502, reachable=True) from e
     # Every address inside a relayed answer is one the peer prints on its own export surface, and
     # following one of those directly would need the credential this service is holding. They are
     # rewritten to point back here, which is also what makes the rule the tables state — "use the
     # address exactly as printed" — remain true across a link.
-    return _rewrite(d, name)
+    return _rewrite(d, name), ctype
 
 
 def _rewrite(value, name: str):

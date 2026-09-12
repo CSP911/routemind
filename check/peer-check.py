@@ -201,6 +201,16 @@ for port in (PORT, PORT_B):
         except Exception: time.sleep(0.25)
 
 
+def text_at(port, path):
+    """A body, as bytes and type. `at` parses JSON and would report a Markdown answer as a failure —
+    which is the exact mistake this pair of assertions exists to catch."""
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/v1{path}", timeout=20) as x:
+            return x.read().decode("utf-8", "replace"), (x.headers.get("Content-Type") or ""), x.status
+    except urllib.error.HTTPError as e: return e.read().decode(errors="replace"), "", e.code
+    except Exception as e: return f"{type(e).__name__}", "", 0
+
+
 def at(port, path):
     try:
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/v1{path}", timeout=20) as x:
@@ -231,6 +241,15 @@ if remote:
     check("  and rewrites the addresses inside it back to A",
           ent and all(str(e.get("fetch") or "/v1/peers/bee").startswith("/v1/peers/bee/") for e in ent),
           json.dumps([e.get("fetch") for e in ent[:2]]))
+    # A document body is Markdown, not JSON, on both sides of a link. This module assumed JSON, so
+    # every remote document came back as "peer is unreachable" — while the peer was answering 200.
+    # Worse than the outage it invented: `reachable` is the flag hop 0 stops claiming absence on, so a
+    # parser bug in here was suspending the absence rule and blaming the other backbone for it.
+    body = next((e["fetch"] for e in ent if str(e.get("fetch") or "").endswith("/body")), None)
+    if body:
+        raw, ctype, code = text_at(PORT, body[3:])
+        check("  and relays a document as the text it is", code == 200 and len(raw) > 0, f"{code} {len(raw)}b")
+        check("    with the type it has on the other side", "markdown" in ctype or "text/" in ctype, ctype)
     if ent:
         st, doc = at(PORT, ent[0]["fetch"][3:])
         check("  and relays a document behind it", st == 200, str(st))
