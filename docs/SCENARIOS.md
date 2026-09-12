@@ -84,6 +84,19 @@ An overlay's age must not depend on where the service happens to be running.
 |---|---|
 | H | The same UTC stamp is the same age in UTC, Seoul, London, New York and Sydney — and that age is right. It was an hour out wherever summer time was in force: `time.mktime(...) - time.timezone` mixes a standard offset with a value that carries DST, and they cancel only outside it. Invisible in deployment, because the containers run UTC; visible to anyone who ran these checks on their own machine in July |
 
+## I — a name that has to become a file
+
+Three inputs are written straight into a path: a node id becomes `<id>.md`, an area name becomes the
+directory, an attached file name is the file. Every filesystem stops one path component at 255 bytes.
+
+| | What it proves |
+|---|---|
+| I1 | An over-long id is refused with a reason. None of the three was bounded, so each passed its kebab-case check, passed validation, and died inside the transaction on `OSError: [Errno 36] File name too long` — which the API could only report as `502 internal error`. Probing every malformed input the surface accepts (broken JSON, no `Content-Type`, wrong method, unknown path, an array for a body), these three were the only ones that came back with no reason |
+| I2 | The same for an area name |
+| I3 | The same for an attached file name |
+| I4 | The longest name that fits is still written — 252 characters, because `.md` makes it exactly 255. A bound nobody has watched permit the longest legal name drifts down to whatever the first refusal happened to be |
+| I5 | One byte over is refused |
+
 ## Deliberately not here
 
 **D — moves and containment** (`write-paths.sh` already moves a node within an area, across areas,

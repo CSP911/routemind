@@ -12,7 +12,7 @@ import os, re, shutil, subprocess, tempfile, threading
 from pathlib import Path
 import yaml
 from .store import Store, set_frontmatter, FM_RE
-from .validate import validate, ID_RE
+from .validate import validate, ID_RE, NAME_MAX, name_too_long
 from .derive import regenerate, write_node_index, sync_region_node_lists, EDITABLE
 
 # What a document may declare about itself, and what a write must therefore carry across rather
@@ -149,6 +149,7 @@ class Writer:
         nid = (given or "").strip()
         if nid:
             if not ID_RE.match(nid): raise WriteError(400, "id must be ASCII kebab-case")
+            if (why := name_too_long(nid, suffix=".md")): raise WriteError(400, f"id: {why}")
             if self.store.node(nid): raise WriteError(409, f"node {nid} exists")
             return nid, False
         # **Do not ask a model a question the name already answers.** The reason an LLM is here at
@@ -157,6 +158,9 @@ class Writer:
         # Asking anyway invites the model to characterise instead of translate: "Parcels" came back
         # as `tracking-system`, a permanent address matching nothing the person typed.
         slug = slug_id(name)
+        if slug and (why := name_too_long(slug, suffix=".md")):
+            # The name is the caller's, so the refusal names the name and not the slug it made.
+            raise WriteError(400, f"the name {name!r} gives an id of {len(slug)} characters — {why}")
         if slug:
             if not self.store.node(slug): return slug, False
             # **The collision is refused before any model is asked, configured or not.** Asking one
@@ -174,6 +178,8 @@ class Writer:
         nid = (self.suggest_id(name=name, kind=kind, one_liner=one_liner, region=region, taken=taken) or "").strip()
         if not nid or not ID_RE.match(nid):
             raise WriteError(422, f"id could not be generated ({nid!r}) — supply one")
+        if (why := name_too_long(nid, suffix=".md")):
+            raise WriteError(422, f"the suggested id is {len(nid)} characters — {why}. Supply one")
         if self.store.node(nid):
             raise WriteError(409, f"the suggested id {nid} already exists — supply one (this never auto-increments)")
         return nid, True
@@ -198,7 +204,14 @@ class Writer:
 
     # ---- the one write path ----
     def entity_path(self, region: str, eid: str) -> Path:
-        """Where an entity lives. One type, one shape: `regions/<area>/<id>.md`."""
+        """Where an entity lives. One type, one shape: `regions/<area>/<id>.md`.
+
+        The bound is repeated here on purpose. Every caller above refuses an over-long name with a
+        message about the field the caller actually typed, which is the useful error; this one is
+        the floor under all of them, because `child_id` composes `<parent>-<stem>` and a route that
+        never asked a person for the id can still arrive with one too long to write. A crash inside
+        the transaction is the one outcome this must not have."""
+        if (why := name_too_long(eid, suffix=".md")): raise WriteError(400, f"id {eid[:24]}…: {why}")
         return self.root / "regions" / region / f"{eid}.md"
 
     def child_id(self, parent: str, stem: str) -> str:
@@ -413,6 +426,7 @@ class Writer:
         n = self.store.node(nid)
         if not n: raise WriteError(404, f"node {nid} not found")
         if not re.fullmatch(r"[a-z0-9][a-z0-9._-]*\.md", name) or name == "INDEX.md": raise WriteError(400, "file name must be <ascii-kebab>.md and not INDEX.md")
+        if (why := name_too_long(name)): raise WriteError(400, f"file name: {why}")
         if "content" not in body: raise WriteError(400, "content is required")
         desc = (body.get("description") or "").strip()
         existing = next((f["description"] for f in n["files"] if f["name"] == name), None)
@@ -469,6 +483,7 @@ class Writer:
         filled, so **both are required**."""
         src = str(body.get("source") or "").strip()
         if not re.fullmatch(r"[a-z][a-z0-9-]*", src or ""): raise WriteError(400, "source must be lowercase ascii-kebab (it is the area directory name)")
+        if (why := name_too_long(src)): raise WriteError(400, f"source: {why}")
         if (self.root / "regions" / src).exists(): raise WriteError(409, f"region {src} exists")
         rep = body.get("representative") or {}
         for k in ("name", "one_liner", "use_when"):

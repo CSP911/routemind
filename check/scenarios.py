@@ -284,4 +284,43 @@ time.tzset()
 check("H  a stamp is the same age in every timezone", len(set(_ages.values())) == 1, json.dumps(_ages))
 check("H    and that age is right", all(abs(v - 10) < 0.05 for v in _ages.values()), json.dumps(_ages))
 
+# ── I. a name that has to become a file ───────────────────────────────────────
+# Three inputs are written straight into a path: a node id becomes `<id>.md`, an area name becomes the
+# directory, and an attached file name is the file. None of them was bounded, and every filesystem
+# stops one path component at 255 bytes — so each of the three passed its kebab-case check, passed
+# validation, and died inside the transaction on `OSError: [Errno 36] File name too long`. The API
+# could only answer `502 internal error`. Probing every malformed input the surface accepts — broken
+# JSON, no Content-Type, wrong method, an unknown path, an array for a body — these three were the
+# only ones that came back with no reason, and a caller given `internal error` has nothing to fix.
+#
+# The boundary is asserted from both sides. A bound nobody has watched permit the longest legal name
+# is a bound that drifts down to whatever the first refusal happened to be.
+LONG = "z" * 300
+make_area("names", "Names", "a question about names · nothing real", "the area section I writes into")
+st, b = call("POST", "/nodes", {"id": LONG, "name": "P", "region": "names", "kind": "system",
+                                "one_liner": "p", "content": "x"})
+check("I1 an over-long id is refused, not a crash", st == 400, f"{st} {b}")
+check("I1   and the refusal says why", "255" in str(b.get("error", "")), repr(b.get("error"))[:120])
+
+st, b = call("POST", "/regions", {"source": LONG, "core_description": "p",
+                                  "representative": {"name": "P", "kind": "system",
+                                                     "one_liner": "p", "use_when": "never"}})
+check("I2 an over-long area name is refused", st == 400, f"{st} {b}")
+
+st, b = call("PUT", f"/nodes/names/files/{LONG}.md", {"content": "x", "description": "p"})
+check("I3 an over-long attached file name is refused", st == 400, f"{st} {b}")
+
+# 252 + len(".md") is exactly 255. Both sides, so the limit stays where the filesystem put it.
+_at = "y" * 252
+st, _ = call("POST", "/nodes", {"id": _at, "name": "At", "region": "names", "kind": "system",
+                                "one_liner": "p", "content": "x"})
+_file = os.path.join(repo, "regions", "names", _at + ".md")
+check("I4 the longest name that fits is written", st in (200, 201) and os.path.exists(_file),
+      f"{st} exists={os.path.exists(_file)}")
+check("I4   and it is exactly the filesystem's limit", len(os.path.basename(_file).encode()) == 255)
+call("DELETE", f"/nodes/{_at}")
+st, _ = call("POST", "/nodes", {"id": "y" * 253, "name": "Over", "region": "names", "kind": "system",
+                                "one_liner": "p", "content": "x"})
+check("I5 one byte over is refused", st == 400, str(st))
+
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

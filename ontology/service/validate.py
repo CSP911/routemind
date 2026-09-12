@@ -10,6 +10,28 @@ from .store import Store, alias_names, file_scope, region_key, FM_RE
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
+# An id is not only an address: it is the file name `<id>.md`, and an area name is a directory name.
+# Every filesystem this runs on stops one path component at 255 bytes, and the write path had no bound
+# of its own — so a 300-character id passed the kebab-case check above, passed validation, and died
+# inside the transaction on `OSError: [Errno 36] File name too long`, which the API could only report
+# as `502 internal error`. Probing every malformed input the API accepts, that was the only one that
+# came back without a reason. The number is the filesystem's and not a matter of taste; there is
+# nothing here to tune.
+NAME_MAX = 255
+ID_MAX = NAME_MAX - len(".md")
+
+
+def name_too_long(value: str, *, suffix: str = "") -> str | None:
+    """The refusal for a name that cannot become a file, or None when it can.
+
+    Bytes rather than characters, because the limit is the filesystem's. Ids are ASCII so the two
+    agree, but an area name or an attached file name reaches here before anything has promised that.
+    """
+    n = len(str(value).encode("utf-8")) + len(suffix)
+    if n <= NAME_MAX: return None
+    return (f"that is {n} bytes as the file name and a path component holds at most {NAME_MAX} — "
+            f"{'an id becomes ' + repr(str(value)[:24] + '….md') if suffix else 'shorten it'}")
+
 
 def edge_rules(vocab: dict) -> list[dict]:
     """Domain rules about which edges are wrong, declared in `vocab.yaml` rather than written here.

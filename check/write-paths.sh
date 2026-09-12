@@ -15,6 +15,16 @@ set -eu
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PORT="${1:-8109}"
 T="$(mktemp -d)"
+
+# This one starts the service itself rather than talking to the running container, so it needs the
+# service's dependency on the machine running it. Without this it dies on an ImportError traceback
+# from inside store.py, which reads as "the check is broken" rather than "install a package".
+python3 -c 'import yaml' 2>/dev/null || {
+  echo "write-paths.sh starts the ontology itself and needs pyyaml on this python:" >&2
+  echo "  python3 -m pip install pyyaml     (or run it where the service's deps already are)" >&2
+  exit 2
+}
+command -v curl >/dev/null || { echo "write-paths.sh needs curl" >&2; exit 2; }
 trap 'kill ${PID:-0} 2>/dev/null || true; rm -rf "$T"' EXIT
 
 cp -r "$ROOT/seed/." "$T/repo/" 2>/dev/null || { mkdir -p "$T/repo"; cp -r "$ROOT/seed/." "$T/repo/"; }
@@ -73,10 +83,22 @@ say "no kind takes the default"           "$(code -X POST "$U/nodes" -d '{"id":"
 say "  and says nobody chose it"          "$(python3 -c 'import json; d=json.load(open("'"$T"'/out")); print(d["kind"], d["kind_generated"])')" "system True"
 # And with no default declared, it refuses rather than inventing one. Done by editing the throwaway
 # repository the way a person would — including the commit, without which every write is blocked.
-sed -i 's/^default_kind: system/# no default/' "$T/repo/vocab.yaml"
+# `sed -i` without an argument is GNU-only: BSD sed reads the next word as the backup suffix and the
+# file as the script, and answers `invalid command code f`. With `set -e` that ended the run right
+# here — so on macOS, where the README sends contributors to run this, everything below this line had
+# never executed. Half the file. A check that stops early and says nothing is worse than no check.
+edit_vocab() { python3 - "$T/repo/vocab.yaml" "$1" "$2" <<'EOF'
+import sys
+p, old, new = sys.argv[1:4]
+s = open(p, encoding="utf-8").read()
+assert old in s, f"{old!r} not in vocab.yaml"
+open(p, "w", encoding="utf-8").write(s.replace(old, new, 1))
+EOF
+}
+edit_vocab "default_kind: system" "# no default"
 git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qam "drop default_kind"
 say "  with no default_kind it refuses"   "$(code -X POST "$U/nodes" -d '{"id":"no-default","name":"X","region":"alpha","one_liner":"x"}')" 503
-sed -i 's/^# no default/default_kind: system/' "$T/repo/vocab.yaml"
+edit_vocab "# no default" "default_kind: system"
 git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qam "restore default_kind"
 
 # The ordinary path, end to end.
