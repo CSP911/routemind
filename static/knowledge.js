@@ -494,6 +494,15 @@
     const row = isArea ? as : { kind: "as", label: holder, address };
     const flagKey = isArea ? as.key : `node:${holder}`;
     const flags = flagsFor(flagKey).length;
+    // An area on a linked backbone is read from here and written where it lives. Its rack was
+    // offering "+ New node", "+ New data", "Advertise upstream" and a delete — four ways to write
+    // into another organisation's ontology, one of them destructive, and every one of them refused
+    // by the far end with 405. Refusing over there is the backstop; not drawing the button is the
+    // interface. What is left is the thing that makes sense at this distance: read its routing table.
+    if (as.peer) {
+      return [{ label: t("knowledge.act.table"),
+                run: () => showRaw({ kind: "as", title: row.label, address }) }];
+    }
     return [
       ...(flags ? [{ label: `⚑ ${t("knowledge.flag.short")} ${flags}`, flag: true, run: () => reviewFlags(flagKey, row.label, address) }] : []),
       ...(canRun() ? [{ label: t("knowledge.act.start"), primary: true, run: () => startRun([address]) }] : []),
@@ -528,6 +537,10 @@
     return {
       key: c.fetch || c.id, id: c.id, label: c.name || c.id, kind: read && !enter ? "data" : "as",
       address: c.fetch, node: enter ? c.id : null, ownerRegion: areaKey, level, holder, pickable: true,
+      // Whose backbone this row belongs to, carried down from the area key. A row from a linked
+      // one still opens and still reads; what it must not do is move, because a move is a write
+      // and writes go to the backbone that owns the area.
+      peer: String(areaKey).includes(":") ? String(areaKey).split(":")[0] : null,
       badge: enter ? (counts || t("knowledge.relOnly")) : "", shape,
     };
   }
@@ -654,7 +667,7 @@
     const { w, h } = DEV[shape];
     const pending = row.flagKey ? flagsFor(row.flagKey).length : 0;
     const picked = Boolean(row.address && state.picked.has(row.address));
-    const g = svgEl("g", { class: `kn-dev is-${shape} is-${row.kind}${selected ? " is-sel" : ""}${row.node && pathIn(row.ownerRegion).includes(row.node) ? " is-open" : ""}${place && row.id ? " is-movable" : ""}${pending ? " is-flagged" : ""}${picked ? " is-picked" : ""}${vrfClass(row, shape)}`, tabindex: "0", role: "button" });
+    const g = svgEl("g", { class: `kn-dev is-${shape} is-${row.kind}${selected ? " is-sel" : ""}${row.node && pathIn(row.ownerRegion).includes(row.node) ? " is-open" : ""}${place && row.id && !row.peer ? " is-movable" : ""}${pending ? " is-flagged" : ""}${picked ? " is-picked" : ""}${vrfClass(row, shape)}`, tabindex: "0", role: "button" });
     g.append(svgEl("rect", { x: x - w / 2, y: y - h / 2, width: w, height: h, rx: shape === "core" ? 10 : 5 }));
     if (shape === "as" || shape === "sw" || shape === "leaf") {
       // Port strip along the bottom edge. A leaf has few ports on purpose: one file is in it, room for more.
@@ -716,7 +729,10 @@
     }
     // Anything in a rack can be picked up; a node can also be landed on. A document cannot be landed
     // on: that would make a document into a holder, and making holders is "+ New node".
-    if (place && row.id) {
+    // Not for a row on another backbone: dragging one is a move, a move is a write, and the far end
+    // refuses it. Nor a drop target, for the same reason pointed the other way — nothing of ours
+    // belongs inside somebody else's area.
+    if (place && row.id && !row.peer) {
       g.addEventListener("pointerdown", (e) => pressTile(e, row, g));
       if (row.node) dropAttrs(g, row.node, place.area, [...place.chain, row.node], row.label);
     }
@@ -1095,10 +1111,27 @@
 
   /** Entries for one Region — `entries[]` is files and children as one list, each row carrying its own
    *  `type` and `fetch`. Fetched on first open; cached in memory and, once all are in, on disk. */
+  /** Where an area's own table lives, from its key alone.
+   *
+   *  A local area is keyed by its directory; an area on a linked backbone by `<peer>:<dir>`, which can
+   *  be taken apart again because a directory name is ASCII kebab-case and cannot hold a colon.
+   *  Deriving it here rather than threading an address through every caller keeps the three call
+   *  sites — opening a rack, warming the ones nobody opened, redrawing after a change — from each
+   *  having to know that some areas are somewhere else.
+   *
+   *  Before this they rebuilt `regions/<key>`, so a peer's area asked for `regions/branch:payroll`,
+   *  got a 404, and opened as an empty rack: the map drew an area you could see and could not open. */
+  const entriesPath = (key) => {
+    const at = String(key).indexOf(":");
+    return at < 0
+      ? "regions/" + encodeURIComponent(key)
+      : `peers/${encodeURIComponent(key.slice(0, at))}/regions/${encodeURIComponent(key.slice(at + 1))}`;
+  };
+
   async function loadEntries(key) {
     if (state.entries.has(key)) return state.entries.get(key);
     try {
-      const detail = await request("regions/" + encodeURIComponent(key));
+      const detail = await request(entriesPath(key));
       state.entries.set(key, detail.entries || []);
     } catch { state.entries.set(key, []); }
     return state.entries.get(key);
