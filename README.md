@@ -38,14 +38,20 @@ in a browser.
 Some questions do not sit in one area. Settling a trip is three: how many days count, how much they
 pay, and whether any of it is taxed. Picking one area answers a third of it.
 
-![One question, several areas: the areas are read at hop 0, the ones the question belongs to are
-grouped into an overlay, and the run works from that one merged table until it is closed with what it
-actually used.](docs/img/overlay-multiple-as.png)
+![How an overlay gets made: the agent reads hop 0, picks every area the question belongs to and says
+why for each, works from the one merged table, and closes it with the addresses the answer actually
+came from. RouteMind serves and checks; it never chooses.](docs/img/overlay-flow.svg)
 
 An **overlay** is that working set, made as an object: the question it is for, the areas and nodes in
 it and **why each one is in it**, the trail of what was added and dropped while reading, and — when it
-closes — what was actually used to answer. One object with two authors: an agent creates it through
-the API, a person ticks areas on the map and presses **Draw VRF**, and the map draws either.
+closes — what was actually used to answer.
+
+**The agent decides what goes in it.** RouteMind has no model of its own for this: it serves the
+tables, refuses an address that resolves to nothing and an overlay over its caps, and keeps the
+record — which rows a question belongs to is never its judgment. So the picking is done by whatever
+model is driving the MCP client, from the `use_when` lines alone. A person can draw one too, by
+ticking areas on the map and pressing **Draw VRF**; both make the same object, and the map draws
+either.
 
 Three rules are worth knowing before you rely on it:
 
