@@ -36,7 +36,7 @@ claude mcp add knowledge -- python3 /abs/path/to/knowledge/mcp/knowledge_mcp.py 
 
 **This repository ships one.** `.mcp.json` at the root registers the server with a path relative to
 the repository, so opening the repo in Claude Code offers it and one approval is the whole setup.
-Point `--api` elsewhere if Knowledge is not on this machine.
+Point `--api` elsewhere if RouteMind is not on this machine.
 
 For a different project, put the same block in its own `.mcp.json` with an absolute path:
 
@@ -77,7 +77,7 @@ Where overlays exist, the `instructions` describe the flow in docs/OVERLAY.md: p
 question belongs to, create the overlay with a reason for each, work from its one table, come back to
 the list at most three times, close with what was used. Measured with Claude Code on 2026-09-11
 against a copy of this install, asked *"an order shipped with SlowPost 7 business days ago still has
-not arrived — what should I do?"* without naming Knowledge: it created an overlay on the delivery area
+not arrived — what should I do?"* without naming RouteMind: it created an overlay on the delivery area
 ("order has not arrived; courier is SlowPost"), opened the SLA node from the overlay's table, read the
 document, answered from it, and closed the overlay `answered` — with the document recorded as
 `reached`, because the overlay named the area and the answer was one level down.
@@ -90,13 +90,13 @@ document, answered from it, and closed the overlay `answered` — with the docum
 The first was the original design, on the reasoning that a tool description is the one text every
 client shows the model. **Measured in Claude Code, that is false**: it loads MCP tools lazily, so the
 model starts with two tool names and no descriptions. Asked *"an order sent by SlowPost is six
-business days late, what do I do?"* — without being told to use Knowledge — it never called the
+business days late, what do I do?"* — without being told to use RouteMind — it never called the
 server, grepped the repository, found nothing, and answered from general courier advice. The answer
 was in an area whose condition read *"an order has not arrived"*.
 
 With the areas in `instructions`, the same question in the same setup loaded the tools by itself,
 skipped the area list because it had already seen it, and answered from the document in three calls.
-So **you do not have to name Knowledge in the question** — as long as the question falls inside an
+So **you do not have to name RouteMind in the question** — as long as the question falls inside an
 area whose `use_when` says so. That is one more reason `use_when` is the field that matters.
 
 One limit: `instructions` are built at initialize, i.e. when the session starts. An area created

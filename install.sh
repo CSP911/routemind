@@ -113,9 +113,9 @@ while [ $i -lt 60 ]; do
     prov=$(printf '%s' "$cfg" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("llm_provider") or "")' 2>/dev/null || echo "")
     known=$(printf '%s' "$cfg" | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin).get("llm_providers") or []))' 2>/dev/null || echo "")
     if [ "$derives" = "True" ]; then
-      printf 'Knowledge is at %s — with %s: it derives addresses and drafts conditions.\n\n' "$BASE" "$prov"
+      printf 'RouteMind is at %s — with %s: it derives addresses and drafts conditions.\n\n' "$BASE" "$prov"
     else
-      printf 'Knowledge is at %s — without an LLM: you type the address and the condition yourself.\n' "$BASE"
+      printf 'RouteMind is at %s — without an LLM: you type the address and the condition yourself.\n' "$BASE"
       # A provider this build does not know turns the LLM off, and "off" alone reads as a forgotten
       # key. Say which it is, because the fix is different.
       want=$(grep -E '^ONTOLOGY_LLM_PROVIDER=' .env | cut -d= -f2)

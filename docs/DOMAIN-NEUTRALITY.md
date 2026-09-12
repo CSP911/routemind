@@ -70,7 +70,7 @@ translation degrades to English rather than to blanks.
 commit. That was written here as the largest remaining hole. Measured, it is not:
 
 * **The screen never lets a person choose a kind that is not in the vocabulary.** With an LLM
-  configured, Knowledge picks one from the list. Without one, the form offers a dropdown of the
+  configured, RouteMind picks one from the list. Without one, the form offers a dropdown of the
   list, defaulting to its first entry. A "kind not in vocab" refusal is reachable by calling the
   API directly and not through the map.
 * **The screen never creates an edge**, so no relation from the vocabulary is ever needed to make
@@ -87,6 +87,6 @@ declaring `edge_rules` that make kinds mean something. What day one actually nee
 screen never asks a person for a word the system will reject — which it does not.
 
 The one real edge — `kind` being a required field whose only default effect was to be rejected if
-wrong — is gone (operator, 2026-09-11). The screen never asks. Knowledge chooses with an LLM where
+wrong — is gone (operator, 2026-09-11). The screen never asks. RouteMind chooses with an LLM where
 there is one, `vocab.yaml`'s `default_kind` supplies it where there is not, and `kind_generated`
 records that nobody picked it, so a domain that later declares `edge_rules` can find them.

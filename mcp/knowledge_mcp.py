@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Knowledge over MCP — so any MCP-capable agent can read this ontology.
+"""RouteMind over MCP — so any MCP-capable agent can read this ontology.
 
     knowledge-mcp --api http://localhost:8080/api/knowledge
 
@@ -78,7 +78,7 @@ class Api:
             except Exception: detail = body
             raise ApiError(f"HTTP {e.code} from {path}" + (f" — {detail}" if detail else ""), e.code)
         except (urllib.error.URLError, TimeoutError) as e:
-            raise ApiError(f"Knowledge is unreachable at {self.base} ({e})")
+            raise ApiError(f"RouteMind is unreachable at {self.base} ({e})")
 
     def json(self, path: str) -> dict:
         raw = self._get(path, "application/json")
@@ -149,9 +149,9 @@ def hop0(api: Api) -> str:
             for r in (d.get("regions") or [])]
     return _table(
         rows,
-        "KNOWLEDGE — the areas of this domain",
+        "ROUTEMIND — the areas of this domain",
         "Pick the row whose condition matches the question, then fetch it. One step, then read.",
-        "Nothing outside this list exists in Knowledge. This list is the grounds on which you may say\n"
+        "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
         "something is absent — no smaller table is.",
     )
 
@@ -394,9 +394,9 @@ class Server:
         try:
             areas = hop0(self.api)
         except ApiError as e:
-            return ("Knowledge is this team's domain knowledge base, and it is not reachable right now "
+            return ("RouteMind is this team's domain knowledge base, and it is not reachable right now "
                     f"({e}). Questions about the domain it covers will need it.")
-        intro = ("Knowledge is this team's own domain knowledge base. It holds facts that are specific to "
+        intro = ("RouteMind is this team's own domain knowledge base. It holds facts that are specific to "
                  "this domain and are not in general knowledge or in any repository.\n\n"
                  "When a question touches anything in the list below, consult Knowledge BEFORE answering "
                  "from general knowledge or searching files. A generic answer to a question this list "
@@ -497,7 +497,7 @@ def serve(api: Api, stdin=sys.stdin, stdout=sys.stdout) -> None:
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="Knowledge over MCP (stdio).")
+    p = argparse.ArgumentParser(description="RouteMind over MCP (stdio).")
     p.add_argument("--api", default=os.environ.get("KNOWLEDGE_API", "http://localhost:8080/api/knowledge"),
                    help="The v1 root: the web app's Knowledge API (http://localhost:8080/api/knowledge), "
                         "or an ontology directly (http://localhost:8100/v1)")

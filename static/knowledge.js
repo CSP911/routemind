@@ -214,7 +214,7 @@
     // Core, with the two things the backbone reads directly hung off it as management hosts: the Core
     // document and the service fragment. They are not Regions and were crowding the Region row.
     seg([[cx, Y.core + DEV.core.h / 2], [cx, Y.bus]], "kn-wire");
-    marks.append(device({ key: "__bb", label: "Knowledge Back-Bone", kind: "bb", address: "", flagKey: "__bb" }, cx, Y.core, "core"));
+    marks.append(device({ key: "__bb", label: "RouteMind Back-Bone", kind: "bb", address: "", flagKey: "__bb" }, cx, Y.core, "core"));
     // The selection, summarised where it can be read and started as one act. Ticking three areas and
     // then hunting for a button on one of them is how a person ends up starting with the wrong set.
     if (state.picked.size && canPick()) {
@@ -626,7 +626,7 @@
     }
     const run = () => {
       if (justDragged) return;           // the click that ends a drag is not a click on the tile
-      if (shape === "core") return showRaw({ kind: "bb", title: "Knowledge Back-Bone", address: "" });
+      if (shape === "core") return showRaw({ kind: "bb", title: "RouteMind Back-Bone", address: "" });
       if (shape === "host" || shape === "mgmt") return showRaw({ kind: row.kind, title: row.label, address: row.address });
       // A switch opens what hangs off it — a rack — and nothing else. The routing table the agent is
       // handed at that step is a button on that rack: opening it on every click meant closing a popup
@@ -1666,7 +1666,7 @@
   const canPick = () => canRun() || state.vrfOn;
 
   const ACTION = {
-    reviewBB: { key: "knowledge.flag.short", run: () => reviewFlags("__bb", "Knowledge Back-Bone", ""),
+    reviewBB: { key: "knowledge.flag.short", run: () => reviewFlags("__bb", "RouteMind Back-Bone", ""),
       when: () => flagsFor("__bb").length > 0 },
     newRegion: { key: "knowledge.bb.newRegion", run: () => newRegionForm() },
     newBBData: { key: "knowledge.act.newData", run: () => whyNoBBData() },
@@ -2315,7 +2315,7 @@
     const w = Math.max(7, ...rows.map((r) => r.address.length));
     const api = `${location.origin}/api/knowledge`;
     return [
-      "You are answering from an ontology called Knowledge. It is a routing table, not a search index:",
+      "You are answering from an ontology called RouteMind. It is a routing table, not a search index:",
       "you pick an area from the list below, fetch that one area, and read what it points you at.",
       "",
       `Fetch with: GET ${api}<address>   (returns JSON; a document address returns the text)`,
@@ -2326,7 +2326,7 @@
       "Use an address exactly as printed. Never build one — every row you fetch prints the addresses",
       "of what is inside it, and those are the only ones that work.",
       "",
-      "Nothing outside this list exists in Knowledge. This list is the grounds on which you may say",
+      "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say",
       "something is absent; no smaller table is.",
     ].join("\n");
   }

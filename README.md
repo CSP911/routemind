@@ -1,4 +1,4 @@
-# Knowledge
+# RouteMind
 
 **An ontology you can see the agent reading.** Split a domain into areas, let each area advertise
 itself in one line, and an agent picks from that list before reading anything else. The map draws
@@ -24,7 +24,7 @@ knowing.
 
 The two things that make it work are the two easiest to get wrong. **`use_when` is the only text read
 before a choice is made**, so an area with a title and no reason is one nobody picks. And **absence is
-decided at hop 0 only** — an area's own table says what that area holds, never what Knowledge lacks.
+decided at hop 0 only** — an area's own table says what that area holds, never what RouteMind lacks.
 
 **[docs/ROUTING.html](docs/ROUTING.html)** — the same structure in detail: how a change to an
 advertisement is proposed and applied, what an overlay is, and how an agent walks all of it. Open it
@@ -47,7 +47,7 @@ the API, a person ticks areas on the map and presses **Draw VRF**, and the map d
 Three rules are worth knowing before you rely on it:
 
 - **It narrows where to look; it does not change what exists.** "Not in the overlay" never means "not
-  in Knowledge" — absence is still decided at hop 0, and going back there is budgeted at three times
+  in RouteMind" — absence is still decided at hop 0, and going back there is budgeted at three times
   a run.
 - **It is run evidence, not ontology.** It is never committed to the data repository — a commit per
   question would bury the structure — so it lives in its own store, expires, and leaves a record.
@@ -164,8 +164,8 @@ Because `install.sh` finishes by reading `/api/app-config`, a wrong key or a tra
 there and not later:
 
 ```
-Knowledge is at http://127.0.0.1:8080 — with openai: it derives addresses and drafts conditions.
-Knowledge is at http://127.0.0.1:8080 — without an LLM: you type the address and the condition yourself.
+RouteMind is at http://127.0.0.1:8080 — with openai: it derives addresses and drafts conditions.
+RouteMind is at http://127.0.0.1:8080 — without an LLM: you type the address and the condition yourself.
 ```
 
 To add or change one afterwards, run `./install.sh` again with the flags, or edit the `ONTOLOGY_LLM_*`
@@ -241,7 +241,7 @@ name gives is filled in as you type the name, and you can change it before savin
 a model can do is give an address to a name that is not in Latin letters; without one, you type that
 address.
 
-**A kind is never asked for.** Nothing reads one until you declare `edge_rules`, so Knowledge picks it
+**A kind is never asked for.** Nothing reads one until you declare `edge_rules`, so RouteMind picks it
 with an LLM where there is one and takes `default_kind` from `vocab.yaml` where there is not. The
 response says `kind_generated` either way, so a domain that later makes kinds mean something can find
 the ones nobody actually chose.
@@ -282,7 +282,7 @@ proxy at `/api/knowledge` (use this) or an ontology directly at `.../v1`. `--act
 recorded on anything the connection writes; it defaults to `mcp`. Both also read `KNOWLEDGE_API` and
 `KNOWLEDGE_ACTOR` from the environment.
 
-Point `--api` at another host and it works the same — the agent does not have to be where Knowledge is.
+Point `--api` at another host and it works the same — the agent does not have to be where RouteMind is.
 
 ### Claude Code
 
@@ -357,7 +357,7 @@ knowledge_overlay(op)    the working set for one question, a VRF — create · g
 
 Two things about this are worth knowing before you write a prompt around it:
 
-- **You do not have to name Knowledge in the question.** The list of areas travels in the server's
+- **You do not have to name RouteMind in the question.** The list of areas travels in the server's
   `instructions`, sent at initialize, so a client that loads tools lazily has still seen it. What
   decides whether the agent comes here is therefore the `use_when` line on each area — which is why
   that is the field to spend time on.

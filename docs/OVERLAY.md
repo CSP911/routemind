@@ -35,7 +35,7 @@ flowchart LR
 ## Four rules
 
 1. **Absence is still decided at hop 0 only.** An overlay narrows where to look; it does not change
-   what exists. "Not in the overlay" never means "not in Knowledge" — the agent goes back to hop 0.
+   what exists. "Not in the overlay" never means "not in RouteMind" — the agent goes back to hop 0.
    That return is budgeted: **at most 3 per run**, or an agent shuttles between areas. The budget is
    in the agent's instructions, not the API: going back is `GET /v1/regions`, which carries no overlay
    and cannot be attributed to a run, so an API count would be a count of something else. The API

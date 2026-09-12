@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Knowledge Web — the map, and a server-side proxy to the ontology API.
+"""RouteMind Web — the map, and a server-side proxy to the ontology API.
 
 Everything a person does here is a call to the ontology API. Nothing about the domain lives in this
 file: it carries a request across the network, checks the shapes it can check cheaply, and hands the
@@ -43,7 +43,7 @@ STATIC_DIR = Path(_iris_playbook_os.environ.get("KNOWLEDGE_STATIC", Path(__file_
 AGENT_URL = str(_iris_playbook_os.environ.get("KNOWLEDGE_AGENT_URL") or "").strip().rstrip("/")
 DEFAULT_ACTOR = (str(_iris_playbook_os.environ.get("KNOWLEDGE_ACTOR") or "web").strip() or "web")[:64]
 
-app = FastAPI(title="Knowledge", docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI(title="RouteMind", docs_url=None, redoc_url=None, openapi_url=None)
 
 _MCP = None
 
@@ -148,9 +148,9 @@ def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = N
         # this", and the only status it does not mean is its own 500. 501 is one it means as well — "this
         # install has no overlay store" — and a consumer deciding whether overlays exist branches on it.
         status = exc.code if (400 <= exc.code < 500 or exc.code in (501, 503)) else 502
-        raise KnowledgeError(status, detail or f"Knowledge API returned HTTP {exc.code}.", details) from exc
+        raise KnowledgeError(status, detail or f"RouteMind API returned HTTP {exc.code}.", details) from exc
     except (_IrisPlaybookURLError, TimeoutError) as exc:
-        raise _IrisPlaybookHTTPException(status_code=503, detail=f"Knowledge API unavailable: {exc}") from exc
+        raise _IrisPlaybookHTTPException(status_code=503, detail=f"RouteMind API unavailable: {exc}") from exc
     try: data = _iris_playbook_json.loads(raw.decode("utf-8"))
     except Exception as exc: raise _IrisPlaybookHTTPException(status_code=502, detail="Knowledge API returned an invalid response.") from exc
     if not isinstance(data, dict): raise _IrisPlaybookHTTPException(status_code=502, detail="Knowledge API response must be an object.")
@@ -166,9 +166,9 @@ def _ontology_text(pathname: str, actor: str) -> str:
         with _iris_playbook_urlopen(proxy_request, timeout=60) as response:
             return response.read().decode("utf-8", "replace")
     except _IrisPlaybookHTTPError as exc:
-        raise _IrisPlaybookHTTPException(status_code=404 if exc.code == 404 else 502, detail=f"Knowledge API returned HTTP {exc.code}.") from exc
+        raise _IrisPlaybookHTTPException(status_code=404 if exc.code == 404 else 502, detail=f"RouteMind API returned HTTP {exc.code}.") from exc
     except (_IrisPlaybookURLError, TimeoutError) as exc:
-        raise _IrisPlaybookHTTPException(status_code=503, detail=f"Knowledge API unavailable: {exc}") from exc
+        raise _IrisPlaybookHTTPException(status_code=503, detail=f"RouteMind API unavailable: {exc}") from exc
 
 
 _KNOWLEDGE_PROPOSAL_STATUS = ("pending", "accepted", "acknowledged", "answered", "rejected")

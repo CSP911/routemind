@@ -34,7 +34,7 @@ const cls = (n) => String(n.attrs.class || "").split(/\s+/);
 const texts = () => find(byId.knTopo, (n) => n.textContent).map((n) => n.textContent);
 
 check("the map drew", find(byId.knTopo, (n) => cls(n).includes("kn-dev")).length > 0);
-check("the backbone is there", texts().includes("Knowledge Back-Bone"));
+check("the backbone is there", texts().includes("RouteMind Back-Bone"));
 // Whatever this install holds, the map shows exactly that. Naming a particular area would tie the
 // check to one person's data and pass vacuously on an empty install — which is the default one.
 const live = await (await realFetch(BASE + "/api/knowledge/regions")).json();
