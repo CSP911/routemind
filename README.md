@@ -9,6 +9,29 @@ repository.
 
 ---
 
+## How it works
+
+![Areas summarize themselves into one advertised route each; an agent reads that list at hop 0, picks
+the areas whose advertised purpose matches the question, and only then reads
+documents.](docs/img/backbone-as-advertisement.png)
+
+The shape is borrowed from dynamic routing on a network, and the borrowed part is the useful one:
+**an area advertises where it is relevant, rather than exposing everything it holds.** An agent reads
+one line per area, routes on that, and reads documents only inside what it picked — so the cost of
+finding something does not grow with how much there is. What each area holds behind its line is its
+own business, which is why the vocabulary and the depth are yours to change without anything upstream
+knowing.
+
+The two things that make it work are the two easiest to get wrong. **`use_when` is the only text read
+before a choice is made**, so an area with a title and no reason is one nobody picks. And **absence is
+decided at hop 0 only** — an area's own table says what that area holds, never what Knowledge lacks.
+
+**[docs/ROUTING.html](docs/ROUTING.html)** — the same structure in detail: how a change to an
+advertisement is proposed and applied, what an overlay is, and how an agent walks all of it. Open it
+in a browser.
+
+---
+
 ## Quickstart
 
 ### What you need
@@ -357,27 +380,6 @@ check/        smoke.sh (API + agent + screen) · write-paths.sh (every write pat
 ```
 
 Every write **commits** into `data/repo`. Undo is `git revert`.
-
-## How it works
-
-![Areas summarize themselves into one advertised route each; an agent reads that list at hop 0, picks
-the areas whose advertised purpose matches the question, and only then reads
-documents.](docs/img/backbone-as-advertisement.png)
-
-The shape is borrowed from dynamic routing on a network, and the borrowed part is the useful one:
-**an area advertises where it is relevant, rather than exposing everything it holds.** An agent reads
-one line per area, routes on that, and reads documents only inside what it picked — so the cost of
-finding something does not grow with how much there is. What each area holds behind its line is its
-own business, which is why the vocabulary and the depth are yours to change without anything upstream
-knowing.
-
-The two things that make it work are the two easiest to get wrong. **`use_when` is the only text read
-before a choice is made**, so an area with a title and no reason is one nobody picks. And **absence is
-decided at hop 0 only** — an area's own table says what that area holds, never what Knowledge lacks.
-
-**[docs/ROUTING.html](docs/ROUTING.html)** — the same structure in detail: how a change to an
-advertisement is proposed and applied, what an overlay is, and how an agent walks all of it. Open it
-in a browser.
 
 ## Not yet domain-neutral
 
