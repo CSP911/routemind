@@ -215,6 +215,13 @@
       return { key: peer ? `${peer}:${dir}` : dir, label: dir, kind: "as",
                address: r.fetch || `/v1/regions/${dir}`,
                region: r, peer, peerLabel: r.peer_label || peer,
+               // `peer` is who this backbone asks — the first hop, and what the read-only rules key
+               // on. `origin` is who the area belongs to, which is not the same once an exchange is
+               // in the middle: it carries the area and does not hold it. The picture groups by
+               // origin so that nothing is drawn as belonging to the thing that merely passed it on.
+               origin: r.origin || peer,
+               originLabel: r.origin ? String(r.origin).toUpperCase() : (r.peer_label || peer),
+               originRevision: r.peer_revision || null,
                flagKey: peer ? null : dir, pickable: !peer };
     });
     const openIdx = ases.map((_, i) => i).filter((i) => isOpen(ases[i].key));
@@ -337,10 +344,19 @@
     // peer, not off this one: drawn on a single bus they would read as areas of this ontology, which
     // is the one thing the picture must not say. The link is drawn dashed and labelled with the state
     // the API reported, because a link is the first thing on this map that can be down.
+    // Grouped by **origin**, not by the peer it was asked of. With an exchange in the middle those
+    // differ, and grouping by the peer would hang three backbones' areas under one EXCHANGE device —
+    // a picture that says the exchange holds them, which is false. It carries them. Network diagrams
+    // draw the adjacency and not the fabric between, for the same reason.
+    //
+    // So a working exchange is not drawn at all. A failed one is, because then it is the thing that
+    // broke and naming it is the only useful thing left to say — that is `silent` below, which keys
+    // on the peer and not on the origin.
     const groups = new Map();
     ases.forEach((row, i) => {
-      if (!groups.has(row.peer)) groups.set(row.peer, []);
-      groups.get(row.peer).push(i);
+      const g = row.origin || row.peer;
+      if (!groups.has(g)) groups.set(g, []);
+      groups.get(g).push(i);
     });
     const linkState = new Map((state.links || []).map((l) => [l.name, l]));
 
@@ -352,13 +368,18 @@
                             address: "", peer: l.name, link: l }, hub, Y.core, "core"));
     });
 
-    for (const [peer, idx] of groups) {
+    for (const [origin, idx] of groups) {
       const from = asX(idx[0]), to = asX(idx[idx.length - 1]);
       const hub = (from + to) / 2;
-      if (peer) {
-        const l = linkState.get(peer) || {};
-        const dev = { key: `__peer:${peer}`, label: ases[idx[0]].peerLabel || peer, kind: "bb",
-                      address: "", peer, link: l };
+      if (origin) {
+        const head = ases[idx[0]];
+        // Its own state, not the transport's. Reached directly there is a link entry; reached through
+        // an exchange there is not, and what is knowable from here is what it advertised and the
+        // revision that came with it.
+        const l = linkState.get(origin) || { reachable: true, areas: idx.length,
+                                             revision: head.originRevision };
+        const dev = { key: `__peer:${origin}`, label: head.originLabel || origin, kind: "bb",
+                      address: "", peer: head.peer, link: l };
         // The wire this backbone reaches it by. Dashed and, when it is down, marked — the rows above
         // are still drawn because the API still advertised them a moment ago, and a link that has
         // gone quiet is a thing to see rather than a row that silently disappears.
@@ -367,12 +388,12 @@
         marks.append(device(dev, hub, Y.core, "core"));
         seg([[hub, Y.core + DEV.core.h / 2], [hub, Y.bus]], "kn-wire is-link" + (l.reachable === false ? " is-down" : ""));
       }
-      seg([[from, Y.bus], [to, Y.bus]], "kn-wire is-bus" + (peer ? " is-link" : ""));
+      seg([[from, Y.bus], [to, Y.bus]], "kn-wire is-bus" + (origin ? " is-link" : ""));
       idx.forEach((i) => {
         const row = ases[i];
         const on = isOpen(row.key);
         seg([[asX(i), Y.bus], [asX(i), Y.as - DEV.as.h / 2]],
-            "kn-wire" + (on ? " is-on" : "") + (peer ? " is-link" : ""));
+            "kn-wire" + (on ? " is-on" : "") + (origin ? " is-link" : ""));
         marks.append(device(row, asX(i), Y.as, "as"));
       });
     }
@@ -1061,7 +1082,12 @@
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({
         published: drawnRevision, savedAt: Date.now(),
-        regions: state.regions, nodes: state.nodes, edges: state.edges, service: state.service,
+        // Local areas only. A peer's rows are not this backbone's to remember: the API drops them the
+        // moment a link cannot be read, and a cache that keeps them puts them straight back — so a
+        // dead link draws exactly like a live one, which is the failure the whole absence rule turns
+        // on. They come back on the refresh below, from the wire, or they do not come back.
+        regions: state.regions.filter((r) => !r.peer),
+        nodes: state.nodes, edges: state.edges, service: state.service,
         entries: [...state.entries.entries()],
       }));
     } catch { /* quota or private mode: the cache is a convenience, the fetch path still works */ }
@@ -1086,6 +1112,15 @@
       // worth seeing, and they cost one call.
       loadFlags().then(draw);
       loadOverlays().then(draw);
+      // Nor is anything across a link. The cached map is this backbone's own areas, which are as good
+      // as the revision they were saved at; whether a peer is answering *right now* is not something
+      // a saved picture can know, and drawing a link that is down as though it were up is the one
+      // mistake this picture must not make.
+      request("regions").then((fresh) => {
+        state.regions = [...state.regions.filter((r) => !r.peer), ...(fresh.regions || []).filter((r) => r.peer)];
+        state.links = fresh.links || [];
+        draw();
+      }).catch(() => {});
       return;
     }
     const [regions, graph] = await Promise.all([request("regions"), request("graph")]);

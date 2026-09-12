@@ -133,6 +133,20 @@ different areas and nothing merged them.
 A link that is down is still drawn, marked, with nothing under it. A map that dropped it would make a
 failed link look exactly like an install that never had one.
 
+**A working exchange is not drawn.** The areas behind it are grouped by the backbone that owns them,
+not by the one that carried them — hanging three backbones' areas under one EXCHANGE device would say
+the exchange holds them, and it does not. Network diagrams draw the adjacency and not the fabric
+between, for the same reason. The address still says the whole truth
+(`/v1/peers/ix/peers/branch/…`), which is where a path belongs.
+
+An exchange that has **failed** is drawn, because then it is the thing that broke and naming it is the
+only useful thing left to say.
+
+And nothing across a link is cached by the screen. The map's own cache holds this backbone's areas —
+as good as the revision they were saved at — and refetches the remote rows every load. A saved picture
+cannot know whether a peer is answering now, and drawing a dead link as a live one is the one mistake
+this picture must not make.
+
 ## Checks
 
 `./check/peer-check.py` — 36 assertions on two throwaway backbones linked both ways, including
