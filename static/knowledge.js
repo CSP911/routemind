@@ -1291,7 +1291,11 @@
     const useWhenRow = labelled("knowledge.bb.useWhen", useWhen, t("knowledge.bb.useWhenWhy"));
     useWhenRow.append(suggest(async () => {
       if (!source.value.trim()) throw new Error(t("knowledge.bb.draftNeedsName"));
-      const d = await post("suggest/use-when", { name: source.value.trim(), one_liner: source.value.trim() });
+      // The name in the form a person reads, not the slug. This sent `it-support` as *what the area
+      // is*, which tells a model nothing it did not already have from the name — and the field it
+      // fills is the one an agent routes on.
+      const label = source.value.trim().replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const d = await post("suggest/use-when", { name: label, one_liner: label });
       useWhen.value = String(d.use_when || "");
       useWhen.focus();
     }));

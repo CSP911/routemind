@@ -134,13 +134,38 @@ def suggest_use_when(name: str, one_liner: str, core_description: str) -> str:
         "- Use only what the input says. Invent no capability the area has not claimed.\n"
         "- Output that line alone — no quotes, no preamble."
     )
-    ask = f"area name: {name}\nwhat it is: {one_liner}\nits row in the architecture document: {core_description}"
+    # A brand-new area has no description and no row in the architecture document yet — the form that
+    # opens one asks for two things and derives the rest. Handing the model an empty field next to
+    # "invent no capability the area has not claimed" left it nothing to do but ask the caller for the
+    # missing context, so say what is missing and what to do about it.
+    known = [f"area name: {name}"]
+    if one_liner and one_liner != name: known.append(f"what it is: {one_liner}")
+    if core_description: known.append(f"its row in the architecture document: {core_description}")
+    if len(known) == 1:
+        known.append("Nothing else is known yet — this area is being opened now. Write the line from the "
+                     "name alone: the questions someone with that name over the door would be asked.")
+    ask = "\n".join(known)
     # 422 means "the model answered and the answer was unusable". A provider that refused is a
     # different fact with a different fix, so it does not borrow that code.
     try: out = (c(SYSTEM, ask) or "").strip().strip('"').splitlines()
     except Exception as e: raise WriteError(502, f"could not draft a line: {e}")
-    line = (out[0] if out else "").strip()
-    if not line: raise WriteError(422, "nothing could be drafted from that — write the line yourself")
+    # The prompt says "output that line alone — no quotes, no preamble", so more than one line back is
+    # the model disobeying, and taking the first of them is how a preamble became the answer.
+    lines = [l.strip() for l in out if l.strip()]
+    line = lines[0] if lines else ""
+    # An answer is not a draft just because it came back. The prompt asks for one line, under 120
+    # characters, no trailing period — and forbids inventing anything the input did not claim. Given a
+    # brand-new area, where the only input is a slug and the architecture row does not exist yet, a
+    # good model obeys that last rule and asks the caller for the missing context instead. The screen
+    # then wrote *"I need the architecture document content… Could you provide the row that describes
+    # what it-support covers?"* straight into the field an agent routes on, and pressing Create would
+    # have made that sentence the area's advertisement.
+    #
+    # So the shape the prompt asked for is checked, not just the presence of text. Refusing reaches
+    # the person as "write the line yourself", which is the honest outcome when there was nothing to
+    # draft from.
+    if not line or len(lines) != 1 or line.endswith(("?", ":")) or len(line) > 240:
+        raise WriteError(422, "nothing could be drafted from that — write the line yourself")
     return line[:300]
 
 
