@@ -1174,9 +1174,13 @@
     card.append(el("p", "kn-fnote", t("knowledge.del.revertable")));
 
     // Typing the name is the whole guard. A confirm dialog is clicked through; a name has to be read.
+    // These four strings are shared with `deleteNodeCard`, so none of them may say "area": deleting a
+    // document read "If this was the wrong area", "Type the area's name" and "That is not the name of
+    // this area" — three times naming the wrong kind of thing, on the one screen where a person has to
+    // know exactly what they are about to destroy. The card's own title says what it is.
     const typed = input("", { class: "kn-input is-mono", spellcheck: "false", placeholder: as.label });
     card.append(labelled("knowledge.del.confirmLabel", typed,
-      t("knowledge.del.confirmHint").replace("{area}", as.label)));
+      t("knowledge.del.confirmHint").replace("{name}", as.label)));
 
     const progress = el("p", "kn-fnote", "");
     card.append(progress);
@@ -1240,7 +1244,7 @@
     if (hasBody) card.append(el("p", "kn-fnote", t("knowledge.delNode.bodyGoes")));
     card.append(el("p", "kn-fnote", t("knowledge.del.revertable")));
     const typed = input("", { class: "kn-input is-mono", spellcheck: "false", placeholder: id });
-    if (lossy) card.append(labelled("knowledge.del.confirmLabel", typed, t("knowledge.del.confirmHint").replace("{area}", id)));
+    if (lossy) card.append(labelled("knowledge.del.confirmLabel", typed, t("knowledge.del.confirmHint").replace("{name}", id)));
 
     card.append(actions(
       button("common.cancel", "quiet", closeCard),
