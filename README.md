@@ -390,6 +390,14 @@ came from, and knowing which is better than being surprised.
 Split out of the Knowledge unit of IRIS. **This repository is the canonical source** of the
 ontology service. See [docs/PROVENANCE.md](docs/PROVENANCE.md).
 
+## Contact
+
+Business inquiries, collaboration, or just curious: **qct8377@gmail.com**
+LinkedIn → [linkedin.com/in/cspark911](https://www.linkedin.com/in/cspark911/)
+Bug reports and questions → [GitHub Issues](https://github.com/CSP911/routemind/issues)
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
