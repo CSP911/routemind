@@ -253,6 +253,8 @@ window.IRISI18N_DICTS.zh = {
   "knowledge.oneLinerHint": "路由表里的那一行 — 智能体就凭它来选",
   "knowledge.outOfSync": "仓库领先了 — 有人手工改过，这种状态下写入会被挡住。发布它，或者还原它。",
   "knowledge.outsideApi": "本体 API 之外",
+  "knowledge.peer.down": "链路中断",
+  "knowledge.peer.up": "{as} 个 AS · rev {rev}",
   "knowledge.pick.start": "区域",
   "knowledge.pickFragment": "选一个片段",
   "knowledge.pickNode": "选一个节点",
@@ -351,4 +353,8 @@ window.IRISI18N_DICTS.zh = {
   "knowledge.weak": "弱",
   "knowledge.weight": "权重",
   "knowledge.working": "处理中…",
+  "knowledge.zoom": "地图大小",
+  "knowledge.zoomIn": "放大",
+  "knowledge.zoomOut": "缩小",
+  "knowledge.zoomReset": "回到 100%",
 };

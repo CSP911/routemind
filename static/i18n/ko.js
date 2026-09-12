@@ -250,6 +250,8 @@ window.IRISI18N_DICTS.ko = {
   "knowledge.oneLinerHint": "라우팅 테이블에 실리는 그 한 줄 — 에이전트는 이걸로 고릅니다",
   "knowledge.outOfSync": "저장소가 앞서 있습니다 — 누군가 손으로 고쳤고, 그 상태에서는 쓰기가 막힙니다. 발행하거나 되돌리세요.",
   "knowledge.outsideApi": "온톨로지 API 밖",
+  "knowledge.peer.down": "회선 끊김",
+  "knowledge.peer.up": "AS {as}개 · rev {rev}",
   "knowledge.pick.start": "영역",
   "knowledge.pickFragment": "프래그먼트를 고르세요",
   "knowledge.pickNode": "노드를 고르세요",
@@ -348,6 +350,10 @@ window.IRISI18N_DICTS.ko = {
   "knowledge.weak": "약함",
   "knowledge.weight": "가중치",
   "knowledge.working": "처리 중…",
+  "knowledge.zoom": "맵 크기",
+  "knowledge.zoomIn": "크게",
+  "knowledge.zoomOut": "작게",
+  "knowledge.zoomReset": "100% 로",
 };
 // 조사 주의 — a note for whoever writes the next Korean string.
 //

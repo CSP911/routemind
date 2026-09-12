@@ -50,6 +50,13 @@
           <span><i class="kn-dot is-flag"></i><span data-i18n="knowledge.legend.flag">ROUTING REQUEST</span></span>
           <span><i class="kn-dot is-vrf"></i><span data-i18n="knowledge.legend.vrf">VRF</span></span>
         </div>
+        <!-- Beside the legend rather than over the map: a control floating on the drawing would sit
+             on top of a tile at some zoom, and this map is already something you drag things across. -->
+        <div class="kn-zoom" role="group" data-i18n-label="knowledge.zoom">
+          <button type="button" id="knZoomOut" class="kn-zbtn" data-i18n-label="knowledge.zoomOut">−</button>
+          <button type="button" id="knZoomReset" class="kn-zpct" data-i18n-label="knowledge.zoomReset">100%</button>
+          <button type="button" id="knZoomIn" class="kn-zbtn" data-i18n-label="knowledge.zoomIn">+</button>
+        </div>
       </div>
       <div class="kn-topo-wrap"><svg id="knTopo" class="kn-topo" role="img" aria-label="RouteMind topology"></svg></div>
       <p class="kn-hint" data-i18n="knowledge.mapHint2">Click a Region or node to open what hangs off it. The routing table the agent is handed is the ▤ button on that rack; a DATA tile opens the file it would read.</p>

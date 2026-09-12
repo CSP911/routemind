@@ -13,9 +13,10 @@ that outweighs the rest: every agent would then need every peer's credential. Re
 credential in one place, in this service's environment, the way the LLM key already is. Firewalls
 are the second reason and the smaller one.
 
-**Nothing is cached beyond a breath.** `ADVERT_TTL` exists so that hop 0 — which every run reads —
-does not make a network call every time, not so that this backbone can answer for a peer that is
-gone. Documents are not cached at all. A cache of somebody else's ontology is a copy of it, and a
+**Nothing is cached beyond a breath.** `ADVERT_TTL` is five seconds and covers failures as well as
+answers: it is there so that a peer which is slow or gone does not cost every request the full
+timeout, not so that this backbone can answer for one. A failure is never served from an earlier
+success. Documents are not cached at all — a cache of somebody else's ontology is a copy of it, and a
 copy is the thing a link exists to avoid; the moment this service can answer from a copy, two
 installs that were meant to stay separate have quietly become one with a replication lag.
 
@@ -36,7 +37,15 @@ from pathlib import Path
 
 import yaml
 
-ADVERT_TTL = float(os.environ.get("ONTOLOGY_PEER_TTL") or 30.0)
+# Five seconds, not thirty. The cache exists for the sad path — a peer that is slow or gone would
+# otherwise cost every single request the full timeout — and for collapsing the burst of calls one
+# agent run makes. It is not there to spare the happy path a few milliseconds on a local network.
+#
+# The number is small because of what it bounds. While a success is cached, a link that has just died
+# still reads as alive, and hop 0 still tells an agent it may claim absence — the one thing the design
+# does not allow. No cache makes that window zero, so the honest thing is to keep it short and say
+# what it is, which docs/PEERING.md does.
+ADVERT_TTL = float(os.environ.get("ONTOLOGY_PEER_TTL") or 5.0)
 TIMEOUT = float(os.environ.get("ONTOLOGY_PEER_TIMEOUT") or 4.0)
 NAME_OK = __import__("re").compile(r"^[a-z][a-z0-9-]{0,30}$")
 
@@ -79,7 +88,10 @@ def declared(root: Path) -> list[dict]:
     return out
 
 
-_cache: dict[str, tuple[float, dict]] = {}
+# name -> (when, advertisement or None, error). A failure is remembered for the same window as a
+# success, and for the stronger reason: without it a peer that is down costs every request the full
+# timeout, and hop 0 — which every run reads — becomes as slow as the slowest thing anyone linked to.
+_cache: dict[str, tuple[float, dict | None, str]] = {}
 
 
 def _fetch(peer: dict, path: str) -> dict:
@@ -99,22 +111,29 @@ def _fetch(peer: dict, path: str) -> dict:
 
 
 def advertisement(peer: dict) -> dict:
-    """What this peer is advertising, cached for `ADVERT_TTL`.
+    """What this peer is advertising, or the failure, remembered for `ADVERT_TTL` either way.
 
-    On failure the cache is **not** used as a fallback. A stale advertisement served as a live one is
-    how a link that is down looks exactly like a link that is up, and the whole point of telling the
-    two apart is that hop 0 has to stop claiming absence when one is down.
+    A failure is **never** answered from an earlier success. A stale advertisement served as a live
+    one is how a link that is down looks exactly like a link that is up, and the whole point of
+    telling those apart is that hop 0 stops claiming absence when one is down. Falling back to the
+    last good answer would make that impossible to notice, which is worse than the outage.
     """
     hit = _cache.get(peer["name"])
-    if hit and (time.monotonic() - hit[0]) < ADVERT_TTL: return hit[1]
-    d = _fetch(peer, "/v1/export/regions")
-    _cache[peer["name"]] = (time.monotonic(), d)
+    if hit and (time.monotonic() - hit[0]) < ADVERT_TTL:
+        if hit[1] is not None: return hit[1]
+        raise PeerError(hit[2], status=504, reachable=False)
+    try:
+        d = _fetch(peer, "/v1/export/regions")
+    except PeerError as e:
+        _cache[peer["name"]] = (time.monotonic(), None, str(e))
+        raise
+    _cache[peer["name"]] = (time.monotonic(), d, "")
     return d
 
 
 def forget(name: str | None = None) -> None:
     """Drop what is remembered about a peer, so the next read goes to the wire. For the checks, and
-    for a person who has just fixed something on the other side and does not want to wait 30s."""
+    for a person who has just fixed something on the other side and does not want to wait it out."""
     if name is None: _cache.clear()
     else: _cache.pop(name, None)
 

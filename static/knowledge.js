@@ -13,7 +13,19 @@
   // `open` is the Region whose nodes are fanned out; `openNode` is the node whose files are fanned out
   // beside them. The map used to stop at nodes, so the documents an operator actually wants to read had
   // no mark to click — the panel showed a list of addresses with no way to open one.
-  const state = { regions: [], nodes: [], edges: [], service: "", open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { agent: false, agentUrl: "", derives: false }, flags: new Map(), picked: new Set(), services: [], overlays: [], vrfOn: false, vrfSel: null, curatorOn: false };
+  const ZOOM_KEY = "knowledge-zoom";
+  const ZOOM_STEPS = [0.5, 0.67, 0.8, 1, 1.25, 1.5, 2];
+  const readZoom = () => {
+    // Per viewer and per browser, like the language: one install is a team's ontology, and how big
+    // somebody wants the map is about their screen and nobody else's.
+    try {
+      const v = Number(localStorage.getItem(ZOOM_KEY));
+      if (ZOOM_STEPS.includes(v)) return v;
+    } catch { /* private mode */ }
+    return 1;
+  };
+
+  const state = { regions: [], nodes: [], edges: [], service: "", open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { agent: false, agentUrl: "", derives: false }, flags: new Map(), picked: new Set(), services: [], overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom() };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -193,10 +205,17 @@
     // underscores, so a tile labelled from it reads `order_delivery` while everything that fetches
     // it says `order-delivery` — one area under two names, and the one on screen is the one that
     // does not work if anybody types it.
+    // An area from a linked backbone is not a different kind of thing — it is the same thing, one
+    // backbone further away. So it draws as an ordinary area and the difference is carried where it
+    // matters: which backbone it hangs off, and a key that cannot collide with a local one. Both
+    // sides of this pair of installs have a `payroll`, which is exactly the case that must not merge.
     const ases = state.regions.map((r) => {
       const dir = String(r.fetch || "").split("/").pop() || norm(r.source);
-      return { key: dir, label: dir, kind: "as", address: r.fetch || `/v1/regions/${dir}`,
-               region: r, flagKey: dir, pickable: true };
+      const peer = r.peer || null;
+      return { key: peer ? `${peer}:${dir}` : dir, label: dir, kind: "as",
+               address: r.fetch || `/v1/regions/${dir}`,
+               region: r, peer, peerLabel: r.peer_label || peer,
+               flagKey: peer ? null : dir, pickable: !peer };
     });
     const openIdx = ases.map((_, i) => i).filter((i) => isOpen(ases[i].key));
 
@@ -222,8 +241,14 @@
     const drop = Math.max(0, vrfBottom + VRF.gap - (BASE_Y.core - DEV.core.h / 2));
     const Y = { core: BASE_Y.core + drop, bus: BASE_Y.bus + drop, as: BASE_Y.as + drop };
 
+    // A link whose peer is down advertises nothing, so it has no areas and would take no room — and
+    // the map would then look exactly like a backbone that has no link at all. Those are different
+    // facts and this is the picture that has to tell them apart, so the room is reserved for the
+    // device whether or not anything hangs off it.
+    const silent = (state.links || []).filter(
+      (l) => l.reachable === false && !ases.some((a) => a.peer === l.name));
     const asRow = ases.length * DEV.as.w + (ases.length - 1) * 24;
-    const width = Math.max(1080, asRow + 96, racksW + 40);
+    const width = Math.max(1080, asRow + 96, racksW + 40) + silent.length * (DEV.core.w + 48);
     const links = svgEl("g", {});
     const marks = svgEl("g", {});
     canvas.append(links, marks);
@@ -308,13 +333,49 @@
       marks.append(device(m, x, y, "mgmt"));
     }
 
-    // The backbone bus and one drop per Region.
-    seg([[asX(0), Y.bus], [asX(ases.length - 1), Y.bus]], "kn-wire is-bus");
+    // One bus per backbone, and a line between the backbones themselves. A peer's areas hang off the
+    // peer, not off this one: drawn on a single bus they would read as areas of this ontology, which
+    // is the one thing the picture must not say. The link is drawn dashed and labelled with the state
+    // the API reported, because a link is the first thing on this map that can be down.
+    const groups = new Map();
     ases.forEach((row, i) => {
-      const on = isOpen(row.key);
-      seg([[asX(i), Y.bus], [asX(i), Y.as - DEV.as.h / 2]], "kn-wire" + (on ? " is-on" : ""));
-      marks.append(device(row, asX(i), Y.as, "as"));
+      if (!groups.has(row.peer)) groups.set(row.peer, []);
+      groups.get(row.peer).push(i);
     });
+    const linkState = new Map((state.links || []).map((l) => [l.name, l]));
+
+    // The ones that answered nothing: a device and the wire to it, marked, with nothing below.
+    silent.forEach((l, i) => {
+      const hub = width - (silent.length - i) * (DEV.core.w + 48) + DEV.core.w / 2 + 24;
+      seg([[cx + DEV.core.w / 2, Y.core], [hub, Y.core]], "kn-wire is-link is-down");
+      marks.append(device({ key: `__peer:${l.name}`, label: l.label || l.name, kind: "bb",
+                            address: "", peer: l.name, link: l }, hub, Y.core, "core"));
+    });
+
+    for (const [peer, idx] of groups) {
+      const from = asX(idx[0]), to = asX(idx[idx.length - 1]);
+      const hub = (from + to) / 2;
+      if (peer) {
+        const l = linkState.get(peer) || {};
+        const dev = { key: `__peer:${peer}`, label: ases[idx[0]].peerLabel || peer, kind: "bb",
+                      address: "", peer, link: l };
+        // The wire this backbone reaches it by. Dashed and, when it is down, marked — the rows above
+        // are still drawn because the API still advertised them a moment ago, and a link that has
+        // gone quiet is a thing to see rather than a row that silently disappears.
+        seg([[cx + DEV.core.w / 2, Y.core], [hub, Y.core]],
+            "kn-wire is-link" + (l.reachable === false ? " is-down" : ""));
+        marks.append(device(dev, hub, Y.core, "core"));
+        seg([[hub, Y.core + DEV.core.h / 2], [hub, Y.bus]], "kn-wire is-link" + (l.reachable === false ? " is-down" : ""));
+      }
+      seg([[from, Y.bus], [to, Y.bus]], "kn-wire is-bus" + (peer ? " is-link" : ""));
+      idx.forEach((i) => {
+        const row = ases[i];
+        const on = isOpen(row.key);
+        seg([[asX(i), Y.bus], [asX(i), Y.as - DEV.as.h / 2]],
+            "kn-wire" + (on ? " is-on" : "") + (peer ? " is-link" : ""));
+        marks.append(device(row, asX(i), Y.as, "as"));
+      });
+    }
 
     let bottom = Y.as + DEV.as.h / 2 + 52;
     if (plans.length) {
@@ -396,9 +457,15 @@
     // drawn outside the viewBox and simply does not appear.
     const svcRows = Math.max((state.services.length || (state.service ? 1 : 0)) - 1, 0);
     const height = Math.max(bottom, 300, Y.core + svcRows * (DEV.mgmt.h + 10) + DEV.mgmt.h + 40);
+    // The viewBox stays the drawing's own size and only the rendered size is scaled, so zooming
+    // changes nothing about where anything is. Every coordinate this function computed — the racks it
+    // measured before sizing the canvas, the corner it reserved for the VRF chips, the drop targets a
+    // drag tests with `elementFromPoint` — is still in the same place, and the wrapper's existing
+    // `overflow-x: auto` becomes the pan. Redrawing at a scaled size instead would mean every one of
+    // those measurements happening in a different coordinate system depending on the zoom.
     canvas.setAttribute("viewBox", `0 0 ${width} ${height}`);
-    canvas.setAttribute("width", width);
-    canvas.setAttribute("height", height);
+    canvas.setAttribute("width", Math.round(width * state.zoom));
+    canvas.setAttribute("height", Math.round(height * state.zoom));
   }
 
   /** Everything about one open area's rack except where it goes: its tiles, its header, its actions
@@ -631,7 +698,15 @@
     g.append(label);
     if (shape === "core") {
       const sub = svgEl("text", { x, y: y + 14, class: "kn-dev-sub", "text-anchor": "middle" });
-      sub.textContent = tv("knowledge.counts", { as: state.regions.length, nodes: state.nodes.length });
+      // A peer's device says what the *link* is, not what this ontology holds. Printing the local
+      // counts under somebody else's name is the map telling a lie in the smallest possible type.
+      // What is knowable from here is how many areas it advertises, and whether it answered.
+      sub.textContent = row.peer
+        ? (row.link && row.link.reachable === false
+            ? t("knowledge.peer.down")
+            : tv("knowledge.peer.up", { as: (row.link && row.link.areas) || 0,
+                                        rev: String((row.link && row.link.revision) || "").slice(0, 7) }))
+        : tv("knowledge.counts", { as: state.regions.filter((r) => !r.peer).length, nodes: state.nodes.length });
       g.append(sub);
     }
     if (row.badge) {
@@ -647,6 +722,10 @@
     }
     const run = () => {
       if (justDragged) return;           // the click that ends a drag is not a click on the tile
+      // A peer's backbone is not this one's transcript. Until there is something to show for a link —
+      // what it advertises, when it was last read — pressing it does nothing, rather than opening the
+      // local backbone's document under somebody else's name.
+      if (shape === "core" && row.peer) return;
       if (shape === "core") return showRaw({ kind: "bb", title: "RouteMind Back-Bone", address: "" });
       if (shape === "host" || shape === "mgmt") return showRaw({ kind: row.kind, title: row.label, address: row.address });
       // A switch opens what hangs off it — a rack — and nothing else. The routing table the agent is
@@ -980,6 +1059,7 @@
     const cached = published ? readCache(published) : null;
     if (cached) {
       state.regions = cached.regions || [];
+      state.links = [];
       state.nodes = cached.nodes || [];
       state.edges = cached.edges || [];
       state.service = cached.service || "";
@@ -994,6 +1074,9 @@
     }
     const [regions, graph] = await Promise.all([request("regions"), request("graph")]);
     state.regions = regions.regions || [];
+    // Never cached, for the reason flags are not: whether a link is up is the thing worth seeing now,
+    // and a cached "reachable" is a picture of a link that may have gone since.
+    state.links = regions.links || [];
     state.nodes = graph.nodes || [];
     state.edges = graph.edges || [];
     state.entries = new Map();
@@ -2323,8 +2406,37 @@
     });
   }
 
+  /** Zoom. Steps rather than a slider: the useful sizes are few and a person wants to land on one,
+   *  not to hunt for 100% again. The percentage is the reset — pressing the number to go back is what
+   *  people try first, and a fourth button for it would be a control for something already on screen. */
+  function zoomControls() {
+    const out = $("knZoomOut"), pct = $("knZoomReset"), inn = $("knZoomIn");
+    if (!out || !pct || !inn) return;
+    const paint = () => {
+      pct.textContent = `${Math.round(state.zoom * 100)}%`;
+      out.disabled = state.zoom <= ZOOM_STEPS[0];
+      inn.disabled = state.zoom >= ZOOM_STEPS[ZOOM_STEPS.length - 1];
+    };
+    const set = (z) => {
+      state.zoom = z;
+      try { localStorage.setItem(ZOOM_KEY, String(z)); } catch { /* private mode */ }
+      paint();
+      draw();
+    };
+    const step = (d) => {
+      const i = ZOOM_STEPS.indexOf(state.zoom);
+      const next = ZOOM_STEPS[Math.min(Math.max((i < 0 ? ZOOM_STEPS.indexOf(1) : i) + d, 0), ZOOM_STEPS.length - 1)];
+      if (next !== state.zoom) set(next);
+    };
+    out.addEventListener("click", () => step(-1));
+    inn.addEventListener("click", () => step(1));
+    pct.addEventListener("click", () => { if (state.zoom !== 1) set(1); });
+    paint();
+  }
+
   function boot() {
     languagePicker();
+    zoomControls();
     $("knCopy").addEventListener("click", async (e) => {
       const b = e.currentTarget;
       try {

@@ -250,6 +250,8 @@ window.IRISI18N_DICTS.en = {
   "knowledge.oneLinerHint": "The one line in the routing table — the agent picks by it",
   "knowledge.outOfSync": "The repository is ahead — someone edited by hand, and writes are blocked in that state. Publish it or revert it.",
   "knowledge.outsideApi": "Outside the ontology API",
+  "knowledge.peer.down": "link down",
+  "knowledge.peer.up": "{as} AS · rev {rev}",
   "knowledge.pick.start": "areas",
   "knowledge.pickFragment": "Pick a fragment",
   "knowledge.pickNode": "Pick a node",
@@ -348,4 +350,8 @@ window.IRISI18N_DICTS.en = {
   "knowledge.weak": "weak",
   "knowledge.weight": "weight",
   "knowledge.working": "working…",
+  "knowledge.zoom": "Map size",
+  "knowledge.zoomIn": "Bigger",
+  "knowledge.zoomOut": "Smaller",
+  "knowledge.zoomReset": "Back to 100%",
 };

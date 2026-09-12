@@ -249,6 +249,8 @@ window.IRISI18N_DICTS.ja = {
   "knowledge.oneLinerHint": "ルーティングテーブルに載るその一行 — エージェントはこれで選びます",
   "knowledge.outOfSync": "リポジトリが先に進んでいます — 誰かが手で編集し、その状態では書き込みが止まります。発行するか、戻してください。",
   "knowledge.outsideApi": "オントロジー API の外",
+  "knowledge.peer.down": "リンク切断",
+  "knowledge.peer.up": "AS {as} · rev {rev}",
   "knowledge.pick.start": "領域",
   "knowledge.pickFragment": "フラグメントを選んでください",
   "knowledge.pickNode": "ノードを選んでください",
@@ -347,4 +349,8 @@ window.IRISI18N_DICTS.ja = {
   "knowledge.weak": "弱い",
   "knowledge.weight": "重み",
   "knowledge.working": "処理中…",
+  "knowledge.zoom": "マップの大きさ",
+  "knowledge.zoomIn": "大きく",
+  "knowledge.zoomOut": "小さく",
+  "knowledge.zoomReset": "100% に戻す",
 };

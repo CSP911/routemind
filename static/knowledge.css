@@ -448,3 +448,24 @@ body.kn-dragging { user-select: none; }
 }
 .kn-lang select:hover { border-color: var(--line-strong, #c7cfd8); }
 .kn-lang select:focus-visible { outline: 2px solid var(--accent, #2d6a5f); outline-offset: 1px; }
+
+/* Map zoom, beside the legend. The percentage is the reset button: a separate one would be a third
+   control for something the number already says, and pressing the number to get back to 100% is the
+   thing people try first. */
+.kn-zoom { display: inline-flex; align-items: center; gap: 2px; margin-left: 14px; }
+.kn-zbtn, .kn-zpct {
+  font: inherit; font-size: 12px; line-height: 1; color: var(--fg, #1c2530);
+  background: var(--panel, #fff); border: 1px solid var(--line, #dfe4ea);
+  padding: 4px 7px; cursor: pointer;
+}
+.kn-zbtn:first-child { border-radius: 7px 0 0 7px; }
+.kn-zbtn:last-child { border-radius: 0 7px 7px 0; }
+.kn-zpct { border-left: 0; border-right: 0; min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; }
+.kn-zbtn:hover:not(:disabled), .kn-zpct:hover { border-color: var(--line-strong, #c7cfd8); }
+.kn-zbtn:disabled { opacity: .4; cursor: default; }
+.kn-zbtn:focus-visible, .kn-zpct:focus-visible { outline: 2px solid var(--accent, #2d6a5f); outline-offset: 1px; }
+
+/* A link to another backbone. Dashed, because it is the one wire on this map that leaves the
+   building and the one that can be down — everything else here either exists or does not. */
+.kn-wire.is-link { stroke-dasharray: 7 5; }
+.kn-wire.is-link.is-down { stroke: var(--warn, #b0603a); opacity: .75; }
