@@ -94,7 +94,7 @@ fi
 
 # Before compose, not after: a bind-mount source Docker has to invent is invented as root, and this
 # container runs as you so that it can commit into your repository.
-mkdir -p data/repo data/publish data/overlays
+mkdir -p data/repo data/publish data/overlays data/harness
 docker compose up -d --build
 
 # One base URL, used to wait and then to check. Computing it twice is how the check ends up talking

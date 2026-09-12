@@ -74,7 +74,17 @@ check("it declares tools", "tools" in (init["result"].get("capabilities") or {})
 # straight to the right area. The instructions are what tells a model a question belongs here at all.
 instr = (init["result"] or {}).get("instructions") or ""
 check("initialize carries instructions", bool(instr.strip()))
-check("they name the areas, so a model can tell a question belongs here", "/v1/regions/" in instr)
+# An install with no areas yet is the default one, and four checks here read as failures on it — the
+# advertisement is empty because there is nothing to advertise, not because anything is broken. What
+# still has to hold either way is asserted either way; what needs an area to exist says so and skips.
+import urllib.request as _u, json as _j
+try:
+    with _u.urlopen(API.rstrip("/") + "/regions", timeout=10) as r: HAS_AREAS = bool(_j.load(r).get("regions"))
+except Exception: HAS_AREAS = False
+if HAS_AREAS:
+    check("they name the areas, so a model can tell a question belongs here", "/v1/regions/" in instr)
+else:
+    results.append("--   no areas yet; the instructions have none to name")
 check("they say to consult it before answering generically", "BEFORE" in instr)
 
 # A notification has no id and must produce no reply. A server that answers one desynchronises the
@@ -98,15 +108,25 @@ check(f"{len(want)} tools — the two an agent walks with{', and the overlay' if
 # The areas have to reach the model before it decides anything, and a tool description is the only
 # text every MCP client shows it.
 desc = tools[0]["description"]
-check("the area list rides in the tool description", "ADDRESS" in desc and "/v1/regions" in desc)
+if HAS_AREAS:
+    check("the area list rides in the tool description", "ADDRESS" in desc and "/v1/regions" in desc)
+else:
+    results.append("--   no areas yet; the tool description has no list to carry")
 check("absence is claimed only for the whole list", "grounds on which you may say" in desc)
 
 # Walk it as an agent would: nothing but addresses the tables printed.
 top, err = c.text("knowledge_table")
-check("no arguments gives the areas", not err and "/v1/regions/" in top)
+check("no arguments answers", not err and bool(top.strip()))
+# The one thing hop 0 must say whether or not it holds anything: that it, and nothing smaller, is
+# where absence is decided. An empty install answers that too, and that is worth checking on the
+# install most people will actually have first.
+check("and it still carries the absence rule", "grounds on which you may say" in top)
 
 addrs = [w for line in top.splitlines() for w in line.split() if w.startswith("/v1/regions/")]
-check("the area list printed at least one address", bool(addrs))
+if HAS_AREAS:
+    check("the area list printed at least one address", bool(addrs))
+else:
+    results.append("--   no areas yet; there is no address for hop 0 to print")
 if addrs:
     area, err = c.text("knowledge_table", {"path": addrs[0]})
     check(f"the area table fetches ({addrs[0]})", not err)

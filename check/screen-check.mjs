@@ -50,8 +50,14 @@ check("the config was read", state.cfg && typeof state.cfg.derives === "boolean"
 const agent = Boolean(state.cfg.agent);
 const overlaysHere = (await realFetch(BASE + "/api/knowledge/overlays?state=open")).status === 200;
 const canPick = agent || overlaysHere;
-check(`tick boxes ${canPick ? "present" : "absent"} (agent ${agent}, overlays ${overlaysHere})`,
-  (find(byId.knTopo, (n) => cls(n).includes("kn-pick")).length > 0) === canPick);
+// A tick box is drawn on an area, so an install with no areas has none whichever way it is
+// configured — asserting "present" there failed the default install rather than the screen.
+if (areas.length) {
+  check(`tick boxes ${canPick ? "present" : "absent"} (agent ${agent}, overlays ${overlaysHere})`,
+    (find(byId.knTopo, (n) => cls(n).includes("kn-pick")).length > 0) === canPick);
+} else {
+  results.push("--   no areas yet; there is nothing to draw a tick box on");
+}
 
 // Open the area: its rack, its node, and the node's document.
 const dev = (label) => find(byId.knTopo, (n) => cls(n).includes("kn-dev") && [...n.children].some((c) => c.textContent === label))[0];
@@ -126,6 +132,36 @@ else {
   state.overlays = live; draw();
   check("a VRF chip is drawn per open overlay", drawn === 1 + 2 + 3 + 5);
   check("and the map leaves that corner to them", clashes === 0);
+}
+
+// "Advertise upstream" files a proposal, and a proposal needs the curator — ONTOLOGY_HARNESS. Unset,
+// every such call answers 501, and until 2026-09-12 the action was offered anyway: the button sat
+// between two that are drawn conditionally, and pressing it put the name of an environment variable
+// on screen. Asserted in both directions, because the failure that lasted was the affordance that is
+// there and cannot work; a check that only proves it appears would have passed throughout.
+{
+  const shown = () => { let n = 0;
+    const walk = (x) => { if (x.textContent && /Advertise upstream/.test(x.textContent)) n++;
+                          for (const c of [...(x.children || [])]) walk(c); };
+    walk(byId.knTopo); walk(byId.knEdit); return n; };
+  if (!areas.length) results.push("--   no areas yet; the advertise-upstream gate needs one");
+  else {
+    const was = state.curatorOn;
+    const seen = {};
+    for (const on of [true, false]) {
+      // Two traps, and both read as "correctly hidden" rather than as a broken check. The tile is
+      // looked up after the redraw, because `draw()` replaces the tree and a node held across it is
+      // detached. And clicking a rack that is already open closes it — the checks above this one
+      // leave the first area open — so it is only clicked when it is shut.
+      state.curatorOn = on; draw();
+      if (!state.open.includes(areas[0])) { const tile = dev(areas[0]); if (tile) tile.click(); }
+      await settle();
+      seen[on] = shown();
+    }
+    state.curatorOn = was; draw();
+    check("advertise-upstream is offered where there is a curator", seen[true] > 0);
+    check("and not offered where there is none", seen[false] === 0);
+  }
 }
 
 console.log(results.join("\n"));

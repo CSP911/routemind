@@ -21,6 +21,8 @@ cp -r "$ROOT/seed/." "$T/repo/" 2>/dev/null || { mkdir -p "$T/repo"; cp -r "$ROO
 mkdir -p "$T/publish"
 git -C "$T/repo" init -q
 git -C "$T/repo" add -A
+# Every commit here names its own author. Without that, a machine with no global git identity —
+# CI, a container, a fresh checkout — aborts partway through with "Author identity unknown".
 git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qm seed
 
 ONTOLOGY_DATA="$T/repo" ONTOLOGY_PUBLISH="$T/publish" PORT="$PORT" \
@@ -72,10 +74,10 @@ say "  and says nobody chose it"          "$(python3 -c 'import json; d=json.loa
 # And with no default declared, it refuses rather than inventing one. Done by editing the throwaway
 # repository the way a person would — including the commit, without which every write is blocked.
 sed -i 's/^default_kind: system/# no default/' "$T/repo/vocab.yaml"
-git -C "$T/repo" commit -qam "drop default_kind"
+git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qam "drop default_kind"
 say "  with no default_kind it refuses"   "$(code -X POST "$U/nodes" -d '{"id":"no-default","name":"X","region":"alpha","one_liner":"x"}')" 503
 sed -i 's/^# no default/default_kind: system/' "$T/repo/vocab.yaml"
-git -C "$T/repo" commit -qam "restore default_kind"
+git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qam "restore default_kind"
 
 # The ordinary path, end to end.
 say "node with its first edge (one txn)"  "$(code -X POST "$U/nodes" -d '{"id":"beta","name":"Beta","kind":"tool","region":"alpha","one_liner":"what beta is","edges":[{"from":"alpha-core","rel":"CONSISTS_OF","to":"beta"}]}')" 201

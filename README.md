@@ -127,7 +127,7 @@ root, because it commits into a repository you own:
 ```sh
 cp .env.example .env
 printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
-mkdir -p data/repo data/publish data/overlays
+mkdir -p data/repo data/publish data/overlays data/harness
 docker compose up -d --build
 ./check/smoke.sh
 ```
@@ -350,6 +350,8 @@ seed/         an empty ontology, copied into data/repo on first boot
 examples/     one worked ontology — copy it into data/repo instead of starting empty
 data/repo     ← your ontology. A git repository, and the only thing to back up
 data/publish  derived from data/repo. Safe to delete; it is rebuilt
+data/overlays one question's working set each — run evidence, not structure
+data/harness  the curator's store: the review queue behind "Advertise upstream"
 check/        smoke.sh (API + agent + screen) · write-paths.sh (every write path, atomically)
               mcp-check.py (the protocol, and an agent's walk) · llm-paths.sh (both LLM modes)
 ```

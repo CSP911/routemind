@@ -9,7 +9,7 @@
   // `open` is the Region whose nodes are fanned out; `openNode` is the node whose files are fanned out
   // beside them. The map used to stop at nodes, so the documents an operator actually wants to read had
   // no mark to click — the panel showed a list of addresses with no way to open one.
-  const state = { regions: [], nodes: [], edges: [], service: "", open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { agent: false, agentUrl: "", derives: false }, flags: new Map(), picked: new Set(), services: [], overlays: [], vrfOn: false, vrfSel: null };
+  const state = { regions: [], nodes: [], edges: [], service: "", open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { agent: false, agentUrl: "", derives: false }, flags: new Map(), picked: new Set(), services: [], overlays: [], vrfOn: false, vrfSel: null, curatorOn: false };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -410,9 +410,10 @@
       ...(flags ? [{ label: `⚑ ${t("knowledge.flag.short")} ${flags}`, flag: true, run: () => reviewFlags(flagKey, row.label, address) }] : []),
       ...(canRun() ? [{ label: t("knowledge.act.start"), primary: true, run: () => startRun([address]) }] : []),
       // Proposes a new line for what this system advertises upward: an area's own line, or — for a
-      // node — the row its holder's table shows for it. Both go through the review queue.
-      { label: t("knowledge.submit.raise"),
-        run: () => openCard(row, () => (isArea ? submitCard(as.key, "as") : submitCard(as.key, "entity", { entity: holder }))) },
+      // node — the row its holder's table shows for it. Both go through the review queue, so it is
+      // offered only where there is a queue to reach.
+      ...(state.curatorOn ? [{ label: t("knowledge.submit.raise"),
+        run: () => openCard(row, () => (isArea ? submitCard(as.key, "as") : submitCard(as.key, "entity", { entity: holder }))) }] : []),
       { label: t("knowledge.act.table"), run: () => showRaw({ kind: "as", title: row.label, address }) },
       { label: "+ " + t("knowledge.act.newNode"), run: () => openCard(row, () => newNodeForm(as.key, isArea ? null : holder)) },
       ...(holder ? [{ label: "+ " + t("knowledge.act.newData"),
@@ -1482,11 +1483,17 @@
 
   /** Pending route proposals, bucketed by the device that should show them. Failure is silent on
    *  purpose: the map is worth drawing without the flags, and a screen that refuses to render because
-   *  a notification could not be counted would be worse than one that quietly has none. */
+   *  a notification could not be counted would be worse than one that quietly has none.
+   *
+   *  Silent, but not thrown away. Without `ONTOLOGY_HARNESS` every curator call answers 501, and this
+   *  is the call that finds that out — the same way `loadOverlays` finds out whether overlays exist.
+   *  What it learns gates "Advertise upstream", which until 2026-09-12 was offered on every install
+   *  and could only ever answer with the name of an environment variable. */
   async function loadFlags() {
     const next = new Map();
     try {
       const rows = (await request("proposals?status=pending")).proposals || [];
+      state.curatorOn = true;
       const add = (key, p) => { if (!key) return; if (!next.has(key)) next.set(key, []); next.get(key).push(p); };
       for (const p of rows) {
         if (p.type !== "route") continue;
@@ -1500,7 +1507,11 @@
         }
         add(BB_SCOPES.has(p.scope) ? "__bb" : norm(p.region || ""), p);
       }
-    } catch { /* leave the map unflagged rather than unbuilt */ }
+    } catch (error) {
+      // 404 or 501 is the install saying it keeps no curator; anything else is a call that failed on
+      // an install that does have one, and the flags are simply missing this time round.
+      if (error.status === 404 || error.status === 501) state.curatorOn = false;
+    }
     state.flags = next;
   }
   const flagsFor = (key) => state.flags.get(key) || [];
@@ -1990,7 +2001,7 @@
     card.append(actions(
       button("knowledge.done.ok", "primary", () => $("knRawDialog").close()),
       button("knowledge.act.newData", null, () => (service ? newServiceFileForm(service) : newFileForm(node))),
-      ...(region ? [button("knowledge.submit.raise", null, () => submitCard(region, "as", { changed: [`/v1/nodes/${nid}`] }))] : []),
+      ...(region && state.curatorOn ? [button("knowledge.submit.raise", null, () => submitCard(region, "as", { changed: [`/v1/nodes/${nid}`] }))] : []),
     ));
     $("knEdit").replaceChildren(card);
     showEditor(true);

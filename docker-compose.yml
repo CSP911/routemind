@@ -22,6 +22,12 @@ services:
       # own directory: not the repository (a commit per question would bury the ontology) and not
       # publish/ (a checkout swapped atomically; anything beside it would be published by accident).
       ONTOLOGY_OVERLAYS: /data/overlays
+      # The curator's store — the review queue behind "Advertise upstream", and what `sleep` writes.
+      # Unset, every proposal is refused 501 and the screen shows the name of this variable to whoever
+      # pressed Submit. It was unset here until 2026-09-12, which meant the review queue had never
+      # worked on any install made from this file. Its own directory, for the overlays' reason: a
+      # commit per proposal would bury the ontology.
+      ONTOLOGY_HARNESS: /data/harness
       # Set these three and Knowledge derives a node's id, kind and description from its name. Leave
       # them out and those are typed by hand — the screen asks for them only in that case.
       # `litellm` is the default because it is what the client always spoke — an existing install
@@ -43,6 +49,9 @@ services:
       - type: bind
         source: ${KNOWLEDGE_OVERLAYS_DIR:-./data/overlays}
         target: /data/overlays
+      - type: bind
+        source: ${KNOWLEDGE_HARNESS_DIR:-./data/harness}
+        target: /data/harness
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
