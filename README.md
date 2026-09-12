@@ -30,6 +30,35 @@ decided at hop 0 only** — an area's own table says what that area holds, never
 advertisement is proposed and applied, what an overlay is, and how an agent walks all of it. Open it
 in a browser.
 
+## One question, several areas
+
+Some questions do not sit in one area. Settling a trip is three: how many days count, how much they
+pay, and whether any of it is taxed. Picking one area answers a third of it.
+
+![One question, several areas: the areas are read at hop 0, the ones the question belongs to are
+grouped into an overlay, and the run works from that one merged table until it is closed with what it
+actually used.](docs/img/overlay-multiple-as.png)
+
+An **overlay** is that working set, made as an object: the question it is for, the areas and nodes in
+it and **why each one is in it**, the trail of what was added and dropped while reading, and — when it
+closes — what was actually used to answer. One object with two authors: an agent creates it through
+the API, a person ticks areas on the map and presses **Draw VRF**, and the map draws either.
+
+Three rules are worth knowing before you rely on it:
+
+- **It narrows where to look; it does not change what exists.** "Not in the overlay" never means "not
+  in Knowledge" — absence is still decided at hop 0, and going back there is budgeted at three times
+  a run.
+- **It is run evidence, not ontology.** It is never committed to the data repository — a commit per
+  question would bury the structure — so it lives in its own store, expires, and leaves a record.
+- **Every change carries a reason**, because what was thought is the part worth learning from later.
+
+Closing records each address as `member` or `reached` — `reached` meaning the answer came from
+something that was never in the set, which says the overlay was drawn a level too coarse. That is
+signal, not error, and it is the thing the design is trying to measure.
+
+**[docs/OVERLAY.md](docs/OVERLAY.md)** — the object, the API and the caps.
+
 ---
 
 ## Quickstart
