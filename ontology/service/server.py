@@ -793,14 +793,33 @@ class Handler(BaseHTTPRequestHandler):
         approval" means nothing read at head office. So each is written for its reader, and the one
         for the outside goes through the review queue like every other advertisement (scope `peer`).
         """
-        if not PEER_TOKEN:
+        token = self.headers.get("X-Peer-Token") or ""
+        who = _peer_by_token(token)
+        if not PEER_TOKEN and not any(p["token"] for p in peering.declared(DATA)):
             return self._err(501, "this backbone advertises to no peer — set ONTOLOGY_PEER_TOKEN to open a link")
-        if self.headers.get("X-Peer-Token") != PEER_TOKEN:
+        if not who and not (PEER_TOKEN and token == PEER_TOKEN):
             return self._err(401, "peer token missing or wrong")
+
+        # Who is on the other end of the line, and who they are asking for. The two are the same
+        # thing on a direct link and are not behind an exchange: there, the caller is the room and
+        # the reader is one of its members, so the room says which. It is believed only when this
+        # backbone's own peers.yaml calls it an exchange — a claim that gets a caller *more* is
+        # exactly the one that must not be taken on the caller's word.
+        reader = who["name"] if who else None
+        if who and who["kind"] == "exchange":
+            reader = (self.headers.get("X-Peer-For") or "").strip() or who["name"]
 
         rj = store.regions_json()
         shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", [])
                   if (r.get("use_when_export") or "").strip()}
+        # An audience narrows what the line opened. Fail closed twice over: an unnamed caller is
+        # nobody, and a restricted area is invisible to nobody. Only a room is handed rows it may not
+        # pass on — it is the one doing the filtering for its members, and it can only do that if it
+        # can see what it is filtering, which is the same thing as saying an exchange on the data
+        # path sees everything. docs/PEERING.md says so where it says who should run one.
+        to_a_room = bool(who) and who["kind"] == "exchange" and not (self.headers.get("X-Peer-For") or "").strip()
+        visible = {k: r for k, r in shared.items() if _visible(r, reader)}
+        if not to_a_room: shared = visible
         # The revision the peer is being told about. It is what makes staleness visible on the other
         # side: git already numbers every state this repository has been in, so a link needs no clock.
         rev = head(DATA)
@@ -812,11 +831,18 @@ class Handler(BaseHTTPRequestHandler):
                  # Named `use_when` because that is what it is to the reader: the line it chooses by.
                  # Which side of the link it was written for is our business, not theirs.
                  "use_when": r["use_when_export"], "representative": r.get("representative"),
+                 # Carried only to a room, which needs it to filter for its members. A backbone that
+                 # is being answered directly has already been filtered for and has no business
+                 # knowing who else was considered.
+                 **({"export_to": r.get("export_to") or []} if to_a_room and r.get("export_to") else {}),
                  "fetch": f"/v1/export/regions/{src}"}
                 for src, r in sorted(shared.items())]})
 
+        # A document is always answered from the narrow set. The listing may be handed to a room
+        # whole so that it can filter; the prose never is. A room asking for a body without saying
+        # who it is for is asking for itself, and a room is not an audience.
         if len(parts) == 2 and parts[0] == "regions":
-            if parts[1] not in shared: return self._err(404, f"no exported area {parts[1]}")
+            if parts[1] not in visible: return self._err(404, f"no exported area {parts[1]}")
             self._as_peer = True
             return self._get(["regions", parts[1]])
 
@@ -824,7 +850,7 @@ class Handler(BaseHTTPRequestHandler):
             n = store.node(parts[1])
             # 404 and not 403: whether this backbone holds a thing it has not shared is itself
             # something the peer has no business learning. The two answers must be indistinguishable.
-            if not n or (n.get("region") or "") not in {r["source"] for r in shared.values()}:
+            if not n or (n.get("region") or "") not in {r["source"] for r in visible.values()}:
                 return self._err(404, f"no exported node {parts[1]}")
             self._as_peer = True
             return self._get(parts)
@@ -1098,6 +1124,35 @@ def _to_export(payload):
                 for k, v in payload.items()}
     if isinstance(payload, list): return [_to_export(v) for v in payload]
     return payload
+
+
+def _peer_by_token(token: str) -> dict | None:
+    """Which declared peer presented this, if any.
+
+    The door still opens for the shared `ONTOLOGY_PEER_TOKEN`, which is what a single-link install
+    has and all it needs. What a *named* caller buys is the only thing that needs a name: an audience
+    written on an area is a list of peers, and a list of peers is worthless against a caller nobody
+    can tell apart. One secret per peer, in both directions — the rule the exchange already keeps —
+    is what makes the two ends of a link know each other, and it is declared in the same peers.yaml
+    that says who this backbone reads.
+    """
+    if not token: return None
+    return next((p for p in peering.declared(DATA) if p["token"] and p["token"] == token), None)
+
+
+def _visible(region: dict, reader: str | None) -> bool:
+    """May this reader see this area at all.
+
+    Absent audience is the common case and means everyone the area is exported to. A named audience
+    narrows it and can never widen it: an area with no `use_when_export` never gets here.
+
+    Fail closed on both unknowns. A caller this backbone cannot name is not on any list, and neither
+    is a reader an exchange declined to name — so a restricted area is invisible to both. The
+    alternative reads far better and is the bug: an unnamed caller falling through to "no audience
+    was matched, so show it" is how a restriction becomes a decoration.
+    """
+    aud = region.get("export_to") or []
+    return not aud or (bool(reader) and reader in aud)
 
 
 def _absence(links) -> str:

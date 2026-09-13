@@ -228,6 +228,15 @@ def publish(root: Path, publish_dir: Path, sha: str | None = None, keep: set[str
     return sha
 
 
+def _name_list(value) -> list[str]:
+    """Peer names off the wire: a list, or one name, or a comma-separated string. Normalised in one
+    place so that what is stored does not depend on which of those a caller sent."""
+    if value is None: return []
+    if isinstance(value, str): value = [v for v in re.split(r"[,\s]+", value) if v]
+    if not isinstance(value, list): return []
+    return sorted({str(v).strip() for v in value if str(v).strip()})
+
+
 class Writer:
     describe_configured = None   # () -> bool. "not configured" (503) and "could not generate" (422) are different facts
     suggest_id = None            # (name, kind, one_liner, region, taken) -> id. Absent → id is required
@@ -659,6 +668,10 @@ class Writer:
                                           # Optional, and absent means this area crosses no link. Export
                                           # is opt-in per area and in writing — see docs/PEERING.md.
                                           "use_when_export": (rep.get("use_when_export") or "").strip() or None,
+                                          # And who, when it is not everybody. Validation refuses an
+                                          # audience without a line above it, so the two arrive or
+                                          # neither does.
+                                          "export_to": _name_list(rep.get("export_to")),
                                           "aliases": [], "one_liner": rep["one_liner"], "body": "",
                                           "path": str(base.relative_to(self.root))})
             end = anchor.end()

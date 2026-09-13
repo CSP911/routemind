@@ -83,7 +83,7 @@ for n in BB:
             break
     open(os.path.join(repo, "peers.yaml"), "w", encoding="utf-8").write(
         f"peers:\n  - name: {AT[n]}\n    label: {AT[n].upper()}\n"
-        f"    url: http://127.0.0.1:{IX_PORT[AT[n]]}\n    token_env: TOK_{n.upper()}\n")
+        f"    url: http://127.0.0.1:{IX_PORT[AT[n]]}\n    kind: exchange\n    token_env: TOK_{n.upper()}\n")
     regenerate(Store(repo))
     for a in (["init", "-q"], ["add", "-A"],
               ["-c", "user.name=x", "-c", "user.email=x@l", "commit", "-qm", "seed"]):

@@ -570,9 +570,14 @@ def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, An
         # supply is passed through; nothing is invented here.
         # `use_when_export` is optional and its absence is meaningful: an area with none does not
         # cross a link at all. Passed through like the rest — the decision is the ontology's.
-        "representative": {k: str(rep[k]).strip()
-                           for k in ("name", "one_liner", "use_when", "use_when_export", "kind", "id")
-                           if str(rep.get(k) or "").strip()},
+        "representative": {
+            **{k: str(rep[k]).strip()
+               for k in ("name", "one_liner", "use_when", "use_when_export", "kind", "id")
+               if str(rep.get(k) or "").strip()},
+            # A list, and passed as one. Who an area crosses to is the ontology's decision like the
+            # rest of this; nothing here narrows or widens it.
+            **({"export_to": rep["export_to"]} if rep.get("export_to") else {}),
+        },
     }
     if isinstance(data.get("edges"), list) and data["edges"]:
         body["edges"] = data["edges"]

@@ -77,7 +77,7 @@ for n in NAMES:
     # anybody else. Six links become three, and adding a fourth backbone costs one more, not three.
     open(os.path.join(repo, "peers.yaml"), "w", encoding="utf-8").write(
         f"peers:\n  - name: {IX}\n    label: EXCHANGE\n"
-        f"    url: http://127.0.0.1:{IX_PORT}\n    token_env: TOK_{n.upper()}\n")
+        f"    url: http://127.0.0.1:{IX_PORT}\n    kind: exchange\n    token_env: TOK_{n.upper()}\n")
     regenerate(Store(repo))
     for a in (["init", "-q"], ["add", "-A"],
               ["-c", "user.name=x", "-c", "user.email=x@l", "commit", "-qm", "seed"]):
@@ -163,6 +163,70 @@ check("  and its address goes through the exchange",
       row and str(row["fetch"]).startswith("/v1/export/peers/gamma/"), row["fetch"] if row else "")
 check("  and keeps the origin's own revision, not the exchange's digest",
       row and len(str(row.get("origin_revision") or "")) == 40 and row["origin_revision"] != adv["revision"])
+
+# ── an area that crosses to one of them and not the other ────────────────────
+# `use_when_export` opens a door; `export_to` says who is on the list. It can only ever narrow, and
+# the interesting failure is not that the wrong backbone sees the row — it is that the wrong backbone
+# sees the row's *address* and follows it, which nothing in the listing would show.
+def set_audience(where, area, names):
+    for f in sorted(os.listdir(os.path.join(where, "regions", area))):
+        q = os.path.join(where, "regions", area, f)
+        text = open(q, encoding="utf-8").read()
+        if "\nrole: representative\n" not in text or "\nparent:" in text: continue
+        out = [l for l in text.splitlines(True) if not l.startswith("export_to:")]
+        if names:
+            at_i = next(i for i, l in enumerate(out) if l.startswith("use_when_export:"))
+            out.insert(at_i + 1, "export_to: [" + ", ".join(names) + "]\n")
+        open(q, "w", encoding="utf-8").write("".join(out))
+        break
+    regenerate(Store(where))
+    subprocess.run(["git", "-C", where, "add", "-A"], check=True)
+    subprocess.run(["git", "-C", where, "-c", "user.name=x", "-c", "user.email=x@l",
+                    # --allow-empty: setting an audience that is already set is a no-op, and a
+                    # helper that dies on one would make the order of the checks load-bearing.
+                    "commit", "-q", "--allow-empty", "-m", f"audience {area}"], check=True)
+
+
+addr = None
+row_b = next((r for r in (adv_b.get("regions") or []) if r["origin"] == "alpha"), None)
+if row_b: addr = row_b["fetch"]
+set_audience(repos["alpha"], SHARE["alpha"], ["beta"])
+time.sleep(0.4)
+
+st, to_b = get(IX_PORT, "/v1/export/regions", TOKENS["beta"])
+st, to_g = get(IX_PORT, "/v1/export/regions", TOKENS["gamma"])
+check("an area named for beta reaches beta",
+      "alpha" in {r["origin"] for r in (to_b.get("regions") or [])},
+      json.dumps(sorted({r["origin"] for r in (to_b.get("regions") or [])})))
+check("  and does not reach gamma",
+      "alpha" not in {r["origin"] for r in (to_g.get("regions") or [])},
+      json.dumps(sorted({r["origin"] for r in (to_g.get("regions") or [])})))
+check("  while gamma's own area still reaches beta",
+      "gamma" in {r["origin"] for r in (to_b.get("regions") or [])})
+# Who else was on the list is not beta's business. The audience is the room's to apply and nobody
+# else's to read.
+check("  and beta is not told who else was considered",
+      "export_to" not in json.dumps(to_b), json.dumps(to_b)[:160])
+
+# The address is the half a listing filter would miss. gamma knew it a moment ago.
+if check("gamma still holds the address from before", bool(addr), str(addr)):
+    st, _ = get(IX_PORT, addr, TOKENS["gamma"])
+    check("  and following it now gets nothing", st == 404, str(st))
+    st, still = get(IX_PORT, addr, TOKENS["beta"])
+    check("  while beta still reads it", still if st == 200 else False, str(st))
+    # 404 and not 403: whether alpha holds something it has not shared with gamma is itself
+    # something gamma has no business learning, and the two answers must be indistinguishable.
+    st_unshared, _ = get(IX_PORT, "/v1/export/peers/alpha/regions/nothing-like-this", TOKENS["gamma"])
+    check("  the same answer an area that was never shared gives", st_unshared == 404, str(st_unshared))
+
+# Health is not policy: the operator sees what alpha is advertising, not who it chose.
+st, opstate = get(IX_PORT, "/v1/export/regions", TOKENS["beta"])
+set_audience(repos["alpha"], SHARE["alpha"], [])
+time.sleep(0.4)
+st, back = get(IX_PORT, "/v1/export/regions", TOKENS["gamma"])
+check("taking the audience away puts it back in front of gamma",
+      "alpha" in {r["origin"] for r in (back.get("regions") or [])},
+      json.dumps(sorted({r["origin"] for r in (back.get("regions") or [])})))
 
 # ── what a backbone makes of it ───────────────────────────────────────────────
 st, hop0 = get(PORTS["alpha"], "/v1/regions")

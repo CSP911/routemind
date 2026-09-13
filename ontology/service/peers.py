@@ -86,7 +86,12 @@ def declared(root: Path) -> list[dict]:
         # The name is a path segment in every address this backbone prints for that peer, so it is
         # held to the same shape an id is. A peer called "../" would be an address nobody could trust.
         env = str(row.get("token_env") or f"ONTOLOGY_PEER_TOKEN_{name.upper().replace('-', '_')}")
-        out.append({"name": name, "url": url, "token_env": env,
+        # An exchange is a peer like any other to read *from* — no backbone has code that knows what
+        # one is. Saying so here changes one thing only, and in the other direction: a peer marked
+        # this way is believed when it says which of its members it is fetching on behalf of. An
+        # ordinary peer is not, because that claim can only ever get a caller **more**.
+        kind = "exchange" if str(row.get("kind") or "").strip() == "exchange" else "backbone"
+        out.append({"name": name, "url": url, "token_env": env, "kind": kind,
                     "token": (os.environ.get(env) or "").strip(),
                     "label": str(row.get("label") or name)})
     return out
@@ -98,7 +103,7 @@ def declared(root: Path) -> list[dict]:
 _cache: dict[str, tuple[float, dict | None, str]] = {}
 
 
-def _fetch(peer: dict, path: str) -> tuple[bytes, str]:
+def _fetch(peer: dict, path: str, *, on_behalf_of: str | None = None) -> tuple[bytes, str]:
     """The bytes a peer sent, and what it says they are. Not parsed here.
 
     A backbone answers JSON for tables and `text/markdown` for a document body, and which one is a
@@ -115,6 +120,9 @@ def _fetch(peer: dict, path: str) -> tuple[bytes, str]:
     # **less**. Nobody lies their way into more. It is a second lock on the same door as `kind` in
     # members.yaml, and it is the one that still holds when the hand-written label is wrong.
     if peer.get("self_kind"): req.add_header("X-Peer-Kind", str(peer["self_kind"]))
+    # Who this is being fetched *for*, when it is not for us. Only an exchange sets it, and only the
+    # far end's own `kind: exchange` makes it worth anything — see `declared`.
+    if on_behalf_of: req.add_header("X-Peer-For", on_behalf_of)
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
             return r.read(), (r.headers.get("Content-Type") or "application/json")

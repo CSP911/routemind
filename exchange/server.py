@@ -173,6 +173,19 @@ def reflect(asking: dict | None = None, claimed_kind: str | None = None) -> dict
     A member skipped this way is not reported either. Whether a third room is up is that room's
     business and the middle operator's; it is not part of what a neighbour is owed.
 
+    **An audience is enforced here, and that is not a detail.** An area may name who it crosses to
+    (`export_to`), and a backbone answering a room cannot apply that itself — it sees the room, not
+    the reader. So it hands the room the rows with the audience written on them and this drops the
+    ones the asker is not named in. Which means the room *sees* what it will not pass on: unavoidable,
+    inherent to anything on the data path, and the reason docs/PEERING.md is blunt about who should
+    run one. The document behind such a row is a different matter and is refused at the backbone that
+    owns it — the listing is composed by whoever is speaking to the reader, the prose is served by
+    whoever wrote it, and only the second of those is a boundary rather than a policy.
+
+    The audience is stripped on the way out. It names members of *this* room, and a neighbouring room
+    would be reading our roster in its own namespace — a list of strangers that happens to match some
+    of its own members. To reach a neighbouring room, an area names the room.
+
     Two things say the asker is a room, and both are needed. `kind` in members.yaml is what stops the
     read from happening, and only a decision made before the read can prevent the hang. The asker's
     own `X-Peer-Kind` is what still holds when that label is typed wrong — and a mislabel is not a
@@ -216,9 +229,13 @@ def reflect(asking: dict | None = None, claimed_kind: str | None = None) -> dict
             path = [m["name"], *(r.get("path") or [])]
             if NAME in path: continue                       # it has been here before
             if mine and mine in path: continue              # split horizon — it came from the asker
+            aud = r.get("export_to") or []
+            # No asker is the operator's health view, which counts rows and emits none.
+            if aud and mine and mine not in aud: continue
             tail = str(r.get("fetch") or "")
             if not tail.startswith("/v1/export"): continue  # not something this contract can carry
-            rows.append({**r, "path": path, "origin": path[-1], "via_kind": m["kind"],
+            rows.append({**{k: v for k, v in r.items() if k != "export_to"},
+                         "path": path, "origin": path[-1], "via_kind": m["kind"],
                          "origin_revision": r.get("origin_revision") or adv.get("revision"),
                          "fetch": f"/v1/export/peers/{m['name']}" + tail[len("/v1/export"):]})
             kept += 1
@@ -276,7 +293,11 @@ class Handler(BaseHTTPRequestHandler):
             if not m: return self._err(404, f"no member {rest[1]}")
             if not m["token"]: return self._err(503, f"member {rest[1]} has no token — set {m['token_env']}")
             try:
-                raw, ctype = peering._fetch(m, "/v1/export/" + "/".join(rest[2:]))
+                # Whose reading this is. The member that owns the document applies the audience —
+                # this room only says who is at the other end of it, which is the one thing it knows
+                # and the backbone cannot.
+                raw, ctype = peering._fetch(m, "/v1/export/" + "/".join(rest[2:]),
+                                            on_behalf_of=who["name"])
             except peering.PeerError as e:
                 return self._err(e.status, str(e),
                                  reason=("peer_said_no" if e.reachable else "peer_unreachable"),

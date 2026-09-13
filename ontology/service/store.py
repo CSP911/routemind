@@ -62,6 +62,16 @@ def alias_names(aliases) -> list[str]:
     return [a["name"] if isinstance(a, dict) else str(a) for a in (aliases or [])]
 
 
+def _names(value) -> list[str]:
+    """A frontmatter list of peer names, normalised. A single name written bare is a list of one —
+    the field is read far more often than it is written, and half of the ways a person writes one
+    name are not a YAML list."""
+    if value is None: return []
+    if isinstance(value, str): value = [v for v in re.split(r"[,\s]+", value) if v]
+    if not isinstance(value, list): return []
+    return sorted({str(v).strip() for v in value if str(v).strip()})
+
+
 class Store:
     def __init__(self, root: str | os.PathLike):
         self.root = Path(root)
@@ -160,6 +170,7 @@ class Store:
                 # What this area says about itself to *another backbone*. Absent means it is not
                 # advertised across a link at all — export is opt-in, per area, in writing.
                 "use_when_export": fm.get("use_when_export"),
+                "export_to": _names(fm.get("export_to")),
                 "role": fm.get("role"), "parent": fm.get("parent"),
                 "expands_in": fm.get("expands_in"), "one_liner": fm.get("one_liner") or "",
                 "order": order, "path": str(f.relative_to(self.root)), "body": m.group(2),
@@ -216,6 +227,7 @@ class Store:
                         "advertises": top["one_liner"] if top else None,
                         "use_when": (top.get("use_when") if top else None),
                         "use_when_export": (top.get("use_when_export") if top else None),
+                        "export_to": (top.get("export_to") if top else []),
                         "nodes": [n["id"] for n in mine]})
         return out
 

@@ -408,5 +408,117 @@ check("  and a read across it works again",
       at(PORT, [r for r in back["regions"] if r.get("peer")][0]["fetch"][3:])[0] == 200
       if any(r.get("peer") for r in back.get("regions") or []) else False)
 
+# ── an audience, on a link with no exchange in it ─────────────────────────────
+# `use_when_export` opens the door and `export_to` says who is on the list. On a direct link the
+# backbone that owns the area does the filtering itself, which it can only do if it can put a name to
+# whoever is calling — and a name comes from **one secret per link, used in both directions**. That
+# rule is written down in docs/PEERING.md and until now nothing checked what it buys. It buys this.
+def set_audience(where, area, names):
+    for f in sorted(os.listdir(os.path.join(where, "regions", area))):
+        q = os.path.join(where, "regions", area, f)
+        text = open(q, encoding="utf-8").read()
+        if "\nrole: representative\n" not in text or "\nparent:" in text: continue
+        out = [l for l in text.splitlines(True) if not l.startswith("export_to:")]
+        if names:
+            i = next(j for j, l in enumerate(out) if l.startswith("use_when_export:"))
+            out.insert(i + 1, "export_to: [" + ", ".join(names) + "]\n")
+        open(q, "w", encoding="utf-8").write("".join(out))
+        break
+    regenerate(Store(where))
+    subprocess.run(["git", "-C", where, "add", "-A"], check=True)
+    subprocess.run(["git", "-C", where, "-c", "user.name=peer", "-c", "user.email=p@l",
+                    # --allow-empty: setting an audience that is already set is a no-op, and a
+                    # helper that dies on one would make the order of the checks load-bearing.
+                    "commit", "-q", "--allow-empty", "-m", f"audience {area}"], check=True)
+
+
+# ── and the rules that stop an audience being written as decoration ──────────
+# Read straight out of the validator on a copy, because every one of these is a state a person can
+# reach by typing and none of them is visibly wrong in the file. The worst of them is the first: an
+# audience on an area that crosses to nobody restricts nothing at all, and reads exactly like a
+# restriction that is working.
+from service.validate import validate                                    # noqa: E402
+
+
+def rep_of(where, area):
+    for f in sorted(os.listdir(os.path.join(where, "regions", area))):
+        q = os.path.join(where, "regions", area, f)
+        t = open(q, encoding="utf-8").read()
+        if "\nrole: representative\n" in t and "\nparent:" not in t: return q, t
+    raise AssertionError(area)
+
+
+def errors_with(lines, area=None, path=None):
+    """Validate a copy of B with those frontmatter lines added to an area's representative."""
+    tmp = os.path.join(T, "vcheck"); shutil.rmtree(tmp, ignore_errors=True)
+    shutil.copytree(repo_b, tmp)
+    q, t = rep_of(tmp, area or SHARED_B) if path is None else (os.path.join(tmp, path), None)
+    if t is None: t = open(q, encoding="utf-8").read()
+    at_i = t.index("\nrole: representative\n") + len("\nrole: representative\n") if "\nrole: representative\n" in t \
+        else t.index("\n---\n", 4) + 1
+    open(q, "w", encoding="utf-8").write(t[:at_i] + "".join(l + "\n" for l in lines) + t[at_i:])
+    return validate(Store(tmp)).get("errors") or []
+
+
+# An area that crosses to nobody. Naming an audience on it restricts nothing, and it is the one of
+# these that reads like a working restriction.
+UNSHARED_B = next(d for d in sorted(os.listdir(os.path.join(repo_b, "regions")))
+                  if os.path.isdir(os.path.join(repo_b, "regions", d)) and d != SHARED_B)
+e = errors_with(["export_to: [ay]"], area=UNSHARED_B)
+check("an audience with no export line is refused",
+      any("export_to without use_when_export" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [Not A Name]"])
+check("  and so is a name that could never be a peer's",
+      any("not a peer name" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [ay, warehouse]"])
+check("while two names are ordinary", not any("export_to" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: ay"])
+check("  and one name written bare is a list of one", not any("export_to" in x for x in e),
+      json.dumps(e[:2]))
+
+# This pair was set up with a secret each way rather than one between them, which is legal and is
+# what most people would write first. Its cost has been invisible until there was something to name.
+set_audience(repo_b, SHARED_B, ["ay"])
+time.sleep(0.4)
+st, closed = at(PORT, "/regions")
+check("an audience is closed to a caller that cannot be named",
+      not any(r.get("peer") for r in (closed.get("regions") or [])),
+      json.dumps([r.get("source") for r in (closed.get("regions") or []) if r.get("peer")]))
+# And it is closed properly, not merely unlisted: A still has yesterday's address.
+check("  and the address it already had stops working",
+      at(PORT, "/peers/bee/regions/" + SHARED_B.replace("_", "-"))[0] == 404)
+# The link itself is fine. Nothing here may look like an outage — an outage suspends the absence
+# rule, and "you are not on the list" is not a reason to stop knowing what exists.
+check("  while the link still reads as up", all(l["reachable"] for l in (closed.get("links") or [])),
+      json.dumps(closed.get("links")))
+check("  and absence may still be claimed", "may say something is absent" in (closed.get("absence") or ""))
+
+# One secret for the link, in both directions — B now looks A up by the same token A presents.
+open(os.path.join(repo_b, "peers.yaml"), "w", encoding="utf-8").write(
+    f"peers:\n  - name: ay\n    label: AY\n"
+    f"    url: http://127.0.0.1:{PORT}\n    token_env: PEERTOK_B\n")
+time.sleep(0.4)
+st, named = at(PORT, "/regions")
+check("with one secret between them the caller has a name, and is on the list",
+      len([r for r in (named.get("regions") or []) if r.get("peer")]) == 1,
+      json.dumps([r.get("source") for r in (named.get("regions") or []) if r.get("peer")]))
+check("  and the audience is not handed to it",
+      "export_to" not in json.dumps(named), json.dumps(named)[:120])
+check("  and the document behind it reads",
+      at(PORT, [r for r in named["regions"] if r.get("peer")][0]["fetch"][3:])[0] == 200
+      if any(r.get("peer") for r in named.get("regions") or []) else False)
+
+# A name that is not ours is not ours, even with the link working perfectly.
+set_audience(repo_b, SHARED_B, ["somebody-else"])
+time.sleep(0.4)
+st, other = at(PORT, "/regions")
+check("an audience naming someone else leaves us out",
+      not any(r.get("peer") for r in (other.get("regions") or [])),
+      json.dumps([r.get("source") for r in (other.get("regions") or []) if r.get("peer")]))
+set_audience(repo_b, SHARED_B, [])
+time.sleep(0.4)
+check("and taking it away puts the area back",
+      len([r for r in (at(PORT, "/regions")[1].get("regions") or []) if r.get("peer")]) == 1)
+
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

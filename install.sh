@@ -116,6 +116,10 @@ peers:
   - name: ix
     label: EXCHANGE
     url: http://exchange:8110
+    # A room, not a backbone. It changes one thing: this backbone believes it when it says which of
+    # its members a document is being fetched for, which is what makes an area's audience mean
+    # anything behind an exchange. An ordinary peer saying the same is not believed.
+    kind: exchange
     token_env: ONTOLOGY_PEER_TOKEN_IX
 YAML
 fi

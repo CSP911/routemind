@@ -17,6 +17,7 @@ ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 # as `502 internal error`. Probing every malformed input the API accepts, that was the only one that
 # came back without a reason. The number is the filesystem's and not a matter of taste; there is
 # nothing here to tune.
+PEER_NAME = re.compile(r"^[a-z][a-z0-9-]{0,30}$")
 NAME_MAX = 255
 ID_MAX = NAME_MAX - len(".md")
 
@@ -226,6 +227,25 @@ def validate(store: Store) -> dict:
                 # It becomes one cell of another backbone's routing table, exactly like use_when.
                 if "|" in exp or "\n" in exp:
                     errors.append(f"node {n['id']}: use_when_export is one table cell — `|` and newlines are not allowed")
+            # `export_to` narrows who that line reaches. It can only ever narrow: an area with no
+            # `use_when_export` crosses to nobody, and naming an audience for it changes nothing at
+            # all — which is precisely the shape of mistake that looks like it worked. So it is an
+            # error and not a warning.
+            aud = n.get("export_to") or []
+            if aud:
+                if not exp:
+                    errors.append(f"node {n['id']}: export_to without use_when_export — an audience for "
+                                  f"an area that crosses to nobody. Write the line first")
+                if n.get("parent"):
+                    errors.append(f"node {n['id']}: only an area's top representative can carry export_to")
+                for a in aud:
+                    # Matched against a peer's name at whoever enforces it — this backbone's own
+                    # peers.yaml for a direct link, the exchange's members.yaml behind one. Held to
+                    # the same shape either way, because a name that cannot be a member is an
+                    # audience of nobody and would read as a working restriction.
+                    if not PEER_NAME.match(a):
+                        errors.append(f"node {n['id']}: export_to names {a!r}, which is not a peer name "
+                                      f"— ASCII kebab-case, starting with a letter")
             if not n.get("parent"):
                 if n["region"] in tops:
                     errors.append(f"region {n['region']}: two top representatives ({tops[n['region']]}, {n['id']}) — an area has one face. Give one of them a parent")
@@ -233,6 +253,9 @@ def validate(store: Store) -> dict:
         elif (n.get("use_when_export") or "").strip():
             errors.append(f"node {n['id']}: use_when_export on a node that does not represent an area — "
                           f"a peer chooses areas, not nodes")
+        elif n.get("export_to"):
+            errors.append(f"node {n['id']}: export_to on a node that does not represent an area — "
+                          f"an audience is something an area has")
     # A representative that carries nothing and has no expands_in cannot be told apart, from the
     # listing alone, as **empty** or as a **boundary**. If that distinction lives only in a document
     # body, neither the screen nor an agent can use it — and both will state something they cannot know.

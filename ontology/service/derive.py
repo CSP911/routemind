@@ -37,6 +37,7 @@ def regenerate(store: Store) -> list[str]:
                      "use_when": ((top.get("use_when") or "") if top else ""),
                      # Empty is not the same as absent here: "" means this area is not exported.
                      "use_when_export": ((top.get("use_when_export") or "") if top else ""),
+                     "export_to": ((top.get("export_to") or []) if top else []),
                      "nodes": [n["id"] for n in nodes if n["region"] == r and n.get("status") != "draft"],
                      "representative": (top["id"] if top else None),
                      "fetch": f"/v1/regions/{r}"})
@@ -51,9 +52,9 @@ def regenerate(store: Store) -> list[str]:
 # dropped them. They come from one place now: a field absent here is not stored, and only a field
 # that is here and in EDITABLE can be changed.
 NODE_FIELDS = ("holds", "injected_by", "status", "role", "parent", "use_when", "use_when_export",
-               "expands_in", "aliases")
+               "export_to", "expands_in", "aliases")
 EDITABLE = ("name", "kind", "one_liner", "aliases", "holds", "status", "use_when", "use_when_export",
-            "expands_in", "parent")
+            "export_to", "expands_in", "parent")
 
 
 def write_node_index(store: Store, node: dict) -> None:
@@ -71,6 +72,12 @@ def write_node_index(store: Store, node: dict) -> None:
     if node.get("parent"): fm.append(f"parent: {node['parent']}")
     if node.get("use_when"): fm.append(f"use_when: {node['use_when']}")
     if node.get("use_when_export"): fm.append(f"use_when_export: {node['use_when_export']}")
+    # Who may see it, when that is not everybody. A list, written flow-style so the file stays one
+    # frontmatter line per fact. Absent is the common case and means the area crosses to every peer
+    # it is exported to at all — the audience narrows what `use_when_export` opened, and can never
+    # open anything on its own.
+    if node.get("export_to"):
+        fm.append("export_to: [" + ", ".join(sorted(node["export_to"])) + "]")
     if node.get("expands_in"): fm.append(f"expands_in: {node['expands_in']}")
     if node.get("aliases"):
         fm.append("aliases: [" + ", ".join(

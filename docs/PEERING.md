@@ -45,6 +45,48 @@ It goes through the review queue, scope `peer`, for the reason every other adver
 area says about itself is the one thing the whole system routes on. Across a link that stops being a
 nicety, because the reader is another organisation.
 
+## And who, when it is not everybody
+
+`export_to` on the same representative names the peers an area crosses to. Absent — the common case —
+means everybody `use_when_export` opened it to. It can only ever **narrow**: an area with no export
+line crosses to nobody, and naming an audience for it restricts nothing, so that is an error rather
+than a warning. It is the one of these mistakes that reads exactly like a restriction that is working.
+
+The names are peer names as the enforcing side knows them: this backbone's own `peers.yaml` on a
+direct link, the exchange's `members.yaml` behind one. In practice both are the organisation's short
+name, and a name that could not be a member is refused.
+
+**Enforcing it needs the caller to have a name, and that is what one secret per link buys.** A list of
+peers is worthless against a caller nobody can tell apart. Two secrets — one each way — is legal, is
+what most people write first, and quietly costs exactly this: the far end is anonymous, and an
+audience closes to it. Fail closed is the deliberate choice in both directions, for a caller with no
+name and for a reader an exchange declined to name. The alternative reads better and is the bug: an
+unnamed caller falling through to *no audience matched, so show it* turns a restriction into a
+decoration.
+
+**Behind an exchange the two halves are enforced in different places, and the reason is worth saying
+plainly.** A backbone answering a room sees the room, not the reader, so it hands the room the rows
+with the audience written on them and the room drops the ones the asker is not named in — which means
+the room *sees* what it will not pass on. That is inherent to anything on a data path and is the
+sharpest form of "who should run an exchange". The **document** behind such a row is refused at the
+backbone that owns it: the room says who it is fetching for (`X-Peer-For`), and the backbone applies
+the audience to the prose. The listing is composed by whoever is speaking to the reader; the prose is
+served by whoever wrote it, and only the second of those is a boundary rather than a policy.
+
+A backbone believes `X-Peer-For` only from a peer its own `peers.yaml` calls `kind: exchange`. A claim
+that gets a caller **more** is exactly the one that cannot be taken on the caller's word — the mirror
+of `X-Peer-Kind`, where the claim gets the claimant less and is therefore safe.
+
+An area that is not on your list answers **404**, the same as one that was never shared. Whether a
+backbone holds something it has not shared with you is itself something you have no business learning.
+
+Like `use_when_export`, the audience is a field on the representative: it can go through the review
+queue or through an ordinary write, and there is no screen for either yet.
+
+Not done: **per-peer wording.** One `use_when_export` goes to everyone who can see the area. Saying a
+different thing to each reader is a further step and has no demand behind it yet; who may see it at
+all was the half that did.
+
 ## The export surface is separate, not the ordinary one behind a check
 
 `/v1/export/…` builds every answer from the exported set, so no path through it — and no mistake in a
@@ -302,8 +344,8 @@ member entry, which is the exchange's half of the declaration. The backbone's ha
 
 ## Not done
 
-* **One export line for all peers.** Per-peer lines, and per-peer visibility, are a policy layer worth
-  designing whole rather than smuggling in as a map.
+* **One export line for all peers.** Per-peer *visibility* is done (`export_to`); per-peer *wording* is
+  not, and has no demand behind it yet.
 * **No withdraw.** A peer's rows go when it stops advertising them or stops answering; there is no
   message that says so.
 * **Two vocabularies.** A peer's areas are described by the peer's `vocab.yaml`, and this backbone's

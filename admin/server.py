@@ -115,6 +115,7 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
                   f"  - name: ix\n"
                   f"    label: EXCHANGE\n"
                   f"    url: http://exchange:8110\n"
+                  f"    kind: exchange\n"
                   f"    token_env: ONTOLOGY_PEER_TOKEN_IX\n"),
         "shell": (f"mkdir -p data-{name}/repo data-{name}/publish data-{name}/overlays data-{name}/harness\n"
                   f"cp -r examples/back-office/. data-{name}/repo/     # or start empty\n"
