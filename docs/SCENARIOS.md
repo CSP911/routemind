@@ -168,6 +168,7 @@ runs through one process that nobody had yet switched off on purpose.
 | N2 | An audience naming somebody who is not in the room leaves **everyone** out, the address stops working and not just the row, the backbone still holds it locally, and **nothing anywhere errors**: the link is up, because "you are not on the list" is not an outage and must not suspend the absence rule |
 | N3 | Taking it away puts the area back, address and all |
 | N4 | It goes through the **review queue**, scope `audience`, like the line it narrows. An empty `after` is a decision here and a mistake everywhere else; there is no drafting it, because who may see something is not in the ontology for a model to read |
+| N5 | The queue has two doors and only one of them is the ontology's. The screen talks to `web/app.py`, and the ontology API is not published outside the compose network — so a scope the proxy does not list is a scope nobody can reach. `peer` and `audience` were both missing there while the docs described the road they take, which made the docs true of a queue with no door. The two lists are read out of the two files and held together |
 
 N2 also pins the one thing the operator's view must keep showing: a member advertising an area, whoever
 it is for. Health is not policy, and an audience that showed up on the exchange's screen would be

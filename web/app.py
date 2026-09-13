@@ -360,6 +360,14 @@ def api_knowledge_one_liner_draft(node_id: str, request: Request) -> dict[str, A
     return _ontology_proxy("POST", "/v1/nodes/" + quote(node_id, safe="") + "/one-liner-draft", actor, {})
 
 
+# Every scope the review queue takes, plus `dr` for the old spelling. A name in this list and not in
+# the ontology's ROUTE_SCOPES is a 422 from further in; a name in ROUTE_SCOPES and **not** here is the
+# worse one, and is what happened to `peer` and `audience`: the ontology API is not published outside
+# the compose network, so a scope missing here is a scope nobody can reach, and the docs describing
+# the road stayed true of a queue with no door. check/room-check.py holds the two lists together.
+QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "peer", "audience")
+
+
 @_iris_route("POST", "/api/knowledge/proposals")
 def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, Any]:
     # A person submitting a routing change. `after` is what they are submitting, which is the draft as
@@ -373,17 +381,26 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     # handover and a proposal filed under the old spelling must stay reviewable.
     # `entity` is one row in a node's table — the line it shows in its holder's listing. It names the
     # entity and not an area: the entity settles where it is, and a second answer could disagree.
-    if scope not in ("as", "dr", "bb", "core", "entity"):
-        raise HTTPException(status_code=422, detail="scope must be as, bb, core or entity.")
+    # `peer` is the line this area shows in another backbone's hop 0 and `audience` is who that line
+    # reaches — the two halves of the export decision. Neither has a field on the map screen, and
+    # both are refused here until 2026-09-13, which meant the road docs/PEERING.md describes ended at
+    # this function: the ontology API is not published outside the compose network, so "it goes
+    # through the review queue" was true of a queue nobody could reach.
+    if scope not in QUEUE_SCOPES:
+        raise HTTPException(status_code=422,
+                            detail="scope must be as, bb, core, entity, peer or audience.")
     where = "entity" if scope == "entity" else "region"
-    for field in (where, "after"):
+    required = [where] if scope == "audience" else [where, "after"]
+    # An empty `after` is a decision for `audience` alone — everybody the area already crosses to —
+    # and a missing sentence for every other scope.
+    for field in required:
         if not str(data.get(field) or "").strip():
             raise HTTPException(status_code=422, detail=f"{field} is required.")
     if where == "entity" and not _KNOWLEDGE_ID.match(str(data["entity"]).strip()):
         raise HTTPException(status_code=422, detail="entity must be an entity id.")
     body: dict[str, Any] = {
         "scope": scope, where: str(data[where]).strip(),
-        "before": str(data.get("before") or ""), "after": str(data["after"]).strip(),
+        "before": str(data.get("before") or ""), "after": str(data.get("after") or "").strip(),
         "why": str(data.get("why") or "").strip(),
     }
     if str(data.get("target") or "").strip():

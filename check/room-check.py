@@ -327,5 +327,28 @@ st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": "audience"}
 check("   and an audience is never drafted for you", st == 400 and "not drafted" in json.dumps(e),
       f"{st} {json.dumps(e)[:120]}")
 
+# The queue has two doors and only one of them is the ontology's. The screen talks to `web/app.py`,
+# which is what a person and a browser can reach — the ontology API is not published outside the
+# compose network — so a scope the proxy does not list is a scope that does not exist in practice.
+# `peer` and `audience` were both missing there while docs/PEERING.md described the road they take,
+# and the docs were true of a queue with no door. Read out of the two files rather than asserted by
+# hand, because a third scope will be added by somebody who edits one of them.
+import re                                                                # noqa: E402
+
+
+def _scopes(path, pattern):
+    body = re.search(pattern, open(os.path.join(ROOT, path), encoding="utf-8").read(), re.S)
+    return set(re.findall(r'"([a-z]+)"', body.group(1))) if body else set()
+
+
+scopes_api = {k for k in _scopes("ontology/service/curator.py", r"ROUTE_SCOPES = \{(.*?)\}")
+              if f'"{k}":' in open(os.path.join(ROOT, "ontology", "service", "curator.py"),
+                                   encoding="utf-8").read()}
+scopes_web = _scopes("web/app.py", r"QUEUE_SCOPES = \((.*?)\)")
+check("N5 every scope the queue takes has a door on the screen's side",
+      scopes_api <= scopes_web, json.dumps(sorted(scopes_api - scopes_web)))
+check("   and the proxy invents none the queue would refuse",
+      scopes_web - scopes_api <= {"dr"}, json.dumps(sorted(scopes_web - scopes_api - {"dr"})))
+
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)
