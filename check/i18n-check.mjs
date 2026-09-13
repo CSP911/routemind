@@ -140,7 +140,7 @@ if (missingReasons.length || missingFields.length || orphanErrs.length) {
 // belongs to the page rather than to a reader. Each entry is a decision.
 const SAME_IN_EVERY_LANGUAGE = new Set([
   "ROUTEMIND", "RouteMind",     // the product's name
-  "MAP",                        // the eyebrow over the map, set in the stylesheet's voice
+  "MAP", "DOMAINS",             // the eyebrows, set in the stylesheet's voice rather than the reader's
   // The kind chips. These are the identifiers the screen and the API both use for a thing — an AS is
   // an AS in every language, and translating the chip would break the one word that ties the map, the
   // address and the docs together. JS overwrites this element with one of them from OBJECT.

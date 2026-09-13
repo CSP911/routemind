@@ -460,6 +460,45 @@ body.kn-dragging { user-select: none; }
 .kn-chip.is-add { cursor: pointer; border-style: dashed; }
 .kn-chip.is-add:hover { border-color: var(--accent, #2d6a5f); color: var(--accent, #2d6a5f); }
 
+/* ── the wall of domains ──────────────────────────────────────────────────────
+   One card per domain, identical down to the empty slots. A card whose shape changes with its
+   contents makes the eye re-read the layout instead of the data, which is the one thing a wall of
+   small multiples exists to avoid. Tokens are this file's own `--kn-*` set. */
+.kn-wall-panel { margin-bottom: 16px; }
+.kn-wall-lead { margin: 0; color: var(--kn-muted); font-size: 12.5px; align-self: flex-end; }
+.kn-wall-count { margin-left: auto; font: 11.5px var(--kn-mono); color: var(--kn-muted); align-self: flex-end; }
+.kn-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(214px, 1fr)); gap: 10px; }
+
+.kn-dcard { background: var(--kn-surface); border: 1px solid var(--kn-line); border-radius: 10px;
+  padding: 11px 12px 10px; display: flex; flex-direction: column; gap: 7px;
+  cursor: pointer; text-align: left; font: inherit; color: var(--kn-text); }
+.kn-dcard:hover { border-color: var(--kn-accent); }
+.kn-dcard.is-here { border-color: var(--kn-accent); }
+.kn-dcard.is-down { border-color: var(--kn-danger); }
+.kn-dcard.is-sel { border-color: var(--kn-accent); box-shadow: 0 0 0 3px var(--kn-surface-2); }
+.kn-dcard-top { display: flex; align-items: baseline; gap: 8px; }
+.kn-dcard-name { font: 600 13px var(--kn-mono); }
+.kn-dcard-flag { margin-left: auto; font: 600 9.5px/1.9 var(--kn-mono); padding: 0 7px;
+  border-radius: 999px; border: 1px solid var(--kn-line); color: var(--kn-muted); white-space: nowrap; }
+.kn-dcard-flag.is-here { border-color: var(--kn-accent); color: var(--kn-accent); }
+.kn-dcard-flag.is-down { border-color: var(--kn-danger); color: var(--kn-danger); }
+.kn-dcard-meta { font: 10px var(--kn-mono); color: var(--kn-muted); margin-top: -5px; }
+/* One slot per area on the wall's own scale, filled for the ones this domain advertises. The scale
+   is shared, so two cards side by side compare directly — that is the whole of why it is a row of
+   slots and not a number. */
+.kn-shelf { display: flex; gap: 3px; height: 7px; }
+.kn-shelf i { flex: 1; border-radius: 2px; background: var(--kn-line); }
+.kn-shelf i.is-on { background: var(--kn-accent); }
+.kn-dcard.is-down .kn-shelf i { background: var(--kn-danger); opacity: .35; }
+.kn-dtags { display: flex; flex-wrap: wrap; gap: 4px; min-height: 42px; align-content: flex-start; }
+.kn-dtag { font: 10.5px var(--kn-mono); border: 1px solid var(--kn-line); border-radius: 5px;
+  padding: 1px 6px; background: var(--kn-surface-2); }
+.kn-dtag.is-more { color: var(--kn-muted); border-style: dashed; background: none; }
+.kn-dnone { font: 10.5px var(--kn-mono); color: var(--kn-danger); }
+.kn-dcard-foot { display: flex; gap: 8px; font: 10px var(--kn-mono); color: var(--kn-muted);
+  border-top: 1px solid var(--kn-line); padding-top: 6px; }
+.kn-dcard-foot .kn-r { margin-left: auto; }
+
 .kn-lang { display: inline-flex; align-items: center; gap: 6px; }
 /* The label is for a screen reader and for `title`; the menu shows each language in its own script,
    which is the only label a person scanning for theirs actually needs. */

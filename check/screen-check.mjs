@@ -25,7 +25,7 @@ class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.at
         on?this.add(c):this.remove(c); return on; },
     }; } }
 globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
-const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions"]) byId[id]=new N(id);
+const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWall","knWallCount"]) byId[id]=new N(id);
 let opens=0; byId.knRawDialog.open=false; byId.knRawDialog.showModal=function(){this.open=true;opens++;}; byId.knRawDialog.close=function(){this.open=false;};
 globalThis.document={readyState:"complete",visibilityState:"visible",getElementById:(i)=>byId[i],createElement:(t)=>new N(t),createElementNS:(_,t)=>new N(t),addEventListener(){}};
 globalThis.__nav=[]; globalThis.window={addEventListener(){},IRISI18N:{t:(k,v)=>String(dict[k] ?? k).replace(/\{(\w+)\}/g,(_,n)=>(v&&v[n]!=null?v[n]:`{${n}}`))},location:{search:"",set href(v){globalThis.__nav.push(v);},get href(){return "";}}}; globalThis.navigator={}; globalThis.location={origin:BASE}; globalThis.confirm=()=>false; globalThis.setInterval=()=>1;
@@ -61,6 +61,46 @@ const live = await (await realFetch(BASE + "/api/knowledge/regions")).json();
 const areas = (live.regions || []).map((r) => String(r.fetch).split("/").pop());
 check(`every area the API has is on the map (${areas.length})`, areas.every((a) => texts().includes(a)));
 check("the config was read", state.cfg && typeof state.cfg.derives === "boolean");
+
+// ── the wall of domains ───────────────────────────────────────────────────────
+// It appears only once there is more than one domain. Most installs have one backbone and no link,
+// and they must see exactly the screen they saw before this existed — a wall of one is not a wall.
+const originsLive = [...new Set((live.regions || []).filter((r) => r.peer).map((r) => String(r.origin || r.peer)))];
+const downLive = (live.links || []).filter((l) => l.reachable === false).length;
+const nDomains = 1 + originsLive.length + downLive;
+if (nDomains < 2) {
+  check("one domain, so no wall is drawn", byId.knWallPanel.hidden === true);
+  console.log("--   only this backbone here; the wall's own assertions need a link");
+} else {
+  check(`the wall is drawn (${nDomains} domains)`, byId.knWallPanel.hidden === false);
+  const cards = find(byId.knWall, (n) => cls(n).includes("kn-dcard"));
+  check("  one card per domain, and no more", cards.length === nDomains, );
+  const names = cards.map((c) => find(c, (n) => cls(n).includes("kn-dcard-name")).map((n) => n.textContent)).flat();
+  check("  each origin has one", originsLive.every((o) => names.includes(o)));
+  // Every card has the same slots whether or not it has anything in them. A card that changes shape
+  // with its contents makes the eye re-read the layout instead of the data, which is the whole of
+  // what a wall of identical cards is for.
+  const shelves = cards.map((c) => find(c, (n) => cls(n).includes("kn-shelf"))[0]);
+  check("  every card has a shelf", shelves.every(Boolean));
+  const widths = [...new Set(shelves.filter(Boolean).map((sh) => [...sh.children].length))];
+  check("  all on one scale, so two cards compare directly", widths.length === 1, );
+  check("  and every card keeps its tag row", cards.every((c) => find(c, (n) => cls(n).includes("kn-dtags")).length === 1));
+  // The map is the detail pane for the selected card. At rest that is this backbone, so the map must
+  // hold its own areas and none of anybody else's.
+  const mine = (live.regions || []).filter((r) => !r.peer).map((r) => String(r.fetch).split("/").pop());
+  const theirs = (live.regions || []).filter((r) => r.peer).map((r) => String(r.fetch).split("/").pop());
+  check("  the map shows this backbone at rest", mine.every((a) => texts().includes(a)));
+  check("    and nobody else's areas with it",
+        !theirs.some((a) => !mine.includes(a) && texts().includes(a)));
+  if (cards.length > 1) {
+    const other = cards.find((c) => !cls(c).includes("is-here"));
+    other.click(); await settle();
+    check("  picking another card redraws the map for it",
+          !mine.some((a) => !theirs.includes(a) && texts().includes(a)));
+    check("    and the wall is still whole", find(byId.knWall, (n) => cls(n).includes("kn-dcard")).length === nDomains);
+    cards.find((c) => cls(c).includes("is-here")).click(); await settle();
+  }
+}
 
 // Picking exists where a pick can go somewhere — a run to start, or an overlay to draw. Asserted in
 // whichever direction this install is configured for, because the interesting failure is the button

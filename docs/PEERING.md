@@ -323,13 +323,44 @@ environment — the split `.env` already makes for the LLM key.
 
 ## On the map
 
-A peer is a second backbone with its own bus, joined by a dashed wire. Its areas hang off **it**, not
-off this one — drawn on a single bus they would read as areas of this ontology. Both installs in the
-example have a `payroll` and the map shows two, one under each backbone, which is right: they are
-different areas and nothing merged them.
+**One card per domain, and the map draws the one you picked.** Every domain hop 0 knows about gets a
+card: this backbone, whoever is advertising through a link, and any link that is not answering. The
+card carries the name, the revision, a shelf and the first few area names; the map below is the detail
+for whichever card is selected.
 
-A link that is down is still drawn, marked, with nothing under it. A map that dropped it would make a
-failed link look exactly like an install that never had one.
+The wall appears **only once there is more than one domain**. A single-backbone install — which is
+most of them, and the one `install.sh` makes — sees exactly the screen it saw before this existed. A
+wall of one is not a wall.
+
+Everything on the wall was tried against the alternatives first, and the alternatives lost for reasons
+worth keeping:
+
+  * **One row for everything**, which is what this was. Every area, local and remote, on one bus. It
+    breaks at five backbones — not by being wide, but by *overlapping*: the local backbone is pinned
+    to the middle of the canvas and each remote device sits at the midpoint of its own group, so one
+    of them eventually lands on top of it.
+  * **A ring of backbones.** It puts an order on a set that has none — there is no backbone 1 and
+    backbone 2 — and it turns the other domains into a menu rather than a picture.
+  * **Hops as vertical tiers, with the rooms as clouds.** True to the topology and still a diagram of
+    a structure nobody needs to look at while working.
+
+The cards are **small multiples**: the same card repeated, so the eye reads the difference in the data
+rather than re-reading a new layout each time. Two rules follow from that and are not negotiable.
+Every card keeps every slot, filled or not — a card that changes shape with its contents defeats the
+whole point. And the shelves share one scale, so *five of five* and *one of five* are one glance apart.
+
+The shelf counts **advertised areas only**. What a remote domain *holds* is not knowable from here and
+must not be guessed at: an area nobody advertised does not exist to this backbone, and a bar implying
+otherwise would be inventing the one number the design refuses to send.
+
+A link that is not answering keeps its card, marked, with nothing on the shelf. A wall that dropped it
+would make a failed link look exactly like an install that never had one. It is a card for the **link**
+and not for a backbone: behind an exchange this backbone cannot tell "that backbone stopped
+advertising" from "that backbone is gone" — only the link's own state is knowable from here — so the
+card says the knowable thing.
+
+A peer's areas are still that peer's. Both installs in the example have a `payroll`, and picking each
+card in turn shows two different areas, which is right: nothing merged them.
 
 **A working exchange is not drawn.** The areas behind it are grouped by the backbone that owns them,
 not by the one that carried them — hanging three backbones' areas under one EXCHANGE device would say

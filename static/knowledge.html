@@ -42,6 +42,23 @@
       </div>
     </section>
 
+    <!-- One card per domain, and every card is the same card. Shown only once there is more than one
+         domain: a wall of one is not a wall, and an install with no link should see exactly what it
+         saw before. Picking a card changes what the map below draws — the wall never reflows, so the
+         cards stay where they are while you click through them, which is the whole of what makes
+         them comparable. -->
+    <section class="panel kn-wall-panel" id="knWallPanel" hidden>
+      <div class="kn-panel-head">
+        <div>
+          <span class="eyebrow">DOMAINS</span>
+          <h2 data-i18n="knowledge.wall.title">Domains</h2>
+        </div>
+        <p class="kn-wall-lead" data-i18n="knowledge.wall.lead">One card each. Pick one and the map below shows it.</p>
+        <span class="kn-wall-count" id="knWallCount"></span>
+      </div>
+      <div class="kn-wall" id="knWall"></div>
+    </section>
+
     <!-- The map is the screen. What a click hands the agent opens over it, because it is a transcript
          to read and close, not a panel to keep half-visible beside the thing it describes. -->
     <section class="panel kn-map-panel">

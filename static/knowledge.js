@@ -25,7 +25,7 @@
     return 1;
   };
 
-  const state = { regions: [], nodes: [], edges: [], service: "", open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { agent: false, agentUrl: "", derives: false }, flags: new Map(), picked: new Set(), services: [], overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom() };
+  const state = { regions: [], nodes: [], edges: [], service: "", open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { agent: false, agentUrl: "", derives: false }, flags: new Map(), picked: new Set(), services: [], overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom(), domain: null, revision: null };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -221,7 +221,91 @@
   const textWidth = (text, px = 7) => [...String(text || "")]
     .reduce((n, ch) => n + (/[\u1100-\u11FF\u3000-\u9FFF\uAC00-\uD7AF\uFF00-\uFFEF]/.test(ch) ? px * 1.79 : px), 0);
 
+  /** Every domain hop 0 knows about: this backbone, whoever is advertising through a link, and any
+   *  link that is down.
+   *
+   *  A link that is down is its own row and not a domain that vanished. Behind an exchange this
+   *  backbone cannot tell "that backbone stopped advertising" from "that backbone is gone" — only the
+   *  link's own state is knowable from here — so the wall says what it knows: the link is not
+   *  answering, and the list is therefore incomplete. */
+  function domainRows() {
+    // Named for what it is, not for where it is: the chip beside it already says "here", and a card
+    // whose name and flag are the same word says one thing twice.
+    const rows = [{ id: "", label: t("knowledge.wall.thisBackbone"), here: true, up: true,
+                    areas: state.regions.filter((r) => !r.peer), rev: state.revision, via: null }];
+    const byOrigin = new Map();
+    for (const r of state.regions) {
+      if (!r.peer) continue;
+      const key = String(r.origin || r.peer);
+      if (!byOrigin.has(key)) byOrigin.set(key, { id: key, label: key, here: false, up: true,
+        areas: [], rev: r.peer_revision || null, via: r.peer });
+      byOrigin.get(key).areas.push(r);
+    }
+    rows.push(...[...byOrigin.values()].sort((a, b) => a.id.localeCompare(b.id)));
+    for (const l of state.links || []) {
+      if (l.reachable !== false) continue;
+      // Keyed apart from an origin of the same name: a link is not the backbone behind it.
+      rows.push({ id: `link:${l.name}`, label: l.label || l.name, here: false, up: false,
+                  areas: [], rev: l.revision || null, via: l.name, why: l.error || "" });
+    }
+    return rows;
+  }
+
+  /** The wall. It appears only once there is more than one domain — a wall of one is not a wall, and
+   *  an install with no link should see exactly the screen it saw before this existed. */
+  function drawWall() {
+    const panel = $("knWallPanel"), wall = $("knWall");
+    const rows = domainRows();
+    panel.hidden = rows.length < 2;
+    if (panel.hidden) { state.domain = null; wall.replaceChildren(); return; }
+    if (state.domain !== null && !rows.some((d) => d.id === state.domain)) state.domain = null;
+    // One scale for every shelf, so two cards side by side compare directly.
+    const scale = Math.max(1, ...rows.map((d) => d.areas.length));
+    const CAP = 4;
+    wall.replaceChildren(...rows.map((d) => {
+      const sel = (state.domain || "") === d.id;
+      const b = el("button", "kn-dcard" + (d.here ? " is-here" : "") + (d.up ? "" : " is-down") +
+                             (sel ? " is-sel" : ""));
+      b.type = "button";
+      b.setAttribute("aria-pressed", String(sel));
+      const top = el("div", "kn-dcard-top");
+      top.append(el("span", "kn-dcard-name", d.label));
+      top.append(el("span", "kn-dcard-flag" + (d.here ? " is-here" : d.up ? "" : " is-down"),
+        d.here ? t("knowledge.wall.here") : d.up ? t("knowledge.wall.across") : t("knowledge.wall.unreachable")));
+      b.append(top);
+      b.append(el("div", "kn-dcard-meta", d.rev ? `rev ${String(d.rev).slice(0, 7)}` : "—"));
+      const shelf = el("div", "kn-shelf");
+      for (let i = 0; i < scale; i++) shelf.append(el("i", i < d.areas.length ? "is-on" : ""));
+      b.append(shelf);
+      const tags = el("div", "kn-dtags");
+      if (!d.up) tags.append(el("span", "kn-dnone", t("knowledge.wall.noAnswer")));
+      else if (!d.areas.length) tags.append(el("span", "kn-dnone", t("knowledge.wall.nothing")));
+      else {
+        for (const r of d.areas.slice(0, CAP))
+          tags.append(el("span", "kn-dtag", String(r.fetch || "").split("/").pop() || norm(r.source)));
+        if (d.areas.length > CAP) tags.append(el("span", "kn-dtag is-more", `+${d.areas.length - CAP}`));
+      }
+      b.append(tags);
+      const foot = el("div", "kn-dcard-foot");
+      foot.append(el("span", null, d.here ? t("knowledge.wall.here") : `⌁ ${d.via || "—"}`));
+      foot.append(el("span", "kn-r", tv("knowledge.wall.count", { n: d.areas.length })));
+      b.append(foot);
+      // Picking never un-picks: the map below always shows something, and an empty map would be a
+      // hole in the screen rather than a state anybody wants.
+      b.addEventListener("click", () => {
+        if ((state.domain || "") === d.id) return;
+        state.domain = d.id || null;
+        state.open = []; state.openNode = new Map(); state.selected = null;
+        draw();
+      });
+      return b;
+    }));
+    $("knWallCount").textContent = tv("knowledge.wall.summary",
+      { n: rows.length, areas: rows.reduce((a, d) => a + d.areas.length, 0) });
+  }
+
   function draw() {
+    drawWall();
     const canvas = $("knTopo");
     canvas.replaceChildren();
     // Named by its address, not by `source`. `source` comes back with hyphens turned into
@@ -232,7 +316,13 @@
     // backbone further away. So it draws as an ordinary area and the difference is carried where it
     // matters: which backbone it hangs off, and a key that cannot collide with a local one. Both
     // sides of this pair of installs have a `payroll`, which is exactly the case that must not merge.
-    const ases = state.regions.map((r) => {
+    // With a wall above, the map is the detail pane for one card. Without one — a single-backbone
+    // install, which is most of them — this is every row there is and nothing changes.
+    const pick = state.domain;
+    const rows = !$("knWallPanel").hidden
+      ? state.regions.filter((r) => (pick === null ? !r.peer : String(r.origin || r.peer) === pick))
+      : state.regions;
+    const ases = rows.map((r) => {
       const dir = String(r.fetch || "").split("/").pop() || norm(r.source);
       const peer = r.peer || null;
       return { key: peer ? `${peer}:${dir}` : dir, label: dir, kind: "as",
@@ -1150,6 +1240,11 @@
       request("regions").then((fresh) => {
         state.regions = [...state.regions.filter((r) => !r.peer), ...(fresh.regions || []).filter((r) => r.peer)];
         state.links = fresh.links || [];
+        // From here too, or a tab that opened on a cached map shows a dash where every other card
+        // shows a revision — which reads as "unknown" rather than as "this one is ours". The
+        // repository head and not the published one: the head is what the map is drawn from, and the
+        // two differ exactly when a publish has failed.
+        state.revision = fresh.revision || null;
         draw();
       }).catch(() => {});
       return;
@@ -1159,6 +1254,10 @@
     // Never cached, for the reason flags are not: whether a link is up is the thing worth seeing now,
     // and a cached "reachable" is a picture of a link that may have gone since.
     state.links = regions.links || [];
+    // This backbone's own revision, for its card on the wall. Every other card carries the one that
+    // came with the advertisement, and a card that showed a dash where the others show a revision
+    // would read as "unknown" rather than as "this one is ours".
+    state.revision = regions.revision || null;
     state.nodes = graph.nodes || [];
     state.edges = graph.edges || [];
     state.entries = new Map();
