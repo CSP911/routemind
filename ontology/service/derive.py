@@ -7,6 +7,7 @@ from __future__ import annotations
 import json, re
 from pathlib import Path
 from .store import Store
+from .store import write as store_write
 
 def region_label(d: str) -> str:
     """Area directory → the key in the CORE.md table. This used to be a hard-coded list; every entry
@@ -54,7 +55,7 @@ def regenerate(store: Store) -> list[str]:
     """Rewrite derived files in place. Returns the relative paths touched."""
     touched = []
     p = store.root / "regions.json"; new = regions_doc(store)
-    if not p.exists() or p.read_text(encoding="utf-8") != new: p.write_text(new, encoding="utf-8"); touched.append("regions.json")
+    if not p.exists() or p.read_text(encoding="utf-8") != new: store_write(p, new); touched.append("regions.json")
     return touched
 
 
@@ -107,7 +108,7 @@ def write_node_index(store: Store, node: dict) -> None:
         fm.append(f"scope: {json.dumps(node['scope'], ensure_ascii=False) if isinstance(node['scope'], list) else node['scope']}")
     if node.get("described_by"): fm.append(f"described_by: {node['described_by']}")
     body = "---\n" + "\n".join(fm) + "\n---\n" + (node.get("body") or "").strip() + "\n"
-    (store.root / node["path"]).write_text(body, encoding="utf-8")
+    store_write(store.root / node["path"], body)
 
 
 def sync_region_node_lists(store: Store) -> list[str]:

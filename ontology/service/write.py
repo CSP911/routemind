@@ -12,6 +12,7 @@ import contextlib, os, re, shutil, subprocess, sys, tempfile, threading, time
 from pathlib import Path
 import yaml
 from .store import Store, set_frontmatter, FM_RE
+from .store import write as store_write, file_lock
 from .validate import validate, ID_RE, NAME_MAX, name_too_long
 from .derive import regenerate, write_node_index, sync_region_node_lists, EDITABLE
 from .romanize import romanize
@@ -57,22 +58,17 @@ def repo_lock(root: Path, wait: float = REPO_LOCK_WAIT):
     It waits rather than refusing, because the thing on the other side is a transaction and those are
     short. But it waits with a bound: a writer wedged for good must not turn every later request into
     a hung connection. What comes back then says a process is holding it, which is a different thing
-    to go and look at than a hand edit."""
-    if fcntl is None or not (root / ".git").is_dir():
-        yield; return
-    with open(root / ".git" / "routemind-write.lock", "a+") as f:
-        deadline = time.monotonic() + wait
-        while True:
-            try:
-                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB); break
-            except OSError:
-                if time.monotonic() >= deadline:
-                    raise WriteError(503, f"another process is writing to {root} and has held it for more than "
-                                          f"{wait:g}s — one writer per data directory. If nothing else should be "
-                                          f"running, look for a second ontology on this mount.")
-                time.sleep(0.05)
-        try: yield
-        finally: fcntl.flock(f, fcntl.LOCK_UN)
+    to go and look at than a hand edit.
+
+    Readers take this same lock **shared** (`Store.snapshot`), so a read never lands in the middle of
+    a transaction. The primitive lives in store.py because both sides need it and write.py already
+    imports store."""
+    def _held():
+        raise WriteError(503, f"another process is writing to {root} and has held it for more than "
+                              f"{wait:g}s — one writer per data directory. If nothing else should be "
+                              f"running, look for a second ontology on this mount.")
+    with file_lock(root, exclusive=True, wait=wait, on_timeout=_held):
+        yield
 
 
 def name_from_file(stem: str) -> str:
@@ -218,7 +214,10 @@ def publish(root: Path, publish_dir: Path, sha: str | None = None, keep: set[str
     link_tmp = publish_dir / f".current-{sha[:8]}"
     if link_tmp.is_symlink() or link_tmp.exists(): link_tmp.unlink()
     os.symlink(sha, link_tmp); os.replace(link_tmp, publish_dir / "current")   # atomic swap
-    (publish_dir / "REVISION").write_text(sha + "\n", encoding="utf-8"); os.chmod(publish_dir / "REVISION", 0o644); os.chmod(publish_dir, 0o755)
+    # Read by `store_published()` and by whatever consumes the checkout, so it is replaced rather
+    # than truncated-and-refilled. The one above it, in the staging directory, is not: that whole
+    # directory is renamed into place, so nothing can see it until it is complete.
+    store_write(publish_dir / "REVISION", sha + "\n"); os.chmod(publish_dir / "REVISION", 0o644); os.chmod(publish_dir, 0o755)
     # keep the last few checkouts only
     kept = sorted((p for p in publish_dir.iterdir() if p.is_dir() and not p.is_symlink() and re.fullmatch(r"[0-9a-f]{40}", p.name)), key=lambda p: p.stat().st_mtime)
     pinned = {k for k in (keep or set()) if k}
@@ -425,6 +424,12 @@ class Writer:
                 if not e.get(k): raise WriteError(400, f"edges[]: {k} is required")
             if nid not in (e["from"], e["to"]): raise WriteError(400, "edges[] must involve the new node")
         def mutate():
+            # Asked twice on purpose. The check above runs before the lock — it has to, because the
+            # id may still have to be made from the name, and that can call a model — so between it
+            # and here another writer can have taken the id. Unlocked, the answer was "free" for
+            # both of them and the second silently overwrote the first. This one is inside the
+            # transaction, where the answer cannot change under it.
+            if base.exists(): raise WriteError(409, f"entity {nid} exists", code="id_taken", data={"id": nid})
             base.parent.mkdir(parents=True, exist_ok=True)
             write_node_index(self.store, {"id": nid, "name": body["name"], "kind": kind, "region": region, "holds": holds, "injected_by": body.get("injected_by"), "status": body.get("status"),
                                           "parent": body.get("parent"), "aliases": body.get("aliases") or [],
@@ -712,7 +717,7 @@ class Writer:
                                           "aliases": [], "one_liner": rep["one_liner"], "body": "",
                                           "path": str(base.relative_to(self.root))})
             end = anchor.end()
-            core.write_text(text[:end] + f"\n| `{label}` | {core_desc} |" + text[end:], encoding="utf-8")
+            store_write(core, text[:end] + f"\n| `{label}` | {core_desc} |" + text[end:])
             if new_edges:
                 edges = self.store.edges()
                 for e in new_edges:
@@ -750,7 +755,7 @@ class Writer:
             shutil.rmtree(d)
             edges = [e for e in self.store.edges() if e["from"] not in ids and e["to"] not in ids]
             self._save_edges(edges)
-            if row: core.write_text(text[:row.start()] + text[row.end():], encoding="utf-8")
+            if row: store_write(core, text[:row.start()] + text[row.end():])
 
         res = self.transact(f"region {src}: delete ({len(ids)} nodes · CORE row)", actor, mutate)
         return {**res, "source": src, "removed_nodes": sorted(ids), "core_row_removed": bool(row)}
@@ -774,7 +779,7 @@ class Writer:
         before = m.group(2)
         if before == desc: raise WriteError(200, "no change")
         def mutate():
-            core.write_text(pat.sub(lambda mm: mm.group(1) + desc + mm.group(3), text, count=1), encoding="utf-8")
+            store_write(core, pat.sub(lambda mm: mm.group(1) + desc + mm.group(3), text, count=1))
         res = self.transact(f"core: region {key} description", actor, mutate)
         return {**res, "key": key, "before": before, "after": desc}
 
@@ -836,7 +841,7 @@ class Writer:
     # ---- edges ----
     def _save_edges(self, edges: list[dict]):
         head_comment = "# Edges. `from` and `to` are node ids; `rel` must be one of the relations in vocab.yaml.\n\n"
-        (self.root / "edges.yaml").write_text(head_comment + yaml.safe_dump(edges, allow_unicode=True, sort_keys=False, width=1000), encoding="utf-8")
+        store_write(self.root / "edges.yaml", head_comment + yaml.safe_dump(edges, allow_unicode=True, sort_keys=False, width=1000))
 
     def add_edge(self, body: dict, actor: str) -> dict:
         for k in ("from", "rel", "to"):
@@ -873,5 +878,5 @@ class Writer:
         return self.fragments_dir / svc / name
 
     def put_fragment(self, svc: str, name: str, content: str) -> dict:
-        p = self.fragment_path(svc, name); p.parent.mkdir(parents=True, exist_ok=True); p.write_text(content, encoding="utf-8")
+        p = self.fragment_path(svc, name); p.parent.mkdir(parents=True, exist_ok=True); store_write(p, content)
         return {"ok": True, "path": str(p)}

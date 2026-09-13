@@ -815,7 +815,15 @@ class Handler(BaseHTTPRequestHandler):
                     # claim to make. A timeout is nobody's claim and must not arrive looking like one.
                     return self._err(e.status, str(e), reason=("peer_said_no" if e.reachable else "peer_unreachable"),
                                      data={"peer": parts[1], "reachable": e.reachable})
-            if method == "GET": return self._get(parts)
+            # One consistent view of the tree per read. Without it a single answer could carry
+            # `regions.json` from before a write and an entity from after it — a routing table that
+            # never existed. The lock is held only while the snapshot loads, so the peer fetches
+            # further down this path cannot stall a write behind somebody else's machine.
+            if method == "GET":
+                try:
+                    with store.snapshot(): return self._get(parts)
+                except TimeoutError as e:
+                    return self._err(503, str(e), reason="repository_busy")
             before = _export_state()
             out = self._write(method, parts)
             # Only when what crosses a link actually changed — every other save is nobody else's

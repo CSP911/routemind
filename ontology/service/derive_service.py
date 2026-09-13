@@ -6,6 +6,7 @@ a hand-kept file list is wrong by the second file, which is why Core generates i
 from __future__ import annotations
 import json
 from .service_store import ServiceStore
+from .store import write as store_write
 
 FM_ORDER = ["service", "core_revision", "publisher", "game_line", "regions", "updated"]
 
@@ -21,7 +22,7 @@ def write_service_index(store: ServiceStore, svc: dict) -> None:
     body = "---\n" + "\n".join(fm) + "\n---\n" + (svc.get("one_liner") or "").strip() + "\n\n## Files\n"
     body += "".join(f"- {f['name']} : {f['description']}\n" for f in files) if files else \
             "(none — this service's fragment is still empty)\n"
-    (store.root / svc["dir"] / "INDEX.md").write_text(body, encoding="utf-8")
+    store_write(store.root / svc["dir"] / "INDEX.md", body)
 
 
 def regenerate(store: ServiceStore) -> list[str]:

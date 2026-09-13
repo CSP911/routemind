@@ -571,6 +571,79 @@ try:
 except ValueError as e:
     eq("an unknown provider is refused", "gemini" in str(e), True)
 
+# ── a reader must never see a file half-written ──────────────────────────────
+# The end-to-end version of this is check/concurrency-check.py, driving a real server; it reproduces
+# the failure but only usually, because the window is one file being truncated and refilled and
+# hitting it is luck. This one is the mechanism on its own, where the window can be made as wide as
+# it needs to be — a big file, rewritten in a loop, read in a loop — so it answers the same question
+# every time.
+#
+# Both directions are measured. `Path.write_text`, which is what every writer here used until
+# 2026-09-13, is shown failing: that is the evidence the fix is for something. `store.write` is shown
+# not failing under the same pressure.
+import threading as _th, tempfile as _tf, shutil as _sh
+from service.store import write as _atomic
+
+def _torn_reads(writer, seconds=1.5):
+    """Rewrite one file over and over with `writer`, read it over and over, count the bad reads."""
+    d = _tf.mkdtemp(prefix="torn-"); f = pathlib.Path(d) / "x.json"
+    a = json.dumps({"v": "a" * 60000}); b = json.dumps({"v": "b" * 60000})
+    f.write_text(a, encoding="utf-8")
+    stop, bad, reads = [], [], [0]
+    def write_loop():
+        i = 0
+        while not stop:
+            writer(f, a if i % 2 else b); i += 1
+    def read_loop():
+        while not stop:
+            try:
+                json.loads(f.read_text(encoding="utf-8")); reads[0] += 1
+            except FileNotFoundError: bad.append("vanished")
+            except Exception as e: bad.append(type(e).__name__)
+    ts = [_th.Thread(target=write_loop), _th.Thread(target=read_loop), _th.Thread(target=read_loop)]
+    for t in ts: t.start()
+    time.sleep(seconds); stop.append(True)
+    for t in ts: t.join()
+    _sh.rmtree(d, ignore_errors=True)
+    return bad, reads[0]
+
+import json, time                                                          # noqa: E402
+_bad, _n = _torn_reads(lambda p, t: p.write_text(t, encoding="utf-8"))
+eq("write_text: a reader does catch it half-written", len(_bad) > 0, True)
+print(f"     ({len(_bad)} torn reads of {_n + len(_bad)} — this is the failure, reproduced)")
+_bad, _n = _torn_reads(_atomic)
+eq("store.write: a reader never does", _bad[:3], [])
+eq(f"  and it really was reading ({_n} clean reads)", _n > 100, True)
+
+
+# ── what ships has to validate as shipped ────────────────────────────────────
+# `examples/back-office` is what the README tells a new person to copy over `data/repo` before the
+# first boot, and `seed/` is what the entrypoint lays down when they do not. Both are committed
+# ontologies with a committed `regions.json`, and neither was ever validated *as committed* — every
+# check that used them called `regenerate` first, so a stale file in the repository was invisible to
+# all of them.
+#
+# It went stale the moment the export fields were added: `use_when_export`, `export_to` and
+# `use_when_export_for` were simply absent from the shipped table. Nothing noticed until the drift
+# rule started comparing the text — and then the very first thing a new install did was report five
+# validation errors about a file nobody had touched. A worked example that does not validate teaches
+# the wrong lesson on page one.
+for _ship in ("examples/back-office", "seed"):
+    _src = pathlib.Path(_ship)
+    if not (_src / "regions.json").exists(): continue
+    import shutil as _sh, tempfile as _tf, subprocess as _sp
+    from service.validate import validate as _v
+    from service.derive import regenerate as _rg
+    _T = _tf.mkdtemp(prefix="shipped-"); _r = pathlib.Path(_T) / "r"
+    _sh.copytree(_src, _r); _sp.run(["git", "-C", str(_r), "init", "-q"], check=True)
+    _st = Store(_r)
+    _res = _v(_st)
+    eq(f"{_ship} validates as shipped", _res["ok"], True)
+    if not _res["ok"]: print("     " + "\n     ".join(e[:120] for e in _res["errors"][:5]))
+    eq(f"  and its derived table needs no regenerating", _rg(_st), [])
+    _sh.rmtree(_T, ignore_errors=True)
+
+
 # ── a derived file that is also committed can be committed stale ─────────────
 # `regions.json` is generated from the areas' `.md` files and the CORE.md table, and it is versioned
 # alongside them, which is the combination that lets the two drift: edit an area's file in an editor,

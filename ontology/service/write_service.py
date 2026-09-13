@@ -9,6 +9,7 @@ directly, so the publish swaps a whole write-once tree behind one symlink rename
 from __future__ import annotations
 from pathlib import Path
 from .service_store import ServiceStore, SERVICE_RE, CONTENT_SUFFIXES
+from .store import write as store_write
 from .derive_service import write_service_index, regenerate
 from .validate_service import validate_services
 from .write import WriteError, _git, _dirty, _restore, _lock, repo_lock, head, publish
@@ -93,7 +94,7 @@ class ServiceWriter:
         name = _safe_name(name)
         if not str(description or "").strip(): raise WriteError(400, "description is required — one line saying what this file holds")
         def mutate():
-            (self.root / svc["dir"] / name).write_text(content, encoding="utf-8")
+            store_write(self.root / svc["dir"] / name, content)
             files = [f for f in svc["files"] if f["name"] != name] + [{"name": name, "description": description.strip()}]
             write_service_index(self.store, {**svc, "service": sid, "files": sorted(files, key=lambda f: f["name"])})
         return self.transact(f"fragment file: {sid}/{name}", actor, mutate)

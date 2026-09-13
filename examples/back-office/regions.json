@@ -7,6 +7,9 @@
    "title": "Documents & Approval",
    "description": "Drafting, approval chains, delegated authority and document retention",
    "use_when": "how to write a draft document · whom to put in the approval chain · whether a team lead can sign this off · how many years this is kept · how to get the company seal",
+   "use_when_export": "",
+   "export_to": [],
+   "use_when_export_for": {},
    "nodes": [
     "approval-line",
     "approval-overview",
@@ -31,6 +34,9 @@
    "title": "Attendance & Leave",
    "description": "Leave, parental leave, and what counts as time worked",
    "use_when": "how many leave days are left · how to book a half day · how much leave a mid-year joiner gets · how to apply for parental leave · what to log for the days of a business trip",
+   "use_when_export": "",
+   "export_to": [],
+   "use_when_export_for": {},
    "nodes": [
     "accrual-rule",
     "annual-leave",
@@ -61,6 +67,9 @@
    "title": "Expenses",
    "description": "Card and travel spending, and what counts as evidence",
    "use_when": "what to do with a receipt · whether the corporate card may be used here · how much a business trip pays · the entertainment cap · the card was lost",
+   "use_when_export": "",
+   "export_to": [],
+   "use_when_export_for": {},
    "nodes": [
     "card-limit-table",
     "card-limit",
@@ -91,6 +100,9 @@
    "title": "Payroll & Insurance",
    "description": "Pay and deductions, social insurance, and the year-end tax settlement",
    "use_when": "what this payslip line means · whether an allowance is tax free · when year-end settlement papers are due · why the insurance deduction changed",
+   "use_when_export": "",
+   "export_to": [],
+   "use_when_export_for": {},
    "nodes": [
     "insurance-rates",
     "insurance",
@@ -116,6 +128,9 @@
    "title": "Purchasing & Contracts",
    "description": "Purchase requests, vendor selection, contracts and their custody",
    "use_when": "how far up this amount has to be approved · how to register a new vendor · how many quotes are needed · where the signed contract is kept",
+   "use_when_export": "",
+   "export_to": [],
+   "use_when_export_for": {},
    "nodes": [
     "approval-threshold",
     "contract-custody",

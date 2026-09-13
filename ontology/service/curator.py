@@ -10,6 +10,7 @@ import hashlib, json, os, re, uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from .store import Store
+from .store import write as store_write
 from .validate import validate
 
 UNEXPLAINED_RE = re.compile(r"^\s*-\s*id:\s*([A-Za-z0-9_-]+)\s*$(?:(?!^\s*-\s*id:).)*?(status:\s*unexplained|provenance:\s*folklore)", re.M | re.S)
@@ -322,7 +323,7 @@ def sleep(store: Store, svc_store, cstore: CuratorStore, publish_dir, svc_publis
     b = gather(store, svc_store, publish_dir, svc_publish_dir, since, cstore.observations())
     if b["new_experience"] == 0 and b["warnings"] == 0 and b["errors"] == 0 and not observed:
         res = {"mode": mode, "slept_at": _now(), "gathered_at": b["gathered_at"], "log_position": b["log_position"], "stimulus": False, "summary": "slept. No new experience and no warnings — nothing to do", "proposals": 0}
-        cstore.last.write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8"); return res
+        store_write(cstore.last, json.dumps(res, ensure_ascii=False, indent=1)); return res
     already = {x for p in cstore.proposals() if p["status"] in ("pending", "answered", "acknowledged", "accepted") for x in (p.get("evidence") or [])}
     props = [p for p in mechanical(b) if not (p["type"] in ("gap", "correction") and set(p["evidence"]) <= already)]
     rejected = []
@@ -346,7 +347,7 @@ def sleep(store: Store, svc_store, cstore: CuratorStore, publish_dir, svc_publis
            "summary": f"evidence {len(b['evidence'])} · new experience {b['new_experience']} · proposals {made}"
                       + (f" · rejected at the gate {len(rejected)}" if rejected else "")
                       + (f" · observations tidied {sum(o.get('observations', 0) for o in observed)}" if any(o.get('observations') for o in observed) else "")}
-    cstore.last.write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8"); return res
+    store_write(cstore.last, json.dumps(res, ensure_ascii=False, indent=1)); return res
 
 
 # ── accept / reject ────────────────────────────────────────────────────────────────────────
