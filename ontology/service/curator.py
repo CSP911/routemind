@@ -386,12 +386,30 @@ def decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply, 
 # same reason — the two together are the whole export decision, and a widening that could be made
 # with a direct write while the wording needed a second pair of eyes would put the queue in front of
 # the smaller of the two.
+PEER_NAME = re.compile(r"^[a-z][a-z0-9-]{0,30}$")
 ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "core": "core_row", "entity": "one_liner",
-                "peer": "use_when_export", "audience": "export_to"}
+                "peer": "use_when_export", "audience": "export_to",
+                # The line one **named** peer is shown instead of the one everybody else gets. The
+                # proposal carries `peer`, because the field is a mapping and a proposal that only
+                # said "the export line" could not say whose.
+                "peer-line": "use_when_export_for"}
 # Scopes whose `after` may be empty, and where empty says something. Everywhere else an empty
 # sentence is a proposal to advertise nothing, which is a mistake rather than a decision; for an
 # audience it is "everybody this area already crosses to", which is the value most areas have.
-EMPTIABLE = {"audience"}
+EMPTIABLE = {"audience", "peer-line"}
+# `peer` is emptiable too, but only against something. An empty export line is two different acts
+# wearing one string: *I have not written it yet*, which is a mistake, and *stop this area crossing*,
+# which is the most consequential decision on this list and the one most deserving of a review. What
+# tells them apart is `before` — a withdrawal withdraws something. Without this there was no queued
+# way to stop advertising at all, only a direct write, so the one export decision that could not be
+# reviewed was the one that takes knowledge away from another organisation.
+EMPTIABLE_AGAINST = {"peer"}
+# Scopes that name a peer as well as an area. The name is the key being written, not evidence.
+PEER_SCOPES = {"peer-line"}
+# Fields that hold a mapping rather than a sentence, so a proposal edits one key of them. Declared,
+# not inferred from whatever is stored: an empty mapping and an unset field look the same from the
+# outside, and deciding by the value means the **first** override of an area silently writes nothing.
+MAPPING_FIELDS = {"use_when_export_for"}
 SCOPE_ALIAS = {"dr": "as"}          # the old value is still accepted; the new name is what gets stored
 
 
@@ -412,12 +430,24 @@ def submit_route(cstore: CuratorStore, body: dict, actor: str) -> dict:
         if not entity: raise ValueError("entity is required for scope `entity` — it is the row being edited")
     elif not region: raise ValueError("region is required")
     if not after and scope not in EMPTIABLE:
-        raise ValueError("after is required — it is the sentence the person settled on")
-    unknown = sorted(set(body) - {"scope", "field", "region", "entity", "after", "before", "why", "target"})
+        if scope not in EMPTIABLE_AGAINST or not str(body.get("before") or "").strip():
+            raise ValueError("after is required — it is the sentence the person settled on"
+                             + (f". To withdraw scope `{scope}`, send the line it is withdrawing as "
+                                f"`before`" if scope in EMPTIABLE_AGAINST else ""))
+    peer = str(body.get("peer") or "").strip()
+    if scope in PEER_SCOPES:
+        if not PEER_NAME.match(peer):
+            raise ValueError(f"peer is required for scope `{scope}` — the reader this line is for, "
+                             f"in ASCII kebab-case")
+    elif peer:
+        raise ValueError(f"scope {scope} does not take a peer")
+    unknown = sorted(set(body) - {"scope", "field", "region", "entity", "after", "before", "why",
+                                  "target", "peer"})
     if unknown: raise ValueError(f"unknown field(s) {unknown}")
     pid = f"cp_{uuid.uuid4().hex[:10]}"
     cstore.append({"event": "proposal", "id": pid, "at": _now(), "type": "route",
                    "scope": scope, "field": field, "region": region, "entity": entity or None,
+                   "peer": peer or None,
                    "before": str(body.get("before") or ""), "after": after,
                    "why": str(body.get("why") or ""), "target": body.get("target"),
                    "submitted_by": actor,

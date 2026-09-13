@@ -287,8 +287,11 @@ def rows(root: Path) -> tuple[list[dict], list[dict]]:
     """
     out, links = [], []
     for peer in declared(root):
+        # `note` is not `error`: the link is up and carrying rows, and calling it down would suspend
+        # the absence rule over a configuration detail. It is the other thing a link can be — working,
+        # and not doing what somebody thinks it is doing.
         state = {"name": peer["name"], "label": peer["label"], "url": peer["url"],
-                 "reachable": True, "revision": None, "areas": 0, "error": None}
+                 "reachable": True, "revision": None, "areas": 0, "error": None, "note": None}
         if not peer["token"]:
             # Named, so that "the link is doing nothing" is never a mystery: the variable this
             # install has to set is in the answer.
@@ -299,6 +302,19 @@ def rows(root: Path) -> tuple[list[dict], list[dict]]:
         except PeerError as e:
             state.update(reachable=False, error=str(e)); links.append(state); continue
         state["revision"] = adv.get("revision")
+        # What it answered, against what it was called. `kind: exchange` is one word typed by hand
+        # into a file, and getting it wrong here fails **silently**: a room is handed the filtered
+        # set instead of the tagged one, so audiences and per-peer lines quietly stop working, and a
+        # document restricted to this backbone comes back 404 because the room could not say who it
+        # was fetching for. Everything looks up. This is the same net the exchange has for the
+        # mirror-image mistake — and unlike there, no header can stand in for the label: believing a
+        # caller that says it is a room would get that caller **more**, which is the one direction a
+        # claim must never be taken on the caller's word.
+        if adv.get("schema") == "routemind-exchange/v1" and peer["kind"] != "exchange":
+            state["note"] = (f"declared as a backbone but answers as an exchange — add `kind: exchange` "
+                             f"to {peer['name']} in peers.yaml. Until then this backbone filters for "
+                             f"the room instead of for its members, so an audience and a line written "
+                             f"for one peer do nothing")
         for r in (adv.get("regions") or []):
             # From the peer's own `fetch`, not rebuilt from `source`. Rebuilding assumed the thing was
             # one hop away and always produced `/v1/peers/<peer>/regions/<src>` — which is right for a

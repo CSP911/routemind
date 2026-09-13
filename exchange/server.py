@@ -239,7 +239,13 @@ def reflect(asking: dict | None = None, claimed_kind: str | None = None) -> dict
             if aud and mine and mine not in aud: continue
             tail = str(r.get("fetch") or "")
             if not tail.startswith("/v1/export"): continue  # not something this contract can carry
-            rows.append({**{k: v for k, v in r.items() if k != "export_to"},
+            # The line this asker is shown, when the origin wrote one for them by name. Picked here
+            # for the same reason the audience is filtered here — the backbone that owns the area
+            # sees this room, not the member behind it — and the rest are dropped on the way out: who
+            # else is told what is between them and the origin.
+            per = r.get("use_when_for") or {}
+            rows.append({**{k: v for k, v in r.items() if k not in ("export_to", "use_when_for")},
+                         **({"use_when": per[mine]} if mine and per.get(mine) else {}),
                          "path": path, "origin": path[-1], "via_kind": m["kind"],
                          "origin_revision": r.get("origin_revision") or adv.get("revision"),
                          "fetch": f"/v1/export/peers/{m['name']}" + tail[len("/v1/export"):]})

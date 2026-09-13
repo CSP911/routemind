@@ -450,6 +450,16 @@ body.kn-dragging { user-select: none; }
 }
 .kn-door.is-open { color: var(--warn-fg, #8a5a2b); border-color: var(--warn-line, #e6cfae); background: var(--warn-bg, #fdf7ee); }
 
+/* The export card: three decisions in one place, each separated enough that nobody submits the one
+   below the one they were reading. The rule between them is doing the work a heading cannot. */
+.kn-export-part { padding: 14px 0 4px; border-top: 1px solid var(--line, #dfe4ea); }
+.kn-export-part:first-of-type { border-top: 0; padding-top: 4px; }
+.kn-cf-sub { margin: 0 0 2px; font-size: 13px; }
+/* A peer this backbone has already been offered something by. Pressing one appends it rather than
+   replacing what is typed: an audience is a list, and the common edit is adding to it. */
+.kn-chip.is-add { cursor: pointer; border-style: dashed; }
+.kn-chip.is-add:hover { border-color: var(--accent, #2d6a5f); color: var(--accent, #2d6a5f); }
+
 .kn-lang { display: inline-flex; align-items: center; gap: 6px; }
 /* The label is for a screen reader and for `title`; the menu shows each language in its own script,
    which is the only label a person scanning for theirs actually needs. */

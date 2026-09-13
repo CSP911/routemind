@@ -38,6 +38,7 @@ def regenerate(store: Store) -> list[str]:
                      # Empty is not the same as absent here: "" means this area is not exported.
                      "use_when_export": ((top.get("use_when_export") or "") if top else ""),
                      "export_to": ((top.get("export_to") or []) if top else []),
+                     "use_when_export_for": ((top.get("use_when_export_for") or {}) if top else {}),
                      "nodes": [n["id"] for n in nodes if n["region"] == r and n.get("status") != "draft"],
                      "representative": (top["id"] if top else None),
                      "fetch": f"/v1/regions/{r}"})
@@ -52,9 +53,9 @@ def regenerate(store: Store) -> list[str]:
 # dropped them. They come from one place now: a field absent here is not stored, and only a field
 # that is here and in EDITABLE can be changed.
 NODE_FIELDS = ("holds", "injected_by", "status", "role", "parent", "use_when", "use_when_export",
-               "export_to", "expands_in", "aliases")
+               "export_to", "use_when_export_for", "expands_in", "aliases")
 EDITABLE = ("name", "kind", "one_liner", "aliases", "holds", "status", "use_when", "use_when_export",
-            "export_to", "expands_in", "parent")
+            "export_to", "use_when_export_for", "expands_in", "parent")
 
 
 def write_node_index(store: Store, node: dict) -> None:
@@ -78,6 +79,14 @@ def write_node_index(store: Store, node: dict) -> None:
     # open anything on its own.
     if node.get("export_to"):
         fm.append("export_to: [" + ", ".join(sorted(node["export_to"])) + "]")
+    # One line per fact stays one line: a flow mapping, values JSON-quoted so a sentence with a colon,
+    # a brace or a `·` in it cannot end the mapping early. Only for the peers that get something other
+    # than the line above — a map that repeated the default for everybody would be two places to
+    # change it and one of them would fall behind.
+    if node.get("use_when_export_for"):
+        fm.append("use_when_export_for: {" + ", ".join(
+            f"{k}: {json.dumps(v, ensure_ascii=False)}"
+            for k, v in sorted(node["use_when_export_for"].items())) + "}")
     if node.get("expands_in"): fm.append(f"expands_in: {node['expands_in']}")
     if node.get("aliases"):
         fm.append("aliases: [" + ", ".join(

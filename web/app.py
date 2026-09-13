@@ -458,7 +458,10 @@ def api_knowledge_one_liner_draft(node_id: str, request: Request) -> dict[str, A
 # worse one, and is what happened to `peer` and `audience`: the ontology API is not published outside
 # the compose network, so a scope missing here is a scope nobody can reach, and the docs describing
 # the road stayed true of a queue with no door. check/room-check.py holds the two lists together.
-QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "peer", "audience")
+QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "peer", "audience", "peer-line")
+# Scopes whose proposal names a peer as well as an area, because the field is a mapping and the
+# proposal has to say whose line it is.
+QUEUE_PEER_SCOPES = ("peer-line",)
 
 
 @_iris_route("POST", "/api/knowledge/proposals")
@@ -483,7 +486,10 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
         raise HTTPException(status_code=422,
                             detail="scope must be as, bb, core, entity, peer or audience.")
     where = "entity" if scope == "entity" else "region"
-    required = [where] if scope == "audience" else [where, "after"]
+    # `peer` may be empty only when it is withdrawing something, which `before` is what says. The
+    # ontology settles it either way; refusing here first is only so the message names the field.
+    empty_ok = scope in ("audience", "peer-line") or (scope == "peer" and str(data.get("before") or "").strip())
+    required = [where] if empty_ok else [where, "after"]
     # An empty `after` is a decision for `audience` alone — everybody the area already crosses to —
     # and a missing sentence for every other scope.
     for field in required:
@@ -498,6 +504,8 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     }
     if str(data.get("target") or "").strip():
         body["target"] = str(data["target"]).strip()
+    if scope in QUEUE_PEER_SCOPES:
+        body["peer"] = str(data.get("peer") or "").strip()
     return _ontology_proxy("POST", "/v1/curator/proposals", actor, body)
 
 

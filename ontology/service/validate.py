@@ -246,6 +246,35 @@ def validate(store: Store) -> dict:
                     if not PEER_NAME.match(a):
                         errors.append(f"node {n['id']}: export_to names {a!r}, which is not a peer name "
                                       f"— ASCII kebab-case, starting with a letter")
+            # A line written for one named reader instead of the one everybody else gets. Every rule
+            # the default line has applies to each of these, because each becomes exactly the same
+            # cell in exactly the same kind of table — just somebody else's.
+            per = n.get("use_when_export_for") or {}
+            if per:
+                if not exp:
+                    errors.append(f"node {n['id']}: use_when_export_for without use_when_export — "
+                                  f"a line for one peer and nothing for the rest. Write the line first")
+                if n.get("parent"):
+                    errors.append(f"node {n['id']}: only an area's top representative can carry use_when_export_for")
+                for who, line in sorted(per.items()):
+                    if not PEER_NAME.match(who):
+                        errors.append(f"node {n['id']}: use_when_export_for names {who!r}, which is not a "
+                                      f"peer name — ASCII kebab-case, starting with a letter")
+                    if "|" in line or "\n" in line:
+                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is one table cell — "
+                                      f"`|` and newlines are not allowed")
+                    if line.strip() == (n.get("one_liner") or "").strip():
+                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is identical to one_liner "
+                                      f"— a description is not a 'when to come here'")
+                    if line.strip() == exp:
+                        # Not a warning. It reads as a decision to say something different to that
+                        # peer, and says the same thing — so the day the default changes, one reader
+                        # silently keeps the old sentence and nobody is looking there.
+                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is identical to "
+                                      f"use_when_export — an override that overrides nothing")
+                    if aud and who not in aud:
+                        errors.append(f"node {n['id']}: use_when_export_for[{who}] writes a line for a peer "
+                                      f"that export_to leaves out — it would never be read")
             if not n.get("parent"):
                 if n["region"] in tops:
                     errors.append(f"region {n['region']}: two top representatives ({tops[n['region']]}, {n['id']}) — an area has one face. Give one of them a parent")
@@ -256,6 +285,9 @@ def validate(store: Store) -> dict:
         elif n.get("export_to"):
             errors.append(f"node {n['id']}: export_to on a node that does not represent an area — "
                           f"an audience is something an area has")
+        elif n.get("use_when_export_for"):
+            errors.append(f"node {n['id']}: use_when_export_for on a node that does not represent an "
+                          f"area — a peer chooses areas, not nodes")
     # A representative that carries nothing and has no expands_in cannot be told apart, from the
     # listing alone, as **empty** or as a **boundary**. If that distinction lives only in a document
     # body, neither the screen nor an agent can use it — and both will state something they cannot know.

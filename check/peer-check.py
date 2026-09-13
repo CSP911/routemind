@@ -476,6 +476,28 @@ e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: ay"])
 check("  and one name written bare is a list of one", not any("export_to" in x for x in e),
       json.dumps(e[:2]))
 
+# A line written for one named reader. Each of these is dead text that reads like a decision, which
+# is why none of them is a warning: the file looks exactly the way somebody meant it to look.
+OV = 'use_when_export_for: {ay: "a line only ay is shown"}'
+e = errors_with([OV], area=UNSHARED_B)
+check("a line for one peer with no line for the rest is refused",
+      any("use_when_export_for without use_when_export" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", f'use_when_export_for: {{ay: "{EXPORT_B}"}}'])
+check("  and one that repeats the default is refused",
+      any("overrides nothing" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [somebody-else]", OV])
+check("  and one written for a peer the audience leaves out",
+      any("would never be read" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", 'use_when_export_for: {Not A Name: "x"}'])
+check("  and one addressed to something that is not a peer name",
+      any("not a peer name" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", 'use_when_export_for: {ay: "a | b"}'])
+check("  and one carrying a pipe, which is a table cell ending early",
+      any("one table cell" in x for x in e), json.dumps(e[:2]))
+e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [ay]", OV])
+check("while a line for a peer that is on the list is ordinary",
+      not any("use_when_export_for" in x for x in e), json.dumps(e[:2]))
+
 # This pair was set up with a secret each way rather than one between them, which is legal and is
 # what most people would write first. Its cost has been invisible until there was something to name.
 set_audience(repo_b, SHARED_B, ["ay"])

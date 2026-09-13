@@ -108,6 +108,17 @@ mkdir -p data/repo data/publish data/overlays data/harness data/exchange
 if ! grep -q '^EXCHANGE_TOKEN_HOME=.\+' .env; then
   setenv EXCHANGE_TOKEN_HOME "$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
 fi
+# An install made before 2026-09-13 has a peers.yaml naming the exchange with no `kind:` on it, and
+# that entry is skipped by the block below because the file exists. Said rather than edited: this is
+# somebody's repository, a write here makes the tree dirty and every later write is then refused
+# until they commit something they did not do. The screen says the same thing on its own.
+if [ -f data/repo/peers.yaml ] && grep -q 'url: *http://exchange:8110' data/repo/peers.yaml \
+   && ! grep -q 'kind: *exchange' data/repo/peers.yaml; then
+  printf "  ! data/repo/peers.yaml names the exchange without 'kind: exchange'.\n"
+  printf "    Add that line and commit it. Without it this backbone filters for the room instead\n"
+  printf "    of for its members, so an area's audience and a line written for one peer do\n"
+  printf "    nothing — and nothing anywhere looks broken. The map's bar says the same.\n"
+fi
 if [ ! -f data/repo/peers.yaml ]; then
   cat > data/repo/peers.yaml <<'YAML'
 # Who this backbone is linked to. The token for each is in the environment, not here — this file is

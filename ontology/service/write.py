@@ -228,6 +228,14 @@ def publish(root: Path, publish_dir: Path, sha: str | None = None, keep: set[str
     return sha
 
 
+def _line_map(value) -> dict:
+    """Peer name to the line that peer is shown. Anything that is not a mapping of text to text is
+    nothing, and an empty line removes that peer's override rather than writing a blank one."""
+    if not isinstance(value, dict): return {}
+    return {str(k).strip(): str(v).strip() for k, v in value.items()
+            if str(k).strip() and str(v).strip()}
+
+
 def _name_list(value) -> list[str]:
     """Peer names off the wire: a list, or one name, or a comma-separated string. Normalised in one
     place so that what is stored does not depend on which of those a caller sent."""
@@ -476,6 +484,8 @@ class Writer:
             # sentence and not a structure. Normalised here rather than at each door, because the
             # cost of getting it wrong is silent — `", ".join("branch")` is `b, r, a, n, c, h`.
             if "export_to" in body: n["export_to"] = _name_list(body["export_to"])
+            if "use_when_export_for" in body:
+                n["use_when_export_for"] = _line_map(body["use_when_export_for"])
             # One type: an entity's content is its own field, not a file underneath it. Editing the
             # body and editing the routing line are the same call on the same thing.
             if "content" in body: n["body"] = body["content"]
@@ -677,6 +687,7 @@ class Writer:
                                           # audience without a line above it, so the two arrive or
                                           # neither does.
                                           "export_to": _name_list(rep.get("export_to")),
+                                          "use_when_export_for": _line_map(rep.get("use_when_export_for")),
                                           "aliases": [], "one_liner": rep["one_liner"], "body": "",
                                           "path": str(base.relative_to(self.root))})
             end = anchor.end()

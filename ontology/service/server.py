@@ -189,11 +189,14 @@ def route_draft(region: str, scope: str, changed: list | None) -> dict:
     scope = curator.SCOPE_ALIAS.get(scope, scope)
     field = curator.ROUTE_SCOPES.get(scope)
     if not field: raise WriteError(400, "scope must be as | bb | core")
-    if field == "export_to":
-        # Not something a model drafts. The other scopes are a sentence about what an area holds,
-        # which is in the ontology and can be read; who may see it is a decision about other
-        # organisations, which is not in here and is nobody's to guess.
-        raise WriteError(400, "an audience is not drafted — name the peers yourself")
+    if scope not in DRAFTABLE:
+        # Guarded on the scope, not on the field, because the prompt is chosen by scope: `peer` has a
+        # field this recognised and no prompt, so it reached `WHAT[scope]` and came back as
+        # `500 internal error`. And these three genuinely are not drafted. The other scopes revise a
+        # sentence about what an area holds, which is in the ontology and can be read; who may see it
+        # and what one named organisation should be told are decisions about people who are not.
+        raise WriteError(400, f"scope {scope} is not drafted — the model can read what an area holds, "
+                              f"not who is reading and what they should be told. Write it yourself")
     if field == "core_row":
         before = next((x.get("description", "") for x in store.regions_json().get("regions", []) if x["id"] == r["key"]), "")
     else:
@@ -205,9 +208,7 @@ def route_draft(region: str, scope: str, changed: list | None) -> dict:
     c = llm_client()
     if not c:
         raise WriteError(503, "route-draft needs an LLM (ONTOLOGY_LLM_*)")
-    WHAT = {"as": "the one line in which **the representative introduces itself** when this area is opened",
-            "bb": "the one line used to decide **whether to choose this area at all** (what question brings you here)",
-            "core": "the **one-line summary** carried in the area table of the architecture document"}[scope]
+    WHAT = DRAFT_PROMPTS[scope]
     SYSTEM = (
         f"You revise an area's advertisement. What you are editing is {WHAT}.\n"
         "The input is (1) the current sentence and (2) a list of what the area actually holds.\n"
@@ -489,12 +490,25 @@ def apply_proposal(p: dict, actor: str):
         # A queue proposal carries a sentence, and one of these fields is a list. Rendered the same
         # way on both sides of the comparison, or an audience would conflict with itself the moment
         # anybody submitted a second one.
-        cur = rep.get(field) or ""
-        if isinstance(cur, list): cur = ", ".join(cur)
+        # A mapping field is edited one key at a time: the proposal names the peer, and what it
+        # replaces is that peer's line and nobody else's. Comparing against the whole map would make
+        # every override conflict with every other one, which is having no conflict check at all once
+        # two people are working. Which fields those are is declared in curator.MAPPING_FIELDS and not
+        # read off the current value — an empty mapping and an unset field look identical from here,
+        # and deciding by the value means the *first* override of an area silently writes nothing.
+        if field in curator.MAPPING_FIELDS:
+            merged = dict(rep.get(field) or {})
+            cur = merged.get(p.get("peer") or "", "")
+            if p["after"]: merged[p["peer"]] = p["after"]
+            else: merged.pop(p.get("peer") or "", None)
+            after = merged
+        else:
+            cur, after = (rep.get(field) or ""), p["after"]
+            if isinstance(cur, list): cur = ", ".join(cur)
         if p.get("before") and cur != p["before"]:
             return {"ok": False, "error": "conflict", "code": 409, "field": field,
                     "current": cur, "submitted_before": p["before"]}
-        return writer.update_node(rep["id"], {field: p["after"]}, actor)
+        return writer.update_node(rep["id"], {field: after}, actor)
     if p["type"] == "repin":
         w = need_services(); return w.update_service(p["service"], {"core_revision": p["to"]}, actor)
     return None
@@ -863,12 +877,18 @@ class Handler(BaseHTTPRequestHandler):
                 {"id": r["id"], "source": r["source"], "title": r["title"],
                  "description": r.get("description", ""),
                  # Named `use_when` because that is what it is to the reader: the line it chooses by.
-                 # Which side of the link it was written for is our business, not theirs.
-                 "use_when": r["use_when_export"], "representative": r.get("representative"),
+                 # Which side of the link it was written for is our business, not theirs — and so is
+                 # the fact that somebody else is shown a different one.
+                 "use_when": _line_for(r, reader), "representative": r.get("representative"),
                  # Carried only to a room, which needs it to filter for its members. A backbone that
                  # is being answered directly has already been filtered for and has no business
                  # knowing who else was considered.
                  **({"export_to": r.get("export_to") or []} if to_a_room and r.get("export_to") else {}),
+                 # Same reason as the audience: a room is answering for members this end cannot see,
+                 # so it is given what it needs to answer for each of them and picks. It sees more
+                 # than any one member does, which is what being on the data path means.
+                 **({"use_when_for": r.get("use_when_export_for") or {}}
+                    if to_a_room and r.get("use_when_export_for") else {}),
                  "fetch": f"/v1/export/regions/{src}"}
                 for src, r in sorted(shared.items())]})
 
@@ -943,6 +963,15 @@ class Handler(BaseHTTPRequestHandler):
                     "dir": r["dir"], "key": r["key"], "representative": r["representative"],
                     "use_when": r.get("use_when") or "",     # should I come here — the same value the listing gave
                     "advertises": r["advertises"],           # how the representative describes itself (one_liner)
+                    # What crosses a link, all three parts of it. Not on the export surface — this is
+                    # the **owner's** view of its own decision, and it is the only place a person can
+                    # read what they have decided: absent means the area crosses nothing, an audience
+                    # means it crosses to those peers only, and a line under a name means that reader
+                    # is shown something else. A screen that could not show these could not be used
+                    # to make them, which is where they were until now.
+                    "use_when_export": r.get("use_when_export") or "",
+                    "export_to": r.get("export_to") or [],
+                    "use_when_export_for": r.get("use_when_export_for") or {},
                     "entries": [_advert_child(c) for c in advertised(r["representative"])],
 })
                     # `path`, `data_kind`, `authority`, `nodes` and `docs` are kept out of the
@@ -1179,6 +1208,17 @@ def _export_state():
         return None
 
 
+# The three advertisements a model can revise, and the sentence each one is. A scope missing here is
+# a scope with no prompt: it used to reach `WHAT[scope]` and come back as `500 internal error`, which
+# names neither the mistake nor the fix.
+DRAFT_PROMPTS = {
+    "as": "the one line in which **the representative introduces itself** when this area is opened",
+    "bb": "the one line used to decide **whether to choose this area at all** (what question brings you here)",
+    "core": "the **one-line summary** carried in the area table of the architecture document",
+}
+DRAFTABLE = frozenset(DRAFT_PROMPTS)
+
+
 def _peer_by_token(token: str) -> dict | None:
     """Which declared peer presented this, if any.
 
@@ -1206,6 +1246,18 @@ def _draft_anywhere(node: dict) -> bool:
         seen.add(parent)
         cur = store.node(parent)
     return False
+
+
+def _line_for(region: dict, reader: str | None) -> str:
+    """The line this reader is shown. The default unless one was written for them by name.
+
+    An unnamed reader gets the default, which is the one written for everybody — unlike the audience,
+    where an unnamed reader is nobody. The two fields fail in opposite directions on purpose: one
+    decides whether anything is read at all and must fail closed, the other decides which sentence is
+    read and has a right answer for a stranger.
+    """
+    per = region.get("use_when_export_for") or {}
+    return (per.get(reader) if reader and per.get(reader) else region.get("use_when_export")) or ""
 
 
 def _visible(region: dict, reader: str | None) -> bool:

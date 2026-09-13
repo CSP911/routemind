@@ -96,9 +96,38 @@ see it is a decision about other organisations, which is not in here and is nobo
 
 Neither this nor `use_when_export` has a field on the map screen yet. Both are API and queue.
 
-Not done: **per-peer wording.** One `use_when_export` goes to everyone who can see the area. Saying a
-different thing to each reader is a further step and has no demand behind it yet; who may see it at
-all was the half that did.
+### A different sentence for one reader
+
+`use_when_export_for` on the same representative maps a peer name to the line **that** peer is shown
+instead of the default. Everybody else keeps the default and nobody is told there are other versions.
+
+It is applied where the audience is applied and for the same reason: the backbone that owns the area
+sees the room, not the reader, so it hands the room the map and the room picks. The lines meant for
+other members are dropped on the way out — who else is told what is between them and the origin.
+
+The rules are the default line's rules, one per entry, because each becomes exactly the same cell in
+exactly the same kind of table: one table cell, no `|`, not the `one_liner`. Two more are its own. An
+override **identical to the default** is an error rather than a warning — it reads as a decision to
+say something different and says the same thing, so the day the default changes one reader silently
+keeps the old sentence and nobody is looking there. And an override for a peer the audience leaves out
+is an error, because it would never be read.
+
+### The screen
+
+All three are on the area's rack, under **Across a link**: the line, who it crosses to, and a
+different line for one reader. Three sections and three proposals, not one form with three fields —
+"stop advertising this area" and "reword it" must never arrive as one thing to say yes or no to.
+
+Each goes through the review queue with its own scope (`peer`, `audience`, `peer-line`), and the
+review card names the peer a `peer-line` proposal is for: without it a reviewer sees
+`use_when_export_for` and two sentences with no way to tell whose line they are, which is the whole of
+what they are being asked to judge.
+
+**Withdrawing goes through the queue too.** An empty `after` on scope `peer` is allowed against a
+non-empty `before` and refused against nothing — the same empty string is *I have not written it yet*
+and *stop this area crossing*, and only the second is a decision. Until 2026-09-13 it was refused
+outright, which meant the one export decision with no queued path was the one that takes knowledge
+away from another organisation.
 
 ## Taking one back
 
@@ -365,7 +394,20 @@ afterwards leaves that intact and perfectly hidden — the rows come out right w
 longer than the wait. This was written the wrong way round first and the check found it as an outage
 on a link that was fine.
 
-**Two locks on it, because `kind` is one word typed by hand.** The label in `members.yaml` is what
+**The backbone has only one lock, and it is the same word.** `kind: exchange` in a backbone's own
+`peers.yaml` is what tells it that it is answering a room — and here no header can stand in for the
+label, because believing a caller that says it is a room would hand that caller the *whole* shared set
+instead of its own share. That is the one direction a claim must never be taken on the caller's word.
+
+So the label is load-bearing and getting it wrong fails silently: audiences and per-peer lines stop
+having any effect, a document restricted to a member comes back 404 because the room could not say who
+it was fetching for, and every screen still looks fine. A backbone now notices — a peer declared as a
+backbone that answers with the exchange schema gets a **note** on its link, naming the line to fix.
+Not an error and not `reachable: false`: the link is up and carrying rows, and calling it down would
+suspend the absence rule over a line in a file. Every install made before 2026-09-13 has this exact
+file, so `install.sh` says so too rather than editing somebody's repository behind them.
+
+**Two locks at the exchange, because `kind` is one word typed by hand.** The label in `members.yaml` is what
 stops the read from happening, and only a decision made before the read can prevent the hang. The
 asker's own `X-Peer-Kind` header is what still holds when the label is wrong. Believing a caller about
 what it is, is safe here and nowhere else: the claim can only ever get the claimant **less**. With the
@@ -415,7 +457,5 @@ member entry, which is the exchange's half of the declaration. The backbone's ha
 
 ## Not done
 
-* **One export line for all peers.** Per-peer *visibility* is done (`export_to`); per-peer *wording* is
-  not, and has no demand behind it yet.
 * **Two vocabularies.** A peer's areas are described by the peer's `vocab.yaml`, and this backbone's
   validator never sees them — which is correct, and must stay that way.

@@ -62,6 +62,15 @@ def alias_names(aliases) -> list[str]:
     return [a["name"] if isinstance(a, dict) else str(a) for a in (aliases or [])]
 
 
+def _lines(value) -> dict:
+    """A peer name to the line that peer is shown, from frontmatter. Anything that is not a mapping of
+    text to text is nothing: the field is read on every export and a half-formed one would put a
+    fragment of somebody's YAML into another backbone's routing table."""
+    if not isinstance(value, dict): return {}
+    return {str(k).strip(): str(v).strip() for k, v in value.items()
+            if str(k).strip() and str(v).strip()}
+
+
 def _names(value) -> list[str]:
     """A frontmatter list of peer names, normalised. A single name written bare is a list of one —
     the field is read far more often than it is written, and half of the ways a person writes one
@@ -171,6 +180,7 @@ class Store:
                 # advertised across a link at all — export is opt-in, per area, in writing.
                 "use_when_export": fm.get("use_when_export"),
                 "export_to": _names(fm.get("export_to")),
+                "use_when_export_for": _lines(fm.get("use_when_export_for")),
                 "role": fm.get("role"), "parent": fm.get("parent"),
                 "expands_in": fm.get("expands_in"), "one_liner": fm.get("one_liner") or "",
                 "order": order, "path": str(f.relative_to(self.root)), "body": m.group(2),
@@ -228,6 +238,7 @@ class Store:
                         "use_when": (top.get("use_when") if top else None),
                         "use_when_export": (top.get("use_when_export") if top else None),
                         "export_to": (top.get("export_to") if top else []),
+                        "use_when_export_for": (top.get("use_when_export_for") if top else {}),
                         "nodes": [n["id"] for n in mine]})
         return out
 

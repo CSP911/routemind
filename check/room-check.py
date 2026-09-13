@@ -322,10 +322,100 @@ if check("   an empty audience is a decision here, not a missing field", st == 2
     time.sleep(0.6)
     check("   and accepting it opens the area again", remote("ay") == ["bee"], json.dumps(remote("ay")))
 st, e = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"], "after": ""})
-check("   while an empty export line is still a mistake", st == 422, f"{st} {json.dumps(e)[:100]}")
+check("   while an empty export line against nothing is still a mistake", st == 422,
+      f"{st} {json.dumps(e)[:100]}")
+check("     and says how a withdrawal is filed instead", "before" in json.dumps(e), json.dumps(e)[:150])
+# Withdrawing is the most consequential of these — it takes knowledge away from another organisation
+# — and until now it was the one export decision with no queued path at all, only a direct write.
+st, pw = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
+                                   "before": LINE["bee"], "after": "", "why": "stop crossing"})
+if check("   but withdrawing what is there goes through the queue", st == 201, json.dumps(pw)[:130]):
+    post("bee", f"proposals/{pw['id']}/accept", {})
+    time.sleep(0.6)
+    check("     and the area stops crossing", remote("ay") == [], json.dumps(remote("ay")))
+    check("     with the link still up, and absence still claimable",
+          all(l["reachable"] for l in (hop0("ay").get("links") or []))
+          and "may say something is absent" in (hop0("ay").get("absence") or ""))
+    st, pb = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
+                                       "after": LINE["bee"], "why": "again"})
+    post("bee", f"proposals/{pb['id']}/accept", {})
+    time.sleep(0.6)
+    check("     and advertising it again brings it back", remote("ay") == ["bee"], json.dumps(remote("ay")))
 st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": "audience"})
 check("   and an audience is never drafted for you", st == 400 and "not drafted" in json.dumps(e),
       f"{st} {json.dumps(e)[:120]}")
+
+# ── N6 — a different sentence for one named reader ───────────────────────────
+# `use_when_export` is the line everybody who can see the area is shown. An override is the line one
+# named peer is shown instead, and its whole risk is that it looks like it worked from every angle
+# except the reader's: the origin cannot see the reader behind a room, so the room picks — and the
+# lines meant for other members must not travel any further than the room.
+OVERRIDE = "what bee tells ay in particular · the questions ay brings"
+st, pr = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "peer": "ay",
+                                   "after": OVERRIDE, "why": "N6"})
+if check("N6 a line for one named peer can be proposed", st == 201, json.dumps(pr)[:150]):
+    st, d = post("bee", f"proposals/{pr['id']}/accept", {})
+    check("   and accepted", st == 200 and d.get("ok") is not False, json.dumps(d)[:150])
+    time.sleep(0.6)
+    row = next((r for r in (hop0("ay").get("regions") or []) if r.get("peer")), None)
+    check("   and it is the line the other backbone is shown",
+          row and row.get("use_when") == OVERRIDE, json.dumps(row.get("use_when") if row else None))
+    # The one that would pass without being right: the room picked, so nothing may leak the map.
+    check("   while nothing tells it there are other versions",
+          "use_when_for" not in json.dumps(hop0("ay")), json.dumps(hop0("ay"))[:140])
+    check("   and the default is untouched for anybody else", export_of("bee") == [SHARE["bee"]])
+
+st, pr2 = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "peer": "ay",
+                                    "before": OVERRIDE, "after": "", "why": "back to the default"})
+if check("   an empty line takes the override away", st == 201, json.dumps(pr2)[:120]):
+    post("bee", f"proposals/{pr2['id']}/accept", {})
+    time.sleep(0.6)
+    row = next((r for r in (hop0("ay").get("regions") or []) if r.get("peer")), None)
+    check("   and the default comes back", row and row.get("use_when") == LINE["bee"],
+          json.dumps(row.get("use_when") if row else None))
+
+st, e = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "after": "x"})
+check("   a line for nobody in particular is refused", st == 422 and "peer is required" in json.dumps(e),
+      f"{st} {json.dumps(e)[:110]}")
+st, e = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"], "after": "x", "peer": "ay"})
+check("   and naming a peer where the scope has none is too", st == 422, f"{st} {json.dumps(e)[:110]}")
+# It used to reach WHAT[scope] and come back as 500 internal error, naming neither the mistake nor
+# the fix — for a scope this same function had just accepted as known.
+for sc in ("peer", "peer-line", "audience"):
+    st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": sc})
+    check(f"   and drafting `{sc}` is refused with a reason, not a 500",
+          st == 400 and "not drafted" in json.dumps(e), f"{st} {json.dumps(e)[:110]}")
+
+# ── N7 — the room labelled as an ordinary backbone ───────────────────────────
+# The mirror of the exchange's own mislabel check, on the side that has only one lock. `kind:
+# exchange` in peers.yaml is what tells a backbone it is answering a room, and unlike at the exchange
+# no header can stand in for it: believing a caller that says it is a room would get that caller the
+# **whole** shared set instead of its own share, which is the one direction a claim must never be
+# taken on the caller's word. So the label is load-bearing, and getting it wrong fails silently —
+# audiences and per-peer lines stop having any effect while every screen still looks fine. Every
+# install made before 2026-09-13 has this exact file.
+open(os.path.join(repos["ay"], "peers.yaml"), "w", encoding="utf-8").write(
+    f"peers:\n  - name: ix\n    label: EXCHANGE\n    url: http://127.0.0.1:{IX_PORT}\n"
+    f"    token_env: TOK_AY\n")
+time.sleep(0.5)
+d = hop0("ay")
+link = (d.get("links") or [{}])[0]
+check("N7 a room labelled as a backbone is noticed", bool(link.get("note")), json.dumps(link))
+check("   and the line to fix is named", "kind: exchange" in (link.get("note") or ""),
+      (link.get("note") or "")[:90])
+# It is working, and that is the point: nothing here may read as an outage, or a configuration
+# detail would take the absence rule down.
+check("   while the link is up and still carrying rows",
+      link.get("reachable") is True and remote("ay") == ["bee"], json.dumps(remote("ay")))
+check("   and absence may still be claimed",
+      "may say something is absent" in (d.get("absence") or ""), (d.get("absence") or "")[:70])
+open(os.path.join(repos["ay"], "peers.yaml"), "w", encoding="utf-8").write(
+    f"peers:\n  - name: ix\n    label: EXCHANGE\n    url: http://127.0.0.1:{IX_PORT}\n"
+    f"    kind: exchange\n    token_env: TOK_AY\n")
+time.sleep(0.5)
+check("   and labelling it puts the note away",
+      not ((hop0("ay").get("links") or [{}])[0].get("note")),
+      json.dumps((hop0("ay").get("links") or [{}])[0]))
 
 # The queue has two doors and only one of them is the ontology's. The screen talks to `web/app.py`,
 # which is what a person and a browser can reach — the ontology API is not published outside the
