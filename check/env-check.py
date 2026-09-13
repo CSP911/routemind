@@ -36,6 +36,31 @@ passed = {m.group(1) for m in re.finditer(r"\$\{([A-Z][A-Z0-9_]*)", compose)}
 # Passed through but deliberately not in .env.example. Each line is a decision.
 UNDOCUMENTED = {}
 
+# ── and the installer has to read .env the way docker does ───────────────────
+# `install.sh` waits on the port it thinks the screen is published at, and docker publishes the port
+# it reads from the same file. When the file names one key twice — appending a line rather than
+# editing the one already there, which is what a person does — docker takes the **last** and the
+# installer took the first. It waited on 8080 while the container served 8480 and reported that
+# nothing had come up, with a healthy stack behind it.
+#
+# The pipeline is lifted out of install.sh and run, rather than copied here: a check holding its own
+# copy of the logic agrees with itself for ever.
+import re as _re, subprocess, tempfile
+
+_src = (ROOT / "install.sh").read_text(encoding="utf-8")
+_m = _re.search(r'^PORT="(\$\(.*\))"$', _src, _re.M)
+if not _m:
+    port_reader = ['install.sh has no PORT="$(...)" line to check — did it move?']
+else:
+    with tempfile.TemporaryDirectory() as _d:
+        # Named twice with the second winning, beside a key that merely starts the same way.
+        (Path(_d) / ".env").write_text("WEB_PORT=8080\nWEB_PORT_B=8081\nWEB_PORT=8480\n",
+                                       encoding="utf-8")
+        _got = subprocess.run(["sh", "-c", 'cd "$1"; printf %s "' + _m.group(1) + '"', "sh", _d],
+                              capture_output=True, text=True).stdout.strip()
+    port_reader = [] if _got == "8480" else [
+        f"install.sh reads WEB_PORT as {_got!r}, docker compose reads '8480'"]
+
 dead = sorted(documented - passed)
 hidden = sorted(v for v in passed - documented if v not in UNDOCUMENTED)
 stale = sorted(v for v in UNDOCUMENTED if v in documented or v not in passed)
@@ -45,6 +70,13 @@ for v in sorted(UNDOCUMENTED):
 for v in stale: print(f"--   {v} is in UNDOCUMENTED but no longer needs to be; drop the entry")
 
 bad = False
+for line in port_reader:
+    bad = True
+    print("FAIL the installer and docker compose disagree about which .env line wins:\n  " + line +
+          "\n  A duplicated key is ordinary — appending a line instead of editing one — and the\n"
+          "  installer then waits on a port nothing is serving and says the stack did not come up.")
+if not port_reader:
+    print("ok   install.sh reads WEB_PORT the way docker compose does (the last line wins)")
 if dead:
     bad = True
     print("FAIL .env.example documents settings no compose file passes to a container:\n  " +

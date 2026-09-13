@@ -152,7 +152,11 @@ docker compose up -d --build
 
 # One base URL, used to wait and then to check. Computing it twice is how the check ends up talking
 # to a different install than the one just started — which it did, and passed.
-PORT="$(grep -E '^WEB_PORT=' .env | cut -d= -f2)"
+# The **last** match, which is the one docker compose uses, and trimmed. Appending a line to .env
+# rather than editing the one already there is an ordinary thing to do; with `head`-style behaviour
+# the installer waited on one port while the container published another, and the message was that
+# nothing came up. Two readers of one file have to agree about which value wins.
+PORT="$(grep -E '^[[:space:]]*WEB_PORT=' .env | tail -n 1 | cut -d= -f2- | tr -d '"'"'"' \r' | tr -d '[:space:]')"
 BASE="http://127.0.0.1:${PORT:-8080}"
 printf 'waiting for %s' "$BASE"
 i=0
