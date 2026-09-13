@@ -58,6 +58,11 @@ sys.path[:0] = [_HERE, os.path.join(os.path.dirname(_HERE), "ontology", "service
 import peers as peering                                          # noqa: E402
 
 NAME = (os.environ.get("EXCHANGE_NAME") or "exchange").strip()
+# The operator's door, and a different one from the members'. What an operator needs is the plumbing —
+# who is attached, is it answering, which revision — and **not** the knowledge, which is why /admin
+# never returns a reflected row. A member reads what everyone published; an operator reads whether the
+# room is working. Unset closes the door entirely.
+ADMIN_TOKEN = (os.environ.get("EXCHANGE_ADMIN_TOKEN") or "").strip()
 MEMBERS = Path(os.environ.get("EXCHANGE_MEMBERS") or "/data/members.yaml")
 PORT = int(os.environ.get("PORT") or 8110)
 NAME_OK = re.compile(r"^[a-z][a-z0-9-]{0,30}$")
@@ -84,6 +89,29 @@ def members() -> list[dict]:
                     "token": (os.environ.get(env) or "").strip(),
                     "label": str(row.get("label") or name)})
     return out
+
+
+def _raw_members() -> list[dict]:
+    """The file as written, unresolved. Editing goes through this rather than through `members()`,
+    which has already turned `token_env` into a token — writing that back would put a secret in a
+    file whose whole point is that it holds none."""
+    import yaml
+    if not MEMBERS.is_file(): return []
+    try: doc = yaml.safe_load(MEMBERS.read_text(encoding="utf-8")) or {}
+    except Exception: return []
+    return [m for m in (doc.get("members") or []) if isinstance(m, dict)]
+
+
+def _write_members(rows: list[dict]) -> None:
+    import yaml
+    head = ("# Who meets here. The token for each is in the environment, not in this file.\n"
+            "#\n"
+            "# This is the exchange's half of the declaration; each backbone names the exchange in its\n"
+            "# own peers.yaml. Both halves are needed, so nobody is enrolled by one side alone.\n")
+    tmp = MEMBERS.with_suffix(".tmp")
+    tmp.write_text(head + yaml.safe_dump({"members": rows}, allow_unicode=True, sort_keys=False),
+                   encoding="utf-8")
+    tmp.replace(MEMBERS)                      # a reader never sees half a room
 
 
 def caller(token: str) -> dict | None:
@@ -171,6 +199,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parts = [unquote(p) for p in urlparse(self.path).path.strip("/").split("/") if p]
+        if parts[:1] == ["admin"]: return self._admin("GET", parts[1:])
         if parts == ["healthz"]:
             ms = members()
             return self._send(200, {"ok": True, "name": NAME, "members": [m["name"] for m in ms],
@@ -214,8 +243,71 @@ class Handler(BaseHTTPRequestHandler):
 
         return self._err(404, "unknown export path")
 
-    def do_POST(self): self._err(405, "an exchange is read-only — write to the backbone that owns it")
-    do_PUT = do_PATCH = do_DELETE = do_POST
+    # ---- the operator's door ----
+    def _admin_ok(self) -> bool:
+        return bool(ADMIN_TOKEN) and self.headers.get("X-Admin-Token") == ADMIN_TOKEN
+
+    def _admin(self, method: str, rest: list[str]):
+        """Membership and health. Never the knowledge.
+
+        An operator can see that BRANCH is attached, answering, and advertising two areas. What those
+        areas are, and what is in them, is between the members — and an admin screen that could read
+        it would be a way around the one rule this whole design turns on: an area crosses because
+        somebody wrote `use_when_export` on it, in its own repository, through its own review queue.
+        Nothing here can make an area cross, and nothing here can read one.
+        """
+        if not ADMIN_TOKEN:
+            return self._err(501, "no operator door — set EXCHANGE_ADMIN_TOKEN")
+        if not self._admin_ok():
+            return self._err(401, "admin token missing or wrong")
+
+        if rest == ["state"] and method == "GET":
+            # Same gather the members get, with the rows thrown away. One code path, so the health an
+            # operator reads is the health a member experiences and not a second opinion about it.
+            r = reflect(None)
+            counts = {}
+            for row in r["regions"]: counts[row["origin"]] = counts.get(row["origin"], 0) + 1
+            return self._send(200, {"ok": True, "name": NAME,
+                                    "members": [{**m, "advertising": counts.get(m["name"], 0)}
+                                                for m in r["members"]]})
+
+        if rest == ["members"] and method in ("POST", "DELETE"):
+            n = int(self.headers.get("Content-Length") or 0)
+            try: body = json.loads(self.rfile.read(n) or b"{}")
+            except Exception: return self._err(422, "body must be JSON")
+            if not isinstance(body, dict): return self._err(422, "body must be an object")
+            name = str(body.get("name") or "").strip()
+            if not NAME_OK.match(name): return self._err(400, "name must be ASCII kebab-case")
+            try:
+                if method == "DELETE": _write_members([m for m in _raw_members() if m.get("name") != name])
+                else:
+                    url = str(body.get("url") or "").strip().rstrip("/")
+                    if not url.startswith(("http://", "https://")): return self._err(400, "url must be http(s)")
+                    rows = [m for m in _raw_members() if m.get("name") != name]
+                    rows.append({"name": name, "label": str(body.get("label") or name.upper()),
+                                 "url": url,
+                                 "token_env": str(body.get("token_env")
+                                                  or f"EXCHANGE_TOKEN_{name.upper().replace('-', '_')}")})
+                    _write_members(sorted(rows, key=lambda m: m["name"]))
+            except OSError as e:
+                return self._err(500, f"members.yaml is not writable: {e}")
+            peering.forget()          # the room changed; do not answer from the old one
+            return self._send(200, {"ok": True, "members": [m["name"] for m in members()]})
+
+        return self._err(404, "unknown admin path")
+
+    def do_POST(self):
+        parts = [unquote(p) for p in urlparse(self.path).path.strip("/").split("/") if p]
+        if parts[:1] == ["admin"]: return self._admin("POST", parts[1:])
+        self._err(405, "an exchange is read-only — write to the backbone that owns it")
+
+    def do_DELETE(self):
+        parts = [unquote(p) for p in urlparse(self.path).path.strip("/").split("/") if p]
+        if parts[:1] == ["admin"]: return self._admin("DELETE", parts[1:])
+        self._err(405, "an exchange is read-only — write to the backbone that owns it")
+
+    def do_PUT(self): self._err(405, "an exchange is read-only — write to the backbone that owns it")
+    do_PATCH = do_PUT
 
 
 def _through(value, member: str):

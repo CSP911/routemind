@@ -1,0 +1,47 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>RouteMind — exchange</title>
+<link rel="stylesheet" href="/static/admin.css">
+<main>
+  <div class="eyebrow">ROUTEMIND</div>
+  <h1>The exchange</h1>
+  <p class="sub">Who is attached, and what it takes to attach one more. This screen holds no docker
+    socket and starts nothing — it prepares, you run.</p>
+
+  <h2>Attached</h2>
+  <p class="note">Membership and health. What each backbone <em>shares</em> is written in its own
+    ontology and reviewed there; nothing on this page can change it, or read it.</p>
+  <div class="panel">
+    <table>
+      <thead><tr><th>Backbone</th><th>Address</th><th>Advertising</th><th>Revision</th><th></th></tr></thead>
+      <tbody id="rows"><tr><td colspan="5" class="note">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <h2>Register a backbone that is already running</h2>
+  <p class="note">The exchange's half of the declaration. The backbone's half is a <code>peers.yaml</code>
+    naming this exchange — neither side alone enrols anybody.</p>
+  <div class="panel">
+    <form id="addForm">
+      <label>Name<input id="mName" placeholder="branch" required></label>
+      <label>Label<input id="mLabel" placeholder="BRANCH"></label>
+      <label>Address<input id="mUrl" placeholder="http://ontology-branch:8100" size="30" required></label>
+      <button class="primary" type="submit">Register</button>
+    </form>
+    <div class="msg" id="addMsg"></div>
+  </div>
+
+  <h2>Prepare a new one</h2>
+  <p class="note">Four directories, one secret, two files and a compose block — the error-prone part,
+    and the part that needs no privilege. Everything below is text to paste.</p>
+  <div class="panel">
+    <form id="planForm">
+      <label>Name<input id="pName" placeholder="warehouse" required></label>
+      <label>Label<input id="pLabel" placeholder="WAREHOUSE"></label>
+      <label>Screen port<input id="pPort" type="number" value="8082" style="width:100px"></label>
+      <button type="submit">Prepare</button>
+    </form>
+    <div id="planOut"></div>
+  </div>
+</main>
+<script src="/static/admin.js"></script>

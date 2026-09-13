@@ -1,0 +1,36 @@
+# The operator's screen for an exchange.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.peer.yml \
+#                  -f docker-compose.exchange.yml -f docker-compose.admin.yml up -d
+#   →  http://localhost:8090
+#
+# **No docker socket.** Adding a backbone here prepares one — directories, secret, peers.yaml, a
+# compose block — and hands back the command. The dangerous part of "add a backbone" was never the
+# mkdir; it is giving container-execution rights to a service that faces a network. This service
+# thinks and docker runs, and the operator stays the one who did it.
+#
+# It cannot read what the members share, either: the exchange's operator door answers membership and
+# health and never a reflected row. An area crosses because somebody wrote `use_when_export` on it in
+# its own repository, through its own review queue, and a screen that could do that from out here
+# would be the way around the only rule that keeps sharing deliberate.
+services:
+  admin:
+    build:
+      context: .
+      dockerfile: admin/Dockerfile
+    image: routemind-admin:0.1.0
+    depends_on:
+      exchange:
+        condition: service_healthy
+    environment:
+      EXCHANGE_URL: http://exchange:8110
+      EXCHANGE_ADMIN_TOKEN: "${EXCHANGE_ADMIN_TOKEN:-}"
+    ports:
+      - "${ADMIN_PORT:-8090}:8090"
+    restart: unless-stopped
+
+  # The other half of that door. Unset — the default — and the exchange has no operator door at all,
+  # which is the right default for a service that may one day face another organisation.
+  exchange:
+    environment:
+      EXCHANGE_ADMIN_TOKEN: "${EXCHANGE_ADMIN_TOKEN:-}"

@@ -213,6 +213,39 @@ transitions one hop further out. Those are worth repeating here because an excha
 a split-horizon rule in between, and either could turn a withdrawal into something that stays
 visible — the failure that looks exactly like everything working.
 
+## The operator's screen
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.peer.yml \
+               -f docker-compose.exchange.yml -f docker-compose.admin.yml up -d
+#  http://localhost:8090
+```
+
+Who is attached, whether each is answering, which revision, how many areas it advertises — and what it
+takes to attach one more.
+
+**It holds no docker socket and starts nothing.** The dangerous part of "add a backbone" was never the
+`mkdir`; it is granting container-execution rights to a service that faces a network. What is actually
+tedious is the rest — a name, four directories, a secret, a `peers.yaml`, a member entry, a compose
+block, a free port — and none of that needs any privilege. So the screen prepares all of it and hands
+back the command. **It thinks; docker runs; the operator stays the one who did it.**
+
+**It cannot read what the members share, and cannot make an area cross.** The exchange has a second
+door for the operator, and it answers membership and health and never a reflected row: you learn that
+BRANCH is attached and advertising two areas, not what they are. An area crosses because somebody
+wrote `use_when_export` on it in its own repository, through its own review queue — a screen out here
+that could do either would be the way around the only rule that keeps sharing deliberate.
+
+Two doors, two keys, and neither is a spare: a member's token does not open `/admin`, and the admin
+token does not read the reflection. `EXCHANGE_ADMIN_TOKEN` unset — the default — means there is no
+operator door at all.
+
+Membership *is* the exchange's own state, so that it can edit: registering a backbone writes the
+member entry, which is the exchange's half of the declaration. The backbone's half is still a
+`peers.yaml` naming this exchange, written over there. Neither side alone enrols anybody.
+
+`./check/admin-check.py` — 25 assertions, most of them about what the door cannot open.
+
 ## Not done
 
 * **One export line for all peers.** Per-peer lines, and per-peer visibility, are a policy layer worth
