@@ -154,6 +154,7 @@ ways hand over one formatter's output; three descriptions of one ontology would 
 
 ```sh
 ./check/mcp-check.py http://localhost:8080/api/knowledge      # the protocol and a whole walk
+./check/all.sh                                                # and everything else — docs/CHECKS.md
 ```
 
 ---

@@ -414,14 +414,24 @@ for _ in range(80):
     except Exception: time.sleep(0.25)
 
 
+# The body is kept, not discarded. This used to be `e.read(); return e.code`, and on 2026-09-13 K1
+# failed once in twenty with `{201: 11, 500: 1}` — where the service puts the exception's own type
+# and message in the body of a 500, and the check threw it away at the moment it arrived. Finding out
+# what it said again cost thirty runs with the server's stderr redirected. A concurrency failure is
+# rare by nature: whatever it hands you the one time it happens is the whole of the evidence.
+_why = []
+
+
 def _call_on(port, body):
     req = urllib.request.Request(f"http://127.0.0.1:{port}/v1/nodes", data=json.dumps(body).encode(),
                                  method="POST", headers={"Content-Type": "application/json",
                                                          "X-Actor": f"p{port}"})
     try:
         with urllib.request.urlopen(req, timeout=60) as r: return r.status
-    except urllib.error.HTTPError as e: e.read(); return e.code
-    except Exception: return 0
+    except urllib.error.HTTPError as e:
+        _why.append(f"{e.code} {e.read().decode(errors='replace')[:200]}"); return e.code
+    except Exception as e:
+        _why.append(repr(e)[:200]); return 0
 
 
 _N = 12
@@ -432,7 +442,8 @@ with _cf.ThreadPoolExecutor(max_workers=_N) as _ex:
 _said_ok = sum(1 for st in _out if st in (200, 201))
 _on_disk = len([f for f in os.listdir(os.path.join(repo, "regions", "names")) if f.startswith("race-")])
 _dirty = subprocess.run(["git", "-C", repo, "status", "--porcelain"], capture_output=True, text=True).stdout.strip()
-check("K1 every write across two processes succeeds", _said_ok == _N, f"{dict(_Counter(_out))}")
+check("K1 every write across two processes succeeds", _said_ok == _N,
+      f"{dict(_Counter(_out))}" + ("  ·  " + " | ".join(_why[:3]) if _why else ""))
 # The one that matters. A caller told "failed" for a write that was committed is the same lie as the
 # publish case, and here it was the *other* process's `git add -A` that committed it.
 check("K1   and what was reported matches what is on disk", _said_ok == _on_disk,

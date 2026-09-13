@@ -1,9 +1,20 @@
 # The checks
 
-There is no test framework here and no runner. Each check is one file you can read top to bottom and
-run on its own, and most of them build the world they need — a throwaway ontology, one or two
-backbones, an exchange — rather than asking you to have one. That is deliberate: a check that needs
-a particular install is a check nobody runs on a different one.
+```sh
+./check/all.sh              # everything, ~22 suites
+./check/all.sh --quick      # skip the slow ones
+./check/all.sh --only peer  # the ones whose name contains "peer"
+```
+
+There is no test framework here. Each check is one file you can read top to bottom and run on its
+own, and most of them build the world they need — a throwaway ontology, one or two backbones, an
+exchange — rather than asking you to have one. That is deliberate: a check that needs a particular
+install is a check nobody runs on a different one.
+
+`all.sh` is not a framework either. It knows one thing the individual files cannot: **where** each
+of them can run — this machine, the ontology container, the web container — which is the part that
+is not obvious and was carried around in somebody's head until 2026-09-14. A suite it cannot run
+fails the run and says why, rather than being quietly skipped.
 
 Two rules the whole set is written against, and they are worth knowing before adding one:
 
@@ -34,7 +45,9 @@ you copy out of the peering guide.
 
 ## Everything there is
 
-Counts are what each one asserted on 2026-09-13. A count that has gone **down** is worth looking at.
+Counts are what each one asserted on 2026-09-14. A count that has gone **down** is worth looking at —
+and this table is not checked against anything, so if you are reading it a long time from now, the
+number to trust is the one the check itself prints.
 
 ### The install, from outside
 
@@ -51,7 +64,7 @@ Counts are what each one asserted on 2026-09-13. A count that has gone **down** 
 
 | | | |
 |---|---|---|
-| `ontology/check.py` | 44 | The invariants, each stated as an **absence** — the body that must still be there, the draft that must not publish. It is not in `check/`, and it is the one people forget |
+| `ontology/check.py` | 127 | The invariants, each stated as an **absence** — the body that must still be there, the draft that must not publish. It is not in `check/`, and it is the one people forget |
 | `check/scenarios.py` | 62 | The routing table over a whole lifetime: areas created, advertised, emptied, deleted, created again. [SCENARIOS.md](SCENARIOS.md) is the contract |
 | `check/overlay-check.py` | 17 | Overlays end to end, through the MCP server, the way an agent uses them |
 | `check/romanize-check.py` | 38 | A name in another script, as an address — and the names that must not become one |
@@ -76,12 +89,13 @@ Counts are what each one asserted on 2026-09-13. A count that has gone **down** 
 
 | | | |
 |---|---|---|
-| `check/screen-check.mjs` | ~60 | The map and the domain wall, drawn against a fake DOM. No browser |
+| `check/screen-check.mjs` | 43 | The map and the domain wall, drawn against a fake DOM. No browser |
 | `check/css-check.mjs` | 147 classes | Every class the screen puts on an element, against every class the stylesheets define |
 | `check/i18n-check.mjs` | 382 keys × 4 | The dictionaries, against each other and against the screen |
 | `check/auth-check.py` | 32 | The door on the screen's side — [AUTH.md](AUTH.md) |
 | `check/env-check.py` | 3 | Every setting `.env.example` documents reaches a container, every `mkdir` recipe covers every bind mount, and the installer reads `.env` the way docker does |
-| `check/eol-check.py` | 181 files | What a checkout on another operating system has to survive — line endings and exec bits |
+| `check/eol-check.py` | 190 files | What a checkout on another operating system has to survive — line endings and exec bits |
+| `check/all.sh` | — | Runs all of the above, each where it can run |
 
 ## Where each one can run
 
