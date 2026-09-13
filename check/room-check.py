@@ -366,6 +366,38 @@ st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": "audience"}
 check("   and an audience is never drafted for you", st == 400 and "not drafted" in json.dumps(e),
       f"{st} {json.dumps(e)[:120]}")
 
+# ── N4d — withdrawing takes the whole decision with it ───────────────────────
+# An audience narrows a line and an override replaces one; with no line there is nothing to narrow
+# and nothing to replace. Leaving them behind leaves state that means nothing — and the validator
+# refuses it, so the withdrawal itself failed, telling somebody deliberately removing a line to
+# "write the line first", which is the advice for the opposite act.
+st, a = post("bee", "proposals", {"scope": "audience", "region": SHARE["bee"], "after": "ay", "why": "N4d"})
+post("bee", f"proposals/{a['id']}/accept", {})
+st, o = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "peer": "ay",
+                                  "after": "a line only ay is shown", "why": "N4d"})
+post("bee", f"proposals/{o['id']}/accept", {})
+time.sleep(0.5)
+st, w = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
+                                  "before": LINE["bee"], "after": "", "why": "withdraw everything"})
+st2, d = post("bee", f"proposals/{w['id']}/accept", {})
+check("N4d withdrawing a line with an audience and an override on it works", st2 == 200,
+      f"{st2} {json.dumps(d)[:200]}")
+check("   and says the two went with it",
+      any("took its audience" in x for x in ((d.get("result") or {}).get("warnings") or [])),
+      json.dumps(((d.get("result") or {}).get("warnings") or [])[:1]))
+time.sleep(0.6)
+check("   and the area stops crossing", remote("ay") == [], json.dumps(remote("ay")))
+raw = json.loads(urllib.request.urlopen(
+    f"http://127.0.0.1:{PORT['bee']}/v1/regions/{SHARE['bee']}", timeout=20).read())
+check("   with nothing left behind to mean nothing",
+      not raw.get("export_to") and not raw.get("use_when_export_for"),
+      json.dumps({k: raw.get(k) for k in ("use_when_export", "export_to", "use_when_export_for")}))
+st, back = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
+                                     "after": LINE["bee"], "why": "again"})
+post("bee", f"proposals/{back['id']}/accept", {})
+time.sleep(0.6)
+check("   and advertising again starts from a clean line", remote("ay") == ["bee"], json.dumps(remote("ay")))
+
 # ── N4c — an accept that could not be applied ────────────────────────────────
 # The queue already did the right thing in substance: nothing was written and the proposal stayed
 # pending. It answered **200** while doing it, so every caller that reads a status line — a script, a

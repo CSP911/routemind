@@ -234,8 +234,9 @@ def validate(store: Store) -> dict:
             aud = n.get("export_to") or []
             if aud:
                 if not exp:
-                    errors.append(f"node {n['id']}: export_to without use_when_export — an audience for "
-                                  f"an area that crosses to nobody. Write the line first")
+                    errors.append(f"node {n['id']}: export_to without use_when_export — an audience "
+                                  f"for an area that crosses to nobody. Write the line, or take the "
+                                  f"audience away too if you are withdrawing it")
                 if n.get("parent"):
                     errors.append(f"node {n['id']}: only an area's top representative can carry export_to")
                 for a in aud:
@@ -252,8 +253,9 @@ def validate(store: Store) -> dict:
             per = n.get("use_when_export_for") or {}
             if per:
                 if not exp:
-                    errors.append(f"node {n['id']}: use_when_export_for without use_when_export — "
-                                  f"a line for one peer and nothing for the rest. Write the line first")
+                    errors.append(f"node {n['id']}: use_when_export_for without use_when_export — a "
+                                  f"line for one peer and nothing for the rest. Write the line, or "
+                                  f"take the override away too if you are withdrawing it")
                 if n.get("parent"):
                     errors.append(f"node {n['id']}: only an area's top representative can carry use_when_export_for")
                 for who, line in sorted(per.items()):

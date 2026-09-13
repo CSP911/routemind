@@ -123,6 +123,12 @@ review card names the peer a `peer-line` proposal is for: without it a reviewer 
 `use_when_export_for` and two sentences with no way to tell whose line they are, which is the whole of
 what they are being asked to judge.
 
+**Withdrawing takes the whole decision with it.** Clearing the line clears the audience and the
+per-peer overrides alongside it, and the answer says so. They narrow and replace a line; with no line
+there is nothing to narrow and nothing to replace, and left behind they are state that means nothing
+— which the validator refuses, so the withdrawal itself failed with advice written for the opposite
+act. The cascade only ever removes, so nothing about it can widen what an area shares.
+
 **Withdrawing goes through the queue too.** An empty `after` on scope `peer` is allowed against a
 non-empty `before` and refused against nothing — the same empty string is *I have not written it yet*
 and *stop this area crossing*, and only the second is a decision. Until 2026-09-13 it was refused

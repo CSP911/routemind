@@ -474,6 +474,8 @@ class Writer:
         if "region" in body and body["region"] != (moves[0][2].parent.name if moves else n["region"]):
             raise WriteError(400, "an area is not set directly — it is where the parent is, so move the entity by its `parent`")
 
+        withdrew: list[str] = []
+
         def mutate():
             unknown = sorted(set(body) - set(EDITABLE) - {"id", "region", "content"})
             if unknown: raise WriteError(400, f"not editable: {unknown} — editable fields are {sorted(EDITABLE) + ['content']}")
@@ -486,6 +488,18 @@ class Writer:
             if "export_to" in body: n["export_to"] = _name_list(body["export_to"])
             if "use_when_export_for" in body:
                 n["use_when_export_for"] = _line_map(body["use_when_export_for"])
+            # Withdrawing takes the whole export decision with it. An audience narrows a line and a
+            # per-peer override replaces one — with no line there is nothing to narrow and nothing to
+            # replace, so leaving them behind leaves state that means nothing and that the validator
+            # rightly refuses. It refused the withdrawal itself, telling somebody deliberately
+            # removing a line to "write the line first", which is the advice for the opposite act.
+            #
+            # Safe because it only ever removes: nothing here can widen what an area shares.
+            if "use_when_export" in body and not (n.get("use_when_export") or "").strip():
+                n["use_when_export"] = None
+                dropped = bool(n.get("export_to")) or bool(n.get("use_when_export_for"))
+                n["export_to"], n["use_when_export_for"] = [], {}
+                if dropped: withdrew.append(nid)
             # One type: an entity's content is its own field, not a file underneath it. Editing the
             # body and editing the routing line are the same call on the same thing.
             if "content" in body: n["body"] = body["content"]
@@ -503,7 +517,14 @@ class Writer:
 
         where = f" -> {moves[0][2].parent.name}" if moves else ""
         extra = f" (+{len(moves) - 1} under it)" if len(moves) > 1 else ""
-        return self.transact(f"node {nid}: update{where}{extra}", actor, mutate)
+        out = self.transact(f"node {nid}: update{where}{extra}", actor, mutate)
+        # Said, not done quietly. The cascade is right and it is still more than was asked for, and
+        # the one place a person will look for what happened is the answer to the call they made.
+        if withdrew and isinstance(out, dict):
+            out.setdefault("warnings", []).insert(
+                0, f"node {nid}: withdrawing the export line took its audience and its per-peer "
+                   f"lines with it — they only mean something beside a line")
+        return out
 
     def _plan_move(self, n: dict, new_parent: str | None) -> list:
         """Where every file goes when `n` is re-parented. Empty when the area does not change.

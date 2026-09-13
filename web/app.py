@@ -494,7 +494,11 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     # and a missing sentence for every other scope.
     for field in required:
         if not str(data.get(field) or "").strip():
-            raise HTTPException(status_code=422, detail=f"{field} is required.")
+            # The ontology says how a withdrawal is filed and this layer refused first with four
+            # words, so the guidance never reached anybody going through the screen.
+            hint = (" To withdraw the line, send the one it is withdrawing as `before`."
+                    if field == "after" and scope == "peer" else "")
+            raise HTTPException(status_code=422, detail=f"{field} is required.{hint}")
     if where == "entity" and not _KNOWLEDGE_ID.match(str(data["entity"]).strip()):
         raise HTTPException(status_code=422, detail="entity must be an entity id.")
     body: dict[str, Any] = {
