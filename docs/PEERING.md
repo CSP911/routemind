@@ -87,6 +87,37 @@ Not done: **per-peer wording.** One `use_when_export` goes to everyone who can s
 different thing to each reader is a further step and has no demand behind it yet; who may see it at
 all was the half that did.
 
+## Taking one back
+
+Rows go when the peer stops advertising them, and until recently they went *eventually* — within
+`ADVERT_TTL`, five seconds at each hop, so ten or fifteen across a room. That is fine in one direction
+and not in the other. Advertising something late is a delay; **withdrawing** something late is the
+withdrawn thing still sitting on somebody else's table, and narrowing an audience is a withdrawal for
+whoever just left the list.
+
+So a backbone whose **export set** changes — which areas cross, the line each shows, who each is for —
+posts `/v1/export/refresh` to its peers, and their only response is to forget what they remember about
+it. Nothing is stored and nothing becomes readable that was not readable before: only sooner. An
+exchange passes it on to its other members, because a withdrawal that reaches the room and stops there
+still waits out every member's own cache.
+
+**A hint, not a protocol.** `ADVERT_TTL` remains the guarantee and failures are swallowed: a peer that
+is down is not a reason to fail somebody's save, and it reads the new set on its own within seconds of
+coming back. It is sent off the request thread for the same reason.
+
+It fires on the export set and not on the revision, because most commits change nothing a peer can
+see and a poke on each one would tell every peer to re-read for somebody fixing a typo in a document
+body.
+
+A hint carries no path to check itself against, the way an advertisement does, so it carries a budget
+that only goes down. The flood stops because it must, not because the rooms happen to be wired into a
+tree.
+
+`./check/refresh-check.py` — 17 assertions with the cache turned **up** to thirty seconds rather than
+off, which is the only way to tell a fresh answer from a lucky one. The control comes first: the same
+withdrawal made behind the server's back stays visible, and then the hint takes it off a table two
+hops away.
+
 ## The export surface is separate, not the ordinary one behind a check
 
 `/v1/export/…` builds every answer from the exported set, so no path through it — and no mistake in a
@@ -197,7 +228,7 @@ this picture must not make.
 
 ## Checks
 
-`./check/peer-check.py` — 49 assertions on two throwaway backbones linked both ways. Mostly negative:
+`./check/peer-check.py` — 66 assertions on two throwaway backbones linked both ways. Mostly negative:
 things that exist, read fine locally, and must still come back 404 across the link.
 
 Half of those are **steady states**; the other half are the transitions, which is what makes this
@@ -209,6 +240,7 @@ dynamic routing rather than a config file that happens to be read over HTTP:
 | an area stops advertising | the row goes **and so does the reach**. A withdrawal that only hid the row would leave every address still readable, which is a missing menu item, not a withdrawal. The 404 is the other backbone saying no, not a link that failed |
 | the link goes down | the rows it can no longer stand behind are dropped, and absence stops being claimed |
 | **the link comes back** | it is used again unprompted, and **absence may be claimed again**. A backbone that stayed cautious for ever after one blip would be as wrong as one that never noticed, and harder to see, because everything still works |
+| an audience is written | the peer it names keeps the area; a caller that cannot be named loses it, address and all — and the link still reads as up, because "you are not on the list" is not an outage and must not suspend the absence rule |
 
 ## The exchange
 
@@ -346,7 +378,5 @@ member entry, which is the exchange's half of the declaration. The backbone's ha
 
 * **One export line for all peers.** Per-peer *visibility* is done (`export_to`); per-peer *wording* is
   not, and has no demand behind it yet.
-* **No withdraw.** A peer's rows go when it stops advertising them or stops answering; there is no
-  message that says so.
 * **Two vocabularies.** A peer's areas are described by the peer's `vocab.yaml`, and this backbone's
   validator never sees them — which is correct, and must stay that way.

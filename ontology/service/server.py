@@ -745,6 +745,12 @@ class Handler(BaseHTTPRequestHandler):
             # own review queue. That is not a limitation to lift later — it is the reason the link
             # exists. Two ontologies that write to each other have been merged.
             if parts[:1] == ["export"]:
+                # One exception, and it is not a write. `refresh` discards something this backbone
+                # *remembers* about the caller and leaves everything it holds untouched: nothing can
+                # be read afterwards that could not be read before, only sooner. A peer sends it when
+                # what it advertises has changed, so a withdrawal does not sit on this table for the
+                # length of a cache. See `peers.announce` for why withdrawal is the case worth it.
+                if parts[1:] == ["refresh"] and method == "POST": return self._refresh()
                 if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
                 return self._export(parts[1:])
             if parts[:1] == ["peers"]:
@@ -763,7 +769,15 @@ class Handler(BaseHTTPRequestHandler):
                     return self._err(e.status, str(e), reason=("peer_said_no" if e.reachable else "peer_unreachable"),
                                      data={"peer": parts[1], "reachable": e.reachable})
             if method == "GET": return self._get(parts)
-            return self._write(method, parts)
+            before = _export_state()
+            out = self._write(method, parts)
+            # Only when what crosses a link actually changed — every other save is nobody else's
+            # business, and a poke on each one would make a link's chatter track this backbone's
+            # edit rate instead of its export rate. Off the request thread, because a peer that is
+            # slow must not make somebody's save slow, and one that is down must not make it fail.
+            if _export_state() != before:
+                threading.Thread(target=peering.announce, args=(DATA,), daemon=True).start()
+            return out
         except WriteError as e:
             if e.status == 200: return self._send(200, {"ok": True, "message": str(e)})
             return self._err(e.status, str(e), e.details, reason=e.code, data=e.data)
@@ -777,6 +791,17 @@ class Handler(BaseHTTPRequestHandler):
     def do_PATCH(self): self._route("PATCH")
     def do_DELETE(self): self._route("DELETE")
     def do_OPTIONS(self): self._route("OPTIONS")
+
+    def _refresh(self):
+        """Forget what this backbone remembers about the caller, and nothing else."""
+        token = self.headers.get("X-Peer-Token") or ""
+        who = _peer_by_token(token)
+        if not who:
+            # No shared-token fallback here, unlike a read. Forgetting is per peer, and a caller with
+            # no name says which peer to forget no better than a stranger does.
+            return self._err(401, "peer token missing or wrong")
+        peering.forget(who["name"])
+        return self._send(200, {"ok": True, "forgot": who["name"]})
 
     # ---- what crosses a link ----
     def _export(self, parts):
@@ -1124,6 +1149,18 @@ def _to_export(payload):
                 for k, v in payload.items()}
     if isinstance(payload, list): return [_to_export(v) for v in payload]
     return payload
+
+
+def _export_state():
+    """What this backbone advertises across a link, as one comparable value: which areas, the line
+    each shows, and who each is for. Deliberately not the git revision — most commits change nothing
+    a peer can see, and a poke on every save would tell every peer to re-read for somebody fixing a
+    typo in a document body."""
+    try:
+        return sorted((r.get("source"), r.get("use_when_export") or "", tuple(r.get("export_to") or []))
+                      for r in (store.regions_json().get("regions") or []))
+    except Exception:
+        return None
 
 
 def _peer_by_token(token: str) -> dict | None:

@@ -51,6 +51,10 @@ import yaml
 # what it is, which docs/PEERING.md does.
 ADVERT_TTL = float(os.environ.get("ONTOLOGY_PEER_TTL") or 5.0)
 TIMEOUT = float(os.environ.get("ONTOLOGY_PEER_TIMEOUT") or 4.0)
+# How far a "re-read me" is passed on. Two covers the shape this supports — a backbone, its room, and
+# the rooms that room meets — and any bound at all is what makes the flood terminate. Not a setting:
+# it is a safety bound, and the only reason to turn it up is a topology this does not have.
+REFRESH_HOPS = 2
 NAME_OK = __import__("re").compile(r"^[a-z][a-z0-9-]{0,30}$")
 
 
@@ -172,6 +176,44 @@ def forget(name: str | None = None) -> None:
     for a person who has just fixed something on the other side and does not want to wait it out."""
     if name is None: _cache.clear()
     else: _cache.pop(name, None)
+
+
+def announce(root: Path, *, self_kind: str | None = None) -> None:
+    """Tell every peer that what this backbone advertises has changed, so they re-read it now.
+
+    **A hint, not a protocol.** Nothing depends on it arriving: `ADVERT_TTL` is the guarantee and this
+    only shortens the window it leaves. Failures are swallowed for that reason — a peer that is down
+    is not a reason to fail somebody's save, and it will read the new set within seconds of coming
+    back anyway.
+
+    Worth having for one case, and it is not symmetry. Advertising something a few seconds late is a
+    delay; **withdrawing** something a few seconds late is the withdrawn thing still sitting on
+    somebody else's table, and narrowing an audience is a withdrawal for whoever just left the list.
+    The two directions are not equally forgiving, so the one that is not gets a push.
+    """
+    poke(declared(root), self_kind=self_kind)
+
+
+def poke(targets: list[dict], *, hops: int = REFRESH_HOPS, self_kind: str | None = None) -> None:
+    """Send the hint to these peers. `hops` is a budget and not a route.
+
+    A room passes the hint on to its own members, which is the only way a withdrawal two rooms out
+    arrives before the cache expires. Passing it on is also how a ring of rooms would send it round
+    for ever, and unlike an advertisement a hint carries no path to check itself against. So it
+    carries a number that only goes down, and the flood stops because it must, not because the
+    topology happens to be a tree.
+    """
+    for peer in targets:
+        if not peer["token"]: continue
+        req = urllib.request.Request(peer["url"] + "/v1/export/refresh", data=b"", method="POST")
+        req.add_header("X-Peer-Token", peer["token"])
+        req.add_header("X-Refresh-Hops", str(max(0, int(hops))))
+        if self_kind or peer.get("self_kind"):
+            req.add_header("X-Peer-Kind", str(self_kind or peer["self_kind"]))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as r: r.read()
+        except Exception:
+            pass
 
 
 def rows(root: Path) -> tuple[list[dict], list[dict]]:

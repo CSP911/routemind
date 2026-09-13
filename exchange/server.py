@@ -40,6 +40,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -373,7 +374,30 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         parts = [unquote(p) for p in urlparse(self.path).path.strip("/").split("/") if p]
         if parts[:1] == ["admin"]: return self._admin("POST", parts[1:])
+        if parts == ["v1", "export", "refresh"]: return self._refresh()
         self._err(405, "an exchange is read-only — write to the backbone that owns it")
+
+    def _refresh(self):
+        """A member says what it advertises has changed. Forget it, and tell the others.
+
+        Not a write, though it arrives as a POST: nothing here is stored and nothing can be read
+        afterwards that could not be read before — only sooner. Passing it on is the whole value. A
+        withdrawal that reaches this room and stops here is a withdrawal that sits on every member's
+        table for the length of their own cache, which is exactly the wait this exists to remove.
+
+        The hint has no path attribute to check itself against, so it carries a budget instead. It is
+        decremented here and the flood stops at nothing left, whatever the rooms are wired into.
+        """
+        who = caller(self.headers.get("X-Peer-Token") or "")
+        if not who: return self._err(401, "peer token missing or wrong")
+        peering.forget(who["name"])
+        try: hops = int(self.headers.get("X-Refresh-Hops") or peering.REFRESH_HOPS)
+        except ValueError: hops = 0
+        if hops > 0:
+            onward = [m for m in members() if m["name"] != who["name"]]
+            threading.Thread(target=peering.poke, args=(onward,),
+                             kwargs={"hops": hops - 1}, daemon=True).start()
+        return self._send(200, {"ok": True, "forgot": who["name"]})
 
     def do_DELETE(self):
         parts = [unquote(p) for p in urlparse(self.path).path.strip("/").split("/") if p]
