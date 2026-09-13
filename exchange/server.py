@@ -66,6 +66,9 @@ ADMIN_TOKEN = (os.environ.get("EXCHANGE_ADMIN_TOKEN") or "").strip()
 MEMBERS = Path(os.environ.get("EXCHANGE_MEMBERS") or "/data/members.yaml")
 PORT = int(os.environ.get("PORT") or 8110)
 NAME_OK = re.compile(r"^[a-z][a-z0-9-]{0,30}$")
+# What an exchange calls itself in an advertisement. A neighbour reads it to know what it is talking
+# to, which is how a mislabelled member is caught rather than believed.
+SCHEMA = "routemind-exchange/v1"
 
 
 def members() -> list[dict]:
@@ -74,6 +77,12 @@ def members() -> list[dict]:
     Both sides declare: a backbone names this exchange in its own `peers.yaml`, and this names the
     backbone here. Nobody is enrolled by one side alone, which for a room that companies meet in is
     not a formality.
+
+    A member may itself be an exchange (`kind: exchange`), and the declaration rule does not change —
+    it is the same two halves, with both of them now held by operators. Neither room joins the other
+    on its own say-so, which is the whole of the answer to "who may enrol whom": **each side enrols
+    the other, or there is no link.** What `kind` changes is not who may join but what is passed on;
+    see `reflect`.
     """
     import yaml
     if not MEMBERS.is_file(): return []
@@ -85,8 +94,11 @@ def members() -> list[dict]:
         name, url = str(row.get("name") or "").strip(), str(row.get("url") or "").strip().rstrip("/")
         if not NAME_OK.match(name) or not url: continue
         env = str(row.get("token_env") or f"EXCHANGE_TOKEN_{name.upper().replace('-', '_')}")
-        out.append({"name": name, "url": url, "token_env": env,
+        kind = "exchange" if str(row.get("kind") or "").strip() == "exchange" else "backbone"
+        out.append({"name": name, "url": url, "token_env": env, "kind": kind,
                     "token": (os.environ.get(env) or "").strip(),
+                    # Every read this room makes says what is doing the reading. See `_fetch`.
+                    "self_kind": "exchange",
                     "label": str(row.get("label") or name)})
     return out
 
@@ -127,7 +139,7 @@ def caller(token: str) -> dict | None:
     return next((m for m in members() if m["token"] and m["token"] == token), None)
 
 
-def reflect(asking: dict | None = None) -> dict:
+def reflect(asking: dict | None = None, claimed_kind: str | None = None) -> dict:
     """Everything the members are advertising, as one table.
 
     Each row keeps **the path it came by** — the members it passed through, nearest last. Two uses,
@@ -141,6 +153,31 @@ def reflect(asking: dict | None = None) -> dict:
 
     A member that cannot be read is reported, not hidden and not answered for. Whoever reads this has
     to be able to tell an empty room from a room it could not see into.
+
+    **No transit.** An exchange offers a neighbouring exchange its own backbones, and never what a
+    third exchange told it. So a row crosses at most one exchange-to-exchange hop, and the reason is
+    not tidiness: carrying somebody else's knowledge to somebody else is a relationship neither of
+    them agreed to, and the operator in the middle would be answering for two rooms that never met.
+    An IX route server declines transit for the same reason, and it is what makes a ring of exchanges
+    structurally unable to loop rather than merely unlikely to — the path can never grow long enough.
+    Two rooms that do want each other's whole reach say so by both joining the third.
+
+    The rule is applied **before** the neighbour is read, not to the rows that come back, and that is
+    not an optimisation. Reading is a request, and a request that has to be answered by making the
+    same request is how two rooms hang each other up: IX1 asks IX2 what it is advertising, IX2 asks
+    IX1 to find out, and neither ever answers. Filtering afterwards would leave that intact and
+    perfectly hidden — the rows would come out right whenever the timeout was longer than the wait.
+    Skipping the read means an exchange answering an exchange asks nobody but its own backbones, so
+    the depth of any gather is two and a room cannot be waiting on a room that is waiting on it.
+
+    A member skipped this way is not reported either. Whether a third room is up is that room's
+    business and the middle operator's; it is not part of what a neighbour is owed.
+
+    Two things say the asker is a room, and both are needed. `kind` in members.yaml is what stops the
+    read from happening, and only a decision made before the read can prevent the hang. The asker's
+    own `X-Peer-Kind` is what still holds when that label is typed wrong — and a mislabel is not a
+    hypothetical, it is one word in one file with no way to be wrong loudly. Believing the asker is
+    safe here and nowhere else, because the claim only ever gets the claimant less.
     """
     # Split horizon: a member is never sent what it advertised. Without it every backbone would see
     # its own areas twice — once locally, once reflected — under two different addresses, and the map
@@ -149,9 +186,13 @@ def reflect(asking: dict | None = None) -> dict:
     # the path, not only at the end, so knowledge that went out through it and came back around a ring
     # of exchanges is dropped too.
     mine = asking["name"] if asking else None
+    # An exchange asking is a different reader from a backbone asking, and the difference is what it
+    # may be told about third parties — not what it may be told about this room's own members.
+    to_exchange = (bool(asking) and asking.get("kind") == "exchange") or claimed_kind == "exchange"
     rows, links = [], []
     for m in members():
-        state = {"name": m["name"], "label": m["label"], "url": m["url"],
+        if to_exchange and m["kind"] == "exchange": continue     # no transit, and no deadlock
+        state = {"name": m["name"], "label": m["label"], "url": m["url"], "kind": m["kind"],
                  "reachable": True, "revision": None, "areas": 0, "error": None}
         if not m["token"]:
             state.update(reachable=False, error=f"no token — set {m['token_env']}")
@@ -161,6 +202,15 @@ def reflect(asking: dict | None = None) -> dict:
         except peering.PeerError as e:
             state.update(reachable=False, error=str(e)); links.append(state); continue
         state["revision"] = adv.get("revision")
+        # What it answered, not what it was called. `kind` is written by hand and the cost of getting
+        # it wrong is the one thing this rule exists to prevent — a room quietly carrying a third
+        # room's knowledge — so the transit rule is decided by the schema the neighbour actually
+        # sent. The declaration still matters: it is what stops the read from happening at all, and
+        # only it can prevent the deadlock. This is the net under the leak, not under the hang.
+        if adv.get("schema") == SCHEMA and m["kind"] != "exchange":
+            state["error"] = (f"declared as a backbone but answers as an exchange — "
+                              f"set kind: exchange on {m['name']} in members.yaml")
+            if to_exchange: state["areas"] = 0; links.append(state); continue
         kept = 0
         for r in (adv.get("regions") or []):
             path = [m["name"], *(r.get("path") or [])]
@@ -168,7 +218,7 @@ def reflect(asking: dict | None = None) -> dict:
             if mine and mine in path: continue              # split horizon — it came from the asker
             tail = str(r.get("fetch") or "")
             if not tail.startswith("/v1/export"): continue  # not something this contract can carry
-            rows.append({**r, "path": path, "origin": path[-1],
+            rows.append({**r, "path": path, "origin": path[-1], "via_kind": m["kind"],
                          "origin_revision": r.get("origin_revision") or adv.get("revision"),
                          "fetch": f"/v1/export/peers/{m['name']}" + tail[len("/v1/export"):]})
             kept += 1
@@ -179,7 +229,7 @@ def reflect(asking: dict | None = None) -> dict:
     digest = hashlib.sha1(json.dumps([r.get("fetch") for r in rows] +
                                      [l.get("revision") for l in links],
                                      sort_keys=True).encode()).hexdigest()
-    return {"revision": digest, "schema": "routemind-exchange/v1", "regions": rows, "members": links}
+    return {"revision": digest, "schema": SCHEMA, "regions": rows, "members": links}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -218,7 +268,7 @@ class Handler(BaseHTTPRequestHandler):
         rest = parts[2:]
 
         if rest == ["regions"]:
-            return self._send(200, reflect(who))
+            return self._send(200, reflect(who, self.headers.get("X-Peer-Kind")))
 
         # Everything else is somebody's, and the address says whose.
         if len(rest) >= 3 and rest[0] == "peers":
@@ -283,9 +333,12 @@ class Handler(BaseHTTPRequestHandler):
                 else:
                     url = str(body.get("url") or "").strip().rstrip("/")
                     if not url.startswith(("http://", "https://")): return self._err(400, "url must be http(s)")
+                    kind = str(body.get("kind") or "backbone").strip()
+                    if kind not in ("backbone", "exchange"):
+                        return self._err(400, "kind must be backbone or exchange")
                     rows = [m for m in _raw_members() if m.get("name") != name]
                     rows.append({"name": name, "label": str(body.get("label") or name.upper()),
-                                 "url": url,
+                                 "url": url, "kind": kind,
                                  "token_env": str(body.get("token_env")
                                                   or f"EXCHANGE_TOKEN_{name.upper().replace('-', '_')}")})
                     _write_members(sorted(rows, key=lambda m: m["name"]))

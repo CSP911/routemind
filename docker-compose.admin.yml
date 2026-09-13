@@ -1,7 +1,6 @@
 # The operator's screen for an exchange.
 #
-#   docker compose -f docker-compose.yml -f docker-compose.peer.yml \
-#                  -f docker-compose.exchange.yml -f docker-compose.admin.yml up -d
+#   docker compose -f docker-compose.yml -f docker-compose.admin.yml up -d
 #   →  http://localhost:8090
 #
 # **No docker socket.** Adding a backbone here prepares one — directories, secret, peers.yaml, a

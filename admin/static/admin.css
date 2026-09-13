@@ -21,8 +21,13 @@ td.mono, .rev { font-family: var(--mono); font-size: 12px; }
 .up .dot { background: var(--ok); } .down .dot { background: var(--bad); }
 .down td { color: var(--bad); }
 .why { color: var(--bad); font-size: 12px; }
+/* A doorway to somebody else's room, not a place knowledge starts. Quiet on purpose: it changes what
+   a row means, not how much it matters. */
+.kind { margin-left: 8px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 999px;
+        font: 700 10px/1.6 var(--mono); letter-spacing: .5px; color: var(--dim); text-transform: uppercase; }
 form { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
 label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--dim); }
+select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--fg); }
 input { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--fg); }
 button { font: inherit; font-size: 13px; padding: 7px 13px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--fg); cursor: pointer; }
 button.primary { background: var(--ok); border-color: var(--ok); color: #fff; }

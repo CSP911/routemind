@@ -160,6 +160,65 @@ check("  leaving the one that was already there", "solo" in (r.get("members") or
 check("  and its ontology untouched — it simply stops meeting here",
       urllib.request.urlopen(f"http://127.0.0.1:{BB_PORT}/healthz", timeout=5).status == 200)
 
+# ── a member may be another exchange ──────────────────────────────────────────
+# Two rooms meeting is the same declaration as a backbone joining one, with both halves now held by
+# operators. What `kind` changes is not who may join — it is what gets carried, and it is one word in
+# one file, so it is worth knowing the door writes it down.
+st, r = call("/admin/members", ADMIN_TOKEN, method="POST",
+             body={"name": "partner", "label": "PARTNER", "url": "http://127.0.0.1:9",
+                   "kind": "exchange"})
+check("another exchange can be registered", st == 200, json.dumps(r)[:90])
+check("  and the file says which it is", "kind: exchange" in open(MEMBERS, encoding="utf-8").read())
+st, state3 = call("/admin/state", ADMIN_TOKEN)
+kinds = {m["name"]: m.get("kind") for m in (state3.get("members") or [])}
+check("  and the operator's view tells the two apart",
+      kinds == {"solo": "backbone", "partner": "exchange"}, json.dumps(kinds))
+st, _ = call("/admin/members", ADMIN_TOKEN, method="POST",
+             body={"name": "nope", "url": "http://127.0.0.1:9", "kind": "router"})
+check("  while a kind that is neither is refused", st == 400, str(st))
+call("/admin/members", ADMIN_TOKEN, method="DELETE", body={"name": "partner"})
+
+# ── what the operator's screen prepares, as text ──────────────────────────────
+# Pure functions, so they are read here rather than through a second server. Everything they hand
+# over is pasted by a person into a file, and the two ways that goes wrong are a secret in a file
+# that is committed and two halves that do not match.
+sys.path.insert(0, os.path.join(ROOT, "admin"))
+import server as adminsrv                                                # noqa: E402
+
+pl = adminsrv.plan("warehouse", "WAREHOUSE", 8082, [8080, 8081, 8090])
+tok = pl["env"].split("=", 1)[1].strip()
+check("a prepared backbone puts its secret in .env", len(tok) > 20)
+check("  and nowhere else", not any(tok in pl[k] for k in ("compose", "peers", "shell")))
+check("  with the compose block naming the variable, not the value",
+      "${EXCHANGE_TOKEN_WAREHOUSE}" in pl["compose"])
+check("  and its half of the declaration pointing at the exchange", "name: ix" in pl["peers"])
+check("  on a port nobody has taken", adminsrv.plan("w", "W", 8080, [8080, 8081, 8090])["port"] == 8082)
+
+lk = adminsrv.plan_link("partner-ix", "PARTNER", "https://ix.partner.example", "ix",
+                        "https://ix.example.com")
+ltok = lk["env"].split("=", 1)[1].strip()
+check("a prepared link between two rooms is one secret", len(ltok) > 20)
+check("  the same on both sides", ltok in lk["their_env"])
+check("  under each side's own variable name",
+      "EXCHANGE_TOKEN_PARTNER_IX=" in lk["env"] and "EXCHANGE_TOKEN_IX=" in lk["their_env"])
+# The half that has to travel is the interesting one: it names *this* room, at the address the other
+# side will call, and neither entry alone is a link.
+check("  with a half to keep, naming them", "name: partner-ix" in lk["mine"]
+      and "https://ix.partner.example" in lk["mine"])
+check("  and a half to send, naming us", "name: ix" in lk["theirs"]
+      and "https://ix.example.com" in lk["theirs"])
+def entry(text):
+    """The yaml, without the prose above it — a comment mentioning `kind` is not the same as a line
+    setting it, and counting either would pass on the wrong one."""
+    return [l for l in text.splitlines() if l.strip() and not l.lstrip().startswith("#")]
+
+
+check("  both marked as rooms, not backbones",
+      entry(lk["mine"]).count("    kind: exchange") == 1
+      and entry(lk["theirs"]).count("    kind: exchange") == 1,
+      json.dumps(entry(lk["mine"])))
+check("  and no secret in either entry", ltok not in lk["mine"] and ltok not in lk["theirs"])
+
 # ── a name that could not be an address is refused ────────────────────────────
 for bad in ["../etc", "Has Caps", "", "x" * 40]:
     st, _ = call("/admin/members", ADMIN_TOKEN, method="POST",

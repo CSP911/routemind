@@ -123,6 +123,38 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
     }
 
 
+def plan_link(name: str, label: str, url: str, mine: str, my_url: str) -> dict:
+    """Everything needed to meet a second exchange, as text — half of it for somebody else to paste.
+
+    The shape of this plan is the answer to *who may enrol whom*: **each side enrols the other, or
+    there is no link.** It is the same two halves as a backbone joining a room, with both halves now
+    held by operators, and it is deliberately not something one screen can finish. What comes back is
+    one secret and two entries — one to add here, one to send over — and the link starts working when
+    the second person has agreed enough to paste theirs.
+
+    Nothing here is built and nothing is started: two rooms already exist, and meeting is a line in
+    each of their files.
+    """
+    up, mine_up = name.upper().replace("-", "_"), mine.upper().replace("-", "_")
+    token = secrets.token_urlsafe(24)
+    return {
+        "name": name, "label": label, "kind": "exchange", "token_env": f"EXCHANGE_TOKEN_{up}",
+        "env": (f"# .env, here — one secret for this link, used in both directions.\n"
+                f"EXCHANGE_TOKEN_{up}={token}\n"),
+        "their_env": (f"# .env, at {label} — the same secret, under the name their room will look it\n"
+                      f"# up by. The value is shared; the variable is each side's own.\n"
+                      f"EXCHANGE_TOKEN_{mine_up}={token}\n"),
+        "mine": (f"# members.yaml, here. `kind: exchange` is what stops this room carrying {label}'s\n"
+                 f"# neighbours to its own — and what stops the two rooms asking each other what they\n"
+                 f"# are advertising and neither ever answering.\n"
+                 f"  - name: {name}\n    label: {label}\n    url: {url}\n"
+                 f"    kind: exchange\n    token_env: EXCHANGE_TOKEN_{up}\n"),
+        "theirs": (f"# members.yaml, at {label}. Their half; send it to whoever runs that room.\n"
+                   f"  - name: {mine}\n    label: {mine.upper()}\n    url: {my_url}\n"
+                   f"    kind: exchange\n    token_env: EXCHANGE_TOKEN_{mine_up}\n"),
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
@@ -172,6 +204,16 @@ class Handler(BaseHTTPRequestHandler):
             if not name or not name.replace("-", "").isalnum() or not name[0].isalpha():
                 return self._send(400, {"error": "name must be ASCII kebab-case, starting with a letter"})
             code, st = call("GET", "/admin/state")
+            if str(body.get("kind") or "") == "exchange":
+                url = str(body.get("url") or "").strip().rstrip("/")
+                my_url = str(body.get("my_url") or "").strip().rstrip("/")
+                if not url.startswith(("http://", "https://")):
+                    return self._send(400, {"error": "their address must be http(s)"})
+                if not my_url.startswith(("http://", "https://")):
+                    return self._send(400, {"error": "this exchange's address must be http(s) — it is "
+                                                     "what the other room will call, and only you know it"})
+                return self._send(200, plan_link(name, str(body.get("label") or name.upper()), url,
+                                                 str(st.get("name") or "exchange"), my_url))
             taken = [8080, 8081, 8090]
             return self._send(200, plan(name, str(body.get("label") or name.upper()),
                                         int(body.get("port") or 8082), taken))

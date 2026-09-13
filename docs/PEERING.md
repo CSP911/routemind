@@ -224,11 +224,54 @@ transitions one hop further out. Those are worth repeating here because an excha
 a split-horizon rule in between, and either could turn a withdrawal into something that stays
 visible — the failure that looks exactly like everything working.
 
+## Two exchanges
+
+A member of an exchange may itself be an exchange (`kind: exchange`), which is how two organisations
+meet without either joining the other's room. It is the same contract used a second time — an exchange
+reads a neighbouring exchange with exactly the member code it uses on a backbone — and it adds two
+rules that only exist once there are two rooms.
+
+**Who may enrol whom: each side enrols the other, or there is no link.** The same two halves as
+everywhere else, with both of them now held by operators. IX1 names IX2 in its `members.yaml`, IX2
+names IX1 in its, one secret between them used in both directions. The operator's screen prepares
+exactly this and can only finish half of it: it hands back one entry to keep and one to send, and the
+link starts working when the second person has agreed enough to paste theirs. Until then the room
+reports the neighbour as unreachable, which is the honest answer.
+
+**No transit.** A room offers a neighbouring room its own backbones, and never what a third room told
+it. HOME sees REMOTE and does not see FAR — not because FAR is secret, but because nobody at either
+end agreed to a relationship with the other, and the operator in the middle would be answering for two
+rooms that never met. An IX route server declines transit for the same reason. It also bounds every
+path at one exchange-to-exchange hop, which is what makes a ring of exchanges structurally unable to
+loop rather than merely unlikely to.
+
+The rule is applied **before** the neighbour is read, and that is not an optimisation. Reading is a
+request, and a request answered by making the same request is how two rooms hang each other up: IX1
+asks IX2 what it is advertising, IX2 asks IX1 to find out, and neither ever answers. Filtering
+afterwards leaves that intact and perfectly hidden — the rows come out right whenever the timeout is
+longer than the wait. This was written the wrong way round first and the check found it as an outage
+on a link that was fine.
+
+**Two locks on it, because `kind` is one word typed by hand.** The label in `members.yaml` is what
+stops the read from happening, and only a decision made before the read can prevent the hang. The
+asker's own `X-Peer-Kind` header is what still holds when the label is wrong. Believing a caller about
+what it is, is safe here and nowhere else: the claim can only ever get the claimant **less**. With the
+label wrong *and* the caller saying nothing, there is nothing left to go on and the knowledge crosses —
+so the operator's screen names the line to fix rather than reassuring anyone that it does not matter.
+
+A neighbour that answers with the exchange schema while declared as a backbone is reported as exactly
+that, and its rows are dropped on the way to another room. That net catches the leak; nothing catches
+the hang but the label.
+
+`./check/ix-peering-check.py` — 35 assertions on three rooms in a line, each with a backbone of its
+own: one hop across, two hops refused in both directions, a document read through three relays, the
+deadlock, and the mislabel with both of its halves.
+
 ## The operator's screen
 
 ```sh
 docker compose -f docker-compose.yml -f docker-compose.peer.yml \
-               -f docker-compose.exchange.yml -f docker-compose.admin.yml up -d
+               -f docker-compose.admin.yml up -d
 #  http://localhost:8090
 ```
 
@@ -261,9 +304,6 @@ member entry, which is the exchange's half of the declaration. The backbone's ha
 
 * **One export line for all peers.** Per-peer lines, and per-peer visibility, are a policy layer worth
   designing whole rather than smuggling in as a map.
-* **Exchanges do not peer with each other yet.** The path attribute that makes it safe is there and is
-  checked; what is missing is a member entry that points at another exchange, and the thought about
-  who is allowed to enrol whom.
 * **No withdraw.** A peer's rows go when it stops advertising them or stops answering; there is no
   message that says so.
 * **Two vocabularies.** A peer's areas are described by the peer's `vocab.yaml`, and this backbone's

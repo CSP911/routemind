@@ -109,6 +109,12 @@ def _fetch(peer: dict, path: str) -> tuple[bytes, str]:
     url = peer["url"] + path
     req = urllib.request.Request(url, headers={"Accept": "application/json, text/markdown, */*"})
     if peer["token"]: req.add_header("X-Peer-Token", peer["token"])
+    # What the *caller* is, said by the caller. An exchange announces itself so the far end can
+    # withhold what it does not carry for third parties, and this is safe to believe for the reason
+    # that makes self-declaration usually unsafe reversed: the claim can only ever get the claimant
+    # **less**. Nobody lies their way into more. It is a second lock on the same door as `kind` in
+    # members.yaml, and it is the one that still holds when the hand-written label is wrong.
+    if peer.get("self_kind"): req.add_header("X-Peer-Kind", str(peer["self_kind"]))
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
             return r.read(), (r.headers.get("Content-Type") or "application/json")

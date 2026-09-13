@@ -13,7 +13,7 @@
     ontology and reviewed there; nothing on this page can change it, or read it.</p>
   <div class="panel">
     <table>
-      <thead><tr><th>Backbone</th><th>Address</th><th>Advertising</th><th>Revision</th><th></th></tr></thead>
+      <thead><tr><th>Member</th><th>Address</th><th>Advertising</th><th>Revision</th><th></th></tr></thead>
       <tbody id="rows"><tr><td colspan="5" class="note">Loading…</td></tr></tbody>
     </table>
   </div>
@@ -26,9 +26,29 @@
       <label>Name<input id="mName" placeholder="branch" required></label>
       <label>Label<input id="mLabel" placeholder="BRANCH"></label>
       <label>Address<input id="mUrl" placeholder="http://ontology-branch:8100" size="30" required></label>
+      <label>Kind<select id="mKind">
+        <option value="backbone">a backbone</option>
+        <option value="exchange">another exchange</option>
+      </select></label>
       <button class="primary" type="submit">Register</button>
     </form>
     <div class="msg" id="addMsg"></div>
+  </div>
+
+  <h2>Meet another exchange</h2>
+  <p class="note">Two rooms that already exist. Each names the other, one secret between them, and
+    neither joins on its own say-so — so half of what this prepares is for the other operator to
+    paste. A room offers a neighbour <em>its own</em> backbones and never a third room's: what
+    crosses is one exchange-to-exchange hop, no further.</p>
+  <div class="panel">
+    <form id="linkForm">
+      <label>Their name<input id="xName" placeholder="partner-ix" required></label>
+      <label>Their label<input id="xLabel" placeholder="PARTNER"></label>
+      <label>Their address<input id="xUrl" placeholder="https://ix.partner.example" size="28" required></label>
+      <label>This exchange, as they will reach it<input id="xMine" placeholder="https://ix.example.com" size="28" required></label>
+      <button type="submit">Prepare</button>
+    </form>
+    <div id="linkOut"></div>
   </div>
 
   <h2>Prepare a new one</h2>
