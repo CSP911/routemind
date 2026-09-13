@@ -520,5 +520,49 @@ time.sleep(0.4)
 check("and taking it away puts the area back",
       len([r for r in (at(PORT, "/regions")[1].get("regions") or []) if r.get("peer")]) == 1)
 
+# ── the secret itself: comparing it, rotating it, and where it may travel ────
+# One shared secret per link is the whole of a link's authentication, so the three things that can be
+# wrong with a shared secret are the three things worth pinning. None of them is visible from a test
+# that only asks whether the right token works.
+from service.peers import same_secret, public_address, declared                # noqa: E402
+
+check("a secret matches itself", same_secret("abc123", "abc123"))
+check("  and nothing else", not same_secret("abc123", "abc124"))
+# `==` stops at the first differing byte, so how long it takes says how much of a guess was right.
+# Between two organisations that is a way in that needs no bug and nobody's mistake, only patience.
+check("  in constant time, not with ==", "compare_digest" in
+      open(os.path.join(ROOT, "ontology", "service", "peers.py"), encoding="utf-8").read())
+# The empty case is the one that turns a closed link into an open one: a peer with no token
+# configured must match nobody, never everybody.
+for a, b in ((None, "x"), ("x", None), ("", ""), (None, None), ("", "x"), ("x", "")):
+    check(f"  and an empty secret matches nothing ({a!r}, {b!r})", not same_secret(a, b))
+
+# Rotation. Without a second accepted secret the only way to change one is to stop both ends at the
+# same moment, which is why nobody does it — and a room makes that worse, because every member's
+# link stops at once.
+open(os.path.join(repo, "peers.yaml"), "w", encoding="utf-8").write(
+    f"peers:\n  - name: bee\n    label: BEE\n    url: http://127.0.0.1:{PORT_B}\n"
+    f"    token_env: PEERTOK_B\n    also_accept_env: PEERTOK_A\n")
+os.environ["PEERTOK_A"], os.environ["PEERTOK_B"] = TOKEN, TOKEN_B
+d = next(x for x in declared(repo) if x["name"] == "bee")
+check("a link presents one secret", d["token"] == TOKEN_B)
+check("  and accepts the one being retired beside it", sorted(d["accept"]) == sorted({TOKEN, TOKEN_B}),
+      json.dumps(sorted(d["accept"])))
+open(os.path.join(repo, "peers.yaml"), "w", encoding="utf-8").write(
+    f"peers:\n  - name: bee\n    label: BEE\n    url: http://127.0.0.1:{PORT_B}\n"
+    f"    token_env: PEERTOK_B\n")
+d = next(x for x in declared(repo) if x["name"] == "bee")
+check("  and with nothing being retired, exactly one", d["accept"] == [TOKEN_B], json.dumps(d["accept"]))
+
+# Where a secret may travel. `http://` inside a compose network or a VPN is the ordinary shape and
+# must stay out of the way; `http://` to a public address is a bearer token in clear text on the wire.
+for url in ("http://ontology:8100", "http://127.0.0.1:8100", "http://10.1.2.3:8110",
+            "http://192.168.0.9", "http://172.16.4.1", "https://ix.partner.example",
+            "http://a-name-that-does-not-resolve.invalid"):
+    check(f"  {url} is not treated as public", not public_address(url))
+# A name that does resolve outside every private range. `example.com` is reserved for this.
+check("while http:// to a public address is", public_address("http://example.com"))
+check("  and https:// to the same place is not", not public_address("https://example.com"))
+
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

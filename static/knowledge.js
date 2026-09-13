@@ -2611,13 +2611,43 @@
     ].join("\n");
   }
 
+  /** Which door this screen is behind, said by the service and not guessed at.
+   *
+   *  Three states and three different things to say. `open` is the one worth a word: it is a
+   *  legitimate deployment on a network where it is acceptable, and it is also the one where the
+   *  README was the only thing that knew. `proxy` shows the name a change will be signed with,
+   *  because a person about to sign one should be able to read it first — and it is the only mode
+   *  where that name is an identity rather than a signature. */
+  function showDoor() {
+    const chip = $("knDoor");
+    if (!chip) return;
+    // Written out rather than assembled from the mode. A key built by concatenation is a key no
+    // grep finds and no dictionary check can see: check/i18n-check.mjs reads the screen for the keys
+    // it asks for, and a prefix glued to a variable reaches it as the prefix, with nothing after it.
+    const DOOR = {
+      open: () => [t("knowledge.auth.open"), t("knowledge.auth.open.why"), true],
+      token: () => [t("knowledge.auth.token"), t("knowledge.auth.token.why"), false],
+      proxy: () => [state.cfg.actor ? t("knowledge.auth.you").replace("{name}", state.cfg.actor)
+                                    : t("knowledge.auth.proxy"),
+                    t("knowledge.auth.proxy.why"), false],
+    };
+    const [label, why, loud] = (DOOR[state.cfg.auth] || DOOR.open)();
+    chip.textContent = label;
+    chip.className = "kn-door" + (loud ? " is-open" : "");
+    chip.title = why;
+    chip.hidden = !label;
+  }
+
   /** What this install can do. Failure is not fatal and not silent-by-omission either: the defaults
    *  are the conservative ones — no run to start, nothing derived — so a screen that could not ask
    *  shows the controls that always work rather than ones that may not. */
   async function loadConfig() {
     try {
       const cfg = await fetch("/api/app-config", { credentials: "same-origin" }).then((r) => r.json());
-      state.cfg = { agent: Boolean(cfg.agent), agentUrl: String(cfg.agent_url || ""), derives: Boolean(cfg.derives) };
+      state.cfg = { agent: Boolean(cfg.agent), agentUrl: String(cfg.agent_url || ""), derives: Boolean(cfg.derives),
+                    auth: String(cfg.auth || "open"), actor: String(cfg.actor || ""),
+                    named: Boolean(cfg.auth_names_the_actor) };
+      showDoor();
     } catch { state.cfg = { agent: false, agentUrl: "", derives: false }; }
   }
 

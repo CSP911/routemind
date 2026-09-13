@@ -8,15 +8,33 @@ answer back. That is why it can be read in one sitting and why a new domain need
 The proxy is server-side on purpose. The ontology API is not published to the browser, so the only
 way to reach it is through a request this file made — which is also where the actor is stamped.
 
-No authentication (operator decision, 2026-09-11). The map is reachable by anyone who can reach the
-port. Two things follow and both are deliberate:
+**Identity is consumed here, never invented.** `KNOWLEDGE_AUTH` picks one of three modes, and the
+running service says which one it is in — in its log, in `/healthz`, and on the screen. Until
+2026-09-13 the only place that said so was the README, which is the one place a running system cannot
+be read from.
 
-  * Every write API is open. Put this on a network where that is acceptable, or put a reverse proxy
-    with authentication in front of it. The README says so in the first paragraph.
-  * The `actor` on a commit, a proposal and an approval would otherwise all read "web", which makes
-    the record useless for the one thing a record is for. The browser sends a name the person typed
-    once (kept in their own browser); the server falls back to KNOWLEDGE_ACTOR, then to "web". It is
-    a signature, not a credential — never treat it as one.
+  * **`open`** (the default, and what every install has been) — anyone who can reach the port can call
+    every write API. Legitimate on a network where that is acceptable, and the point is that it is now
+    a choice something states rather than a fact somebody has to remember.
+  * **`token`** — a shared secret in `KNOWLEDGE_TOKEN`, presented as `Authorization: Bearer …`. It
+    answers *may you write*, and nothing about *who you are*, so the actor stays a signature. For an
+    agent, a script, a deployment where the browser is not the point.
+  * **`proxy`** — an authenticating reverse proxy in front, and its header (`KNOWLEDGE_AUTH_HEADER`,
+    default `X-Forwarded-Email`) read **only** from an address declared in
+    `KNOWLEDGE_AUTH_TRUSTED_PROXY`. Without that second half a trusted header is worse than no
+    authentication at all: anybody can set one, and now it also names them somebody else. So the
+    service refuses to start in this mode without it.
+
+Only `proxy` produces an actor worth the name, and there it **replaces** what the client sent rather
+than falling back to it. Everywhere else the `actor` on a commit, a proposal and an approval is a
+signature and not a credential — the browser sends a name the person typed once, the server falls
+back to KNOWLEDGE_ACTOR, then to "web" — and `/healthz` says `names_the_actor: false` so nothing
+downstream has to guess which it is holding.
+
+The gate is on **writes**, and on reads too with `KNOWLEDGE_AUTH_READS=1`. Reads are what an agent
+does through the MCP, which has no session and did not ask for one; closing them by default would
+have made turning authentication on mean turning the agent off, and the hole the README warns about
+is a write hole.
 """
 from __future__ import annotations
 
@@ -42,6 +60,68 @@ STATIC_DIR = Path(_iris_playbook_os.environ.get("KNOWLEDGE_STATIC", Path(__file_
 # and a button that drops them on the floor teaches that picking does not matter.
 AGENT_URL = str(_iris_playbook_os.environ.get("KNOWLEDGE_AGENT_URL") or "").strip().rstrip("/")
 DEFAULT_ACTOR = (str(_iris_playbook_os.environ.get("KNOWLEDGE_ACTOR") or "web").strip() or "web")[:64]
+
+# ---- the door (see the module docstring) ----
+AUTH_MODES = ("open", "token", "proxy")
+AUTH = (str(_iris_playbook_os.environ.get("KNOWLEDGE_AUTH") or "open").strip().lower() or "open")
+AUTH_TOKEN = str(_iris_playbook_os.environ.get("KNOWLEDGE_TOKEN") or "").strip()
+AUTH_HEADER = str(_iris_playbook_os.environ.get("KNOWLEDGE_AUTH_HEADER") or "X-Forwarded-Email").strip()
+AUTH_FROM = [x.strip() for x in
+             str(_iris_playbook_os.environ.get("KNOWLEDGE_AUTH_TRUSTED_PROXY") or "").split(",") if x.strip()]
+AUTH_READS = str(_iris_playbook_os.environ.get("KNOWLEDGE_AUTH_READS") or "").strip().lower() in ("1", "true", "yes", "on")
+WRITE_METHODS = ("POST", "PUT", "PATCH", "DELETE")
+
+
+def _auth_misconfigured() -> str:
+    """Why this configuration cannot be served, or empty. Read at import and again by the checks.
+
+    Every one of these is a state where the service would come up looking guarded and not be. Coming
+    up at all is the bug: an operator who sets `KNOWLEDGE_AUTH=proxy` has decided the thing is meant
+    to be closed, and a service that quietly serves it open instead has turned a decision into a
+    surprise.
+    """
+    if AUTH not in AUTH_MODES:
+        return f"KNOWLEDGE_AUTH={AUTH!r} is not one of {', '.join(AUTH_MODES)}"
+    if AUTH == "token" and not AUTH_TOKEN:
+        return "KNOWLEDGE_AUTH=token needs KNOWLEDGE_TOKEN — a mode with no secret is an open door with a lock painted on"
+    if AUTH == "proxy" and not AUTH_FROM:
+        return ("KNOWLEDGE_AUTH=proxy needs KNOWLEDGE_AUTH_TRUSTED_PROXY — the address the header is "
+                "believed from. Without it anybody can send the header and be whoever they like. "
+                "Set it to the proxy's address, or to `any` if the network itself guarantees nothing "
+                "else can reach this port")
+    return ""
+
+
+def _trusted_source(client: str | None) -> bool:
+    """Is this request coming from somewhere the header may be believed.
+
+    `any` is spelled out and ugly on purpose: it is right when a compose network or a firewall is the
+    thing making the guarantee, and it should never be reached for by accident.
+    """
+    if "any" in AUTH_FROM: return True
+    if not client: return False
+    import ipaddress
+    try: ip = ipaddress.ip_address(client)
+    except ValueError: return client in AUTH_FROM
+    for entry in AUTH_FROM:
+        try:
+            if ip in ipaddress.ip_network(entry, strict=False): return True
+        except ValueError:
+            if entry == client: return True
+    return False
+
+
+def _authenticated(request: Request) -> str | None:
+    """The identity behind this request, or None. Empty string means "allowed, but unnamed"."""
+    if AUTH == "open": return ""
+    if AUTH == "token":
+        import hmac
+        head = str(request.headers.get("Authorization") or "")
+        given = head[7:].strip() if head[:7].lower() == "bearer " else ""
+        return "" if (given and AUTH_TOKEN and hmac.compare_digest(given, AUTH_TOKEN)) else None
+    if not _trusted_source(request.client.host if request.client else None): return None
+    who = str(request.headers.get(AUTH_HEADER) or "").strip()
+    return who[:128] if who else None
 
 app = FastAPI(title="RouteMind", docs_url=None, redoc_url=None, openapi_url=None)
 
@@ -106,11 +186,24 @@ _ACTOR_OK = _iris_re.compile(r"^[\w .@-]{1,64}$", _iris_re.UNICODE)
 
 
 def _require_admin(request: Request) -> dict[str, Any]:
-    """There is no gate. Kept as a seam: putting one back is this function and nothing else."""
+    """The gate, for the page. The seam this used to hold open now has a door in it."""
+    if _authenticated(request) is None:
+        raise HTTPException(status_code=401, detail="Not authenticated.")
     return {}
 
 
 def _request_user(request: Request) -> dict[str, Any]:
+    """Who to record. In `proxy` mode the proxy says so and the client does not get a vote.
+
+    The comment that used to sit above the proxy calls said the actor was "the signed-in username,
+    never a client-supplied value", and it was the opposite: there was no sign-in and the value came
+    straight off a header the browser set. One of those two had to become true, and this is the half
+    that can be — where an identity actually exists, it wins; where none does, the name is a
+    signature and `/healthz` says as much.
+    """
+    if AUTH == "proxy":
+        who = _authenticated(request)
+        return {"username": who} if who else {}
     # Percent-encoded on the way in, because HTTP headers are latin-1 and a name with a Korean — or
     # accented, or any non-ASCII — character otherwise arrives as mojibake, fails the check, and is
     # replaced by the default. Every commit then reads "web" and nobody notices until they look.
@@ -875,7 +968,7 @@ def root() -> RedirectResponse:
 
 
 @_iris_route("GET", "/api/app-config")
-def app_config() -> dict[str, Any]:
+def app_config(request: Request) -> dict[str, Any]:
     """What the screen cannot know about this install: whether a run has anywhere to go, and whether
     an id and a kind can be derived or have to be typed. Both change what the screen must show, and
     a screen guessing either way is wrong for half the installs."""
@@ -891,7 +984,45 @@ def app_config() -> dict[str, Any]:
             # fields are what lets an install say the true thing instead.
             "llm_provider": health.get("llm_provider"),
             "llm_providers": health.get("llm_providers") or [],
+            # What the door is, said by the running service. The README knew and the process did not,
+            # which is the wrong way round: the README describes the build and this describes the
+            # deployment, and they are different questions once there is more than one way to run it.
+            # `names_the_actor` is the one downstream consumers need — it says whether the name on a
+            # commit is an identity or a signature, and nothing else can tell them apart.
+            "auth": AUTH, "auth_names_the_actor": AUTH == "proxy", "auth_guards_reads": AUTH_READS,
+            # Who this request would be recorded as. In `proxy` mode that is the identity, and the
+            # screen shows it — a person about to sign a routing change should be able to see the
+            # name it will be signed with before they press anything.
+            "actor": _knowledge_actor(request),
             "actor_default": DEFAULT_ACTOR}
+
+
+@app.middleware("http")
+async def _the_door(request: Request, call_next):
+    """One gate in front of everything, rather than a check on each route.
+
+    A guard applied route by route has to be right every time, and the routes are added by whoever
+    needs one; a surface that is closed unless it is on a list is right by construction. It is the
+    same argument the export surface is built on, and the same one that stopped `_export` ever being
+    able to serve an area nobody shared.
+
+    Open in `open` mode, which is the default and every install so far. Elsewhere: writes always,
+    reads only when asked for, and `/healthz` never — a health check that needs a credential is a
+    health check nobody wires up.
+    """
+    if AUTH == "open": return await call_next(request)
+    path = request.url.path
+    guarded = path.startswith("/api/knowledge") or path in ("/", "/knowledge")
+    if guarded and path != "/healthz" and (request.method in WRITE_METHODS or AUTH_READS):
+        if _authenticated(request) is None:
+            return JSONResponse(
+                {"detail": "Not authenticated.", "auth": AUTH},
+                status_code=401,
+                # Named so a client knows what to present rather than guessing. In `proxy` mode there
+                # is nothing for a client to do about it, and saying `Bearer` there would send them
+                # looking for a token that does not exist.
+                headers={"WWW-Authenticate": "Bearer"} if AUTH == "token" else {})
+    return await call_next(request)
 
 
 @app.middleware("http")
@@ -916,6 +1047,18 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 def main() -> None:
     port = int(_iris_playbook_os.environ.get("PORT") or 8080)
+    bad = _auth_misconfigured()
+    if bad:
+        # Refusing to start, and not starting open. An operator who set a mode has decided this is
+        # meant to be closed; coming up anyway would turn that decision into a surprise, and the kind
+        # of surprise nobody finds until somebody else does.
+        sys.stderr.write(f"routemind-web: {bad}\n")
+        raise SystemExit(2)
+    sys.stderr.write(
+        f"routemind-web auth={AUTH} names_the_actor={AUTH == 'proxy'} guards_reads={AUTH_READS} port={port}\n")
+    if AUTH == "open":
+        sys.stderr.write("  KNOWLEDGE_AUTH is open — anyone who can reach this port can call every "
+                         "write API. Deliberate on a network where that is fine; see README.\n")
     uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
 
 

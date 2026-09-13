@@ -831,7 +831,7 @@ class Handler(BaseHTTPRequestHandler):
         who = _peer_by_token(token)
         if not PEER_TOKEN and not any(p["token"] for p in peering.declared(DATA)):
             return self._err(501, "this backbone advertises to no peer — set ONTOLOGY_PEER_TOKEN to open a link")
-        if not who and not (PEER_TOKEN and token == PEER_TOKEN):
+        if not who and not peering.same_secret(token, PEER_TOKEN):
             return self._err(401, "peer token missing or wrong")
 
         # Who is on the other end of the line, and who they are asking for. The two are the same
@@ -1190,7 +1190,8 @@ def _peer_by_token(token: str) -> dict | None:
     that says who this backbone reads.
     """
     if not token: return None
-    return next((p for p in peering.declared(DATA) if p["token"] and p["token"] == token), None)
+    return next((p for p in peering.declared(DATA)
+                 if any(peering.same_secret(token, t) for t in p["accept"])), None)
 
 
 def _draft_anywhere(node: dict) -> bool:

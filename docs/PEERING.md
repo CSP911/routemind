@@ -311,6 +311,32 @@ transitions one hop further out. Those are worth repeating here because an excha
 a split-horizon rule in between, and either could turn a withdrawal into something that stays
 visible — the failure that looks exactly like everything working.
 
+## A secret and a public address
+
+One secret per link, used in both directions, and three things about a shared secret that a test of
+"does the right token work" never reaches.
+
+**It is compared in constant time.** `==` on strings stops at the first differing byte, so how long it
+takes says how much of a guess was right. Between two organisations that is a way in needing no bug
+and nobody's mistake, only patience. An empty expected secret matches nothing, so a link with no token
+configured is closed rather than open to everyone.
+
+**It will not travel in clear text to a public address.** `http://` inside a compose network or a VPN
+is the ordinary shape and stays out of the way; `http://` to an address outside every private range is
+a bearer token on the wire, and a link refuses to present one there and says so. The refusal is
+**ours** — `reachable=True` — because it is this end declining, not the peer being unreachable, and
+the absence rule must not be suspended over a decision we made. A name that does not resolve is not
+treated as public: a peer that is simply down would otherwise produce a refusal about secrecy and send
+whoever reads it looking in entirely the wrong place.
+
+**It can be rotated without a flag day.** `also_accept_env` on a `peers.yaml` or `members.yaml` entry
+names a second variable that is still accepted. Add the new secret there on both sides, switch what
+each presents, then drop the old one. Without it the only way to change a secret is to stop both ends
+at the same moment — which is why nobody does, and a room makes it worse, because every member's link
+stops at once.
+
+`./check/peer-check.py` — the last 21 of its 87 assertions.
+
 ## Two exchanges
 
 A member of an exchange may itself be an exchange (`kind: exchange`), which is how two organisations

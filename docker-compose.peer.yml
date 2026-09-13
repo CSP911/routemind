@@ -65,6 +65,13 @@ services:
     environment:
       KNOWLEDGE_API_URL: http://ontology-b:8100
       KNOWLEDGE_ACTOR: "${KNOWLEDGE_ACTOR_B:-web-b}"
+      # The same door as the first backbone's screen. A second screen left open while the first is
+      # closed is the whole gate, since both write into ontologies that advertise to each other.
+      KNOWLEDGE_AUTH: "${KNOWLEDGE_AUTH:-open}"
+      KNOWLEDGE_TOKEN: "${KNOWLEDGE_TOKEN:-}"
+      KNOWLEDGE_AUTH_HEADER: "${KNOWLEDGE_AUTH_HEADER:-X-Forwarded-Email}"
+      KNOWLEDGE_AUTH_TRUSTED_PROXY: "${KNOWLEDGE_AUTH_TRUSTED_PROXY:-}"
+      KNOWLEDGE_AUTH_READS: "${KNOWLEDGE_AUTH_READS:-}"
     ports:
       - "${WEB_PORT_B:-8081}:8080"
     restart: unless-stopped

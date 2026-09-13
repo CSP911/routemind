@@ -98,6 +98,9 @@ def members() -> list[dict]:
         kind = "exchange" if str(row.get("kind") or "").strip() == "exchange" else "backbone"
         out.append({"name": name, "url": url, "token_env": env, "kind": kind,
                     "token": (os.environ.get(env) or "").strip(),
+                    # Still accepted while a secret is being changed — see peers._accepted. A room
+                    # is the worst place for a flag day: every member's link stops at once.
+                    "accept": peering._accepted(env, row.get("also_accept_env")),
                     # Every read this room makes says what is doing the reading. See `_fetch`.
                     "self_kind": "exchange",
                     "label": str(row.get("label") or name)})
@@ -137,7 +140,8 @@ def caller(token: str) -> dict | None:
     every caller anonymous, and an anonymous caller has to be sent its own areas back.
     """
     if not token: return None
-    return next((m for m in members() if m["token"] and m["token"] == token), None)
+    return next((m for m in members()
+                 if any(peering.same_secret(token, t) for t in m["accept"])), None)
 
 
 def reflect(asking: dict | None = None, claimed_kind: str | None = None) -> dict:
@@ -317,7 +321,7 @@ class Handler(BaseHTTPRequestHandler):
 
     # ---- the operator's door ----
     def _admin_ok(self) -> bool:
-        return bool(ADMIN_TOKEN) and self.headers.get("X-Admin-Token") == ADMIN_TOKEN
+        return peering.same_secret(self.headers.get("X-Admin-Token"), ADMIN_TOKEN)
 
     def _admin(self, method: str, rest: list[str]):
         """Membership and health. Never the knowledge.
@@ -361,6 +365,8 @@ class Handler(BaseHTTPRequestHandler):
                     rows = [m for m in _raw_members() if m.get("name") != name]
                     rows.append({"name": name, "label": str(body.get("label") or name.upper()),
                                  "url": url, "kind": kind,
+                                 **({"also_accept_env": str(body["also_accept_env"]).strip()}
+                                    if str(body.get("also_accept_env") or "").strip() else {}),
                                  "token_env": str(body.get("token_env")
                                                   or f"EXCHANGE_TOKEN_{name.upper().replace('-', '_')}")})
                     _write_members(sorted(rows, key=lambda m: m["name"]))

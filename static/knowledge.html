@@ -17,13 +17,20 @@
         <h1 data-i18n="knowledge.title">RouteMind</h1>
         <p class="kn-sub" data-i18n="knowledge.sub">What the agent is handed at each step, in the words it is handed.</p>
       </div>
-      <!-- Filled from the dictionaries that actually loaded, so it can never offer one that is not
-           there. It changes only what this browser shows: nothing is sent, nothing is written, and
-           the person at the next desk keeps theirs. -->
-      <label class="kn-lang">
-        <span class="kn-lang-label" data-i18n-label="knowledge.language">Language</span>
-        <select id="knLang" data-i18n-label="knowledge.language"></select>
-      </label>
+      <div class="kn-head-right">
+        <!-- What the door on this screen is. Not in the problems bar below: an open door is a
+             legitimate deployment on a network where it is fine, and a permanent alarm on every
+             default install is how a bar stops being read. Quiet, always there, and never a guess —
+             the running service is what answers. -->
+        <span class="kn-door" id="knDoor" hidden></span>
+        <!-- Filled from the dictionaries that actually loaded, so it can never offer one that is not
+             there. It changes only what this browser shows: nothing is sent, nothing is written, and
+             the person at the next desk keeps theirs. -->
+        <label class="kn-lang">
+          <span class="kn-lang-label" data-i18n-label="knowledge.language">Language</span>
+          <select id="knLang" data-i18n-label="knowledge.language"></select>
+        </label>
+      </div>
     </header>
 
     <!-- Shown only when something is wrong, with the one button that fixes it. -->

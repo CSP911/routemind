@@ -31,8 +31,11 @@ mislabelling one of these suspends the absence rule for a reason that is not tru
 """
 from __future__ import annotations
 
+import hmac
+import ipaddress
 import json
 import os
+import socket
 import time
 import urllib.error
 import urllib.parse
@@ -56,6 +59,45 @@ TIMEOUT = float(os.environ.get("ONTOLOGY_PEER_TIMEOUT") or 4.0)
 # it is a safety bound, and the only reason to turn it up is a topology this does not have.
 REFRESH_HOPS = 2
 NAME_OK = __import__("re").compile(r"^[a-z][a-z0-9-]{0,30}$")
+
+
+def same_secret(given: str | None, expected: str | None) -> bool:
+    """Compare two secrets without leaking how far the comparison got.
+
+    `==` on strings stops at the first differing byte, so how long it takes says how much of a guess
+    was right. Over a link between organisations that is a way in that needs no bug and no mistake by
+    anybody — just patience — and the fix is one function. An empty expected secret matches nothing:
+    a link with no token configured is closed, never open to everyone.
+    """
+    if not given or not expected: return False
+    return hmac.compare_digest(str(given), str(expected))
+
+
+def public_address(url: str) -> bool:
+    """Would a secret sent here cross a network nobody in this deployment controls?
+
+    `http://` to a name that resolves outside the machine and outside a private range is a bearer
+    token in clear text on the wire. Inside a compose network or a VPN that is the normal, reasonable
+    shape and this must not get in its way; to a public address it is the difference between a link
+    between two companies and a link between two companies and whoever is in between.
+
+    Unresolvable is **not** treated as public. A peer that is simply down would otherwise turn into a
+    refusal about secrecy, which sends whoever reads it looking in the wrong place entirely.
+    """
+    try:
+        parts = urllib.parse.urlsplit(url)
+        if parts.scheme != "http": return False              # https carries it, and so does anything else declared
+        host = parts.hostname or ""
+        if not host: return False
+        try: infos = socket.getaddrinfo(host, None)
+        except OSError: return False                         # cannot say; not the same as "it is public"
+        for info in infos:
+            ip = ipaddress.ip_address(info[4][0])
+            if not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved):
+                return True
+        return False
+    except Exception:
+        return False
 
 
 class PeerError(Exception):
@@ -97,8 +139,20 @@ def declared(root: Path) -> list[dict]:
         kind = "exchange" if str(row.get("kind") or "").strip() == "exchange" else "backbone"
         out.append({"name": name, "url": url, "token_env": env, "kind": kind,
                     "token": (os.environ.get(env) or "").strip(),
+                    # What is still accepted from this peer while a secret is being changed. One
+                    # secret per link means changing it is a flag day unless both are good for a
+                    # while: add the new one here on both sides, switch what each presents, then
+                    # drop the old. Without it the only way to rotate is to stop both ends together,
+                    # which is why nobody rotates.
+                    "accept": _accepted(env, row.get("also_accept_env")),
                     "label": str(row.get("label") or name)})
     return out
+
+
+def _accepted(env: str, also: object) -> list[str]:
+    """Every secret a peer may present: the current one, and the one being retired if there is one."""
+    names = [env] + ([str(also).strip()] if str(also or "").strip() else [])
+    return [v for v in ((os.environ.get(n) or "").strip() for n in names) if v]
 
 
 # name -> (when, advertisement or None, error). A failure is remembered for the same window as a
@@ -116,6 +170,14 @@ def _fetch(peer: dict, path: str, *, on_behalf_of: str | None = None) -> tuple[b
     place a Markdown body was being fed to a JSON parser.
     """
     url = peer["url"] + path
+    if peer["token"] and public_address(peer["url"]):
+        # Refused here rather than sent and regretted. This is the one failure in this module that is
+        # neither the peer saying no nor the peer being unreachable, and it is ours — so it is
+        # `reachable=True`: the absence rule must not be suspended over a link this end declined to
+        # use. See docs/PEERING.md, "A secret and a public address".
+        raise PeerError(f"peer {peer['name']} is at a public address over plain http — its token "
+                        f"would go out in clear text. Use https, or put the link on a network you "
+                        f"control", status=502, reachable=True)
     req = urllib.request.Request(url, headers={"Accept": "application/json, text/markdown, */*"})
     if peer["token"]: req.add_header("X-Peer-Token", peer["token"])
     # What the *caller* is, said by the caller. An exchange announces itself so the far end can
