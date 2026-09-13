@@ -1106,8 +1106,17 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[0] == "curator" and parts[1] == "proposals" and method == "POST":
             status = {"accept": "accepted", "reject": "rejected"}.get(parts[3])
             if not status: return self._err(404, "accept | reject")
-            return self._send(200, curator.decide(cstore(), parts[2], status, body.get("why"), lambda p: apply_proposal(p, actor), body.get("override"),
-                                                  discard_draft=lambda nid: discard_draft(nid, actor)))
+            out = curator.decide(cstore(), parts[2], status, body.get("why"), lambda p: apply_proposal(p, actor), body.get("override"),
+                                 discard_draft=lambda nid: discard_draft(nid, actor))
+            # A decision that did not happen must not answer 200. `decide` says so in the body and
+            # leaves the proposal pending, which is right, and every caller that reads the status
+            # line — a script, a curl, the screen's own `request()` — was told the accept had worked
+            # and showed "applied" over a queue item still sitting there. The same failure the
+            # publish path had in the other direction: a status that disagrees with what happened.
+            if isinstance(out, dict) and out.get("ok") is False:
+                code = (out.get("detail") or {}).get("code") if isinstance(out.get("detail"), dict) else None
+                return self._send(int(code or 409), out)
+            return self._send(200, out)
         if len(parts) == 3 and parts[0] == "nodes" and parts[2] == "one-liner-draft" and method == "POST":
             # Draft only — the line goes through the queue like an area's, never straight to disk.
             return self._send(200, one_liner_draft(parts[1]))

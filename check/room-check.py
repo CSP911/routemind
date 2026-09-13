@@ -299,7 +299,12 @@ def post(who, path, body):
                                headers={"Content-Type": "application/json", "X-Actor": "room-check"})
     try:
         with urllib.request.urlopen(r, timeout=30) as x: return x.status, json.loads(x.read() or b"{}")
-    except urllib.error.HTTPError as e: return e.code, {"error": e.read().decode(errors="replace")[:200]}
+    except urllib.error.HTTPError as e:
+        # Parsed, not stringified. A refusal carries its reason in the body, and a helper that turns
+        # the body into one truncated string makes every assertion about a refusal a substring hunt.
+        raw = e.read()
+        try: return e.code, json.loads(raw or b"{}")
+        except Exception: return e.code, {"error": raw.decode(errors="replace")[:200]}
     except Exception as e: return 0, {"error": type(e).__name__}
 
 
@@ -344,6 +349,26 @@ if check("   but withdrawing what is there goes through the queue", st == 201, j
 st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": "audience"})
 check("   and an audience is never drafted for you", st == 400 and "not drafted" in json.dumps(e),
       f"{st} {json.dumps(e)[:120]}")
+
+# ── N4c — an accept that could not be applied ────────────────────────────────
+# The queue already did the right thing in substance: nothing was written and the proposal stayed
+# pending. It answered **200** while doing it, so every caller that reads a status line — a script, a
+# curl, and the screen's own request(), which throws only on a non-2xx — was told the accept had
+# worked and showed "applied" over a queue item still sitting there. The mirror of the publish bug in
+# docs/SCENARIOS.md J, pointing the other way.
+st, gone = post("bee", "proposals", {"scope": "peer", "region": "no-such-area-at-all",
+                                     "after": "a line for an area that is not there", "why": "N4c"})
+if check("N4c a proposal can be filed against an area that is not there", st == 201, json.dumps(gone)[:110]):
+    st, d = post("bee", f"proposals/{gone['id']}/accept", {})
+    check("   and accepting it does not answer 200", st != 200, str(st))
+    check("     but says what failed", d.get("ok") is False and "apply failed" in json.dumps(d),
+          json.dumps(d)[:140])
+    st, q = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"], "after": "x", "why": "peek"})
+    rows = json.loads(urllib.request.urlopen(
+        f"http://127.0.0.1:{PORT['bee']}/v1/curator/proposals?status=pending", timeout=20).read())["proposals"]
+    check("   and the one that failed is still pending, not quietly accepted",
+          gone["id"] in [r["id"] for r in rows], json.dumps([r["id"] for r in rows]))
+    post("bee", f"proposals/{q['id']}/reject", {"why": "tidying up after the peek"})
 
 # ── N6 — a different sentence for one named reader ───────────────────────────
 # `use_when_export` is the line everybody who can see the area is shown. An override is the line one
