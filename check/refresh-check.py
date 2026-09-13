@@ -206,5 +206,37 @@ if check("advertising it again through the API works", wrote == 200, str(wrote))
     check("  and it is back on a's table, with nobody having sent a hint",
           len(at_a()) == 1, json.dumps([r.get("source") for r in at_a()]))
 
+# ── every field a peer can see, or the hint is not a hint ────────────────────
+# The fingerprint that decides whether to send one listed the areas, the line and the audience, and
+# was written before a line could be addressed to one reader by name. So writing that line changed
+# what that reader is shown and sent nothing: the row sat stale for a cache at each hop while the
+# change looked done — and a line written for one reader is usually the narrower one, which is the
+# single case this whole mechanism exists for.
+rep_id = None
+for f in sorted(os.listdir(os.path.join(repos["b"], "regions", SHARED))):
+    t = open(os.path.join(repos["b"], "regions", SHARED, f), encoding="utf-8").read()
+    if "\nrole: representative\n" in t and "\nparent:" not in t:
+        rep_id = next(l.split(":", 1)[1].strip() for l in t.splitlines() if l.startswith("id:"))
+        break
+FOR_A = "what b tells a in particular, and nobody else"
+body = json.dumps({"use_when_export": LINE, "use_when_export_for": {"ay": FOR_A}}).encode()
+req = urllib.request.Request(f"http://127.0.0.1:{B_PORT}/v1/nodes/{rep_id}", data=body, method="PUT",
+                             headers={"Content-Type": "application/json", "X-Actor": "refresh-check"})
+try:
+    with urllib.request.urlopen(req, timeout=30) as x: wrote = x.status
+except urllib.error.HTTPError as e: wrote = f"{e.code} {e.read().decode(errors='replace')[:120]}"
+except Exception as e: wrote = type(e).__name__
+if check("a line written for one named reader is a write a peer can see", wrote == 200, str(wrote)):
+    time.sleep(1.5)
+    rows = at_a()
+    check("  and the row is still on a's table", len(rows) == 1,
+          json.dumps([r.get("source") for r in rows]))
+    # The whole assertion in one line: with a thirty-second cache at each hop, a's table already
+    # carries the sentence written for a. Without the field in the fingerprint no hint goes out and
+    # this is the old line for the next half-minute, with everything looking done.
+    check("  carrying the line written for it, with no cache waited out",
+          rows and rows[0].get("use_when") == FOR_A,
+          json.dumps(rows[0].get("use_when") if rows else None))
+
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

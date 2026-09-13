@@ -1207,11 +1207,21 @@ def _to_export(payload):
 
 def _export_state():
     """What this backbone advertises across a link, as one comparable value: which areas, the line
-    each shows, and who each is for. Deliberately not the git revision — most commits change nothing
-    a peer can see, and a poke on every save would tell every peer to re-read for somebody fixing a
-    typo in a document body."""
+    each shows, who each is for, and what any named reader is shown instead.
+
+    Deliberately not the git revision — most commits change nothing a peer can see, and a poke on
+    every save would tell every peer to re-read for somebody fixing a typo in a document body.
+
+    **Every field a peer can see has to be in here.** `use_when_export_for` was added to the export
+    surface and not to this, so writing a line for one named reader changed what that reader is shown
+    and sent no hint: the row sat stale for a cache at each hop while the change looked done. The one
+    case the hint exists for is a reader being shown something narrower than before, which is exactly
+    what this field is.
+    """
     try:
-        return sorted((r.get("source"), r.get("use_when_export") or "", tuple(r.get("export_to") or []))
+        return sorted((r.get("source"), r.get("use_when_export") or "",
+                       tuple(r.get("export_to") or []),
+                       tuple(sorted((r.get("use_when_export_for") or {}).items())))
                       for r in (store.regions_json().get("regions") or []))
     except Exception:
         return None
