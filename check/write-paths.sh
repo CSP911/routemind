@@ -76,7 +76,17 @@ say "  the tree is still clean"           "$(git -C "$T/repo" status --porcelain
 # (not configured), never a 422 and never a guess.
 say "an ASCII name gives the id, no LLM"  "$(code -X POST "$U/nodes" -d '{"name":"No Id","kind":"system","region":"alpha","one_liner":"x"}')" 201
 say "  it is the name, and nobody guessed" "$(python3 -c 'import json; d=json.load(open("'"$T"'/out")); print(d["id"], d["id_generated"])')" "no-id False"
-say "a non-ASCII name with no LLM refuses" "$(code -X POST "$U/nodes" -d '{"name":"소포","kind":"system","region":"alpha","one_liner":"x"}')" 503
+# Non-ASCII is no longer the line. `romanize` handles what is mechanical — Latin with marks, hangul,
+# kana — so a Korean team no longer types an id by hand for every entity while an English one types
+# none. What it refuses is what needs a dictionary of readings rather than a rule, and this is that:
+# 小包 is the same word as the 소포 that used to be here, in the script that cannot be read from its
+# own characters.
+say "a hangul name gives the id, no LLM"   "$(code -X POST "$U/nodes" -d '{"name":"소포","kind":"system","region":"alpha","one_liner":"x"}')" 201
+say "  and it is a legible address"        "$(python3 -c 'import json; d=json.load(open("'"$T"'/out")); print(d["id"], d["id_generated"])')" "sopo False"
+say "a kana name gives one too"            "$(code -X POST "$U/nodes" -d '{"name":"こづつみ","kind":"system","region":"alpha","one_liner":"x"}')" 201
+say "  and Latin with marks"               "$(code -X POST "$U/nodes" -d '{"name":"Küçük Paket","kind":"system","region":"alpha","one_liner":"x"}')" 201
+say "  spelt as somebody would read it"    "$(python3 -c 'import json; d=json.load(open("'"$T"'/out")); print(d["id"])')" "kucuk-paket"
+say "a han name with no LLM refuses"       "$(code -X POST "$U/nodes" -d '{"name":"小包","kind":"system","region":"alpha","one_liner":"x"}')" 503
 # A kind is different: nothing reads one until a domain declares edge_rules, so vocab.yaml supplies
 # a default and the screen never asks. It is still recorded as not chosen by anyone.
 say "no kind takes the default"           "$(code -X POST "$U/nodes" -d '{"id":"no-kind","name":"No Kind","region":"alpha","one_liner":"x"}')" 201
@@ -124,7 +134,7 @@ say "  and the routing table carries its fetch" "$(curl -s "$U/regions/alpha" | 
 # It creates an entity, so it needs a name for it — the same rule as `POST /v1/nodes`, and the same
 # refusal when there is neither an id nor an LLM to derive one. Refusing beats the quiet alternative,
 # which was renaming the document to what the container should have been called.
-say "promotion, untranslatable, no LLM"  "$(code -X POST "$U/nodes/beta/files/x.md/promote" -d '{"name":"묶음","one_liner":"what groups them"}')" 503
+say "promotion, untranslatable, no LLM"  "$(code -X POST "$U/nodes/beta/files/x.md/promote" -d '{"name":"束","one_liner":"what groups them"}')" 503
 say "promotion makes the container"       "$(code -X POST "$U/nodes/beta/files/x.md/promote" -d '{"id":"group","name":"Group","one_liner":"what groups them"}')" 201
 say "  it answers with the new container" "$(python3 -c 'import json; print(json.load(open("'"$T"'/out"))["id"])')" group
 say "  the container stands where x stood" "$(curl -s "$U/nodes/group" | python3 -c 'import json,sys; print(json.load(sys.stdin)["parent"])')" beta

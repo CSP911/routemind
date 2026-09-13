@@ -14,6 +14,7 @@ import yaml
 from .store import Store, set_frontmatter, FM_RE
 from .validate import validate, ID_RE, NAME_MAX, name_too_long
 from .derive import regenerate, write_node_index, sync_region_node_lists, EDITABLE
+from .romanize import romanize
 
 # What a document may declare about itself, and what a write must therefore carry across rather
 # than replace. `scope` is load-bearing: the validator refuses a `common` file that states a
@@ -92,15 +93,22 @@ def name_from_file(stem: str) -> str:
 def slug_id(name: str) -> str | None:
     """The id a name gives on its own, or None when the name does not give one.
 
-    Deliberately literal, and it refuses rather than guesses. **A partly-ASCII name is the trap**:
-    `Ürün` reduces to `r-n`, which is not wrong-looking enough for anyone to catch, and an id cannot
-    be renamed. So a name is only allowed to speak for itself when every letter in it is ASCII —
-    anything else goes to the translator, which is what the translator is for.
+    It refuses rather than guesses, and that has not changed. **A partly-transliterated name is the
+    trap**: `Ürün` reduced by dropping what was not understood gives `r-n`, which is not
+    wrong-looking enough for anyone to catch, and an id cannot be renamed.
+
+    What has changed is how much can be understood. It used to be "ASCII letters only", which meant a
+    team writing in Korean, Japanese or Turkish typed an id by hand for every entity while an English
+    team typed none — seventy-nine of them in the shipped example, and a different product depending
+    on the language you work in. `romanize` handles what is mechanical (Latin with marks, hangul,
+    kana) and refuses the rest (han characters, which need a dictionary of readings). The all-or-
+    nothing rule is inside it: one unreadable letter and the whole name gives nothing.
 
     Punctuation and spacing are separators; they are not letters and do not disqualify a name."""
     raw = (name or "").strip()
-    if any(ch.isalpha() and not ("a" <= ch.lower() <= "z") for ch in raw): return None
-    out = re.sub(r"[^a-z0-9]+", "-", raw.lower()).strip("-")[:48].strip("-")
+    latin = romanize(raw)
+    if latin is None: return None
+    out = re.sub(r"[^a-z0-9]+", "-", latin.lower()).strip("-")[:48].strip("-")
     return out if out and ID_RE.match(out) else None
 
 
