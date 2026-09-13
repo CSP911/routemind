@@ -1,13 +1,17 @@
 # Scenarios — the routing table over a whole lifetime
 
-`check/scenarios.py` runs these. Everything else in `check/` asks whether one call answers correctly;
-this asks whether **the thing an agent reads still tells the truth after the ontology has been lived
-in** — areas created, advertised, emptied, deleted, and created again.
+Everything else in `check/` asks whether one call answers correctly; a scenario asks whether **the
+thing an agent reads still tells the truth after the ontology has been lived in** — areas created,
+advertised, emptied, deleted, and created again.
 
-It runs against a throwaway ontology it starts itself, because several of these delete everything.
+Two runners, because there are two lifetimes. `check/scenarios.py` is one backbone over time
+(**A**–**K**); `check/room-check.py` is a room over time (**L**–**N**), which became a lifetime worth
+having the day an exchange started shipping in the default install. Both run against throwaway
+ontologies they start themselves, because several of these delete everything.
 
 ```sh
 docker compose exec ontology python3 /tmp/check/scenarios.py     # see the header of the file
+./check/room-check.py
 ```
 
 ## Why these and not others
@@ -126,10 +130,53 @@ a human runs git. None of that looks like a race from outside.
 | K2 | The tree is not left dirty, and the repository is still valid |
 | K3 | A held lock gives up rather than hanging, and says a process is holding it — not that someone edited by hand |
 
+## L — membership in a room
+
+`check/room-check.py`. Two backbones and an exchange. Registering one is an ordinary Tuesday;
+**removing** one is the widest-blast-radius button on the operator's screen, and what it must not
+touch is as much of the scenario as what it must.
+
+| | What it proves |
+|---|---|
+| L1 | The shipped shape: one backbone, one exchange, nothing to reflect. Hop 0 must read exactly as it would with no exchange — same rows, absence claimable, **nobody named** — or every single-backbone install is being told about a link it does not have |
+| L2 | A second backbone registered but not yet advertising changes nothing at hop 0. Being in the room is not the same as sharing |
+| L3 | It advertises → the row arrives with nothing restarted, what it points at is readable straight away, and the absence sentence starts naming the room it comes through. A row that appears without its documents is a promise the link cannot keep |
+| L4 | Removed at the exchange → its rows and **their addresses** go from the other backbone, absence goes back to naming nobody, and **its own ontology is untouched**: it simply stops meeting here |
+| L5 | Registered again → the row comes back |
+
+## M — the room itself goes away
+
+`check/room-check.py`. Not a member: the exchange. This scenario exists because the default changed
+under the older ones — an exchange now ships in every install, which means every link in every install
+runs through one process that nobody had yet switched off on purpose.
+
+| | What it proves |
+|---|---|
+| M1 | Each backbone keeps answering, keeps serving **its own** areas, drops the rows it can no longer stand behind, says the list is incomplete, **stops claiming absence**, and names what failed and why. A read across the dead room is not a 404 — nobody is saying no |
+| M2 | It comes back → used again unprompted, and absence may be claimed again. A backbone that stayed cautious for ever after one blip is as wrong as one that never noticed, and much harder to see, because everything still works |
+
+## N — an audience over a lifetime
+
+`check/room-check.py`, with the steady states in `peer-check.py` and `exchange-check.py`.
+
+| | What it proves |
+|---|---|
+| N1 | An audience naming the reader changes nothing for it — and does not hand it the list. Who else was considered is not the reader's business |
+| N2 | An audience naming somebody who is not in the room leaves **everyone** out, the address stops working and not just the row, the backbone still holds it locally, and **nothing anywhere errors**: the link is up, because "you are not on the list" is not an outage and must not suspend the absence rule |
+| N3 | Taking it away puts the area back, address and all |
+
+N2 also pins the one thing the operator's view must keep showing: a member advertising an area, whoever
+it is for. Health is not policy, and an audience that showed up on the exchange's screen would be
+visible to the one party it does not restrict.
+
 ## Deliberately not here
 
 **D — moves and containment** (`write-paths.sh` already moves a node within an area, across areas,
 refuses a loop, and refuses deleting a node that holds one).
 **E — absence wording and invented addresses** (`mcp-check.py` already walks that).
+**O — rooms meeting rooms** (`ix-peering-check.py` walks one hop across, two hops refused in both
+directions, the deadlock and the mislabel).
+**Withdrawal latency** (`refresh-check.py`, which needs the cache turned *up* rather than off and so
+cannot share a runner with anything here).
 
 Duplicating them would mean two places to update and one of them going stale.
