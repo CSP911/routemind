@@ -54,8 +54,24 @@ from service.store import Store                                          # noqa:
 from service.derive import regenerate                                    # noqa: E402
 
 TOK = {"TOK_AY": "t-ay", "TOK_BEE": "t-bee"}
+def _need_areas(names, n, what):
+    """These checks share areas between backbones, so they need a seed with at least `n` of them.
+
+    The ontology image ships `seed/` with no areas and no `examples/`, which is right — an install
+    starts empty — and means running this inside a container ends in `IndexError: list index out of
+    range` from the slice below. A refusal that names neither the mistake nor the fix is the thing
+    this repository keeps finding in its own code; it should not be in the checks that find it.
+    """
+    if len(names) >= n: return names
+    print(f"this check needs a seed with at least {n} area{'s' if n > 1 else ''} to share between "
+          f"backbones, and {what} "
+          f"has {len(names)}.\nRun it on the host, where examples/back-office is — the ontology image "
+          f"ships an empty seed on purpose.")
+    raise SystemExit(2)
+
 areas = sorted(d for d in os.listdir(os.path.join(seed, "regions"))
                if os.path.isdir(os.path.join(seed, "regions", d)))
+_need_areas(areas, 2, "the seed")
 SHARE = {"ay": areas[0], "bee": areas[1]}
 PORT = {"ay": A_PORT, "bee": B_PORT}
 repos = {}

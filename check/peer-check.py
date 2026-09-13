@@ -50,8 +50,25 @@ from service.derive import regenerate                                    # noqa:
 
 # One area is shared, by writing the line that shares it. Nothing else about the repository changes,
 # which is the point: sharing is one field, and its absence is the default.
+def _need_areas(names, n, what):
+    """This check shares an area between two backbones, so it needs a seed with at least `n`.
+
+    The ontology image ships `seed/` with no areas and no `examples/`, which is right — an install
+    starts empty — and means running this inside a container ends in `IndexError: list index out of
+    range`. A refusal that names neither the mistake nor the fix is the thing this repository keeps
+    finding in its own code; it should not be in the checks that find it.
+    """
+    if len(names) >= n: return names
+    print(f"this check needs a seed with at least {n} area{'s' if n > 1 else ''} to share between "
+          f"backbones, and {what} "
+          f"has {len(names)}.\nRun it on the host, where examples/back-office is — the ontology image "
+          f"ships an empty seed on purpose.")
+    raise SystemExit(2)
+
+
 areas = sorted(d for d in os.listdir(os.path.join(repo, "regions"))
                if os.path.isdir(os.path.join(repo, "regions", d)))
+_need_areas(areas, 1, "the seed")
 SHARED, PRIVATE = areas[0], (areas[1] if len(areas) > 1 else None)
 EXPORT_LINE = "what a partner may ask this office · the questions we answer for them"
 rep_file = None
@@ -156,6 +173,7 @@ shutil.copytree(seed, repo_b)
 # B shares a different area, so a row appearing at A can only have come across the link.
 areas_b = sorted(d for d in os.listdir(os.path.join(repo_b, "regions"))
                  if os.path.isdir(os.path.join(repo_b, "regions", d)))
+_need_areas(areas_b, 1, "the seed")
 SHARED_B = areas_b[-1] if areas_b[-1] != SHARED else areas_b[0]
 EXPORT_B = "what the other office may ask us · the questions we answer for them"
 for f in sorted(os.listdir(os.path.join(repo_b, "regions", SHARED_B))):
