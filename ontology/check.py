@@ -571,6 +571,46 @@ try:
 except ValueError as e:
     eq("an unknown provider is refused", "gemini" in str(e), True)
 
+# ── a derived file that is also committed can be committed stale ─────────────
+# `regions.json` is generated from the areas' `.md` files and the CORE.md table, and it is versioned
+# alongside them, which is the combination that lets the two drift: edit an area's file in an editor,
+# commit, restart, and nothing regenerates. Measured 2026-09-13 on a copy of the live repository —
+# `title` and `use_when` changed by hand, `validate` returned ok with no errors and no warnings, and
+# hop 0 went on advertising the old wording. `use_when` is the sentence an agent routes on, so what
+# was quietly wrong was the routing table itself.
+#
+# Stated as an absence, like everything else here: the loss is that nobody is told.
+if (pathlib.Path("data/repo") / "regions").is_dir():
+    import shutil, tempfile, subprocess, json as _json
+    from service.validate import validate as _validate
+    from service.derive import regenerate as _regen
+    _T = tempfile.mkdtemp(prefix="derived-drift-")
+    _repo = pathlib.Path(_T) / "repo"
+    shutil.copytree("data/repo", _repo, ignore=shutil.ignore_patterns(".git"))
+    subprocess.run(["git", "-C", str(_repo), "init", "-q"], check=True)
+    _st = Store(_repo)
+    eq("the copy starts in sync", _regen(_st), [])
+    eq("  and validates", _validate(_st)["ok"], True)
+
+    _area = sorted(d.name for d in (_repo / "regions").iterdir() if d.is_dir())[0]
+    _md = _repo / "regions" / _area / f"{_area}.md"
+    _before = _md.read_text(encoding="utf-8")
+    _md.write_text(_before.replace("use_when:", "use_when: EDITED BY HAND ·", 1), encoding="utf-8")
+    _v = _validate(_st)
+    eq("a hand-edited area file is caught", _v["ok"], False)
+    eq("  and the error names the file, the area and the field",
+       any(f"regions.json {_area}" in e and "use_when" in e for e in _v["errors"]), True)
+    eq("  and does not blame a field that did not move",
+       any("export_to" in e for e in _v["errors"]), False)
+    eq("  regenerating is what fixes it", _regen(_st), ["regions.json"])
+    eq("  and then it validates again", _validate(_st)["ok"], True)
+
+    # The other direction, which is the one that would make this check worthless: an untouched tree
+    # must not fail. A drift check that fires on a clean repository would be turned off within a day.
+    _md.write_text(_before, encoding="utf-8"); _regen(_st)
+    eq("an untouched tree still passes", _validate(_st)["ok"], True)
+    shutil.rmtree(_T, ignore_errors=True)
+
 # ── if a tree is there, does every entity read ───────────────────────────────
 root = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path("data/repo")
 if (root / "regions").is_dir():

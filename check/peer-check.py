@@ -475,7 +475,13 @@ def errors_with(lines, area=None, path=None):
     at_i = t.index("\nrole: representative\n") + len("\nrole: representative\n") if "\nrole: representative\n" in t \
         else t.index("\n---\n", 4) + 1
     open(q, "w", encoding="utf-8").write(t[:at_i] + "".join(l + "\n" for l in lines) + t[at_i:])
-    return validate(Store(tmp)).get("errors") or []
+    # Regenerate first, because that is what putting these lines in through the API would do — the
+    # transaction is mutate → regenerate → validate. Skipping it left the copy in the one state
+    # validate now refuses on its own (`regions.json` disagreeing with the files it comes from), and
+    # every assertion below that asks "is `export_to` mentioned in the errors" answered yes for a
+    # reason that had nothing to do with the line under test.
+    st = Store(tmp); regenerate(st)
+    return validate(st).get("errors") or []
 
 
 # An area that crosses to nobody. Naming an audience on it restricts nothing, and it is the one of

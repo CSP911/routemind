@@ -79,8 +79,9 @@ check("initialize carries instructions", bool(instr.strip()))
 # still has to hold either way is asserted either way; what needs an area to exist says so and skips.
 import urllib.request as _u, json as _j
 try:
-    with _u.urlopen(API.rstrip("/") + "/regions", timeout=10) as r: HAS_AREAS = bool(_j.load(r).get("regions"))
-except Exception: HAS_AREAS = False
+    with _u.urlopen(API.rstrip("/") + "/regions", timeout=10) as r: _hop0 = _j.load(r)
+except Exception: _hop0 = {}
+HAS_AREAS = bool(_hop0.get("regions"))
 if HAS_AREAS:
     check("they name the areas, so a model can tell a question belongs here", "/v1/regions/" in instr)
 else:
@@ -112,7 +113,23 @@ if HAS_AREAS:
     check("the area list rides in the tool description", "ADDRESS" in desc and "/v1/regions" in desc)
 else:
     results.append("--   no areas yet; the tool description has no list to carry")
-check("absence is claimed only for the whole list", "grounds on which you may say" in desc)
+# Whether the confident sentence is the correct one is not a constant — it holds only while every
+# link answered. So the branch is picked from the live link state, and each side asserts the other's
+# sentence is *absent*: a build that printed both, or the wrong one, fails either way. Asserting the
+# confident literal unconditionally is how the pasted-block door went on claiming the list was the
+# whole world with a link down.
+DOWN = [l for l in (_hop0.get("links") or []) if not l.get("reachable")]
+RULE_WHOLE = "grounds on which you may say"
+RULE_SUSPENDED = "do not say anything is absent"
+def rule(where, text):
+    if DOWN:
+        check(f"{where} suspends the absence rule while a link is down",
+              RULE_SUSPENDED in text and "This list is incomplete" in text and RULE_WHOLE not in text)
+    else:
+        check(f"{where} claims absence only for the whole list",
+              RULE_WHOLE in text and RULE_SUSPENDED not in text)
+
+rule("the tool description", desc)
 
 # Walk it as an agent would: nothing but addresses the tables printed.
 top, err = c.text("knowledge_table")
@@ -120,7 +137,7 @@ check("no arguments answers", not err and bool(top.strip()))
 # The one thing hop 0 must say whether or not it holds anything: that it, and nothing smaller, is
 # where absence is decided. An empty install answers that too, and that is worth checking on the
 # install most people will actually have first.
-check("and it still carries the absence rule", "grounds on which you may say" in top)
+rule("and hop 0 itself", top)
 
 addrs = [w for line in top.splitlines() for w in line.split() if w.startswith("/v1/regions/")]
 if HAS_AREAS:

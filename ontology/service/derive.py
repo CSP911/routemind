@@ -15,18 +15,23 @@ def region_label(d: str) -> str:
 VIEW_NOTE = "- edges.md : relations this area's nodes take part in (generated — edges.yaml is the source)"
 
 
-def regenerate(store: Store) -> list[str]:
-    """Rewrite derived files in place. Returns the relative paths touched."""
-    root, touched = store.root, []
-    nodes = store.nodes(); edges = store.edges()
-    region_of = {n["id"]: n["region"] for n in nodes}
-    name_of = {n["id"]: n["name"] for n in nodes}
-    templates = {(r["id"] if isinstance(r, dict) else r): (r.get("template") if isinstance(r, dict) else None) for g in store.vocab().get("relations", []) for r in g["rels"]}
+def regions_doc(store: Store) -> str:
+    """What `regions.json` must contain, given the files — computed, not read.
+
+    Split out of `regenerate` so something other than the writer can ask the question. `regions.json`
+    is derived *and committed*, which means it can be committed stale: hand-edit an area's `.md`, push
+    without regenerating, and hop 0 goes on advertising the old `title` and the old `use_when` for
+    ever. `use_when` is the sentence an agent routes on, so that is a routing table quietly
+    disagreeing with the repository it is supposed to be. The validator compares the two now, and it
+    needs the answer without touching the tree.
+    """
     # edges.md retired (2026-09-09). A relation view was generated per area and **nothing read it** —
     # agents use the API, the map draws the graph. edges.yaml is the source and `/v1/edges` and
-    # `/v1/graph` serve it. What was left was code that wrote the file and a validator that warned
-    # when it was missing.
-    # ---- regions.json ----
+    # `/v1/graph` serve it. What was left was code that wrote the file, a validator that warned when
+    # it was missing, and — until this was split out — four locals built from `store.edges()` and the
+    # relation templates that nothing below has read since.
+    root = store.root
+    nodes = store.nodes()
     core = store.core(); core_rows = {m.group(1): m.group(2).strip() for m in re.finditer(r"^\| `([A-Z_]+)` \| (.+?) \|$", core, re.M)}
     regs = []
     for r in sorted(d.name for d in (root / "regions").iterdir() if d.is_dir()):
@@ -42,7 +47,13 @@ def regenerate(store: Store) -> list[str]:
                      "nodes": [n["id"] for n in nodes if n["region"] == r and n.get("status") != "draft"],
                      "representative": (top["id"] if top else None),
                      "fetch": f"/v1/regions/{r}"})
-    p = root / "regions.json"; new = json.dumps({"schema": "iris-ontology-regions/v2", "regions": regs}, ensure_ascii=False, indent=1) + "\n"
+    return json.dumps({"schema": "iris-ontology-regions/v2", "regions": regs}, ensure_ascii=False, indent=1) + "\n"
+
+
+def regenerate(store: Store) -> list[str]:
+    """Rewrite derived files in place. Returns the relative paths touched."""
+    touched = []
+    p = store.root / "regions.json"; new = regions_doc(store)
     if not p.exists() or p.read_text(encoding="utf-8") != new: p.write_text(new, encoding="utf-8"); touched.append("regions.json")
     return touched
 

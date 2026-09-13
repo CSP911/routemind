@@ -13,3 +13,11 @@ __pycache__/
 # The second backbone's data, for anyone trying a link out locally. Its own repository, the way
 # data/ is — docker-compose.peer.yml, docs/PEERING.md.
 /data-b/
+
+# The demonstration domain: three more backbones and a second exchange. Built by
+# examples/seed-demo.sh from examples/back-office, so what is versioned is the forty lines that make
+# them different from it rather than five copies of the same worked example.
+/data-vendor/
+/data-audit/
+/data-depot/
+/data-partner-ix/

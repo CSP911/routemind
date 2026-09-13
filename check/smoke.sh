@@ -10,6 +10,26 @@ set -e
 BASE="${1:-http://127.0.0.1:8080}"
 say() { printf '%s\n' "$*"; }
 
+# Every check below used to be run as `check | sed 's/^/  /'`, and `set -e` reads the exit status of
+# the *pipeline* — which is sed's, and sed always succeeds. So four of the seven parts of the one
+# command the README tells people to run could not fail it: smoke.sh printed FAIL lines from
+# mcp-check and env-check and then exited 0. Run, then indent, then look at the status.
+TMP=$(mktemp); trap 'rm -f "$TMP"' EXIT
+sub() {
+  name="$1"; shift
+  "$@" >"$TMP" 2>&1; rc=$?
+  sed 's/^/  /' "$TMP"
+  [ "$rc" = 0 ] || { say "FAIL $name exited $rc"; exit 1; }
+}
+# Same, for a check whose body is one line per case and whose last line is the count. Smoke is read
+# by someone deciding whether their install works, and forty lines of "ok" is not that.
+subq() {
+  name="$1"; shift
+  "$@" >"$TMP" 2>&1; rc=$?
+  tail -1 "$TMP" | sed 's/^/  /'
+  [ "$rc" = 0 ] || { sed 's/^/  /' "$TMP"; say "FAIL $name exited $rc"; exit 1; }
+}
+
 say "== API =="
 curl -fsS "$BASE/api/app-config" >/dev/null && say "ok   config"
 curl -fsS "$BASE/api/knowledge/regions" >/dev/null && say "ok   hop 0"
@@ -53,26 +73,26 @@ bad=$(curl -s -o /dev/null -w '%{http_code}' -H 'Content-Type: application/json'
 if [ "$mv" = 404 ] && [ "$bad" = 422 ]; then say "ok   a move reaches Knowledge"
 else say "FAIL a move: expected 404 from Knowledge and 422 for a bad id, got $mv and $bad"; exit 1; fi
 
-command -v node >/dev/null 2>&1 && node "$(dirname "$0")/i18n-check.mjs" | sed 's/^/  /'
+command -v node >/dev/null 2>&1 && sub i18n-check node "$(dirname "$0")/i18n-check.mjs"
 # Static, so it runs here rather than in the screen half: a class with no rule is a bug the API
 # cannot see and the fake DOM does not render.
-command -v node >/dev/null 2>&1 && node "$(dirname "$0")/css-check.mjs" | sed 's/^/  /'
+command -v node >/dev/null 2>&1 && sub css-check node "$(dirname "$0")/css-check.mjs"
 # Also static, and also invisible to every other check: a setting .env.example documents that compose
 # never passes is read by nothing, with no error to say so. ONTOLOGY_HARNESS was exactly that, and the
 # review queue had never worked on any install made from that file.
-command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/env-check.py" | sed 's/^/  /'
+command -v python3 >/dev/null 2>&1 && sub env-check python3 "$(dirname "$0")/env-check.py"
 # And what a checkout on another operating system has to survive. Everything else here runs on a
 # machine where line endings and the exec bit already hold, so nothing else can see either.
-command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/eol-check.py" | sed 's/^/  /'
+command -v python3 >/dev/null 2>&1 && sub eol-check python3 "$(dirname "$0")/eol-check.py"
 # Pure function, no server, no dependency — so it runs here rather than beside the checks that need
 # a backbone. An id is permanent, and every failure this one can have is a plausible wrong address.
-command -v python3 >/dev/null 2>&1 && python3 "$(dirname "$0")/romanize-check.py" | tail -1 | sed 's/^/  /'
+command -v python3 >/dev/null 2>&1 && subq romanize-check python3 "$(dirname "$0")/romanize-check.py"
 # Not run here: check/peer-check.py and check/exchange-check.py start backbones of their own and need
 # pyyaml on this python, the way write-paths.sh does.
 
 say "== an agent =="
 if command -v python3 >/dev/null 2>&1; then
-  cd "$(dirname "$0")/.." && ./check/mcp-check.py "$BASE/api/knowledge" | sed 's/^/  /'
+  cd "$(dirname "$0")/.." && sub mcp-check ./check/mcp-check.py "$BASE/api/knowledge"
 else
   say "--   python3 not installed; skipping the agent half"
 fi

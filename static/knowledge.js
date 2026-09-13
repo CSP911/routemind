@@ -372,8 +372,13 @@
     // the map would then look exactly like a backbone that has no link at all. Those are different
     // facts and this is the picture that has to tell them apart, so the room is reserved for the
     // device whether or not anything hangs off it.
+    // A link that answered nothing still gets its room reserved, or a failed link would look exactly
+    // like an install that never had one. With a wall above, that job belongs to its card — so the
+    // device is drawn only when its own card is the one selected, and the map stays the detail of
+    // one thing rather than one thing plus every outage.
     const silent = (state.links || []).filter(
-      (l) => l.reachable === false && !ases.some((a) => a.peer === l.name));
+      (l) => l.reachable === false && !ases.some((a) => a.peer === l.name)
+             && ($("knWallPanel").hidden || state.domain === `link:${l.name}`));
     const asRow = ases.length * DEV.as.w + (ases.length - 1) * 24;
     const width = Math.max(1080, asRow + 96, racksW + 40) + silent.length * (DEV.core.w + 48);
     const links = svgEl("g", {});
@@ -2842,8 +2847,15 @@
       "Use an address exactly as printed. Never build one — every row you fetch prints the addresses",
       "of what is inside it, and those are the only ones that work.",
       "",
-      "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say",
-      "something is absent; no smaller table is.",
+      // The service computes this sentence, and it is the only thing that can: whether this list is
+      // still the whole world depends on whether every link answered, which only the side that just
+      // tried to read them knows. This block used to print the confident version unconditionally —
+      // so with a link down it handed an agent "nothing outside this list exists" over a list that
+      // was missing rows, which is the one claim the design forbids. The MCP server has always read
+      // it from the API (mcp/knowledge_mcp.py, hop0); this is the same fallback, for a service too
+      // old to send one.
+      d.absence || ("Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
+                    + "something is absent; no smaller table is."),
     ].join("\n");
   }
 

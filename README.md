@@ -136,7 +136,8 @@ changes nothing about the nine already running.
 The part worth reading is what absence means once there is a link: hop 0 can only claim something is
 missing while every link is up, and says so itself when one is not.
 [docs/PEERING.md](docs/PEERING.md), and `docker compose -f docker-compose.yml -f
-docker-compose.peer.yml up -d` for a second one.
+docker-compose.peer.yml up -d` for a second one. `./examples/seed-demo.sh` builds six of them across
+two rooms, one of which is deliberately not answering — the shape the screens are designed against.
 
 ### One command
 
@@ -285,7 +286,33 @@ docker compose up -d --build
 | The map draws, but every write is refused **read-only** | `data/repo` has uncommitted changes — someone edited it by hand | Commit or revert them in `data/repo`, then `curl -X POST -H 'Content-Type: application/json' -d '{}' localhost:8080/api/knowledge/publish` |
 | A change to `static/` or `ontology/` does nothing | Both are `COPY`ed into the image, not bind-mounted | `docker compose up -d --build` |
 | Your first node is refused | Its `kind` is not in `vocab.yaml` — which is the point of that file | Edit `data/repo/vocab.yaml`, commit, publish |
+| `regions.json <area>: use_when … no longer matches the files it is derived from` | Someone edited an area's `.md` by hand and committed without regenerating | Below |
 | Anything else | | `docker compose logs -f ontology web` |
+
+---
+
+### A hand-edited repository
+
+`data/repo` is meant to be edited by hand — it is the reviewed artefact, and a pull request against it
+is the point. One file in it is not: `regions.json` is **derived** from the areas' own `.md` files and
+from the table in `CORE.md`, and it is also committed, which is the combination that lets it go stale.
+Every write through the API regenerates it; an edit made in an editor does not.
+
+Stale, it is not inert. `regions.json` is what hop 0 advertises, and `use_when` is the sentence an
+agent reads to decide which area answers a question. A stale one routes on wording that is no longer
+in the repository, and until 2026-09-13 nothing said so: `validate` compared which areas and which
+nodes were listed, never the text. It does now, and it names the fields.
+
+To regenerate after editing by hand, from the checkout:
+
+```sh
+docker compose exec ontology python3 -c \
+  "import pathlib; from service.store import Store; from service.derive import regenerate; \
+   print(regenerate(Store(pathlib.Path('/data/repo'))) or 'already in sync')"
+```
+
+then commit what it changed. Or make any write through the screen — that regenerates, validates,
+commits and publishes in one transaction, which is what the API is for.
 
 ---
 

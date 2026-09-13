@@ -533,9 +533,30 @@ A neighbour that answers with the exchange schema while declared as a backbone i
 that, and its rows are dropped on the way to another room. That net catches the leak; nothing catches
 the hang but the label.
 
-`./check/ix-peering-check.py` — 35 assertions on three rooms in a line, each with a backbone of its
+`./check/ix-peering-check.py` — 37 assertions on three rooms in a line, each with a backbone of its
 own: one hop across, two hops refused in both directions, a document read through three relays, the
 deadlock, and the mislabel with both of its halves.
+
+### Seeing it, rather than reading about it
+
+Everything above is one throwaway process per backbone inside a check. To look at it:
+
+```sh
+./examples/seed-demo.sh
+docker compose -f docker-compose.yml -f docker-compose.peer.yml \
+               -f docker-compose.admin.yml -f docker-compose.demo.yml up -d --build
+```
+
+Six backbones and two rooms — HOME and BRANCH on IX, VENDOR, AUDIT and DEPOT on PARTNER-IX, and
+LEGACY, a direct link that is declared and never started. Six areas out of nineteen carry a
+`use_when_export` line, and the other thirteen stay home, which is the part that is hard to believe
+until it is on a screen. The wall at http://localhost:8080/knowledge draws one card per domain and
+LEGACY wears its own chip; the operator's screen at :8090 shows PARTNER-IX carrying five rows that
+none of its own backbones wrote.
+
+It is a demonstration and not a deployment: real domains are five separate installs with five
+operators, and the only thing they would share is a member entry at each end. The seeder says what it
+touches, skips anything already there, and only ever appends to `data/`.
 
 ## The operator's screen
 

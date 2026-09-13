@@ -5,8 +5,9 @@ Every write through the API must pass this before it is committed.
 """
 from __future__ import annotations
 from collections import Counter
-import re
+import json, re
 from .store import Store, alias_names, file_scope, region_key, FM_RE
+from . import derive
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
@@ -475,6 +476,32 @@ def validate(store: Store) -> dict:
             if rj[d].get("source") != d.replace("-", "_"): errors.append(f"regions.json {d}: source must be {d.replace('-', '_')!r}")
     for d in rj:
         if d not in regions: errors.append(f"regions.json: entry {d} has no directory")
+
+    # ---- regions.json vs what the files actually say ----
+    # The checks above compare the *shape*: which areas have a row, which nodes are in it. Nothing
+    # compared the text, and the text is the part a person edits. `regions.json` is derived and also
+    # committed, so it can be committed stale — open `regions/x/x.md`, fix the sentence, push, and
+    # `regenerate` never runs. Everything validated, and hop 0 went on advertising the old `title`
+    # and the old `use_when` for ever. `use_when` is the sentence an agent routes on: that is the
+    # routing table disagreeing with the repository it is derived from, silently, with no way for
+    # anyone to find out. Measured 2026-09-13 on a copy of the live repository — two fields changed
+    # by hand, `ok: True`, no errors and no warnings.
+    #
+    # Named per field rather than "the file is stale", because the fix differs: `title` and
+    # `use_when` come from the area's representative, `description` from the CORE.md table.
+    try:
+        want = {r["source"]: r for r in json.loads(derive.regions_doc(store)).get("regions", [])}
+    except Exception as e:  # a derive that cannot run is its own error, not a silent pass
+        errors.append(f"regions.json: cannot be checked against the files — {type(e).__name__}: {e}")
+        want = {}
+    have = {r["source"]: r for r in store.regions_json().get("regions", [])}
+    for src in sorted(set(want) & set(have)):
+        # `nodes` is left to the check above, which says which ids differ.
+        drift = sorted(k for k, v in want[src].items() if k != "nodes" and have[src].get(k) != v)
+        if drift:
+            errors.append(f"regions.json {src}: {', '.join(drift)} no longer matches the files it is "
+                          f"derived from. It is generated, not written — any write through the API "
+                          f"regenerates it; see README, \u201cA hand-edited repository\u201d.")
     return {"ok": not errors, "errors": errors, "warnings": warnings,
             "stats": {"nodes": len(nodes), "edges": len(edges), "kinds": len(kinds), "relations": len(rels), "regions": len(regions),
                       "revision": store.revision()}}

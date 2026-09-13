@@ -249,6 +249,14 @@ check("the operator of the middle room is let in", st == 200, json.dumps(state)[
 kinds = {m["name"]: m.get("kind") for m in (state.get("members") or [])}
 check("  and sees which of its members are rooms and which are backbones",
       kinds == {"ix1": "exchange", "ix3": "exchange", "remote": "backbone"}, json.dumps(kinds))
+# A room member carries what is behind it, and the operator's number has to say so. Counting by the
+# backbone that owns a row made every neighbouring room read "advertising 0" while it was carrying
+# everything — the one number on that screen, wrong for exactly the members that matter most.
+carrying = {m["name"]: m.get("advertising") for m in (state.get("members") or [])}
+check("  and how much each member is carrying, rooms included",
+      carrying.get("ix1") == 1 and carrying.get("remote") == 1, json.dumps(carrying))
+check("    a room's number is what comes through it, not what it owns",
+      carrying.get("ix1", 0) > 0, json.dumps(carrying))
 check("  with every one of them answering",
       all(m["reachable"] for m in (state.get("members") or [])),
       json.dumps([(m["name"], m["reachable"], m["error"]) for m in (state.get("members") or [])]))

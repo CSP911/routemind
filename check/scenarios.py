@@ -12,11 +12,27 @@ Needs pyyaml, which the ontology image has and a host usually does not:
 
     docker cp check $(docker compose ps -q ontology):/tmp/check
     docker cp mcp   $(docker compose ps -q ontology):/tmp/mcp
-    docker compose exec ontology sh -c 'mkdir -p /tmp/ontology && ln -sfn /app/service /tmp/ontology/service && ln -sfn /app/seed /tmp/seed'
     docker compose exec ontology python3 /tmp/check/scenarios.py
 """
 import atexit, json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
+# Two layouts, because this check runs in two places. From a checkout the service and the seed sit
+# beside this file; copied into the ontology container they do not — the image keeps them at /app,
+# flattened, with no `ontology/` above them. This used to be closed by a line of symlinks in the
+# procedure above, which is a step that works perfectly and that the next person forgets, and the
+# failure it produces ("the ontology on 8131 did not start") names none of it. Find them instead.
+def _tree():
+    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    for server, seed in ((os.path.join(here, "ontology", "service", "server.py"), os.path.join(here, "seed")),
+                         ("/app/service/server.py", "/app/seed")):
+        if os.path.exists(server) and os.path.isdir(seed): return server, seed
+    raise SystemExit("no ontology to run: looked beside this check and in /app")
+
+SERVER, SEED = _tree()
+# The package root for `import service.…` — the directory holding `service/`, which is `ontology/` in
+# a checkout and `/app` in the image. ROOT stays what it always was, for the MCP server: that one is
+# copied to /tmp/mcp beside /tmp/check, so it is in the same place in both layouts.
+SERVICE_PARENT = os.path.dirname(os.path.dirname(SERVER))
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8131
 results, procs, notes = [], [], []
@@ -44,7 +60,7 @@ def _end():
 
 T = tempfile.mkdtemp(prefix="scenarios-")
 repo = os.path.join(T, "repo")
-shutil.copytree(os.path.join(ROOT, "seed"), repo)
+shutil.copytree(SEED, repo)
 for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=seed", "-c", "user.email=s@l", "commit", "-qm", "seed"]):
     subprocess.run(["git", "-C", repo, *a], check=True)
 
@@ -54,7 +70,7 @@ env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(PORT),
        # The review queue is the only path that writes `use_when` (B2), so the curator has to exist.
        "ONTOLOGY_HARNESS": os.path.join(T, "harness")}
 for k in [k for k in env if k.startswith("ONTOLOGY_LLM_")]: env.pop(k)
-procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
+procs.append(subprocess.Popen([sys.executable, SERVER],
                               env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
 API = f"http://127.0.0.1:{PORT}/v1"
 for _ in range(80):
@@ -270,7 +286,7 @@ check("G3 reverting makes it writable again", health.get("writable") is True and
 # and the two cancel only outside summer time — an hour out in Europe/London and America/New_York,
 # exactly right in Asia/Seoul, which is the signature. The containers run UTC, so this was invisible
 # in deployment and visible only to whoever ran these checks on their own machine in July.
-sys.path.insert(0, os.path.join(ROOT, "ontology"))
+sys.path.insert(0, SERVICE_PARENT)
 from service.overlays import _age_hours as _age                     # noqa: E402
 _stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 10 * 3600))
 _was = os.environ.get("TZ")
@@ -379,7 +395,7 @@ from collections import Counter as _Counter                               # noqa
 
 _P2 = PORT + 1
 _env2 = {**env, "PORT": str(_P2), "ONTOLOGY_PUBLISH": os.path.join(T, "publish2")}
-procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
+procs.append(subprocess.Popen([sys.executable, SERVER],
                               env=_env2, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
 for _ in range(80):
     try: _u2.urlopen(f"http://127.0.0.1:{_P2}/healthz", timeout=1); break
@@ -413,7 +429,7 @@ check("K2 the tree is not left dirty", _dirty == "", _dirty[:80])
 check("K2   and the repository is still valid", call("POST", "/validate", {})[1].get("ok") is True)
 
 # Waiting is bounded: a writer wedged for good must not turn every later request into a hung socket.
-sys.path.insert(0, os.path.join(ROOT, "ontology"))
+sys.path.insert(0, SERVICE_PARENT)
 from service.write import repo_lock, WriteError as _WE                    # noqa: E402
 with repo_lock(__import__("pathlib").Path(repo)):
     _t0 = time.monotonic()

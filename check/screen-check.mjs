@@ -102,6 +102,13 @@ if (nDomains < 2) {
   const mine = (live.regions || []).filter((r) => !r.peer).map((r) => String(r.fetch).split("/").pop());
   const theirs = (live.regions || []).filter((r) => r.peer).map((r) => String(r.fetch).split("/").pop());
   check("  the map shows this backbone at rest", mine.every((a) => texts().includes(a)));
+  // A down link has a card of its own now, so drawing its device beside this backbone's areas would
+  // say the same thing twice — and the map is the detail of one card, not of one card plus every
+  // outage. It comes back when its own card is picked.
+  const downNames = (live.links || []).filter((l) => l.reachable === false)
+    .map((l) => String(l.label || l.name).toUpperCase());
+  check("    and not the devices of links that are down",
+        !downNames.some((n) => texts().includes(n)), JSON.stringify(downNames));
   check("    and nobody else's areas with it",
         !theirs.some((a) => !mine.includes(a) && texts().includes(a)));
   if (cards.length > 1) {
@@ -173,8 +180,18 @@ if (ctx === null) check("agentContext is exported for checking", false);
 else {
   check("the pasted block names every area", areas.every((a) => ctx.includes(a)));
   check("it carries a fetchable base URL", /\/api\/knowledge/.test(ctx));
-  check("it repeats the absence rule, and only for the whole list",
-    /grounds on which you may say/.test(ctx) && /no smaller table/.test(ctx));
+  // Which rule is the right one depends on the links, so the check asks the service the same
+  // question the service answers: with everything up the block may say the list is the world, and
+  // with a link down it must say the opposite. Asserting the first literal unconditionally is how
+  // this block printed the confident sentence over an incomplete list for as long as it did.
+  const down = (live.links || []).filter((l) => l.reachable === false);
+  if (down.length)
+    check("it suspends the absence rule while a link is down",
+      /This list is incomplete/.test(ctx) && /do not say anything is absent/.test(ctx)
+      && !/grounds on which you may say/.test(ctx));
+  else
+    check("it repeats the absence rule, and only for the whole list",
+      /grounds on which you may say/.test(ctx) && /no smaller table/.test(ctx));
   check("it tells the agent not to build addresses", /Never build one/.test(ctx));
 }
 

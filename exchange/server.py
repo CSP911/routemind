@@ -347,8 +347,15 @@ class Handler(BaseHTTPRequestHandler):
             # Same gather the members get, with the rows thrown away. One code path, so the health an
             # operator reads is the health a member experiences and not a second opinion about it.
             r = reflect(None)
+            # Counted by the member it came in **through**, not by the backbone that owns it. For a
+            # backbone member those are the same name; for a member that is itself a room they are
+            # not, and counting by origin made every neighbouring room read "advertising 0" while it
+            # was carrying everything behind it. An operator's health view has to say what each link
+            # is doing, and a room's job is carrying.
             counts = {}
-            for row in r["regions"]: counts[row["origin"]] = counts.get(row["origin"], 0) + 1
+            for row in r["regions"]:
+                via = (row.get("path") or [row.get("origin")])[0]
+                counts[via] = counts.get(via, 0) + 1
             return self._send(200, {"ok": True, "name": NAME,
                                     "members": [{**m, "advertising": counts.get(m["name"], 0)}
                                                 for m in r["members"]]})

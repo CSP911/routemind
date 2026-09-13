@@ -1,0 +1,163 @@
+# A room of two backbones meeting a second room of three, plus one partner still on a direct link.
+#
+#   ./examples/seed-demo.sh
+#   docker compose -f docker-compose.yml -f docker-compose.peer.yml \
+#                  -f docker-compose.admin.yml -f docker-compose.demo.yml up -d --build
+#
+# The seeder first, and not only for the ontologies: it makes the bind-mount directories, and docker
+# creates a missing one owned by root while the container runs as KNOWLEDGE_UID. It also builds each
+# backbone's `peers.yaml` and the one `use_when_export` line that makes an area cross, which is the
+# part worth reading — six areas out of nineteen are offered, and the other thirteen stay home
+# because nobody wrote that line. The five ontologies themselves are copies of examples/back-office
+# and are not in git.
+#
+# **This is a demonstration, not a deployment.** It exists so the screen can be looked at with more
+# than one domain on it, and so the checks have a shape to run against that a single install cannot
+# produce. Real domains are not made in one compose file: each of these would be somebody else's
+# install, with its own secrets and its own operator, and the only thing they would share is the
+# member entry at each end.
+#
+# The shape it builds, and why each piece is here:
+#
+#   here          home                    this backbone
+#   our room      ix ─── branch           a second backbone in the same organisation
+#                  │
+#   their room     └── partner-ix ─── vendor · audit · depot
+#                                     three domains one room further out, which is where the
+#                                     no-transit rule can be seen doing something: they reach home
+#                                     because partner-ix offers its **own** members, and anything
+#                                     behind a *third* room would not
+#   direct        legacy                a partner that never joined a room, declared in home's
+#                                       peers.yaml and deliberately **not started** — the only way
+#                                       a "not answering" card can appear at all. A backbone that
+#                                       goes quiet behind an exchange simply stops advertising, and
+#                                       this end cannot tell that from it being gone.
+#
+# Secrets: EXCHANGE_TOKEN_VENDOR, _AUDIT, _DEPOT and EXCHANGE_TOKEN_PARTNER in .env.
+services:
+  ontology-vendor:
+    build: { context: ., dockerfile: ontology/Dockerfile }
+    image: knowledge-ontology:${IMAGE_TAG:-0.1.0}
+    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
+    environment:
+      ONTOLOGY_DATA: /data/repo
+      ONTOLOGY_PUBLISH: /data/publish
+      ONTOLOGY_OVERLAYS: /data/overlays
+      ONTOLOGY_HARNESS: /data/harness
+      ONTOLOGY_ACCESS: /data/access
+      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_VENDOR:-}"
+      ONTOLOGY_PEER_TOKEN_IX: "${EXCHANGE_TOKEN_VENDOR:-}"
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+    volumes:
+      - type: bind
+        source: ./data-vendor/repo
+        target: /data/repo
+      - type: bind
+        source: ./data-vendor/publish
+        target: /data/publish
+      - type: bind
+        source: ./data-vendor/overlays
+        target: /data/overlays
+      - type: bind
+        source: ./data-vendor/harness
+        target: /data/harness
+      - type: bind
+        source: ./data-vendor/access
+        target: /data/access
+    restart: unless-stopped
+
+  ontology-audit:
+    build: { context: ., dockerfile: ontology/Dockerfile }
+    image: knowledge-ontology:${IMAGE_TAG:-0.1.0}
+    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
+    environment:
+      ONTOLOGY_DATA: /data/repo
+      ONTOLOGY_PUBLISH: /data/publish
+      ONTOLOGY_OVERLAYS: /data/overlays
+      ONTOLOGY_HARNESS: /data/harness
+      ONTOLOGY_ACCESS: /data/access
+      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_AUDIT:-}"
+      ONTOLOGY_PEER_TOKEN_IX: "${EXCHANGE_TOKEN_AUDIT:-}"
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+    volumes:
+      - type: bind
+        source: ./data-audit/repo
+        target: /data/repo
+      - type: bind
+        source: ./data-audit/publish
+        target: /data/publish
+      - type: bind
+        source: ./data-audit/overlays
+        target: /data/overlays
+      - type: bind
+        source: ./data-audit/harness
+        target: /data/harness
+      - type: bind
+        source: ./data-audit/access
+        target: /data/access
+    restart: unless-stopped
+
+  ontology-depot:
+    build: { context: ., dockerfile: ontology/Dockerfile }
+    image: knowledge-ontology:${IMAGE_TAG:-0.1.0}
+    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
+    environment:
+      ONTOLOGY_DATA: /data/repo
+      ONTOLOGY_PUBLISH: /data/publish
+      ONTOLOGY_OVERLAYS: /data/overlays
+      ONTOLOGY_HARNESS: /data/harness
+      ONTOLOGY_ACCESS: /data/access
+      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_DEPOT:-}"
+      ONTOLOGY_PEER_TOKEN_IX: "${EXCHANGE_TOKEN_DEPOT:-}"
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+    volumes:
+      - type: bind
+        source: ./data-depot/repo
+        target: /data/repo
+      - type: bind
+        source: ./data-depot/publish
+        target: /data/publish
+      - type: bind
+        source: ./data-depot/overlays
+        target: /data/overlays
+      - type: bind
+        source: ./data-depot/harness
+        target: /data/harness
+      - type: bind
+        source: ./data-depot/access
+        target: /data/access
+    restart: unless-stopped
+
+  # The second room. Its members are the three above; its link to ours is one secret used in both
+  # directions, the same rule a backbone joins a room by.
+  partner-ix:
+    build: { context: ., dockerfile: exchange/Dockerfile }
+    image: routemind-exchange:${IMAGE_TAG:-0.1.0}
+    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
+    environment:
+      EXCHANGE_NAME: partner-ix
+      EXCHANGE_MEMBERS: /data/members.yaml
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+      EXCHANGE_TOKEN_VENDOR: "${EXCHANGE_TOKEN_VENDOR:-}"
+      EXCHANGE_TOKEN_AUDIT: "${EXCHANGE_TOKEN_AUDIT:-}"
+      EXCHANGE_TOKEN_DEPOT: "${EXCHANGE_TOKEN_DEPOT:-}"
+      EXCHANGE_TOKEN_PARTNER: "${EXCHANGE_TOKEN_PARTNER:-}"
+    volumes:
+      - type: bind
+        source: ./data-partner-ix
+        target: /data
+    restart: unless-stopped
+
+  # Our own room learns about theirs. `kind: exchange` on that member is what stops this room
+  # carrying their domains on to a third — and what stops the two rooms asking each other what they
+  # are advertising and neither ever answering.
+  exchange:
+    environment:
+      EXCHANGE_TOKEN_PARTNER: "${EXCHANGE_TOKEN_PARTNER:-}"
+
+  # The secret for the direct partner. Without it the link reads "no token — set …", which is a
+  # different fact from "not answering" and the wrong one to be demonstrating: this backbone should
+  # be trying and failing to reach it, not declining to try.
+  ontology:
+    environment:
+      EXCHANGE_TOKEN_LEGACY: "${EXCHANGE_TOKEN_LEGACY:-}"
