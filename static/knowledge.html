@@ -54,9 +54,22 @@
           <h2 data-i18n="knowledge.wall.title">Domains</h2>
         </div>
         <p class="kn-wall-lead" data-i18n="knowledge.wall.lead">One card each. Pick one and the map below shows it.</p>
-        <span class="kn-wall-count" id="knWallCount"></span>
       </div>
-      <div class="kn-wall" id="knWall"></div>
+      <!-- Two walls, because they are two kinds of thing: what this backbone holds and what reaches
+           it across a link. The split also takes the label off every card — a group that says
+           "across a link" makes the same words on each of its cards pure ink, so the chip is kept
+           for the one state that is not the group's own: a link that is not answering. -->
+      <div class="kn-wall-group">
+        <div class="kn-wall-gh"><span data-i18n="knowledge.wall.here">here</span></div>
+        <div class="kn-wall" id="knWallMine"></div>
+      </div>
+      <div class="kn-wall-group">
+        <div class="kn-wall-gh">
+          <span data-i18n="knowledge.wall.across">across a link</span>
+          <span class="kn-wall-count" id="knWallCount"></span>
+        </div>
+        <div class="kn-wall" id="knWallTheirs"></div>
+      </div>
     </section>
 
     <!-- The map is the screen. What a click hands the agent opens over it, because it is a transcript

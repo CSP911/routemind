@@ -465,9 +465,15 @@ body.kn-dragging { user-select: none; }
    contents makes the eye re-read the layout instead of the data, which is the one thing a wall of
    small multiples exists to avoid. Tokens are this file's own `--kn-*` set. */
 .kn-wall-panel { margin-bottom: 16px; }
-.kn-wall-lead { margin: 0; color: var(--kn-muted); font-size: 12.5px; align-self: flex-end; }
-.kn-wall-count { margin-left: auto; font: 11.5px var(--kn-mono); color: var(--kn-muted); align-self: flex-end; }
+/* Beside the heading, not at the far edge of the panel. `.kn-panel-head` spaces its children apart,
+   and with the count moved down into the group headings this was the only sibling left to push. */
+.kn-wall-lead { margin: 0 auto 0 0; color: var(--kn-muted); font-size: 12.5px; align-self: flex-end; }
+.kn-wall-count { font: 11.5px var(--kn-mono); color: var(--kn-muted); }
 .kn-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(214px, 1fr)); gap: 10px; }
+.kn-wall-group + .kn-wall-group { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--kn-line); }
+.kn-wall-gh { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px;
+  font: 600 10px var(--kn-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--kn-muted); }
+.kn-wall-gh .kn-wall-count { margin-left: auto; letter-spacing: 0; text-transform: none; font-weight: 400; }
 
 .kn-dcard { background: var(--kn-surface); border: 1px solid var(--kn-line); border-radius: 10px;
   padding: 11px 12px 10px; display: flex; flex-direction: column; gap: 7px;

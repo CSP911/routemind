@@ -328,6 +328,13 @@ card: this backbone, whoever is advertising through a link, and any link that is
 card carries the name, the revision, a shelf and the first few area names; the map below is the detail
 for whichever card is selected.
 
+**Two walls, not one.** *Here* holds this backbone alone; *across a link* holds everyone else. This
+backbone is not a peer of itself, and a card of it sitting in the row with the others says it is. The
+split earns something else too: a group heading that says *across a link* makes the same words on each
+of its cards pure ink, so the chip is kept for the one state a heading cannot carry — a link that is
+not answering. The shelves still share **one** scale across both walls, because comparing what this
+backbone advertises against what reaches it is the comparison most worth having.
+
 The wall appears **only once there is more than one domain**. A single-backbone install — which is
 most of them, and the one `install.sh` makes — sees exactly the screen it saw before this existed. A
 wall of one is not a wall.

@@ -254,15 +254,17 @@
   /** The wall. It appears only once there is more than one domain — a wall of one is not a wall, and
    *  an install with no link should see exactly the screen it saw before this existed. */
   function drawWall() {
-    const panel = $("knWallPanel"), wall = $("knWall");
+    const panel = $("knWallPanel"), mine = $("knWallMine"), theirs = $("knWallTheirs");
     const rows = domainRows();
     panel.hidden = rows.length < 2;
-    if (panel.hidden) { state.domain = null; wall.replaceChildren(); return; }
+    if (panel.hidden) { state.domain = null; mine.replaceChildren(); theirs.replaceChildren(); return; }
     if (state.domain !== null && !rows.some((d) => d.id === state.domain)) state.domain = null;
-    // One scale for every shelf, so two cards side by side compare directly.
+    // One scale across **both** walls, not one per wall. Comparing what this backbone advertises
+    // against what reaches it is the comparison most worth having, and two scales would make five of
+    // five and one of one draw identically.
     const scale = Math.max(1, ...rows.map((d) => d.areas.length));
     const CAP = 4;
-    wall.replaceChildren(...rows.map((d) => {
+    const cardFor = ((d) => {
       const sel = (state.domain || "") === d.id;
       const b = el("button", "kn-dcard" + (d.here ? " is-here" : "") + (d.up ? "" : " is-down") +
                              (sel ? " is-sel" : ""));
@@ -270,8 +272,10 @@
       b.setAttribute("aria-pressed", String(sel));
       const top = el("div", "kn-dcard-top");
       top.append(el("span", "kn-dcard-name", d.label));
-      top.append(el("span", "kn-dcard-flag" + (d.here ? " is-here" : d.up ? "" : " is-down"),
-        d.here ? t("knowledge.wall.here") : d.up ? t("knowledge.wall.across") : t("knowledge.wall.unreachable")));
+      // Only for the state its own group does not already say. "Across a link" on every card in the
+      // group called *across a link* is a label repeated as many times as there are cards; a link
+      // that is not answering is the one thing the group heading cannot tell you.
+      if (!d.up) top.append(el("span", "kn-dcard-flag is-down", t("knowledge.wall.unreachable")));
       b.append(top);
       b.append(el("div", "kn-dcard-meta", d.rev ? `rev ${String(d.rev).slice(0, 7)}` : "—"));
       const shelf = el("div", "kn-shelf");
@@ -299,9 +303,12 @@
         draw();
       });
       return b;
-    }));
+    });
+    mine.replaceChildren(...rows.filter((d) => d.here).map(cardFor));
+    const away = rows.filter((d) => !d.here);
+    theirs.replaceChildren(...away.map(cardFor));
     $("knWallCount").textContent = tv("knowledge.wall.summary",
-      { n: rows.length, areas: rows.reduce((a, d) => a + d.areas.length, 0) });
+      { n: away.length, areas: away.reduce((a, d) => a + d.areas.length, 0) });
   }
 
   function draw() {

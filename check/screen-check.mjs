@@ -25,7 +25,7 @@ class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.at
         on?this.add(c):this.remove(c); return on; },
     }; } }
 globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
-const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWall","knWallCount"]) byId[id]=new N(id);
+const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount"]) byId[id]=new N(id);
 let opens=0; byId.knRawDialog.open=false; byId.knRawDialog.showModal=function(){this.open=true;opens++;}; byId.knRawDialog.close=function(){this.open=false;};
 globalThis.document={readyState:"complete",visibilityState:"visible",getElementById:(i)=>byId[i],createElement:(t)=>new N(t),createElementNS:(_,t)=>new N(t),addEventListener(){}};
 globalThis.__nav=[]; globalThis.window={addEventListener(){},IRISI18N:{t:(k,v)=>String(dict[k] ?? k).replace(/\{(\w+)\}/g,(_,n)=>(v&&v[n]!=null?v[n]:`{${n}}`))},location:{search:"",set href(v){globalThis.__nav.push(v);},get href(){return "";}}}; globalThis.navigator={}; globalThis.location={origin:BASE}; globalThis.confirm=()=>false; globalThis.setInterval=()=>1;
@@ -73,8 +73,20 @@ if (nDomains < 2) {
   console.log("--   only this backbone here; the wall's own assertions need a link");
 } else {
   check(`the wall is drawn (${nDomains} domains)`, byId.knWallPanel.hidden === false);
-  const cards = find(byId.knWall, (n) => cls(n).includes("kn-dcard"));
+  const mineCards = find(byId.knWallMine, (n) => cls(n).includes("kn-dcard"));
+  const awayCards = find(byId.knWallTheirs, (n) => cls(n).includes("kn-dcard"));
+  const cards = [...mineCards, ...awayCards];
   check("  one card per domain, and no more", cards.length === nDomains, );
+  // Two walls: what this backbone holds, and what reaches it. The local one is never among the
+  // others — it is not a peer of itself, and putting it in that group would say it is.
+  check("  this backbone is on its own wall, alone", mineCards.length === 1);
+  check("    and never among the ones across a link",
+        awayCards.length === nDomains - 1 && !awayCards.some((c) => cls(c).includes("is-here")));
+  // The chip is kept for the one state a group heading cannot carry. Every card wearing the name of
+  // its own group is a label repeated once per card.
+  const flags = cards.map((c) => find(c, (n) => cls(n).includes("kn-dcard-flag")).length);
+  check("  only a link that is not answering wears a chip",
+        flags.filter(Boolean).length === downLive, `${flags.filter(Boolean).length} chips, ${downLive} down`);
   const names = cards.map((c) => find(c, (n) => cls(n).includes("kn-dcard-name")).map((n) => n.textContent)).flat();
   check("  each origin has one", originsLive.every((o) => names.includes(o)));
   // Every card has the same slots whether or not it has anything in them. A card that changes shape
@@ -97,7 +109,9 @@ if (nDomains < 2) {
     other.click(); await settle();
     check("  picking another card redraws the map for it",
           !mine.some((a) => !theirs.includes(a) && texts().includes(a)));
-    check("    and the wall is still whole", find(byId.knWall, (n) => cls(n).includes("kn-dcard")).length === nDomains);
+    check("    and both walls are still whole",
+          find(byId.knWallMine, (n) => cls(n).includes("kn-dcard")).length +
+          find(byId.knWallTheirs, (n) => cls(n).includes("kn-dcard")).length === nDomains);
     cards.find((c) => cls(c).includes("is-here")).click(); await settle();
   }
 }
