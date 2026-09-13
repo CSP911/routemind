@@ -153,9 +153,29 @@ def _dirty(root) -> str:
     begins at index 3 — and stripping the whole output eats the leading space of the *first* line
     only. Every path after it survived; the first one always arrived a character short, and with one
     file dirty, which is the usual case, the screen named a file that does not exist.
+
+    **`--no-optional-locks`, and it is not a micro-optimisation.** `git status` refreshes the index
+    while it looks, and to do that it takes `.git/index.lock` — the same lock `git add -A` needs one
+    line further down in every transaction. This function is called from two places: inside the
+    transaction, under the exclusive lock, where nothing else is running; and from `/healthz`, under
+    no lock at all, which the map's status bar polls. So a person with the map open was periodically
+    taking the index lock, and a save that landed on top of that came back **500** — `fatal: Unable
+    to create '.git/index.lock': File exists`. Measured 2026-09-14: a `git status` loop beside a
+    `git add -A` loop failed 49 of 200 adds. With this flag, 0 of 200. The flag is exactly for this;
+    the answer is the same, git simply does not write while producing it.
+
+    Two more things this line was getting wrong, both of which fail *open*. It did not pass
+    `safe.directory` the way `_git` does, so in a container whose repository is owned by another uid
+    git refuses with "dubious ownership" — and the return code was never looked at, so any failure
+    became empty output, which reads as **clean**. The guard whose whole job is to refuse writes onto
+    a hand-edited tree would have quietly allowed them.
     """
-    out = subprocess.run(["git", "-C", str(root), "status", "--porcelain"],
-                         capture_output=True, text=True, timeout=10).stdout
+    r = subprocess.run(["git", "--no-optional-locks", "-c", "safe.directory=*", "-C", str(root),
+                        "status", "--porcelain"], capture_output=True, text=True, timeout=10)
+    if r.returncode != 0:
+        raise WriteError(500, f"cannot tell whether {root} has uncommitted changes: "
+                              f"{r.stderr.strip() or 'git status failed'}")
+    out = r.stdout
     if not out.strip(): return ""
     names = [l[3:].strip() for l in out.splitlines() if len(l) > 3]
     head = ", ".join(names[:3])

@@ -34,6 +34,12 @@ Three things are asserted, and the third is the one that costs something to keep
   2. no write fails, and none is lost
   3. every answer is **internally consistent** — an area's row in hop 0 and the entities it points at
      come from the same instant, never one from before a write and one from after
+  4. **a status poll does not break a save** — the fourth is a different failure with the same shape,
+     found on 2026-09-14 by asking which parts of a write are git. `/healthz` runs `git status`, the
+     map's status bar polls it, and `git status` refreshes the index — taking `.git/index.lock`,
+     which is the lock `git add -A` needs in every transaction. A `git status` loop beside a
+     `git add -A` loop failed 49 of 200 adds. So a person with the map open could make somebody
+     else's save return 500, and nothing in the product connected those two facts.
 """
 import concurrent.futures as cf, json, os, random, shutil, subprocess, sys, tempfile, time
 import urllib.request, urllib.error
@@ -87,7 +93,7 @@ def call(port, path, body=None, method="GET"):
     except Exception as e: return 0, repr(e)
 
 
-read_codes, write_codes, torn, lost = Counter(), Counter(), [], []
+read_codes, write_codes, poll_codes, torn, lost = Counter(), Counter(), Counter(), [], []
 for rnd in range(ROUNDS):
     T = tempfile.mkdtemp(prefix="conc-"); repo = os.path.join(T, "repo")
     shutil.copytree(SEED, repo)
@@ -120,8 +126,16 @@ for rnd in range(ROUNDS):
             out.append(("area", st2, b2))
         return out
 
-    with cf.ThreadPoolExecutor(max_workers=N + READERS) as ex:
+    def poller():
+        """What the map's status bar does, and the only caller of `_dirty` outside the lock."""
+        out = []
+        while not stop:
+            out.append(("healthz",) + call(port, "/healthz"))
+        return out
+
+    with cf.ThreadPoolExecutor(max_workers=N + READERS + 2) as ex:
         rd = [ex.submit(reader) for _ in range(READERS)]
+        rd += [ex.submit(poller) for _ in range(2)]
         wr = list(ex.map(lambda i: call(port, "/v1/nodes",
                          {"id": f"conc-{rnd}-{i}", "name": f"Conc {i}", "region": area,
                           "kind": "system", "one_liner": "x", "content": "y"}, "POST"), range(N)))
@@ -130,7 +144,8 @@ for rnd in range(ROUNDS):
     p.terminate(); p.wait(timeout=15)
 
     for st, _ in wr: write_codes[st] += 1
-    for _, st, _ in reads: read_codes[st] += 1
+    for kind, st, _ in reads:
+        (poll_codes if kind == "healthz" else read_codes)[st] += 1
     on_disk = len([f for f in os.listdir(os.path.join(repo, "regions", area))
                    if f.startswith(f"conc-{rnd}-")])
     said_ok = sum(1 for st, _ in wr if st in (200, 201))
@@ -152,5 +167,11 @@ check(f"no write failed ({sum(write_codes.values())} writes)",
       set(write_codes) <= {200, 201}, json.dumps(dict(write_codes)))
 check("and every write that was reported is on disk", not lost, "; ".join(lost[:3]))
 check("every answer came from one instant", not torn, "; ".join(torn[:3]))
+# The poll is never the thing that fails — it answered 200 every time even when it was breaking
+# every save on the machine. So this asserts on the *writes*, and says which side to look at.
+check(f"and {sum(poll_codes.values())} status polls of /healthz broke none of them",
+      set(poll_codes) <= {200} and set(write_codes) <= {200, 201},
+      f"polls {json.dumps(dict(poll_codes))}, and the writes beside them {json.dumps(dict(write_codes))}"
+      f" — `git status` refreshes the index, which is the lock `git add -A` needs")
 finished.append(True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)
