@@ -2,6 +2,30 @@
 
 Open work that has been decided on but not done. Newest first. Each item says who it waits on.
 
+## Snapshot isolation costs hop 0 twenty percent — *watch, then measure again*
+
+Every read now takes the writers' lock shared, loads the tree, and lets go (`Store.snapshot`), which
+is what stopped an answer being assembled from two different instants. Measured 2026-09-14 on
+`examples/back-office`, 79 entities, 300 requests each:
+
+| | before | after |
+|---|---|---|
+| `/v1/regions` — hop 0, the hot path | 8.37 ms | **10.01 ms** |
+| `/v1/regions/<area>` | 19.06 ms | 13.15 ms — *faster*, the nodes load once |
+| `/v1/core` | 0.19 ms | 1.64 ms |
+
+The 20% on hop 0 buys correctness and is worth it as it stands. What is left in it: the snapshot is
+rebuilt on every request, and the tree only changes when a write commits. A writer could leave a
+generation stamp — one small file under `.git/`, written inside the exclusive lock — and a reader
+could `stat` it and reuse the snapshot it already has when nothing has moved. That turns the common
+case into one stat.
+
+**Not done, and not obviously worth doing yet.** Two reasons to wait. The absolute numbers are small
+and nobody has reported it. And a stamp only a writer bumps would not notice a **hand edit** to
+`data/repo`, which is a supported thing to do and today shows up on the next read — so the stamp
+would have to be something a hand edit also moves, which is most of what makes the current cost. Do
+not start this without a measurement from a real install saying hop 0 is too slow.
+
 ## Overlay: the ten-question comparison — *operator: when, and which questions*
 
 docs/OVERLAY.md, "How we will know it helped". The same ten questions or fewer, run twice — as agents
