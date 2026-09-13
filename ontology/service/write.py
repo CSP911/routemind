@@ -471,6 +471,11 @@ class Writer:
             if unknown: raise WriteError(400, f"not editable: {unknown} — editable fields are {sorted(EDITABLE) + ['content']}")
             for k in EDITABLE:
                 if k in body: n[k] = body[k]
+            # An audience is a list wherever it is stored and arrives as whatever the caller had:
+            # a list from the API, one comma-separated line from the review queue, which carries a
+            # sentence and not a structure. Normalised here rather than at each door, because the
+            # cost of getting it wrong is silent — `", ".join("branch")` is `b, r, a, n, c, h`.
+            if "export_to" in body: n["export_to"] = _name_list(body["export_to"])
             # One type: an entity's content is its own field, not a file underneath it. Editing the
             # body and editing the routing line are the same call on the same thing.
             if "content" in body: n["body"] = body["content"]

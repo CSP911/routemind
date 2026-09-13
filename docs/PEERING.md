@@ -80,8 +80,21 @@ of `X-Peer-Kind`, where the claim gets the claimant less and is therefore safe.
 An area that is not on your list answers **404**, the same as one that was never shared. Whether a
 backbone holds something it has not shared with you is itself something you have no business learning.
 
-Like `use_when_export`, the audience is a field on the representative: it can go through the review
-queue or through an ordinary write, and there is no screen for either yet.
+The same rule reaches one thing that is not an audience at all. A **draft** entity is hidden from its
+area's listing and answers by address, which is right for the owner — draft means unfinished, not
+secret — and was a hole across a link, where the listing is the only access control there is. Anybody
+holding an address from before it became a draft kept reading it. It is 404 across a link now, and
+unchanged locally. docs/SCENARIOS.md P1.
+
+It travels the road the line it narrows travels: the **review queue**, scope `audience`, with no
+immediate-apply path. The two together are the whole export decision, and a widening that could be
+made with a direct write while the wording needed a second pair of eyes would put the queue in front
+of the smaller of the two. One rule is its own: an empty `after` is a decision here — *everybody this
+area already crosses to* — and a mistake everywhere else. And there is no drafting it. The other
+scopes revise a sentence about what an area holds, which is in the ontology and can be read; who may
+see it is a decision about other organisations, which is not in here and is nobody's to guess.
+
+Neither this nor `use_when_export` has a field on the map screen yet. Both are API and queue.
 
 Not done: **per-peer wording.** One `use_when_export` goes to everyone who can see the area. Saying a
 different thing to each reader is a further step and has no demand behind it yet; who may see it at

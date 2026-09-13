@@ -382,8 +382,16 @@ def decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply, 
 # It goes through this queue and not through a direct write for the reason every other advertisement
 # does — what an area says about itself is the one thing the whole system routes on, and it is worth
 # a second pair of eyes. Across a link that is not a nicety: the reader is another organisation.
+# `audience` is the other half of `peer`: who that line reaches. It travels the same road for the
+# same reason — the two together are the whole export decision, and a widening that could be made
+# with a direct write while the wording needed a second pair of eyes would put the queue in front of
+# the smaller of the two.
 ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "core": "core_row", "entity": "one_liner",
-                "peer": "use_when_export"}
+                "peer": "use_when_export", "audience": "export_to"}
+# Scopes whose `after` may be empty, and where empty says something. Everywhere else an empty
+# sentence is a proposal to advertise nothing, which is a mistake rather than a decision; for an
+# audience it is "everybody this area already crosses to", which is the value most areas have.
+EMPTIABLE = {"audience"}
 SCOPE_ALIAS = {"dr": "as"}          # the old value is still accepted; the new name is what gets stored
 
 
@@ -403,7 +411,8 @@ def submit_route(cstore: CuratorStore, body: dict, actor: str) -> dict:
     if scope == "entity":
         if not entity: raise ValueError("entity is required for scope `entity` — it is the row being edited")
     elif not region: raise ValueError("region is required")
-    if not after: raise ValueError("after is required — it is the sentence the person settled on")
+    if not after and scope not in EMPTIABLE:
+        raise ValueError("after is required — it is the sentence the person settled on")
     unknown = sorted(set(body) - {"scope", "field", "region", "entity", "after", "before", "why", "target"})
     if unknown: raise ValueError(f"unknown field(s) {unknown}")
     pid = f"cp_{uuid.uuid4().hex[:10]}"

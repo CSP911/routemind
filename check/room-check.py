@@ -103,7 +103,10 @@ for n in ("ay", "bee"):
         subprocess.run(["git", "-C", repo, *a], check=True)
     e = {**os.environ, **TOK, "ONTOLOGY_DATA": repo, "PORT": str(PORT[n]),
          "ONTOLOGY_PUBLISH": os.path.join(T, f"pub-{n}"),
-         "ONTOLOGY_PEER_TOKEN": TOK[f"TOK_{n.upper()}"], "ONTOLOGY_PEER_TTL": "0"}
+         "ONTOLOGY_PEER_TOKEN": TOK[f"TOK_{n.upper()}"], "ONTOLOGY_PEER_TTL": "0",
+         # The review queue, because the audience is set through it and a scenario that reaches it
+         # another way is testing a door nobody uses.
+         "ONTOLOGY_HARNESS": os.path.join(T, f"harness-{n}")}
     for k in [k for k in e if k.startswith("ONTOLOGY_LLM_")]: e.pop(k)
     envs[n] = e
     procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
@@ -283,6 +286,46 @@ set_export("bee", LINE["bee"])
 time.sleep(0.4)
 check("N3 taking the audience away puts it back", remote("ay") == ["bee"], json.dumps(remote("ay")))
 check("   and the address with it", get(A_PORT, addr)[0] == 200)
+
+# ── N4 — through the door a person actually uses ─────────────────────────────
+# Everything above wrote the frontmatter directly, which is how a check reaches a state and is not
+# how anybody reaches it. An audience is half of the export decision and travels the road the other
+# half does: the review queue, scope `audience`, with no immediate-apply path. Two rules of that road
+# are worth pinning here, and both are specific to this scope — an empty `after` is a decision rather
+# than a mistake, and there is no drafting it.
+def post(who, path, body):
+    r = urllib.request.Request(f"http://127.0.0.1:{PORT[who]}/v1/curator/{path}",
+                               data=json.dumps(body).encode(), method="POST",
+                               headers={"Content-Type": "application/json", "X-Actor": "room-check"})
+    try:
+        with urllib.request.urlopen(r, timeout=30) as x: return x.status, json.loads(x.read() or b"{}")
+    except urllib.error.HTTPError as e: return e.code, {"error": e.read().decode(errors="replace")[:200]}
+    except Exception as e: return 0, {"error": type(e).__name__}
+
+
+st, pr = post("bee", "proposals", {"scope": "audience", "region": SHARE["bee"],
+                                   "after": "nobody-here", "why": "N4"})
+if check("N4 an audience can be proposed through the queue", st == 201, json.dumps(pr)[:140]):
+    st, d = post("bee", f"proposals/{pr['id']}/accept", {})
+    check("   and accepted", st == 200 and d.get("ok") is not False, json.dumps(d)[:140])
+    time.sleep(0.6)
+    check("   and the other backbone loses the area", remote("ay") == [], json.dumps(remote("ay")))
+    # The other half of the decision is unmoved. A queue that wrote the wrong field would look
+    # exactly like this until somebody read the file.
+    check("   while the line it wrote for peers is untouched", export_of("bee") == [SHARE["bee"]],
+          json.dumps(export_of("bee")))
+
+st, pr2 = post("bee", "proposals", {"scope": "audience", "region": SHARE["bee"],
+                                    "before": "nobody-here", "after": "", "why": "everyone again"})
+if check("   an empty audience is a decision here, not a missing field", st == 201, json.dumps(pr2)[:160]):
+    post("bee", f"proposals/{pr2['id']}/accept", {})
+    time.sleep(0.6)
+    check("   and accepting it opens the area again", remote("ay") == ["bee"], json.dumps(remote("ay")))
+st, e = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"], "after": ""})
+check("   while an empty export line is still a mistake", st == 422, f"{st} {json.dumps(e)[:100]}")
+st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": "audience"})
+check("   and an audience is never drafted for you", st == 400 and "not drafted" in json.dumps(e),
+      f"{st} {json.dumps(e)[:120]}")
 
 shutil.rmtree(T, ignore_errors=True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

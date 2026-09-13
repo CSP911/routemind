@@ -297,8 +297,15 @@ for nm, want in (("Parcels", "parcels"), ("Courier SLA", "courier-sla"), ("US4 M
                  ("CDN — Edge", "cdn-edge"), ("3rd party", "3rd-party")):
     eq(f"{nm!r} names its own id", slug_id(nm), want)
 # The trap the translator exists for: a name that is *partly* ASCII reduces to a fragment that looks
-# deliberate. `Ürün` -> `r-n`, and there is no rename path.
-for nm in ("소포 추적", "Ürün", "한글 CDN", "   "):
+# deliberate, and there is no rename path. What counts as "a regex cannot take it" narrowed on
+# 2026-09-12, when hangul, kana and Latin-with-marks became mechanical — see ontology/service/
+# romanize.py. Han characters did not: there is no rule, only a dictionary of readings, and for
+# Japanese the reading depends on the compound. Those still go to the model, and so does a name with
+# one of them anywhere in it.
+for nm, want in (("소포 추적", "sopo-chujeog"), ("Ürün", "urun"), ("한글 CDN", "hangeul-cdn"),
+                 ("けいひ", "keihi")):
+    eq(f"{nm!r} names its own id now, with no model", slug_id(nm), want)
+for nm in ("小包", "小包 tracking", "束", "   "):
     eq(f"{nm!r} is sent to the translator, not guessed at", slug_id(nm), None)
 
 # A description cut at 60 characters was becoming the name: "Courier SLA: delivery times for
@@ -325,7 +332,7 @@ def _id_without_an_llm():
                                             "use_when": "tracking a parcel"}}, "c")
     out = {"id": r["representative"], "said it generated one": r["id_generated"]}
     try:
-        w.create_node({"name": "소포", "kind": "tool", "region": "p", "parent": r["representative"],
+        w.create_node({"name": "小包", "kind": "tool", "region": "p", "parent": r["representative"],
                        "one_liner": "a parcel"}, "c")
         out["a name a regex cannot take"] = "accepted"
     except WriteError as e:
@@ -375,7 +382,7 @@ def _suggestion_matches_the_write():
     # Two reasons reach the same place and they have different fixes. Calling a name collision
     # "no LLM is configured" sends the reader somewhere a model would not have helped.
     refuse("a name whose id is taken", lambda: w._resolve_id(None, name="Parcel Tracking", kind="", one_liner="", region="a"))
-    refuse("a name a regex cannot take", lambda: w._resolve_id(None, name="소포", kind="", one_liner="", region="a"))
+    refuse("a name a regex cannot take", lambda: w._resolve_id(None, name="小包", kind="", one_liner="", region="a"))
 
     # Now with a model wired. A collision must be refused **before it is asked** — told "must not
     # collide", a model answers `books-2`, which is the one thing this method's own rule forbids.
@@ -386,7 +393,7 @@ def _suggestion_matches_the_write():
     out["was the model asked"] = list(asked)
     # It is still asked for the case it exists for.
     w.suggest_id = lambda **kw: (asked.append(kw.get("name")), "parcel")[1]
-    out["a translated name"] = w._resolve_id(None, name="소포", kind="", one_liner="", region="a")
+    out["a translated name"] = w._resolve_id(None, name="小包", kind="", one_liner="", region="a")
     return out
 
 

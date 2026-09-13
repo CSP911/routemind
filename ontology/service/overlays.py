@@ -224,11 +224,28 @@ class OverlayStore:
         rows, seen = [], {m["address"] for m in existing}
         if not members: raise OverlayError(400, "members is required — an overlay with nothing in it narrows nothing")
         for m in members:
-            addr = _norm((m or {}).get("address"))
+            # A member is `{address, why}`. Handed a bare string — the obvious first guess, and what
+            # a person writing the call by hand types — `.get` raised and the caller was told
+            # `500 internal error`, which names neither the mistake nor the fix. Every other refusal
+            # in here says what was wrong with the input; this one has to as well.
+            if not isinstance(m, dict):
+                raise OverlayError(400, f"each member is an object with `address` and `why` — got {type(m).__name__}"
+                                        + (f" ({m!r})" if isinstance(m, str) and len(m) < 60 else ""))
+            addr = _norm(m.get("address"))
             why = str((m or {}).get("why") or "").strip()
             if not addr: raise OverlayError(400, "each member needs an address")
             if not why: raise OverlayError(400, f"{addr} has no why — without it the record says what happened and not what was thought")
             if addr in seen: raise OverlayError(409, f"{addr} is already in this overlay")
+            if addr.startswith("/v1/peers/"):
+                # It resolves to nothing here and the generic refusal blamed the person for making
+                # the address up — which they had not: hop 0 printed it, and the tables say to follow
+                # an address exactly as printed. The true answer is narrower and is about what an
+                # overlay is. It narrows **this** tree; a peer's areas are not in it, and an overlay
+                # that quietly got smaller whenever a link dropped would turn "look here" into "this
+                # is all there is", which is the one thing the absence rule forbids.
+                raise OverlayError(422, f"{addr} is across a link — an overlay narrows this backbone's "
+                                        f"own tree, and another backbone's areas are not part of it. "
+                                        f"Ask over there, or add the areas here that lead to it")
             got = resolve(addr)
             if not got:
                 # Deliberately **not** "an address nobody printed". Nothing records what was printed;

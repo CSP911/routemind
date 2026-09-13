@@ -6,12 +6,15 @@ advertised, emptied, deleted, and created again.
 
 Two runners, because there are two lifetimes. `check/scenarios.py` is one backbone over time
 (**A**–**K**); `check/room-check.py` is a room over time (**L**–**N**), which became a lifetime worth
-having the day an exchange started shipping in the default install. Both run against throwaway
+having the day an exchange started shipping in the default install. `check/cross-check.py` is
+**P** — the two crossed, which is where three real defects were: a promise that was right for a local
+reader and wrong for a remote one is invisible from either side alone. All three run against throwaway
 ontologies they start themselves, because several of these delete everything.
 
 ```sh
 docker compose exec ontology python3 /tmp/check/scenarios.py     # see the header of the file
 ./check/room-check.py
+./check/cross-check.py
 ```
 
 ## Why these and not others
@@ -164,10 +167,31 @@ runs through one process that nobody had yet switched off on purpose.
 | N1 | An audience naming the reader changes nothing for it — and does not hand it the list. Who else was considered is not the reader's business |
 | N2 | An audience naming somebody who is not in the room leaves **everyone** out, the address stops working and not just the row, the backbone still holds it locally, and **nothing anywhere errors**: the link is up, because "you are not on the list" is not an outage and must not suspend the absence rule |
 | N3 | Taking it away puts the area back, address and all |
+| N4 | It goes through the **review queue**, scope `audience`, like the line it narrows. An empty `after` is a decision here and a mistake everywhere else; there is no drafting it, because who may see something is not in the ontology for a model to read |
 
 N2 also pins the one thing the operator's view must keep showing: a member advertising an area, whoever
 it is for. Health is not policy, and an audience that showed up on the exchange's screen would be
 visible to the one party it does not restrict.
+
+## P — where the new configuration meets the old
+
+`check/cross-check.py`. Two backbones and an exchange, with the features that were built before links
+existed switched on beside them. Everything else about peering asks *does a link work*; these ask the
+question that only appears once there is one: **which of the promises this ontology already makes are
+still true when the reader is another backbone?** Each was a settled answer for a local reader and a
+different question for a remote one, and three of them were wrong.
+
+| | What it proves |
+|---|---|
+| P1 | A **draft** is hidden from a listing and answers by address. Right for the owner — "draft" means unfinished, not secret — and across a link that listing is the *only* access control there is, so anyone holding yesterday's address kept reading a thing that had been taken off the table. Now 404 across a link, indistinguishable from a node that was never there, and unchanged locally |
+| P2 | A **hand-edited tree** refuses writes and must keep serving a peer. The tempting answer is to stop until somebody tidies up, and it is wrong twice over: the peer would see an outage, stop claiming absence, and none of it would be true |
+| P3 | An **overlay** refuses an address across a link — it narrows this backbone's own tree, and one that quietly got smaller whenever a link dropped would turn "look here" into "this is all there is". The refusal was right and its *reason* said the address had been assembled, when hop 0 had printed it and every table says to follow one exactly as printed. Blaming the reader for doing the documented thing is worse than not refusing |
+| P4 | An **audience and an outage** are two reasons a row is missing and only one of them suspends absence. Off the list → the row goes, absence stands. The link then drops → the outage is what is reported. It comes back → the policy is what remains |
+| P5 | A **252-character id** — the longest there is, because `.md` makes it 255 — crosses a room whole, three prefixes deep, and reads back untruncated |
+| P6 | **Deleting** an exported area, as opposed to withdrawing it. Refused while it holds anything, by a rule written before links existed and still right; once empty, the row and the address go at the peer, as that backbone saying no rather than a link that failed |
+
+A fourth defect was found while writing P3 and is checked there: a malformed overlay member came back
+`500 internal error`, naming neither the mistake nor the fix — the class of bug section I exists for.
 
 ## Deliberately not here
 

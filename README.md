@@ -480,7 +480,8 @@ data/overlays one question's working set each — run evidence, not structure
 data/harness  the curator's store: the review queue behind "Advertise upstream"
 check/        smoke.sh (API + agent + screen) · write-paths.sh (every write path, atomically)
               mcp-check.py (the protocol, and an agent's walk) · llm-paths.sh (both LLM modes)
-              scenarios.py + room-check.py (docs/SCENARIOS.md: a backbone, and a room, over time)
+              scenarios.py + room-check.py + cross-check.py (docs/SCENARIOS.md: a backbone over
+              time, a room over time, and the two crossed)
               peer-check · exchange-check · ix-peering-check · refresh-check · admin-check (links)
 ```
 

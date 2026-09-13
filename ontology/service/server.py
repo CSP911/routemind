@@ -189,6 +189,11 @@ def route_draft(region: str, scope: str, changed: list | None) -> dict:
     scope = curator.SCOPE_ALIAS.get(scope, scope)
     field = curator.ROUTE_SCOPES.get(scope)
     if not field: raise WriteError(400, "scope must be as | bb | core")
+    if field == "export_to":
+        # Not something a model drafts. The other scopes are a sentence about what an area holds,
+        # which is in the ontology and can be read; who may see it is a decision about other
+        # organisations, which is not in here and is nobody's to guess.
+        raise WriteError(400, "an audience is not drafted — name the peers yourself")
     if field == "core_row":
         before = next((x.get("description", "") for x in store.regions_json().get("regions", []) if x["id"] == r["key"]), "")
     else:
@@ -481,7 +486,11 @@ def apply_proposal(p: dict, actor: str):
         # third — a `peer` proposal would have silently overwritten the area's own `use_when`.
         field = curator.ROUTE_SCOPES.get(curator.SCOPE_ALIAS.get(scope, scope))
         if not field: return {"ok": False, "error": f"unknown route scope {scope!r}"}
-        cur = (rep.get(field) or "")
+        # A queue proposal carries a sentence, and one of these fields is a list. Rendered the same
+        # way on both sides of the comparison, or an audience would conflict with itself the moment
+        # anybody submitted a second one.
+        cur = rep.get(field) or ""
+        if isinstance(cur, list): cur = ", ".join(cur)
         if p.get("before") and cur != p["before"]:
             return {"ok": False, "error": "conflict", "code": 409, "field": field,
                     "current": cur, "submitted_before": p["before"]}
@@ -877,6 +886,13 @@ class Handler(BaseHTTPRequestHandler):
             # something the peer has no business learning. The two answers must be indistinguishable.
             if not n or (n.get("region") or "") not in {r["source"] for r in visible.values()}:
                 return self._err(404, f"no exported node {parts[1]}")
+            # A draft is not in the area's advertised list, and across a link that list is the only
+            # access control there is. Locally the same node answers by address on purpose — the
+            # reader there is the owner, and "draft" means unfinished rather than secret — but a peer
+            # cannot be told "this is hidden" and then be served it by anyone who kept yesterday's
+            # address. The surface must offer exactly what its own tables offer.
+            if _draft_anywhere(n):
+                return self._err(404, f"no exported node {parts[1]}")
             self._as_peer = True
             return self._get(parts)
 
@@ -1175,6 +1191,20 @@ def _peer_by_token(token: str) -> dict | None:
     """
     if not token: return None
     return next((p for p in peering.declared(DATA) if p["token"] and p["token"] == token), None)
+
+
+def _draft_anywhere(node: dict) -> bool:
+    """Is this entity a draft, or under one. A published child of a draft parent is not in any
+    listing either — the parent is what carries it — so following an address to it would be the same
+    hole one level down."""
+    seen, cur = set(), node
+    while cur:
+        if (cur.get("status") or "") == "draft": return True
+        parent = cur.get("parent")
+        if not parent or parent in seen: return False
+        seen.add(parent)
+        cur = store.node(parent)
+    return False
 
 
 def _visible(region: dict, reader: str | None) -> bool:
