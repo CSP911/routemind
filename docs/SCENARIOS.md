@@ -199,6 +199,31 @@ different question for a remote one, and three of them were wrong.
 A fourth defect was found while writing P3 and is checked there: a malformed overlay member came back
 `500 internal error`, naming neither the mistake nor the fix — the class of bug section I exists for.
 
+## Q — the install a stranger gets
+
+`check/install-check.sh`, and it is not run with the others: it clones the **committed** tree,
+installs it in a temporary directory on its own ports and image tags, adds the second backbone, and
+walks the export decision end to end. Minutes, because it builds. Before a release, and after a change
+large enough that you would not want to be the first person to find out.
+
+Every scenario above builds its own world. This one is about the world a person arrives in, and the
+mistakes are a different set — none of these could have come from a check, because a check never
+appends a line to a `.env`, never reads a status code, and never runs anything in a container it did
+not prepare.
+
+| | What it found |
+|---|---|
+| Q1 | `install.sh` and docker compose read one `.env` and disagreed about which duplicate line wins — the installer waited on a port nothing served and said the stack had not come up, with a healthy stack behind it. Now `check/env-check.py` lifts the pipeline out of install.sh and runs it |
+| Q2 | An accept that could not be applied answered **200**. Right in substance — nothing written, the proposal left pending — and every caller that branches on a status believed it, the screen included. N4c |
+| Q3 | Withdrawing an export line was refused by its own audience and override, with advice written for the opposite act. They go with it now. N4d |
+| Q4 | The refresh hint's fingerprint did not list `use_when_export_for`, so the newest export field was the only one with no hint behind it — and it is the one usually written to show somebody *less* |
+| Q5 | The peering checks died with `IndexError` inside the ontology container, whose seed has no areas on purpose. They say so now |
+| Q6 | `mkdir -p data-b/…` was in `install.sh` for the first backbone and in the operator screen's plan, and missing from the one command a person copies out of docs/PEERING.md. Docker creates a missing bind mount **owned by root**, so the second backbone never became healthy |
+
+The image tags are the reason this can be run at all without thinking about it: they were shared, so a
+verification build would have replaced the images the machine's own install next starts from.
+`IMAGE_TAG` exists for that.
+
 ## Deliberately not here
 
 **D — moves and containment** (`write-paths.sh` already moves a node within an area, across areas,

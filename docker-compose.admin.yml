@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: admin/Dockerfile
-    image: routemind-admin:0.1.0
+    image: routemind-admin:${IMAGE_TAG:-0.1.0}
     depends_on:
       exchange:
         condition: service_healthy

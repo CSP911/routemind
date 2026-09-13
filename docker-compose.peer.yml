@@ -1,7 +1,13 @@
 # A second backbone, meeting the first at the exchange that is already there.
 #
+#   mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness
 #   docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
 #   →  http://localhost:8080  this one      http://localhost:8081  the other
+#
+# The `mkdir` is not tidiness. These are bind mounts, and docker creates a missing one **owned by
+# root**, so the container — which runs as KNOWLEDGE_UID — cannot write it and never becomes healthy.
+# install.sh does the same for the first backbone's `data/`; nothing was doing it for this one, and
+# the documented way to add a second backbone failed on a machine that had never had one.
 #
 # **Nothing about the first backbone changes.** Its `peers.yaml` still holds one entry — the exchange
 # — and it will still hold one when there are ten. That is what the exchange bought, and it is why it
@@ -24,7 +30,7 @@ services:
     build:
       context: .
       dockerfile: ontology/Dockerfile
-    image: knowledge-ontology:0.1.0
+    image: knowledge-ontology:${IMAGE_TAG:-0.1.0}
     user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
     environment:
       ONTOLOGY_DATA: /data/repo
@@ -58,7 +64,7 @@ services:
     build:
       context: .
       dockerfile: web/Dockerfile
-    image: knowledge-web:0.1.0
+    image: knowledge-web:${IMAGE_TAG:-0.1.0}
     depends_on:
       ontology-b:
         condition: service_healthy

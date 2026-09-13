@@ -168,6 +168,26 @@ Two containers, no database. On first boot an empty ontology is laid into `data/
 directory becomes a git repository. Every write — from the screen or the API — **commits** into it, so
 undo is `git revert`.
 
+### Before a release: install it the way a stranger would
+
+```sh
+./check/install-check.sh          # a few minutes; it builds
+./check/install-check.sh --keep   # leave it running to poke at
+```
+
+Clones the **committed** tree into a temporary directory and installs it there, then adds the second
+backbone, wires both halves of the declaration, and walks the whole export decision — advertise, an
+audience, a line for one named reader, withdraw. Its own directory, its own compose project, its own
+ports and its own image tags, so nothing of yours is touched.
+
+Run it after a change large enough that you would not want to be the first person to find out. The
+ordinary checks build their own world; this one is about the world a person arrives in, and that is a
+different set of mistakes. Six real defects came out of its first two runs, and four could not have
+come from any other check: a key written twice in `.env` that the installer and docker read
+differently, a status code believed over a body, an `IndexError` where a sentence belonged, and a
+`mkdir` that was in `install.sh` and in the operator screen's plan and missing from the one command
+you copy out of the peering guide.
+
 ### Start from the worked example, not an empty map
 
 An empty install is a backbone with no areas: correct, and hard to read. To start from
@@ -503,7 +523,8 @@ data/repo     ← your ontology. A git repository, and the only thing to back up
 data/publish  derived from data/repo. Safe to delete; it is rebuilt
 data/overlays one question's working set each — run evidence, not structure
 data/harness  the curator's store: the review queue behind "Advertise upstream"
-check/        smoke.sh (API + agent + screen) · write-paths.sh (every write path, atomically)
+check/        install-check.sh (a clean clone, installed and walked — before a release)
+              smoke.sh (API + agent + screen) · write-paths.sh (every write path, atomically)
               mcp-check.py (the protocol, and an agent's walk) · llm-paths.sh (both LLM modes)
               scenarios.py + room-check.py + cross-check.py (docs/SCENARIOS.md: a backbone over
               time, a room over time, and the two crossed)

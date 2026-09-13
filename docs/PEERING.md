@@ -227,10 +227,17 @@ Nothing about the backbones already running changes. Each one's `peers.yaml` hol
 the exchange — and still holds one when there are ten.
 
 ```sh
+mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness
 docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
 #  http://localhost:8080   this office
 #  http://localhost:8081   the other one
 ```
+
+The `mkdir` first, and it is not tidiness: these are bind mounts, docker creates a missing one **owned
+by root**, and the container runs as `KNOWLEDGE_UID` and cannot write it. It says so — *"/data/repo is
+not writable by uid …"* — and it says so after failing to start, which is one step later than useful.
+`install.sh` does this for the first backbone and the operator's screen prints it in the plan it hands
+you; only the line you copy out of here was missing it.
 
 Two full installs, each with its own repository under `data/` and `data-b/`. Two services rather than
 one service with two data directories, on purpose: **this is the remote case with a shorter cable.**

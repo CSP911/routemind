@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: ontology/Dockerfile
-    image: knowledge-ontology:0.1.0
+    image: knowledge-ontology:${IMAGE_TAG:-0.1.0}
     # The data directory is a git repository on the host and writes commit into it, so this must be
     # the uid that owns it. Wrong uid = every write fails at the commit, after the file was written.
     # `UID` is readonly in bash and is not exported to compose, so it silently stays 1000 and every
@@ -85,7 +85,7 @@ services:
     build:
       context: .
       dockerfile: web/Dockerfile
-    image: knowledge-web:0.1.0
+    image: knowledge-web:${IMAGE_TAG:-0.1.0}
     depends_on:
       ontology:
         condition: service_healthy
@@ -112,7 +112,7 @@ services:
     build:
       context: .
       dockerfile: exchange/Dockerfile
-    image: routemind-exchange:0.1.0
+    image: routemind-exchange:${IMAGE_TAG:-0.1.0}
     user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
     environment:
       EXCHANGE_NAME: "${EXCHANGE_NAME:-ix}"
