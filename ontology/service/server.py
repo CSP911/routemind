@@ -1114,12 +1114,20 @@ def _absence(links) -> str:
     so out loud is the difference between an agent that reports what it could not see and one that
     reports that something does not exist.
     """
-    named = ", ".join(l["label"] for l in links)
     down = [l for l in links if not l["reachable"]]
     if not down:
-        return (f"Nothing outside this list exists in RouteMind or in the backbones it is linked to "
-                f"({named}). This list is the grounds on which you may say something is absent — no "
-                f"smaller table is.")
+        # Only the links that actually brought something. A link that is up and advertising nothing
+        # adds nothing to the world, so the plain sentence is not merely acceptable there — it is the
+        # accurate one, and naming an empty link would tell a reader to expect rows that are not
+        # coming. It also stops an install with one backbone from announcing "the backbones it is
+        # linked to (EXCHANGE)", which names as a backbone the one thing that is careful not to be.
+        named = ", ".join(l["label"] for l in links if l.get("areas"))
+        if not named:
+            return ("Nothing outside this list exists in RouteMind. This list is the grounds on which "
+                    "you may say something is absent — no smaller table is.")
+        return (f"Nothing outside this list exists in RouteMind or in the backbones it reaches "
+                f"through {named}. This list is the grounds on which you may say something is absent "
+                f"— no smaller table is.")
     why = "; ".join(f"{l['label']}: {l['error']}" for l in down)
     return ("**This list is incomplete.** " + ("A link" if len(down) == 1 else "Links") +
             f" could not be read ({why}), so areas that exist may be missing from it. Answer from what "

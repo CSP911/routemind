@@ -328,6 +328,35 @@ if SECOND:
               body.get("reason") == "peer_said_no", json.dumps(body)[:90])
     check("  while everything B never stopped advertising is untouched", SHARED_B in after)
 
+# ── a link that is up and carrying nothing ────────────────────────────────────
+# The state every fresh install is in: an exchange is wired from the first `docker compose up` and has
+# nothing to reflect yet. A link that brings no rows adds nothing to the world, so the plain sentence
+# is not merely acceptable — it is the accurate one. Naming the link would promise rows that are not
+# coming, and on a one-backbone install it announced "the backbones it is linked to (EXCHANGE)",
+# calling a backbone the one thing that is careful not to be one.
+_had = {}
+for a in areas_b:
+    for f in sorted(os.listdir(os.path.join(repo_b, "regions", a))):
+        t = open(os.path.join(repo_b, "regions", a, f), encoding="utf-8").read()
+        if "\nrole: representative\n" not in t or "\nparent:" in t: continue
+        line = next((l.split(":", 1)[1].strip() for l in t.splitlines()
+                     if l.startswith("use_when_export:")), None)
+        if line: _had[a] = line
+        break
+for a in _had: set_export(repo_b, a, None)
+time.sleep(0.4)
+st, bare = at(PORT, "/regions")
+check("a link carrying nothing leaves the plain sentence alone",
+      "linked to" not in (bare.get("absence") or "") and "reaches through" not in (bare.get("absence") or ""),
+      (bare.get("absence") or "")[:80])
+check("  and absence may still be claimed", "may say something is absent" in (bare.get("absence") or ""))
+check("  while the link itself still reads as up",
+      all(l["reachable"] for l in (bare.get("links") or [])))
+for a, line in _had.items(): set_export(repo_b, a, line)
+time.sleep(0.4)
+check("  and it comes back when something is advertised again",
+      "reaches through" in (at(PORT, "/regions")[1].get("absence") or ""))
+
 # ── and with it down ──────────────────────────────────────────────────────────
 # The whole design rests on "only hop 0 may say something is not here", and that is true because hop
 # 0 is the whole world. A link that cannot be read makes it false. There is no smaller honest claim.

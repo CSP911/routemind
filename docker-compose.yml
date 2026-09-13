@@ -1,6 +1,17 @@
-# Knowledge — two containers, no database.
+# RouteMind — one backbone, its screen, and the exchange it meets other backbones at.
 #
 #   docker compose up -d   →   http://localhost:${WEB_PORT:-8080}
+#
+# **The exchange is here from the start, with one backbone attached to it.** A second backbone is
+# then one file and one registration away, and nothing about the first one changes — which is the
+# whole reason for meeting at an exchange rather than pairing off. Wiring it in later would mean
+# rewriting the first backbone's `peers.yaml` at the moment somebody is already busy adding a second.
+#
+# With one backbone it reflects nothing and costs a container. That is the price of the third one
+# being free, and of the second not being a migration.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d    a second backbone
+#   docker compose -f docker-compose.yml -f docker-compose.admin.yml up -d   the operator's screen
 #
 # The ontology API is not published. The only way in is the web container's proxy, which is also the
 # one place an actor is stamped on a write. Publishing 8100 would route around both.
@@ -36,11 +47,10 @@ services:
       # makes that whole surface answer 501, which is right: opening a link is a decision.
       # Everything a link needs beyond this is in peers.yaml, in the data repository, because
       # who this backbone is linked to belongs in git and a secret does not. docs/PEERING.md.
-      ONTOLOGY_PEER_TOKEN: "${ONTOLOGY_PEER_TOKEN:-}"
-      # Tokens this backbone presents to its own peers, one per peer named in peers.yaml.
-      # Passed through as a block so adding a peer does not mean editing this file.
-      ONTOLOGY_PEER_TOKEN_HQ: "${ONTOLOGY_PEER_TOKEN_HQ:-}"
-      ONTOLOGY_PEER_TOKEN_BRANCH: "${ONTOLOGY_PEER_TOKEN_BRANCH:-}"
+      # What this backbone accepts from the exchange, and what it presents to it. One secret, both
+      # directions — install.sh writes it on the first run.
+      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_HOME:-}"
+      ONTOLOGY_PEER_TOKEN_IX: "${EXCHANGE_TOKEN_HOME:-}"
       ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
       ONTOLOGY_PEER_TIMEOUT: "${ONTOLOGY_PEER_TIMEOUT:-}"
       # Set these three and Knowledge derives a node's id, kind and description from its name. Leave
@@ -87,4 +97,30 @@ services:
       KNOWLEDGE_ACTOR: "${KNOWLEDGE_ACTOR:-web}"
     ports:
       - "${WEB_PORT:-8080}:8080"
+    restart: unless-stopped
+
+  # Where backbones meet. It has no repository, no areas and no hop 0 — so it cannot become one, and
+  # the sentence the whole design rests on has no third kind of thing to be confused about. With a
+  # single backbone it has nothing to reflect and simply waits. docs/PEERING.md.
+  exchange:
+    build:
+      context: .
+      dockerfile: exchange/Dockerfile
+    image: routemind-exchange:0.1.0
+    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
+    environment:
+      EXCHANGE_NAME: "${EXCHANGE_NAME:-ix}"
+      EXCHANGE_MEMBERS: /data/members.yaml
+      # One secret per member, used in both directions — which is what lets the exchange know who is
+      # calling, and spare a member its own advertisement coming back at it. install.sh writes the
+      # first one; the operator's screen prints the next.
+      EXCHANGE_TOKEN_HOME: "${EXCHANGE_TOKEN_HOME:-}"
+      EXCHANGE_TOKEN_BRANCH: "${EXCHANGE_TOKEN_BRANCH:-}"
+      EXCHANGE_ADMIN_TOKEN: "${EXCHANGE_ADMIN_TOKEN:-}"
+      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
+      ONTOLOGY_PEER_TIMEOUT: "${ONTOLOGY_PEER_TIMEOUT:-}"
+    volumes:
+      - type: bind
+        source: ${KNOWLEDGE_EXCHANGE_DIR:-./data/exchange}
+        target: /data
     restart: unless-stopped

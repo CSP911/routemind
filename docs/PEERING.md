@@ -1,6 +1,12 @@
 # Links between backbones
 
-Two RouteMinds that must not become one, with a wire between them.
+RouteMinds that must not become one, meeting where it does not merge them.
+
+**An install is one backbone and an exchange, from the first `docker compose up`.** With one backbone
+the exchange reflects nothing and costs a container — and that is the price of the second one being a
+file and a registration rather than a migration. Two backbones *can* peer directly and the code still
+does it; the default is the exchange because the moment somebody adds a second backbone is exactly
+the wrong moment to be rewriting the first one's configuration.
 
 ## What it is for, and what it is not for
 
@@ -96,6 +102,9 @@ and comes back 504 with `reason: peer_unreachable`.
 
 ## Trying one out
 
+Nothing about the backbones already running changes. Each one's `peers.yaml` holds a single entry —
+the exchange — and still holds one when there are ten.
+
 ```sh
 docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
 #  http://localhost:8080   this office
@@ -106,18 +115,15 @@ Two full installs, each with its own repository under `data/` and `data-b/`. Two
 one service with two data directories, on purpose: **this is the remote case with a shorter cable.**
 When the two are in different companies nothing changes but the URL and who holds the token.
 
-Then, on each side:
+Four things, and the operator's screen prints all four for you:
 
-1. Give an area a `use_when_export`, through **Advertise upstream** on its rack (scope `peer`).
-2. Write `peers.yaml` in that repository:
-   ```yaml
-   peers:
-     - name: branch
-       label: BRANCH
-       url: http://ontology-b:8100
-       token_env: ONTOLOGY_PEER_TOKEN_BRANCH
-   ```
-3. Set that variable, and `ONTOLOGY_PEER_TOKEN` for what this backbone accepts, in `.env`.
+1. `EXCHANGE_TOKEN_BRANCH` in `.env` — one secret, used in both directions.
+2. `data-b/repo/peers.yaml`, naming the exchange. Its half of the declaration.
+3. A member entry at the exchange, naming it. The other half — neither side alone enrols anybody.
+4. A `use_when_export` on whatever it should share, through **Advertise upstream** (scope `peer`).
+
+Only the fourth is about knowledge, and only the fourth goes through a review queue. The first three
+are wiring.
 
 `peers.yaml` is in the repository because who a backbone is linked to is part of what it is: it
 belongs in git, in review and in the history. The token is the opposite and comes from the
@@ -162,20 +168,25 @@ dynamic routing rather than a config file that happens to be read over HTTP:
 | the link goes down | the rows it can no longer stand behind are dropped, and absence stops being claimed |
 | **the link comes back** | it is used again unprompted, and **absence may be claimed again**. A backbone that stayed cautious for ever after one blip would be as wrong as one that never noticed, and harder to see, because everything still works |
 
-## An exchange, when there are more than two
+## The exchange
 
-Two backbones peer directly and that is the simplest thing that works. Six that all want to see each
-other need fifteen links. An **exchange** is where they meet instead: everybody names it, nobody names
-anybody else, and six links do what fifteen did. The seventh backbone costs one link, not six.
+Where backbones meet. It is in the base compose file and `install.sh` attaches the first backbone to
+it, so an install is wired for a second before anyone wants one.
 
-```sh
-mkdir -p data/exchange && cp examples/exchange/members.yaml data/exchange/
-#  then point each backbone's peers.yaml at the exchange instead of at each other
-docker compose -f docker-compose.yml -f docker-compose.peer.yml -f docker-compose.exchange.yml up -d
-```
+Everybody names the exchange and nobody names anybody else, so N backbones take N links instead of
+N(N−1)/2:
 
-`members.yaml` lives under `data/` because it is this installation's, the way `data/repo` is — the
-copy in `examples/` is a starting point, not a default.
+| backbones | direct | at an exchange |
+|---|---|---|
+| 2 | 1 | 2 |
+| 3 | 3 | 3 |
+| 6 | **15** | 6 |
+| 10 | **45** | 10 |
+| **adding one** | **edit every other backbone** | **one registration** |
+
+At two it costs more than it saves, which is why this is a decision rather than arithmetic. What it
+buys is that the shape never changes: adding the tenth backbone touches the same one file as adding
+the second, and the nine already running are not edited, restarted, or aware of it.
 
 **It is not a backbone and cannot become one.** No repository, no areas, no vocabulary, no
 `/v1/regions` — so no hop 0, and the sentence everything rests on has no third kind of thing to be

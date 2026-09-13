@@ -1,17 +1,24 @@
-# A second backbone, for trying a link out.
+# A second backbone, meeting the first at the exchange that is already there.
 #
 #   docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
-#   →  http://localhost:8080  (this office)      http://localhost:8081  (the other one)
+#   →  http://localhost:8080  this one      http://localhost:8081  the other
 #
-# It is a separate file because one backbone is the ordinary shape and two is a thing you go and do.
+# **Nothing about the first backbone changes.** Its `peers.yaml` still holds one entry — the exchange
+# — and it will still hold one when there are ten. That is what the exchange bought, and it is why it
+# is in the base file rather than added here: wiring it at the moment somebody is adding a second
+# backbone would mean rewriting the first one's configuration exactly when it is in use.
 #
-# **Two services, not one service with two data directories.** That costs a container and buys the
-# only thing worth buying: this *is* the remote case, with a shorter cable. When the two are in
-# different companies, nothing here changes but the URL and who holds the token. Modelling in-org
-# peering as two directories inside one process would work today and teach nothing.
+# Two services rather than one service with two data directories, on purpose: **this is the remote
+# case with a shorter cable.** When the two are in different companies nothing changes but the URL
+# and who holds the token.
 #
 # Both are real installs. Each has its own repository, its own review queue, its own vocabulary, and
-# writes to each go through its own screen — which is the whole point of a link rather than a merge.
+# writes to each go through its own screen — which is the point of a link rather than a merge.
+#
+# Two more things are needed and neither is here, because neither is deployment:
+#   * `EXCHANGE_TOKEN_BRANCH` in .env — one secret, used in both directions
+#   * a member entry at the exchange, and a `peers.yaml` in this backbone's repository
+# docs/PEERING.md walks both, and the operator's screen prints them.
 services:
   ontology-b:
     build:
@@ -24,10 +31,9 @@ services:
       ONTOLOGY_PUBLISH: /data/publish
       ONTOLOGY_OVERLAYS: /data/overlays
       ONTOLOGY_HARNESS: /data/harness
-      # What this one accepts from its peer, and what it presents to it. In a real pair of installs
-      # these are two different secrets held by two different people; here they are two lines in .env.
-      ONTOLOGY_PEER_TOKEN: "${ONTOLOGY_PEER_TOKEN_B:-try-a-link-b}"
-      ONTOLOGY_PEER_TOKEN_HQ: "${ONTOLOGY_PEER_TOKEN:-try-a-link-a}"
+      # What it accepts from the exchange, and what it presents to it. One secret, both directions.
+      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_BRANCH:-}"
+      ONTOLOGY_PEER_TOKEN_IX: "${EXCHANGE_TOKEN_BRANCH:-}"
       ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
       ONTOLOGY_LLM_PROVIDER: "${ONTOLOGY_LLM_PROVIDER:-litellm}"
       ONTOLOGY_LLM_BASE_URL: "${ONTOLOGY_LLM_BASE_URL:-}"
@@ -62,11 +68,3 @@ services:
     ports:
       - "${WEB_PORT_B:-8081}:8080"
     restart: unless-stopped
-
-  # The first backbone learns the token its peer expects. Everything else about the link — that there
-  # is one, and where it is — is in data/repo/peers.yaml, which is versioned and reviewed like the
-  # rest of what this backbone is.
-  ontology:
-    environment:
-      ONTOLOGY_PEER_TOKEN: "${ONTOLOGY_PEER_TOKEN:-try-a-link-a}"
-      ONTOLOGY_PEER_TOKEN_BRANCH: "${ONTOLOGY_PEER_TOKEN_B:-try-a-link-b}"

@@ -125,14 +125,18 @@ it in. [docs/I18N.md](docs/I18N.md) says why, and how to add a language.
 
 ### More than one backbone
 
-Two RouteMinds that must not become one, with a wire between them — head office and a subsidiary, a
-company and its supplier. An area crosses by writing the line it wants to show in the *other*
-backbone's hop 0, and by nothing else; documents are relayed, so no agent holds a peer's credential.
+An install is **one backbone and an exchange** — the place backbones meet, wired from the first
+`docker compose up` so that adding a second is a file and a registration rather than a migration.
+Head office and a subsidiary, a company and its supplier: two RouteMinds that must not become one.
+
+An area crosses by writing the line it wants to show in the *other* backbone's hop 0, and by nothing
+else. Documents are relayed, so no agent ever holds a peer's credential, and adding the tenth backbone
+changes nothing about the nine already running.
 
 The part worth reading is what absence means once there is a link: hop 0 can only claim something is
 missing while every link is up, and says so itself when one is not.
 [docs/PEERING.md](docs/PEERING.md), and `docker compose -f docker-compose.yml -f
-docker-compose.peer.yml up -d` to try one.
+docker-compose.peer.yml up -d` for a second one.
 
 ### One command
 

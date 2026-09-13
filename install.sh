@@ -94,7 +94,45 @@ fi
 
 # Before compose, not after: a bind-mount source Docker has to invent is invented as root, and this
 # container runs as you so that it can commit into your repository.
-mkdir -p data/repo data/publish data/overlays data/harness
+mkdir -p data/repo data/publish data/overlays data/harness data/exchange
+
+# The link this install already has: one backbone, meeting at its own exchange.
+#
+# **Wired now rather than when a second backbone arrives.** Both halves of a link are declarations —
+# the backbone names the exchange, the exchange names the backbone — and writing them at install time
+# means adding a second backbone touches nothing that already works. Doing it later would mean
+# rewriting the first backbone's peers.yaml at exactly the moment somebody is busy adding a second.
+#
+# The secret is generated once and kept. It is the same one in both directions, which is what lets the
+# exchange tell who is calling.
+if ! grep -q '^EXCHANGE_TOKEN_HOME=.\+' .env; then
+  setenv EXCHANGE_TOKEN_HOME "$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+fi
+if [ ! -f data/repo/peers.yaml ]; then
+  cat > data/repo/peers.yaml <<'YAML'
+# Who this backbone is linked to. The token for each is in the environment, not here — this file is
+# versioned and reviewed like the rest of what this backbone is, and a secret is neither.
+peers:
+  - name: ix
+    label: EXCHANGE
+    url: http://exchange:8110
+    token_env: ONTOLOGY_PEER_TOKEN_IX
+YAML
+fi
+if [ ! -f data/exchange/members.yaml ]; then
+  cat > data/exchange/members.yaml <<'YAML'
+# Who meets here. The token for each is in the environment, not in this file.
+#
+# This is the exchange's half of the declaration; each backbone names the exchange in its own
+# peers.yaml. Both halves are needed, so nobody is enrolled by one side alone.
+members:
+  - name: home
+    label: HOME
+    url: http://ontology:8100
+    token_env: EXCHANGE_TOKEN_HOME
+YAML
+fi
+
 docker compose up -d --build
 
 # One base URL, used to wait and then to check. Computing it twice is how the check ends up talking
