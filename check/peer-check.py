@@ -516,6 +516,36 @@ e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [ay]", OV])
 check("while a line for a peer that is on the list is ordinary",
       not any("use_when_export_for" in x for x in e), json.dumps(e[:2]))
 
+# ── the export policy on a kind ───────────────────────────────────────────────
+# `vocab.yaml` says what a kind is; it also says whether that sort of thing leaves. A value that is
+# neither yes nor no is refused rather than read as one — `export: maybe` would read as caution and
+# would be permission, which is the worst direction for a mistake in this file to point.
+from service.validate import export_kinds                                # noqa: E402
+import yaml as _yaml                                                     # noqa: E402
+
+
+def vocab_with(kind, value):
+    v = _yaml.safe_load(open(os.path.join(repo_b, "vocab.yaml"), encoding="utf-8").read())
+    for k in v["kinds"]:
+        if k["id"] == kind: k["export"] = value
+    return v
+
+
+K = _yaml.safe_load(open(os.path.join(repo_b, "vocab.yaml"), encoding="utf-8").read())["kinds"][0]["id"]
+check(f"`export: no` on `{K}` names it", export_kinds(vocab_with(K, False)) == {K},
+      json.dumps(sorted(export_kinds(vocab_with(K, False)))))
+check("  and the word spelled out means the same", export_kinds(vocab_with(K, "no")) == {K})
+check("  while yes is the default said out loud", export_kinds(vocab_with(K, True)) == set())
+check("  and a kind that says nothing crosses",
+      export_kinds(_yaml.safe_load(open(os.path.join(repo_b, "vocab.yaml"), encoding="utf-8").read())) == set())
+
+tmp = os.path.join(T, "vcheck2"); shutil.rmtree(tmp, ignore_errors=True); shutil.copytree(repo_b, tmp)
+open(os.path.join(tmp, "vocab.yaml"), "w", encoding="utf-8").write(
+    _yaml.safe_dump(vocab_with(K, "maybe"), allow_unicode=True, sort_keys=False))
+e = validate(Store(tmp)).get("errors") or []
+check("a value that is neither is refused, not guessed at",
+      any("export must be yes or no" in x for x in e), json.dumps(e[:2]))
+
 # This pair was set up with a secret each way rather than one between them, which is legal and is
 # what most people would write first. Its cost has been invisible until there was something to name.
 set_audience(repo_b, SHARED_B, ["ay"])

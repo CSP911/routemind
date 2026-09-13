@@ -39,6 +39,12 @@ services:
       # worked on any install made from this file. Its own directory, for the overlays' reason: a
       # commit per proposal would bury the ontology.
       ONTOLOGY_HARNESS: /data/harness
+      # Who read what across a link. A relayed document is held for one request and discarded, so
+      # nothing anywhere remembers unless the owner writes a line — and every read through an
+      # exchange arrives from the same container, so the HTTP log cannot tell them apart. Its own
+      # directory, one file per UTC day, and to stderr as well so an install that mounts nothing
+      # still has the record. docs/PEERING.md, "Who read what".
+      ONTOLOGY_ACCESS: /data/access
       # How long a write waits for another process holding this data directory before it answers that
       # one is. One ontology per directory is the rule; the lock is what makes breaking it merely slow
       # instead of destructive. Documented in .env.example, so it has to arrive here to be real.
@@ -77,6 +83,9 @@ services:
       - type: bind
         source: ${KNOWLEDGE_HARNESS_DIR:-./data/harness}
         target: /data/harness
+      - type: bind
+        source: ${KNOWLEDGE_ACCESS_DIR:-./data/access}
+        target: /data/access
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped

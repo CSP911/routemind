@@ -1,6 +1,6 @@
 # A second backbone, meeting the first at the exchange that is already there.
 #
-#   mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness
+#   mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness data-b/access
 #   docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
 #   →  http://localhost:8080  this one      http://localhost:8081  the other
 #
@@ -37,6 +37,12 @@ services:
       ONTOLOGY_PUBLISH: /data/publish
       ONTOLOGY_OVERLAYS: /data/overlays
       ONTOLOGY_HARNESS: /data/harness
+      # Who read what across a link. A relayed document is held for one request and discarded, so
+      # nothing anywhere remembers unless the owner writes a line — and every read through an
+      # exchange arrives from the same container, so the HTTP log cannot tell them apart. Its own
+      # directory, one file per UTC day, and to stderr as well so an install that mounts nothing
+      # still has the record. docs/PEERING.md, "Who read what".
+      ONTOLOGY_ACCESS: /data/access
       # What it accepts from the exchange, and what it presents to it. One secret, both directions.
       ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_BRANCH:-}"
       ONTOLOGY_PEER_TOKEN_IX: "${EXCHANGE_TOKEN_BRANCH:-}"
@@ -58,6 +64,9 @@ services:
       - type: bind
         source: ${KNOWLEDGE_B_HARNESS_DIR:-./data-b/harness}
         target: /data/harness
+      - type: bind
+        source: ${KNOWLEDGE_B_ACCESS_DIR:-./data-b/access}
+        target: /data/access
     restart: unless-stopped
 
   web-b:

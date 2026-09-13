@@ -166,6 +166,70 @@ off, which is the only way to tell a fresh answer from a lucky one. The control 
 withdrawal made behind the server's back stays visible, and then the hint takes it off a table two
 hops away.
 
+## A domain, and what a kind is allowed to do
+
+A **domain** is one exchange and the backbones around it. Between domains the question stops being
+*which areas* and becomes *which sorts of thing* — and `vocab.yaml`, which is already where a kind is
+defined, reviewed and committed, is where that is written:
+
+```yaml
+kinds:
+  - id: table
+    desc: a table of values — amounts, caps, rates, day counts
+    export: no          # this sort of thing stays inside this backbone
+```
+
+**One decision per kind, not one per entity.** Twelve, not seventy-nine. And a **deny** list rather
+than an allow list: the area-level `use_when_export` is already the opt-in, and making an export a
+twelve-part act would mean the part everybody skips is the one that matters. A value that is neither
+yes nor no is refused rather than read as one — `export: maybe` reads as caution and would be
+permission.
+
+**Listing and fetch agree, and that is the whole of the difficulty.** A row dropped from a table and
+still readable by address is a leak; a row left in a table and refused on fetch reads as an outage,
+and following an address exactly as printed is what every table tells an agent to do. So a denied kind
+goes from the listing, its address answers the same 404 as something that never existed, and the fetch
+walks the whole parent chain — a published child of a hidden parent is in no listing either.
+
+An area whose **face** is of a denied kind does not cross at all. Its rows are the representative's
+children, so offering it would offer a table nothing in which can be read, and an empty table reads as
+*there is nothing here* rather than *you may not see it*.
+
+None of this changes what the owner holds. It is a policy about what leaves.
+
+## Who read what
+
+**Nothing is copied and nothing is kept.** A relayed document is held for the length of one request
+and discarded — no cache at the reader, which is the difference between a link and a merge. The cost
+is accountability: with a physical copy there is at least an artefact at the far end, and this leaves
+nothing anywhere unless the owner writes a line. *What did the other domain read from us last month*
+is the first question anybody asks.
+
+Until 2026-09-13 the answer available was an HTTP access line:
+
+```
+172.20.0.2 "GET /v1/export/nodes/payroll-overview HTTP/1.1" 200
+```
+
+which does not say who — and every read through an exchange arrives from the same container, so they
+were all identically anonymous.
+
+The owner records one JSON line per read: when, **which link carried it**, **who was at the far end**,
+what was asked for, served or refused, and how big. Two names because they are two questions, and
+behind two rooms the second is the neighbouring room rather than the backbone inside it — not a gap,
+but what no-transit means. A room's members are its own business.
+
+**Refusals are recorded too, and matter more.** A served read is the ordinary case; a refused one is
+somebody following an address they should not have, and a run of them is the only signal there is that
+a link is being probed rather than used. A wrong token is recorded before the door.
+
+To stderr always, so an install that configures nothing still has it, and to `ONTOLOGY_ACCESS` as well
+— one file per UTC day, because stderr rotates away and an audit that rotates away is not one.
+
+`./check/domain-check.py` — 31 assertions on two domains: the policy on both the listing and the
+address, the whole area when its face is denied, both names in the record, a refusal with its reason,
+and a document read across the boundary that leaves no trace anywhere on the reader's disk.
+
 ## The export surface is separate, not the ordinary one behind a check
 
 `/v1/export/…` builds every answer from the exported set, so no path through it — and no mistake in a
@@ -227,7 +291,7 @@ Nothing about the backbones already running changes. Each one's `peers.yaml` hol
 the exchange — and still holds one when there are ten.
 
 ```sh
-mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness
+mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness data-b/access
 docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
 #  http://localhost:8080   this office
 #  http://localhost:8081   the other one

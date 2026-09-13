@@ -22,7 +22,7 @@ from urllib.parse import urlparse, unquote
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from service.store import Store                     # noqa: E402
-from service.validate import validate               # noqa: E402
+from service.validate import validate, export_kinds  # noqa: E402
 from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E402
 from service.service_store import ServiceStore              # noqa: E402
 from service.validate_service import validate_services      # noqa: E402
@@ -30,6 +30,7 @@ from service.write_service import ServiceWriter             # noqa: E402
 from service import peers as peering                        # noqa: E402
 from service import overlays                                # noqa: E402
 from service import curator                                 # noqa: E402
+from service import access                                  # noqa: E402
 
 DATA = Path(os.environ.get("ONTOLOGY_DATA", "/data"))
 PUBLISH = Path(os.environ["ONTOLOGY_PUBLISH"]) if os.environ.get("ONTOLOGY_PUBLISH") else None
@@ -38,6 +39,9 @@ FRAGMENTS = Path(os.environ["ONTOLOGY_FRAGMENTS"]) if os.environ.get("ONTOLOGY_F
 # link and that whole surface answers 501 — which is the right default: opening one is a decision,
 # not something an install drifts into. See docs/PEERING.md.
 PEER_TOKEN = (os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
+# Where the record of cross-domain reads is kept. Unset means stderr only, which every install has
+# without configuring anything — and stderr rotates away, and an audit that rotates away is not one.
+ACCESS = (os.environ.get("ONTOLOGY_ACCESS") or "").strip() or None
 SERVICES = Path(os.environ["ONTOLOGY_SERVICES"]) if os.environ.get("ONTOLOGY_SERVICES") else None
 SERVICE_PUBLISH = Path(os.environ["ONTOLOGY_SERVICE_PUBLISH"]) if os.environ.get("ONTOLOGY_SERVICE_PUBLISH") else None
 # Its own path, never under ONTOLOGY_PUBLISH: Pi mounts that read-only and it is a git checkout
@@ -692,9 +696,29 @@ class Handler(BaseHTTPRequestHandler):
     # silently reads a different node with the same name. So every address leaving on this surface is
     # moved onto it, once, here, where nothing can route around it.
     _as_peer = False
+    # Set for the length of one read of the export surface, and cleared by the answer. Recording in
+    # `_send` rather than at each `return` covers the exits this function has today and the ones
+    # somebody adds next year — the same argument that made the export surface a separate surface
+    # instead of the ordinary one behind a check.
+    _access = None
 
     def _send(self, code: int, payload, ctype="application/json; charset=utf-8"):
-        if self._as_peer and isinstance(payload, dict): payload = _to_export(payload)
+        if self._access is not None:
+            a, self._access = self._access, None
+            why = None
+            if code >= 400 and isinstance(payload, dict):
+                why = payload.get("reason") or (payload.get("error") or "")[:120]
+            access.record(ACCESS, path=a["path"], peer=a.get("peer"), reader=a.get("reader"),
+                          outcome=("served" if 200 <= code < 300 else "refused"), reason=why,
+                          size=(len(json.dumps(payload, ensure_ascii=False)) if isinstance(payload, (dict, list))
+                                else len(payload or "")))
+        if self._as_peer and isinstance(payload, dict):
+            # One place, for both of the things a peer's answer needs doing to it. Doing either of
+            # them at the call sites would mean being right at every call site, and the export
+            # surface has four; the argument is the same one that made it a separate surface rather
+            # than the ordinary one behind a check.
+            payload = _drop_kinds(payload, _denied_kinds())
+            payload = _to_export(payload)
         body = payload.encode("utf-8") if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False, indent=1).encode("utf-8")
         self.send_response(code); self.send_header("Content-Type", ctype); self.send_header("Content-Length", str(len(body)))
         self.send_header("Access-Control-Allow-Origin", "*"); self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -841,6 +865,10 @@ class Handler(BaseHTTPRequestHandler):
         approval" means nothing read at head office. So each is written for its reader, and the one
         for the outside goes through the review queue like every other advertisement (scope `peer`).
         """
+        # Before the door, so a wrong token is recorded too. A refused read is the one that matters:
+        # a served one is the ordinary case, and a run of refusals is the only signal there is that a
+        # link is being probed rather than used.
+        self._access = {"path": urlparse(self.path).path, "peer": None, "reader": None}
         token = self.headers.get("X-Peer-Token") or ""
         who = _peer_by_token(token)
         if not PEER_TOKEN and not any(p["token"] for p in peering.declared(DATA)):
@@ -856,6 +884,10 @@ class Handler(BaseHTTPRequestHandler):
         reader = who["name"] if who else None
         if who and who["kind"] == "exchange":
             reader = (self.headers.get("X-Peer-For") or "").strip() or who["name"]
+        # Two names, because they answer different questions: which link carried this, and who was at
+        # the far end of it. Behind two rooms the second is the neighbouring room and not the backbone
+        # inside it — which is not a gap in the record, it is what no-transit means.
+        self._access.update(peer=(who or {}).get("name"), reader=reader)
 
         rj = store.regions_json()
         shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", [])
@@ -867,6 +899,17 @@ class Handler(BaseHTTPRequestHandler):
         # path sees everything. docs/PEERING.md says so where it says who should run one.
         to_a_room = bool(who) and who["kind"] == "exchange" and not (self.headers.get("X-Peer-For") or "").strip()
         visible = {k: r for k, r in shared.items() if _visible(r, reader)}
+        # An area whose **face** is of a kind that does not cross, does not cross. Its entries are
+        # that representative's children, so offering the area would offer a table every row of which
+        # is refused — and an empty table is the one answer a listing must never give, because it
+        # reads as "there is nothing here" rather than "you may not see it".
+        _denied = _denied_kinds()
+        if _denied:
+            def _face_crosses(r):
+                rep = store.node(r.get("representative") or "")
+                return not rep or str(rep.get("kind") or "") not in _denied
+            shared = {k: r for k, r in shared.items() if _face_crosses(r)}
+            visible = {k: r for k, r in visible.items() if _face_crosses(r)}
         if not to_a_room: shared = visible
         # The revision the peer is being told about. It is what makes staleness visible on the other
         # side: git already numbers every state this repository has been in, so a link needs no clock.
@@ -912,6 +955,12 @@ class Handler(BaseHTTPRequestHandler):
             # cannot be told "this is hidden" and then be served it by anyone who kept yesterday's
             # address. The surface must offer exactly what its own tables offer.
             if _draft_anywhere(n):
+                return self._err(404, f"no exported node {parts[1]}")
+            # And the kind. `vocab.yaml` says which sorts of thing stay inside this backbone, and an
+            # entity under one that does not cross does not cross either — a table nobody may see is
+            # not made visible by hanging a note off it. Same 404 as everything else refused here:
+            # whether this backbone holds it is not something the peer learns.
+            if _kind_denied_anywhere(n, _denied_kinds()):
                 return self._err(404, f"no exported node {parts[1]}")
             self._as_peer = True
             return self._get(parts)
@@ -1253,6 +1302,40 @@ def _peer_by_token(token: str) -> dict | None:
                  if any(peering.same_secret(token, t) for t in p["accept"])), None)
 
 
+def _denied_kinds() -> set[str]:
+    """Which kinds do not cross, from the vocabulary as it stands. Read per request rather than at
+    startup: `vocab.yaml` is committed like everything else and a policy that needed a restart to
+    take effect would be a policy nobody trusts."""
+    # Imported by name. `validate` in this module is the **function**, not the module it came from,
+    # so `validate.export_kinds` was an AttributeError — swallowed by the guard below, which turned a
+    # policy that did nothing into a policy that looked applied. The guard stays, for a vocab.yaml
+    # somebody is midway through editing; it is not allowed to hide a missing name.
+    try: return export_kinds(store.vocab())
+    except Exception: return set()
+
+
+def _drop_kinds(payload, denied: set[str]):
+    """Take the entities a peer may not see out of a listing it is being handed.
+
+    Listing and fetching have to agree. Refusing the fetch alone leaves the address printed in a
+    table the peer was given, and an address that is printed and then refused is worse than one that
+    was never offered — it reads as an outage, and following it is what the tables tell an agent to
+    do. This is the same failure a draft had.
+    """
+    if not denied or not isinstance(payload, dict): return payload
+    out = dict(payload)
+    # One level at a time, by the row's own kind. A row under a denied one is never reached, because
+    # the denied one was dropped from the listing that would have led to it — and the fetch closes the
+    # remembered-address route by walking the whole chain. Navigation and fetch agree; neither leaves
+    # an address printed that the other refuses.
+    for key in ("entries", "children"):
+        rows = out.get(key)
+        if isinstance(rows, list):
+            out[key] = [r for r in rows
+                        if not (isinstance(r, dict) and str(r.get("kind") or "") in denied)]
+    return out
+
+
 def _draft_anywhere(node: dict) -> bool:
     """Is this entity a draft, or under one. A published child of a draft parent is not in any
     listing either — the parent is what carries it — so following an address to it would be the same
@@ -1277,6 +1360,23 @@ def _line_for(region: dict, reader: str | None) -> str:
     """
     per = region.get("use_when_export_for") or {}
     return (per.get(reader) if reader and per.get(reader) else region.get("use_when_export")) or ""
+
+
+def _kind_denied_anywhere(node: dict, denied: set[str]) -> bool:
+    """Is this entity of a kind that does not cross, or under one.
+
+    Up the chain for the same reason `_draft_anywhere` walks it: a published child of a hidden parent
+    is in no listing either, so following an address to it would be the same hole one level down.
+    """
+    if not denied: return False
+    seen, cur = set(), node
+    while cur:
+        if str(cur.get("kind") or "") in denied: return True
+        parent = cur.get("parent")
+        if not parent or parent in seen: return False
+        seen.add(parent)
+        cur = store.node(parent)
+    return False
 
 
 def _visible(region: dict, reader: str | None) -> bool:

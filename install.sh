@@ -94,7 +94,7 @@ fi
 
 # Before compose, not after: a bind-mount source Docker has to invent is invented as root, and this
 # container runs as you so that it can commit into your repository.
-mkdir -p data/repo data/publish data/overlays data/harness data/exchange
+mkdir -p data/repo data/publish data/overlays data/harness data/exchange data/access
 
 # The link this install already has: one backbone, meeting at its own exchange.
 #

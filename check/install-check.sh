@@ -109,7 +109,7 @@ say "== the second backbone, wired the way docs/PEERING.md says =="
 # KNOWLEDGE_UID unable to write them. The first run of this check is how that line reached the
 # documents: it was in install.sh for the first backbone and in the operator screen's plan, and
 # missing from the one command a person copies out of docs/PEERING.md.
-mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness
+mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness data-b/access
 if ! docker compose $COMPOSE up -d > up.log 2>&1; then
   bad "the peer overlay did not come up"
   tail -12 up.log

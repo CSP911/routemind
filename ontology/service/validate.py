@@ -73,6 +73,34 @@ def _ref_exists(store: Store, ref: str) -> bool:
     return any((store.root / c).exists() for c in (f"regions/{r}/{m.group(2)}", f"regions/{r}/nodes/{m.group(2)}"))
 
 
+def export_kinds(vocab: dict) -> set[str]:
+    """The kinds that do not cross a link, declared on the kind itself in `vocab.yaml`.
+
+        kinds:
+          - id: table
+            desc: a table of values — amounts, caps, rates, day counts
+            export: no          # this kind stays inside this backbone
+
+    On the kind and not somewhere else because the vocabulary is already where a kind is *defined*,
+    reviewed and committed — "this sort of thing does not leave" is a sentence about the sort of
+    thing, and putting it beside the definition means one decision per kind rather than one per
+    entity. Twelve, not seventy-nine.
+
+    A deny list rather than an allow list. The area-level decision is already the opt-in: an area
+    crosses because somebody wrote `use_when_export` for it. Requiring every kind to be named again
+    would make exporting one area a twelve-part act, and the part everybody would skip is the one
+    that matters.
+    """
+    out = set()
+    for k in (vocab.get("kinds") or []):
+        if not isinstance(k, dict): continue
+        v = k.get("export")
+        # `no` in YAML is already False; a string is what somebody writes by hand.
+        if v is False or (isinstance(v, str) and v.strip().lower() in ("no", "false", "never")):
+            out.add(str(k.get("id") or "").strip())
+    return {k for k in out if k}
+
+
 def area_rules(vocab: dict) -> dict:
     """Per-area rules, declared in `vocab.yaml`. Absent means the area has no special role.
 
@@ -98,6 +126,16 @@ def validate(store: Store) -> dict:
     errors, warnings = [], []
     vocab = store.vocab(); budgets = vocab.get("budgets", {})
     kinds = {k["id"] for k in vocab.get("kinds", [])}
+    # `export` on a kind decides whether that sort of thing crosses a link. Anything but a plain no
+    # is refused rather than read as one: a policy that silently means the opposite of what somebody
+    # typed is the worst shape this file can take, and `export: maybe` would read as caution.
+    for k in (vocab.get("kinds") or []):
+        v = k.get("export") if isinstance(k, dict) else None
+        if v is None: continue
+        if not (v is False or v is True or (isinstance(v, str) and v.strip().lower()
+                                            in ("no", "false", "never", "yes", "true"))):
+            errors.append(f"vocab kinds[{k.get('id')}]: export must be yes or no, got {v!r} — "
+                          f"anything else would be read as one of them and it is not obvious which")
     groups = {g["group"]: [(r["id"] if isinstance(r, dict) else r) for r in g["rels"]] for g in vocab.get("relations", [])}
     rels = {r for rs in groups.values() for r in rs}
     domain_rules = edge_rules(vocab); areas = area_rules(vocab)

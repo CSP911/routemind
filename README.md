@@ -529,6 +529,7 @@ check/        install-check.sh (a clean clone, installed and walked — before a
               scenarios.py + room-check.py + cross-check.py (docs/SCENARIOS.md: a backbone over
               time, a room over time, and the two crossed)
               peer-check · exchange-check · ix-peering-check · refresh-check · admin-check (links)
+              domain-check.py (what crosses a domain boundary, and who is recorded reading it)
 ```
 
 Every write **commits** into `data/repo`. Undo is `git revert`.
