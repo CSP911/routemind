@@ -4,6 +4,10 @@ Status: **built** 2026-09-11 — direction approved by the operator, reviewed an
 Knowledge session (`/v1/overlays`, 0fda554), consumed by the proxy, the map and the MCP server. Not yet
 done: the ten-question comparison at the bottom, and the curator reading closed records.
 
+![How an overlay gets made: the agent reads hop 0, picks every area the question belongs to and says
+why for each, works from the one merged table, and closes it with the addresses the answer actually
+came from. RouteMind serves and checks; it never chooses.](img/overlay-flow.svg)
+
 ## Why
 
 Today an overlay exists only when a person ticks areas on the map, and only reaches an agent through
@@ -33,6 +37,12 @@ flowchart LR
 ```
 
 ## Four rules
+
+**The agent decides what goes in it.** RouteMind has no model of its own for this: it serves the
+tables, refuses an address that resolves to nothing and an overlay over its caps, and keeps the
+record — which rows a question belongs to is never its judgment. The picking is done by whatever model
+is driving the MCP client, from the `use_when` lines alone. A person can draw one too, by ticking
+areas on the map and pressing **Draw VRF**; both make the same object, and the map draws either.
 
 1. **Absence is still decided at hop 0 only.** An overlay narrows where to look; it does not change
    what exists. "Not in the overlay" never means "not in RouteMind" — the agent goes back to hop 0.

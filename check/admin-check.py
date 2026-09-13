@@ -18,7 +18,7 @@ reasonable. So most of what is asserted here is what it **cannot** do.
     does not read the reflection — two doors, two keys, and neither is a spare for the other.
   * With no token configured it is not a door at all.
 """
-import json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
+import json, os, pathlib, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = int(sys.argv[1]) if len(sys.argv) > 1 else 8151
@@ -31,12 +31,24 @@ def check(name, cond, extra=""):
     results.append(("ok   " if cond else "FAIL ") + name + ("" if cond or not extra else f"   — {extra}"))
 
 
+# A run that stopped early used to print a summary that read exactly like a clean one. The results
+# list holds what ran, `_end` is an atexit handler so it prints whatever crashed the script, and
+# "0 failed of 29" is then true of the 29 that ran and silent about the 40 that did not. The exit
+# code was 1, so nothing automated was fooled — but the line a person reads said the run passed, and
+# that is the one place a check must not be wrong about itself. Appended to on the last line.
+finished = []
+
+
 def _end():
     for p in procs:
         try: p.terminate()
         except Exception: pass
     if results: print("\n".join(results))
-    if results: print(f"\n{sum(r.startswith('FAIL') for r in results)} failed of {len(results)}")
+    if results:
+        n = sum(r.startswith("FAIL") for r in results)
+        print(f"\n{n} failed of {len(results)}" if finished else
+              f"\n{n} failed of the {len(results)} that ran — but THE RUN STOPPED EARLY and the rest "
+              f"never ran, so this is not a pass. What stopped it is printed above these results.")
 
 
 import atexit; atexit.register(_end)
@@ -194,6 +206,40 @@ check("  with the compose block naming the variable, not the value",
 check("  and its half of the declaration pointing at the exchange", "name: ix" in pl["peers"])
 check("  on a port nobody has taken", adminsrv.plan("w", "W", 8080, [8080, 8081, 8090])["port"] == 8082)
 
+# ── the plan has to agree with itself, and with the backbone it is a copy of ──
+# It is three texts a person pastes in order — a mkdir, a compose file, a peers.yaml — and nothing
+# reads them back, so a directory can go missing from one of them and every screen still looks
+# right. Two had: `access`, added with the access record, reached docker-compose.peer.yml and
+# neither the mkdir nor the compose fragment here. A backbone made through this screen therefore
+# kept **no record of who read what across the link it was being added to** — working exactly as
+# well as one that did, and saying nothing.
+#
+# So the three are compared to each other and to docker-compose.peer.yml, which is the same backbone
+# written by hand and the only place this shape is reviewed.
+made = {d.split("/", 1)[1] for d in pl["shell"].split("\n")[0].split() if d.startswith("data-warehouse/")}
+mounted = {l.split(":")[0].rsplit("/", 1)[1] for l in pl["compose"].splitlines()
+           if l.strip().startswith("- ./data-warehouse/")}
+targets = {l.split(":", 1)[1].strip() for l in pl["compose"].splitlines()
+           if l.strip().startswith("- ./data-warehouse/")}
+settings = {l.split(":", 1)[1].strip() for l in pl["compose"].splitlines()
+            if l.strip().startswith("ONTOLOGY_") and l.split(":", 1)[1].strip().startswith("/data/")}
+peer_yml = (pathlib.Path(__file__).resolve().parent.parent / "docker-compose.peer.yml").read_text(encoding="utf-8")
+# The hand-written file uses the long `source: ${KNOWLEDGE_B_…_DIR:-./data-b/x}` form, so the
+# default has a closing brace on it.
+hand = {l.split("./data-b/", 1)[1].strip().rstrip("}") for l in peer_yml.splitlines() if "./data-b/" in l}
+
+check("  every directory the plan makes is one the plan mounts", made == mounted,
+      f"mkdir {sorted(made)} vs volumes {sorted(mounted)}")
+# Both directions, and the second is the one that matters. A path configured with nothing mounted
+# there loses its contents on restart; a path **mounted with nothing configured** is the original
+# bug's real shape — the directory exists, is empty, and the thing that should write into it was
+# never told to. Nothing fails, and there is no record. One-directional (`settings <= targets`) was
+# the first version here and it passed with ONTOLOGY_ACCESS deleted.
+check("  and the paths it mounts are exactly the paths it configures", settings == targets,
+      f"mounted-not-configured {sorted(targets - settings)}, configured-not-mounted {sorted(settings - targets)}")
+check("  and it is the same set the hand-written second backbone uses", made == hand,
+      f"plan {sorted(made)} vs docker-compose.peer.yml {sorted(hand)}")
+
 lk = adminsrv.plan_link("partner-ix", "PARTNER", "https://ix.partner.example", "ix",
                         "https://ix.example.com")
 ltok = lk["env"].split("=", 1)[1].strip()
@@ -228,4 +274,5 @@ st, _ = call("/admin/members", ADMIN_TOKEN, method="POST", body={"name": "ok-nam
 check("and so is an address that is not http", st == 400, str(st))
 
 shutil.rmtree(T, ignore_errors=True)
+finished.append(True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

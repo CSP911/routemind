@@ -36,13 +36,24 @@ def check(name, cond, extra=""):
     return bool(cond)
 
 
+# A run that stopped early used to print a summary that read exactly like a clean one. The results
+# list holds what ran, `_end` is an atexit handler so it prints whatever crashed the script, and
+# "0 failed of 29" is then true of the 29 that ran and silent about the 40 that did not. The exit
+# code was 1, so nothing automated was fooled — but the line a person reads said the run passed, and
+# that is the one place a check must not be wrong about itself. Appended to on the last line.
+finished = []
+
+
 def _end():
     for p in procs:
         try: p.terminate()
         except Exception: pass
     if results:
         print("\n".join(results))
-        print(f"\n{sum(r.startswith('FAIL') for r in results)} failed of {len(results)}")
+        n = sum(r.startswith("FAIL") for r in results)
+        print(f"\n{n} failed of {len(results)}" if finished else
+              f"\n{n} failed of the {len(results)} that ran — but THE RUN STOPPED EARLY and the rest "
+              f"never ran, so this is not a pass. What stopped it is printed above these results.")
 
 
 import atexit; atexit.register(_end)
@@ -304,4 +315,5 @@ st, seen3, _ = origins(IX_PORT["ix3"], TOK["TOK_FAR"])
 check("  so far still sees one room across, and no more", seen3 == ["remote"], json.dumps(seen3))
 
 shutil.rmtree(T, ignore_errors=True)
+finished.append(True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

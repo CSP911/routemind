@@ -69,7 +69,64 @@ for v in sorted(UNDOCUMENTED):
     if v not in stale: print(f"--   {v} is not in .env.example, on purpose — {UNDOCUMENTED[v]}")
 for v in stale: print(f"--   {v} is in UNDOCUMENTED but no longer needs to be; drop the entry")
 
+# ── and every `mkdir -p` recipe has to cover every bind mount ────────────────
+# Docker creates a missing bind-mount path **owned by root** while the container runs as
+# KNOWLEDGE_UID, so a recipe short by one directory is a container that never becomes healthy, with
+# a message about the directory that *is* there. This has now happened twice: `data-b/…` was in
+# install.sh and in the operator screen's plan and missing from docs/PEERING.md (SCENARIOS Q6), and
+# then `access` — added with the access record — was missing from three recipes in README.md and from
+# the operator screen's plan, which is the screen written to prevent exactly this.
+#
+# So the recipes are compared to the mounts rather than to each other. A recipe naming one directory
+# is exempt: that is the `mkdir -p data/repo && cp -r examples/…` form, where install.sh makes the
+# rest. Two or more means the recipe is standing in for the whole preparation.
+MOUNT_RE = re.compile(r"source:\s*(?:\$\{[A-Z_]+:-)?\./([a-z0-9-]+)/([a-z]+)\}?")
+mounts: dict[str, set[str]] = {}
+for f in COMPOSE:
+    for root, sub in MOUNT_RE.findall(f.read_text(encoding="utf-8")):
+        mounts.setdefault(root, set()).add(sub)
+# Every `data-<something>` is one backbone laid out like the second one, including the one the
+# operator screen prints for a name nobody has chosen yet.
+peer_layout = set().union(*(v for k, v in mounts.items() if k.startswith("data-")), set())
+
+# A recipe is not always one run of text. It is broken over lines with a trailing backslash in the
+# shell, and in admin/server.py it is two adjacent Python string literals — so the text is joined
+# before it is read, or the check reports a complete recipe as short and the next person "fixes" a
+# file that was right. `\` + newline, and `"` + newline + `f"`, both become one space.
+JOIN_RE = re.compile(r"\\\s*\n\s*|\"\s*\n\s*f?\"")
+RECIPE_RE = re.compile(r"mkdir -p ((?:[A-Za-z0-9{}$_-]+/[a-z]+\s+)*[A-Za-z0-9{}$_-]+/[a-z]+)")
+short = []
+for f in sorted(ROOT.glob("*.sh")) + sorted(ROOT.glob("*.yml")) + sorted(ROOT.glob("docs/*.md")) \
+       + [ROOT / "README.md", ROOT / "admin/server.py"]:
+    raw = f.read_text(encoding="utf-8")
+    text = JOIN_RE.sub(" ", raw)
+    for m in RECIPE_RE.finditer(text):
+        dirs = [d for d in m.group(1).split() if "/" in d]
+        if len(dirs) < 2: continue
+        roots = {d.split("/")[0] for d in dirs}
+        if len(roots) != 1: continue
+        r = roots.pop()
+        want = mounts.get(r) or (peer_layout if r.startswith("data-") or "{" in r or "$" in r else None)
+        if not want: continue
+        missing = sorted(want - {d.split("/", 1)[1] for d in dirs})
+        if missing:
+            # The joined text has different offsets, so the line is counted in the file as written.
+            # Joining never removes a `mkdir -p`, so the nth one in the joined text is the nth one
+            # here — which matters in README.md, where the first is a one-directory recipe this loop
+            # skipped and naming it would send someone to edit the wrong line.
+            nth = text[:m.start()].count("mkdir -p")
+            at = -1
+            for _ in range(nth + 1): at = raw.index("mkdir -p", at + 1)
+            line = raw[:at].count("\n") + 1
+            short.append(f"{f.relative_to(ROOT)}:{line}  {r}/ is missing " + ", ".join(missing))
+
 bad = False
+if short:
+    bad = True
+    print("FAIL a mkdir recipe does not cover every bind mount:\n  " + "\n  ".join(short) +
+          "\n  Docker creates the missing one as root and the container never comes up.")
+else:
+    print(f"ok   every mkdir recipe covers its bind mounts ({sum(len(v) for v in mounts.values())} across {len(mounts)} layouts)")
 for line in port_reader:
     bad = True
     print("FAIL the installer and docker compose disagree about which .env line wins:\n  " + line +

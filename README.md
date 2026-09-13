@@ -22,343 +22,101 @@ documents.](docs/img/backbone-as-advertisement.svg)
 The shape is borrowed from dynamic routing on a network, and the borrowed part is the useful one:
 **an area advertises where it is relevant, rather than exposing everything it holds.** An agent reads
 one line per area, routes on that, and reads documents only inside what it picked — so the cost of
-finding something does not grow with how much there is. What each area holds behind its line is its
-own business, which is why the vocabulary and the depth are yours to change without anything upstream
-knowing.
+finding something does not grow with how much there is.
 
 The two things that make it work are the two easiest to get wrong. **`use_when` is the only text read
 before a choice is made**, so an area with a title and no reason is one nobody picks. And **absence is
 decided at hop 0 only** — an area's own table says what that area holds, never what RouteMind lacks.
 
-**[docs/ROUTING.html](docs/ROUTING.html)** — the same structure in detail: how a change to an
-advertisement is proposed and applied, what an overlay is, and how an agent walks all of it. Open it
-in a browser.
+Some questions do not sit in one area: settling a trip is three at once, and picking one answers a
+third of it. An **overlay** is that working set made as an object — the areas, why each is in it, and
+what was actually used to answer. The agent draws it; RouteMind serves it and keeps the record.
 
-## One question, several areas
-
-Some questions do not sit in one area. Settling a trip is three: how many days count, how much they
-pay, and whether any of it is taxed. Picking one area answers a third of it.
-
-![How an overlay gets made: the agent reads hop 0, picks every area the question belongs to and says
-why for each, works from the one merged table, and closes it with the addresses the answer actually
-came from. RouteMind serves and checks; it never chooses.](docs/img/overlay-flow.svg)
-
-An **overlay** is that working set, made as an object: the question it is for, the areas and nodes in
-it and **why each one is in it**, the trail of what was added and dropped while reading, and — when it
-closes — what was actually used to answer.
-
-**The agent decides what goes in it.** RouteMind has no model of its own for this: it serves the
-tables, refuses an address that resolves to nothing and an overlay over its caps, and keeps the
-record — which rows a question belongs to is never its judgment. So the picking is done by whatever
-model is driving the MCP client, from the `use_when` lines alone. A person can draw one too, by
-ticking areas on the map and pressing **Draw VRF**; both make the same object, and the map draws
-either.
-
-Three rules are worth knowing before you rely on it:
-
-- **It narrows where to look; it does not change what exists.** "Not in the overlay" never means "not
-  in RouteMind" — absence is still decided at hop 0, and going back there is budgeted at three times
-  a run.
-- **It is run evidence, not ontology.** It is never committed to the data repository — a commit per
-  question would bury the structure — so it lives in its own store, expires, and leaves a record.
-- **Every change carries a reason**, because what was thought is the part worth learning from later.
-
-Closing records each address as `member` or `reached` — `reached` meaning the answer came from
-something that was never in the set, which says the overlay was drawn a level too coarse. That is
-signal, not error, and it is the thing the design is trying to measure.
-
-**[docs/OVERLAY.md](docs/OVERLAY.md)** — the object, the API and the caps.
+**[docs/ROUTING.html](docs/ROUTING.html)** — the whole structure in detail, in a browser.
+**[docs/OVERLAY.md](docs/OVERLAY.md)** — overlays.
 
 ---
 
 ## Quickstart
 
-### What you need
-
-Docker, with `docker compose`. That is all the service itself needs — the containers carry python and
-git. The checks that run at the end use the host's `curl` and `python3`, and the screen half also uses
-`node` if it is there; without those the install still comes up, it just verifies less.
-
-### Where it runs
-
-macOS, Linux and Windows. The service is two Linux containers, so it is identical on every host
-Docker runs on; what differs is the handful of pieces that run on your own machine instead.
-
-| | macOS | Linux | Windows |
-|---|---|---|---|
-| The two containers | yes | yes | yes — Docker Desktop, WSL2 backend |
-| The map, in a browser | yes | yes | yes |
-| `mcp/knowledge_mcp.py` | yes | yes | yes, natively — no WSL needed |
-| `install.sh`, `check/*` | yes | yes | from WSL or Git Bash |
-
-The MCP server is one file, stdlib only, and runs on **any python 3.7 or newer** — checked against
-3.7, 3.8, 3.9, 3.11, 3.12 and 3.14. That includes Windows python, with no WSL and nothing to install.
-
-#### Windows, in particular
-
-Three things differ, and only the first one bites during normal use.
-
-1. **Write `python`, not `python3`,** in every MCP config below. On Windows `python3` is usually not
-   a program at all: it is an alias that opens the Microsoft Store. Give the script an absolute path
-   too, unless your client lets you set a working directory.
-2. **Run `install.sh` and anything in `check/` from WSL or Git Bash.** They are POSIX shell and there
-   is no PowerShell port. Docker Desktop itself is driven normally from either.
-3. **Let git give you the repository's own line endings.** `.gitattributes` pins them to LF, so a
-   plain `git clone` is right even with `core.autocrlf=true` set globally. Unpacking a zip made on
-   Windows, or overriding those attributes, turns `ontology/entrypoint.sh` into CRLF — and the
-   container then refuses to start with `no such file or directory` naming a file that is plainly
-   there, because the kernel read its shebang as `/bin/sh\r`.
-
-Under WSL, keep the clone inside the WSL filesystem rather than under `/mnt/c`. The ontology container
-runs as a fixed uid:gid and commits into `data/repo` through a bind mount, and a Windows-mounted path
-does not model POSIX ownership the way that needs.
-
-### Languages
-
-The screen speaks English, 한국어, 日本語 and 简体中文, chosen from the menu in the top-right corner. It
-changes instantly, it is remembered in that browser, and a first visit follows the browser's own
-language — **per viewer, not per install**, because one install is a team's ontology and an
-install-time setting would serve everyone whatever the installer happened to speak.
-
-What the agent is handed stays English on purpose, and the ontology stays in whatever words you wrote
-it in. [docs/I18N.md](docs/I18N.md) says why, and how to add a language.
-
-### More than one backbone
-
-An install is **one backbone and an exchange** — the place backbones meet, wired from the first
-`docker compose up` so that adding a second is a file and a registration rather than a migration.
-Head office and a subsidiary, a company and its supplier: two RouteMinds that must not become one.
-
-An area crosses by writing the line it wants to show in the *other* backbone's hop 0, and by nothing
-else. Documents are relayed, so no agent ever holds a peer's credential, and adding the tenth backbone
-changes nothing about the nine already running.
-
-The part worth reading is what absence means once there is a link: hop 0 can only claim something is
-missing while every link is up, and says so itself when one is not.
-[docs/PEERING.md](docs/PEERING.md), and `docker compose -f docker-compose.yml -f
-docker-compose.peer.yml up -d` for a second one. `./examples/seed-demo.sh` builds six of them across
-two rooms, one of which is deliberately not answering — the shape the screens are designed against.
-
-### One command
+Docker, with `docker compose`. That is all the service needs — the containers carry python and git.
+The checks at the end use the host's `curl`, `python3` and `node` if they are there; without them the
+install still comes up, it just verifies less.
 
 ```sh
 git clone https://github.com/CSP911/routemind.git knowledge && cd knowledge
 ./install.sh
 ```
 
-In order, `install.sh`:
-
-1. copies `.env.example` to `.env` if you have none, and appends **your own uid/gid** to it;
-2. asks once whether you have an LLM — Enter skips it, and it does not ask again;
-3. `mkdir -p data/repo data/publish data/overlays` — **before** compose, on purpose;
-4. `docker compose up -d --build`;
-5. waits for the web container, reads `/api/app-config`, and tells you which mode you ended up in;
-6. runs `check/smoke.sh` — the API, an agent's walk through the MCP server, and the map screen.
-
 → **http://localhost:8080**
 
-It is safe to run again: an existing `.env` is kept and only the settings you pass are replaced.
-Running it again is also how you add or change the LLM later. It never stops to ask when there is no
-terminal to ask in, or when `.env` already answers.
+In order, `install.sh` copies `.env.example` to `.env` and appends **your own uid/gid**; asks once
+whether you have an LLM (Enter skips it); `mkdir -p`s all six bind-mount directories **before**
+compose, on purpose; brings the stack up; reads `/api/app-config` and tells you which mode you ended
+up in; and runs `check/smoke.sh`.
 
-```sh
-./install.sh --no-llm      # do not ask; run without one
-```
+Safe to run again — an existing `.env` is kept and only what you pass is replaced. `--no-llm` skips
+the question entirely; `--llm-provider openai --llm-url … --llm-key … --llm-model …` answers it
+without being asked. An LLM is optional and changes exactly one thing: a **✨ Suggest** button that
+drafts a routing line for you to edit. **[docs/LLM.md](docs/LLM.md)**.
 
-Two containers, no database. On first boot an empty ontology is laid into `data/repo`, and that
-directory becomes a git repository. Every write — from the screen or the API — **commits** into it, so
-undo is `git revert`.
-
-### Before a release: install it the way a stranger would
-
-```sh
-./check/install-check.sh          # a few minutes; it builds
-./check/install-check.sh --keep   # leave it running to poke at
-```
-
-Clones the **committed** tree into a temporary directory and installs it there, then adds the second
-backbone, wires both halves of the declaration, and walks the whole export decision — advertise, an
-audience, a line for one named reader, withdraw. Its own directory, its own compose project, its own
-ports and its own image tags, so nothing of yours is touched.
-
-Run it after a change large enough that you would not want to be the first person to find out. The
-ordinary checks build their own world; this one is about the world a person arrives in, and that is a
-different set of mistakes. Six real defects came out of its first two runs, and four could not have
-come from any other check: a key written twice in `.env` that the installer and docker read
-differently, a status code believed over a body, an `IndexError` where a sentence belonged, and a
-`mkdir` that was in `install.sh` and in the operator screen's plan and missing from the one command
-you copy out of the peering guide.
+**Three containers, no database.** `ontology` is the API and the only thing that touches your git
+repository; `web` is the map and a proxy in front of it; `exchange` is where backbones meet — **empty
+and idle until you link one**, and there from the first boot so that adding a second backbone is a
+file and a registration rather than a migration. On first boot an empty ontology is laid into
+`data/repo` and that directory becomes a git repository. Every write **commits** into it, so undo is
+`git revert`.
 
 ### Start from the worked example, not an empty map
 
-An empty install is a backbone with no areas: correct, and hard to read. To start from
-[`examples/back-office`](examples/) instead — five areas, 79 entities, five levels deep — copy it in
-**before** the first boot:
+An empty install is a backbone with no areas: correct, and hard to read.
+[`examples/back-office`](examples/) is five areas, 79 entities, five levels deep. Copy it in **before**
+the first boot:
 
 ```sh
 mkdir -p data/repo && cp -r examples/back-office/. data/repo/
 ./install.sh --no-llm
 ```
 
-The container git-inits and commits whatever it finds there. It is a starting point to edit or
-delete, not a schema.
-
-### With an LLM
-
-Optional, and it changes exactly one thing: a **✨ Suggest** button beside each routing line drafts it
-for you to edit. Leave it out and those buttons are shown disabled — everything else is identical,
-because you write every line either way.
-
-**First, ask the provider what the key can actually use:**
-
-```sh
-./check/llm-probe.py --provider openai --base https://api.openai.com --key $KEY
-./check/llm-probe.py --provider openai --base https://api.openai.com --key $KEY --model gpt-4o-mini
-```
-
-It lists the models the key can see, then makes one small call with the one you pick. No model list is
-written into this repository — one would start going stale the day it was written, and would reject
-new models rather than accept them.
-
-**Then install with it.** Three providers, and they are genuinely different wires rather than one with
-options — the path, the auth header, where the system prompt goes and the shape of the reply all differ:
-
-```sh
-# OpenAI
-./install.sh --llm-provider openai \
-             --llm-url https://api.openai.com --llm-key sk-... --llm-model gpt-4o-mini
-
-# Anthropic
-./install.sh --llm-provider anthropic \
-             --llm-url https://api.anthropic.com --llm-key sk-ant-... --llm-model claude-sonnet-5
-
-# A LiteLLM-style gateway, or anything OpenAI-shaped — the default
-./install.sh --llm-provider litellm \
-             --llm-url https://your-gateway --llm-key ... --llm-model ...
-```
-
-Environment variables do the same, for CI:
-
-```sh
-KNOWLEDGE_LLM_PROVIDER=openai KNOWLEDGE_LLM_URL=https://api.openai.com \
-KNOWLEDGE_LLM_KEY=sk-... KNOWLEDGE_LLM_MODEL=gpt-4o-mini ./install.sh
-```
-
-Two rules account for most misconfigurations:
-
-- **Give the base URL without `/v1`.** The client appends the rest itself.
-- **A provider this build does not know turns the LLM off** and says so, in the startup log and in what
-  `install.sh` prints, rather than being quietly ignored.
-
-Because `install.sh` finishes by reading `/api/app-config`, a wrong key or a trailing `/v1` shows up
-there and not later:
-
-```
-RouteMind is at http://127.0.0.1:8080 — with openai: it derives addresses and drafts conditions.
-RouteMind is at http://127.0.0.1:8080 — without an LLM: you type the address and the condition yourself.
-```
-
-To add or change one afterwards, run `./install.sh` again with the flags, or edit the `ONTOLOGY_LLM_*`
-lines in `.env` and re-run it.
-
-### By hand, without install.sh
-
-**`mkdir` before compose.** Docker creates a missing bind-mount path as root, and this container is not
-root, because it commits into a repository you own:
+### Without install.sh
 
 ```sh
 cp .env.example .env
 printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
-mkdir -p data/repo data/publish data/overlays data/harness
+mkdir -p data/repo data/publish data/overlays data/harness data/exchange data/access
 docker compose up -d --build
 ./check/smoke.sh
 ```
+
+The `mkdir` is not tidiness. Docker creates a missing bind-mount path as **root**, and this container
+is not root, because it commits into a repository you own. A list short by one directory is a
+container that never becomes healthy.
 
 ### When it does not come up
 
 | What you see | Why | What to do |
 |---|---|---|
-| `./install.sh: Permission denied` | The tree arrived without its exec bits — a zip, or a share that does not carry them | `chmod +x install.sh check/*.sh check/*.py check/*.mjs`. The container's ENTRYPOINT no longer needs this: the Dockerfile chmods it during the build |
-| `FATAL: /data/repo is not writable by uid …`, then a restart loop | Docker invented the bind-mount path as root | Remove it, `mkdir -p data/repo data/publish data/overlays`, check `KNOWLEDGE_UID`/`KNOWLEDGE_GID` in `.env` against `id -u` / `id -g`, and start again |
-| `exec /app/entrypoint.sh: no such file or directory`, on a file that is plainly there | Its line endings are CRLF, so the kernel read the shebang as `/bin/sh\r`. A zip made on Windows, or `core.autocrlf` overriding `.gitattributes` | Re-clone with `git clone`, which honours the repository's `eol=lf`. To repair in place: `git add --renormalize . && git checkout -- .`, then `docker compose up -d --build` |
-| The MCP server dies at startup on Windows with `UnicodeEncodeError`, before any tool is called | An old copy from before this was fixed. Python uses the locale code page for a pipe, and cp1252/cp949/cp932 cannot encode `—` or `→` — both are in the area list sent with the `initialize` reply | Pull. If you must run an old copy, set `PYTHONUTF8=1` in the client's env |
-| `port is already allocated` | Something else holds 8080 | Set `WEB_PORT=9000` in `.env`, then `docker compose up -d` |
-| The map draws, but every write is refused **read-only** | `data/repo` has uncommitted changes — someone edited it by hand | Commit or revert them in `data/repo`, then `curl -X POST -H 'Content-Type: application/json' -d '{}' localhost:8080/api/knowledge/publish` |
-| A change to `static/` or `ontology/` does nothing | Both are `COPY`ed into the image, not bind-mounted | `docker compose up -d --build` |
-| Your first node is refused | Its `kind` is not in `vocab.yaml` — which is the point of that file | Edit `data/repo/vocab.yaml`, commit, publish |
-| `regions.json <area>: use_when … no longer matches the files it is derived from` | Someone edited an area's `.md` by hand and committed without regenerating | Below |
+| `./install.sh: Permission denied` | The tree arrived without its exec bits — a zip, or a share that does not carry them | `chmod +x install.sh check/*.sh check/*.py check/*.mjs` |
+| `FATAL: /data/repo is not writable by uid …`, then a restart loop | Docker invented a bind-mount path as root | Remove it, `mkdir` **all six** as above, check `KNOWLEDGE_UID`/`KNOWLEDGE_GID` against `id -u` / `id -g`, start again |
+| `exec /app/entrypoint.sh: no such file or directory`, on a file that is plainly there | CRLF line endings, so the kernel read the shebang as `/bin/sh\r` | Re-clone with `git clone`, which honours the repository's `eol=lf`. In place: `git add --renormalize . && git checkout -- .` |
+| `port is already allocated` | Something else holds 8080 | `WEB_PORT=9000` in `.env`, then `docker compose up -d` |
+| Every write is refused **read-only** | `data/repo` has uncommitted changes | Commit or revert them, then POST `/api/knowledge/publish` |
+| A change to `static/` or `ontology/` does nothing | Both are `COPY`ed into the image | `docker compose up -d --build` |
+| Your first node is refused | Its `kind` is not in `vocab.yaml` — the point of that file | Below |
+| `regions.json <area>: … no longer matches the files it is derived from` | Someone edited an area's `.md` by hand and did not regenerate | **[docs/DATA-REPO.md](docs/DATA-REPO.md)** |
 | Anything else | | `docker compose logs -f ontology web` |
 
 ---
 
-### A hand-edited repository
-
-`data/repo` is meant to be edited by hand — it is the reviewed artefact, and a pull request against it
-is the point. One file in it is not: `regions.json` is **derived** from the areas' own `.md` files and
-from the table in `CORE.md`, and it is also committed, which is the combination that lets it go stale.
-Every write through the API regenerates it; an edit made in an editor does not.
-
-Stale, it is not inert. `regions.json` is what hop 0 advertises, and `use_when` is the sentence an
-agent reads to decide which area answers a question. A stale one routes on wording that is no longer
-in the repository, and until 2026-09-13 nothing said so: `validate` compared which areas and which
-nodes were listed, never the text. It does now, and it names the fields.
-
-To regenerate after editing by hand, from the checkout:
-
-```sh
-docker compose exec ontology python3 -c \
-  "import pathlib; from service.store import Store; from service.derive import regenerate; \
-   print(regenerate(Store(pathlib.Path('/data/repo'))) or 'already in sync')"
-```
-
-then commit what it changed. Or make any write through the screen — that regenerates, validates,
-commits and publishes in one transaction, which is what the API is for.
-
----
-
-### The door
-
-`KNOWLEDGE_AUTH` picks one of three, and the **running service says which one it is in** — in its log
-at startup, in `/api/app-config`, and on a chip in the screen's header. Until 2026-09-13 the only
-thing that knew was this file, which is the one place a running system cannot be read from.
-
-| | who may write | the name on a change |
-|---|---|---|
-| `open` *(default)* | anyone who can reach the port | whatever the browser typed — a signature |
-| `token` | whoever holds `KNOWLEDGE_TOKEN`, as `Authorization: Bearer …` | still a signature |
-| `proxy` | whoever your reverse proxy authenticated | **the proxy's**, and the browser gets no vote |
-
-`open` is what every install has been and is legitimate on a network where it is acceptable. The
-change is that it is now a state something states rather than a fact somebody has to remember.
-
-**`proxy` is the only mode that produces an identity**, and it needs two halves: the header
-(`KNOWLEDGE_AUTH_HEADER`, default `X-Forwarded-Email`) and the address it is believed from
-(`KNOWLEDGE_AUTH_TRUSTED_PROXY`). Believing it from anywhere is *worse* than no authentication —
-anybody can send one, and the record then names a person who was not there. So the service **refuses
-to start** in that mode without it, and likewise in `token` mode with no secret: an operator who set a
-mode decided this was meant to be closed, and coming up open instead turns a decision into a surprise.
-
-The gate is on writes. `KNOWLEDGE_AUTH_READS=1` extends it to reads, which also means giving the
-agent the secret — reads are what the MCP does, and it has no session.
-
-Between backbones the door is different and older: **one secret per link, used in both directions**,
-compared in constant time. Two things make it workable between organisations — a link refuses to
-present its token over plain `http` to a public address, and `also_accept_env` keeps a second secret
-good so rotating one is not a flag day. See **[docs/PEERING.md](docs/PEERING.md)**.
-
-The **name** field at the top right is a signature that goes on commits and proposals, kept in that
-person's own browser. **It is not a permission.**
-
----
-
-## First thing to do — `vocab.yaml` is your domain
+## First — `vocab.yaml` is your domain
 
 A node's `kind` and an edge's `rel` **must appear in the vocabulary**, so until you edit this file
 your first node is refused. The starter set (`system` · `tool` · `store` · `host` · `channel` ·
-`task` · `party`) is a starting point, not a schema.
+`task` · `party`) is a starting point, not a schema. Edit `data/repo/vocab.yaml` and commit — there is
+no vocabulary editor on screen yet.
 
-After installing, edit `data/repo/vocab.yaml` and commit — there is no vocabulary editor on screen
-yet.
+It is also where you say what may leave. `export: no` on a kind stops that sort of thing crossing to
+another domain — one decision per kind rather than per document.
 
 ## Second — one area
 
@@ -373,212 +131,115 @@ Then, from that area's rack: `+ New node` → `+ New data` to attach documents.
 
 ---
 
-## More about the LLM
-
-Configuring one is in the quickstart. What that does not say:
-
-**You write every routing line yourself**, with a model or without: when an agent should choose an
-area, what a node holds, what a document is for. Each field shows how to write it, and **Suggest fills
-the box — it does not save.** Nothing is written until you press the form's own button. The address a
-name gives is filled in as you type the name, and you can change it before saving. The one thing only
-a model can do is give an address to a name that is not in Latin letters; without one, you type that
-address.
-
-**A kind is never asked for.** Nothing reads one until you declare `edge_rules`, so RouteMind picks it
-with an LLM where there is one and takes `default_kind` from `vocab.yaml` where there is not. The
-response says `kind_generated` either way, so a domain that later makes kinds mean something can find
-the ones nobody actually chose.
-
-`ONTOLOGY_LLM_MAX_TOKENS` and `ONTOLOGY_LLM_TEMPERATURE` are yours. **`response_format` is not**: the
-code sets it per call — the two prompts whose answer is parsed as JSON ask for JSON, the four that read
-one line do not. Setting it by hand breaks the parsing, and the only symptom is that the model seems to
-be answering strangely.
-
-`./check/llm-paths.sh` runs both modes, so a change to one does not quietly break the other.
-
 ## Connecting an agent
 
-Optional — the map works on its own. Full detail is in **[docs/AGENTS.md](docs/AGENTS.md)**; this is
-enough to get an agent reading.
-
-An agent reads this ontology the same way in every case: **fetch the list of areas, pick one, fetch
-that area, read what it points at.** Two operations, never a third. What differs between engines is
-only how those two reach them.
-
-| Way | For | What it is |
-|---|---|---|
-| **MCP** | Claude Code, Codex, Claude Desktop, Cursor, any MCP client | `mcp/knowledge_mcp.py` — stdio, stdlib only |
-| **Paste** | any chat agent, a notebook, someone else's tool | the **Copy for an agent** button on the map |
-| **Launch URL** | a web console that accepts a run | `KNOWLEDGE_AGENT_URL` |
-
-All three hand over the **same advertisement**, from one formatter — three descriptions of one
-ontology would drift, and the one that drifts is the one nobody is checking.
-
-### The MCP server
+Optional — the map works on its own. An agent reads this ontology the same way in every case: **fetch
+the list of areas, pick one, fetch that area, read what it points at.** Two operations, never a third.
 
 ```sh
 python3 mcp/knowledge_mcp.py --api http://localhost:8080/api/knowledge
 ```
 
-One file, stdlib only: no install, no virtualenv, nothing to build. `--api` is the v1 root — the web
-proxy at `/api/knowledge` (use this) or an ontology directly at `.../v1`. `--actor NAME` sets the name
-recorded on anything the connection writes; it defaults to `mcp`. Both also read `KNOWLEDGE_API` and
-`KNOWLEDGE_ACTOR` from the environment.
+One file, stdlib only, python 3.7 or newer: no install, no virtualenv, nothing to build. **Opening
+this repository in Claude Code is the whole setup** — `.mcp.json` registers it. For Codex, Cursor,
+Claude Desktop and anything else, one config block each in **[docs/AGENTS.md](docs/AGENTS.md)**.
 
-Every config below writes `python3`. On Windows write `python` — and if your client offers no way to
-set a working directory, give the script an absolute path.
+Three tools: `knowledge_table(path?)` for a routing table, `knowledge_read(path)` for one document,
+and `knowledge_overlay(op)` for a working set where the install keeps overlays. The area list travels
+in the server's `instructions`, so **you do not have to name RouteMind in the question** — what
+decides whether the agent comes here is the `use_when` line on each area.
 
-Point `--api` at another host and it works the same — the agent does not have to be where RouteMind is.
-
-### Claude Code
-
-**Opening this repository is the whole setup.** `.mcp.json` at the root registers the server with a
-path relative to the repository, so Claude Code offers it and one approval connects it.
-
-From any other directory, register it once with an absolute path:
+Without MCP, **Copy for an agent** on the map puts the same advertisement on the clipboard. All three
+ways hand over one formatter's output; three descriptions of one ontology would drift.
 
 ```sh
-claude mcp add knowledge -- python3 /abs/path/to/knowledge/mcp/knowledge_mcp.py \
-  --api http://localhost:8080/api/knowledge --actor claude-code
+./check/mcp-check.py http://localhost:8080/api/knowledge      # the protocol and a whole walk
 ```
 
-`claude mcp list` shows it; `/mcp` inside a session shows the tools it exposes.
+---
 
-### Codex
+## More than one backbone
 
-`~/.codex/config.toml`:
+An install is **one backbone and an exchange**. A **domain** is one exchange and the backbones on it —
+head office and a subsidiary are one domain; a company and its supplier are two.
 
-```toml
-[mcp_servers.knowledge]
-command = "python3"
-args = ["/abs/path/to/knowledge/mcp/knowledge_mcp.py",
-        "--api", "http://localhost:8080/api/knowledge",
-        "--actor", "codex"]
-```
+An area crosses by writing the line it wants to show in the *other* backbone's hop 0, and by nothing
+else:
 
-### Claude Desktop
+| In the area's own `.md` | What it does |
+|---|---|
+| `use_when_export` | the line strangers see. No line, no crossing — this is the whole opt-in |
+| `export_to` | which peers may see it at all. Absent means everyone linked |
+| `use_when_export_for` | say it differently to one named peer |
+| `export: no` on a kind, in `vocab.yaml` | that sort of thing never leaves, whatever an area says |
 
-`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS,
-`%APPDATA%\Claude\claude_desktop_config.json` on Windows — then restart the app:
+Three properties are worth knowing before relying on it:
 
-```json
-{
-  "mcpServers": {
-    "knowledge": {
-      "command": "python3",
-      "args": ["/abs/path/to/knowledge/mcp/knowledge_mcp.py",
-               "--api", "http://localhost:8080/api/knowledge",
-               "--actor", "claude-desktop"]
-    }
-  }
-}
-```
+- **Nothing is copied.** A document is relayed, held for one request and discarded. No agent ever
+  holds a peer's credential, and nothing at the far end keeps a copy — so the only record that a read
+  happened is the one the **owner** writes. That is `ONTOLOGY_ACCESS`: one JSON line per read, naming
+  which link carried it and who was at the far end, refusals included.
+- **No transit.** A room offers a neighbour its own backbones and never a third room's. Two
+  organisations meet without either joining the other's.
+- **Absence suspends itself.** Hop 0 may only claim something is missing while every link is up, and
+  says so itself when one is not.
 
-### Cursor, and any other MCP client
+The screen draws one card per domain — what this backbone holds, what reaches it, and any link that
+is not answering. `./examples/seed-demo.sh` builds six backbones across two rooms, one deliberately
+down, which is the shape the screens are designed against.
 
-The same block, in whatever that client calls its MCP config — Cursor reads `.cursor/mcp.json` in the
-project or `~/.cursor/mcp.json` globally, and most others take this identical shape:
+**[docs/PEERING.md](docs/PEERING.md)** is the contract, including the operator's screen at `:8090`.
 
-```json
-{
-  "mcpServers": {
-    "knowledge": {
-      "command": "python3",
-      "args": ["/abs/path/to/knowledge/mcp/knowledge_mcp.py",
-               "--api", "http://localhost:8080/api/knowledge"]
-    }
-  }
-}
-```
-
-### What the agent gets
-
-```
-knowledge_table(path?)   a routing table — what is here, and where to go next.
-                         No argument = the list of areas, where every search starts.
-knowledge_read(path)     one document, as written.
-knowledge_overlay(op)    the working set for one question, a VRF — create · get · add · remove · close.
-                         Present only where the install keeps overlays (ONTOLOGY_OVERLAYS).
-```
-
-Two things about this are worth knowing before you write a prompt around it:
-
-- **You do not have to name RouteMind in the question.** The list of areas travels in the server's
-  `instructions`, sent at initialize, so a client that loads tools lazily has still seen it. What
-  decides whether the agent comes here is therefore the `use_when` line on each area — which is why
-  that is the field to spend time on.
-- **`instructions` are built when the session starts.** An area created mid-session shows up in the
-  tool description at the next tool listing, but not in the instructions until the next session.
-
-### Checking it works
-
-Before wiring a client, run the protocol and an agent's whole walk against your install:
-
-```sh
-./check/mcp-check.py http://localhost:8080/api/knowledge
-```
-
-It initializes, lists the tools, walks from the area list into an area and into a document, and checks
-that an invented address is refused. `./check/smoke.sh` runs it as its middle third.
-
-By hand, if you want to see the bytes:
-
-```sh
-printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"probe","version":"0"}}}' \
-  | python3 mcp/knowledge_mcp.py --api http://localhost:8080/api/knowledge
-```
-
-### Without MCP
-
-**Copy for an agent** on the map puts the same advertisement on the clipboard — the area list, the
-base URL, and the rule never to build an address — for pasting into any chat agent.
-
-With `KNOWLEDGE_AGENT_URL` set, ticking areas on the map draws a **▶ Start** button that sends the
-selection to a web console. With it unset, that button and the tick boxes are **not drawn at all**,
-rather than left as a control that does nothing.
+---
 
 ## Layout
 
 ```
 ontology/     the ontology API — python + pyyaml + git. Knows nothing about any domain
+exchange/     where backbones meet. No repository, no areas, no hop 0
 web/          the map and a proxy — one FastAPI file. Knows nothing about any domain
+admin/        the operator's screen for an exchange. Off unless EXCHANGE_ADMIN_TOKEN is set
 mcp/          the MCP server, so any MCP-capable agent can read the ontology
 static/       the map screen
 seed/         an empty ontology, copied into data/repo on first boot
-examples/     one worked ontology — copy it into data/repo instead of starting empty
+examples/     one worked ontology, and seed-demo.sh — six backbones across two rooms
+check/        every check. docs/CHECKS.md
+docs/         everything below
+
 data/repo     ← your ontology. A git repository, and the only thing to back up
 data/publish  derived from data/repo. Safe to delete; it is rebuilt
 data/overlays one question's working set each — run evidence, not structure
 data/harness  the curator's store: the review queue behind "Advertise upstream"
-check/        install-check.sh (a clean clone, installed and walked — before a release)
-              smoke.sh (API + agent + screen) · write-paths.sh (every write path, atomically)
-              mcp-check.py (the protocol, and an agent's walk) · llm-paths.sh (both LLM modes)
-              scenarios.py + room-check.py + cross-check.py (docs/SCENARIOS.md: a backbone over
-              time, a room over time, and the two crossed)
-              peer-check · exchange-check · ix-peering-check · refresh-check · admin-check (links)
-              domain-check.py (what crosses a domain boundary, and who is recorded reading it)
+data/exchange members.yaml — who meets at this install's exchange
+data/access   who read what across a link, one file per UTC day
 ```
 
-Every write **commits** into `data/repo`. Undo is `git revert`.
+## Everything else
 
-## Not yet domain-neutral
+| | |
+|---|---|
+| [ROUTING.html](docs/ROUTING.html) | the whole structure, in a browser |
+| [PEERING.md](docs/PEERING.md) | links between backbones, domains, and the operator's screen |
+| [OVERLAY.md](docs/OVERLAY.md) | the working set for one question |
+| [AGENTS.md](docs/AGENTS.md) | connecting an agent — every client, and the tools |
+| [LLM.md](docs/LLM.md) | the optional ✨ Suggest buttons, and the three provider wires |
+| [AUTH.md](docs/AUTH.md) | who may write, and whose name goes on the change |
+| [DATA-REPO.md](docs/DATA-REPO.md) | your ontology as a git repository, and the one derived file in it |
+| [CHECKS.md](docs/CHECKS.md) | every check, what it proves, and where it can run |
+| [PLATFORMS.md](docs/PLATFORMS.md) | macOS, Linux, Windows — and what differs on each |
+| [I18N.md](docs/I18N.md) | English, 한국어, 日本語, 简体中文 — and adding one |
+| [SCENARIOS.md](docs/SCENARIOS.md) | the routing table over a whole lifetime |
+| [DOMAIN-NEUTRALITY.md](docs/DOMAIN-NEUTRALITY.md) | which rules still belong to the domain this came from |
+| [PROVENANCE.md](docs/PROVENANCE.md) · [DELTA-FROM-IRIS.md](docs/DELTA-FROM-IRIS.md) | where this came from, and what changed |
+| [TODO.md](docs/TODO.md) | known gaps, written down rather than glossed over |
 
-Written down rather than glossed over: **[docs/DOMAIN-NEUTRALITY.md](docs/DOMAIN-NEUTRALITY.md)**.
-Nothing there blocks a new domain, but some rules in the validator belong to the domain this code
-came from, and knowing which is better than being surprised.
-
-## Where this came from
-
-Split out of the Knowledge unit of IRIS. **This repository is the canonical source** of the
-ontology service. See [docs/PROVENANCE.md](docs/PROVENANCE.md).
+---
 
 ## Contact
 
 Business inquiries, collaboration, or just curious: **qct8377@gmail.com**
 LinkedIn → [linkedin.com/in/cspark911](https://www.linkedin.com/in/cspark911/)
 Bug reports and questions → [GitHub Issues](https://github.com/CSP911/routemind/issues)
-
----
 
 ## License
 

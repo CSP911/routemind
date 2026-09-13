@@ -48,6 +48,14 @@ def note(name, what):
     notes.append(f"--   {name}: {what}")
 
 
+# A run that stopped early used to print a summary that read exactly like a clean one. The results
+# list holds what ran, `_end` is an atexit handler so it prints whatever crashed the script, and
+# "0 failed of 29" is then true of the 29 that ran and silent about the 40 that did not. The exit
+# code was 1, so nothing automated was fooled — but the line a person reads said the run passed, and
+# that is the one place a check must not be wrong about itself. Appended to on the last line.
+finished = []
+
+
 @atexit.register
 def _end():
     for p in procs:
@@ -55,7 +63,11 @@ def _end():
         except Exception: pass
     if results: print("\n".join(results))
     if notes: print("\n".join(notes))
-    if results: print(f"\n{sum(r.startswith('FAIL') for r in results)} failed of {len(results)}")
+    if results:
+        n = sum(r.startswith("FAIL") for r in results)
+        print(f"\n{n} failed of {len(results)}" if finished else
+              f"\n{n} failed of the {len(results)} that ran — but THE RUN STOPPED EARLY and the rest "
+              f"never ran, so this is not a pass. What stopped it is printed above these results.")
 
 
 T = tempfile.mkdtemp(prefix="scenarios-")
@@ -441,4 +453,5 @@ check("K3 a held lock gives up rather than hanging", _msg is not None and _took 
 check("K3   and says a process is holding it, not that someone edited by hand",
       _msg and "another process" in _msg, repr(_msg)[:100])
 
+finished.append(True)
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

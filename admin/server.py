@@ -89,6 +89,12 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
             f"      ONTOLOGY_PUBLISH: /data/publish\n"
             f"      ONTOLOGY_OVERLAYS: /data/overlays\n"
             f"      ONTOLOGY_HARNESS: /data/harness\n"
+            # The access record, and this fragment was written before it existed. Without it a
+            # backbone added through this screen keeps no record of who read what across the link
+            # it is being added to — which is the one thing memory-only relay makes the owner's job,
+            # missing from the plan for exactly the backbones an operator creates here. It is not a
+            # setting anybody would notice was absent: everything works, and nothing is written down.
+            f"      ONTOLOGY_ACCESS: /data/access\n"
             f'      ONTOLOGY_PEER_TOKEN: "${{EXCHANGE_TOKEN_{up}}}"\n'
             f'      ONTOLOGY_PEER_TOKEN_IX: "${{EXCHANGE_TOKEN_{up}}}"\n'
             f"    volumes:\n"
@@ -96,6 +102,7 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
             f"      - ./data-{name}/publish:/data/publish\n"
             f"      - ./data-{name}/overlays:/data/overlays\n"
             f"      - ./data-{name}/harness:/data/harness\n"
+            f"      - ./data-{name}/access:/data/access\n"
             f"    restart: unless-stopped\n"
             f"  web-{name}:\n"
             f"    build: {{ context: ., dockerfile: web/Dockerfile }}\n"
@@ -117,7 +124,13 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
                   f"    url: http://exchange:8110\n"
                   f"    kind: exchange\n"
                   f"    token_env: ONTOLOGY_PEER_TOKEN_IX\n"),
-        "shell": (f"mkdir -p data-{name}/repo data-{name}/publish data-{name}/overlays data-{name}/harness\n"
+        # Every directory the compose overlay mounts, and the list is the whole point of the line:
+        # docker creates a missing bind mount owned by root while the container runs as KNOWLEDGE_UID,
+        # so one omission is a backbone that never becomes healthy. `access` was omitted here — the
+        # access record's directory, added after this plan was written — which is the same defect this
+        # plan exists to prevent, recurring one directory later.
+        "shell": (f"mkdir -p data-{name}/repo data-{name}/publish data-{name}/overlays "
+                  f"data-{name}/harness data-{name}/access\n"
                   f"cp -r examples/back-office/. data-{name}/repo/     # or start empty\n"
                   f"#  write the two files above, then:\n"
                   f"docker compose -f docker-compose.yml -f docker-compose.{name}.yml up -d\n"),

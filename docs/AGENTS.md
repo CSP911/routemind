@@ -25,7 +25,14 @@ is the one nobody is checking.
 python3 mcp/knowledge_mcp.py --api http://localhost:8080/api/knowledge
 ```
 
-Stdlib only — no install, no virtualenv, nothing to build. It speaks stdio JSON-RPC.
+Stdlib only — no install, no virtualenv, nothing to build. It speaks stdio JSON-RPC, on any python
+3.7 or newer.
+
+`--api` is the **v1 root**: the web proxy at `/api/knowledge`, which is the one to use, or an ontology
+directly at `…/v1`. `--actor NAME` is the name recorded on anything the connection writes; it defaults
+to `mcp`. Both also read the environment — `KNOWLEDGE_API` and `KNOWLEDGE_ACTOR` — for clients that
+give you no way to pass arguments. Point `--api` at another host and it works the same: the agent does
+not have to be where RouteMind is.
 
 ### Claude Code
 
@@ -36,7 +43,8 @@ claude mcp add knowledge -- python3 /abs/path/to/knowledge/mcp/knowledge_mcp.py 
 
 **This repository ships one.** `.mcp.json` at the root registers the server with a path relative to
 the repository, so opening the repo in Claude Code offers it and one approval is the whole setup.
-Point `--api` elsewhere if RouteMind is not on this machine.
+Point `--api` elsewhere if RouteMind is not on this machine. `claude mcp list` shows whether it
+registered; `/mcp` inside a session shows the tools it exposes.
 
 For a different project, put the same block in its own `.mcp.json` with an absolute path:
 
@@ -62,6 +70,28 @@ The same command, in whatever that client calls its MCP config. Most take the id
 command = "python3"
 args = ["/abs/path/to/knowledge/mcp/knowledge_mcp.py", "--api", "http://localhost:8080/api/knowledge"]
 ```
+
+`~/.codex/config.toml`. Everything else takes JSON of one shape — Cursor reads `.cursor/mcp.json` in
+the project or `~/.cursor/mcp.json` globally; Claude Desktop reads
+`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS and
+`%APPDATA%\Claude\claude_desktop_config.json` on Windows, and has to be restarted afterwards:
+
+```json
+{
+  "mcpServers": {
+    "knowledge": {
+      "command": "python3",
+      "args": ["/abs/path/to/knowledge/mcp/knowledge_mcp.py",
+               "--api", "http://localhost:8080/api/knowledge",
+               "--actor", "claude-desktop"]
+    }
+  }
+}
+```
+
+On Windows write `python`, not `python3`: there, `python3` is usually an alias that opens the
+Microsoft Store rather than a program. And give the script an absolute path unless the client lets
+you set a working directory.
 
 ### The tools
 
@@ -162,3 +192,15 @@ every route, and `check/write-paths.sh` exercises them.
 
 The last part of that check is the one that matters: it navigates using nothing but addresses the
 tables printed, which is exactly what an agent can do and no more.
+
+To see the bytes, one request is enough — the reply carries the `instructions`, which is where the
+area list travels:
+
+```sh
+printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"probe","version":"0"}}}' \
+  | python3 mcp/knowledge_mcp.py --api http://localhost:8080/api/knowledge
+```
+
+One consequence of that being sent at initialize: **`instructions` are built when the session
+starts.** An area created mid-session reaches the tool description at the next tool listing, but not
+the instructions until the next session.
