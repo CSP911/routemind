@@ -7,7 +7,9 @@ One worked ontology, so that a fresh install has something to read before it has
 ## back-office
 
 The corporate-support desk of one fictional company: leave, expenses, purchasing, approvals, payroll.
-Five areas, 79 entities, five levels deep, 30 relations, 37 documents.
+Five areas, 79 entities, five levels deep, 30 relations. **Every entity carries a document** —
+until 2026-09-14, 42 of them were an address and a routing line with nothing written behind them,
+which made the example good at showing the shape of an ontology and poor at showing what it is for.
 
 Every amount and deadline in it is that company's own policy, **not the law** — where a real statute
 sets something (retention, tax-free caps, insurance rates), the document names it.
