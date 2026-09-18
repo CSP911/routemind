@@ -373,6 +373,7 @@ first would make two things vary at once.
 | `bench/rows-check.py` | P1 |
 | `bench/coverage.py` | coverage, one of the five difficulty factors |
 | `eval/DIFFICULTY.md` | the difficulty scale — factors, levels, thresholds, validation |
+| `eval/CORPUS.md` | what the corpus is, how it was built, what was checked, what it cannot support |
 | `bench/restructure.py` | the corpus tree: a section page per cluster, idempotent |
 | `bench/smoke.py` | retrieve + rerank end to end |
 | `eval/fixtures/` | the continuity-fixture contract, one worked example, and `check.py` |
