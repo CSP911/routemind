@@ -234,6 +234,7 @@ data/access   who read what across a link, one file per UTC day
 | [DOMAIN-NEUTRALITY.md](docs/DOMAIN-NEUTRALITY.md) | which rules still belong to the domain this came from |
 | [PROVENANCE.md](docs/PROVENANCE.md) · [DELTA-FROM-IRIS.md](docs/DELTA-FROM-IRIS.md) | where this came from, and what changed |
 | [TODO.md](docs/TODO.md) | known gaps, written down rather than glossed over |
+| [eval/](eval/) | the study — pre-registered before it is run |
 
 ---
 

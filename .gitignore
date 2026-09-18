@@ -21,3 +21,8 @@ __pycache__/
 /data-audit/
 /data-depot/
 /data-partner-ix/
+
+# The retrieval experiment (docs/TODO.md, the ten-question comparison). A 10x corpus, the indexes
+# built from it, and the run records. Generated, large, and not part of the product — the shipped
+# worked example it grew from is examples/back-office and that one *is* versioned.
+/bench/

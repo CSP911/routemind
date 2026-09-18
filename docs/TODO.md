@@ -26,7 +26,12 @@ and nobody has reported it. And a stamp only a writer bumps would not notice a *
 would have to be something a hand edit also moves, which is most of what makes the current cost. Do
 not start this without a measurement from a real install saying hop 0 is too slow.
 
-## Overlay: the ten-question comparison — *operator: when, and which questions*
+## Overlay: the ten-question comparison — *superseded by eval/PREREGISTRATION.md*
+
+What follows is the 2026-09-11 framing. The study it grew into is pre-registered in `eval/`,
+with the corpus, the arms, the failure definitions and the open parameters. Kept for the record.
+
+### As first written
 
 docs/OVERLAY.md, "How we will know it helped". The same ten questions or fewer, run twice — as agents
 work without overlays, and through them — counting calls to an answer and how many were reached.
