@@ -18,6 +18,7 @@ rises, which is a more useful thing than whether routing wins on average.
 | [PREREGISTRATION.md](PREREGISTRATION.md) | the design, fixed before any arm runs — arms, failure definitions, sub-questions, statistics, open parameters, threats |
 | [DIFFICULTY.md](DIFFICULTY.md) | the difficulty scale — five factors, four levels each, where the thresholds came from |
 | [CORPUS.md](CORPUS.md) | what the corpus is, how it was built, what was checked, what it cannot support |
+| [gold/](gold/) | the answer key — questions, where their answers are, and how each is graded |
 | [fixtures/](fixtures/) | continuity fixtures — a failure routing accuracy cannot see, contributed from outside |
 
 ## Where it stands
@@ -27,7 +28,7 @@ rises, which is a more useful thing than whether routing wins on average.
 | Corpus | **done** — 700 documents, 5 areas, validated |
 | Difficulty factors | **done** — C, D, E per document in `bench/factors.csv` |
 | Preconditions | P1 done (no near-duplicate descriptions, max 0.533). P2 waits on the gold set |
-| Gold set | **not started** — blocked on the open parameters below |
+| Gold set | **pilot done** — 23 questions, 7/5/5/6 across the bands. The full set is blocked on the labeller question |
 | Arms | not run |
 
 ## Before anything runs

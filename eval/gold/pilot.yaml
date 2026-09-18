@@ -1,0 +1,213 @@
+# Pilot gold set — 20 questions, five per difficulty band.
+#
+# A plumbing check, not a result. It exists to find out whether the bands separate at all, whether
+# the scoring runs end to end, and whether anything about the design breaks on contact, before
+# seventy questions are written against it.
+#
+# **Written by the assistant that generated the corpus.** That is circular and it is why this is a
+# pilot. `A_true` here is a first pass; the operator's job is the one judgment that cannot be
+# derived — *does any other area also answer this?* — and the full set resolves the labeller
+# question first (PREREGISTRATION.md §9).
+#
+# A and B are set deliberately. A is then measured from the text rather than trusted, by
+# eval/gold/grade.py, and the band is computed. Where the measured A disagrees with the intent, the
+# measurement wins and the intent is left in place as a record of what was attempted.
+#
+#   intent_A / intent_B   what the question was written to be
+#   A_true                areas that contain an answer
+#   D_true                documents that answer it. A set: the corpus holds a parent and its table
+#   needs                 any — one area suffices · all — the answer is incomplete without both
+
+questions:
+
+# ── easy · A0 B0 — the question uses the document's own words, one obvious area ──
+- id: e1
+  q: "Which year-end deductions does the pre-filled data not show, and what conditions apply to them?"
+  A_true: [payroll]
+  D_true: [year-end-manual-deduction-items]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+
+- id: e2
+  q: "Who qualifies for family care leave, and which family members does it cover?"
+  A_true: [attendance]
+  D_true: [family-care-leave-eligibility]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+
+- id: e3
+  q: "What counts as flexible working here, and where does each specific rule live?"
+  A_true: [attendance]
+  D_true: [flexwork-overview]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+
+- id: e4
+  q: "Why doesn't the annual salary quoted at hire map cleanly onto a single month's gross pay?"
+  A_true: [payroll]
+  D_true: [pay-structure-vs-monthly-payslip]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+
+- id: e5
+  q: "Which liability and indemnity terms does the company hold fixed, and where can a cap move?"
+  A_true: [procurement]
+  D_true: [liability-and-indemnity-position]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+
+# ── moderate · A1 B0–1 — the same words rearranged; one area, a second defensible ──
+- id: m1
+  q: "What happens if my banked hours don't cover the shortfall at the end of the month?"
+  A_true: [attendance]
+  D_true: [flexitime-shortfall-case]
+  needs: any
+  intent_A: 1
+  intent_B: 0
+
+- id: m2
+  q: "I'm leaving before the bonus is paid. Does being on headcount when it was calculated mean I qualify?"
+  A_true: [payroll]
+  D_true: [bonus-payment-timing]
+  needs: any
+  intent_A: 1
+  intent_B: 1
+
+- id: m3
+  q: "I travelled Friday through Monday for a client site visit. Which of those days get recorded as worked?"
+  A_true: [attendance]
+  D_true: [weekend-trip-case]
+  needs: any
+  intent_A: 1
+  intent_B: 1
+
+- id: m4
+  q: "Is unpaid leave taken out of my pay on working days or on calendar days?"
+  A_true: [payroll]
+  D_true: [unpaid-leave-deduction-calculation]
+  needs: any
+  intent_A: 1
+  intent_B: 0
+
+- id: m5
+  q: "A counterparty signed on a power of attorney that had already lapsed. What happens now?"
+  A_true: [approval]
+  D_true: [expired-poa-relied-upon]
+  needs: any
+  intent_A: 1
+  intent_B: 0
+
+# ── hard · A2 B1–2 — paraphrase; two areas plausible, either may suffice ──
+- id: h1
+  q: "I stayed late three nights last week but never put anything in beforehand. Will that reach my pay?"
+  A_true: [attendance]
+  D_true: [unrequested-overtime-case]
+  needs: any
+  intent_A: 2
+  intent_B: 1
+
+- id: h2
+  q: "We want to send hampers to customers for the holiday. How much per customer, and what do we keep?"
+  A_true: [expense]
+  D_true: [entertainment-seasonal-gifts]
+  needs: any
+  intent_A: 2
+  intent_B: 1
+
+- id: h3
+  q: "My day trip turned into an overnight because the meeting overran. How long do I have to tell anyone?"
+  A_true: [expense, attendance]
+  D_true: [domestic-trip-same-day-overrun-deadline]
+  needs: any
+  intent_A: 2
+  intent_B: 2
+
+- id: h4
+  q: "Somebody put a purchase through as an ordinary memo instead. Does that change anything?"
+  A_true: [approval]
+  D_true: [kind-misclassification]
+  needs: any
+  intent_A: 2
+  intent_B: 1
+
+- id: h5
+  q: "What has to be cleared before I get on a plane for work?"
+  A_true: [attendance, approval]
+  D_true: [trip-approval-overview]
+  needs: any
+  intent_A: 2
+  intent_B: 2
+
+# ── severe · A3, B2–3 — almost no shared vocabulary; the answer spans areas ──
+- id: s1
+  q: "I want to work out of Portugal for a few months. Who has to say yes, and does anything change about what comes off my pay?"
+  A_true: [attendance, payroll]
+  D_true: [working-abroad-approval-role]
+  needs: all
+  intent_A: 3
+  intent_B: 3
+
+- id: s2
+  q: "Our whole team was moved across to the subsidiary. Does my start date reset, and what does that do to what I'd be owed on the way out?"
+  A_true: [attendance, payroll]
+  D_true: [group-transfer-case]
+  needs: all
+  intent_A: 3
+  intent_B: 3
+
+- id: s3
+  q: "Nobody did any work on the Sunday while we were abroad. Who decides whether it counts, and does it still pay?"
+  A_true: [expense, attendance]
+  D_true: [overseas-trip-per-diem-attendance-role]
+  needs: all
+  intent_A: 3
+  intent_B: 3
+
+- id: s4
+  q: "We settled on a supplier in a room. Is what we wrote down enough to place the order, or is something else needed?"
+  A_true: [approval, procurement]
+  D_true: [meeting-minutes-overview]
+  needs: all
+  intent_A: 3
+  intent_B: 3
+
+# Added after grading: the first pass left moderate with two questions, which is not enough to say
+# anything about that row. These three are written onto documents with C+D+E of 4, so an A0–1, B0
+# question lands in the band. Adjusting which questions fill a band is stratified sampling; the band
+# definition is frozen and no question was moved on the strength of a result.
+- id: m6
+  q: "What closes out on a leaver's insurance record, and where does the pension cut-off differ from the payslip?"
+  A_true: [payroll]
+  D_true: [insurance-leaving-deregistration]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+
+- id: m7
+  q: "Action was taken before the draft was written. What still has to match afterwards?"
+  A_true: [approval]
+  D_true: [urgent-after-the-fact]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+
+- id: m8
+  q: "Someone paid for one client dinner in two taps on the card, both under the evidence threshold. What did the close cycle do with that?"
+  A_true: [expense]
+  D_true: [expense-audit-close-worked-case]
+  needs: any
+  intent_A: 1
+  intent_B: 0
+
+- id: s5
+  q: "Someone we brought in for a half-day session doesn't charge VAT. What do I need back from them, and from what amount does it start to matter?"
+  A_true: [expense]
+  D_true: [evidence-vat-exempt]
+  needs: any
+  intent_A: 3
+  intent_B: 2
