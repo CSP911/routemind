@@ -23,13 +23,41 @@ frozen here.
 
 ## The five factors
 
-Each is graded 0–3. Model-free factors come first: two of the five need no embedding at all, and the
-two that do are computed with **a model other than the one under test**, because a difficulty scale
-built from the retriever's own geometry is calibrated to that retriever's blind spots.
+Each is graded 0–3. Three of the five need no model at all. The two that do — routing margin and
+crowding — are computed with **`text-embedding-3-large`, pinned**, and that is the same model the
+dense side of the retrieval arms uses. This was not the original intention and the reason for the
+change is worth recording.
 
-Thresholds are the observed quartiles of the corpus as it stands (701 documents, measured
-2026-09-18). They are recorded here so that a later corpus can be compared against the same cuts
-rather than re-quartiled into agreement.
+The plan was to compute D and E with a different model, since a difficulty scale built from the
+retriever's own geometry is calibrated to that retriever's blind spots. Measured across
+`text-embedding-3-large` and `text-embedding-ada-002` on all 700 documents:
+
+| | same band across the two models |
+|---|---|
+| C depth | 700/700 — structural, no model involved |
+| D margin | 192/700 (27%) |
+| E crowding | 54/700 (8%) |
+| C+D+E | 11/700 (2%) — **79% of documents change band** |
+
+The shift is entirely one-directional: ada-002 scores every document harder, because its cosines run
+higher across the board and a fixed 0.70 neighbour threshold therefore catches far more. **An absolute
+threshold does not carry between embedding models.**
+
+That leaves two ways to define the cuts, and they trade against different things.
+
+- **Quantiles of whatever model is in use.** Stable across models — but it defines the top quarter of
+  any corpus as hard, which would make the 79-vs-800 scale comparison vacuous: difficulty would be
+  a fixed share by construction, and the effect of scale on difficulty could not appear.
+- **Absolute cuts with the model pinned.** Comparable across corpus sizes, which the scale axis needs;
+  breaks if the model changes, which is now a measured quantity rather than a worry.
+
+The scale axis is load-bearing, so the cuts stay absolute and the model is pinned. The cost is stated
+in §Threats and its size is known: **re-deriving D and E with a different embedding moves 79% of
+documents by one to six points.** Anyone re-running this must use the same model or re-derive the
+cuts, and the factor tool prints which model produced its numbers for exactly that reason.
+
+Thresholds below are the observed quartiles of the corpus as it stands (700 documents, measured
+2026-09-18, `text-embedding-3-large`).
 
 ### A · Lexical bridge — does the question use the document's words?
 
@@ -139,6 +167,18 @@ something with a system that correctly reported nothing to find.
   whose questions and documents share an author.
 
 ---
+
+## Threats to the scale itself
+
+1. **D and E share a model with the thing being measured.** A document the retriever's embedding finds
+   crowded is scored crowded, so the scale is partly a description of that embedding. Three of the
+   five factors are model-free and C alone is fully structural; the report gives results by factor so
+   a reader can see how much of an effect rests on D and E.
+2. **The cuts are this corpus's quartiles.** A corpus with a different shape would produce different
+   bands from the same documents. The cuts are recorded with their date and their model so a later
+   run can say whether it is comparing like with like.
+3. **A and B are assigned when the question is written**, by the same hand that wrote the corpus.
+   The human validation below is the check on that, and it is the only check there is.
 
 ## Validation
 
