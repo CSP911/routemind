@@ -1,6 +1,6 @@
 # Pre-registration — human intervention in RAG, realised as a routing layer
 
-**Status: DRAFT, 2026-09-18 (rev. 2, continuity added the same day).** This document is written *before* any arm is run. Once the open
+**Status: DRAFT, 2026-09-18 (rev. 3 — continuity added, and the staleness axis corrected after measuring it).** This document is written *before* any arm is run. Once the open
 parameters at the bottom are fixed it is frozen, and every later document in `eval/` is built from it.
 A metric, arm or decision rule that is not in the frozen version does not enter the report.
 
@@ -96,12 +96,53 @@ document set grows and it is what makes one sentence cover a hundred documents.
 
 The 79 original documents are all S1 by construction: the descriptions were written for them.
 
-### The continuous form of the same variable
+### Two variables, not one ordered scale
 
-Stratum is a categorical claim made at design time. It is checked by measuring, for every document,
-the **embedding distance between the document and its area's description**. This gives the
-"staleness" axis a continuous x, and it tests the labels: if S1 documents are not measurably closer to
-their descriptions than S4 documents, the labelling is wrong and the report says so.
+The strata were first written as though they ran from covered to uncovered, S1 through S4, and the
+continuous axis was to be `cos(document, the area's whole description)`. Measured on 2026-09-18 that
+ordering did not hold — S4 sat *above* S2 — and the reason turned out to be the design, not the data.
+
+Cosine over the whole description measures **topical proximity**. What the axis has to measure is
+**coverage**: does this sentence tell a reader to look here for this document? The two come apart
+exactly where it matters. `expense` says "how much a business trip pays"; a document about travel
+insurance shares the vocabulary of trips and scores close (0.390), and that clause does not describe
+it at all. A document about budget variance shares nothing and scores far (0.344), and is equally
+uncovered. The measurement answered a different question than the one being asked.
+
+Splitting the description into its clauses and taking the **maximum similarity over clauses** asks the
+sharper question — is there *one specific clause* for this document, rather than is this document
+vaguely near the average of five. Measured the same day:
+
+| | whole description | max over clauses |
+|---|---|---|
+| S1 | 0.419 | **0.397** |
+| S2 | 0.362 | 0.299 |
+| S3 | 0.350 | 0.304 |
+| S4 | 0.378 | 0.306 |
+
+The S1-to-rest gap widens from 0.057 to 0.098, and S2, S3 and S4 collapse onto each other. That
+collapse is the finding: **they are all uncovered**, and a coverage measure is right to score them
+alike. The original expectation that they would order was conflating two different variables.
+
+So the design is corrected to two:
+
+| | | Measured by |
+|---|---|---|
+| **coverage** — continuous | how specifically the description reaches this document | max over clauses of `cos(document, clause)` |
+| **why uncovered** — categorical | S2 belongs but unnamed · S3 straddles two areas · S4 new territory | the pre-registered stratum label |
+
+Q2's curve is drawn against **coverage**. The stratum is what Q3 reads to say *which kind* of failure
+a miss was. Nothing about the labels changes; what changes is the claim made about them — they were
+never a single ordered scale and are no longer treated as one.
+
+**Validation of the axis.** Coverage is a judgment, and this measures it with a distance. The
+agreement is checked on a sample of about fifty (document, area) pairs rated by the operator — 0 the
+description does not reach it, 1 partly, 2 yes — against the measured coverage and against the
+stratum labels, reported as Cohen's kappa. The operator rates them because the corpus was written by
+the assistant; a label and a corpus from one hand is not a check. If agreement is poor, the fallback
+is an entailment judgment per (document, clause) — a model asked whether the clause sends a reader
+here — used to *characterise the dataset* and never to score an arm, and the report says which was
+used.
 
 ### Scale
 
@@ -168,7 +209,7 @@ Recorded on every F1, from the stratum label — decided before the miss was obs
 | | Question | Design |
 |---|---|---|
 | **Q1** | Which part of the intervention pays? | the 2×2 (§3.1) against both floors (§3.2). F1–F3 |
-| **Q2** | Where does it stop paying? | the A1−B1 gap, sliced two ways: by **staleness** (stratum, and the continuous distance) and by **scale** (79 / 800) |
+| **Q2** | Where does it stop paying? | the A1−B1 gap against **coverage** (continuous, §4), and by **scale** (79 / 800). The stratum is not an axis here — it is what Q3 reads |
 | **Q3** | When it fails, whose fault? | S1 misses vs non-S1 misses, counts and ratio. The router model is fixed and named; if a second model is affordable, S1 misses that survive a model change are the logic failures that are not one model's opinion |
 | **Q4a** | The cost of intervention — iteration | **hops per answered question, median and p95.** An agentic router hides a stale table by iterating; hops should rise before accuracy falls. Requires an iterative router with a hop budget |
 | **Q5a** | Currency — is the operative document *found* | on continuity fixtures (§7a): the operative document in the top-k, and its rank **against its distractors**. A reranker blind to dates has no reason to put July above March |
@@ -254,7 +295,7 @@ first would make two things vary at once.
 - Policy-based routing (enforced overrides of the router's choice)
 - Area weights, a floor under them, deliberate decay
 - A drift monitor (sample an area, summarise it, diff against the human sentence). Note that Q2's
-  continuous distance is the same instrument used as a measurement rather than a monitor.
+  coverage measure is the same instrument used as a measurement rather than a monitor.
 - **Continuity fields on entities** — `state` (active · superseded · withdrawn), `age`, and a pointer
   to what an entity supersedes. Proposed in the same discussion. Deferred until Q5 has run against
   the baseline tag, for the reason given under Q5. One note for when they come: supersession in the
@@ -289,6 +330,8 @@ first would make two things vary at once.
 | `bench/retrieve.py` | BM25 + dense (`text-embedding-3-large`) + RRF, embeddings cached |
 | `bench/rerank.py` | LLM scoring, blind to areas |
 | `bench/rows-check.py` | P1 |
+| `bench/coverage.py` | the coverage axis (§4), per stratum or per document |
+| `bench/restructure.py` | the corpus tree: a section page per cluster, idempotent |
 | `bench/smoke.py` | retrieve + rerank end to end |
 | `eval/fixtures/` | the continuity-fixture contract, one worked example, and `check.py` |
 | `git tag baseline-pre-continuity` | the implementation Q5 is measured against first |
