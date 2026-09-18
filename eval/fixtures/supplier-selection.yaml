@@ -1,0 +1,117 @@
+# The history GovKM described, written as the back office would have written it. Four documents that
+# are all true, all relevant, and only one of which is the current state.
+id: supplier-selection-x
+area: procurement
+subject: which supplier is approved for the X component
+contributed_by: GovKM (the scenario); written up here as the worked example
+
+documents:
+  - id: x-supplier-a-approved
+    date: 2025-03-03
+    kind: rule
+    name: Supplier A approved for the X component
+    one_liner: The decision that made Supplier A the registered source for X, and what it was conditional on
+    body: |
+      # Supplier A approved for the X component
+
+      Decided 3 March 2025, on the purchase request raised by the platform team and three quotes.
+
+      ## What was decided
+      Supplier A is the registered source for the X component for the 2025 procurement year. Orders go
+      through the office & purchasing desk against the annual agreement, banded on the annual total.
+
+      ## Conditions
+      - Delivery within ten working days of order.
+      - Two consecutive late deliveries trigger a review of the approval.
+
+      The registration, the quotes and the comparison are filed with the draft. If a condition above is
+      breached, the review is raised by the desk, not by the requesting team.
+
+  - id: x-supplier-a-late-delivery
+    date: 2025-06-12
+    kind: case
+    name: Supplier A — second late delivery on X
+    one_liner: What happened when Supplier A missed the delivery window a second time, and what it triggered
+    body: |
+      # Supplier A — second late delivery on X
+
+      Recorded 12 June 2025 by the office & purchasing desk.
+
+      ## What happened
+      The May order for X arrived nineteen working days after order, against a ten-day condition. It
+      was the second consecutive late delivery; the April order had arrived on day fourteen.
+
+      ## What it triggered
+      Under the conditions of the March approval, two consecutive late deliveries raise a review. The
+      desk raised it the same day. Until the review concludes, open orders with Supplier A stand and
+      no new orders are placed.
+
+      This is a record of an event. It does not by itself change who the registered source is.
+
+  - id: x-supplier-b-approved
+    date: 2025-07-07
+    kind: rule
+    name: Supplier B approved for the X component
+    one_liner: The decision that replaced Supplier A with Supplier B as the registered source for X
+    body: |
+      # Supplier B approved for the X component
+
+      Decided 7 July 2025, closing the review raised on 12 June.
+
+      ## What was decided
+      Supplier B is the registered source for the X component from 7 July 2025. **This replaces the
+      approval of Supplier A dated 3 March 2025**, which is withdrawn from the same date. Open orders
+      with Supplier A are fulfilled and no further orders are placed with them for X.
+
+      ## Why
+      Two consecutive late deliveries against the March conditions, and a review that found no
+      remedy Supplier A could commit to. Supplier B quoted a twelve-day window and a penalty clause.
+
+      ## What does not change
+      The annual band, the desk placing orders, and the evidence rules. Only the counterparty.
+
+  - id: x-sourcing-retrospective-2025
+    date: 2025-10-20
+    kind: case
+    name: Retrospective — sourcing the X component in 2025
+    one_liner: How the X sourcing decision was made and remade during 2025, kept for the next selection
+    body: |
+      # Retrospective — sourcing the X component in 2025
+
+      Written 20 October 2025 for the procurement review.
+
+      ## The sequence
+      Supplier A was the original selection in March, chosen on price with three quotes. Two late
+      deliveries in April and May triggered the review written into that approval, and the review
+      moved sourcing to Supplier B in July.
+
+      ## What to take from it
+      - The delivery condition in the March approval is what made the change possible. Write one in.
+      - Price alone chose A. The comparison for the next selection should weight delivery history.
+      - The original selection of A was correct on the information available at the time.
+
+      This is a record for the next selection. It changes nothing about the current source.
+
+truth:
+  operative: x-supplier-b-approved
+  states:
+    x-supplier-a-approved: superseded
+    x-supplier-a-late-delivery: active
+    x-supplier-b-approved: active
+    x-sourcing-retrospective-2025: active
+  supersedes:
+    x-supplier-b-approved: [x-supplier-a-approved]
+
+questions:
+  - q: Which supplier is currently approved for the X component?
+    answer: Supplier B, since 7 July 2025
+    operative: x-supplier-b-approved
+    distractors: [x-supplier-a-approved, x-sourcing-retrospective-2025]
+  - q: Who was the original supplier chosen for X, and why was it changed?
+    answer: Supplier A, on price; changed after two consecutive late deliveries triggered the review in the March approval
+    operative: x-sourcing-retrospective-2025
+    distractors: []
+  - q: Can I place a new order for X with Supplier A?
+    answer: No. No further orders with A since 7 July 2025; orders go to Supplier B
+    operative: x-supplier-b-approved
+    distractors: [x-supplier-a-approved]

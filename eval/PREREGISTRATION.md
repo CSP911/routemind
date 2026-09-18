@@ -1,6 +1,6 @@
 # Pre-registration — human intervention in RAG, realised as a routing layer
 
-**Status: DRAFT, 2026-09-18.** This document is written *before* any arm is run. Once the open
+**Status: DRAFT, 2026-09-18 (rev. 2, continuity added the same day).** This document is written *before* any arm is run. Once the open
 parameters at the bottom are fixed it is frozen, and every later document in `eval/` is built from it.
 A metric, arm or decision rule that is not in the frozen version does not enter the report.
 
@@ -129,6 +129,7 @@ The chain is: question → router picks areas **A_picked** → retrieval inside 
 | F2 | retrieval failure | routing hit, but no D_true document in the top-k inside the picked areas | |
 | F3 | rank failure | a D_true document is returned, below k | |
 | F4 | **false absence** | the system says there is no answer, and there is | |
+| F5 | **stale answer** | routing hit, retrieval hit, the operative document is in the top-k — and the answer rests on a document it superseded | |
 
 F1 is logged separately from F2 and F3 on every question (donk8r): a wrong hop 0 must not show up as a
 retrieval miss, or the reranker gets tuned for a problem the table caused.
@@ -136,6 +137,12 @@ retrieval miss, or the reranker gets tuned for a problem the table caused.
 **F4 is asymmetric.** The B-arms cannot commit it — they have no absence to claim. Only an A-arm can,
 because hop 0 asserts it is the whole world. Counting only "was the document found" would hide both the
 design's most expensive failure and its reason for existing.
+
+**F5 is orthogonal to all of the above.** A system can pass F1 through F3 perfectly and still be wrong,
+because four true, relevant, findable documents describe four states of the same subject over time and
+only one is current. This is not a retrieval failure; it is a failure to distinguish *found the
+material* from *established which material is operative* — after a correction, a supersession, or a
+moved responsibility. Raised by GovKM, 2026-09-18. Every arm can commit it, A and B alike.
 
 ### Cause of a routing miss
 
@@ -164,12 +171,19 @@ Recorded on every F1, from the stratum label — decided before the miss was obs
 | **Q2** | Where does it stop paying? | the A1−B1 gap, sliced two ways: by **staleness** (stratum, and the continuous distance) and by **scale** (79 / 800) |
 | **Q3** | When it fails, whose fault? | S1 misses vs non-S1 misses, counts and ratio. The router model is fixed and named; if a second model is affordable, S1 misses that survive a model change are the logic failures that are not one model's opinion |
 | **Q4a** | The cost of intervention — iteration | **hops per answered question, median and p95.** An agentic router hides a stale table by iterating; hops should rise before accuracy falls. Requires an iterative router with a hop budget |
+| **Q5a** | Currency — is the operative document *found* | on continuity fixtures (§7a): the operative document in the top-k, and its rank **against its distractors**. A reranker blind to dates has no reason to put July above March |
 
 ### Stage 2 — generation attached.
 
 | | Question | Design |
 |---|---|---|
 | **Q4b** | The cost of intervention — false absence | F4 rate on answerable questions (the cost) and correct-refusal rate on unanswerable ones (the benefit). Same mechanism, both signs |
+| **Q5b** | Currency — is the operative document *used* | F5: does the generated answer rest on the operative document or on one it superseded |
+
+Q5 runs **first against `git tag baseline-pre-continuity`**, the implementation before any state, age
+or supersession field exists — so the fixtures measure what the system was, and any continuity-aware
+change is a delta from a preserved result rather than a test designed around the fix. The contributor
+asked for exactly this, and it is the same discipline as the rest of this document.
 
 In stage 1, F4 is estimated as *potential* false absence: questions where F1 occurred and hop 0 was in
 a state that permits an absence claim (every link up).
@@ -195,6 +209,19 @@ Not yet written. What this document fixes about it:
 questions and label A_true. That is circular. Resolution recorded here once decided (§9).
 
 ---
+
+## 7a. Continuity fixtures
+
+A second kind of input, contributed rather than derived from the corpus. One subject, several
+documents about it over time, and the truth about which is operative now. The contract, a worked
+example and a checker are in `eval/fixtures/`.
+
+Two rules carry over from the strata: the documents are plain — dated the way a person would date
+them, with no field that says "current" — and the truth never enters the corpus. A third is new: a
+fixture's documents join an existing area, so routing to them is governed by that area's frozen
+description like everything else.
+
+What a fixture measures is Q5. It is scored on its own questions, not on the gold set's.
 
 ## 8. Statistics
 
@@ -228,6 +255,11 @@ first would make two things vary at once.
 - Area weights, a floor under them, deliberate decay
 - A drift monitor (sample an area, summarise it, diff against the human sentence). Note that Q2's
   continuous distance is the same instrument used as a measurement rather than a monitor.
+- **Continuity fields on entities** — `state` (active · superseded · withdrawn), `age`, and a pointer
+  to what an entity supersedes. Proposed in the same discussion. Deferred until Q5 has run against
+  the baseline tag, for the reason given under Q5. One note for when they come: supersession in the
+  fixtures is between *documents* (a July decision replaces a March one), so the fields belong on
+  entities and surface in an area's table, not on the hop 0 rows.
 
 ---
 
@@ -258,5 +290,7 @@ first would make two things vary at once.
 | `bench/rerank.py` | LLM scoring, blind to areas |
 | `bench/rows-check.py` | P1 |
 | `bench/smoke.py` | retrieve + rerank end to end |
+| `eval/fixtures/` | the continuity-fixture contract, one worked example, and `check.py` |
+| `git tag baseline-pre-continuity` | the implementation Q5 is measured against first |
 
 `bench/` is not versioned (generated, large). This file and everything else in `eval/` is.
