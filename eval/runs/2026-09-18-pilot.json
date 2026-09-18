@@ -1,0 +1,2727 @@
+{
+ "k": 10,
+ "per_hop": 2,
+ "gold": "eval/gold/pilot.yaml",
+ "router_model": "gpt-4o",
+ "rerank_model": "gpt-4o",
+ "embed_model": "text-embedding-3-large",
+ "results": [
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 5,
+   "mrr": 0.2,
+   "arm": "B1",
+   "id": "e1",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "year-end-manual-deductions",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-prefilled-scope",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-steps",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-tax",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-manual-deduction-items",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-dates",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-deadline",
+     "area": "payroll"
+    },
+    {
+     "id": "equity-year-end-treatment",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-year-end-reconciliation",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-withholding-tax",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "e2",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "family-care-leave-eligibility",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-category-table",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-other-than-parental-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-pay-and-insurance-status",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-start-notice-table",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-return-notice-table",
+     "area": "attendance"
+    },
+    {
+     "id": "unpaid-personal-leave-form",
+     "area": "attendance"
+    },
+    {
+     "id": "childcare-apply",
+     "area": "attendance"
+    },
+    {
+     "id": "military-leave-service-continuity",
+     "area": "attendance"
+    },
+    {
+     "id": "year-end-dependant-registration",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "e3",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "flexwork-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "flexwork-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "core-hours-table",
+     "area": "attendance"
+    },
+    {
+     "id": "flexwork-system-entry",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "booking-cases-index",
+     "area": "attendance"
+    },
+    {
+     "id": "sick-leave-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "equipment-lending-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "e4",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "pay-structure-vs-monthly-payslip",
+     "area": "payroll"
+    },
+    {
+     "id": "pay-annual-figure-components",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-basic-pay",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-standard-monthly-income",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-prorated-month",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-line-summary",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-payment-lines",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-deduction-lines",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-items",
+     "area": "payroll"
+    },
+    {
+     "id": "severance-tax",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense",
+    "payroll",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "e5",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "liability-and-indemnity-position",
+     "area": "procurement"
+    },
+    {
+     "id": "negotiable-contract-terms",
+     "area": "procurement"
+    },
+    {
+     "id": "standard-contract-clauses",
+     "area": "procurement"
+    },
+    {
+     "id": "entertainment-fixed-headcount-event",
+     "area": "expense"
+    },
+    {
+     "id": "nontaxable-allowance-summary",
+     "area": "payroll"
+    },
+    {
+     "id": "standard-payment-terms",
+     "area": "procurement"
+    },
+    {
+     "id": "nontaxable-car-allowance-overcap-month",
+     "area": "payroll"
+    },
+    {
+     "id": "severance-retirement-pension-types",
+     "area": "payroll"
+    },
+    {
+     "id": "entertainment-public-official-present",
+     "area": "expense"
+    },
+    {
+     "id": "contract-under-audit-hold",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "m1",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "flexitime-shortfall-case",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-month-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-carryover-table",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-compensatory-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-unrequested-hours-response",
+     "area": "attendance"
+    },
+    {
+     "id": "parental-leave-early-return-case",
+     "area": "attendance"
+    },
+    {
+     "id": "short-balance-appeal-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "short-balance-rejection-case",
+     "area": "attendance"
+    },
+    {
+     "id": "bonus-leaving-month-clawback-overlap",
+     "area": "payroll"
+    },
+    {
+     "id": "short-balance-half-day-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "B1",
+   "id": "m2",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "bonus-leaving-month",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-payment-timing",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-types-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-leaving-month-clawback-overlap",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-leaving",
+     "area": "payroll"
+    },
+    {
+     "id": "signing-bonus-clawback-condition",
+     "area": "payroll"
+    },
+    {
+     "id": "leave-payout-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "unused-leave-payout-rate-table",
+     "area": "attendance"
+    },
+    {
+     "id": "severance-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-insurance-contributions",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "m3",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-per-diem-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "biz-trip-attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-overview",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-per-diem-attendance-role",
+     "area": "expense"
+    },
+    {
+     "id": "trip-attendance-outcomes-table",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-system",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-client-site-multi-day",
+     "area": "expense"
+    },
+    {
+     "id": "unauthorized-trip-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "attendance",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.25,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "m4",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "unpaid-leave-deduction-calculation",
+     "area": "payroll"
+    },
+    {
+     "id": "unpaid-leave-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "unpaid-leave-return-proration",
+     "area": "payroll"
+    },
+    {
+     "id": "leaving-month-leave-day-case",
+     "area": "attendance"
+    },
+    {
+     "id": "overseas-trip-per-diem-day-types",
+     "area": "expense"
+    },
+    {
+     "id": "leaving-month-leave-day-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-of-absence-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "long-term-illness-conversion",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-category-table",
+     "area": "attendance"
+    },
+    {
+     "id": "final-leave-settlement",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "procurement"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "m5",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "expired-poa-relied-upon",
+     "area": "approval"
+    },
+    {
+     "id": "power-of-attorney-issuance",
+     "area": "approval"
+    },
+    {
+     "id": "power-of-attorney-scope",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-overview",
+     "area": "approval"
+    },
+    {
+     "id": "evidence-of-authority-request",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "wrong-approver-in-chain",
+     "area": "approval"
+    },
+    {
+     "id": "missing-consent-found-late",
+     "area": "approval"
+    },
+    {
+     "id": "missing-original-case",
+     "area": "procurement"
+    },
+    {
+     "id": "ai-tool-data-leak-case",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h1",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance-system-guide",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-unrequested-hours-response",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "leaving-month-leave-day-case",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-attendance-gap",
+     "area": "expense"
+    },
+    {
+     "id": "entitlement-case-payroll-cutoff",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll-contact",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": true,
+   "rank": 3,
+   "mrr": 0.3333333333333333,
+   "arm": "B1",
+   "id": "h2",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "entertainment-limit",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-seasonal-gifts",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment",
+     "area": "expense"
+    },
+    {
+     "id": "night-and-holiday-hours",
+     "area": "attendance"
+    },
+    {
+     "id": "procurement-overview",
+     "area": "procurement"
+    },
+    {
+     "id": "overtime-rate-table",
+     "area": "attendance"
+    },
+    {
+     "id": "procurement",
+     "area": "procurement"
+    },
+    {
+     "id": "overtime-cap-scope-table",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h3",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "domestic-trip-same-day-overrun-deadline",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun-resubmission",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-band-change-notice",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun-cost-table",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-cancelled-return-leg",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-stopover-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "expense-trip-days-attendance-gap",
+     "area": "expense"
+    },
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-late-confirmation-case",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "B1",
+   "id": "h4",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "card-po-choice-overview",
+     "area": "expense"
+    },
+    {
+     "id": "kind-misclassification",
+     "area": "approval"
+    },
+    {
+     "id": "ga-desk",
+     "area": "procurement"
+    },
+    {
+     "id": "split-purchase-same-intent",
+     "area": "approval"
+    },
+    {
+     "id": "wrong-approver-in-chain",
+     "area": "approval"
+    },
+    {
+     "id": "quote-swap-after-drafting",
+     "area": "approval"
+    },
+    {
+     "id": "approval-line",
+     "area": "approval"
+    },
+    {
+     "id": "policy-change-draft",
+     "area": "approval"
+    },
+    {
+     "id": "corp-card",
+     "area": "expense"
+    },
+    {
+     "id": "band-set-by-quote-at-drafting",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 0.6666666666666666,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "B1",
+   "id": "h5",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "biz-trip-attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-approval-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-approval-deadline",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-attendance-case-index",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "overseas-trip-approver-sequence",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-approval-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "audit-document-release-procedure",
+     "area": "approval"
+    },
+    {
+     "id": "domestic-trip-mode-choice-approver",
+     "area": "expense"
+    },
+    {
+     "id": "post-departure-trip-approval-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.6666666666666666,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "B1",
+   "id": "s1",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "working-abroad-approval-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "insurance-reported-pay-change",
+     "area": "payroll"
+    },
+    {
+     "id": "expense-allowance-eligibility-form",
+     "area": "expense"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "childcare-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-allowance-owner",
+     "area": "expense"
+    },
+    {
+     "id": "payroll-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-change-signoff",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "B1",
+   "id": "s2",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "group-transfer-entitlement",
+     "area": "attendance"
+    },
+    {
+     "id": "group-transfer-case",
+     "area": "attendance"
+    },
+    {
+     "id": "entitlement-case-matrix",
+     "area": "attendance"
+    },
+    {
+     "id": "combined-transfer-milestone-case",
+     "area": "attendance"
+    },
+    {
+     "id": "transfer-in-first-year-table",
+     "area": "attendance"
+    },
+    {
+     "id": "entitlement-recalc-trigger",
+     "area": "attendance"
+    },
+    {
+     "id": "entitlement-case-transfer-vs-rehire",
+     "area": "attendance"
+    },
+    {
+     "id": "rehire-service-continuity",
+     "area": "attendance"
+    },
+    {
+     "id": "entitlement-case-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "rehire-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 5,
+   "mrr": 0.2,
+   "arm": "B1",
+   "id": "s3",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "overseas-trip-per-diem-day-types",
+     "area": "expense"
+    },
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    },
+    {
+     "id": "overseas-trip-per-diem-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "trip-hours-recording-table",
+     "area": "attendance"
+    },
+    {
+     "id": "overseas-trip-per-diem-attendance-role",
+     "area": "expense"
+    },
+    {
+     "id": "expense-trip-days-overview",
+     "area": "expense"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu",
+     "area": "expense"
+    },
+    {
+     "id": "biz-trip-attendance",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "s4",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "purchase-steps",
+     "area": "procurement"
+    },
+    {
+     "id": "procurement",
+     "area": "procurement"
+    },
+    {
+     "id": "procurement-overview",
+     "area": "procurement"
+    },
+    {
+     "id": "purchase-request",
+     "area": "procurement"
+    },
+    {
+     "id": "supplier-refuses-documentation",
+     "area": "procurement"
+    },
+    {
+     "id": "sole-quote-exception",
+     "area": "procurement"
+    },
+    {
+     "id": "vendor",
+     "area": "procurement"
+    },
+    {
+     "id": "vendor-steps",
+     "area": "procurement"
+    },
+    {
+     "id": "card-po-supplier-request-procedure",
+     "area": "expense"
+    },
+    {
+     "id": "card-po-request-form",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "m6",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "insurance-leaving-deregistration",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-movements-partial-year",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-correction-leaver",
+     "area": "payroll"
+    },
+    {
+     "id": "unpaid-leave-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-movement-triggers",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-enrolment",
+     "area": "payroll"
+    },
+    {
+     "id": "severance-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-rates",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "m7",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "urgent-after-the-fact",
+     "area": "approval"
+    },
+    {
+     "id": "after-the-fact-deadline",
+     "area": "approval"
+    },
+    {
+     "id": "draft-kind-effective-date",
+     "area": "approval"
+    },
+    {
+     "id": "draft-doc",
+     "area": "approval"
+    },
+    {
+     "id": "expense-draft-approval-overview",
+     "area": "expense"
+    },
+    {
+     "id": "draft-kinds-table",
+     "area": "approval"
+    },
+    {
+     "id": "policy-change-draft",
+     "area": "approval"
+    },
+    {
+     "id": "consenting-teams-table",
+     "area": "approval"
+    },
+    {
+     "id": "pay-change-draft-rise-cutoff",
+     "area": "payroll"
+    },
+    {
+     "id": "expense-draft-approval-request-form",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "m8",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "expense-audit-close-worked-case",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-split-payment",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-2percent-penalty",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-guest-attendee-list",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-split-payment-mixed-card",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-meal-reclassified-internal",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense",
+    "payroll",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "s5",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "top": [
+    {
+     "id": "evidence-vat-exempt",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-vat-exempt-categories",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-awkward-cases-overview",
+     "area": "expense"
+    },
+    {
+     "id": "card-use-foreign-currency",
+     "area": "expense"
+    },
+    {
+     "id": "expense-personal-card-reimbursement-evidence",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-no-tax-invoice",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-individual-seller",
+     "area": "expense"
+    },
+    {
+     "id": "procurement-overview",
+     "area": "procurement"
+    },
+    {
+     "id": "band-boundary-cases",
+     "area": "procurement"
+    },
+    {
+     "id": "contractor-misclassification-risk",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 5,
+   "mrr": 0.2,
+   "arm": "A1",
+   "id": "e1",
+   "needs": "any",
+   "picked": [
+    "payroll"
+   ],
+   "router_said": "payroll",
+   "top": [
+    {
+     "id": "year-end-manual-deductions",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-prefilled-scope",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-steps",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-tax",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-manual-deduction-items",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-dates",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-deadline",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-year-end-reconciliation",
+     "area": "payroll"
+    },
+    {
+     "id": "equity-year-end-treatment",
+     "area": "payroll"
+    },
+    {
+     "id": "nontaxable-allowance-claim-form",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "e2",
+   "needs": "any",
+   "picked": [
+    "attendance"
+   ],
+   "router_said": "attendance",
+   "top": [
+    {
+     "id": "family-care-leave-eligibility",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-category-table",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-other-than-parental-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-start-notice-table",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-pay-and-insurance-status",
+     "area": "attendance"
+    },
+    {
+     "id": "unpaid-personal-leave-form",
+     "area": "attendance"
+    },
+    {
+     "id": "childcare-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "childcare-apply",
+     "area": "attendance"
+    },
+    {
+     "id": "military-leave-service-continuity",
+     "area": "attendance"
+    },
+    {
+     "id": "parental-leave-case-index",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "e3",
+   "needs": "any",
+   "picked": [
+    "attendance"
+   ],
+   "router_said": "attendance",
+   "top": [
+    {
+     "id": "flexwork-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "flexwork-system-entry",
+     "area": "attendance"
+    },
+    {
+     "id": "flexwork-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "core-hours-table",
+     "area": "attendance"
+    },
+    {
+     "id": "hybrid-week-pattern",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-carryover-table",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-month-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "booking-cases-index",
+     "area": "attendance"
+    },
+    {
+     "id": "sick-leave-overview",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "e4",
+   "needs": "any",
+   "picked": [
+    "payroll"
+   ],
+   "router_said": "payroll",
+   "top": [
+    {
+     "id": "pay-structure-vs-monthly-payslip",
+     "area": "payroll"
+    },
+    {
+     "id": "pay-annual-figure-components",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-basic-pay",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-standard-monthly-income",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-prorated-month",
+     "area": "payroll"
+    },
+    {
+     "id": "pay-review-cycle",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-line-summary",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-payment-lines",
+     "area": "payroll"
+    },
+    {
+     "id": "pay-promotion-midyear-adjustment",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-leaving-checklist",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "e5",
+   "needs": "any",
+   "picked": [
+    "procurement"
+   ],
+   "router_said": "procurement",
+   "top": [
+    {
+     "id": "liability-and-indemnity-position",
+     "area": "procurement"
+    },
+    {
+     "id": "negotiable-contract-terms",
+     "area": "procurement"
+    },
+    {
+     "id": "standard-contract-clauses",
+     "area": "procurement"
+    },
+    {
+     "id": "standard-payment-terms",
+     "area": "procurement"
+    },
+    {
+     "id": "contract-under-audit-hold",
+     "area": "procurement"
+    },
+    {
+     "id": "custody-retention-periods",
+     "area": "procurement"
+    },
+    {
+     "id": "renewal-decision",
+     "area": "procurement"
+    },
+    {
+     "id": "renewal-notice-deadline",
+     "area": "procurement"
+    },
+    {
+     "id": "missing-original-case",
+     "area": "procurement"
+    },
+    {
+     "id": "sanctions-ownership-checks",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "m1",
+   "needs": "any",
+   "picked": [
+    "attendance",
+    "payroll"
+   ],
+   "router_said": "attendance, payroll",
+   "top": [
+    {
+     "id": "flexitime-shortfall-case",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-month-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-carryover-table",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-compensatory-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-unrequested-hours-response",
+     "area": "attendance"
+    },
+    {
+     "id": "parental-leave-early-return-case",
+     "area": "attendance"
+    },
+    {
+     "id": "short-balance-appeal-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "short-balance-rejection-case",
+     "area": "attendance"
+    },
+    {
+     "id": "bonus-leaving-month-clawback-overlap",
+     "area": "payroll"
+    },
+    {
+     "id": "core-hours-table",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "A1",
+   "id": "m2",
+   "needs": "any",
+   "picked": [
+    "payroll"
+   ],
+   "router_said": "payroll",
+   "top": [
+    {
+     "id": "bonus-leaving-month",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-payment-timing",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-insurance-contributions",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-types-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "bonus-leaving-month-clawback-overlap",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-leaving",
+     "area": "payroll"
+    },
+    {
+     "id": "signing-bonus-clawback-condition",
+     "area": "payroll"
+    },
+    {
+     "id": "leave-payout-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "severance-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-prorated-month",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "m3",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "attendance"
+   ],
+   "router_said": "attendance, expense",
+   "top": [
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-client-site-multi-day",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-per-diem-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "unauthorized-trip-case",
+     "area": "attendance"
+    },
+    {
+     "id": "biz-trip-attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-trip-days-overview",
+     "area": "expense"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "domestic-trip-client-site-allowance-table",
+     "area": "expense"
+    },
+    {
+     "id": "expense-trip-days-late-confirmation-case",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "m4",
+   "needs": "any",
+   "picked": [
+    "attendance",
+    "payroll"
+   ],
+   "router_said": "attendance, payroll",
+   "top": [
+    {
+     "id": "unpaid-leave-deduction-calculation",
+     "area": "payroll"
+    },
+    {
+     "id": "unpaid-leave-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "unpaid-leave-return-proration",
+     "area": "payroll"
+    },
+    {
+     "id": "leaving-month-leave-day-case",
+     "area": "attendance"
+    },
+    {
+     "id": "leaving-month-leave-day-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "long-term-illness-conversion",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-category-table",
+     "area": "attendance"
+    },
+    {
+     "id": "final-leave-settlement",
+     "area": "attendance"
+    },
+    {
+     "id": "leaving-month-leave-day-pay-table",
+     "area": "attendance"
+    },
+    {
+     "id": "short-balance-rejection-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "m5",
+   "needs": "any",
+   "picked": [
+    "approval"
+   ],
+   "router_said": "approval",
+   "top": [
+    {
+     "id": "expired-poa-relied-upon",
+     "area": "approval"
+    },
+    {
+     "id": "power-of-attorney-issuance",
+     "area": "approval"
+    },
+    {
+     "id": "power-of-attorney-scope",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-overview",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "evidence-of-authority-request",
+     "area": "approval"
+    },
+    {
+     "id": "missing-consent-found-late",
+     "area": "approval"
+    },
+    {
+     "id": "contract-ended-early",
+     "area": "approval"
+    },
+    {
+     "id": "wrong-approver-in-chain",
+     "area": "approval"
+    },
+    {
+     "id": "ai-tool-data-leak-case",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "h1",
+   "needs": "any",
+   "picked": [
+    "attendance",
+    "payroll"
+   ],
+   "router_said": "attendance, payroll",
+   "top": [
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance-system-guide",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-unrequested-hours-response",
+     "area": "attendance"
+    },
+    {
+     "id": "leaving-month-leave-day-case",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-contact",
+     "area": "payroll"
+    },
+    {
+     "id": "entitlement-case-payroll-cutoff",
+     "area": "attendance"
+    },
+    {
+     "id": "payslip-leaving-checklist",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "A1",
+   "id": "h2",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "procurement"
+   ],
+   "router_said": "expense, procurement",
+   "top": [
+    {
+     "id": "entertainment-limit",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-seasonal-gifts",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment",
+     "area": "expense"
+    },
+    {
+     "id": "procurement-overview",
+     "area": "procurement"
+    },
+    {
+     "id": "procurement",
+     "area": "procurement"
+    },
+    {
+     "id": "approval-threshold",
+     "area": "procurement"
+    },
+    {
+     "id": "expense-petty-cash-limit",
+     "area": "expense"
+    },
+    {
+     "id": "card-limit",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "card-limit-table",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "h3",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "attendance"
+   ],
+   "router_said": "attendance, expense",
+   "top": [
+    {
+     "id": "domestic-trip-same-day-overrun-deadline",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-band-change-notice",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun-cost-table",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun-resubmission",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-cancelled-return-leg",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-stopover-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "expense-trip-days-attendance-gap",
+     "area": "expense"
+    },
+    {
+     "id": "expense-trip-days-late-confirmation-case",
+     "area": "expense"
+    },
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "A1",
+   "id": "h4",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "procurement"
+   ],
+   "router_said": "expense, procurement",
+   "top": [
+    {
+     "id": "card-po-choice-overview",
+     "area": "expense"
+    },
+    {
+     "id": "ga-desk",
+     "area": "procurement"
+    },
+    {
+     "id": "rejecting-a-delivery",
+     "area": "procurement"
+    },
+    {
+     "id": "split-purchase-trap",
+     "area": "procurement"
+    },
+    {
+     "id": "negotiable-contract-terms",
+     "area": "procurement"
+    },
+    {
+     "id": "one-off-purchase-vendor-registration",
+     "area": "procurement"
+    },
+    {
+     "id": "prepaid-card-lost-virtual-number-case",
+     "area": "expense"
+    },
+    {
+     "id": "expense-travel-agency-direct-booking-case",
+     "area": "expense"
+    },
+    {
+     "id": "quote-waiver-procedure",
+     "area": "procurement"
+    },
+    {
+     "id": "card-use-deposit-forfeiture",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "h5",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "attendance"
+   ],
+   "router_said": "attendance, expense",
+   "top": [
+    {
+     "id": "trip-approval-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-approval-deadline",
+     "area": "attendance"
+    },
+    {
+     "id": "post-departure-trip-approval-case",
+     "area": "attendance"
+    },
+    {
+     "id": "biz-trip-attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "expense-travel-agency-overview",
+     "area": "expense"
+    },
+    {
+     "id": "trip-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-approval-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "domestic-trip-mode-choice-approver",
+     "area": "expense"
+    },
+    {
+     "id": "workplace-safety-check-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-attendance-case-index",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "approval",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "A1",
+   "id": "s1",
+   "needs": "all",
+   "picked": [
+    "payroll",
+    "approval"
+   ],
+   "router_said": "approval, payroll",
+   "top": [
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-reported-pay-change",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-change-signoff",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-second-job-annual-events",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip",
+     "area": "payroll"
+    },
+    {
+     "id": "year-end-deadline",
+     "area": "payroll"
+    },
+    {
+     "id": "nontaxable-research-role-check",
+     "area": "payroll"
+    },
+    {
+     "id": "pay-change-decision-overview",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "A1",
+   "id": "s2",
+   "needs": "all",
+   "picked": [
+    "payroll"
+   ],
+   "router_said": "payroll",
+   "top": [
+    {
+     "id": "severance-eligibility",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-july-pension-reset",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-movements-partial-year",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-movement-triggers",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-pay-change-during-settlement",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-retroactive-rise",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-overview",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-second-job-annual-events",
+     "area": "payroll"
+    },
+    {
+     "id": "leave-payout-timing",
+     "area": "payroll"
+    },
+    {
+     "id": "pay-band-movement-rules",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "A1",
+   "id": "s3",
+   "needs": "all",
+   "picked": [
+    "attendance",
+    "payroll"
+   ],
+   "router_said": "attendance, payroll",
+   "top": [
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-hours-recording-table",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-attendance-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "trip-attendance-outcomes-table",
+     "area": "attendance"
+    },
+    {
+     "id": "biz-trip-attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "working-abroad-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-cap-scope-table",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "A1",
+   "id": "s4",
+   "needs": "all",
+   "picked": [
+    "procurement"
+   ],
+   "router_said": "procurement",
+   "top": [
+    {
+     "id": "procurement",
+     "area": "procurement"
+    },
+    {
+     "id": "purchase-steps",
+     "area": "procurement"
+    },
+    {
+     "id": "procurement-overview",
+     "area": "procurement"
+    },
+    {
+     "id": "purchase-request",
+     "area": "procurement"
+    },
+    {
+     "id": "supplier-refuses-documentation",
+     "area": "procurement"
+    },
+    {
+     "id": "vendor",
+     "area": "procurement"
+    },
+    {
+     "id": "sole-quote-exception",
+     "area": "procurement"
+    },
+    {
+     "id": "vendor-steps",
+     "area": "procurement"
+    },
+    {
+     "id": "ga-desk",
+     "area": "procurement"
+    },
+    {
+     "id": "vendor-registration-shortcuts-table",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "m6",
+   "needs": "any",
+   "picked": [
+    "payroll"
+   ],
+   "router_said": "payroll",
+   "top": [
+    {
+     "id": "insurance-leaving-deregistration",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-movement-triggers",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-movements-partial-year",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll",
+     "area": "payroll"
+    },
+    {
+     "id": "insurance-rates",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-leaving",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-contact",
+     "area": "payroll"
+    },
+    {
+     "id": "payslip-leaving-checklist",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "m7",
+   "needs": "any",
+   "picked": [
+    "approval"
+   ],
+   "router_said": "approval",
+   "top": [
+    {
+     "id": "urgent-after-the-fact",
+     "area": "approval"
+    },
+    {
+     "id": "after-the-fact-deadline",
+     "area": "approval"
+    },
+    {
+     "id": "draft-kind-effective-date",
+     "area": "approval"
+    },
+    {
+     "id": "draft-doc",
+     "area": "approval"
+    },
+    {
+     "id": "policy-change-draft",
+     "area": "approval"
+    },
+    {
+     "id": "draft-kinds-table",
+     "area": "approval"
+    },
+    {
+     "id": "kind-misclassification",
+     "area": "approval"
+    },
+    {
+     "id": "consenting-teams-table",
+     "area": "approval"
+    },
+    {
+     "id": "approval",
+     "area": "approval"
+    },
+    {
+     "id": "purchase-draft-quote-correction",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "m8",
+   "needs": "any",
+   "picked": [
+    "expense"
+   ],
+   "router_said": "expense",
+   "top": [
+    {
+     "id": "expense-audit-close-worked-case",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-split-payment",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-split-payment-mixed-card",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-meal-reclassified-internal",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-third-party-name",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-2percent-penalty",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-guest-attendee-list",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A1",
+   "id": "s5",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "procurement"
+   ],
+   "router_said": "expense, procurement",
+   "top": [
+    {
+     "id": "evidence-vat-exempt",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-awkward-cases-overview",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-vat-exempt-categories",
+     "area": "expense"
+    },
+    {
+     "id": "card-use-conference-fees",
+     "area": "expense"
+    },
+    {
+     "id": "card-use-foreign-currency-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "card-use-foreign-currency",
+     "area": "expense"
+    },
+    {
+     "id": "expense-personal-card-reimbursement-evidence",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-2percent-penalty",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-split-payment",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-no-tax-invoice",
+     "area": "expense"
+    }
+   ]
+  }
+ ]
+}

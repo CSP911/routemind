@@ -1,0 +1,121 @@
+# The 10x corpus, as subject clusters. Generation expands each cluster into `n` documents.
+#
+# The stratum is the experiment. It records, per document, whether the area's FROZEN `use_when`
+# describes it — which is the only thing that makes "was the right document in the chosen area"
+# readable afterwards.
+#
+#   S1  the row names this subject.                      control: density, not drift
+#   S2  belongs to the area; no clause names it.         the ordinary way a row goes stale
+#   S3  straddles two areas; neither row claims it.      where a routing miss is defensible
+#   S4  the company grew into this; no row anticipated.  the row is simply absent
+#
+# `why` is written for a reader deciding whether the label is honest. If a cluster's `why` has to
+# argue, the label is probably wrong.
+
+expense:
+  frozen_use_when: "what to do with a receipt · whether the corporate card may be used here · how much a business trip pays · the entertainment cap · the card was lost"
+  S1:
+    - {under: evidence, n: 24, topic: "Evidence in awkward cases", detail: "foreign-language receipts, e-receipts and their reissue, a merchant that cannot issue a tax invoice, VAT-exempt sellers, a receipt in someone else's name, split payments at one merchant, a refund after the claim was filed", why: "the row says 'what to do with a receipt'"}
+    - {under: corp-card, n: 26, topic: "Card use by situation", detail: "subscriptions and their renewal, conference and seminar fees, taxi and ride-hailing, fuel and parking, mobile top-ups, deposits and prepayments, a charge in a foreign currency, an annual licence", why: "the row says 'whether the corporate card may be used here'"}
+    - {under: travel-domestic, n: 30, topic: "Domestic trip cases", detail: "by city and by mode — rail vs air on marginal legs, a trip with two overnight stops, a client site with no hotel under the cap, a same-day return that overran, a cancelled leg, own-car trips with tolls", why: "the row says 'how much a business trip pays'"}
+    - {under: travel-overseas, n: 26, topic: "Overseas trip cases", detail: "by band and by country — a multi-country trip, a band change mid-trip, a stopover, a trip that started before an exchange-rate move, prepaid lodging billed at home, a per-diem day with no attendance", why: "the row says 'how much a business trip pays'"}
+    - {under: entertainment, n: 8,  topic: "Entertainment cases", detail: "seasonal gifts, an event with a fixed head count, a client who brings guests, condolence and congratulation, a meal that turned out to be internal, a public official present", why: "the row says 'the entertainment cap'"}
+    - {under: card-loss, n: 7,  topic: "Lost card and disputed charges", detail: "lost abroad, a subscription that kept charging, a merchant trading under another name, a charge disputed after seven days, a card stopped while travelling", why: "the row says 'the card was lost'"}
+  S2:
+    - {n: 14, topic: "Budget against actual", detail: "how a team's monthly variance report is prepared, what a variance has to explain, the reforecast cycle", why: "plainly an Expenses subject; no clause is about budgets at all"}
+    - {n: 12, topic: "Prepaid and virtual cards", detail: "when one is issued instead of a corporate card, single-use numbers for online vendors, topping up, unused balances", why: "a card, but not the corporate card the row names"}
+    - {n: 12, topic: "Subscription lifecycle", detail: "registering a recurring service, who owns a renewal, cancelling before auto-renew, seat counts that drift", why: "spend management, never named"}
+    - {n: 12, topic: "Reimbursement without a card", detail: "the disbursement form beyond the lost-receipt case, advances and floats, petty cash, paying an employee back for a personal card charge", why: "the row is written entirely around the corporate card"}
+    - {n: 10, topic: "Month-end close and expense audit", detail: "the close calendar, what the desk samples, the findings that recur, how a finding is answered", why: "the process around expenses rather than a spend"}
+    - {n: 10, topic: "Team spending ceilings", detail: "per-team annual ceilings, what happens at 80% and at 100%, carrying nothing over", why: "a control on spending; no clause reaches it"}
+  S3:
+    - {n: 14, topic: "Allowances that ride on pay", detail: "meal and own-car allowance, a remote-work stipend, when a reimbursement becomes taxable pay", pair: payroll, why: "the money is an expense; whether it is taxed is Payroll's row"}
+    - {n: 12, topic: "Trip days versus allowance days", detail: "a trip confirmed late, a day in attendance but not in the claim, a weekend day in lieu, a trip spanning a month boundary", pair: attendance, why: "attendance decides the days, expenses decides the money; neither row says who owns the seam"}
+    - {n: 10, topic: "Card or purchase order", detail: "a spend that is under the card cap but needs a quote, a supplier who wants a PO, a repeat purchase that crossed a band", pair: procurement, why: "both rows could claim it and neither names the boundary"}
+    - {n: 6,  topic: "Spending that needs a draft first", detail: "over-cap spending approved in advance, an emergency spend regularised afterwards", pair: approval, why: "the authority is Approval's, the money is Expenses'"}
+  S4:
+    - {n: 10, topic: "Business travel insurance and risk", detail: "cover for a trip, what to do after an incident abroad, a country the company will not send people to", why: "no area's row anticipates travel risk"}
+    - {n: 10, topic: "Travel emissions reporting", detail: "how a trip's emissions are recorded, the annual figure, choosing rail over air where the policy asks", why: "a reporting duty the company took on; no row names it"}
+    - {n: 8,  topic: "Corporate travel agency", detail: "booking through the agency, what it may and may not book, the service fee, out-of-policy bookings", why: "a new intermediary; the row assumes you book it yourself"}
+
+attendance:
+  frozen_use_when: "how many leave days are left · how to book a half day · how much leave a mid-year joiner gets · how to apply for parental leave · what to log for the days of a business trip"
+  S1:
+    - {under: leave-accrual, n: 24, topic: "Entitlement cases", detail: "a transfer from a group company, a rehire, service across a leave of absence, the year of the 3/5/7-year increase, someone who left and its final balance", why: "the row says 'how many leave days are left'"}
+    - {under: leave-use, n: 22, topic: "Booking cases", detail: "half and quarter days, a day booked and cancelled, leave in the last week of December, same-morning leave, leave over a public holiday, a request that failed on a short balance", why: "the row says 'how to book a half day'"}
+    - {under: leave-accrual-midyear, n: 14, topic: "Mid-year joiner cases", detail: "by joining month, a joiner who was on leave of absence, a joiner who transferred in, the first 1 January, days accrued and lapsed before it", why: "the row says 'how much leave a mid-year joiner gets'"}
+    - {under: childcare-leave, n: 12, topic: "Parental leave cases", detail: "both parents, two blocks, returning early, extending, a return to a different team, insurance during it", why: "the row says 'how to apply for parental leave'"}
+    - {under: biz-trip-attendance, n: 9,  topic: "Trip attendance cases", detail: "a weekend trip, an overseas trip crossing dates, a cancelled trip after approval, a trip taken without a request, a trip spanning the month close", why: "the row says 'what to log for the days of a business trip'"}
+  S2:
+    - {n: 12, topic: "Overtime and hours", detail: "requesting in advance, night and holiday hours, the weekly cap, hours worked and never requested", why: "attendance, and no clause is about hours at all"}
+    - {n: 10, topic: "Flexible and remote working", detail: "core hours, a flexitime month, working from home and how it is recorded, a hybrid week", why: "how attendance is recorded; the row only knows leave and trips"}
+    - {n: 10, topic: "Leave of absence other than parental", detail: "study, military, family care, unpaid leave, what each does to service and entitlement", why: "the row names parental leave only"}
+    - {n: 10, topic: "Sick leave and injury", detail: "sick days against annual leave, evidence, an industrial accident, a long illness", why: "an attendance subject with no clause"}
+    - {n: 8,  topic: "Attendance corrections and disputes", detail: "after the month closes, a record nobody entered, two records for one day, a dispute with a team lead", why: "the machinery around attendance rather than a kind of leave"}
+  S3:
+    - {n: 12, topic: "Days that decide money", detail: "a trip day's allowance, a leave day in a leaving month, unused leave paid out, a prorated joining month", pair: payroll, why: "attendance counts days, payroll prices them"}
+    - {n: 10, topic: "Trip approval before the trip", detail: "the trip request as a draft, who approves an overseas trip, a trip approved after departure", pair: approval, why: "the authority is Approval's, the attendance is here"}
+    - {n: 8,  topic: "The handover to a claim", detail: "confirming dates before claiming, a claim filed first, a mismatch between the two systems", pair: expense, why: "the seam the two areas share and neither row names"}
+  S4:
+    - {n: 8,  topic: "Workplace safety and health checks", detail: "the annual check, what is recorded, time off for it, an accident at work", why: "no row anticipates occupational health"}
+    - {n: 7,  topic: "Equipment lending", detail: "a laptop or phone signed out, what happens on leave of absence, returning it on leaving", why: "nothing in any row is about company property"}
+    - {n: 5,  topic: "Working abroad", detail: "working from another country temporarily, the days that create a tax question, approval for it", why: "a subject the company grew into; no row reaches it"}
+
+payroll:
+  frozen_use_when: "what this payslip line means · whether an allowance is tax free · when year-end settlement papers are due · why the insurance deduction changed"
+  S1:
+    - {under: payslip, n: 18, topic: "Payslip lines in detail", detail: "each payment and deduction line, a prorated month, a retroactive rise, a correction carried to next month, the leaving payslip", why: "the row says 'what this payslip line means'"}
+    - {under: nontaxable, n: 13, topic: "Tax-free allowances, case by case", detail: "each allowance against its cap and its condition, a month over the cap, an allowance with the condition failed, double counting against a receipt", why: "the row says 'whether an allowance is tax free'"}
+    - {under: year-end-tax, n: 14, topic: "Year-end settlement", detail: "each deduction the pre-filled service does not carry, dependants, a missed cut-off, an amended claim, an over-claim found later", why: "the row says 'when year-end settlement papers are due'"}
+    - {under: insurance, n: 11, topic: "Social insurance movements", detail: "the April health settlement, the July pension reset, a reported pay change, enrolment and leaving, a second job", why: "the row says 'why the insurance deduction changed'"}
+  S2:
+    - {n: 10, topic: "Bonuses and incentives", detail: "how a bonus is taxed, when it is paid, a bonus in a leaving month, a signing bonus with a clawback", why: "pay, and no clause is about bonuses"}
+    - {n: 9,  topic: "Severance and leaving pay", detail: "the calculation, the retirement pension type, when it is paid, tax on it", why: "payroll's, and entirely unnamed"}
+    - {n: 8,  topic: "Garnishment and deductions by order", detail: "a court order, the protected portion, how it appears on the payslip", why: "a deduction the row never anticipates"}
+    - {n: 8,  topic: "Pay structure and review", detail: "how the annual figure is built, the review cycle, what a band means, a promotion mid-year", why: "about pay rather than about a payslip"}
+  S3:
+    - {n: 10, topic: "Allowance or reimbursement", detail: "the same money paid two ways, which is taxed, which needs evidence", pair: expense, why: "the classification is Payroll's, the money is Expenses'"}
+    - {n: 7,  topic: "Days into money", detail: "unused leave paid out, a prorated month, unpaid leave of absence", pair: attendance, why: "the count is Attendance's, the price is here"}
+    - {n: 4,  topic: "Pay changes that need a decision", detail: "a rise approved in a draft, an off-cycle payment, an advance", pair: approval, why: "the authority is Approval's"}
+  S4:
+    - {n: 8,  topic: "Stock and long-term incentives", detail: "a grant, vesting, what happens on leaving, the tax event", why: "no row anticipates equity"}
+    - {n: 6,  topic: "Paying people who are not employees", detail: "contractors, withholding on a freelancer, an overseas contractor", why: "payroll-adjacent and named by nothing"}
+
+approval:
+  frozen_use_when: "how to write a draft document · whom to put in the approval chain · whether a team lead can sign this off · how many years this is kept · how to get the company seal"
+  S1:
+    - {under: draft-doc, n: 11, topic: "Drafts by kind", detail: "purchase, hire, contract, policy change, an urgent one filed after the fact, one withdrawn and refiled", why: "the row says 'how to write a draft document'"}
+    - {under: approval-line, n: 9, topic: "Chains and consent", detail: "which team consents to what, an objection, a missing consent found late, a chain with the wrong approver", why: "the row says 'whom to put in the approval chain'"}
+    - {under: delegated-approval, n: 8, topic: "Delegation in practice", detail: "each band, a deputy, a split purchase, a subject that beats the amount, an annual agreement", why: "the row says 'whether a team lead can sign this off'"}
+    - {under: retention, n: 8, topic: "Retention cases", detail: "by document kind, a contract that ended, something under audit, the January destruction list, an early destruction", why: "the row says 'how many years this is kept'"}
+    - {under: doc-admin, n: 6, topic: "Seals", detail: "company and corporate seal, a seal certificate, a seal for an overseas document, an electronic signature instead", why: "the row says 'how to get the company seal'"}
+  S2:
+    - {n: 10, topic: "Policy and its own lifecycle", detail: "how a rule is proposed, reviewed, published and withdrawn, who owns one", why: "governance; the row is about documents, not about rules"}
+    - {n: 8,  topic: "Meetings and minutes", detail: "which meetings are minuted, what a minute has to record, where they are kept", why: "records, and unnamed"}
+    - {n: 6,  topic: "Signing authority for outside parties", detail: "who may sign what, a power of attorney, a counterparty asking for evidence of authority", why: "authority outward rather than approval inward"}
+    - {n: 4,  topic: "Audit requests", detail: "an internal audit asking for documents, an external auditor, what may be handed over", why: "about the document store, never named"}
+  S3:
+    - {n: 8,  topic: "The approval behind a purchase", detail: "the band, the quotes, the draft that carries them", pair: procurement, why: "both rows describe half of it"}
+    - {n: 5,  topic: "Approvals that move money", detail: "over-cap spending, an advance, an emergency spend", pair: expense, why: "the authority here, the money there"}
+    - {n: 3,  topic: "Approvals about people", detail: "leave of absence, a trip, a working-abroad request", pair: attendance, why: "the chain is here, the record is there"}
+  S4:
+    - {n: 6,  topic: "Personal data", detail: "what may be collected, consent, a subject access request, a breach", why: "the company took this on; no row imagines it"}
+    - {n: 5,  topic: "Use of AI tools", detail: "which tools are permitted, what may not be pasted into one, who approves a new one", why: "genuinely new territory"}
+
+procurement:
+  frozen_use_when: "how far up this amount has to be approved · how to register a new vendor · how many quotes are needed · where the signed contract is kept"
+  S1:
+    - {under: approval-threshold, n: 8,  topic: "Bands and quotes in practice", detail: "each band, a sole quote and its reason, a split order, an annual agreement, a band crossed by a repeat", why: "the row says 'how far up' and 'how many quotes'"}
+    - {under: vendor, n: 6,  topic: "Vendor registration cases", detail: "a sole trader, an overseas supplier, a mismatched account holder, a one-off purchase, a supplier who will not send papers", why: "the row says 'how to register a new vendor'"}
+    - {under: contract-custody, n: 7,  topic: "Contract custody cases", detail: "an electronic contract, a contract that ended, borrowing an original, a contract under audit, a missing original", why: "the row says 'where the signed contract is kept'"}
+  S2:
+    - {n: 6,  topic: "Receiving and inspection", detail: "checking goods in, a short delivery, damaged goods, rejecting a delivery", why: "purchasing, and no clause is about receipt of goods"}
+    - {n: 5,  topic: "Vendor performance and renewal", detail: "reviewing a supplier, a supplier who missed dates, ending a relationship, a renewal decision", why: "after registration; unnamed"}
+    - {n: 4,  topic: "Contract terms the company insists on", detail: "the standard clauses, payment terms, liability, what may be negotiated", why: "about the contract's content rather than its custody"}
+    - {n: 4, topic: "Supplier due diligence", detail: "sanctions and ownership checks, a supplier code of conduct, what disqualifies one", why: "checking a supplier before registering one has always been part of registering it — the row says how to register a vendor and never mentions the check. Labelled S4 until 2026-09-18; of every S4 cluster it measured closest to its row (0.443), because the clause reaches it"}
+    - {n: 3,  topic: "Office supplies and standing stock", detail: "what is kept in stock, reordering, what never needs a request", why: "the desk's routine work, not in the row"}
+  S3:
+    - {n: 6,  topic: "Buying or expensing", detail: "the boundary, a card spend that should have been a PO, a repeat that crossed a band", pair: expense, why: "neither row names the boundary"}
+    - {n: 4,  topic: "The draft behind an order", detail: "the request as a draft, the authority, an order placed without one", pair: approval, why: "shared between two rows"}
+  S4:
+    - {n: 3,  topic: "Software and licence compliance", detail: "tracking licences, an audit by a vendor, unlicensed use found internally", why: "new territory"}

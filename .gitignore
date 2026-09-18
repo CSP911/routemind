@@ -22,7 +22,12 @@ __pycache__/
 /data-depot/
 /data-partner-ix/
 
-# The retrieval experiment (docs/TODO.md, the ten-question comparison). A 10x corpus, the indexes
-# built from it, and the run records. Generated, large, and not part of the product — the shipped
-# worked example it grew from is examples/back-office and that one *is* versioned.
-/bench/
+# The retrieval experiment (eval/). What is generated is ignored; what generates it is not — the
+# study claims to be reproducible, and a tool nobody can read is not. The corpus itself grew from
+# examples/back-office, which is versioned.
+/bench/corpus/
+/bench/manifest.json
+/bench/sections.json
+/bench/embeddings*.json
+/bench/factors.csv
+/bench/*.log
