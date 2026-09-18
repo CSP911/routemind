@@ -1,6 +1,6 @@
 # Pre-registration — human intervention in RAG, realised as a routing layer
 
-**Status: DRAFT, 2026-09-18 (rev. 3 — continuity added, and the staleness axis corrected after measuring it).** This document is written *before* any arm is run. Once the open
+**Status: DRAFT, 2026-09-18 (rev. 4 — difficulty × routing is the frame; the strata drop to a secondary label).** This document is written *before* any arm is run. Once the open
 parameters at the bottom are fixed it is frozen, and every later document in `eval/` is built from it.
 A metric, arm or decision rule that is not in the frozen version does not enter the report.
 
@@ -131,9 +131,10 @@ So the design is corrected to two:
 | **coverage** — continuous | how specifically the description reaches this document | max over clauses of `cos(document, clause)` |
 | **why uncovered** — categorical | S2 belongs but unnamed · S3 straddles two areas · S4 new territory | the pre-registered stratum label |
 
-Q2's curve is drawn against **coverage**. The stratum is what Q3 reads to say *which kind* of failure
-a miss was. Nothing about the labels changes; what changes is the claim made about them — they were
-never a single ordered scale and are no longer treated as one.
+Coverage is **one factor among five** in the difficulty scale (§5a, [DIFFICULTY.md](DIFFICULTY.md)),
+not the axis the result is drawn against. The stratum is what Q3 reads to say *which kind* of failure
+a miss was. Nothing about the labels changes; what changes is the weight put on them — they were never
+a single ordered scale, and they were never the whole of what makes a question hard.
 
 **Validation of the axis.** Coverage is a judgment, and this measures it with a distance. The
 agreement is checked on a sample of about fifty (document, area) pairs rated by the operator — 0 the
@@ -202,6 +203,44 @@ Recorded on every F1, from the stratum label — decided before the miss was obs
 
 ---
 
+## 5a. The frame — difficulty × routing
+
+The study's skeleton is four bands of question difficulty, each run with the routing layer and
+without it.
+
+| | with routing | without |
+|---|---|---|
+| easy | | |
+| moderate | | |
+| hard | | |
+| severe | | |
+
+**This table is the result.** The core question is answered by how the gap between the two columns
+changes as difficulty rises — not by whether routing wins on average, which is a number that hides
+the only thing worth knowing.
+
+Difficulty is computed from five structural factors, graded 0–3 and summed: lexical bridge, area
+spread, depth, routing margin, crowding. Three need no model; the two that do are computed with a
+model other than the one under test. The full specification, with the thresholds taken from this
+corpus and the reason for each, is **[DIFFICULTY.md](DIFFICULTY.md)**, and it is fixed before any
+question is written.
+
+Everything else in this document is layered onto that frame rather than beside it:
+
+| | goes where |
+|---|---|
+| the 2×2 ablation (§3.1) | splits the "with routing" column into four |
+| scale, 79 and 800 (§4) | two copies of the whole table |
+| the strata S1–S4 | a secondary label inside each cell — *why* it was hard |
+| hops, and which hop a route diverged at | diagnostics within a cell |
+| continuity fixtures (§7a) | a separate row; currency is orthogonal to difficulty |
+
+**The strata are no longer the independent variable.** They were, and the change is recorded in §4:
+coverage is one cause of difficulty among several, and a design with coverage as the only axis cannot
+represent a question that is hard because it is phrased differently, or because forty documents
+resemble the answer. 36% of documents have a nearest description belonging to another area; none of
+that was visible on a covered/uncovered axis.
+
 ## 6. Sub-questions, in order
 
 ### Stage 1 — router only. No generation, no LLM judge.
@@ -209,7 +248,7 @@ Recorded on every F1, from the stratum label — decided before the miss was obs
 | | Question | Design |
 |---|---|---|
 | **Q1** | Which part of the intervention pays? | the 2×2 (§3.1) against both floors (§3.2). F1–F3 |
-| **Q2** | Where does it stop paying? | the A1−B1 gap against **coverage** (continuous, §4), and by **scale** (79 / 800). The stratum is not an axis here — it is what Q3 reads |
+| **Q2** | Where does it stop paying? | the A1−B1 gap by **difficulty band** (§5a) and by **scale** (79 / 800). Coverage and the strata are read inside a band, to say why |
 | **Q3** | When it fails, whose fault? | S1 misses vs non-S1 misses, counts and ratio. The router model is fixed and named; if a second model is affordable, S1 misses that survive a model change are the logic failures that are not one model's opinion |
 | **Q4a** | The cost of intervention — iteration | **hops per answered question, median and p95.** An agentic router hides a stale table by iterating; hops should rise before accuracy falls. Requires an iterative router with a hop budget |
 | **Q5a** | Currency — is the operative document *found* | on continuity fixtures (§7a): the operative document in the top-k, and its rank **against its distractors**. A reranker blind to dates has no reason to put July above March |
@@ -240,8 +279,10 @@ Not yet written. What this document fixes about it:
 - Each question carries: `A_true`, `D_true`, `needs: any | all` (does one area suffice, or is the
   answer only complete with both — a trip settlement is attendance *and* expense; a retention period
   is approval *or* procurement), and its stratum inherited from D_true.
-- Stratified so every stratum has enough questions to report on its own. Ten questions split by
-  stratum share gives S4 one question, which is not a measurement.
+- **At least 15 questions per difficulty band**, by design rather than by luck, plus the unanswerable
+  group. Stratum coverage is checked after, as a secondary label.
+- Lexical-gap (A3) and all-areas-required (B3) questions are written **deliberately**: they do not
+  occur naturally in a corpus whose questions and documents share an author.
 - Includes unanswerable questions (§5).
 - Questions are written the way people ask, not the way documents are written. A question lifted from
   a document's own sentences measures findability of that document, not routing.
@@ -330,7 +371,8 @@ first would make two things vary at once.
 | `bench/retrieve.py` | BM25 + dense (`text-embedding-3-large`) + RRF, embeddings cached |
 | `bench/rerank.py` | LLM scoring, blind to areas |
 | `bench/rows-check.py` | P1 |
-| `bench/coverage.py` | the coverage axis (§4), per stratum or per document |
+| `bench/coverage.py` | coverage, one of the five difficulty factors |
+| `eval/DIFFICULTY.md` | the difficulty scale — factors, levels, thresholds, validation |
 | `bench/restructure.py` | the corpus tree: a section page per cluster, idempotent |
 | `bench/smoke.py` | retrieve + rerank end to end |
 | `eval/fixtures/` | the continuity-fixture contract, one worked example, and `check.py` |
