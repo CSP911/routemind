@@ -31,6 +31,18 @@ The instance is RouteMind. The components are named generically — *partition*,
 
 ## 2. Preconditions — checked before measurement
 
+**P0 — the routing table describes the corpus** (`./bench/mapcheck.py`, added 2026-09-20). Five rules,
+decided from the table against the corpus with no arm running: a family is filed where the corpus
+keeps that subject; hop 0 names what each area holds; a superseding section says it is current where
+the walker sees it; a superseded page has a notice **in its own area**; nothing claims to supersede a
+document on another subject. All five come from failures that cost three discarded runs.
+
+It fails the frozen hop-0 table by four, which is the point: a rule that only ever passed the
+artefact it was written beside would not be a check. See [DESIGN.md](DESIGN.md) §1a for how the
+conflict between "hop 0 is not rewritten for the test" and "the table must be well-kept" is held
+open rather than resolved.
+
+
 | | What | Result |
 |---|---|---|
 | P1 | No two area descriptions are near-duplicates in embedding space. If they were, the router would be coin-flipping between them and routing accuracy would have a floor no model lifts | **Done.** Max pairwise cosine 0.533 (`use_when`), 0.484 (all fields). Nothing above 0.70. `bench/rows-check.py` |

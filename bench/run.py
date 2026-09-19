@@ -81,8 +81,21 @@ def corpus():
 
 
 def rows():
+    """hop 0. Frozen by default; `BENCH_USE_WHEN=maintained` selects the updated twin.
+
+    The frozen sentences predate the extension and stay untouched, so a win cannot come from having
+    rewritten the table for the test. The maintained ones are what an operator would have written
+    after adding 345 documents and superseding five subjects, and running both is how the value of
+    that maintenance gets a number instead of an assumption.
+    """
     spec = yaml.safe_load((ROOT / "spec.yaml").read_text(encoding="utf-8"))
-    return {a: spec[a]["frozen_use_when"] for a in spec}
+    frozen = {a: spec[a]["frozen_use_when"] for a in spec}
+    if os.environ.get("BENCH_USE_WHEN") != "maintained":
+        return frozen
+    upd = yaml.safe_load((ROOT / "use_when_maintained.yaml").read_text(encoding="utf-8"))
+    missing = set(frozen) - set(upd)
+    if missing: sys.exit(f"  use_when_maintained.yaml is missing areas: {sorted(missing)}")
+    return {a: " ".join(upd[a].split()) for a in frozen}
 
 
 def subtree(visited, children, texts):
@@ -125,6 +138,17 @@ def main():
     # severe band measured. --steps is a runaway stop, not a budget.
     ap.add_argument("--budget", type=int, default=0)
     ap.add_argument("--steps", type=int, default=30)
+    # **A1's read score has no ranking step, and never should have had one.** The product walks,
+    # reads, and answers; nothing in it reorders a candidate list. Reranking what the agent collected
+    # was a scoring convenience — it put A1 in the same unit as B1's top ten — and dropping it is the
+    # more faithful measurement rather than a concession. It is also exact: reranking four collected
+    # documents and keeping the top ten returns the same four. It would only bite on a walk that
+    # collected more than k, which `read_n` records and `read_exact` flags.
+    #
+    # `scoped` is different. That one is retrieval, so it does have a ranking step, and under this
+    # flag it is fusion-only and labelled as such.
+    ap.add_argument("--no-rerank", action="store_true",
+                    help="score A1 without the reranker: exact for `read`, fusion-only for `scoped`")
     ap.add_argument("--skip-hopeless", action="store_true",
                     help="do not spend a reranking call on a question whose answer is not among the "
                          "candidates; the miss is already decided")
@@ -155,6 +179,7 @@ def main():
     def save():
         outp.write_text(json.dumps({"k": a.k, "per_hop": a.per_hop, "budget": a.budget,
                                     "steps": a.steps, "gold": a.gold,
+                                    "no_rerank": bool(a.no_rerank),
                                     "router_model": router.model, "rerank_model": rr.model,
                                     "embed_model": h.dense.model, "results": results},
                                    indent=1, ensure_ascii=False), encoding="utf-8")
@@ -177,11 +202,11 @@ def main():
                 walk["usage"] = {k: agent.usage[k] - before[k] for k in agent.usage}
                 hops = walk["hops"]
                 got = [i for i in walk["collected"] if i in texts]
-                read_ranked = rr.rank(q["q"], got, texts) if len(got) > 1 else got
+                read_ranked = got if (a.no_rerank or len(got) <= 1) else rr.rank(q["q"], got, texts)
                 picked = sorted({area[i] for i in walk["visited"] if i in area})
                 reach = subtree(walk["visited"], children, texts)
                 cand = h.search(q["q"], scope=reach or None, n=max(a.k, 20))
-                ranked = rr.rank(q["q"], cand[:20], texts) + cand[20:]
+                ranked = cand if a.no_rerank else rr.rank(q["q"], cand[:20], texts) + cand[20:]
                 raw = " | ".join(walk["log"])[:400]
             else:
                 scope = None
@@ -211,6 +236,7 @@ def main():
                 # What the walk cost, per question, measured rather than estimated. Q4a asks what the
                 # intervention costs and this is the answer in the only unit that is not arguable.
                 r["usage"] = walk["usage"]
+                r["read_exact"] = bool(not a.no_rerank or len(got) <= a.k)
                 # A walk that hit the turn ceiling never said DONE. Its hop count is the ceiling
                 # speaking, not the question, and the report has to be able to drop it.
                 r["exhausted"] = walk["exhausted"]

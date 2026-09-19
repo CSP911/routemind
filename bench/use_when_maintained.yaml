@@ -1,0 +1,57 @@
+# hop 0, brought up to date — the maintained twin of `frozen_use_when` in spec.yaml.
+#
+# The frozen sentences were written before 345 documents were added and five subjects were
+# superseded, and they are kept exactly as they were: a routing layer that wins because its table was
+# rewritten for the test has not won anything. But an operator who adds that much and supersedes that
+# much would update the map, and *not* updating it is not a neutral baseline either — it is a map
+# that has gone stale, which is one of the things this study is about.
+#
+# So both exist and both are measured. BENCH_USE_WHEN=maintained selects this one. The delta between
+# them is the value of the maintenance, and it is the first number this study has on the cost side of
+# "pays for itself" that is about the human's work rather than the machine's.
+#
+# Three kinds of edit, and nothing else:
+#   added     a subject the area now holds and the frozen sentence never named
+#   moved     a subject that left this area, named with where it went and from when
+#   dated     currency, where an area now holds both a superseded rule and its replacement
+#
+# No wording is taken from any question. Written 2026-09-19; diff against spec.yaml is the record of
+# what the maintenance actually was.
+
+approval: >-
+  how to write a draft document · whom to put in the approval chain · whether a team lead can sign
+  this off · how many years this is kept · how to get the company seal ·
+  (spend thresholds by amount moved to procurement on 2026-01-01 — what is still here is the old rule)
+
+attendance: >-
+  how many leave days are left · how to book a half day · how much leave a mid-year joiner gets ·
+  how to apply for parental leave · what to log for the days of a business trip ·
+  how much leave accrues by employment type, service and site (current table since 2026-01-01) ·
+  what overtime, night and holiday hours pay, by day type, hours and place (current table since
+  2026-01-01) — older pages on both subjects are still here and are superseded
+
+expense: >-
+  what to do with a receipt · whether the corporate card may be used here · how much a business trip
+  pays, including the overseas per-diem by grade, destination band and length of stay (current table
+  since 2026-01-01; the older band-only caps are still here and are superseded) ·
+  the entertainment cap · the card was lost
+
+payroll: >-
+  what this payslip line means · whether an allowance is tax free · when year-end settlement papers
+  are due · why the insurance deduction changed ·
+  (the overtime, night and holiday premium rates moved to attendance on 2026-01-01 — the page still
+  here is the old rule)
+
+procurement: >-
+  how far up this amount has to be approved — the approval threshold by category, amount and term
+  (current table since 2026-01-01) · how to register a new vendor, and the supplier due diligence
+  required by origin, contract value and what is supplied (current table since 2026-01-01) ·
+  how many quotes are needed · where the signed contract is kept — older pages on both subjects are
+  still here and are superseded
+
+# "the approval threshold" and "supplier due diligence" replaced "what a purchase of this size needs"
+# and "how deeply to vet one" after mapcheck R2 failed on both. The rule matches the subject's own
+# noun literally, and loosening it to accept a synonym would have made the rule whatever the sentence
+# happened to say. A walk picks an area from this line and nothing else, so a maintained map that
+# declines to use the subject's name is a less findable map — the literal rule is the right one and
+# the sentence was the thing to change.

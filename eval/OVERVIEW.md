@@ -97,6 +97,21 @@ Full account: **[DESIGN.md](DESIGN.md) §3**.
 
 ---
 
+## 4a. The precondition nobody had written down
+
+The claim is about a **well-kept** routing layer. A stale table is a different object, and three runs
+were discarded before that was stated as a condition rather than assumed: two families filed in areas
+this corpus does not keep those subjects in, a new section whose one-liner read as an index rather
+than as the current table, and every supersession notice filed inside the section a mistaken walk
+never reaches.
+
+`./bench/mapcheck.py` now decides it before anything runs — five rules from the table against the
+corpus, no arm, no result in view. It **fails the frozen hop-0 table by four**, which is what makes it
+a check rather than a rationalisation: the rule condemns the artefact the pre-registration protects.
+Both tables are kept and every result names which one it ran under. [DESIGN.md](DESIGN.md) §1a.
+
+---
+
 ## 5. Variables — what varies, what is measured, what is pinned
 
 ### Independent: what is deliberately varied

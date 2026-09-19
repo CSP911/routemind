@@ -24,6 +24,47 @@ if they were independent will be too narrow. §6 says what is done about that.
 
 ---
 
+## 1a. The precondition: the map must describe the corpus
+
+The claim under test is that a **well-kept** routing layer earns its upkeep. A table that has gone
+stale is a different object, and measuring one by accident is not a null result — it is a
+measurement of the wrong thing wearing the right label.
+
+So the table is checked before the arms run, the way §2 of the pre-registration checks the corpus.
+`./bench/mapcheck.py` decides it from the table against the corpus, with no arm running and no result
+in view:
+
+| | rule |
+|---|---|
+| **R1** | a family is filed in the area where this corpus already keeps that subject |
+| **R2** | every subject with a section under an area is named in that area's hop-0 sentence |
+| **R3** | a section that supersedes another says it is current, in its one-liner — the only line a walk sees when choosing between them |
+| **R4** | every area holding a superseded page holds a notice about it, **at the area**, not inside the section that replaced it |
+| **R5** | nothing claims to supersede a document about a different subject |
+
+All five come from failures that actually happened, and each would have caught its failure in seconds
+instead of over a hundred questions.
+
+**Why this is a precondition and not a way of fitting.** "It was a precondition, not tuning" is
+exactly what someone says after fitting to their own questions, so the rules have to be the kind that
+could have been written in advance and that bite where it hurts. These do: **R2 fails the frozen
+hop-0 table by four**, which is the artefact the pre-registration protects and the one a
+score-chasing rule would have been written to spare. The frozen sentences predate the extension and
+never name what was added to those areas.
+
+That leaves a conflict worth stating rather than resolving away. The pre-registration says hop 0 is
+not rewritten for the test; the premise says the table must be well-kept. Both are kept:
+`bench/spec.yaml` is untouched, `bench/use_when_maintained.yaml` is the updated twin,
+`BENCH_USE_WHEN=maintained` selects it, and **every result names which table it ran under**. Results
+under the frozen table measure the map's condition; results under the maintained table measure the
+routing idea. Neither is quoted as the other.
+
+A caution on what passing means. Five rules are five rules — they do not certify the map. Sibling
+sections that read confusably, a one-liner that misdescribes its section, a subject with no home at
+all: none of those are checked yet. The list grows when a failure shows it is short.
+
+---
+
 ## 2. Variables
 
 ### 2a. Independent — what is deliberately varied
@@ -31,6 +72,7 @@ if they were independent will be too narrow. §6 says what is done about that.
 | | levels | how it varies |
 |---|---|---|
 | **arm** | `B1` · `A1` | within question: every question goes through both |
+| **routing table** | frozen · maintained | between runs. Frozen **fails** the §1a precondition; it is measured to show what a stale map costs, never as the headline |
 | **question purpose** | `direct` · `indirect` · `stale` | between questions, by construction |
 | **corpus** | 779 base · 1,114 with the extension | between runs, one environment variable |
 | **family** | perdiem · overtime · accrual · threshold · diligence | between questions; a blocking factor, not a treatment |

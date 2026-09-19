@@ -1,17 +1,10 @@
-# The A1 sample — 300 questions, stratified by purpose.
+# The A1 sample — 300 questions, stratified by purpose, areas corrected.
 #
-# B1 runs on all 640 because its reranking calls are nearly all skipped: the answer is not among the
-# candidates, so the miss is already decided. A1 is the expensive arm — a walk is several model calls
-# with the conversation resent each turn — so it runs on a sample, and the sample is built by purpose
-# rather than by chance.
-#
-#   direct    100   20 per family. The control. It only has to confirm 1.00
+#   direct    100   20 per family. The control
 #   indirect  150   30 per family. The collapse: legend, then code, then row
-#   stale      50   10 per family. The older document is correct; reaching for the new row is wrong
+#   stale      50   10 per family. The older document is correct
 #
-# Within each family the cells are taken across the 4x4x4 grid rather than from one corner, so every
-# value of every axis appears. At 30 per family a proportion near 0.1 carries a 95% interval of about
-# +/-0.11; pooled across five families, about +/-0.05.
+# Cells are taken across the 4x4x4 grid so every value of every axis appears in every family.
 
 questions:
 
@@ -237,7 +230,7 @@ questions:
 
 - id: h-overtime-000-d
   q: "For day D1, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
   needs: any
   intent_A: 0
@@ -248,7 +241,7 @@ questions:
 
 - id: h-overtime-100-d
   q: "For day D2, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p1]
   needs: any
   intent_A: 0
@@ -259,7 +252,7 @@ questions:
 
 - id: h-overtime-020-d
   q: "For day D1, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p1]
   needs: any
   intent_A: 0
@@ -270,7 +263,7 @@ questions:
 
 - id: h-overtime-200-d
   q: "For day D3, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p1]
   needs: any
   intent_A: 0
@@ -281,7 +274,7 @@ questions:
 
 - id: h-overtime-021-d
   q: "For day D1, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p2]
   needs: any
   intent_A: 0
@@ -292,7 +285,7 @@ questions:
 
 - id: h-overtime-120-d
   q: "For day D2, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p1]
   needs: any
   intent_A: 0
@@ -303,7 +296,7 @@ questions:
 
 - id: h-overtime-300-d
   q: "For day D4, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p1]
   needs: any
   intent_A: 0
@@ -314,7 +307,7 @@ questions:
 
 - id: h-overtime-031-d
   q: "For day D1, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p2]
   needs: any
   intent_A: 0
@@ -325,7 +318,7 @@ questions:
 
 - id: h-overtime-121-d
   q: "For day D2, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p2]
   needs: any
   intent_A: 0
@@ -336,7 +329,7 @@ questions:
 
 - id: h-overtime-211-d
   q: "For day D3, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p2]
   needs: any
   intent_A: 0
@@ -347,7 +340,7 @@ questions:
 
 - id: h-overtime-023-d
   q: "For day D1, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p4]
   needs: any
   intent_A: 0
@@ -358,7 +351,7 @@ questions:
 
 - id: h-overtime-122-d
   q: "For day D2, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p3]
   needs: any
   intent_A: 0
@@ -369,7 +362,7 @@ questions:
 
 - id: h-overtime-212-d
   q: "For day D3, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p3]
   needs: any
   intent_A: 0
@@ -380,7 +373,7 @@ questions:
 
 - id: h-overtime-302-d
   q: "For day D4, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p3]
   needs: any
   intent_A: 0
@@ -391,7 +384,7 @@ questions:
 
 - id: h-overtime-033-d
   q: "For day D1, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p4]
   needs: any
   intent_A: 0
@@ -402,7 +395,7 @@ questions:
 
 - id: h-overtime-222-d
   q: "For day D3, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p3]
   needs: any
   intent_A: 0
@@ -413,7 +406,7 @@ questions:
 
 - id: h-overtime-312-d
   q: "For day D4, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p3]
   needs: any
   intent_A: 0
@@ -424,7 +417,7 @@ questions:
 
 - id: h-overtime-133-d
   q: "For day D2, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p4]
   needs: any
   intent_A: 0
@@ -435,7 +428,7 @@ questions:
 
 - id: h-overtime-313-d
   q: "For day D4, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p4]
   needs: any
   intent_A: 0
@@ -446,7 +439,7 @@ questions:
 
 - id: h-overtime-233-d
   q: "For day D3, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p4]
   needs: any
   intent_A: 0
@@ -677,7 +670,7 @@ questions:
 
 - id: h-threshold-000-d
   q: "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v1-term-m1]
   needs: any
   intent_A: 0
@@ -688,7 +681,7 @@ questions:
 
 - id: h-threshold-100-d
   q: "For category C2, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v1-term-m1]
   needs: any
   intent_A: 0
@@ -699,7 +692,7 @@ questions:
 
 - id: h-threshold-020-d
   q: "For category C1, amount V3, term M1, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v3-term-m1]
   needs: any
   intent_A: 0
@@ -710,7 +703,7 @@ questions:
 
 - id: h-threshold-200-d
   q: "For category C3, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v1-term-m1]
   needs: any
   intent_A: 0
@@ -721,7 +714,7 @@ questions:
 
 - id: h-threshold-021-d
   q: "For category C1, amount V3, term M2, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v3-term-m2]
   needs: any
   intent_A: 0
@@ -732,7 +725,7 @@ questions:
 
 - id: h-threshold-120-d
   q: "For category C2, amount V3, term M1, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v3-term-m1]
   needs: any
   intent_A: 0
@@ -743,7 +736,7 @@ questions:
 
 - id: h-threshold-300-d
   q: "For category C4, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v1-term-m1]
   needs: any
   intent_A: 0
@@ -754,7 +747,7 @@ questions:
 
 - id: h-threshold-031-d
   q: "For category C1, amount V4, term M2, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v4-term-m2]
   needs: any
   intent_A: 0
@@ -765,7 +758,7 @@ questions:
 
 - id: h-threshold-121-d
   q: "For category C2, amount V3, term M2, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v3-term-m2]
   needs: any
   intent_A: 0
@@ -776,7 +769,7 @@ questions:
 
 - id: h-threshold-211-d
   q: "For category C3, amount V2, term M2, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v2-term-m2]
   needs: any
   intent_A: 0
@@ -787,7 +780,7 @@ questions:
 
 - id: h-threshold-023-d
   q: "For category C1, amount V3, term M4, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v3-term-m4]
   needs: any
   intent_A: 0
@@ -798,7 +791,7 @@ questions:
 
 - id: h-threshold-122-d
   q: "For category C2, amount V3, term M3, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v3-term-m3]
   needs: any
   intent_A: 0
@@ -809,7 +802,7 @@ questions:
 
 - id: h-threshold-212-d
   q: "For category C3, amount V2, term M3, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v2-term-m3]
   needs: any
   intent_A: 0
@@ -820,7 +813,7 @@ questions:
 
 - id: h-threshold-302-d
   q: "For category C4, amount V1, term M3, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v1-term-m3]
   needs: any
   intent_A: 0
@@ -831,7 +824,7 @@ questions:
 
 - id: h-threshold-033-d
   q: "For category C1, amount V4, term M4, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v4-term-m4]
   needs: any
   intent_A: 0
@@ -842,7 +835,7 @@ questions:
 
 - id: h-threshold-222-d
   q: "For category C3, amount V3, term M3, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v3-term-m3]
   needs: any
   intent_A: 0
@@ -853,7 +846,7 @@ questions:
 
 - id: h-threshold-312-d
   q: "For category C4, amount V2, term M3, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v2-term-m3]
   needs: any
   intent_A: 0
@@ -864,7 +857,7 @@ questions:
 
 - id: h-threshold-133-d
   q: "For category C2, amount V4, term M4, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v4-term-m4]
   needs: any
   intent_A: 0
@@ -875,7 +868,7 @@ questions:
 
 - id: h-threshold-313-d
   q: "For category C4, amount V2, term M4, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v2-term-m4]
   needs: any
   intent_A: 0
@@ -886,7 +879,7 @@ questions:
 
 - id: h-threshold-233-d
   q: "For category C3, amount V4, term M4, whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v4-term-m4]
   needs: any
   intent_A: 0
@@ -1567,7 +1560,7 @@ questions:
 
 - id: h-overtime-000-i
   q: "An ordinary tuesday, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
   needs: any
   intent_A: 3
@@ -1582,7 +1575,7 @@ questions:
 
 - id: h-overtime-010-i
   q: "An ordinary tuesday, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p1]
   needs: any
   intent_A: 3
@@ -1597,7 +1590,7 @@ questions:
 
 - id: h-overtime-002-i
   q: "An ordinary tuesday, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p3]
   needs: any
   intent_A: 3
@@ -1612,7 +1605,7 @@ questions:
 
 - id: h-overtime-020-i
   q: "An ordinary tuesday, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p1]
   needs: any
   intent_A: 3
@@ -1627,7 +1620,7 @@ questions:
 
 - id: h-overtime-110-i
   q: "A saturday, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p1]
   needs: any
   intent_A: 3
@@ -1642,7 +1635,7 @@ questions:
 
 - id: h-overtime-003-i
   q: "An ordinary tuesday, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p4]
   needs: any
   intent_A: 3
@@ -1657,7 +1650,7 @@ questions:
 
 - id: h-overtime-021-i
   q: "An ordinary tuesday, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p2]
   needs: any
   intent_A: 3
@@ -1672,7 +1665,7 @@ questions:
 
 - id: h-overtime-102-i
   q: "A saturday, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p3]
   needs: any
   intent_A: 3
@@ -1687,7 +1680,7 @@ questions:
 
 - id: h-overtime-201-i
   q: "Liberation day, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p2]
   needs: any
   intent_A: 3
@@ -1702,7 +1695,7 @@ questions:
 
 - id: h-overtime-300-i
   q: "Two in the morning, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p1]
   needs: any
   intent_A: 3
@@ -1717,7 +1710,7 @@ questions:
 
 - id: h-overtime-022-i
   q: "An ordinary tuesday, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p3]
   needs: any
   intent_A: 3
@@ -1732,7 +1725,7 @@ questions:
 
 - id: h-overtime-103-i
   q: "A saturday, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p4]
   needs: any
   intent_A: 3
@@ -1747,7 +1740,7 @@ questions:
 
 - id: h-overtime-121-i
   q: "A saturday, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p2]
   needs: any
   intent_A: 3
@@ -1762,7 +1755,7 @@ questions:
 
 - id: h-overtime-202-i
   q: "Liberation day, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p3]
   needs: any
   intent_A: 3
@@ -1777,7 +1770,7 @@ questions:
 
 - id: h-overtime-220-i
   q: "Liberation day, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p1]
   needs: any
   intent_A: 3
@@ -1792,7 +1785,7 @@ questions:
 
 - id: h-overtime-023-i
   q: "An ordinary tuesday, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p4]
   needs: any
   intent_A: 3
@@ -1807,7 +1800,7 @@ questions:
 
 - id: h-overtime-113-i
   q: "A saturday, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p4]
   needs: any
   intent_A: 3
@@ -1822,7 +1815,7 @@ questions:
 
 - id: h-overtime-131-i
   q: "A saturday, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p2]
   needs: any
   intent_A: 3
@@ -1837,7 +1830,7 @@ questions:
 
 - id: h-overtime-212-i
   q: "Liberation day, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p3]
   needs: any
   intent_A: 3
@@ -1852,7 +1845,7 @@ questions:
 
 - id: h-overtime-230-i
   q: "Liberation day, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p1]
   needs: any
   intent_A: 3
@@ -1867,7 +1860,7 @@ questions:
 
 - id: h-overtime-311-i
   q: "Two in the morning, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p2]
   needs: any
   intent_A: 3
@@ -1882,7 +1875,7 @@ questions:
 
 - id: h-overtime-033-i
   q: "An ordinary tuesday, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p4]
   needs: any
   intent_A: 3
@@ -1897,7 +1890,7 @@ questions:
 
 - id: h-overtime-132-i
   q: "A saturday, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p3]
   needs: any
   intent_A: 3
@@ -1912,7 +1905,7 @@ questions:
 
 - id: h-overtime-231-i
   q: "Liberation day, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p2]
   needs: any
   intent_A: 3
@@ -1927,7 +1920,7 @@ questions:
 
 - id: h-overtime-312-i
   q: "Two in the morning, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p3]
   needs: any
   intent_A: 3
@@ -1942,7 +1935,7 @@ questions:
 
 - id: h-overtime-330-i
   q: "Two in the morning, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p1]
   needs: any
   intent_A: 3
@@ -1957,7 +1950,7 @@ questions:
 
 - id: h-overtime-223-i
   q: "Liberation day, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p4]
   needs: any
   intent_A: 3
@@ -1972,7 +1965,7 @@ questions:
 
 - id: h-overtime-313-i
   q: "Two in the morning, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p4]
   needs: any
   intent_A: 3
@@ -1987,7 +1980,7 @@ questions:
 
 - id: h-overtime-331-i
   q: "Two in the morning, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p2]
   needs: any
   intent_A: 3
@@ -2002,7 +1995,7 @@ questions:
 
 - id: h-overtime-323-i
   q: "Two in the morning, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p4]
   needs: any
   intent_A: 3
@@ -2467,7 +2460,7 @@ questions:
 
 - id: h-threshold-000-i
   q: "A couple of laptops, about 700,000 won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v1-term-m1]
   needs: any
   intent_A: 3
@@ -2482,7 +2475,7 @@ questions:
 
 - id: h-threshold-010-i
   q: "A couple of laptops, roughly 3 million won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v2-term-m1]
   needs: any
   intent_A: 3
@@ -2497,7 +2490,7 @@ questions:
 
 - id: h-threshold-002-i
   q: "A couple of laptops, about 700,000 won, locked in for three years: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v1-term-m3]
   needs: any
   intent_A: 3
@@ -2512,7 +2505,7 @@ questions:
 
 - id: h-threshold-020-i
   q: "A couple of laptops, around 12 million won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v3-term-m1]
   needs: any
   intent_A: 3
@@ -2527,7 +2520,7 @@ questions:
 
 - id: h-threshold-110-i
   q: "A consultant's time, roughly 3 million won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v2-term-m1]
   needs: any
   intent_A: 3
@@ -2542,7 +2535,7 @@ questions:
 
 - id: h-threshold-003-i
   q: "A couple of laptops, about 700,000 won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v1-term-m4]
   needs: any
   intent_A: 3
@@ -2557,7 +2550,7 @@ questions:
 
 - id: h-threshold-021-i
   q: "A couple of laptops, around 12 million won, renewing every year: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v3-term-m2]
   needs: any
   intent_A: 3
@@ -2572,7 +2565,7 @@ questions:
 
 - id: h-threshold-102-i
   q: "A consultant's time, about 700,000 won, locked in for three years: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v1-term-m3]
   needs: any
   intent_A: 3
@@ -2587,7 +2580,7 @@ questions:
 
 - id: h-threshold-201-i
   q: "Flights and hotels, about 700,000 won, renewing every year: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v1-term-m2]
   needs: any
   intent_A: 3
@@ -2602,7 +2595,7 @@ questions:
 
 - id: h-threshold-300-i
   q: "Dinner with a client, about 700,000 won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v1-term-m1]
   needs: any
   intent_A: 3
@@ -2617,7 +2610,7 @@ questions:
 
 - id: h-threshold-022-i
   q: "A couple of laptops, around 12 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v3-term-m3]
   needs: any
   intent_A: 3
@@ -2632,7 +2625,7 @@ questions:
 
 - id: h-threshold-103-i
   q: "A consultant's time, about 700,000 won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v1-term-m4]
   needs: any
   intent_A: 3
@@ -2647,7 +2640,7 @@ questions:
 
 - id: h-threshold-121-i
   q: "A consultant's time, around 12 million won, renewing every year: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v3-term-m2]
   needs: any
   intent_A: 3
@@ -2662,7 +2655,7 @@ questions:
 
 - id: h-threshold-202-i
   q: "Flights and hotels, about 700,000 won, locked in for three years: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v1-term-m3]
   needs: any
   intent_A: 3
@@ -2677,7 +2670,7 @@ questions:
 
 - id: h-threshold-220-i
   q: "Flights and hotels, around 12 million won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v3-term-m1]
   needs: any
   intent_A: 3
@@ -2692,7 +2685,7 @@ questions:
 
 - id: h-threshold-023-i
   q: "A couple of laptops, around 12 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v3-term-m4]
   needs: any
   intent_A: 3
@@ -2707,7 +2700,7 @@ questions:
 
 - id: h-threshold-113-i
   q: "A consultant's time, roughly 3 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v2-term-m4]
   needs: any
   intent_A: 3
@@ -2722,7 +2715,7 @@ questions:
 
 - id: h-threshold-131-i
   q: "A consultant's time, about 40 million won, renewing every year: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v4-term-m2]
   needs: any
   intent_A: 3
@@ -2737,7 +2730,7 @@ questions:
 
 - id: h-threshold-212-i
   q: "Flights and hotels, roughly 3 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v2-term-m3]
   needs: any
   intent_A: 3
@@ -2752,7 +2745,7 @@ questions:
 
 - id: h-threshold-230-i
   q: "Flights and hotels, about 40 million won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v4-term-m1]
   needs: any
   intent_A: 3
@@ -2767,7 +2760,7 @@ questions:
 
 - id: h-threshold-311-i
   q: "Dinner with a client, roughly 3 million won, renewing every year: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v2-term-m2]
   needs: any
   intent_A: 3
@@ -2782,7 +2775,7 @@ questions:
 
 - id: h-threshold-033-i
   q: "A couple of laptops, about 40 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c1-amount-v4-term-m4]
   needs: any
   intent_A: 3
@@ -2797,7 +2790,7 @@ questions:
 
 - id: h-threshold-132-i
   q: "A consultant's time, about 40 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c2-amount-v4-term-m3]
   needs: any
   intent_A: 3
@@ -2812,7 +2805,7 @@ questions:
 
 - id: h-threshold-231-i
   q: "Flights and hotels, about 40 million won, renewing every year: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v4-term-m2]
   needs: any
   intent_A: 3
@@ -2827,7 +2820,7 @@ questions:
 
 - id: h-threshold-312-i
   q: "Dinner with a client, roughly 3 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v2-term-m3]
   needs: any
   intent_A: 3
@@ -2842,7 +2835,7 @@ questions:
 
 - id: h-threshold-330-i
   q: "Dinner with a client, about 40 million won, just the once: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v4-term-m1]
   needs: any
   intent_A: 3
@@ -2857,7 +2850,7 @@ questions:
 
 - id: h-threshold-223-i
   q: "Flights and hotels, around 12 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c3-amount-v3-term-m4]
   needs: any
   intent_A: 3
@@ -2872,7 +2865,7 @@ questions:
 
 - id: h-threshold-313-i
   q: "Dinner with a client, roughly 3 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v2-term-m4]
   needs: any
   intent_A: 3
@@ -2887,7 +2880,7 @@ questions:
 
 - id: h-threshold-331-i
   q: "Dinner with a client, about 40 million won, renewing every year: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v4-term-m2]
   needs: any
   intent_A: 3
@@ -2902,7 +2895,7 @@ questions:
 
 - id: h-threshold-323-i
   q: "Dinner with a client, around 12 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [hard-threshold-row-category-c4-amount-v3-term-m4]
   needs: any
   intent_A: 3
@@ -3372,7 +3365,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3383,7 +3376,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3394,7 +3387,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3405,7 +3398,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3416,7 +3409,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3427,7 +3420,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3438,7 +3431,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3449,7 +3442,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3460,7 +3453,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
@@ -3471,117 +3464,117 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: perdiem
   lever: stale
   support: []
 
 - id: s-overtime--01
   q: "For overtime worked in October 2025, what premium applied to hours beyond the forty-hour week?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--02
   q: "Someone worked from eleven at night until two in the morning on a weekday in 2025 — what premium?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--03
   q: "What premium applied to holiday work in 2025?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--04
   q: "Someone worked overnight on a public holiday in 2025 — did the two premiums stack?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--05
   q: "In 2025, did a person on a normal rostered night shift get the night premium even when it was not overtime?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--06
   q: "Before 2026, was an employee working overnight on a holiday paid two separate overtime premiums?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--07
   q: "Which hours counted as night under the 2025 rules?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--08
   q: "On a 2025 payslip, was the holiday premium paid on top of ordinary overtime?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--09
   q: "In 2025, what was the weekly threshold above which hours counted as overtime?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
 - id: s-overtime--10
   q: "A 2025 dispute about overnight holiday pay — what did the rate table say?"
-  A_true: [payroll]
+  A_true: [attendance]
   D_true: [overtime-rate-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: overtime
   lever: stale
   support: []
 
@@ -3592,7 +3585,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3603,7 +3596,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3614,7 +3607,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3625,7 +3618,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3636,7 +3629,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3647,7 +3640,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3658,7 +3651,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3669,7 +3662,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3680,7 +3673,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
@@ -3691,117 +3684,117 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: accrual
   lever: stale
   support: []
 
 - id: s-threshold-01
   q: "A 2,000,000 KRW purchase in 2025 — who signed it off and how many quotes were needed?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-02
   q: "A 400,000 KRW purchase in 2025 — who signed it?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-03
   q: "A 5,000,000 KRW purchase in 2025 — who signed it and how many quotes?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-04
   q: "A 15,000,000 KRW purchase in 2025 — what did it need beyond a signature?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-05
   q: "In 2025, could an order be split so each part fell in a lower band?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-06
   q: "A sole supplier in 2025 with a written reason — what did that change?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-07
   q: "An annual agreement signed in 2025 — was it banded on the monthly rate or the annual total?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-08
   q: "Were the 2025 amount bands net or gross of VAT?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-09
   q: "Two orders to the same vendor for the same item two months apart in 2025 — treated separately?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
 - id: s-threshold-10
   q: "In 2025, how many quotes were needed between three and ten million won?"
-  A_true: [approval]
+  A_true: [procurement]
   D_true: [threshold-table]
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: threshold
   lever: stale
   support: []
 
@@ -3812,7 +3805,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3823,7 +3816,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3834,7 +3827,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3845,7 +3838,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3856,7 +3849,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3867,7 +3860,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3878,7 +3871,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3889,7 +3882,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3900,7 +3893,7 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []
 
@@ -3911,6 +3904,6 @@ questions:
   needs: any
   intent_A: 2
   intent_B: 0
-  family: stale
+  family: diligence
   lever: stale
   support: []

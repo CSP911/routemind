@@ -110,7 +110,13 @@ FAMILIES = [
               ("travel-overseas", "Overseas travel"),
               ("overseas-trip-band-country-table", "Which band a country is in")]),
 
- dict(key="overtime", area="payroll", subject="Overtime rate",
+ # attendance, not payroll. The frozen corpus keeps overtime in attendance — `overtime-rate-table`
+ # and `night-and-holiday-hours` both live there — and hop 0's payroll sentence is about payslip
+ # lines and deductions, correctly. Placing this family in payroll made five walks "fail" by going to
+ # attendance, which is where the subject actually is: the agent was right and the label was wrong.
+ # The fix is the placement, not the frozen table, and telling which of the two was at fault took
+ # looking at where the superseded documents live rather than at which answer was more convenient.
+ dict(key="overtime", area="attendance", subject="Overtime rate",
   unit="the multiplier, the rounding rule and whether approval was needed first",
   axes=[
    ("day", "{v} work", [("weekday", "an ordinary Tuesday"), ("weekend", "a Saturday"),
@@ -170,7 +176,10 @@ FAMILIES = [
               ("accrual-rule", "How leave accrues"),
               ("leave-accrual-midyear", "Mid-year joiners")]),
 
- dict(key="threshold", area="approval", subject="Approval threshold",
+ # procurement, not approval. `threshold-table` and `approval-threshold` both live in procurement in
+ # the frozen corpus, and hop 0 says so — "how far up this amount has to be approved · how many quotes
+ # are needed" is procurement's own sentence and it is accurate. Same error as overtime.
+ dict(key="threshold", area="procurement", subject="Approval threshold",
   unit="who signs it, how many competing quotes are needed and how long it takes",
   axes=[
    ("category", "{v}", [("equipment", "a couple of laptops"), ("services", "a consultant's time"),
@@ -226,13 +235,33 @@ FAMILIES = [
   ask="do we have to go and see their premises, and how often does their file get looked at again",
   was="a single checklist applied to every supplier regardless of origin, value or what is supplied",
   supersedes=[("supplier-due-diligence", "Supplier due diligence"),
-              ("sanctions-ownership-checks", "Sanctions and ownership screening"),
-              ("vendor-performance-review", "Vendor performance review")]),
+              ("sanctions-ownership-checks", "Sanctions and ownership screening")]),
+              # `vendor-performance-review` was on this list and has been taken off. It is about what
+              # happens at each review point once a supplier is registered; this table sets the
+              # interval between reviews. Related is not superseded, and claiming supersession where
+              # there is none is the same labelling error as everything else caught this week — it
+              # would have scored a correct retrieval as a stale answer.
 ]
 
 
 EFFECTIVE = "2026-01-01"
 PRIOR = "2024-07-01"
+
+
+# **The section's one-liner is the only line the walker sees.** A walk opens an area and is handed one
+# line per child; it never reads the section's own page. So the currency notice was written onto all
+# 320 rows and into a revision document, and left out of the single place that decides whether the
+# walk arrives at them at all. Beside "A map of how requesting, logging and capping overtime hours
+# fits together", a line reading "64 rows indexed by day code and hours code and place code" is an
+# index, not an answer, and the agent reasonably opened the older section and answered from a
+# superseded table — a stale answer committed by the routing arm, caused by the map rather than by
+# the model.
+#
+# Fixed once, and measured as an intervention rather than as a bug: `read` on the indirect lever was
+# 0.73 before this line changed (2026-09-19, 15 questions), and the after is reported beside it. That
+# delta is what one sentence of human writing is worth, which is the study's own question in
+# miniature. Once — repeating it until the number improves would be tuning, not measurement — and
+# without any word the questions use, so it cannot be teaching to the test.
 
 
 def provenance(fam):
@@ -304,7 +333,7 @@ def build(grid):
 id: {sec}
 name: "{fam['subject']} — by {', '.join(a[0] for a in axes)}"
 kind: section
-one_liner: "{n_rows} rows indexed by {' and '.join(a[0] + ' code' for a in axes)}, plus the three legends that turn a person's words into those codes"
+one_liner: "THE CURRENT {fam['subject'].upper()} TABLE, in force from {EFFECTIVE} — it replaces `{fam['supersedes'][0][0]}` and the older rules around it. {n_rows} rows indexed by {' and '.join(a[0] + ' code' for a in axes)}, with legends that turn a person's words into those codes"
 parent: {fam['area']}
 ---
 # {fam['subject']}
@@ -343,6 +372,11 @@ If what you have is not listed, take the nearest entry above it and record the c
                              "cluster": fam["subject"], "family": fam["key"], "stratum": "S1"}
             support.setdefault(fam["key"], []).append(lid)
 
+        # **The notice hangs off the area, not off the new section.** It used to be a child of the
+        # new section, which is the one place a walk that went wrong never reaches: the failures all
+        # opened the *incumbent's* section, read the superseded table and answered from it. A warning
+        # filed inside the thing it is warning you about is not a warning. At the area it sits beside
+        # both sections and is one of the first lines any walk into that area is handed.
         rid = f"hard-{fam['key']}-legend-revision"
         sup_rows = "\n".join(f"| {n} | `{i}` | superseded from {EFFECTIVE} |"
                              for i, n in fam["supersedes"])
@@ -350,8 +384,8 @@ If what you have is not listed, take the nearest entry above it and record the c
 id: {rid}
 name: "{fam['subject']} — what changed on {EFFECTIVE}"
 kind: reference
-one_liner: "Which documents this table replaced and from when. Read this if you found an older rule elsewhere"
-parent: {sec}
+one_liner: "WARNING — {fam['subject'].lower()} changed on {EFFECTIVE}. `{fam['supersedes'][0][0]}` and the pages around it are the OLD rule. Read this before answering from anything in this area about {fam['subject'].lower()}"
+parent: {fam['area']}
 ---
 # {fam['subject']} — what changed on {EFFECTIVE}
 
@@ -368,7 +402,7 @@ that is the only thing they are correct for. Nothing in them says so, which is w
 Every row in this section repeats the same notice, so a reader who lands on one row without passing
 through here still learns which version they are holding.
 """))
-        manifest[rid] = {"id": rid, "area": fam["area"], "parent": sec, "legend": "revision",
+        manifest[rid] = {"id": rid, "area": fam["area"], "parent": fam["area"], "legend": "revision",
                          "cluster": fam["subject"], "family": fam["key"], "stratum": "S1"}
         support.setdefault(fam["key"], []).append(rid)
 
@@ -428,7 +462,58 @@ is decided by the budget holder rather than by this table.
                           f"{pa.capitalize()}, {pb}, {pc}: {fam['ask']}?",
                         D_true=[did], lever="indirect", family=fam["key"], area=fam["area"],
                         intent_A=3, support=support[fam["key"]]))
+    for frm, did, text in moved_docs():
+        docs.append((frm, did, text))
+        m = next(x for x in MOVED if f"hard-moved-{x['key']}" == did)
+        manifest[did] = {"id": did, "area": frm, "parent": frm, "legend": "moved",
+                         "cluster": m["subject"], "family": m["key"], "stratum": "S1"}
     return docs, questions, manifest
+
+
+# Supersession that crosses an area. `payslip-overtime` sits in payroll and states the premium
+# multipliers; the table that replaced it is in attendance, because that is where this corpus keeps
+# overtime. Same for `delegation-scope` in approval against the threshold table in procurement. A
+# walk that enters payroll for an overtime-premium question finds the superseded page, is told
+# nothing, and answers from it — and the area's own revision notice is in a different area entirely.
+#
+# So each origin area gets a forwarding note. It is an ordinary retrievable document like the
+# legends: no arm is handed anything another arm cannot also retrieve, and what differs is that a
+# walk can act on it in a second step.
+MOVED = [
+ dict(frm="payroll", to="attendance", key="overtime", subject="Overtime premiums",
+      old=[("payslip-overtime", "Overtime, night and holiday premiums")]),
+ dict(frm="approval", to="procurement", key="threshold", subject="Spend approval thresholds",
+      old=[("delegation-scope", "Scope by authority")]),
+]
+
+
+def moved_docs():
+    out = []
+    for m in MOVED:
+        did = f"hard-moved-{m['key']}"
+        olds = "\n".join(f"| {n} | `{i}` | the old rule, correct only before {EFFECTIVE} |"
+                          for i, n in m["old"])
+        out.append((m["frm"], did, f"""---
+id: {did}
+name: "{m['subject']} moved to {m['to']} on {EFFECTIVE}"
+kind: reference
+one_liner: "WARNING — {m['subject'].lower()} are no longer written in {m['frm']}. From {EFFECTIVE} the current table is in {m['to']}. Read this before answering from anything in {m['frm']} about this"
+parent: {m['frm']}
+---
+# {m['subject']} moved to {m['to']}
+
+From **{EFFECTIVE}**, {m['subject'].lower()} are set by the table in **{m['to']}**
+(`sec-hard-{m['key']}`), not by anything in {m['frm']}.
+
+| still here | id | status |
+|---|---|---|
+{olds}
+
+The pages above were not withdrawn and nothing in them says they were replaced. They remain correct
+for anything dated before {EFFECTIVE} and for nothing after it. If the question is about a date on or
+after {EFFECTIVE}, leave {m['frm']} and open `sec-hard-{m['key']}` in {m['to']}.
+"""))
+    return out
 
 
 def parse_grid(s):
