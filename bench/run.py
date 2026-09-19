@@ -27,7 +27,7 @@ problem the table caused:
 B1 has no routing step. Its F1 is computed from where its top-k actually came from, which is the
 closest honest analogue — it says whether an unrouted retriever ended up in the right area anyway.
 """
-import argparse, json, pathlib, re, sys, time
+import argparse, json, os, pathlib, re, sys, time
 import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent
@@ -47,8 +47,19 @@ def corpus():
     whole of what a hierarchy is for.
     """
     man = json.loads((ROOT / "manifest.json").read_text())
+    roots = [ROOT / "corpus" / "regions"]
+    # The 700 stay frozen. BENCH_EXTRA_CORPUS=bench/corpus-hard adds the qualifier families on top,
+    # so 700 and 780 are two rows of one table instead of one number that changed meaning.
+    extra = os.environ.get("BENCH_EXTRA_CORPUS")
+    if extra:
+        ex = pathlib.Path(extra)
+        if not ex.is_absolute(): ex = ROOT.parent / ex
+        roots.append(ex / "regions")
+        cm = ex.parent / "crowd-manifest.json"
+        if cm.exists(): man.update(json.loads(cm.read_text()))
     texts, area, one_liner, parent, has_body = {}, {}, {}, {}, {}
-    for p in (ROOT / "corpus" / "regions").rglob("*.md"):
+    for r in roots:
+      for p in r.rglob("*.md"):
         m = FM.match(p.read_text(encoding="utf-8")); fm = yaml.safe_load(m.group(1)) or {}
         i = fm.get("id") or p.stem
         one_liner[i] = fm.get("one_liner", "")
@@ -125,6 +136,17 @@ def main():
                   budget=a.budget or None, steps=a.steps)
     arms = [a.arm] if a.arm else ["B1", "A3", "A1"]
 
+    out = a.out or f"eval/runs/{time.strftime('%Y-%m-%d')}-pilot.json"
+    outp = ROOT.parent / out
+    outp.parent.mkdir(parents=True, exist_ok=True)
+
+    def save():
+        outp.write_text(json.dumps({"k": a.k, "per_hop": a.per_hop, "budget": a.budget,
+                                    "steps": a.steps, "gold": a.gold,
+                                    "router_model": router.model, "rerank_model": rr.model,
+                                    "embed_model": h.dense.model, "results": results},
+                                   indent=1, ensure_ascii=False), encoding="utf-8")
+
     results = []
     for arm in arms:
         for n, q in enumerate(g, 1):
@@ -170,7 +192,7 @@ def main():
             r.update(arm=arm, id=q["id"], needs=q["needs"], picked=picked, router_said=raw,
                      hops=hops, collected=len(read_ranked) if arm == "A1" else None,
                      top=[{"id": i, "area": area[i]} for i in ranked[:a.k]])
-            results.append(r)
+            results.append(r); save()
             extra = (f"  read {'ok ' if r['read_retrieval_hit'] else 'MISS'}({r['read_n']})"
                      f" scope {r['reach_n']:>3} back {r['returns']}"
                      f"{' EXHAUSTED' if r['exhausted'] else ''}") if arm == "A1" else ""
@@ -180,14 +202,7 @@ def main():
                   f"  hops {hops if hops is not None else '-'}{extra}"
                   f"  {','.join(picked) if picked else ''}", file=sys.stderr)
 
-    out = a.out or f"eval/runs/{time.strftime('%Y-%m-%d')}-pilot.json"
-    p = ROOT.parent / out
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps({"k": a.k, "per_hop": a.per_hop, "budget": a.budget,
-                             "steps": a.steps, "gold": a.gold,
-                             "router_model": router.model, "rerank_model": rr.model,
-                             "embed_model": h.dense.model, "results": results},
-                            indent=1, ensure_ascii=False), encoding="utf-8")
+    save()
     print(f"\n  written to {out}", file=sys.stderr)
 
 

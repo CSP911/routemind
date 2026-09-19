@@ -1,0 +1,554 @@
+{
+ "family-care-leave-eligibility": {
+  "0": "If I split family care leave into shorter blocks for the same family member and the same underlying condition, does the 90-day cap reset?",
+  "1": "Does the 90-day limit start over when I take family care leave in separate blocks for the same relative and the same condition?",
+  "2": "If I take time off to look after my mother in a few separate stretches for the same illness, does the 90-day allowance start fresh each time?",
+  "3": "I've been taking time off in chunks to look after my father through the same ongoing health problem — does the three-month allowance start again each time I go back to work in between, or does it all count together?"
+ },
+ "military-leave-service-continuity": {
+  "0": "After discharge from military service leave, within how many days must the employee confirm the return date with the HR desk?",
+  "1": "How soon after their discharge date does someone coming back from military service leave have to confirm their return to HR?",
+  "2": "Once my army duty ends, how quickly do I have to tell HR when I'm coming back to work?",
+  "3": "I'm finishing up my time in the armed forces and coming back to my job — is there a deadline for letting the people office know what day I'll be back?"
+ },
+ "policy-version-history": {
+  "0": "If a policy has been amended three times, does each version get its own 5-year drafts-and-proposals retention clock from its own filing date, or is there one clock for the policy?",
+  "1": "For a policy amended three times, does the five-year retention period run separately for each amended version from when that version was filed, or once for the whole policy?",
+  "2": "When a rule document has been revised several times, does each revision get its own five-year keeping period starting when it was filed, or does the whole document share a single period?",
+  "3": "We've changed the same internal rule three times over the years — do we have to hold on to each earlier wording for five years counted from when that wording was put in place, or can we clear out the old ones since only the latest applies?"
+ },
+ "severance-eligibility": {
+  "0": "If continuous service reaches 11 months and 25 days before resignation, is a prorated severance pay owed under the one-year minimum service condition?",
+  "1": "Does an employee who resigns after 11 months and 25 days of continuous service receive a partial severance payment, or nothing at all?",
+  "2": "If someone quits about five days short of a full year with the company, do they get a scaled-down payout or none?",
+  "3": "I handed in my notice a few days before hitting twelve months at my job — am I entitled to a smaller exit payment, or does being just under wipe it out entirely?"
+ },
+ "unpaid-personal-leave-form": {
+  "0": "What happens if the unpaid personal leave request form is used for a leave that actually qualifies as study, military, or family care leave?",
+  "1": "If someone files this unpaid personal leave form for an absence that really belongs under study, military, or family care leave, what goes wrong?",
+  "2": "What's the consequence of submitting this general time-off request when the absence should have been logged as schooling, service, or caring for a relative?",
+  "3": "If I ask for time off using the general no-pay request and it later turns out my reason fell into one of the specific recognised types, does anything break?"
+ },
+ "vendor-performance-review": {
+  "0": "Does a clean performance score in a supplier review clear a sanctions or beneficial-owner match?",
+  "1": "If a vendor passes every delivery and quality check in their annual review, does that override a sanctions or beneficial-owner screening hit?",
+  "2": "Can a strong yearly assessment keep a supplier from being blocked when their name comes up on a watchlist or ownership check?",
+  "3": "We rate one of our regular contractors highly on everything we track — on-time, no defects, correct billing — but their name just came back flagged in a background check; does the good track record let us keep working with them?"
+ },
+ "wfh-recording-procedure": {
+  "0": "What happens if I don't submit a \"Remote work\" entry in the attendance system by 09:00 on the day I work from home?",
+  "1": "If I worked from home but never logged the remote work entry by 09:00, how does the attendance system treat that day?",
+  "2": "I worked a full day at home but forgot to record it anywhere before the morning deadline — what does the system show for that day and can I fix it later?",
+  "3": "I genuinely put in my hours from my kitchen table yesterday but never told anyone in advance or filed anything — will that day count, or am I now stuck explaining a gap?"
+ },
+ "account-holder-mismatch": {
+  "0": "Can a covering letter promising to fix the account name later unblock a vendor registration with an account holder mismatch?",
+  "1": "If a vendor submits a letter undertaking to correct the mismatched bank account name afterwards, does registration still stay blocked?",
+  "2": "Will a written promise to update the bank details later let a supplier get signed up while the account name still differs from their certificate?",
+  "3": "My business is listed under one name but the bank account is in my wife's name from before I started trading — can I just send a note saying I'll change it soon and get approved now?"
+ },
+ "advance-authority-table": {
+  "0": "If a 450,000 KRW advance is authorised by a team lead but the actual spend comes in over 500,000 KRW, what has to happen before the advance can close?",
+  "1": "When an advance requested at 450,000 KRW and signed off by a team lead turns out to have actually cost more than 500,000 KRW, what must be done before it can be closed out?",
+  "2": "If someone gets 450,000 KRW up front with only their team lead's sign-off and then spends more than 500,000 KRW, what does the extra require before the whole thing can be settled?",
+  "3": "My manager okayed 450,000 KRW for me to take on a trip, but I ended up needing over 500,000 KRW — do I need someone more senior to sign off on the difference before I can settle up?"
+ },
+ "bonus-year-end-reconciliation": {
+  "0": "If the annualized method under-withheld because a large bonus landed early in the year, how is the shortfall collected at the year-end settlement in February?",
+  "1": "When too little tax was withheld on a bonus paid early in the year under the annualized method, how does the February year-end settlement recover the difference?",
+  "2": "If not enough tax was taken off a big bonus paid near the start of the year, how do I end up paying the missing amount?",
+  "3": "My company took too little off a large payment I got in January — when and how do I have to make up the difference?"
+ },
+ "damaged-goods-on-arrival": {
+  "0": "When goods arrive visibly damaged, how long should the packaging be kept before it goes to recycling?",
+  "1": "For a damaged delivery, at what point is it safe to throw out the box and pallet wrap?",
+  "2": "If something turns up broken, when can I finally get rid of the carton and padding it came in?",
+  "3": "A shipment showed up smashed — how long am I supposed to hang on to all the wrapping and cardboard before binning it?"
+ },
+ "equipment-lending-approval-role": {
+  "0": "If my line manager confirmed \"equipment returned\" by email but IT has no entry logging the return, does the deduction still go through on schedule?",
+  "1": "My line manager emailed me confirming I handed the laptop back, but IT never logged it as received — will HR still apply the charge to my final pay?",
+  "2": "My boss said in a chat message that I'd given the laptop back, but the tech team never recorded it — can they still take money off my last paycheque?",
+  "3": "I gave my work laptop back and my supervisor wrote to say it was all sorted, but nobody in the tech department seems to have noted it down — am I still going to get charged for it when I'm paid at the end?"
+ },
+ "equity-vesting-schedule": {
+  "0": "If an employee leaves one week before the month-12 cliff, do they get any pro-rata credit for the eleven months served?",
+  "1": "Does someone who departs a week short of the one-year cliff receive a prorated portion of that 25% tranche?",
+  "2": "If I quit seven days before my first anniversary, do I keep any share of the 25% that would have been released at the one-year mark?",
+  "3": "I'm resigning a week before I hit a year — do I walk away with a fraction of the first chunk of stock for the eleven months I put in, or nothing at all?"
+ },
+ "equity-year-end-treatment": {
+  "0": "If I had a large vesting event mid-year, does that equity income get its own separate year-end settlement or is it reconciled in the single February run?",
+  "1": "When stock vests in one month and tax is withheld using the annualized method, can that one-off event be settled on its own timeline or does it wait for February with everything else?",
+  "2": "My shares paid out in a single month and a lot of tax was taken — do I get that sorted out separately, or does it only get fixed along with the rest of my pay in the annual reconciliation?",
+  "3": "I got a big one-time payout from company shares halfway through the year and too much was deducted that month; can that be straightened out on its own, or do I have to wait for the once-a-year adjustment that covers all my pay?"
+ },
+ "expense-budget-reforecast-approver": {
+  "0": "Which desk approves a submitted reforecast before finance applies it and it replaces the locked quarterly figure?",
+  "1": "Who has to sign off on a reforecast after a team lead submits it, before the new number takes effect in the system?",
+  "2": "After a manager sends in a revised budget number, who has to okay it before the system starts measuring against the new figure instead of the old one?",
+  "3": "My team put in an updated target but we're still showing a big gap against the original — whose approval are we waiting on for the new number to actually count?"
+ },
+ "expense-ceiling-reset-deadline": {
+  "0": "If a December claim is filed after that month's close date, is it tested against that calendar year's ceiling or the new year's ceiling?",
+  "1": "What happens to December spend that misses the close date — does it still count toward last year's annual ceiling or the new one?",
+  "2": "If I submit an expense from December after the monthly cutoff has passed, does it count against last year's budget limit or this year's?",
+  "3": "I was late turning in a receipt from the end of last year — will that amount come out of the old year's allowance or eat into what I have for this year?"
+ },
+ "flexwork-system-entry": {
+  "0": "What happens if I log a remote day under the Leave menu instead of the Remote work menu?",
+  "1": "If a work-from-home day gets entered in the Leave menu rather than Remote work, what goes wrong with the record?",
+  "2": "What's the consequence of booking a home-office day as time off instead of putting it in the right place?",
+  "3": "I marked a day I worked from my flat as a day away — will that eat into my allowance even though I actually worked?"
+ },
+ "ai-tool-data-leak-case": {
+  "0": "If the consumer tier of a translation tool retains input for training, what happens to the commercial terms of an unsigned contract draft pasted into it?",
+  "1": "When someone uses the free consumer tier of an approved translation tool to check a draft contract clause, why do the contract's pricing terms end up stored outside the company?",
+  "2": "If an employee runs an unsigned agreement through a free online translator to check a clause, where does that pricing information end up and why?",
+  "3": "A colleague dropped part of a deal document that hadn't been signed yet into one of those free websites that converts text into another language — does the money side of it now sit somewhere we don't control?"
+ },
+ "allowance-reimbursement-double-payment": {
+  "0": "If a fixed allowance has already been paid against a category, how is a reimbursement claim for the identical expense treated for tax — does it keep the nontaxable reimbursement treatment?",
+  "1": "When an allowance has already covered a category, does a later reimbursement for that same cost still go through the tax-free route, or is it taxed?",
+  "2": "If I've already received a monthly flat payment for something and then also get paid back for the actual receipt, is that second payment taxed?",
+  "3": "My employer gives me a set monthly sum for a cost and then also paid me back for the same bill — will that extra money count as taxable earnings?"
+ },
+ "allowance-reimbursement-switch-procedure": {
+  "0": "If a switch request from a standing monthly allowance to actual-cost reimbursement is submitted mid-month, does that cancel the current month's allowance?",
+  "1": "When someone asks mid-month to move a category like own-car use from a monthly allowance onto reimbursement of actual costs, is the allowance for that month still paid in full?",
+  "2": "If I ask halfway through the month to stop getting the fixed monthly payment for car use and start claiming what I actually spend, will I still get the fixed amount for that month?",
+  "3": "I told payroll on the 15th that I'd rather be paid back for what I actually spend on driving instead of the set sum I get every month — will the set sum still land this time round?"
+ },
+ "allowance-reimbursement-tax-comparison": {
+  "0": "If a round-sum payment is labelled \"reimbursement\" but submitted without receipts, what is the tax treatment?",
+  "1": "How is a reimbursement claim taxed when no receipt is attached to it?",
+  "2": "If someone asks to be paid back for a work cost but can't produce the receipt, does that money still come to them untaxed?",
+  "3": "I put in for money my company owes me for something I bought for work, but I lost the proof of purchase — will they take tax off it?"
+ },
+ "attendance-correction-request-form": {
+  "0": "On the attendance correction request form, what does the duplicate record option require me to enter besides which entry to keep?",
+  "1": "If I tick duplicate record on the attendance correction form, what details do I have to provide apart from choosing which one stays?",
+  "2": "When I'm reporting that the same clock-in got logged twice, what information do I need to supply besides saying which copy to keep?",
+  "3": "My check-in shows up twice for the same day — other than telling them which one is right, what else do I need to give them?"
+ },
+ "attendance-dispute-escalation-procedure": {
+  "0": "If a disputed entry is still unresolved when the 10-day window from the month's close passes, does the fix still need the late-correction override?",
+  "1": "When an employee and team lead are still arguing past the 10-day window after the month closes, is the late-correction override still required for the fix?",
+  "2": "If a disagreement about how a day was recorded drags on past the 10 days allowed after month end, does the change still need special approval for being late?",
+  "3": "My manager and I couldn't settle an argument about how a day off was logged before the deadline ran out — do I still have to get the extra sign-off for fixing it late even though the holdup wasn't my doing?"
+ },
+ "audit-clearance-authority-table": {
+  "0": "For pay and employment records, why does internal audit only need division head clearance while an external auditor needs the CEO?",
+  "1": "Why can a division head clear pay and employment records for internal audit but not for an outside auditor, who needs CEO sign-off instead?",
+  "2": "Why does a department manager's approval cover salary and staff files for our own in-house review, but the chief executive has to approve them for an outside accounting firm?",
+  "3": "When our own people look at staff wage files a manager can okay it, so why does the top executive have to sign off when someone from outside the company asks for the same files?"
+ },
+ "audit-request-overview": {
+  "0": "When an external auditor requests a document, what release decision is needed and at what authority level?",
+  "1": "If an outside firm doing a statutory audit asks for a contract, who has to clear its release before it goes out?",
+  "2": "Does handing a file to accountants from another firm need sign-off first, and if so from whom?",
+  "3": "Our books are being checked by people who don't work here and one of them asked me for a signed agreement — can I just email it over, or does someone above me have to say yes first?"
+ },
+ "borrowing-original-procedure": {
+  "0": "If I made a photocopy of a borrowed signed original, does that close the checkout log entry?",
+  "1": "Does keeping a photocopy instead of bringing back the borrowed original count as returning it and close out the log?",
+  "2": "If I scan or copy a contract I took from the files, is that enough to clear my name from the sign-out record, or do I still have to hand back the actual paper?",
+  "3": "I took a document out of storage and kept a duplicate for my own use — am I still considered to have it until I physically hand the real one back?"
+ },
+ "card-po-choice-overview": {
+  "0": "Does being under my card's per-transaction cap exempt a purchase from the quote requirement?",
+  "1": "If a purchase falls below my per-transaction card ceiling, do I still need a competitive quote on file?",
+  "2": "If something costs less than the most I'm allowed to put on the card in one go, do I still have to get comparison prices first?",
+  "3": "I'm buying something small enough to pay for outright without extra sign-off — do I still need to shop around and keep proof of the other prices?"
+ },
+ "ai-tools-overview": {
+  "0": "If a team lead buys the consumer tier of a tool that is already approved at enterprise level with their own card, may unpublished financial figures be entered into it?",
+  "1": "Our team lead paid for the individual subscription of an AI tool that the company already has an enterprise agreement for — can we put unpublished financial numbers into that one?",
+  "2": "My manager expensed a personal paid plan for the same chatbot the company licenses centrally; is it okay to feed it financial results we haven't released yet?",
+  "3": "Someone on my team signed up and paid for the standard version of a writing assistant the company already has a business deal for — is it safe to put our unreleased quarterly numbers into the version they bought?"
+ },
+ "allowance-reimbursement-overview": {
+  "0": "If an employee draws the standing meal allowance and also submits a lunch receipt for reimbursement in the same period, what has to happen?",
+  "1": "What should payroll do when someone receives the fixed monthly meal allowance and then also claims back an actual lunch receipt in that same month?",
+  "2": "If a worker gets the flat monthly food payment and also puts in a lunch bill to be paid back for the same month, is that allowed and what's the fix?",
+  "3": "I already get a set amount each month toward my lunches, but I also handed in a restaurant bill from last week to be paid back — can I keep both?"
+ },
+ "attendance-correction-approval-role": {
+  "0": "Can the HR desk amend an attendance record on the line manager's verbal say-so, or must the confirmation be written on the correction form itself?",
+  "1": "If a manager verbally confirms a forgotten clock-in, will the HR desk make the system edit, or does the confirmation need to be written on the correction form?",
+  "2": "My supervisor told the HR team in person that I was in that day and my clock-in was missed — is that enough for them to fix my timesheet, or does it need to be written down on the form?",
+  "3": "My boss agrees I was at work the day the machine didn't log me, but she just said so out loud to the office staff — will they change it, or does she have to put it in writing somewhere specific?"
+ },
+ "audit-hold-suspends-destruction": {
+  "0": "If a tax invoice hits its five-year retention mark while an audit is open, can it go on the January destruction list?",
+  "1": "A tax invoice has passed its five-year retention period but the audit covering it is still running — is it cleared for destruction in January?",
+  "2": "Our five-year keep period on some tax bills is up, but the review that covers them hasn't finished — can we shred them in the January cleanout?",
+  "3": "The time we're required to keep some old tax paperwork ran out, but inspectors are still going through that same paperwork — are we allowed to throw it out in our yearly clear-out?"
+ },
+ "bonus-insurance-contributions": {
+  "0": "If a bonus is paid in November, when does it affect the health insurance deduction — that month or at the April settlement?",
+  "1": "A bonus paid in November doesn't raise that month's health deduction, so when does it actually get picked up?",
+  "2": "If someone gets a bonus in late autumn, when does the extra medical coverage charge on it actually come out of their pay?",
+  "3": "My year-end extra payment didn't change anything on my payslip that month — when do the deductions catch up with it?"
+ },
+ "bonus-tax-method-comparison": {
+  "0": "Which bonus type has a flat rate election available instead of the annualized withholding method, and by when must the election be made?",
+  "1": "For which kind of bonus can payroll apply a single flat rate rather than the annualized recalculation, and what's the deadline for requesting it?",
+  "2": "Is there any bonus where I can ask for one fixed tax percentage instead of the usual year-to-date recalculation, and when do I have to ask?",
+  "3": "I'm getting a lump sum when I join a new company — can I have the tax taken out at one set percentage rather than the normal way, and do I need to say something beforehand?"
+ },
+ "bonus-types-overview": {
+  "0": "Of the three bonus types, which one is paid on a fixed date set in the employment contract rather than a date set by HR?",
+  "1": "Which of the three bonuses has its payment date written into the employment contract instead of being chosen each year by HR?",
+  "2": "Which kind of extra payment has its payout month locked into my employment agreement, rather than being decided annually by the people team?",
+  "3": "My employer pays a few different kinds of lump sums on top of salary — which one has a date I can rely on because it's written into what I signed, instead of being picked each year by someone in the office?"
+ },
+ "bonus-withholding-method": {
+  "0": "Why does the annualized withholding method mean an identical bonus can withhold different tax for two employees on different basic salaries?",
+  "1": "Why can the same bonus amount end up with different tax withheld for two employees, if payroll annualizes it against year-to-date regular pay?",
+  "2": "Why might two coworkers getting the same size bonus have different amounts of tax taken out of it?",
+  "3": "My colleague and I got the exact same extra payment at the end of the year, so why did more get deducted from mine than hers?"
+ },
+ "card-blocked-while-travelling": {
+  "0": "If my card is blocked mid-trip by the issuer's fraud monitoring, why should I not report it as a lost card when I call the international hotline?",
+  "1": "When fraud monitoring freezes my card abroad and it's a false positive, what's the harm in telling the hotline the card was lost?",
+  "2": "My bank stopped my card while I was overseas even though nothing was stolen — why is it a bad idea to tell them it went missing when I ring them?",
+  "3": "I was abroad and my payment stopped going through because my bank put a stop on it by itself; if I phone them, why shouldn't I just say it disappeared to get things moving?"
+ },
+ "card-charge-merchant-alias": {
+  "0": "If a charge shows a different trading name on my statement, what do I need to check before raising a dispute as an unrecognised charge?",
+  "1": "My card statement lists a payment processor instead of the shop I paid — what should I verify before treating it as unrecognised?",
+  "2": "The company name on my bill isn't the place I actually bought from — what do I compare before reporting it as a charge I don't recognise?",
+  "3": "I don't recognise the business listed next to one of my card payments — how do I work out whether it's actually mine before flagging it?"
+ },
+ "advance-reconciliation-deadline": {
+  "0": "How many business days after return does the reconciliation window run for an overseas trip versus a domestic trip or purchase?",
+  "1": "For an advance on an overseas trip, how long after getting back do I have to reconcile, and is that different from a domestic trip or purchase?",
+  "2": "If I took money upfront for a work trip abroad, how many working days after I get home do I have to submit receipts, and is the limit shorter for trips within the country?",
+  "3": "I was given cash before a work trip and just got back from overseas — how long do I have to hand in my paperwork before it's counted as a problem, and would it be a tighter turnaround if I'd stayed in the country?"
+ },
+ "advance-shortfall-case": {
+  "0": "If a travel advance of 450,000 KRW is reconciled with receipts totalling only 380,000 KRW filed within the deadline, is the advance closed correctly?",
+  "1": "A team lead got a 450,000 KRW advance but only turned in 380,000 KRW of receipts on time — does hitting the reconciliation deadline mean the advance is settled?",
+  "2": "I was given 450,000 won upfront for a trip and submitted proof of spending for 380,000 won before the due date — is that expense claim finished, or do I still owe something?",
+  "3": "My company paid me cash before a work trip, I came back having spent less than that and handed in my paperwork on time — is there anything left for me to do about the extra money I'm still holding?"
+ },
+ "after-the-fact-deadline": {
+  "0": "How many business days does an after-the-fact draft have before it's treated as unfiled?",
+  "1": "If I write up an action after the fact, how long do I have to file it before it counts as never filed at all?",
+  "2": "When something gets done before approval, how many working days do I have to submit the paperwork before it's considered missing entirely?",
+  "3": "I had to buy something in a hurry and am only now writing it up — how late can I be before the record is considered to not exist?"
+ },
+ "ai-tool-approval-procedure": {
+  "0": "For a 150,000 KRW tool that will process personal data, does Legal still need to consent even though a team lead holds the approval authority for that spend band?",
+  "1": "If a tool costing 150,000 KRW net of VAT handles customer contact details, is Legal's sign-off still required when a team lead can approve the cost on their own?",
+  "2": "If we want a cheap subscription — around 150,000 KRW — that stores customer contact info, does the legal team still have to weigh in, or can my manager just okay it?",
+  "3": "We want to start using an inexpensive online service that would hold customer names and phone numbers; can my immediate boss just sign off because it's so cheap, or does someone else have to review it first?"
+ },
+ "ai-tool-input-restrictions": {
+  "0": "Does summarizing a document in an approved AI tool count as pasting in restricted input, or is it exempt?",
+  "1": "If I only ask the AI tool to summarize a document rather than copy it, does that still count as putting the restricted material in?",
+  "2": "If I just ask the chatbot for a short summary instead of the full text, am I still handing over the confidential content?",
+  "3": "I'm not copying the whole file over, just asking for the gist of it — does that get me around the rule about sensitive material?"
+ },
+ "allowance-reimbursement-election": {
+  "0": "If a traveller takes the flat daily allowance of 20,000 KRW for a domestic trip and then also submits receipts for that same trip's meals, what has to happen before payroll processes either claim?",
+  "1": "Can someone claim the flat daily travel rate for a trip and also hand in receipted spend for the same trip, or does one claim have to go?",
+  "2": "If I take the fixed per-day payment for a work trip and then also file my actual meal and taxi receipts from that trip, what happens to those two claims?",
+  "3": "I got the set daily amount for a two-day work visit and then sent in my food and taxi slips from the same days — is that allowed, or do I need to cancel one of them?"
+ },
+ "approved-ai-tools-table": {
+  "0": "If a tool's enterprise tier is approved for translation of external correspondence, is the consumer tier of that same tool also approved?",
+  "1": "Does approval of the enterprise tier for translating outside correspondence extend to the free version of the same tool?",
+  "2": "If our company account for a translation tool is cleared for use, can I use the free version of it for the same work?",
+  "3": "I pay for a chatbot myself and use it to translate emails from clients — does the fact that the company already allows that same chatbot mean mine is fine too?"
+ },
+ "attendance-claim-data-crosscheck-table": {
+  "0": "If the number of allowance days claimed on the claim form exceeds what the confirmed attendance record spans, is the claim rejected on that field alone even when every date matches an actual trip day?",
+  "1": "What happens to a claim that lists more allowance days than the attendance record covers, if each individual date on it is still a real day of the trip?",
+  "2": "If someone asks to be paid for more days than the attendance system shows for the trip, does the request fail even though all the dates listed are genuine travel days?",
+  "3": "My expense request got knocked back because I asked for more days than the office has me down as being away, but every single date I put down was one I really was travelling — is that enough on its own to fail it?"
+ },
+ "attendance-claim-handoff-deadline": {
+  "0": "If an attendance record is still \"requested\" more than 5 working days after the traveller's return, what happens to the case?",
+  "1": "What happens when a trip's attendance record hasn't been confirmed within 5 working days of the employee getting back?",
+  "2": "If my manager hasn't signed off on my trip record more than a week after I got back, does it just sit there or does someone else step in?",
+  "3": "My boss still hasn't approved the record of my work trip and it's been well over a week since I returned — does anyone chase this up, and am I burning through the time I have to submit my expenses?"
+ },
+ "attendance-claim-system-mismatch-procedure": {
+  "0": "When the trip dates on the claim form don't match the confirmed attendance record, is the claim rejected or held, and which record is corrected first?",
+  "1": "If my expense claim shows different trip dates than the attendance record, does the claim get thrown out, and which one do I fix first?",
+  "2": "My travel reimbursement form lists different dates than what's logged for my time away — is the form refused, and do I change the form or the log first?",
+  "3": "I put down one set of dates for my work trip and the office has slightly different ones on file because of the time difference flying back — will my money request be turned down, and which side gets changed to match?"
+ },
+ "annual-health-check-rule": {
+  "0": "If an employee books a slot for January but the calendar year closes before attending, is the annual health check recorded as completed for that calendar year?",
+  "1": "An employee reserved a health check appointment in January but the year ended before they went — does that count as completing the requirement for that year?",
+  "2": "If someone schedules their yearly medical exam but the year runs out before the visit happens, does the scheduling alone satisfy the obligation for that year?",
+  "3": "I arranged a doctor's visit for next January but the year finished before I actually went in — am I still considered to have missed it, and do I have to start over?"
+ },
+ "attendance-claim-mismatch-resolution-role": {
+  "0": "If the claim form and the confirmed attendance record disagree, can the HR desk amend the attendance dates to release the allowance for payment?",
+  "1": "When a claim doesn't match the confirmed attendance dates, is the HR desk allowed to correct those dates itself, or does that sit with the line manager?",
+  "2": "My expenses team spotted that my trip dates on the form don't match what's logged — can they just fix the logged dates themselves so the payment goes through?",
+  "3": "The dates on my reimbursement request are a day off from what's on file and the payroll people say they can't just change it — who actually has to sign off on fixing that?"
+ },
+ "attendance-correction-overview": {
+  "0": "What happens to a correction request filed without naming which of the three types of wrong attendance record it is?",
+  "1": "If I submit a correction request but don't specify which of the three record problems it covers, is my evidence still reviewed?",
+  "2": "If I send in a fix request for my timesheet without saying what kind of problem it is, will anyone look at my proof?",
+  "3": "I asked for my hours to be amended but never said what went wrong — will they still check the documents I attached?"
+ },
+ "band-set-by-quote-at-drafting": {
+  "0": "If a quote of 2,950,000 KRW becomes an invoice of 3,050,000 KRW after a late-added delivery fee, does the division head's approval on the original purchase draft still cover it?",
+  "1": "When a purchase draft filed at a 2,950,000 KRW quote ends up invoiced at 3,050,000 KRW because a delivery fee was added late, is the division head's signature still good or does it need the CEO?",
+  "2": "We got approval from our department head for a 2.95 million won purchase, but a shipping charge pushed the final bill to 3.05 million — do we need to get it signed off again at a higher level?",
+  "3": "My manager okayed a buy at just under three million won, then a late freight charge tipped the final amount just over — can we pay it on the existing sign-off or does someone above him have to look at it first?"
+ },
+ "bonus-leaving-month-clawback-overlap": {
+  "0": "If the signing bonus clawback exceeds net pay on the final payslip, does the remainder roll forward or come out of severance?",
+  "1": "When an employee resigns before the minimum-service date and the clawback is bigger than what's left of their final net pay, how is the leftover amount recovered?",
+  "2": "If someone quits early and owes back part of their hiring bonus, but their last paycheck isn't big enough to cover it, can the company take the rest from their redundancy payment?",
+  "3": "I left my job before the date I'd agreed to stay until, and I have to repay part of the money they gave me when I joined — my last pay won't cover it all, so will they take the rest out of my exit payment or bill me for it?"
+ },
+ "cancelled-day-payroll-timing": {
+  "0": "If I cancel an approved booking on or after the payroll cutoff date, does the restored balance reach the current month's payslip or the following month's?",
+  "1": "When a booked leave day is cancelled after the monthly payroll cutoff, which month's payslip reflects the correction?",
+  "2": "If I call off a scheduled day off too late in the month for payroll to pick it up, will this month's pay be adjusted or next month's?",
+  "3": "I told my manager I no longer need the time off I'd already had signed off, but I did it near the end of the month — will my pay be right this time round or only later?"
+ },
+ "card-po-approver-role": {
+  "0": "If a team lead raises a purchase order above their 1,000,000 KRW PO approval limit, who approves it?",
+  "1": "When a team lead's purchase order goes over the 1,000,000 KRW limit for their level, which approver has to sign off?",
+  "2": "I'm a team lead and the order I need to raise is more than 1,000,000 KRW — who has to authorise it?",
+  "3": "I lead a team and the thing I need to buy costs over a million won, more than I'm allowed to okay myself — whose approval do I need?"
+ },
+ "card-po-repeat-purchase-case": {
+  "0": "If four printer supply orders from the same vendor in one month total 460,000 KRW, does the 300,000–1,000,000 KRW band's written quote requirement apply even though each order was under the 300,000 KRW quote threshold?",
+  "1": "We placed four separate small orders with one vendor in a month adding up to 460,000 KRW, each below 300,000 KRW — do we still need a written quote on file?",
+  "2": "If we buy from the same company several times in one month and each purchase is small but they add up to about 460,000 won, do we need to get a price estimate in writing?",
+  "3": "Our team keeps restocking office items from the same shop in little amounts through the month, and nothing on its own is big enough to need paperwork — does adding them all up change that?"
+ },
+ "card-po-request-form": {
+  "0": "On the purchase order request form, can the quote reference be left blank if the supplier gave a verbal price over the phone?",
+  "1": "If a supplier already quoted us a price by phone, do I still need a quote reference on the PO request form?",
+  "2": "The vendor told me the price on a call — do I still have to attach something in writing when requesting a purchase order number?",
+  "3": "A seller gave me a figure verbally and I noted it down, so is that enough for the paperwork or does someone need an actual written document attached before the order is approved?"
+ },
+ "card-po-supplier-request-procedure": {
+  "0": "If I order from a card-averse supplier before the purchase order is approved, is the purchase still authorised given the amount would have cleared on its own?",
+  "1": "What happens if I place the order with a supplier who won't take the card before their PO has been signed off, even when the amount is small enough to have been fine?",
+  "2": "If a vendor refuses card payment and I go ahead and place the order before the approval paperwork comes through, does the low value of the purchase make it okay?",
+  "3": "A company we're buying from only accepts bank transfer and wants a reference number first — if I let them start the work before that reference is signed off, am I in trouble even though it's a cheap purchase?"
+ },
+ "annual-agreement-band": {
+  "0": "For a cleaning contract billed monthly at 260,000 KRW, whose authority band does the agreement fall into when compared against the 3,000,000 KRW line?",
+  "1": "If a recurring cleaning agreement is invoiced at 260,000 KRW each month, who has to approve it once you total the annual value against the spend bands?",
+  "2": "We have a janitorial service costing 260,000 KRW a month on a year-long deal — does a division head have sign-off authority, or does it need to go higher?",
+  "3": "Our office gets a small monthly bill of about 260,000 KRW for an ongoing service, and each bill is well under the limit my manager can okay — does that mean the manager can approve it, or does someone more senior need to?"
+ },
+ "attendance-to-claim-handoff-overview": {
+  "0": "What happens to a trip allowance claim filed against an attendance record whose dates still show as \"requested\" rather than \"confirmed\"?",
+  "1": "If I submit a daily allowance claim before the trip dates are confirmed in attendance, is it held in a queue or sent back to me?",
+  "2": "If I put in for my travel per diem before my travel days have been signed off, does the request just sit there until it's approved or do I have to enter it again?",
+  "3": "I asked for the money for my days away before my manager had okayed that I was away — will it wait for him or do I have to start over?"
+ },
+ "band-boundary-cases": {
+  "0": "For an ongoing monthly service priced at 400,000 KRW, which approval band does the amount used for banding fall in?",
+  "1": "If we're signing up for a service that costs 400,000 KRW every month with no end date, which band does it land in once you work out the amount used for banding?",
+  "2": "We're paying 400,000 KRW a month for something with no fixed end — what approval level does that need, and what figure is it based on?",
+  "3": "A supplier wants 400,000 KRW monthly on a rolling arrangement; do I get that signed off as a small spend, or does something about the ongoing nature push it higher?"
+ },
+ "card-dispute-deadline": {
+  "0": "If a charge from an overseas leg only appears on next month's statement, do the 7 days for raising a disputed charge count from the statement or from the trip?",
+  "1": "For a foreign charge that doesn't post until the following month's statement, does the seven-day dispute window start at that posting or at the date of travel?",
+  "2": "When a purchase made abroad shows up a month late on my bill, does the week I have to question it begin from when the bill came out or from when I was travelling?",
+  "3": "I paid for something while away and it only turned up on my next bill — is the clock for saying I don't recognise it counted from the bill date or from when I was actually there?"
+ },
+ "card-dispute-scenario-table": {
+  "0": "If I file a dispute for a charge that turns out to be legitimate, what happens beyond it being withdrawn — and how does a pattern of unfounded disputes from one card lead to fraud monitoring blocking it?",
+  "1": "What's the downside of filing disputes for charges that turn out to be legitimate, given that repeated unfounded ones from the same card can trigger a block mid-trip?",
+  "2": "If I keep reporting charges I don't recognise and they turn out to be fine, can that cause my card to get frozen while I'm travelling?",
+  "3": "I've flagged a few payments as suspicious and they all turned out to be real purchases — could doing that too often end up leaving me unable to pay for anything while I'm away?"
+ },
+ "card-subscription-persists": {
+  "0": "If I cancelled a subscription eleven days before renewal and got a cancellation confirmation email but was still charged in full, do I claim the charge as normal or treat it as an unrecognised charge under the seven-day dispute path?",
+  "1": "I cancelled inside the notice period and have the confirmation email, but the renewal charge went through anyway — should I still claim that month's charge, or dispute it as unrecognised?",
+  "2": "I ended a recurring payment in good time and have the email proving it, but the money came out anyway — do I put it on my expenses as usual or raise it as a charge I don't recognise?",
+  "3": "I told the company to stop my monthly plan well before the next payment date and they emailed back to say it was done, yet the money still came off my card — do I put that amount through as a normal work expense or flag it as something I didn't authorise?"
+ },
+ "card-use-annual-licence-multi-user": {
+  "0": "If the team roster changes mid-year on a shared licence, by when does the handover request to a new cardholder of record have to clear?",
+  "1": "When a shared licence needs to move to a different cardholder after people leave the team, what deadline does that handover request have to meet?",
+  "2": "If the person whose card pays for a team-wide subscription leaves, is there a cutoff for getting it switched to someone else's card before the next annual charge?",
+  "3": "My colleague paid for the tool the whole team uses and she's moved on — is there a point in the year by which we have to get it onto someone else's card, or does it just bill her again?"
+ },
+ "card-use-conference-fee-table": {
+  "0": "For a registration fee billed in USD or EUR, does it use a separate conference exchange rate or the transaction date's rate on the card statement?",
+  "1": "If a conference registration fee is charged in USD or EUR, which rate converts it to KRW — the transaction date rate on the card statement, or some special conference rate?",
+  "2": "When I pay a seminar sign-up cost in foreign money, what exchange rate do I use to report it in won?",
+  "3": "I paid to attend an industry event abroad and was charged in dollars — which day's rate should I use when converting the amount for my expense claim?"
+ },
+ "card-use-conference-fees": {
+  "0": "Can I fold a conference registration fee into an entertainment claim to raise the per-head cap?",
+  "1": "If a seminar I registered for includes a dinner, can the registration fee go on the entertainment claim to lift the per-head limit?",
+  "2": "The training event I paid to attend came with a dinner — may I put that sign-up cost together with my client hospitality spending so the allowance per person goes further?",
+  "3": "I paid to attend a work event that included a meal; can I add that payment to what I claim for taking clients out so the amount allowed per person stretches further?"
+ },
+ "card-use-deposit-refund-procedure": {
+  "0": "If a venue deposit charged to the card is refunded minus a cancellation fee, is that reported as a partial refund or a cancelled claim, and within how many working days?",
+  "1": "The hall deposit came back to my card but they kept a cancellation charge — do I report the whole claim as cancelled or just the returned portion, and how quickly?",
+  "2": "I got most of my booking money back after they took a fee off the top — do I have to tell anyone about just the part that came back, and is there a deadline?",
+  "3": "The hotel put money back on my work card but held some of it for cancelling late — am I supposed to flag only the bit they returned, and how soon do I have to say something?"
+ },
+ "annual-agreement-banding": {
+  "0": "For a 400,000 KRW/month ongoing service, does the request band on the monthly cost or the annual total of 4,800,000 KRW?",
+  "1": "If a recurring service costs 400,000 KRW each month, do we band it at that monthly figure or at the 4,800,000 KRW we'd spend over the year?",
+  "2": "We're signing up for a subscription at 400,000 KRW a month — does the approval level depend on the monthly bill or on what we pay across twelve months?",
+  "3": "Our team wants a tool billed at 400,000 KRW every month with no end date — can a team lead approve that, or does someone more senior have to, given what it adds up to in a year?"
+ },
+ "band-reference-table": {
+  "0": "For a purchase of exactly 500,000 KRW, is the approver the team lead or the division head, given the bands are lower-bound-inclusive?",
+  "1": "If a request comes in at exactly 500,000 KRW, which band does it fall into — team lead or division head?",
+  "2": "When a purchase costs precisely 500,000 KRW, who has to sign off on it — the team manager or the division manager?",
+  "3": "Our order came to exactly 500,000 won on the nose — does my immediate boss handle that or does it have to go one level up?"
+ },
+ "card-use-subscription-cancellation": {
+  "0": "If a renewal is charged to the corporate card after I've cancelled the vendor account, is it treated as an error to be waived or as a new spend needing its own evidence, and how quickly must a later refund be reported?",
+  "1": "After I cancelled with the vendor but the renewal still hit the card, does that charge count as a mistake that gets written off or as fresh spending I have to evidence, and what's the deadline for reporting a refund if they give one back?",
+  "2": "My software provider billed me again even though I'd already closed the account — do I have to justify that payment like any other purchase, and how long do I have to flag the money if they pay it back?",
+  "3": "I told the company to stop billing me but the yearly payment came off the work card anyway — am I on the hook to explain that payment as if it were a normal purchase, and how soon do I need to tell someone if the money comes back?"
+ },
+ "combined-transfer-milestone-case": {
+  "0": "If an employee transferred from a group affiliate in March 2022 with their 2019 service-start-date preserved, when does the 5-year milestone on the 3/5/7 ladder fire?",
+  "1": "An employee moved over from a group affiliate in March 2022 but kept their 2019 service date — what date does their 5-year bump actually land on?",
+  "2": "Someone joined us from a sister company in March 2022 but their original 2019 start date carried over — when do they hit their five-year leave increase?",
+  "3": "A colleague came to us from another part of the business in 2022, though they've been with the wider organisation since 2019 — which of those dates do I count from to work out when their extra holiday kicks in at five years?"
+ },
+ "delegation-is-per-draft": {
+  "0": "If a division head has been signing off most of a team's 2,800,000 KRW purchases, does that give them standing to approve a draft at 3,200,000 KRW that crosses into the CEO's band?",
+  "1": "Does a division head's history of approving routine purchases just under 3,000,000 KRW let them sign a 3,200,000 KRW draft that falls in the CEO's band?",
+  "2": "Our department manager has been okaying most of these orders when they come in around 2.8 million won — can he also sign the one that came in at 3.2 million, or does that have to go to the chief executive?",
+  "3": "The same person has handled all our routine orders for months, so does that let them green-light one that came in a bit bigger than usual, or does it have to go higher up?"
+ },
+ "domestic-trip-case-system": {
+  "0": "If the city field on a lodging night is left blank, does the claim system apply the 100,000 KRW cap or default to 80,000 KRW?",
+  "1": "What cap does the system use for a lodging night where the city wasn't entered, and does it flag an error?",
+  "2": "If I forget to put the location on a hotel night, what limit gets applied and will anything warn me?",
+  "3": "I stayed overnight in Seoul but didn't fill in where I was when I filed — will I get the full amount back or come up short without being told?"
+ },
+ "domestic-trip-mode-choice": {
+  "0": "On a marginal domestic leg where air saves only an hour or two over rail, do I need prior approval before buying the ticket?",
+  "1": "If flying would only shave an hour or two off a domestic trip that has a rail option, do I have to get approval before I book rather than explain it on the expense report?",
+  "2": "For a short work trip where the train is available but the plane is a bit faster, do I need sign-off before purchasing, or can I justify the choice when I file my costs?",
+  "3": "I could get there slightly quicker by plane than by train for a work trip inside the country — do I have to clear that with someone in advance, or is it enough to explain the extra cost when I submit it?"
+ },
+ "domestic-trip-same-day-overrun": {
+  "0": "On a same-day return that overran into an unplanned overnight stay, does the lodging cap still apply and what is it in Seoul or Busan?",
+  "1": "If a trip approved as a same-day return ends up needing a hotel overnight, is the nightly lodging limit still enforced, and how much is allowed in Seoul or Busan?",
+  "2": "I had to stay the night on a day trip that didn't get back — is there still a maximum I can spend on the room, and is it higher in the big cities?",
+  "3": "My meeting ran late and I couldn't get home, so I ended up paying for a room I never planned on — is there a ceiling on what the company will cover for that, and does it change depending on which city I'm stuck in?"
+ },
+ "domestic-trip-same-day-overrun-resubmission": {
+  "0": "Why can't I just attach the hotel receipt to the original same-day form instead of having the trip reclassified as overnight first?",
+  "1": "If a same-day trip runs late and I end up staying the night, why isn't it enough to add the hotel receipt to the same-day claim form?",
+  "2": "I had to stay over on what was meant to be a one-day work trip — why does adding the hotel bill to the original expense form get the claim sent back?",
+  "3": "My day trip ran long and I had to book a room last minute; why won't the finance team accept the room charge if I just add it to the expenses I already started filling in?"
+ },
+ "entertainment-condolence-congratulation": {
+  "0": "If I send both a cash condolence payment and a wreath for the same funeral, does each get its own 200,000 KRW cap?",
+  "1": "For one funeral, does sending cash plus a wreath give me two separate 200,000 KRW limits or one shared ceiling?",
+  "2": "If I give money and also send flowers for the same client's funeral, can I claim 200,000 KRW for each or is the limit combined?",
+  "3": "A client's parent died and I both handed over an envelope of cash and arranged flowers — can I put those through as two claims at the full amount each, or do they count together against one limit?"
+ },
+ "domestic-trip-cancelled-leg-refund-procedure": {
+  "0": "How many working days do I have to report a refund after it lands on the corporate card, and what happens if it goes unreported?",
+  "1": "If a refund for a cancelled fare shows up on the company card, what's the deadline for reporting it and what's the consequence of missing it?",
+  "2": "When money comes back to the company card for a trip I didn't take, how quickly must I declare it and what's the penalty if I don't?",
+  "3": "My flight was called off and the money came back onto the card the firm pays for — how long do I have to tell anyone before it starts counting against me personally?"
+ },
+ "domestic-trip-cancelled-return-leg": {
+  "0": "If my return train on an overnight trip is cancelled and I rebook, how do I claim the cancelled fare and the replacement fare without it being flagged as duplicate spend?",
+  "1": "When weather cancels my return leg and I book a new ticket the next morning, what do I need to submit alongside the new fare so the two aren't treated as duplicate spend?",
+  "2": "My way home was called off and I bought another ticket — do I have to prove the first ticket was refunded, or can I just submit the new one?",
+  "3": "Bad weather scrapped my evening ride back and I paid for another one the next day; will putting both on my expenses look like I'm charging twice, and what do I attach to avoid that?"
+ },
+ "domestic-trip-cases-index": {
+  "0": "On domestic trips, what is the per-km figure that applies to own-car trips and tolls?",
+  "1": "For a domestic trip where I drive my own car, what rate per kilometre applies?",
+  "2": "If I use my personal vehicle for a work trip inside the country, how much am I reimbursed for each kilometre driven?",
+  "3": "I drove myself to a meeting in another city instead of buying a ticket — how much do I get back for the distance?"
+ },
+ "domestic-trip-client-site-allowance-table": {
+  "0": "On a client-site day trip with no hotel night, is the 20,000 KRW daily allowance still paid and what goes on the lodging line?",
+  "1": "If a domestic trip has no hotel stay because the client arranged it, do I still get the 20,000 KRW daily allowance, and what do I put for lodging?",
+  "2": "When I travel to a customer's office and come back the same day without staying anywhere, can I still claim the flat 20,000 KRW per-day amount, and do I leave the accommodation row blank?",
+  "3": "I went to see a customer and came back that evening without staying over — do I still get the fixed daily amount for meals and getting around, and what do I write in the row for where I slept?"
+ },
+ "domestic-trip-lodging-by-city": {
+  "0": "If a domestic trip has one night in Busan and one night elsewhere, is the lodging cap 100,000 KRW for both nights, and does the 20,000 KRW daily allowance go up for the Busan night?",
+  "1": "For a trip with an overnight in Busan and another overnight in a smaller city, does the higher 100,000 KRW lodging rate cover both nights, and does the per-day allowance change for the Busan portion?",
+  "2": "If I stay one night in Busan and the next night in a smaller town, does the higher hotel limit apply to both nights, and does my daily meal and transport money increase because of the Busan stop?",
+  "3": "I'm away two nights for work, one in a big city and one in a small town — can I claim the bigger room rate for both nights, and do I get more per day for food and getting around because part of the trip was in the big city?"
+ },
+ "domestic-trip-mode-choice-jeju": {
+  "0": "For a Jeju trip where air is mandatory, does booking business class still need team lead sign-off, or does the rail-comparison exemption cover fare class too?",
+  "1": "Since there's no rail option to Jeju and flying is the only way there, do I still need my team lead to approve a business-class ticket?",
+  "2": "If a destination can only be reached by plane, does that mean I can pick whatever seat class I want, or does someone still have to approve a pricier one?",
+  "3": "Travelling somewhere I can't drive or take a train to — am I free to book a more expensive seat without asking my manager first?"
+ },
+ "domestic-trip-mode-choice-worked-example": {
+  "0": "If I book an air fare on Seoul–Daegu without prior approval, how much is reimbursed given KTX economy is 43,500 KRW each way?",
+  "1": "On a Seoul–Daegu day trip, what happens to my reimbursement if I buy the 95,000 KRW flight before getting the exception signed off?",
+  "2": "If I buy a plane ticket for that Seoul-to-Daegu trip without clearing it first, will the company pay the full amount or just what the train would have cost?",
+  "3": "I went ahead and bought the more expensive ticket for my day trip down south without asking anyone first — am I going to be stuck paying the difference myself?"
+ },
+ "domestic-trip-own-car-tolls": {
+  "0": "Are tolls covered by the 300 KRW per km own-car rate, or claimed separately with the toll receipt?",
+  "1": "When I drive my own car on a domestic trip at 300 KRW per km, do I claim toll charges on top with their receipt or are they already in the per-km amount?",
+  "2": "If I use my personal car for a work trip and get paid a set amount per kilometre, can I also ask for the highway fees back, or is that already included?",
+  "3": "I drove my own vehicle to a meeting in another city and got reimbursed based on how far I went — do I get the motorway charges back too, or should I just add them into the distance figure?"
+ },
+ "domestic-trip-rail-air-fare-table": {
+  "0": "On the Seoul–Pohang leg, under what condition can I book air instead of the KTX rail fare?",
+  "1": "When is flying allowed on Seoul–Pohang instead of taking the KTX, given that rail is otherwise the default there?",
+  "2": "I usually have to take the train between Seoul and Pohang — what schedule problem would let me fly that route instead?",
+  "3": "If the only train option to Pohang leaves me sitting around for hours before I can continue that day, am I allowed to fly instead?"
+ },
+ "domestic-trip-same-day-overrun-cost-table": {
+  "0": "When a same-day trip is converted to overnight, why does a claim showing 40,000 KRW daily allowance against a single day get sent back instead of 20,000 KRW against each of two days?",
+  "1": "If a planned day trip turns into an overnight stay, can I just claim 40,000 KRW of allowance on the one day, or does it have to be 20,000 KRW entered on each of the two days?",
+  "2": "My one-day work trip ended up running overnight — is the extra 20,000 KRW meal money supposed to be logged as a separate second date, or can I double it on the original date?",
+  "3": "I had to stay the night on what was meant to be a there-and-back work trip, and I put the whole doubled per-day amount on the departure date — is that going to be rejected?"
+ },
+ "domestic-trip-two-stops-claim-table": {
+  "0": "If I stayed in Busan night 1 and Daejeon night 2, can I claim the 100,000 KRW lodging cap against the Daejeon night?",
+  "1": "On a two-city trip where Busan allows 100,000 KRW and Daejeon 80,000 KRW, can the higher cap be applied to the Daejeon night too?",
+  "2": "I slept in two different cities on one trip, and one has a higher hotel limit than the other — can I use the bigger limit for both nights?",
+  "3": "My trip took me to two places overnight, one pricier than the other; do I just add the two hotel bills together and check them against one overall total, or does each night get judged separately?"
+ },
+ "overseas-trip-band-system-defaults": {
+  "0": "When a multi-country itinerary is filed, what band does the trip claim system automatically assign to every night, and what has to be entered manually?",
+  "1": "If my overseas trip covers more than one country, which country's band does the system default to for the whole claim, and what do I need to correct by hand?",
+  "2": "When a work trip abroad has several countries in it, does the expense system work out the rates for each one, or does it just use the first place I'm going for the whole thing?",
+  "3": "I'm travelling to three different places on one work trip with different costs of living — will the expenses form sort out the nightly limits for each leg or do I have to put them in myself?"
+ },
+ "overseas-trip-multi-country": {
+  "0": "On a Seoul → Tokyo (2 nights) → Frankfurt (3 nights) → Nairobi (1 night) trip, can I claim all six nights at the Frankfurt band rate since it was the longest leg?",
+  "1": "For a six-night trip covering Tokyo, Frankfurt and Nairobi, is it acceptable to file every night at the Frankfurt rate because that leg had the most nights, or must each city's own band apply?",
+  "2": "If one business trip covers three countries with different hotel limits and daily amounts, can I just use the limit for the country I stayed in longest for the whole trip?",
+  "3": "I was away six nights across three countries on one job — do I have to work out the hotel and meal money separately for each place I slept, or can I apply one figure across the whole thing?"
+ },
+ "overseas-trip-multi-country-band-table": {
+  "0": "On a travel day that crosses a border mid-flight, is the night billed at the band of the country of departure or the country where the traveller lands and sleeps?",
+  "1": "If a flight crosses a country line partway through the day, which country's band applies to that night — where I took off or where I land and sleep?",
+  "2": "When I fly from one country to another in a single day, does that night's rate follow where I started out or where I end up staying?",
+  "3": "I left Tokyo in the morning and checked into a hotel in Manila that evening — which city's limits do I use for that night's room and meals?"
+ },
+ "overseas-trip-prepaid-lodging-cancellation": {
+  "0": "If a prepaid hotel refund for two cancelled nights lands on the corporate card, within how many working days must the refund be reported separately from the lodging claim?",
+  "1": "When a hotel refunds two cancelled nights back to the corporate card mid-trip, how soon after it hits the card does the refund have to be reported on its own?",
+  "2": "My company card was credited back for the nights I didn't use after cutting a trip short — how quickly do I have to declare that money coming back, separately from my accommodation expenses?",
+  "3": "I paid for five nights upfront, left after three, and the money for the unused nights came back to the card a few days later — since the total I'm asking for is the same anyway, do I need to flag that money separately, and by when?"
+ }
+}

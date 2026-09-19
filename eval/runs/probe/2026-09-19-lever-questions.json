@@ -1,0 +1,632 @@
+{
+ "near:domestic-trip-mode-choice-jeju": {
+  "kind": "near",
+  "gold": [
+   "domestic-trip-mode-choice-jeju"
+  ],
+  "q": {
+   "0": "On a Jeju trip where air is mandatory, what fare class still needs team lead sign-off if you want to book it instead of economy?",
+   "3": "If flying is the only way to reach the destination, which higher-priced seating option still requires your manager’s approval?"
+  }
+ },
+ "near:card-use-fuel-parking": {
+  "kind": "near",
+  "gold": [
+   "card-use-fuel-parking"
+  ],
+  "q": {
+   "0": "For parking charges, above what KRW amount is a receipt required?",
+   "3": "At what price point does a parking payment stop being treated as a small purchase and start needing proof of purchase?"
+  }
+ },
+ "near:overseas-trip-multi-country-band-table": {
+  "kind": "near",
+  "gold": [
+   "overseas-trip-multi-country-band-table"
+  ],
+  "q": {
+   "0": "If I cross a border mid-flight and land in a different country before bedtime, which country’s band applies to that travel day’s lodging and allowance—the one I took off from or the one I land in and sleep in?",
+   "3": "On a day I fly to another country and only arrive in the evening, do I claim that night’s hotel and per‑diem at the departing country’s rate or the arriving country’s rate where I actually spend the night?"
+  }
+ },
+ "near:entitlement-recalc-trigger": {
+  "kind": "near",
+  "gold": [
+   "entitlement-recalc-trigger"
+  ],
+  "q": {
+   "0": "Which changes are explicitly listed as not triggering a recalculation of your leave entitlement, even if your role or reporting line changes?",
+   "3": "If I switch roles or move around internally but stay employed, what kinds of changes won’t cause my vacation allowance to be recalculated automatically?"
+  }
+ },
+ "near:evidence-no-tax-invoice": {
+  "kind": "near",
+  "gold": [
+   "evidence-no-tax-invoice"
+  ],
+  "q": {
+   "0": "If a street stall or other cash‑only vendor can’t issue a tax invoice at all, up to roughly what amount in KRW can a disbursement form substitute for qualifying evidence before there is no workaround?",
+   "3": "When the seller can’t provide any of the usual official proof of purchase, about what spend limit (in won) can you cover with the internal payout form before the claim must be rejected?"
+  }
+ },
+ "near:leave-request-notice-table": {
+  "kind": "near",
+  "gold": [
+   "leave-request-notice-table"
+  ],
+  "q": {
+   "0": "What is the only leave request type here that has a genuinely enforced minimum notice period, and what is that minimum in days?",
+   "3": "Which kind of time-off request is the only one the system actually forces you to file a certain number of days ahead, and how many days ahead is it?"
+  }
+ },
+ "near:payslip-leaving-checklist": {
+  "kind": "near",
+  "gold": [
+   "payslip-leaving-checklist"
+  ],
+  "q": {
+   "0": "If someone is looking for severance pay on a leaver’s final payslip, within how many days of the last working day is it usually paid separately instead?",
+   "3": "When an employee leaves and that termination payout isn’t shown on their last salary statement, how long after their final day is it normally paid out on its own?"
+  }
+ },
+ "near:mid-year-joiner-lapse-table": {
+  "kind": "near",
+  "gold": [
+   "mid-year-joiner-lapse-table"
+  ],
+  "q": {
+   "0": "Do days accrued in November or December still lapse on 31 December if they’re unused by a first-year mid-year joiner?",
+   "3": "If someone starts late in the year and earns time off near the end of December, does any of that unused time automatically disappear at the year boundary?"
+  }
+ },
+ "near:expense-budget-variance-carryover-case": {
+  "kind": "near",
+  "gold": [
+   "expense-budget-variance-carryover-case"
+  ],
+  "q": {
+   "0": "In the worked case where March’s travel underspend didn’t carry over, what was the KRW threshold that the two April trips crossed that triggered the need for an explanation?",
+   "3": "In the example where last month’s unspent travel money wasn’t carried into the next month, what amount did the next month’s overage exceed that made a written justification mandatory?"
+  }
+ },
+ "near:year-end-manual-deduction-items": {
+  "kind": "near",
+  "gold": [
+   "year-end-manual-deduction-items"
+  ],
+  "q": {
+   "0": "For manual medical expense deductions the pre-fill doesn’t apply, what percentage of your own gross pay is the floor that medical spend must exceed before any of it counts?",
+   "3": "When you’re trying to claim health-related costs that aren’t automatically handled, how big does the spending have to be compared to your salary before you can deduct anything at all?"
+  }
+ },
+ "near:expense-allowance-stop-start-procedure": {
+  "kind": "near",
+  "gold": [
+   "expense-allowance-stop-start-procedure"
+  ],
+  "q": {
+   "0": "When you file an eligibility form to stop a payroll allowance after the month's payroll cutoff, what month does the stop apply in?",
+   "3": "If I send in the paperwork to end my stipend after payroll has already been locked for the month, which pay cycle will the end date show up in?"
+  }
+ },
+ "near:nontaxable-childcare-age-out": {
+  "kind": "near",
+  "gold": [
+   "nontaxable-childcare-age-out"
+  ],
+  "q": {
+   "0": "If a child turns seven in September and the childcare allowance still pays 200,000 KRW that month, is the whole 200,000 KRW taxable from September or only an excess above the cap?",
+   "3": "When the kid has their seventh birthday and the stipend still shows up on that month’s pay, does all of that month’s amount become subject to income tax, or just whatever would be over the monthly limit?"
+  }
+ },
+ "near:trip-allowance-claim-deadline": {
+  "kind": "near",
+  "gold": [
+   "trip-allowance-claim-deadline"
+  ],
+  "q": {
+   "0": "What is the cutoff in business days after your return date for filing a trip allowance claim so it still lands on the same month's payslip?",
+   "3": "How many working days after you get back do you have to submit the travel per-diem request to have it show up on that month’s paycheck?"
+  }
+ },
+ "near:expense-personal-card-reimbursement-evidence": {
+  "kind": "near",
+  "gold": [
+   "expense-personal-card-reimbursement-evidence"
+  ],
+  "q": {
+   "0": "For a personal-card reimbursement claim, what evidence is required when a single line item is over 30,000 KRW?",
+   "3": "If an employee paid a business expense on their own bank card and the individual purchase is above the 30,000 won cutoff, what documentation do they need to submit?"
+  }
+ },
+ "near:expense-subscription-registry-system": {
+  "kind": "near",
+  "gold": [
+   "expense-subscription-registry-system"
+  ],
+  "q": {
+   "0": "When the registry auto-populates recurring charges from the corporate card feed, which field still requires a manual entry because the card feed has no visibility into how many people use a licence?",
+   "3": "In the system that fills in subscription details from company card transactions, what piece of information still has to be typed in by hand because the transaction data can’t show how many users are covered?"
+  }
+ },
+ "near:expense-trip-days-month-boundary-worked-example": {
+  "kind": "near",
+  "gold": [
+   "expense-trip-days-month-boundary-worked-example"
+  ],
+  "q": {
+   "0": "In the worked case of the five-day domestic trip from 30 July to 3 August, what were the exact two date ranges the system generated as separate claim lines when it split the claim at the calendar boundary?",
+   "3": "For the example where a five-day in-country trip spans the end of one month and the start of the next, what were the two specific date spans the tool created as separate entries when it divided the request at the month change?"
+  }
+ },
+ "near:overtime-rate-table": {
+  "kind": "near",
+  "gold": [
+   "overtime-rate-table"
+  ],
+  "q": {
+   "0": "When an employee works night hours during holiday work, what premium applies and does it stack to +100%?",
+   "3": "If someone is scheduled overnight on a public holiday, what extra percentage is added to their base pay for those hours in total?"
+  }
+ },
+ "near:parental-leave-extension-procedure": {
+  "kind": "near",
+  "gold": [
+   "parental-leave-extension-procedure"
+  ],
+  "q": {
+   "0": "When extending an agreed parental leave block, how many days before the original end date (not the new one) must the extension request be submitted to the HR desk?",
+   "3": "If I want to push back my planned return-to-work date while I’m already on family leave, how far in advance of the originally scheduled end do I have to notify HR?"
+  }
+ },
+ "near:prepaid-card-topup-approver": {
+  "kind": "near",
+  "gold": [
+   "prepaid-card-topup-approver"
+  ],
+  "q": {
+   "0": "If a prepaid card’s issuance plus top-ups together cross the same threshold that would require a division head’s sign-off on a normal expense claim, who gets involved in approving the top-up?",
+   "3": "When adding more money to an already-issued prepaid card pushes the total funding past the level that normally needs senior approval on a regular expense, whose approval has to be included for that reload?"
+  }
+ },
+ "near:kind-misclassification": {
+  "kind": "near",
+  "gold": [
+   "kind-misclassification"
+  ],
+  "q": {
+   "0": "When a division head files an ongoing vendor-selection rule as a 2,400,000 KRW purchase to keep it at division-head level, who is the correct approver it must route to once it’s recognized as a policy change?",
+   "3": "If someone tries to get a permanent change in how suppliers are chosen approved as though it were just a one-time expense, which executive ultimately has to sign off on it?"
+  }
+ },
+ "near:insurance-movements-partial-year": {
+  "kind": "near",
+  "gold": [
+   "insurance-movements-partial-year"
+  ],
+  "q": {
+   "0": "If someone leaves mid-year, does the April health settlement run for them at the next April payroll run, or is their partial-year health true-up settled at the leaving date instead?",
+   "3": "When an employee quits partway through the year, do you still do the springtime health premium reconciliation later on, or do you square it up on their final paycheck?"
+  }
+ },
+ "near:reimbursement-actual-cost-uncapped": {
+  "kind": "near",
+  "gold": [
+   "reimbursement-actual-cost-uncapped"
+  ],
+  "q": {
+   "0": "In the example given for why reimbursements have no monthly cap, what amount is the client dinner that would be repaid in full if properly evidenced and approved?",
+   "3": "In the illustration about paying back a business meal with proof, how much did the dinner cost in that scenario?"
+  }
+ },
+ "near:bonus-types-overview": {
+  "kind": "near",
+  "gold": [
+   "bonus-types-overview"
+  ],
+  "q": {
+   "0": "Which bonus type is paid once a year after results are confirmed, on a date HR sets rather than the contract?",
+   "3": "Which kind of extra payout is only issued annually after the year’s outcomes are finalized, with the timing chosen by HR instead of being written into the employment agreement?"
+  }
+ },
+ "near:card-po-repeat-purchase-case": {
+  "kind": "near",
+  "gold": [
+   "card-po-repeat-purchase-case"
+  ],
+  "q": {
+   "0": "In the four small orders example, what was the total monthly spend (in KRW) that put the supplier inside the 300,000–1,000,000 KRW quote band?",
+   "3": "Across those four separate buys from the same vendor in one month, what was the combined amount that triggered the mid-range paperwork requirement?"
+  }
+ },
+ "near:flexwork-overview": {
+  "kind": "near",
+  "gold": [
+   "flexwork-overview"
+  ],
+  "q": {
+   "0": "On a working-from-home day, what happens if no presence is recorded during the core hours band even if the total hours worked add up?",
+   "3": "If I work from home but I’m not available during the midday window everyone has to cover, how will that day be treated even if I still do a full day’s hours?"
+  }
+ },
+ "near:expense-audit-finding-response-procedure": {
+  "kind": "near",
+  "gold": [
+   "expense-audit-finding-response-procedure"
+  ],
+  "q": {
+   "0": "In a threshold-breach finding (cash spend over 30,000 KRW with only a simple receipt), what penalty percentage is fixed and cannot be reversed even if you later supply evidence?",
+   "3": "If you went over the cash limit and only had a basic receipt, what percent of the spend is automatically deducted with no way to undo it even after you provide more paperwork later?"
+  }
+ },
+ "near:expense-ceiling-no-carryover": {
+  "kind": "near",
+  "gold": [
+   "expense-ceiling-no-carryover"
+  ],
+  "q": {
+   "0": "On what date does the annual ceiling reset to a clean slate, with no unused balance carrying over and no overage carrying in as debt?",
+   "3": "What calendar day does each team’s yearly spending limit start over from zero so last year’s leftover (or overspend) doesn’t affect the new year?"
+  }
+ },
+ "near:expense-travel-emissions-owner": {
+  "kind": "near",
+  "gold": [
+   "expense-travel-emissions-owner"
+  ],
+  "q": {
+   "0": "If an expense audit reviewer finds a missing rail comparison line or a blank distance field on a trip claim, which desk can raise a finding but still has no authority to change what mode a leg was booked under?",
+   "3": "When a monthly checker spots that a trip record is missing the train-versus-flight comparison or the kilometres are empty, which team can report it as an issue but cannot alter how that segment was originally classified?"
+  }
+ },
+ "near:loa-start-notice-table": {
+  "kind": "near",
+  "gold": [
+   "loa-start-notice-table"
+  ],
+  "q": {
+   "0": "If I notify military leave with less than 30 days before the enlistment date, does it still have to be granted and not treated as a late request?",
+   "3": "If I get my service order late and can’t give a month’s warning before I’m due to report, will the company still have to approve my time away rather than saying I applied too late?"
+  }
+ },
+ "near:sick-leave-annual-leave-offset": {
+  "kind": "near",
+  "gold": [
+   "sick-leave-annual-leave-offset"
+  ],
+  "q": {
+   "0": "If I file a doctor's certificate for an illness absence of 3 or more consecutive days, from which day onward does the absence stop being deducted from my annual leave balance and get coded as unpaid sick leave instead?",
+   "3": "When I’m out sick for several days in a row and provide medical proof, starting on what day do those days stop reducing my vacation time and get recorded in the separate unpaid illness category instead?"
+  }
+ },
+ "two:chain-roles-not-interchangeable|attendance-correction-approval-role": {
+  "kind": "two",
+  "gold": [
+   "chain-roles-not-interchangeable",
+   "attendance-correction-approval-role"
+  ],
+  "q": {
+   "0": "In an attendance correction, who must confirm what the record should say and who must amend the attendance system entry, given that these roles are not interchangeable and one person cannot fill two of them on the same draft?",
+   "3": "For a timesheet fix, who has to verify the right version of what happened and who is responsible for making the change in the software, considering the process requires separate people for separate checkpoints?"
+  }
+ },
+ "two:chain-roles-not-interchangeable|expense-allowance-change-report-deadline": {
+  "kind": "two",
+  "gold": [
+   "chain-roles-not-interchangeable",
+   "expense-allowance-change-report-deadline"
+  ],
+  "q": {
+   "0": "If the drafter of a payroll allowance change form is also the reviewer, what control is removed from the chain, and by when (relative to the change itself and the monthly payroll cutoff) must the change reach and clear HR to stop the allowance being paid on time?",
+   "3": "When the same person both prepares and checks an update to a recurring pay benefit, what safeguard is lost, and what are the two separate time limits that determine whether payments stop in the intended pay cycle?"
+  }
+ },
+ "two:chain-roles-not-interchangeable|allowance-reimbursement-double-payment": {
+  "kind": "two",
+  "gold": [
+   "chain-roles-not-interchangeable",
+   "allowance-reimbursement-double-payment"
+  ],
+  "q": {
+   "0": "If payroll’s monthly reconciliation finds that a fixed allowance and an actual-cost reimbursement claim have both landed on the same category in the same month, which two roles in the draft chain must be kept separate so that the person who wrote the draft isn’t also the one checking it before it reaches the approver?",
+   "3": "When a monthly pay check spots that a flat monthly payment and a submit-your-receipt payment have both been put into the same bucket for the same month, which two people in the sign-off flow must be different so the author of the paperwork isn’t also the one doing the pre-signature quality check?"
+  }
+ },
+ "two:chain-roles-not-interchangeable|annual-agreement-banding": {
+  "kind": "two",
+  "gold": [
+   "chain-roles-not-interchangeable",
+   "annual-agreement-banding"
+  ],
+  "q": {
+   "0": "If a team lead drafts a request for a 400,000 KRW/month ongoing service, can they also review and approve it as a 400,000 KRW decision, or must the annual total band it into CEO approval and require separate drafter/reviewer/approver roles?",
+   "3": "When someone writes up a repeating monthly charge as if it were just a small monthly expense, is it acceptable for that same person to do the internal check and sign-off themselves, or does the full year’s amount push it to top-level sign-off with different people handling each step?"
+  }
+ },
+ "two:attendance-correction-approval-role|expense-allowance-change-report-deadline": {
+  "kind": "two",
+  "gold": [
+   "attendance-correction-approval-role",
+   "expense-allowance-change-report-deadline"
+  ],
+  "q": {
+   "0": "For an attendance correction submitted after the 10-day deadline, whose written confirmation must be attached, and within how many working days of a change in eligibility must HR receive a payroll allowance change to keep it on time?",
+   "3": "When a late timekeeping fix needs sign-off, whose written approval has to be included, and what is the maximum number of business days after an eligibility change for it to be received to avoid delaying the pay adjustment?"
+  }
+ },
+ "two:attendance-correction-approval-role|allowance-reimbursement-double-payment": {
+  "kind": "two",
+  "gold": [
+   "attendance-correction-approval-role",
+   "allowance-reimbursement-double-payment"
+  ],
+  "q": {
+   "0": "If payroll’s reconciliation finds an allowance and an actual-cost reimbursement claim in the same category and month, who confirms in writing which attendance correction version of a disputed day is correct and who edits the attendance system record so the override can be approved past the 10-day deadline?",
+   "3": "When the pay team flags two payouts for the same type of item in the same month, who must formally validate which account of a contested workday is right and which office actually updates the timekeeping entry so a late exception can be authorized?"
+  }
+ },
+ "two:attendance-correction-approval-role|annual-agreement-banding": {
+  "kind": "two",
+  "gold": [
+   "attendance-correction-approval-role",
+   "annual-agreement-banding"
+  ],
+  "q": {
+   "0": "If a manager has already confirmed an attendance correction but only verbally (not in writing on the correction form), what should the HR desk do to amend the attendance system entry, and why is that analogous to why an annual agreement bands on the yearly total rather than a \"monthly cost\" figure?",
+   "3": "When someone with authority has only spoken their sign-off rather than providing the required written evidence, what action should the admin team take before changing the official log, and how does that reflect the principle that recurring payments must be evaluated on the full-year amount instead of a smaller periodic figure?"
+  }
+ },
+ "two:expense-allowance-change-report-deadline|allowance-reimbursement-double-payment": {
+  "kind": "two",
+  "gold": [
+   "expense-allowance-change-report-deadline",
+   "allowance-reimbursement-double-payment"
+  ],
+  "q": {
+   "0": "If you report a change that ends eligibility for a standing payroll allowance within 5 working days but it clears HR after the monthly payroll cutoff and the allowance still pays that month, how will payroll treat a reimbursement claim submitted for the same category in that same month—will the claim be held/rejected or will the allowance be reversed, and what are the tax consequences if both payments would otherwise land?",
+   "3": "If you notify the company about losing a recurring monthly payment quickly but too late for the current pay run so it still gets issued this month, what happens if you also submit a same-month cost claim for the same item—does finance pause/deny it or cancel the recurring line, and how is any overlap taxed?"
+  }
+ },
+ "two:expense-allowance-change-report-deadline|annual-agreement-banding": {
+  "kind": "two",
+  "gold": [
+   "expense-allowance-change-report-deadline",
+   "annual-agreement-banding"
+  ],
+  "q": {
+   "0": "If someone submits a request for a 400,000 KRW/month recurring service to a team lead and only later totals it to the 4,800,000 KRW annual agreement that should have been in the CEO approval band, what is the risk if that correction reaches HR after the monthly payroll cutoff even though it was within 5 working days of the change?",
+   "3": "When a repeating monthly purchase is later reclassified as a much bigger yearly commitment that should have had higher-level signoff, what happens if that update is sent in time under the short reporting window but arrives after the monthly processing deadline?"
+  }
+ },
+ "two:allowance-reimbursement-double-payment|annual-agreement-banding": {
+  "kind": "two",
+  "gold": [
+   "allowance-reimbursement-double-payment",
+   "annual-agreement-banding"
+  ],
+  "q": {
+   "0": "If a 400,000 KRW/month recurring service is mistakenly approved as a monthly cost instead of banding on its 4,800,000 KRW annual total, and in the same month payroll sees both a standing allowance and an actual-cost reimbursement claim submitted for the same category, what will payroll do with the reimbursement claim and what tax treatment applies if both payments would otherwise land on the same payslip?",
+   "3": "If an ongoing subscription is wrongly authorized using its per-period price rather than its full-year value, and during that same pay period someone is set to receive both a flat recurring payment and a submitted expense repayment for the same purpose, what will the pay team do with the submitted repayment and how will the extra amount be taxed if both would otherwise be paid together?"
+  }
+ },
+ "two:annual-agreement-band|booking-cases-index": {
+  "kind": "two",
+  "gold": [
+   "annual-agreement-band",
+   "booking-cases-index"
+  ],
+  "q": {
+   "0": "If you have a cleaning contract billed monthly at 260,000 KRW and the total annual value is 3,120,000 KRW net of VAT, who is the approver for the agreement’s authority band, and what must happen approval-wise for a same-morning leave request before the day is recorded?",
+   "3": "In a case where a repeating monthly service adds up over a year to exceed the signing limit even though each bill is small, who must sign off overall, and what has to be in place for a time-off request submitted that morning before the absence can be logged?"
+  }
+ },
+ "two:annual-agreement-band|expense-budget-line-item-table": {
+  "kind": "two",
+  "gold": [
+   "annual-agreement-band",
+   "expense-budget-line-item-table"
+  ],
+  "q": {
+   "0": "For a cleaning contract billed 260,000 KRW per month, what is the agreement’s authority band approver based on its total annual value net of VAT, and which budget line item should it be tagged under at claim submission so it doesn’t default to card miscellaneous?",
+   "3": "If we’re paying a service fee every month, who has to sign off when you total the whole year before the first payment, and which reporting bucket should it be filed under when submitting the expense so it doesn’t land in the catch‑all category by default?"
+  }
+ },
+ "two:annual-agreement-band|bonus-insurance-contributions": {
+  "kind": "two",
+  "gold": [
+   "annual-agreement-band",
+   "bonus-insurance-contributions"
+  ],
+  "q": {
+   "0": "If we have a cleaning contract billed at 260,000 KRW per month and we also pay a bonus in November, who must approve the recurring agreement (based on its total annual value net of VAT) and which insurance lines will be affected in November versus only at the following April health insurance settlement?",
+   "3": "For a yearlong service paid in equal monthly installments plus a one-time extra payment in late autumn, which signer has final sign-off authority for the whole commitment and which paycheck deductions change immediately versus only when the yearly true-up happens the next spring?"
+  }
+ },
+ "two:booking-cases-index|expense-budget-line-item-table": {
+  "kind": "two",
+  "gold": [
+   "booking-cases-index",
+   "expense-budget-line-item-table"
+  ],
+  "q": {
+   "0": "If someone submits a leave request that includes a public holiday inside a block, what specific rule should they follow instead of the general leave-apply procedure, and which budget line item will their conference registration default to if they file the claim without tagging it to a line item at the point of claim?",
+   "3": "When time off overlaps an official day off and an expense is filed without choosing a category during submission, what guidance should be consulted for the time-off request and where will that cost be placed by default in the tracking report?"
+  }
+ },
+ "two:booking-cases-index|bonus-insurance-contributions": {
+  "kind": "two",
+  "gold": [
+   "booking-cases-index",
+   "bonus-insurance-contributions"
+  ],
+  "q": {
+   "0": "If I submit a same-morning leave request on the day my November bonus is paid, what approval condition must be met before the day is recorded in the attendance system, and which insurance line will be charged on the bonus itself in that month?",
+   "3": "If I put in time off on the morning I want to take it, on a day when I’m also getting a one-off payout in November, what sign-off has to happen before the absence is logged, and which mandatory payroll deduction will increase immediately because of that payout?"
+  }
+ },
+ "two:expense-budget-line-item-table|bonus-insurance-contributions": {
+  "kind": "two",
+  "gold": [
+   "expense-budget-line-item-table",
+   "bonus-insurance-contributions"
+  ],
+  "q": {
+   "0": "If a conference registration is filed without its category flag and defaults to card miscellaneous, what variance pattern will that create across the Travel and Card miscellaneous line items in the monthly report, and when would a November bonus first change any of the insurance-related deductions (and which line) even though pension and health don’t rise in the bonus month?",
+   "3": "When an expense is submitted without being assigned to the right bucket and gets routed into the catch‑all bucket, what mismatch will appear between the intended bucket and the catch‑all in the monthly figures, and for an extra payout made in November, in which later month will any payroll insurance withholding first be adjusted (and which type) despite no immediate change that month in the other major withholdings?"
+  }
+ },
+ "two:after-the-fact-deadline|days-that-decide-money-overview": {
+  "kind": "two",
+  "gold": [
+   "after-the-fact-deadline",
+   "days-that-decide-money-overview"
+  ],
+  "q": {
+   "0": "If an after-the-fact draft for a business trip day is filed more than 5 business days after the trip happened, what consequence applies to the draft and what pay item is that attendance day supposed to trigger on the payslip?",
+   "3": "If the write-up for travel done for work is submitted too late after the event, what happens to that submission and what extra payment is that day meant to generate in payroll?"
+  }
+ },
+ "two:after-the-fact-deadline|travel-insurance-claim-deadline": {
+  "kind": "two",
+  "gold": [
+   "after-the-fact-deadline",
+   "travel-insurance-claim-deadline"
+  ],
+  "q": {
+   "0": "If someone took an urgent action before approval while abroad and only wrote the after-the-fact draft after the incident, by what day-count must they file the draft to avoid it being treated as unfiled, and by what day-count must they file the formal insurance claim to avoid it lapsing?",
+   "3": "After an unplanned event on an overseas trip that was dealt with immediately but written up later, what is the maximum time allowed for the internal write-up to still count, and what is the maximum time allowed for the external reimbursement request to still be accepted?"
+  }
+ },
+ "two:after-the-fact-deadline|garnishment-order-receipt-procedure": {
+  "kind": "two",
+  "gold": [
+   "after-the-fact-deadline",
+   "garnishment-order-receipt-procedure"
+  ],
+  "q": {
+   "0": "If payroll receives a garnishment order after wages are paid, within how many business days of that payment must an after-the-fact draft be filed so the first payslip it can still adjust can start withholding rather than being treated as unfiled?",
+   "3": "When a mandatory take-from-pay notice arrives too late to change the already-issued check, what is the maximum number of workdays after the pay event to submit the retroactive write-up so the earliest editable payroll run can apply the first reduction instead of it being counted as never documented?"
+  }
+ },
+ "two:days-that-decide-money-overview|travel-insurance-claim-deadline": {
+  "kind": "two",
+  "gold": [
+   "days-that-decide-money-overview",
+   "travel-insurance-claim-deadline"
+  ],
+  "q": {
+   "0": "After an incident abroad on a business trip day, by when must the formal insurance claim be filed to avoid being refused outright?",
+   "3": "If something happens overseas during a work-related travel day that triggers extra pay, what is the latest you can submit the insurer paperwork so it won’t be rejected?"
+  }
+ },
+ "two:days-that-decide-money-overview|garnishment-order-receipt-procedure": {
+  "kind": "two",
+  "gold": [
+   "days-that-decide-money-overview",
+   "garnishment-order-receipt-procedure"
+  ],
+  "q": {
+   "0": "If a garnishment order is received for an employee during their prorated joining month, which payslip must payroll begin withholding from, given that the prorated joining month affects the first payslip’s base salary by calendar days worked and withholding must start from the first payslip that can still be adjusted after the order is received?",
+   "3": "When a mandatory deduction notice arrives for a newly hired person whose first month’s pay is reduced because they only worked part of that month, which paycheck is the earliest one the pay team is required to start taking the money from?"
+  }
+ },
+ "two:travel-insurance-claim-deadline|garnishment-order-receipt-procedure": {
+  "kind": "two",
+  "gold": [
+   "travel-insurance-claim-deadline",
+   "garnishment-order-receipt-procedure"
+  ],
+  "q": {
+   "0": "If an employee has an incident abroad that may lead to an insurance claim and payroll receives a garnishment order during the same trip, by what latest day must the formal insurance claim be filed, and from which payslip must payroll begin withholding?",
+   "3": "When someone has a medical issue while traveling outside the country and later gets a wage-seizure notice at work, what is the final day they can submit the reimbursement request, and which paycheck has to be the first one to apply the required cut?"
+  }
+ },
+ "two:meeting-minutes-overview|combined-transfer-milestone-case": {
+  "kind": "two",
+  "gold": [
+   "meeting-minutes-overview",
+   "combined-transfer-milestone-case"
+  ],
+  "q": {
+   "0": "If a meeting ends with a decision to approve the 5-year 3/5/7 ladder bump for an employee whose service-start-date was preserved through a documented group transfer, what must the minute record (decision and authority), and which date should it treat as the milestone anchor for filing/retention purposes?",
+   "3": "When a meeting formally authorizes an increased time-off entitlement for someone who moved over from a related company without resetting their original start date, what must be written down to show who approved it under what power, and which start date should be used as the basis date when storing it for the appropriate retention period?"
+  }
+ },
+ "two:meeting-minutes-overview|card-po-approver-role": {
+  "kind": "two",
+  "gold": [
+   "meeting-minutes-overview",
+   "card-po-approver-role"
+  ],
+  "q": {
+   "0": "If a staff requester raises a 500,000 KRW purchase order that produces a spend approval decision inside an authority band, who has to approve the PO and does the meeting where that approval decision is made need a minute?",
+   "3": "For a 500,000 KRW supplier request initiated by a regular employee, which role must authorize it, and is written documentation required to formally capture that authorization if it’s granted during a group discussion?"
+  }
+ },
+ "two:meeting-minutes-overview|pay-annual-figure-components": {
+  "kind": "two",
+  "gold": [
+   "meeting-minutes-overview",
+   "pay-annual-figure-components"
+  ],
+  "q": {
+   "0": "If a meeting ends with a decision to approve someone’s annual salary figure at hire or promotion, what does the minute need to record about that decision and which parts of the annual salary figure are guaranteed?",
+   "3": "When a group formally signs off on someone’s yearly compensation amount, what must the written record capture about the ruling and which pieces of that yearly amount are the ones that will definitely be paid?"
+  }
+ },
+ "two:combined-transfer-milestone-case|card-po-approver-role": {
+  "kind": "two",
+  "gold": [
+   "combined-transfer-milestone-case",
+   "card-po-approver-role"
+  ],
+  "q": {
+   "0": "If an employee transferred in March 2022 with their original 2019 service date preserved, in what month/year does their 5-year anniversary bump fire on the 3/5/7 ladder, and who must approve a purchase order submitted by a staff-level requester for 400,000 KRW?",
+   "3": "For someone who moved to a related company in March 2022 but kept their original 2019 start timestamp, when will their next five‑year increase take effect, and which role has to sign off a 400,000 KRW supplier request created by an entry‑level employee?"
+  }
+ },
+ "two:combined-transfer-milestone-case|pay-annual-figure-components": {
+  "kind": "two",
+  "gold": [
+   "combined-transfer-milestone-case",
+   "pay-annual-figure-components"
+  ],
+  "q": {
+   "0": "An employee who transferred in March 2022 with their 2019 service-start-date preserved is told an “annual salary” figure at the new employer; when will their 5-year bump fire, and which components of that annual salary are guaranteed to appear on every payslip?",
+   "3": "For someone who moved to a related company in early 2022 while keeping their original start date from 2019, on what date will the five‑year entitlement increase take effect, and which parts of the stated yearly compensation are certain to be paid each month?"
+  }
+ },
+ "two:card-po-approver-role|pay-annual-figure-components": {
+  "kind": "two",
+  "gold": [
+   "card-po-approver-role",
+   "pay-annual-figure-components"
+  ],
+  "q": {
+   "0": "If I’m a Staff requester and the PO amount is 350,000 KRW, who has to approve the purchase order, and which components of my quoted annual salary figure are guaranteed to appear on every payslip regardless of performance?",
+   "3": "For a rank-and-file employee submitting a supplier request above their own spending threshold, which higher-up must sign it off, and which parts of the compensation package are assured to be paid every month even if results are poor?"
+  }
+ },
+ "two:policy-amendment-procedure|core-hours-table": {
+  "kind": "two",
+  "gold": [
+   "policy-amendment-procedure",
+   "core-hours-table"
+  ],
+  "q": {
+   "0": "If we amend the core-hours policy, what authority must the amendment carry, and which specific version must it name to avoid both versions looking valid at once?",
+   "3": "When making a small change to the rules about the mandatory daily availability window, what approval level is required for the update, and what exact prior edition has to be identified so it doesn’t appear that two different editions are simultaneously in force?"
+  }
+ },
+ "two:policy-amendment-procedure|card-use-annual-licence": {
+  "kind": "two",
+  "gold": [
+   "policy-amendment-procedure",
+   "card-use-annual-licence"
+  ],
+  "q": {
+   "0": "If we file a narrow correction to the annual licences policy as an amendment, what authority does that amendment need and what qualifying evidence (receipt) is required when the licence renews automatically twelve months later?",
+   "3": "When making a small tweak to the current rule about once-a-year renewals, what level of sign-off is required for the update and what proof of purchase must be collected when the next automatic renewal charge happens?"
+  }
+ }
+}
