@@ -355,8 +355,23 @@ What a fixture measures is Q5. It is scored on its own questions, not on the gol
 | k | retrieved documents that count as "found" | **10** | pilot |
 | areas per hop | areas the single-decision router may pick | **2** | pilot |
 | hop budget | **none** — neither returns to hop 0 nor descents are rationed; see below | **unbounded** | pilot |
-| router / agent model | **`claude-opus-5`**, and the floor is that class | pilot |
+| router / agent model | **`claude-opus-5`**, and the floor is that class. On the hard extension, `claude-sonnet-5` — deviation recorded below | pilot |
 | reranker model | **GPT-5.6 or better**, a different vendor from the router | pilot |
+
+**Deviation from the floor, recorded before the run (2026-09-19).** The routing arms on
+`bench/corpus-hard` run with **`claude-sonnet-5`**, which is below the floor this section sets. The
+floor exists so that a routing failure is not an instruction-following failure in disguise, and the
+deviation is taken on measured grounds rather than on cost alone: on the three-question harness check
+Sonnet 5 issued no command naming an id that was not in the table, kept the command format on every
+turn, and solved both indirect questions in **two hops** — walking to the section, reading all three
+legends, and opening the correct row. gpt-4o, the failure that put this floor here, invented row
+names that appeared in no table. Sonnet 5 did not do that, and a model that does not do that is not
+the hazard the floor was written against.
+
+What this costs: a routing failure under Sonnet 5 is one rung less safe from the "was the model able"
+reading than one under Opus 5. So **any failure that matters to a conclusion is re-run under
+`claude-opus-5` before it is reported**, and the report names the model on every number. The
+deviation does not extend to the frozen 700 corpus, where the original floor stands.
 
 **Why there is no hop budget (rev. 5).** There was one: returns to hop 0 were rationed at three, the
 figure the overlay design uses. The pilot showed that number, not the routing, was what the severe row

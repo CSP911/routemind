@@ -1,0 +1,588 @@
+{
+ "k": 10,
+ "per_hop": 2,
+ "budget": 0,
+ "steps": 30,
+ "gold": "eval/gold/hard-smoke.yaml",
+ "router_model": "claude-sonnet-5",
+ "rerank_model": "gpt-5",
+ "embed_model": "text-embedding-3-large",
+ "results": [
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-111-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-perdiem-111-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-stay",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-222-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-case",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "A3",
+   "id": "h-perdiem-111-d",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "attendance"
+   ],
+   "router_said": "expense, attendance",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "A3",
+   "id": "h-perdiem-111-i",
+   "needs": "any",
+   "picked": [
+    "expense",
+    "approval"
+   ],
+   "router_said": "expense, approval",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "travel-overseas",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-stay",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "A3",
+   "id": "h-accrual-222-i",
+   "needs": "any",
+   "picked": [
+    "attendance",
+    "payroll"
+   ],
+   "router_said": "attendance, payroll",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-milestone-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "read_retrieval_hit": true,
+   "read_rank": 1,
+   "read_mrr": 1.0,
+   "read_n": 1,
+   "reach_n": 342,
+   "returns": 0,
+   "opens": 2,
+   "read_chars": 798,
+   "exhausted": false,
+   "arm": "A1",
+   "id": "h-perdiem-111-d",
+   "needs": "any",
+   "picked": [
+    "expense"
+   ],
+   "router_said": "OPEN expense | OPEN sec-hard-perdiem | READ hard-perdiem-row-grade-g2-band-b2-stay-s2 | For grade G2, band B2, stay S2 (overseas per-diem):\n\n- **Lodging cap:** 179 USD per night\n- **Receipt threshold:** you must keep receipts for any expense above **34 USD**\n\n(For reference, the corresponding meal allowance is 66 USD/day and incidentals are 13 USD/day.) | DONE",
+   "hops": 2,
+   "collected": 1,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "read_retrieval_hit": true,
+   "read_rank": 1,
+   "read_mrr": 1.0,
+   "read_n": 4,
+   "reach_n": 342,
+   "returns": 0,
+   "opens": 2,
+   "read_chars": 2749,
+   "exhausted": false,
+   "arm": "A1",
+   "id": "h-perdiem-111-i",
+   "needs": "any",
+   "picked": [
+    "expense"
+   ],
+   "router_said": "OPEN expense | OPEN sec-hard-perdiem | READ hard-perdiem-legend-grade | READ hard-perdiem-legend-band | READ hard-perdiem-legend-stay | READ hard-perdiem-row-grade-g2-band-b2-stay-s2 | For a team manager (grade G2) on a four-night trip (stay S2) to Singapore (band B2):\n\n- **Lodging cap:** 179 USD per night\n- **Meals allowance:** 66 USD per day\n- **Incidentals:** 13 USD per day\n- **Receipt threshol",
+   "hops": 2,
+   "collected": 4,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "travel-overseas",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-stay",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-prepaid-lodging-settlement",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "read_retrieval_hit": true,
+   "read_rank": 1,
+   "read_mrr": 1.0,
+   "read_n": 4,
+   "reach_n": 267,
+   "returns": 0,
+   "opens": 2,
+   "read_chars": 2929,
+   "exhausted": false,
+   "arm": "A1",
+   "id": "h-accrual-222-i",
+   "needs": "any",
+   "picked": [
+    "attendance"
+   ],
+   "router_said": "OPEN attendance | OPEN sec-hard-accrual | READ hard-accrual-legend-type | READ hard-accrual-legend-tenure | READ hard-accrual-legend-site | READ hard-accrual-row-type-e3-tenure-t3-site-l3 | Based on your profile — **three days a week (type E3)**, **five years of tenure (tenure T3)**, **Singapore entity (site L3)** — here's what applies:\n\n- **Monthly accrual:** 1.24 days per month\n- **Carry-over li",
+   "hops": 2,
+   "collected": 4,
+   "top": [
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "group-transfer-entitlement",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-milestone-case",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-case",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-carryover-table",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    }
+   ]
+  }
+ ]
+}
