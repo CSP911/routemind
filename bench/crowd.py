@@ -104,7 +104,11 @@ FAMILIES = [
                        ("Meals, per day", f"{38 + 9*i[0] + 14*i[1] + 5*i[2]} USD"),
                        ("Receipt threshold", f"{18 + 4*i[0] + 9*i[1] + 3*i[2]} USD"),
                        ("Incidentals, per day", f"{7 + 2*i[0] + 3*i[1] + i[2]} USD")],
-  ask="what can I put on a hotel each night, and above what amount do I have to keep the receipt"),
+  ask="what can I put on a hotel each night, and above what amount do I have to keep the receipt",
+  was="a single cap per region band, with no distinction by grade or by length of stay",
+  supersedes=[("overseas-rates", "Overseas allowance and exchange rate"),
+              ("travel-overseas", "Overseas travel"),
+              ("overseas-trip-band-country-table", "Which band a country is in")]),
 
  dict(key="overtime", area="payroll", subject="Overtime rate",
   unit="the multiplier, the rounding rule and whether approval was needed first",
@@ -129,7 +133,11 @@ FAMILIES = [
                        ("Rounding", f"to the nearest {5 + 5*(i[1] % 4)} minutes"),
                        ("Approval needed in advance", "yes" if (i[0] + i[1]) >= 3 else "no"),
                        ("Counts toward the monthly cap", "yes" if i[1] >= 1 else "no")],
-  ask="what do I actually get paid for that time, and did it need clearing with anyone beforehand"),
+  ask="what do I actually get paid for that time, and did it need clearing with anyone beforehand",
+  was="one multiplier per day type, with no hour banding and no work-location distinction",
+  supersedes=[("overtime-rate-table", "Overtime rates"),
+              ("overtime-approval-role", "Who approves overtime"),
+              ("payslip-overtime", "The overtime line on a payslip")]),
 
  dict(key="accrual", area="attendance", subject="Leave accrual",
   unit="the monthly accrual rate, the carry-over limit and the notice required",
@@ -156,7 +164,11 @@ FAMILIES = [
                        ("Carry-over limit, days", f"{4 + 3*i[1] + i[2]}"),
                        ("Notice required, working days", f"{2 + i[0] + (i[2] % 3)}"),
                        ("Accrues during unpaid leave", "yes" if i[0] == 0 and i[1] >= 2 else "no")],
-  ask="how much time off am I building up each month, and how much can I still be holding in January"),
+  ask="how much time off am I building up each month, and how much can I still be holding in January",
+  was="a single entitlement by length of service, granted whole and not adjusted for employment type",
+  supersedes=[("leave-accrual", "Leave entitlement"),
+              ("accrual-rule", "How leave accrues"),
+              ("leave-accrual-midyear", "Mid-year joiners")]),
 
  dict(key="threshold", area="approval", subject="Approval threshold",
   unit="who signs it, how many competing quotes are needed and how long it takes",
@@ -181,7 +193,11 @@ FAMILIES = [
                                          "the CFO", "the board"][min(4, (i[1] + i[2]) // 2)]),
                        ("Competing quotes", ["none", "two", "three", "three and a written comparison"][min(3, i[1])]),
                        ("Working days to expect", f"{2 + 3*i[1] + i[2]}")],
-  ask="whose signature do I need, and do I have to get other prices first"),
+  ask="whose signature do I need, and do I have to get other prices first",
+  was="one threshold table by amount alone, with category and term left to judgement",
+  supersedes=[("threshold-table", "Approval thresholds"),
+              ("approval-threshold", "What each amount needs"),
+              ("delegation-scope", "Delegation of authority")]),
 
  dict(key="diligence", area="procurement", subject="Supplier due diligence",
   unit="the checks required, the documents to collect and the re-review interval",
@@ -207,8 +223,50 @@ FAMILIES = [
                                                  "last three years, audited"][min(3, i[1])]),
                        ("Site visit", "yes" if (i[1] >= 2 or i[2] >= 5) else "no"),
                        ("Re-review interval", f"every {[36, 24, 12, 6][min(3, i[1])]} months")],
-  ask="do we have to go and see their premises, and how often does their file get looked at again"),
+  ask="do we have to go and see their premises, and how often does their file get looked at again",
+  was="a single checklist applied to every supplier regardless of origin, value or what is supplied",
+  supersedes=[("supplier-due-diligence", "Supplier due diligence"),
+              ("sanctions-ownership-checks", "Sanctions and ownership screening"),
+              ("vendor-performance-review", "Vendor performance review")]),
 ]
+
+
+EFFECTIVE = "2026-01-01"
+PRIOR = "2024-07-01"
+
+
+def provenance(fam):
+    """The paragraph every row carries, saying that it is current and what it replaced.
+
+    It goes on **every** row rather than only in one notice, because a retriever hands over ten
+    documents and nothing else: whichever row arrives has to be able to say, on its own, that it is
+    the version in force. A notice filed somewhere else is a notice the reader never sees.
+
+    **It is two lines, and the length is the whole lesson.** The first version was a 1,200-character
+    block — a status heading, a paragraph, a comparison table — repeated identically on all 64 rows,
+    against about 200 characters of content that actually distinguished a row from its siblings. The
+    boilerplate then dominated every row's embedding, pulled them all towards one point and away from
+    any question, and the incumbent documents' share of the top ten rose from 38-96% to 81-98%. The
+    fix made the thing it was fixing worse. Two lines recovered part of it (81% back to 64% on the
+    cleanest family) and one line is what remains: a row's content is about 400 characters, so any
+    notice long enough to read as prose is half the document.
+
+    **The share is not the thing to optimise, and chasing it was the second mistake.** A row indexed
+    by codes cannot out-rank a document written in the question's own subject words, and it is not
+    supposed to — that is what the legends and the walk are for. What the notice buys is that a miss
+    is now *defensible*: the corpus states which version is in force, so retrieving the older one is
+    a stale answer rather than an arguable alternative, and the gold label records what the documents
+    say instead of ruling from outside them. Whether an arm can find that out is measured separately,
+    by `anatomy`, which reports how often the revision notice reaches the top ten.
+
+    What it fixes is not a labelling difficulty. The corpus held two answers and stated nowhere which
+    was in force, so no labeller — however careful, however many — had anything to decide *from*.
+    This puts the fact in the corpus, where an arm can retrieve it, and the gold label becomes a
+    record of what the documents say rather than a ruling handed down from outside them.
+    """
+    sup = fam["supersedes"]
+    return (f"*In force from {EFFECTIVE}; supersedes `{sup[0][0]}`. "
+            f"See `hard-{fam['key']}-legend-revision`.*\n\n")
 
 
 def slug(s): return re.sub(r"[^a-z0-9]+", "-", str(s).lower()).strip("-")
@@ -285,6 +343,35 @@ If what you have is not listed, take the nearest entry above it and record the c
                              "cluster": fam["subject"], "family": fam["key"], "stratum": "S1"}
             support.setdefault(fam["key"], []).append(lid)
 
+        rid = f"hard-{fam['key']}-legend-revision"
+        sup_rows = "\n".join(f"| {n} | `{i}` | superseded from {EFFECTIVE} |"
+                             for i, n in fam["supersedes"])
+        docs.append((fam["area"], rid, f"""---
+id: {rid}
+name: "{fam['subject']} — what changed on {EFFECTIVE}"
+kind: reference
+one_liner: "Which documents this table replaced and from when. Read this if you found an older rule elsewhere"
+parent: {sec}
+---
+# {fam['subject']} — what changed on {EFFECTIVE}
+
+Until {EFFECTIVE} this subject was written as {fam['was']}. From {EFFECTIVE} it is the table in this
+section, indexed by {' and '.join(a[0] for a in axes)}.
+
+| replaced document | id | status |
+|---|---|---|
+{sup_rows}
+
+Those documents were not withdrawn. They remain correct for anything dated before {EFFECTIVE}, and
+that is the only thing they are correct for. Nothing in them says so, which is why this page exists.
+
+Every row in this section repeats the same notice, so a reader who lands on one row without passing
+through here still learns which version they are holding.
+"""))
+        manifest[rid] = {"id": rid, "area": fam["area"], "parent": sec, "legend": "revision",
+                         "cluster": fam["subject"], "family": fam["key"], "stratum": "S1"}
+        support.setdefault(fam["key"], []).append(rid)
+
         for ia, (va, pa) in enumerate(axes[0][1]):
             for ib, (vb, pb) in enumerate(axes[1][1]):
                 for ic, (vc, pc) in enumerate(axes[2][1]):
@@ -301,6 +388,7 @@ If what you have is not listed, take the nearest entry above it and record the c
                     # correct answer, which is a mislabelled question rather than a hard one.
                     flat = (ia * len(axes[1][1]) + ib) * len(axes[2][1]) + ic
                     tbl = "\n".join(f"| {k} | {v}" + " |" for k, v in fam["fields"]((ia, ib, ic), flat))
+                    prov = provenance(fam)
                     docs.append((fam["area"], did, f"""---
 id: {did}
 name: "{fam['subject']} — {', '.join(sysv)}"
@@ -318,7 +406,7 @@ are not sure which values apply to you.
 |---|---|
 {tbl}
 
-## If the figures are exceeded
+{prov}## If the figures are exceeded
 An excess that was not approved in advance is settled at the figure above and the difference is not
 recoverable. An unavoidable excess is claimed with a short written statement and the evidence, and
 is decided by the budget holder rather than by this table.
@@ -630,21 +718,25 @@ def cmd_anatomy(a):
         fam, d = q["family"], q["D_true"][0]
         for t in h.search(q["q"], n=10):
             if t == d: k = "answer"
+            elif man.get(t, {}).get("family") == fam and t.endswith("-legend-revision"): k = "revision notice"
             elif man.get(t, {}).get("family") == fam and "-legend-" in t: k = "own legend"
             elif man.get(t, {}).get("family") == fam: k = "sibling row"
             elif t.startswith("hard-"): k = "other family"
             else: k = "frozen 700"
             acc[fam][k] += 1
         acc[fam]["_n"] += 1
-    ks = ["answer", "sibling row", "own legend", "other family", "frozen 700"]
+    ks = ["answer", "sibling row", "revision notice", "own legend", "other family", "frozen 700"]
     print("\n  what fills the top 10 on an indirect question\n")
     print(f"    {'family':<12}{'n':>4}   " + "".join(f"{k:>14}" for k in ks))
     for fam in sorted(acc):
         n = acc[fam]["_n"]
         print(f"    {fam:<12}{n:>4}   " + "".join(f"{acc[fam][k]/n/10:>13.0%} " for k in ks))
-    print("\n    sibling row  the intended failure — the family was reached, the qualifier was not")
-    print("    frozen 700   the confound — the incumbent corpus already answers this, and a miss")
-    print("                 scored against the extension may not be a miss at all\n")
+    print("\n    revision notice  the supersession was discoverable from what came back — a reader")
+    print("                     handed these ten could learn the older rule no longer applies")
+    print("    sibling row      the intended failure — the family was reached, the qualifier was not")
+    print("    frozen 700       the incumbent corpus. Since 2026-01-01 it is superseded and says so")
+    print("                     nowhere, so returning it is a stale answer — which is a failure this")
+    print("                     study names, and no longer an arguable alternative\n")
 
 
 def cmd_routecheck(a):

@@ -125,6 +125,9 @@ def main():
     # severe band measured. --steps is a runaway stop, not a budget.
     ap.add_argument("--budget", type=int, default=0)
     ap.add_argument("--steps", type=int, default=30)
+    ap.add_argument("--skip-hopeless", action="store_true",
+                    help="do not spend a reranking call on a question whose answer is not among the "
+                         "candidates; the miss is already decided")
     a = ap.parse_args()
 
     g = yaml.safe_load(pathlib.Path(a.gold).read_text(encoding="utf-8"))["questions"]
@@ -169,7 +172,9 @@ def main():
                 #   read     what the agent actually collected. What a consumer is handed.
                 #   scoped   retrieval inside the subtrees the walk opened, filled to k. Same unit
                 #            as B1 and A3 — the walk chooses where, retrieval chooses what.
+                before = dict(agent.usage)
                 walk = agent.walk(q["q"])
+                walk["usage"] = {k: agent.usage[k] - before[k] for k in agent.usage}
                 hops = walk["hops"]
                 got = [i for i in walk["collected"] if i in texts]
                 read_ranked = rr.rank(q["q"], got, texts) if len(got) > 1 else got
@@ -184,8 +189,15 @@ def main():
                     picked, raw = router.pick(q["q"])
                     scope = [i for i in texts if area[i] in picked] or None
                 cand = h.search(q["q"], scope=scope, n=max(a.k, 20))
-                ranked = rr.rank(q["q"], cand[:20], texts) + cand[20:]
+                # An exact saving, not an approximation. The reranker only reorders the candidates it
+                # is given, so a question whose answer is not among them cannot be rescued by it — the
+                # miss is already decided and the call would only pay to confirm it. On the hard
+                # extension that is 161 of 192 indirect questions. `reranked` records which rows were
+                # settled this way so nobody has to take it on trust.
+                hopeless = a.skip_hopeless and not (set(q["D_true"]) & set(cand[:20]))
+                ranked = cand if hopeless else rr.rank(q["q"], cand[:20], texts) + cand[20:]
             r = score(q, ranked, area, picked, a.k)
+            if arm != "A1": r["reranked"] = not hopeless
             if arm == "A1":
                 rd = score(q, read_ranked, area, picked, a.k)
                 r["read_retrieval_hit"] = rd["retrieval_hit"]
@@ -196,6 +208,9 @@ def main():
                 r["returns"] = walk["returns"]
                 r["opens"] = walk["opens"]
                 r["read_chars"] = walk["read_chars"]
+                # What the walk cost, per question, measured rather than estimated. Q4a asks what the
+                # intervention costs and this is the answer in the only unit that is not arguable.
+                r["usage"] = walk["usage"]
                 # A walk that hit the turn ceiling never said DONE. Its hop count is the ceiling
                 # speaking, not the question, and the report has to be able to drop it.
                 r["exhausted"] = walk["exhausted"]
@@ -206,6 +221,7 @@ def main():
             extra = (f"  read {'ok ' if r['read_retrieval_hit'] else 'MISS'}({r['read_n']})"
                      f" scope {r['reach_n']:>3} back {r['returns']}"
                      f" read {r['read_chars']//1000}k"
+                     f" tok {(r['usage']['in']+r['usage']['cache_write']+r['usage']['cache_read'])//1000}k"
                      f"{' EXHAUSTED' if r['exhausted'] else ''}") if arm == "A1" else ""
             print(f"    {arm} {q['id']:<4} routing {'ok ' if r['routing_hit'] else 'MISS'}"
                   f"  retrieval {'ok ' if r['retrieval_hit'] else 'MISS'}"

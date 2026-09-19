@@ -1,16 +1,14 @@
-# Gold set — the hard extension, grid 4x4x4 (64 rows per family).
+# The hard extension, restricted to the three families whose misses are evidence.
 #
-# Generated: ./bench/crowd.py write --grid 4x4x4.  Regenerate rather than edit.
+# `accrual` and `overtime` are held back, not deleted. On those two the base corpus fills 96% and 81%
+# of the top ten (./bench/crowd.py anatomy), so a miss there may be the incumbent corpus answering the
+# question rather than the retriever failing — and the bias runs towards the study's own hypothesis,
+# which is the worst direction for it to run. They return once each family carries a dated revision
+# notice saying which rule is current.
 #
-# Two questions per row, same answer, different vocabulary:
+#   384 questions · 192 rows · perdiem, threshold, diligence
 #
-#   direct     asks in the system's words ("grade 3, band C, 6 to 10 nights"). A control.
-#   indirect   asks the way a person would ("a team manager, Jakarta, eight nights"). None of those
-#              words appears in any row — only in the legends — so answering needs a lookup and then
-#              a fetch, and the answer is one of 64 rows the query cannot otherwise separate.
-#
-# `support` names the legend documents an arm has to pass through. They are ordinary retrievable
-# documents: no arm can reach anything another arm cannot.
+# Regenerate: ./bench/crowd.py write --grid 4x4x4, then this filter.
 
 questions:
 
@@ -38,7 +36,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-001-d
   q: "For grade G1, band B1, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -64,7 +61,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-002-d
   q: "For grade G1, band B1, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -90,7 +86,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-003-d
   q: "For grade G1, band B1, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -116,7 +111,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-010-d
   q: "For grade G1, band B2, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -142,7 +136,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-011-d
   q: "For grade G1, band B2, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -168,7 +161,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-012-d
   q: "For grade G1, band B2, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -194,7 +186,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-013-d
   q: "For grade G1, band B2, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -220,7 +211,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-020-d
   q: "For grade G1, band B3, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -246,7 +236,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-021-d
   q: "For grade G1, band B3, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -272,7 +261,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-022-d
   q: "For grade G1, band B3, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -298,7 +286,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-023-d
   q: "For grade G1, band B3, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -324,7 +311,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-030-d
   q: "For grade G1, band B4, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -350,7 +336,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-031-d
   q: "For grade G1, band B4, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -376,7 +361,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-032-d
   q: "For grade G1, band B4, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -402,7 +386,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-033-d
   q: "For grade G1, band B4, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -428,7 +411,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-100-d
   q: "For grade G2, band B1, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -454,7 +436,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-101-d
   q: "For grade G2, band B1, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -480,7 +461,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-102-d
   q: "For grade G2, band B1, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -506,7 +486,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-103-d
   q: "For grade G2, band B1, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -532,7 +511,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-110-d
   q: "For grade G2, band B2, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -558,7 +536,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-111-d
   q: "For grade G2, band B2, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -584,7 +561,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-112-d
   q: "For grade G2, band B2, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -610,7 +586,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-113-d
   q: "For grade G2, band B2, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -636,7 +611,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-120-d
   q: "For grade G2, band B3, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -662,7 +636,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-121-d
   q: "For grade G2, band B3, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -688,7 +661,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-122-d
   q: "For grade G2, band B3, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -714,7 +686,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-123-d
   q: "For grade G2, band B3, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -740,7 +711,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-130-d
   q: "For grade G2, band B4, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -766,7 +736,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-131-d
   q: "For grade G2, band B4, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -792,7 +761,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-132-d
   q: "For grade G2, band B4, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -818,7 +786,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-133-d
   q: "For grade G2, band B4, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -844,7 +811,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-200-d
   q: "For grade G3, band B1, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -870,7 +836,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-201-d
   q: "For grade G3, band B1, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -896,7 +861,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-202-d
   q: "For grade G3, band B1, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -922,7 +886,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-203-d
   q: "For grade G3, band B1, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -948,7 +911,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-210-d
   q: "For grade G3, band B2, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -974,7 +936,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-211-d
   q: "For grade G3, band B2, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1000,7 +961,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-212-d
   q: "For grade G3, band B2, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1026,7 +986,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-213-d
   q: "For grade G3, band B2, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1052,7 +1011,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-220-d
   q: "For grade G3, band B3, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1078,7 +1036,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-221-d
   q: "For grade G3, band B3, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1104,7 +1061,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-222-d
   q: "For grade G3, band B3, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1130,7 +1086,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-223-d
   q: "For grade G3, band B3, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1156,7 +1111,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-230-d
   q: "For grade G3, band B4, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1182,7 +1136,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-231-d
   q: "For grade G3, band B4, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1208,7 +1161,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-232-d
   q: "For grade G3, band B4, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1234,7 +1186,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-233-d
   q: "For grade G3, band B4, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1260,7 +1211,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-300-d
   q: "For grade G4, band B1, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1286,7 +1236,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-301-d
   q: "For grade G4, band B1, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1312,7 +1261,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-302-d
   q: "For grade G4, band B1, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1338,7 +1286,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-303-d
   q: "For grade G4, band B1, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1364,7 +1311,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-310-d
   q: "For grade G4, band B2, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1390,7 +1336,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-311-d
   q: "For grade G4, band B2, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1416,7 +1361,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-312-d
   q: "For grade G4, band B2, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1442,7 +1386,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-313-d
   q: "For grade G4, band B2, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1468,7 +1411,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-320-d
   q: "For grade G4, band B3, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1494,7 +1436,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-321-d
   q: "For grade G4, band B3, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1520,7 +1461,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-322-d
   q: "For grade G4, band B3, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1546,7 +1486,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-323-d
   q: "For grade G4, band B3, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1572,7 +1511,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-330-d
   q: "For grade G4, band B4, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1598,7 +1536,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-331-d
   q: "For grade G4, band B4, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1624,7 +1561,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-332-d
   q: "For grade G4, band B4, stay S3, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1650,7 +1586,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
 
 - id: h-perdiem-333-d
   q: "For grade G4, band B4, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
@@ -1676,3335 +1611,6 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
-  - hard-perdiem-legend-revision
-
-- id: h-overtime-000-d
-  q: "For day D1, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-000-i
-  q: "An ordinary tuesday, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-001-d
-  q: "For day D1, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-001-i
-  q: "An ordinary tuesday, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-002-d
-  q: "For day D1, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-002-i
-  q: "An ordinary tuesday, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-003-d
-  q: "For day D1, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-003-i
-  q: "An ordinary tuesday, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h1-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-010-d
-  q: "For day D1, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-010-i
-  q: "An ordinary tuesday, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-011-d
-  q: "For day D1, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-011-i
-  q: "An ordinary tuesday, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-012-d
-  q: "For day D1, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-012-i
-  q: "An ordinary tuesday, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-013-d
-  q: "For day D1, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-013-i
-  q: "An ordinary tuesday, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h2-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-020-d
-  q: "For day D1, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-020-i
-  q: "An ordinary tuesday, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-021-d
-  q: "For day D1, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-021-i
-  q: "An ordinary tuesday, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-022-d
-  q: "For day D1, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-022-i
-  q: "An ordinary tuesday, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-023-d
-  q: "For day D1, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-023-i
-  q: "An ordinary tuesday, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h3-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-030-d
-  q: "For day D1, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-030-i
-  q: "An ordinary tuesday, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-031-d
-  q: "For day D1, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-031-i
-  q: "An ordinary tuesday, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-032-d
-  q: "For day D1, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-032-i
-  q: "An ordinary tuesday, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-033-d
-  q: "For day D1, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-033-i
-  q: "An ordinary tuesday, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d1-hours-h4-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-100-d
-  q: "For day D2, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-100-i
-  q: "A saturday, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-101-d
-  q: "For day D2, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-101-i
-  q: "A saturday, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-102-d
-  q: "For day D2, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-102-i
-  q: "A saturday, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-103-d
-  q: "For day D2, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-103-i
-  q: "A saturday, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h1-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-110-d
-  q: "For day D2, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-110-i
-  q: "A saturday, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-111-d
-  q: "For day D2, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-111-i
-  q: "A saturday, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-112-d
-  q: "For day D2, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-112-i
-  q: "A saturday, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-113-d
-  q: "For day D2, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-113-i
-  q: "A saturday, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h2-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-120-d
-  q: "For day D2, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-120-i
-  q: "A saturday, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-121-d
-  q: "For day D2, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-121-i
-  q: "A saturday, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-122-d
-  q: "For day D2, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-122-i
-  q: "A saturday, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-123-d
-  q: "For day D2, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-123-i
-  q: "A saturday, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h3-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-130-d
-  q: "For day D2, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-130-i
-  q: "A saturday, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-131-d
-  q: "For day D2, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-131-i
-  q: "A saturday, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-132-d
-  q: "For day D2, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-132-i
-  q: "A saturday, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-133-d
-  q: "For day D2, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-133-i
-  q: "A saturday, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d2-hours-h4-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-200-d
-  q: "For day D3, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-200-i
-  q: "Liberation day, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-201-d
-  q: "For day D3, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-201-i
-  q: "Liberation day, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-202-d
-  q: "For day D3, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-202-i
-  q: "Liberation day, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-203-d
-  q: "For day D3, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-203-i
-  q: "Liberation day, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h1-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-210-d
-  q: "For day D3, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-210-i
-  q: "Liberation day, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-211-d
-  q: "For day D3, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-211-i
-  q: "Liberation day, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-212-d
-  q: "For day D3, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-212-i
-  q: "Liberation day, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-213-d
-  q: "For day D3, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-213-i
-  q: "Liberation day, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h2-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-220-d
-  q: "For day D3, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-220-i
-  q: "Liberation day, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-221-d
-  q: "For day D3, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-221-i
-  q: "Liberation day, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-222-d
-  q: "For day D3, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-222-i
-  q: "Liberation day, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-223-d
-  q: "For day D3, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-223-i
-  q: "Liberation day, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h3-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-230-d
-  q: "For day D3, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-230-i
-  q: "Liberation day, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-231-d
-  q: "For day D3, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-231-i
-  q: "Liberation day, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-232-d
-  q: "For day D3, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-232-i
-  q: "Liberation day, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-233-d
-  q: "For day D3, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-233-i
-  q: "Liberation day, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d3-hours-h4-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-300-d
-  q: "For day D4, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-300-i
-  q: "Two in the morning, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-301-d
-  q: "For day D4, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-301-i
-  q: "Two in the morning, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-302-d
-  q: "For day D4, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-302-i
-  q: "Two in the morning, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-303-d
-  q: "For day D4, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-303-i
-  q: "Two in the morning, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h1-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-310-d
-  q: "For day D4, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-310-i
-  q: "Two in the morning, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-311-d
-  q: "For day D4, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-311-i
-  q: "Two in the morning, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-312-d
-  q: "For day D4, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-312-i
-  q: "Two in the morning, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-313-d
-  q: "For day D4, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-313-i
-  q: "Two in the morning, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h2-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-320-d
-  q: "For day D4, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-320-i
-  q: "Two in the morning, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-321-d
-  q: "For day D4, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-321-i
-  q: "Two in the morning, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-322-d
-  q: "For day D4, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-322-i
-  q: "Two in the morning, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-323-d
-  q: "For day D4, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-323-i
-  q: "Two in the morning, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h3-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-330-d
-  q: "For day D4, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-330-i
-  q: "Two in the morning, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-331-d
-  q: "For day D4, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-331-i
-  q: "Two in the morning, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-332-d
-  q: "For day D4, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-332-i
-  q: "Two in the morning, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-overtime-333-d
-  q: "For day D4, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: overtime
-  lever: direct
-  support: []
-
-- id: h-overtime-333-i
-  q: "Two in the morning, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
-  A_true: [payroll]
-  D_true: [hard-overtime-row-day-d4-hours-h4-place-p4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: overtime
-  lever: indirect
-  support:
-  - hard-overtime-legend-day
-  - hard-overtime-legend-hours
-  - hard-overtime-legend-place
-  - hard-overtime-legend-revision
-
-- id: h-accrual-000-d
-  q: "For type E1, tenure T1, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-000-i
-  q: "On the regular payroll, been here eight months, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-001-d
-  q: "For type E1, tenure T1, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-001-i
-  q: "On the regular payroll, been here eight months, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-002-d
-  q: "For type E1, tenure T1, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-002-i
-  q: "On the regular payroll, been here eight months, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-003-d
-  q: "For type E1, tenure T1, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-003-i
-  q: "On the regular payroll, been here eight months, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t1-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-010-d
-  q: "For type E1, tenure T2, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-010-i
-  q: "On the regular payroll, been here two years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-011-d
-  q: "For type E1, tenure T2, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-011-i
-  q: "On the regular payroll, been here two years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-012-d
-  q: "For type E1, tenure T2, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-012-i
-  q: "On the regular payroll, been here two years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-013-d
-  q: "For type E1, tenure T2, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-013-i
-  q: "On the regular payroll, been here two years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t2-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-020-d
-  q: "For type E1, tenure T3, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-020-i
-  q: "On the regular payroll, been here five years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-021-d
-  q: "For type E1, tenure T3, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-021-i
-  q: "On the regular payroll, been here five years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-022-d
-  q: "For type E1, tenure T3, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-022-i
-  q: "On the regular payroll, been here five years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-023-d
-  q: "For type E1, tenure T3, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-023-i
-  q: "On the regular payroll, been here five years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t3-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-030-d
-  q: "For type E1, tenure T4, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-030-i
-  q: "On the regular payroll, been here nine years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-031-d
-  q: "For type E1, tenure T4, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-031-i
-  q: "On the regular payroll, been here nine years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-032-d
-  q: "For type E1, tenure T4, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-032-i
-  q: "On the regular payroll, been here nine years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-033-d
-  q: "For type E1, tenure T4, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-033-i
-  q: "On the regular payroll, been here nine years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e1-tenure-t4-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-100-d
-  q: "For type E2, tenure T1, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-100-i
-  q: "On a two-year contract, been here eight months, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-101-d
-  q: "For type E2, tenure T1, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-101-i
-  q: "On a two-year contract, been here eight months, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-102-d
-  q: "For type E2, tenure T1, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-102-i
-  q: "On a two-year contract, been here eight months, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-103-d
-  q: "For type E2, tenure T1, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-103-i
-  q: "On a two-year contract, been here eight months, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t1-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-110-d
-  q: "For type E2, tenure T2, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-110-i
-  q: "On a two-year contract, been here two years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-111-d
-  q: "For type E2, tenure T2, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-111-i
-  q: "On a two-year contract, been here two years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-112-d
-  q: "For type E2, tenure T2, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-112-i
-  q: "On a two-year contract, been here two years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-113-d
-  q: "For type E2, tenure T2, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-113-i
-  q: "On a two-year contract, been here two years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t2-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-120-d
-  q: "For type E2, tenure T3, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-120-i
-  q: "On a two-year contract, been here five years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-121-d
-  q: "For type E2, tenure T3, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-121-i
-  q: "On a two-year contract, been here five years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-122-d
-  q: "For type E2, tenure T3, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-122-i
-  q: "On a two-year contract, been here five years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-123-d
-  q: "For type E2, tenure T3, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-123-i
-  q: "On a two-year contract, been here five years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t3-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-130-d
-  q: "For type E2, tenure T4, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-130-i
-  q: "On a two-year contract, been here nine years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-131-d
-  q: "For type E2, tenure T4, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-131-i
-  q: "On a two-year contract, been here nine years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-132-d
-  q: "For type E2, tenure T4, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-132-i
-  q: "On a two-year contract, been here nine years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-133-d
-  q: "For type E2, tenure T4, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-133-i
-  q: "On a two-year contract, been here nine years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e2-tenure-t4-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-200-d
-  q: "For type E3, tenure T1, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-200-i
-  q: "In three days a week, been here eight months, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-201-d
-  q: "For type E3, tenure T1, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-201-i
-  q: "In three days a week, been here eight months, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-202-d
-  q: "For type E3, tenure T1, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-202-i
-  q: "In three days a week, been here eight months, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-203-d
-  q: "For type E3, tenure T1, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-203-i
-  q: "In three days a week, been here eight months, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t1-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-210-d
-  q: "For type E3, tenure T2, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-210-i
-  q: "In three days a week, been here two years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-211-d
-  q: "For type E3, tenure T2, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-211-i
-  q: "In three days a week, been here two years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-212-d
-  q: "For type E3, tenure T2, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-212-i
-  q: "In three days a week, been here two years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-213-d
-  q: "For type E3, tenure T2, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-213-i
-  q: "In three days a week, been here two years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t2-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-220-d
-  q: "For type E3, tenure T3, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-220-i
-  q: "In three days a week, been here five years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-221-d
-  q: "For type E3, tenure T3, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-221-i
-  q: "In three days a week, been here five years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-222-d
-  q: "For type E3, tenure T3, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-222-i
-  q: "In three days a week, been here five years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-223-d
-  q: "For type E3, tenure T3, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-223-i
-  q: "In three days a week, been here five years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-230-d
-  q: "For type E3, tenure T4, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-230-i
-  q: "In three days a week, been here nine years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-231-d
-  q: "For type E3, tenure T4, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-231-i
-  q: "In three days a week, been here nine years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-232-d
-  q: "For type E3, tenure T4, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-232-i
-  q: "In three days a week, been here nine years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-233-d
-  q: "For type E3, tenure T4, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-233-i
-  q: "In three days a week, been here nine years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e3-tenure-t4-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-300-d
-  q: "For type E4, tenure T1, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-300-i
-  q: "Here from our partner firm, been here eight months, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-301-d
-  q: "For type E4, tenure T1, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-301-i
-  q: "Here from our partner firm, been here eight months, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-302-d
-  q: "For type E4, tenure T1, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-302-i
-  q: "Here from our partner firm, been here eight months, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-303-d
-  q: "For type E4, tenure T1, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-303-i
-  q: "Here from our partner firm, been here eight months, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t1-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-310-d
-  q: "For type E4, tenure T2, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-310-i
-  q: "Here from our partner firm, been here two years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-311-d
-  q: "For type E4, tenure T2, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-311-i
-  q: "Here from our partner firm, been here two years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-312-d
-  q: "For type E4, tenure T2, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-312-i
-  q: "Here from our partner firm, been here two years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-313-d
-  q: "For type E4, tenure T2, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-313-i
-  q: "Here from our partner firm, been here two years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t2-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-320-d
-  q: "For type E4, tenure T3, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-320-i
-  q: "Here from our partner firm, been here five years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-321-d
-  q: "For type E4, tenure T3, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-321-i
-  q: "Here from our partner firm, been here five years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-322-d
-  q: "For type E4, tenure T3, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-322-i
-  q: "Here from our partner firm, been here five years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-323-d
-  q: "For type E4, tenure T3, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-323-i
-  q: "Here from our partner firm, been here five years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t3-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-330-d
-  q: "For type E4, tenure T4, site L1, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l1]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-330-i
-  q: "Here from our partner firm, been here nine years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l1]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-331-d
-  q: "For type E4, tenure T4, site L2, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l2]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-331-i
-  q: "Here from our partner firm, been here nine years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l2]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-332-d
-  q: "For type E4, tenure T4, site L3, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l3]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-332-i
-  q: "Here from our partner firm, been here nine years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l3]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
-
-- id: h-accrual-333-d
-  q: "For type E4, tenure T4, site L4, how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l4]
-  needs: any
-  intent_A: 0
-  intent_B: 0
-  family: accrual
-  lever: direct
-  support: []
-
-- id: h-accrual-333-i
-  q: "Here from our partner firm, been here nine years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?"
-  A_true: [attendance]
-  D_true: [hard-accrual-row-type-e4-tenure-t4-site-l4]
-  needs: any
-  intent_A: 3
-  intent_B: 0
-  family: accrual
-  lever: indirect
-  support:
-  - hard-accrual-legend-type
-  - hard-accrual-legend-tenure
-  - hard-accrual-legend-site
-  - hard-accrual-legend-revision
 
 - id: h-threshold-000-d
   q: "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5030,7 +1636,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-001-d
   q: "For category C1, amount V1, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5056,7 +1661,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-002-d
   q: "For category C1, amount V1, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5082,7 +1686,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-003-d
   q: "For category C1, amount V1, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5108,7 +1711,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-010-d
   q: "For category C1, amount V2, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5134,7 +1736,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-011-d
   q: "For category C1, amount V2, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5160,7 +1761,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-012-d
   q: "For category C1, amount V2, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5186,7 +1786,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-013-d
   q: "For category C1, amount V2, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5212,7 +1811,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-020-d
   q: "For category C1, amount V3, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5238,7 +1836,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-021-d
   q: "For category C1, amount V3, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5264,7 +1861,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-022-d
   q: "For category C1, amount V3, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5290,7 +1886,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-023-d
   q: "For category C1, amount V3, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5316,7 +1911,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-030-d
   q: "For category C1, amount V4, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5342,7 +1936,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-031-d
   q: "For category C1, amount V4, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5368,7 +1961,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-032-d
   q: "For category C1, amount V4, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5394,7 +1986,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-033-d
   q: "For category C1, amount V4, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5420,7 +2011,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-100-d
   q: "For category C2, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5446,7 +2036,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-101-d
   q: "For category C2, amount V1, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5472,7 +2061,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-102-d
   q: "For category C2, amount V1, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5498,7 +2086,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-103-d
   q: "For category C2, amount V1, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5524,7 +2111,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-110-d
   q: "For category C2, amount V2, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5550,7 +2136,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-111-d
   q: "For category C2, amount V2, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5576,7 +2161,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-112-d
   q: "For category C2, amount V2, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5602,7 +2186,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-113-d
   q: "For category C2, amount V2, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5628,7 +2211,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-120-d
   q: "For category C2, amount V3, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5654,7 +2236,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-121-d
   q: "For category C2, amount V3, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5680,7 +2261,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-122-d
   q: "For category C2, amount V3, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5706,7 +2286,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-123-d
   q: "For category C2, amount V3, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5732,7 +2311,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-130-d
   q: "For category C2, amount V4, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5758,7 +2336,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-131-d
   q: "For category C2, amount V4, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5784,7 +2361,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-132-d
   q: "For category C2, amount V4, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5810,7 +2386,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-133-d
   q: "For category C2, amount V4, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5836,7 +2411,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-200-d
   q: "For category C3, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5862,7 +2436,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-201-d
   q: "For category C3, amount V1, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5888,7 +2461,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-202-d
   q: "For category C3, amount V1, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -5914,7 +2486,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-203-d
   q: "For category C3, amount V1, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -5940,7 +2511,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-210-d
   q: "For category C3, amount V2, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -5966,7 +2536,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-211-d
   q: "For category C3, amount V2, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -5992,7 +2561,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-212-d
   q: "For category C3, amount V2, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -6018,7 +2586,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-213-d
   q: "For category C3, amount V2, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -6044,7 +2611,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-220-d
   q: "For category C3, amount V3, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -6070,7 +2636,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-221-d
   q: "For category C3, amount V3, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -6096,7 +2661,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-222-d
   q: "For category C3, amount V3, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -6122,7 +2686,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-223-d
   q: "For category C3, amount V3, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -6148,7 +2711,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-230-d
   q: "For category C3, amount V4, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -6174,7 +2736,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-231-d
   q: "For category C3, amount V4, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -6200,7 +2761,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-232-d
   q: "For category C3, amount V4, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -6226,7 +2786,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-233-d
   q: "For category C3, amount V4, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -6252,7 +2811,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-300-d
   q: "For category C4, amount V1, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -6278,7 +2836,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-301-d
   q: "For category C4, amount V1, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -6304,7 +2861,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-302-d
   q: "For category C4, amount V1, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -6330,7 +2886,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-303-d
   q: "For category C4, amount V1, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -6356,7 +2911,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-310-d
   q: "For category C4, amount V2, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -6382,7 +2936,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-311-d
   q: "For category C4, amount V2, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -6408,7 +2961,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-312-d
   q: "For category C4, amount V2, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -6434,7 +2986,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-313-d
   q: "For category C4, amount V2, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -6460,7 +3011,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-320-d
   q: "For category C4, amount V3, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -6486,7 +3036,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-321-d
   q: "For category C4, amount V3, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -6512,7 +3061,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-322-d
   q: "For category C4, amount V3, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -6538,7 +3086,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-323-d
   q: "For category C4, amount V3, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -6564,7 +3111,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-330-d
   q: "For category C4, amount V4, term M1, whose signature do I need, and do I have to get other prices first?"
@@ -6590,7 +3136,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-331-d
   q: "For category C4, amount V4, term M2, whose signature do I need, and do I have to get other prices first?"
@@ -6616,7 +3161,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-332-d
   q: "For category C4, amount V4, term M3, whose signature do I need, and do I have to get other prices first?"
@@ -6642,7 +3186,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-threshold-333-d
   q: "For category C4, amount V4, term M4, whose signature do I need, and do I have to get other prices first?"
@@ -6668,7 +3211,6 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
-  - hard-threshold-legend-revision
 
 - id: h-diligence-000-d
   q: "For origin O1, value W1, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6694,7 +3236,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-001-d
   q: "For origin O1, value W1, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6720,7 +3261,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-002-d
   q: "For origin O1, value W1, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6746,7 +3286,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-003-d
   q: "For origin O1, value W1, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6772,7 +3311,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-010-d
   q: "For origin O1, value W2, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6798,7 +3336,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-011-d
   q: "For origin O1, value W2, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6824,7 +3361,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-012-d
   q: "For origin O1, value W2, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6850,7 +3386,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-013-d
   q: "For origin O1, value W2, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6876,7 +3411,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-020-d
   q: "For origin O1, value W3, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6902,7 +3436,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-021-d
   q: "For origin O1, value W3, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6928,7 +3461,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-022-d
   q: "For origin O1, value W3, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6954,7 +3486,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-023-d
   q: "For origin O1, value W3, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -6980,7 +3511,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-030-d
   q: "For origin O1, value W4, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7006,7 +3536,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-031-d
   q: "For origin O1, value W4, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7032,7 +3561,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-032-d
   q: "For origin O1, value W4, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7058,7 +3586,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-033-d
   q: "For origin O1, value W4, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7084,7 +3611,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-100-d
   q: "For origin O2, value W1, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7110,7 +3636,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-101-d
   q: "For origin O2, value W1, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7136,7 +3661,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-102-d
   q: "For origin O2, value W1, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7162,7 +3686,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-103-d
   q: "For origin O2, value W1, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7188,7 +3711,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-110-d
   q: "For origin O2, value W2, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7214,7 +3736,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-111-d
   q: "For origin O2, value W2, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7240,7 +3761,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-112-d
   q: "For origin O2, value W2, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7266,7 +3786,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-113-d
   q: "For origin O2, value W2, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7292,7 +3811,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-120-d
   q: "For origin O2, value W3, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7318,7 +3836,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-121-d
   q: "For origin O2, value W3, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7344,7 +3861,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-122-d
   q: "For origin O2, value W3, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7370,7 +3886,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-123-d
   q: "For origin O2, value W3, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7396,7 +3911,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-130-d
   q: "For origin O2, value W4, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7422,7 +3936,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-131-d
   q: "For origin O2, value W4, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7448,7 +3961,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-132-d
   q: "For origin O2, value W4, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7474,7 +3986,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-133-d
   q: "For origin O2, value W4, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7500,7 +4011,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-200-d
   q: "For origin O3, value W1, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7526,7 +4036,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-201-d
   q: "For origin O3, value W1, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7552,7 +4061,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-202-d
   q: "For origin O3, value W1, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7578,7 +4086,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-203-d
   q: "For origin O3, value W1, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7604,7 +4111,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-210-d
   q: "For origin O3, value W2, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7630,7 +4136,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-211-d
   q: "For origin O3, value W2, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7656,7 +4161,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-212-d
   q: "For origin O3, value W2, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7682,7 +4186,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-213-d
   q: "For origin O3, value W2, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7708,7 +4211,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-220-d
   q: "For origin O3, value W3, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7734,7 +4236,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-221-d
   q: "For origin O3, value W3, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7760,7 +4261,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-222-d
   q: "For origin O3, value W3, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7786,7 +4286,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-223-d
   q: "For origin O3, value W3, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7812,7 +4311,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-230-d
   q: "For origin O3, value W4, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7838,7 +4336,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-231-d
   q: "For origin O3, value W4, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7864,7 +4361,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-232-d
   q: "For origin O3, value W4, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7890,7 +4386,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-233-d
   q: "For origin O3, value W4, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7916,7 +4411,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-300-d
   q: "For origin O4, value W1, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7942,7 +4436,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-301-d
   q: "For origin O4, value W1, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7968,7 +4461,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-302-d
   q: "For origin O4, value W1, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -7994,7 +4486,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-303-d
   q: "For origin O4, value W1, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8020,7 +4511,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-310-d
   q: "For origin O4, value W2, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8046,7 +4536,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-311-d
   q: "For origin O4, value W2, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8072,7 +4561,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-312-d
   q: "For origin O4, value W2, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8098,7 +4586,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-313-d
   q: "For origin O4, value W2, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8124,7 +4611,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-320-d
   q: "For origin O4, value W3, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8150,7 +4636,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-321-d
   q: "For origin O4, value W3, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8176,7 +4661,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-322-d
   q: "For origin O4, value W3, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8202,7 +4686,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-323-d
   q: "For origin O4, value W3, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8228,7 +4711,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-330-d
   q: "For origin O4, value W4, goods K1, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8254,7 +4736,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-331-d
   q: "For origin O4, value W4, goods K2, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8280,7 +4761,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-332-d
   q: "For origin O4, value W4, goods K3, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8306,7 +4786,6 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision
 
 - id: h-diligence-333-d
   q: "For origin O4, value W4, goods K4, do we have to go and see their premises, and how often does their file get looked at again?"
@@ -8332,4 +4811,3 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
-  - hard-diligence-legend-revision

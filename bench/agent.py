@@ -71,6 +71,8 @@ class Agent:
         self.one_liner = one_liner
         self.has_body = has_body
         self.body = body or {}          # id -> the document text READ hands back
+        # Counted rather than estimated. What a walk costs is a result of this study, not a footnote.
+        self.usage = {"in": 0, "out": 0, "cache_write": 0, "cache_read": 0}
         self.budget = budget            # returns to hop 0; None is unbounded, and is the default
         self.steps = steps              # turns, a runaway stop
         # Pinned. The first run used gpt-4o and it invented row names that were not in the table —
@@ -92,7 +94,20 @@ class Agent:
                     "messages": [{"role": "system", "content": SYSTEM}] + convo}
         else:
             url, hdr = self.base + "/v1/messages", {"x-api-key": self.key, "anthropic-version": "2023-06-01"}
-            body = {"model": self.model, "max_tokens": 2000, "system": SYSTEM, "messages": convo}
+            # Prompt caching. A walk resends the whole conversation every turn, and the section table
+            # alone is 2,800 tokens — measured over a four-turn walk, 53% of the input was the same
+            # text going out again. Two breakpoints: the system prompt, which never changes, and the
+            # end of the conversation as it stands, so the next turn reads everything before it from
+            # cache instead of paying for it. The first turn is under the 1,024-token minimum and is
+            # not cached, which is correct rather than a failure.
+            msgs = [dict(m) for m in convo]
+            msgs[-1] = {"role": msgs[-1]["role"],
+                        "content": [{"type": "text", "text": msgs[-1]["content"],
+                                     "cache_control": {"type": "ephemeral"}}]}
+            body = {"model": self.model, "max_tokens": 2000,
+                    "system": [{"type": "text", "text": SYSTEM,
+                                "cache_control": {"type": "ephemeral"}}],
+                    "messages": msgs}
         if self.provider == "openai":
             # Through the shared helper: the newer OpenAI models refuse `max_tokens` and name the
             # replacement in the error body, and this path was hand-rolling the request and throwing
@@ -106,6 +121,11 @@ class Agent:
         for attempt in range(4):
             try:
                 with urllib.request.urlopen(req, timeout=120) as r: d = json.load(r)
+                u = d.get("usage") or {}
+                self.usage["in"] += u.get("input_tokens", 0)
+                self.usage["out"] += u.get("output_tokens", 0)
+                self.usage["cache_write"] += u.get("cache_creation_input_tokens", 0)
+                self.usage["cache_read"] += u.get("cache_read_input_tokens", 0)
                 return "".join(b.get("text", "") for b in d["content"] if b.get("type") == "text")
             except urllib.error.HTTPError as e:
                 detail = e.read().decode("utf-8", "replace")[:300]

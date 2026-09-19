@@ -363,6 +363,10 @@ What a fixture measures is Q5. It is scored on its own questions, not on the gol
 
 ## 8. Statistics
 
+**[DESIGN.md](DESIGN.md) is the full account** — variables, what is held and how it is
+enforced, what is not held and which way each leans, the sampling frame, pairing, power, and the
+falsification conditions. What follows is the commitment; that document is the reasoning.
+
 - Paired design: every question through every arm. Differences are per-question, not per-arm means.
 - Effect sizes with bootstrap confidence intervals over questions.
 - **A pilot of ~20 questions is a plumbing check, not a result.** Claims of difference need on the
