@@ -317,14 +317,29 @@ What a fixture measures is Q5. It is scored on its own questions, not on the gol
 
 ## 9. Open parameters — fixed before freezing
 
-| | Parameter | Candidates |
-|---|---|---|
-| k | how many retrieved documents count as "found" | 5 or 10 |
-| areas per hop | how many areas the router may pick at once | 1 · 2 · 3 |
-| hop budget | maximum returns to hop 0 per question | 3 (the overlay design's own figure) |
-| `needs` | default when a question spans areas | `any` unless marked `all` |
-| router model | fixed and named; second model if affordable | — |
-| labeller | who writes A_true — the operator, mechanical derivation from the manifest, or both | see §7 |
+| | Parameter | Value | Fixed |
+|---|---|---|---|
+| k | retrieved documents that count as "found" | **10** | pilot |
+| areas per hop | areas the single-decision router may pick | **2** | pilot |
+| hop budget | **returns to hop 0**, not descents — the two are separate budgets, and spending one on both starves the walk before it reads anything | **3** | pilot |
+| router / agent model | pinned and named. A weaker model invented row names that were in no table, which is an instruction failure being scored as a routing failure | **`claude-opus-5`** | pilot |
+| reranker model | a different vendor from the router: one that shares the router's blind spots cannot correct for them | **`gpt-5`** | pilot |
+| `needs` | default when a question spans areas | `any` unless marked `all` | ✓ |
+| labeller | who writes A_true | **open** — see §7 | |
+
+The pilot fixed everything except the labeller. Those values hold for the full run unless a reason to
+change one is recorded here with its date.
+
+### How A1 is scored
+
+Comparing the agent to B1 at face value is not a fair fight: the agent reads one or two documents and
+B1 returns ten candidates, and *picked exactly right* is a harder question than *was in the top ten*.
+Both are reported and they answer different things.
+
+| | |
+|---|---|
+| **read** | what the agent actually collected. What a consumer is handed |
+| **scoped** | retrieval inside the subtrees the walk opened, filled to k. The same unit as A3 and B1 — the walk chooses where, retrieval chooses what |
 
 ---
 

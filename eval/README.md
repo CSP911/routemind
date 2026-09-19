@@ -29,7 +29,8 @@ rises, which is a more useful thing than whether routing wins on average.
 | Difficulty factors | **done** — C, D, E per document in `bench/factors.csv` |
 | Preconditions | P1 done (no near-duplicate descriptions, max 0.533). P2 waits on the gold set |
 | Gold set | **pilot done** — 23 questions, 7/5/5/6 across the bands. The full set is blocked on the labeller question |
-| Arms | not run |
+| Arms | **pilot run** — three arms (B1 no routing · A3 one decision · A1 the agent walking the tree) over 23 questions |
+| Parameters | fixed by the pilot except the labeller: k=10, 2 areas per hop, 3 returns, router `claude-opus-5`, reranker `gpt-5` |
 
 ## Before anything runs
 
