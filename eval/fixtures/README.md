@@ -84,3 +84,15 @@ the baseline tag first. Results are preserved beside the fixture once they exist
 Add one file under `eval/fixtures/`, run `check.py`, open a pull request. Say in the description what
 the history is designed to expose — a correction, a supersession, a moved responsibility — so the
 result can be read against the intent.
+
+---
+
+## Where this sits
+
+`../DATASETS.md` is the plain-language inventory of everything the study has built — the two
+corpora, the six question sets, the metrics and the checks — written for someone arriving from
+outside. Read it first if the contract below assumes something you have not met.
+
+It also names the territory this contract shares with current work: a corpus where an older
+general rule and a newer specific table both exist, and nothing stamps the older one
+superseded. That is the same problem as continuity, approached from the other side.

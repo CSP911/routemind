@@ -23,6 +23,7 @@ strangely the question is worded. A corpus built on that principle measures **hi
 | | |
 |---|---|
 | [PREREGISTRATION.md](PREREGISTRATION.md) | the design, fixed before any arm runs — arms, failure definitions, sub-questions, statistics, open parameters, threats |
+| **[DATASETS.md](DATASETS.md)** | **start here if you are new** — every dataset, how it was made, what it is checked against, and where a contributor fits |
 | **[COLLAPSE.md](COLLAPSE.md)** | the collapse threshold, what `hit@10` and `recall@20` mean, and the corpus built to cross it |
 | [DIFFICULTY.md](DIFFICULTY.md) | the difficulty scale — five factors, and rev. 6 on why four of them did nothing |
 | [CORPUS.md](CORPUS.md) | what the corpus is, how it was built, what was checked, what it cannot support |
