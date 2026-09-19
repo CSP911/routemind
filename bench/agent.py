@@ -15,16 +15,20 @@ Hop 0 is the five frozen `use_when` sentences. Every table below it prints one r
 one-liner, which is exactly what `mcp/knowledge_mcp.py` puts in the `why` column. Nothing else is
 shown — not the body, not the corpus size, not which areas are large.
 
-**Two budgets, because descending and starting over are not the same act.** The first version spent
-one budget on both and starved: reaching the documents of two areas costs OPEN, OPEN, BACK, OPEN,
-OPEN, and with a budget of three the agent had used it all before it read anything. It visited the
-right areas and came back with nothing.
+**Nothing is rationed.** The first version budgeted returns at three, and the pilot showed what that
+buys: on the `needs: all` questions the agent spent eight hops inside one area and never reached the
+second, while the single-shot arm — which is handed two areas for free — reached both. A cap was
+being read as a routing result. It is not one. So there is no cap.
 
-    returns   going back to hop 0. Budgeted at 3 — the figure the overlay design uses.
-    steps     turns in total, a stop against looping rather than a measure of anything.
+    returns   going back to hop 0. Counted, never refused.
+    opens     descents. Counted, never refused; the tree bounds them.
+    steps     turns in total, a runaway stop and nothing else. Not a budget: a walk that hits it is
+              looping, and the run records that it did rather than scoring it as a choice.
 
-Descending is not rationed. A tree bounds it: five levels is five OPENs, and an agent that opens the
-wrong table has still spent a turn, which is what `steps` catches.
+What the agent spends is now an observation instead of a parameter. If routing needs twelve hops to
+do what retrieval does in one call, that is the finding, and it is only visible if the twelve are
+allowed. A cost ceiling, if the design wants one, belongs in the report — fitted to measured walks —
+not in the harness that measures them.
 """
 import json, os, re, time, urllib.error, urllib.request
 
@@ -43,14 +47,14 @@ SYSTEM = (
 
 
 class Agent:
-    def __init__(self, rows, children, one_liner, has_body, budget=3, steps=10,
+    def __init__(self, rows, children, one_liner, has_body, budget=None, steps=30,
                  model=None, provider=None):
         self.rows = rows                # area -> frozen use_when
         self.children = children        # id -> [child ids]
         self.one_liner = one_liner
         self.has_body = has_body
-        self.budget = budget            # returns to hop 0
-        self.steps = steps              # turns, a loop guard
+        self.budget = budget            # returns to hop 0; None is unbounded, and is the default
+        self.steps = steps              # turns, a runaway stop
         # Pinned. The first run used gpt-4o and it invented row names that were not in the table —
         # not a routing-logic failure, an instruction-following one, and the two are exactly what Q3
         # is trying to keep apart. A weak router turns every question into "was the model able".
@@ -111,7 +115,8 @@ class Agent:
                 verb, arg = m.group(1).upper(), m.group(2).strip("`,.")
                 if verb == "DONE": done = True; break
                 if verb == "BACK":
-                    if returns >= self.budget: refused = True; continue
+                    if self.budget is not None and returns >= self.budget:
+                        refused = True; continue
                     returns += 1; shown.append(self._hop0()); continue
                 if arg not in self.one_liner:
                     # Saying nothing here is how a run burns its turns: the agent names something
@@ -134,6 +139,9 @@ class Agent:
                 shown = ["That named nothing in the table. Reply with OPEN, READ, BACK or DONE and an "
                          "id exactly as printed.\n\n" + self._hop0()]
             convo.append({"role": "user", "content": "\n\n".join(shown)})
+        # `exhausted` is the honest field: a walk that ran out of turns did not say DONE, and a hop
+        # count that ends at the ceiling means the ceiling, not the question.
         return {"collected": list(dict.fromkeys(collected)), "visited": visited,
                 "returns": returns, "opens": opens, "turns": turns,
-                "hops": opens + returns, "log": log}
+                "hops": opens + returns, "exhausted": turns >= self.steps and not done,
+                "log": log}

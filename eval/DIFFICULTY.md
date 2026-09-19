@@ -10,9 +10,11 @@ written or any arm is run, or the bands become a description of the results.
 
 Two commitments shape everything below.
 
-**Difficulty is computed from structure, then checked against people.** Not assigned by judgment and
-not derived from how the system performs. A band defined by what the retriever fails at is a band
-that cannot be used to measure the retriever.
+**Difficulty is computed from structure, then checked against people.** Each question's difficulty is
+a number computed from the question and the corpus — never from how any arm performed on it. This
+survives the calibrated cuts below and is the reason they are safe: *where* the band boundaries sit is
+learned from plain RAG, but *which side* a given question falls on is decided by its own structure,
+before it is run.
 
 **Difficulty is a property of a (question, answer) pair, not of a document.** The same document is
 easy to reach when the question uses its words and hard when it does not. Document-level factors are
@@ -134,14 +136,99 @@ factor says nothing. At 0.70 — median 2, p75 3, p90 5, max 14, and 16% isolate
 
 ## Bands
 
-The five levels are summed, 0–15.
+The five levels are summed, 0–15. The sum is the difficulty of a question. What the **cuts** in that
+sum mean is the subject of this section, and it changed after the pilot.
 
-| Band | Sum | What it means |
+### Why the cuts are calibrated against plain RAG
+
+The first version cut at 0–2 / 3–5 / 6–9 / 10–15. Those numbers were chosen by eye, and the pilot
+showed what that costs: the three lower bands came back at 1.00 on every arm. Twenty-three questions
+bought one row of signal. "Severe" meant nothing more than *a big number on a scale I invented* —
+there was no reason a sum of 10 should be the place anything happens.
+
+So the cuts are placed where something does happen. **Severe is where plain RAG breaks**, and the
+other three cuts are placed the same way, off the same curve:
+
+| Band | Defined by | Meaning |
 |---|---|---|
-| **쉬움 / easy** | 0–2 | the question names the document in the document's own words, one obvious area, shallow, no rivals |
-| **보통 / moderate** | 3–5 | one factor is genuinely hard, or several are mildly so |
-| **어려움 / hard** | 6–9 | two or three factors working together |
-| **극악 / severe** | 10–15 | paraphrased, spanning areas, deep, ambiguous and crowded at once |
+| **쉬움 / easy** | B1 hit@10 ≥ 0.95 | retrieval alone is essentially always right |
+| **보통 / moderate** | 0.80 ≤ B1 < 0.95 | retrieval alone is usually right |
+| **어려움 / hard** | 0.50 ≤ B1 < 0.80 | retrieval alone is right more often than not |
+| **극악 / severe** | B1 hit@10 < 0.50 | **retrieval alone misses more than it hits** |
+
+B1 is the baseline arm: hybrid retrieval and the reranker, no routing layer, whole corpus in scope.
+Hit@10 against `D_true`, the same metric the report uses.
+
+This is the definition the design has been reaching for all along. The claim under test is that human
+intervention pays where retrieval stops coping; "where retrieval stops coping" is now a measured
+place rather than an assertion.
+
+### What this costs, stated plainly
+
+**B1's column stops being a result.** It is the axis. Reading "B1 does worse in severe questions" off
+the results table is reading the definition back out, and the report says so at the top of that table.
+
+What remains a result, and is the whole study: **A3 and A1 in each band.** Whether routing recovers
+what plain retrieval lost at B1 < 0.50 is not settled by any definition, and that is the number the
+core question turns on.
+
+### The calibration set keeps it non-circular
+
+Fitting cuts on the same questions you report on would let a band boundary chase a single question.
+It does not happen here, because the fit and the report never touch the same questions.
+
+- A **calibration set** of ~60 questions is written first, spanning sums 0–15 with at least three
+  questions at each sum. It is written to the same rules as the gold set and **never appears in it**.
+- **Only B1 is run on it.** No router, no agent — the calibration must not be able to see the arms it
+  will be used to judge.
+- B1 hit@10 is plotted against the sum, and the three thresholds above are read off as sum cuts:
+  the smallest sum at which the curve falls below 0.95, below 0.80, below 0.50.
+- Those three integers are **frozen into this document with their date**, and the calibration set is
+  retired. Every gold question's band is then its sum against the frozen cuts — computed before it is
+  run, never adjusted after.
+
+If the curve never falls below 0.50 even at a sum of 15, that is a finding and not a failure: it says
+this corpus cannot be made hard enough for plain RAG to break, and the honest report is that routing
+has no room to pay here. The corpus would then need to grow before the question can be asked.
+
+### What the pilot already says about where the break is
+
+The pilot is not a calibration set — it is 23 questions, and they are the ones being reported on — but
+B1 ran on all of them and their sums are known, so the shape of the curve is not a mystery:
+
+| sum | 0 | 2 | 4 | 5 | 6 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| B1 hit@10 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.67 |
+| n | 1 | 6 | 4 | 1 | 1 | 2 | 2 | 2 | 1 | 3 |
+
+**Plain RAG does not break anywhere below a sum of 12, and at 12 it is still at 0.67.** On this
+evidence the severe cut is at 13 or above, or it does not exist in this corpus — and the pilot's
+hardest question was a 12, so nothing has yet been asked at the sums where a break could live.
+
+The corpus has the headroom, barely. C+D+E is a property of the document, and a question adds A+B
+(0–6), so the reachable sum of a question is `CDE + 6`:
+
+| CDE | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| documents | 7 | 46 | 98 | 138 | 152 | 126 | 82 | 29 | 17 | 5 |
+
+- **51 documents** (7.3%) can carry a question at sum ≥ 13
+- **22** (3.1%) at sum ≥ 14
+- **5** (0.7%) at sum ≥ 15
+
+So the calibration set has to be deliberately top-heavy: the interesting region is 11–15, and it is
+where the corpus is thinnest. It gets **at least 8 questions at each of 13, 14 and 15** — which uses
+most of those 51 documents and every one of the five at CDE 9 — and thinner coverage below 11, where
+the pilot has already shown the curve is flat at 1.00. Reaching those sums means A=3 and B=3 on every
+one of them: fully paraphrased, and spanning two areas. They will not occur naturally and must be
+written to hit the mark.
+
+If the curve still refuses to drop below 0.50 at a sum of 15, that is the answer to the study's core
+question on this corpus, and DIFFICULTY.md records it as such rather than moving a threshold to
+produce a severe band.
+
+**Frozen cuts:** _not yet calibrated — the calibration run has not been made. Until it is, the
+provisional cuts 0–2 / 3–5 / 6–9 / 10–15 stand, and every result carrying them is marked provisional._
 
 **The composition is recorded, not just the band.** A severe question is stored as `A3 B2 C1 D3 E1`,
 so a failure can be read against which factor was extreme. This is the cause-splitting asked for in
@@ -174,10 +261,17 @@ something with a system that correctly reported nothing to find.
    crowded is scored crowded, so the scale is partly a description of that embedding. Three of the
    five factors are model-free and C alone is fully structural; the report gives results by factor so
    a reader can see how much of an effect rests on D and E.
-2. **The cuts are this corpus's quartiles.** A corpus with a different shape would produce different
-   bands from the same documents. The cuts are recorded with their date and their model so a later
-   run can say whether it is comparing like with like.
-3. **A and B are assigned when the question is written**, by the same hand that wrote the corpus.
+2. **The cuts are this corpus's quartiles, and now this corpus's retriever too.** A corpus with a
+   different shape would produce different bands from the same documents; so would a stronger
+   baseline retriever, which would push every cut upward. The cuts are recorded with their date, their
+   model and the calibration run that produced them, so a later run can say whether it is comparing
+   like with like. A reader who wants a corpus-independent reading should use the factor sum, which is
+   reported alongside the band for every question.
+3. **The band boundary is fitted, so B1 near a boundary is partly fitted noise.** The calibration set
+   is disjoint from the gold set, which stops a boundary from chasing a reported question, but ~60
+   questions still place each cut with real uncertainty. The report gives results by factor sum as
+   well as by band, so no conclusion has to rest on one integer.
+4. **A and B are assigned when the question is written**, by the same hand that wrote the corpus.
    The human validation below is the check on that, and it is the only check there is.
 
 ## Validation
@@ -186,6 +280,8 @@ The scale is structural and the claim is that it tracks how hard a person would 
 That claim is checked, not assumed.
 
 Forty questions spanning all four bands are rated 1–4 by the operator, blind to the computed band.
+This is a check on the **sum** — that the five factors track human-perceived difficulty at all — and
+it is independent of where the cuts fall, so it can be run before the calibration set exists.
 Agreement is reported as Spearman's ρ against the computed sum and as weighted kappa against the band.
 
 The operator rates them because the corpus was written by the assistant; a scale and a corpus from one

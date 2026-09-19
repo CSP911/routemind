@@ -106,17 +106,23 @@ def main():
     ap.add_argument("gold"); ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--per-hop", type=int, default=2)
     ap.add_argument("--arm", choices=["A1", "A3", "B1"]); ap.add_argument("--out")
-    ap.add_argument("--budget", type=int, default=3)
+    # 0 is unbounded, and is the default: the pilot showed the cap, not the routing, was what the
+    # severe band measured. --steps is a runaway stop, not a budget.
+    ap.add_argument("--budget", type=int, default=0)
+    ap.add_argument("--steps", type=int, default=30)
     a = ap.parse_args()
 
     g = yaml.safe_load(pathlib.Path(a.gold).read_text(encoding="utf-8"))["questions"]
     texts, area, one_liner, children, has_body = corpus()
     print(f"  {len(texts)} retrievable · {len(one_liner)} in the tree · {len(g)} questions · "
-          f"k={a.k} · areas/hop={a.per_hop} · hop budget={a.budget}", file=sys.stderr)
+          f"k={a.k} · areas/hop={a.per_hop} · "
+          f"returns={'unbounded' if not a.budget else a.budget} · turn ceiling={a.steps}",
+          file=sys.stderr)
     h = Hybrid(texts).warm()
     rr = LLMReranker()
     router = Router(rows(), per_hop=a.per_hop)
-    agent = Agent(rows(), children, one_liner, has_body, budget=a.budget)
+    agent = Agent(rows(), children, one_liner, has_body,
+                  budget=a.budget or None, steps=a.steps)
     arms = [a.arm] if a.arm else ["B1", "A3", "A1"]
 
     results = []
@@ -156,12 +162,18 @@ def main():
                 r["read_mrr"] = rd["mrr"]
                 r["read_n"] = len(read_ranked)
                 r["reach_n"] = len(reach)
+                r["returns"] = walk["returns"]
+                r["opens"] = walk["opens"]
+                # A walk that hit the turn ceiling never said DONE. Its hop count is the ceiling
+                # speaking, not the question, and the report has to be able to drop it.
+                r["exhausted"] = walk["exhausted"]
             r.update(arm=arm, id=q["id"], needs=q["needs"], picked=picked, router_said=raw,
                      hops=hops, collected=len(read_ranked) if arm == "A1" else None,
                      top=[{"id": i, "area": area[i]} for i in ranked[:a.k]])
             results.append(r)
             extra = (f"  read {'ok ' if r['read_retrieval_hit'] else 'MISS'}({r['read_n']})"
-                     f" scope {r['reach_n']:>3}") if arm == "A1" else ""
+                     f" scope {r['reach_n']:>3} back {r['returns']}"
+                     f"{' EXHAUSTED' if r['exhausted'] else ''}") if arm == "A1" else ""
             print(f"    {arm} {q['id']:<4} routing {'ok ' if r['routing_hit'] else 'MISS'}"
                   f"  retrieval {'ok ' if r['retrieval_hit'] else 'MISS'}"
                   f"  rank {str(r['rank'] or '-'):<4}"
@@ -171,7 +183,8 @@ def main():
     out = a.out or f"eval/runs/{time.strftime('%Y-%m-%d')}-pilot.json"
     p = ROOT.parent / out
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps({"k": a.k, "per_hop": a.per_hop, "budget": a.budget, "gold": a.gold,
+    p.write_text(json.dumps({"k": a.k, "per_hop": a.per_hop, "budget": a.budget,
+                             "steps": a.steps, "gold": a.gold,
                              "router_model": router.model, "rerank_model": rr.model,
                              "embed_model": h.dense.model, "results": results},
                             indent=1, ensure_ascii=False), encoding="utf-8")

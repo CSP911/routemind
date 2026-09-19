@@ -1,6 +1,6 @@
 # Pre-registration — human intervention in RAG, realised as a routing layer
 
-**Status: DRAFT, 2026-09-18 (rev. 4 — difficulty × routing is the frame; the strata drop to a secondary label).** This document is written *before* any arm is run. Once the open
+**Status: DRAFT, 2026-09-19 (rev. 5 — the band cuts are calibrated against plain RAG, and the agent's hop budget is removed).** This document is written *before* any arm is run. Once the open
 parameters at the bottom are fixed it is frozen, and every later document in `eval/` is built from it.
 A metric, arm or decision rule that is not in the frozen version does not enter the report.
 
@@ -225,6 +225,18 @@ model other than the one under test. The full specification, with the thresholds
 corpus and the reason for each, is **[DIFFICULTY.md](DIFFICULTY.md)**, and it is fixed before any
 question is written.
 
+**Where the bands are cut is calibrated against plain RAG (rev. 5).** The pilot returned 1.00 on every
+arm in the three lower bands: the cuts had been chosen by eye and "severe" meant only *a large number
+on a scale we invented*. The cuts are now placed where something measurably happens — **severe is
+where B1 hit@10 falls below 0.50**, with the other three cuts read off the same curve (≥ 0.95, ≥ 0.80,
+≥ 0.50). The curve is fitted on a **calibration set of ~60 questions that never enters the gold set**,
+running B1 only; the resulting integers are frozen into DIFFICULTY.md with their date, and a gold
+question's band is then its own structural sum against those frozen integers, decided before it is run.
+
+The cost is stated where it is incurred: **B1's column is now the axis, not a result.** That routing
+faces harder questions in the severe row is true by construction. What is not true by construction,
+and is the entire study, is **whether A3 and A1 recover what B1 lost there**.
+
 Everything else in this document is layered onto that frame rather than beside it:
 
 | | goes where |
@@ -321,9 +333,22 @@ What a fixture measures is Q5. It is scored on its own questions, not on the gol
 |---|---|---|---|
 | k | retrieved documents that count as "found" | **10** | pilot |
 | areas per hop | areas the single-decision router may pick | **2** | pilot |
-| hop budget | **returns to hop 0**, not descents — the two are separate budgets, and spending one on both starves the walk before it reads anything | **3** | pilot |
+| hop budget | **none** — neither returns to hop 0 nor descents are rationed; see below | **unbounded** | pilot |
 | router / agent model | **`claude-opus-5`**, and the floor is that class | pilot |
 | reranker model | **GPT-5.6 or better**, a different vendor from the router | pilot |
+
+**Why there is no hop budget (rev. 5).** There was one: returns to hop 0 were rationed at three, the
+figure the overlay design uses. The pilot showed that number, not the routing, was what the severe row
+measured — the agent arm spent a median of 8 hops inside one area and never reached the second, while
+the single-decision arm, which is handed two areas for free, reached both. A refused BACK scored as a
+routing miss.
+
+So nothing is rationed. What a walk spends is now an **observation, not a parameter**: returns, opens
+and turns are recorded per question and reported as distributions, and if routing needs twelve hops to
+do what retrieval does in one call, that is the finding. A turn ceiling of 30 remains as a runaway
+stop; a walk that reaches it is flagged `exhausted` and its hop count is reported as censored rather
+than as a choice the agent made. Any cost ceiling the design wants belongs in the report, fitted to
+measured walks, not in the harness that measures them.
 
 **The model floor, and why there is one.** Anything the router gets wrong under a weak model is
 three failures wearing one coat: the description never named the subject, the routing decision was
@@ -413,7 +438,10 @@ first would make two things vary at once.
 | `eval/CORPUS.md` | what the corpus is, how it was built, what was checked, what it cannot support |
 | `bench/restructure.py` | the corpus tree: a section page per cluster, idempotent |
 | `bench/smoke.py` | retrieve + rerank end to end |
+| `bench/agent.py` | the walking arm — OPEN / READ / BACK / DONE, nothing rationed |
+| `bench/run.py` | the three arms, scored per question |
 | `eval/fixtures/` | the continuity-fixture contract, one worked example, and `check.py` |
 | `git tag baseline-pre-continuity` | the implementation Q5 is measured against first |
 
-`bench/` is not versioned (generated, large). This file and everything else in `eval/` is.
+`bench/` tools are versioned; its generated artefacts (manifest, embeddings, corpus) are not.
+Everything in `eval/` is versioned.
