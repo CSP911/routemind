@@ -214,3 +214,70 @@ embedding model, and that is a finding worth more than the band.
     ./bench/harden.py search && ./bench/harden.py verify            # L3
 
 The first two are the ones that matter. Everything else is already on disk.
+
+
+---
+
+## L4b — the threshold was crossed, and what it took
+
+The extension in L4 did **not** break B1: five families of sixteen, measured hit@10 **1.00** on both
+levers over 31 questions before the run was stopped for being an expensive way to confirm a known
+answer.
+
+The reason is arithmetic and it is the most useful thing this search produced. With N equally
+plausible documents and k returned, the answer arrives with probability about k/N. At N=16 and k=20
+every sibling reaches the candidate list, the reranker reads the qualifiers off them, and it picks
+correctly every time. **No wording can change that**, which is why three rounds of sharpening the
+wording achieved nothing.
+
+So the corpus was rebuilt against the arithmetic rather than against intuition:
+
+| | first attempt | second |
+|---|---|---|
+| rows per family | 16 (4×4) | **64** (4×4×4) |
+| row vocabulary | English phrases — "on standby", "at a client" | **codes** — `place P3`, `stay S2` |
+| the mapping | implicit in the row | **three legend documents per family**, retrievable |
+| discriminating-word leak | 102 of 320 indirect questions | **0 of 320** |
+| documents added | 85 | 340 |
+
+The code change was the one that mattered. With English in the rows, a third of the indirect
+questions shared a word their own row had and its siblings did not, so BM25 and the reranker could
+pick the row without consulting a legend — the lookup the design exists to force was optional.
+
+### Result
+
+Hybrid fusion, 1,114 documents, 640 questions:
+
+| lever | n | hit@10 | recall@20 | median rank |
+|---|---|---|---|---|
+| direct | 320 | 0.99 | 1.00 | 1 |
+| indirect | 320 | **0.025** | **0.075** | 999 |
+
+    direct     answer in the top 10 on 318 of 320
+    indirect   answer in the top 10 on   8 of 320
+               outside the top 50 on   226 of 320
+    BM25 alone: 1.00 at rank 1 direct · 0.00 at rank 464 indirect
+
+`recall@20` is a hard bound on `hit@10`, so **B1 ≤ 0.075 is proved rather than estimated** — 0.50 is
+crossed by a factor of six on the bound and sixteen on the point estimate.
+
+**The failure has a shape.** On 193 of 320 indirect questions the retriever returned a *legend* in
+the top 10. It fetches the lookup table and never the answer, because the legend is the only document
+sharing vocabulary with the question. A person reads the legend, learns the code, opens the row — two
+steps. Single-shot retrieval has one and spends it on the first.
+
+**The control is what makes it usable.** Same documents, same retriever: asked in the index's own
+vocabulary the answer comes back first, 318 times of 320. The only difference between 0.99 and 0.03
+is which vocabulary the question was written in.
+
+Written up in **[../COLLAPSE.md](../COLLAPSE.md)**. `eval/DIFFICULTY.md` rev. 6 records what this
+overturned in the scale; the calibration set is cancelled, because the five-factor sum does not
+predict B1 and the place it was meant to locate has been located.
+
+### Still open
+
+- The routing arms have never run on this corpus. `crowd.py routecheck` confirms the walk is
+  structurally available — 67-row table, ~2,590 tokens, legends leading, five steps — but whether an
+  agent takes it is a measurement, and it needs an Anthropic balance.
+- Dense-only as a second floor, per the threat in L0b.
+- `probe2`'s 120 lever questions and `harden`'s search remain unrun.

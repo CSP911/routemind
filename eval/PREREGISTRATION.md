@@ -1,6 +1,6 @@
 # Pre-registration — human intervention in RAG, realised as a routing layer
 
-**Status: DRAFT, 2026-09-19 (rev. 5 — the band cuts are calibrated against plain RAG, and the agent's hop budget is removed).** This document is written *before* any arm is run. Once the open
+**Status: DRAFT, 2026-09-19 (rev. 6 — the severe band has a dataset; difficulty is rival count, not a five-factor sum).** This document is written *before* any arm is run. Once the open
 parameters at the bottom are fixed it is frozen, and every later document in `eval/` is built from it.
 A metric, arm or decision rule that is not in the frozen version does not enter the report.
 
@@ -225,7 +225,28 @@ model other than the one under test. The full specification, with the thresholds
 corpus and the reason for each, is **[DIFFICULTY.md](DIFFICULTY.md)**, and it is fixed before any
 question is written.
 
-**Where the bands are cut is calibrated against plain RAG (rev. 5).** The pilot returned 1.00 on every
+**Rev. 6 — the severe band exists and was built rather than calibrated.** The calibration set is
+cancelled. Its purpose was to find where B1 breaks along the five-factor sum, and the sum does not
+predict B1: three of the five factors are flat across their whole range, and the one that moves (the
+lexical bridge) turned out to measure BM25 rather than retrieval — a paraphrase takes BM25's
+recall@20 to 0.13 while the dense half holds at 0.95.
+
+What decides whether a retriever finds an answer is **how many rivals that answer has**. With N
+equally plausible documents and k returned, the answer arrives with probability about k/N, and that
+is calculable in advance. `bench/crowd.py` builds a corpus part accordingly — five families of 64
+rows indexed by codes, with the person-to-code mapping in separate retrievable legend documents — and
+plain RAG measures **hit@10 0.03** on it against **0.99** on the same rows asked in the index's own
+vocabulary. The threshold `B1 hit@10 < 0.50` stands as written; it now has a dataset that crosses it
+by a factor of sixteen. Full account in **[COLLAPSE.md](COLLAPSE.md)**.
+
+Two consequences for this document. **The study reports two corpora as two rows**: the frozen 700,
+where B1 does not fall below 0.80 under any wording, and the 1,114 with the extension, where it
+collapses — the finding is about corpus composition, and a reader whose corpus has no qualifier
+families should expect the 0.80. And **the baseline needs a second floor**: at A=3 dense alone scores
+0.88 at ten while fusing it with a collapsed BM25 scores 0.39, so reciprocal rank fusion is averaging
+signal with noise and part of any routing advantage would otherwise be an artefact of the baseline.
+
+**Where the bands are cut is calibrated against plain RAG (rev. 5, superseded by the above).** The pilot returned 1.00 on every
 arm in the three lower bands: the cuts had been chosen by eye and "severe" meant only *a large number
 on a scale we invented*. The cuts are now placed where something measurably happens — **severe is
 where B1 hit@10 falls below 0.50**, with the other three cuts read off the same curve (≥ 0.95, ≥ 0.80,
@@ -434,7 +455,11 @@ first would make two things vary at once.
 | `bench/rerank.py` | LLM scoring, blind to areas |
 | `bench/rows-check.py` | P1 |
 | `bench/coverage.py` | coverage, one of the five difficulty factors |
-| `eval/DIFFICULTY.md` | the difficulty scale — factors, levels, thresholds, validation |
+| `eval/DIFFICULTY.md` | the difficulty scale — factors, levels, thresholds, and rev. 6 on why four of five did nothing |
+| `eval/COLLAPSE.md` | the collapse threshold, the metrics behind it, and the corpus built to cross it |
+| `bench/crowd.py` | that corpus — 5 qualifier families, 340 documents, templated and deterministic |
+| `bench/decompose.py` · `bench/confusable.py` | free diagnostics: which half of the retriever fails, and where the corpus is confusable |
+| `eval/gold/hard.yaml` | 640 questions against it, two levers per row |
 | `eval/CORPUS.md` | what the corpus is, how it was built, what was checked, what it cannot support |
 | `bench/restructure.py` | the corpus tree: a section page per cluster, idempotent |
 | `bench/smoke.py` | retrieve + rerank end to end |

@@ -40,3 +40,5 @@ bench/.probe.lock
 /bench/probe-results-fusion.json
 /bench/probe2-results.json
 /bench/harden-state.json
+/bench/crowd-fusion.json
+/bench/crowd-curve*.json

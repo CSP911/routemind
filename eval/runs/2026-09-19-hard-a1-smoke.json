@@ -1,0 +1,222 @@
+{
+ "k": 10,
+ "per_hop": 2,
+ "budget": 0,
+ "steps": 30,
+ "gold": "eval/gold/hard-smoke.yaml",
+ "router_model": "gpt-5",
+ "rerank_model": "gpt-5",
+ "embed_model": "text-embedding-3-large",
+ "results": [
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "read_retrieval_hit": true,
+   "read_rank": 1,
+   "read_mrr": 1.0,
+   "read_n": 1,
+   "reach_n": 342,
+   "returns": 0,
+   "opens": 2,
+   "read_chars": 798,
+   "exhausted": false,
+   "arm": "A1",
+   "id": "h-perdiem-111-d",
+   "needs": "any",
+   "picked": [
+    "expense"
+   ],
+   "router_said": "OPEN expense | OPEN sec-hard-perdiem | READ hard-perdiem-row-grade-g2-band-b2-stay-s2 | DONE",
+   "hops": 2,
+   "collected": 1,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "read_retrieval_hit": false,
+   "read_rank": null,
+   "read_mrr": 0.0,
+   "read_n": 3,
+   "reach_n": 342,
+   "returns": 2,
+   "opens": 11,
+   "read_chars": 3094,
+   "exhausted": false,
+   "arm": "A1",
+   "id": "h-perdiem-111-i",
+   "needs": "any",
+   "picked": [
+    "expense"
+   ],
+   "router_said": "OPEN expense | OPEN travel-expense | OPEN travel-overseas | OPEN sec-overseas-trip-cases | OPEN sec-overseas-trip-cases-1 | READ overseas-trip-band-country-table\nBACK\nOPEN expense\nOPEN travel-expense\nOPEN travel-overseas\nREAD overseas-rates\nBACK\nOPEN expense\nOPEN evidence | OPEN qualified-evidence | READ qualified-list\nDONE",
+   "hops": 13,
+   "collected": 3,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-stay",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "travel-overseas",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "read_retrieval_hit": true,
+   "read_rank": 1,
+   "read_mrr": 1.0,
+   "read_n": 4,
+   "reach_n": 267,
+   "returns": 0,
+   "opens": 3,
+   "read_chars": 2929,
+   "exhausted": false,
+   "arm": "A1",
+   "id": "h-accrual-222-i",
+   "needs": "any",
+   "picked": [
+    "attendance"
+   ],
+   "router_said": "OPEN attendance | OPEN annual-leave\nOPEN sec-hard-accrual | READ hard-accrual-legend-type\nREAD hard-accrual-legend-tenure\nREAD hard-accrual-legend-site | READ hard-accrual-row-type-e3-tenure-t3-site-l3 | DONE",
+   "hops": 3,
+   "collected": 4,
+   "top": [
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "group-transfer-entitlement",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-milestone-case",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-case",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "flexitime-carryover-table",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    }
+   ]
+  }
+ ]
+}

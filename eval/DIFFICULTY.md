@@ -23,6 +23,50 @@ frozen here.
 
 ---
 
+## Rev. 6 — the axis is rival count, and four of the five factors were measuring something else
+
+Everything below this section was written before the scale was measured. It is kept because it is
+what the corpus was built against and because the measurements are only legible next to what they
+overturned. Read this section first.
+
+**What was measured.** 368 questions over 92 documents, four wordings each, then a corpus built to
+order. Three results, each narrowing the last:
+
+1. **A paraphrase destroys BM25 and barely touches the dense half.** At A=3, BM25 recall@20 is 0.13
+   with the answer's median rank outside the top 50; dense recall@20 is 0.95 with median rank 3. B1
+   ends at 0.80. **Factor A was measuring BM25's problem, not retrieval's.**
+2. **C, D and E do nothing.** Across documents stratified by C+D+E from 0 to 9, B1 recall@10 sits
+   between 0.80 and 0.96 with no trend. Summing five factors equally is what flattened the composite
+   axis to 0.78–0.86 from sum 4 to sum 10 and made the pilot's three lower bands all return 1.00.
+3. **The real axis is arithmetic.** If N documents are equally plausible for a query and the
+   retriever returns k, the answer arrives with probability about k/N. A family of 16 near-identical
+   documents scores hit@10 **1.00** at k=20 — every sibling fits in the candidate list and the
+   reranker reads the qualifiers off them. A family of 64, indexed by codes the question does not
+   contain, scores **0.03**.
+
+> **Difficulty, for a retriever, is how many rivals the answer has** — and unlike the five factors it
+> is calculable before anything is run.
+
+**E was the right idea at the wrong scale.** Crowding counted embedding neighbours above a
+similarity threshold, in a corpus whose largest cluster was 27 documents and whose closest pair of
+documents sat at cosine 0.911. The factor could not reach the region where crowding bites, because
+the corpus did not contain it.
+
+**What this changes, and what it does not.**
+
+| | |
+|---|---|
+| the severe band | now has a dataset that provably crosses it — see **[COLLAPSE.md](COLLAPSE.md)** |
+| the calibration set | **cancelled.** Its job was to find where B1 breaks on a sum that does not predict B1. The cut is `hit@10 < 0.50` and the dataset that crosses it exists |
+| factors A–E | kept as **descriptive labels** on every question, not as an ordered scale. A is worth reporting because it separates the two halves of the retriever; C, D and E are recorded and reported by factor so a reader can see they did nothing |
+| the four bands | on the frozen 700 they stay provisional and, on the evidence, largely empty above "moderate". The 700 corpus **cannot** be pushed past B1 0.80 by wording |
+| the report | carries **two corpora as two rows**: 700 documents where retrieval holds, and 1,114 where it collapses. The finding is about corpus composition |
+
+**The honest summary of the scale's first three revisions:** it was built to grade questions, and the
+thing that decides whether retrieval finds an answer turned out to be a property of the corpus.
+
+---
+
 ## The five factors
 
 Each is graded 0–3. Three of the five need no model at all. The two that do — routing margin and

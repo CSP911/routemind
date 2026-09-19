@@ -73,6 +73,10 @@ def corpus():
     children = {}
     for i, par in parent.items():
         if par and par != i: children.setdefault(par, []).append(i)
+    # Sorted, because the order was whatever rglob returned — not reproducible across machines, and
+    # the agent is shown this list verbatim. A benchmark whose prompt depends on directory order is
+    # a benchmark that cannot be replicated.
+    for k in children: children[k].sort()
     return texts, area, one_liner, children, has_body
 
 
@@ -132,8 +136,10 @@ def main():
     h = Hybrid(texts).warm()
     rr = LLMReranker()
     router = Router(rows(), per_hop=a.per_hop)
+    # `texts` is what READ hands back — the same string the retrieval arms index, so the walker and
+    # the retriever are reading the identical corpus and no arm sees a word the others cannot.
     agent = Agent(rows(), children, one_liner, has_body,
-                  budget=a.budget or None, steps=a.steps)
+                  budget=a.budget or None, steps=a.steps, body=texts)
     arms = [a.arm] if a.arm else ["B1", "A3", "A1"]
 
     out = a.out or f"eval/runs/{time.strftime('%Y-%m-%d')}-pilot.json"
@@ -186,6 +192,7 @@ def main():
                 r["reach_n"] = len(reach)
                 r["returns"] = walk["returns"]
                 r["opens"] = walk["opens"]
+                r["read_chars"] = walk["read_chars"]
                 # A walk that hit the turn ceiling never said DONE. Its hop count is the ceiling
                 # speaking, not the question, and the report has to be able to drop it.
                 r["exhausted"] = walk["exhausted"]
@@ -195,6 +202,7 @@ def main():
             results.append(r); save()
             extra = (f"  read {'ok ' if r['read_retrieval_hit'] else 'MISS'}({r['read_n']})"
                      f" scope {r['reach_n']:>3} back {r['returns']}"
+                     f" read {r['read_chars']//1000}k"
                      f"{' EXHAUSTED' if r['exhausted'] else ''}") if arm == "A1" else ""
             print(f"    {arm} {q['id']:<4} routing {'ok ' if r['routing_hit'] else 'MISS'}"
                   f"  retrieval {'ok ' if r['retrieval_hit'] else 'MISS'}"

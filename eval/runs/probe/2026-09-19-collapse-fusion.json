@@ -1,0 +1,4482 @@
+[
+ {
+  "id": "h-perdiem-000-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-000-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 13,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-001-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-001-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-002-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-002-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-003-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-003-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-010-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-010-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 20,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-011-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-011-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-012-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-012-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-perdiem-013-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-013-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-020-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-020-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 26,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-021-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-021-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-022-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-022-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-023-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-023-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-030-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-030-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-031-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-031-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-032-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-032-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-perdiem-033-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-033-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-100-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-100-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 21,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-101-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-101-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-102-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-102-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-103-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-103-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 38,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-110-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-110-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 31,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-111-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-111-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-112-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-112-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-113-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-113-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-120-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-120-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 42,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-121-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-121-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-122-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-122-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-123-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-123-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-130-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-130-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 49,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-131-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-131-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-132-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-132-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-133-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-133-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-200-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-200-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 17,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-201-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-201-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-202-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-202-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-203-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-203-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-210-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-210-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 7,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-211-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-211-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-212-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-212-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-213-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-213-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 35,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-220-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-220-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 10,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-221-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-221-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-222-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-222-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-223-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-223-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-230-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-230-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 36,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-231-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-231-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 43,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-232-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-232-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-233-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-233-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 46,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-300-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-300-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-301-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-301-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-302-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-302-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-303-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-303-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-310-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-310-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 16,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-311-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-311-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 45,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-312-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-312-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-313-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-313-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-320-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-320-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 21,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-321-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-321-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 23,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-322-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-322-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-323-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-323-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-330-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-330-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-331-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-331-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-332-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-332-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 40,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-perdiem-333-d",
+  "lever": "direct",
+  "family": "perdiem",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-perdiem-333-i",
+  "lever": "indirect",
+  "family": "perdiem",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-000-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-000-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-001-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-001-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-002-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 8,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-002-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-overtime-003-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-003-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-overtime-010-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-010-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-011-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-011-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-012-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-012-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-013-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-013-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-020-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-020-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-021-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-021-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-022-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-022-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-023-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-023-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-030-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-030-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-031-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-031-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-032-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-032-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 49,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-033-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 9,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-033-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-100-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 10,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-100-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-101-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-101-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-102-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 8,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-102-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-overtime-103-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-103-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-110-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-110-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-111-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-111-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-112-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-112-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-113-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-113-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-120-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-120-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 22,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-121-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-121-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-122-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-122-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-123-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-123-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-130-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-130-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-131-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-131-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-132-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-132-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 44,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-133-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-133-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-200-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-200-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 22,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-overtime-201-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 7,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-201-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-202-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-202-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 30,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-overtime-203-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-203-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-overtime-210-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-210-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-211-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-211-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 36,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-212-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-212-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 42,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-213-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-213-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 44,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-220-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-220-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-221-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-221-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-222-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-222-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 46,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-223-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-223-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-230-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-230-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 27,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-231-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-231-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 29,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-232-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-232-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 33,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-233-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-233-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 37,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-300-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-300-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-301-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-301-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-302-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-302-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 20,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-overtime-303-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-303-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 43,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-overtime-310-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-310-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-311-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-311-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-312-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-312-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 37,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-313-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-313-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-320-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-320-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-321-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-321-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-322-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-322-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-323-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-323-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-330-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-330-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-331-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-331-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-332-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-332-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-333-d",
+  "lever": "direct",
+  "family": "overtime",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-overtime-333-i",
+  "lever": "indirect",
+  "family": "overtime",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-000-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-000-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-001-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-001-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-002-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-002-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-003-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-003-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 50,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-010-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-010-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-011-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-011-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-012-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-012-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-013-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-013-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-020-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-020-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 40,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-021-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-021-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-022-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-022-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-023-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-023-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-030-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-030-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-031-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-031-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-032-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-032-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-033-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-033-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-100-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-100-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 40,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-101-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-101-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 43,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-102-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-102-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-103-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-103-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-110-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-110-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 38,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-111-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-111-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 11,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-112-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-112-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 17,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-113-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-113-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 27,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-120-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-120-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-121-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-121-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 44,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-122-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-122-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-123-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-123-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 29,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-130-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-130-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 31,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-131-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-131-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 44,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-132-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-132-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-133-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-133-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 47,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-200-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-200-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-201-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-201-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-202-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-202-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 18,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-203-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-203-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 49,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-210-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-210-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 42,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-211-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-211-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-212-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-212-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 17,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-213-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-213-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 25,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-220-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-220-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 35,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-221-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-221-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 23,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-222-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-222-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 26,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-223-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-223-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 33,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-230-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-230-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-231-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-231-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-232-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-232-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 29,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-233-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-233-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 42,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-300-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-300-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-301-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-301-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-accrual-302-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-302-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-accrual-303-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-303-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-accrual-310-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 7,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-310-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-311-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-311-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-312-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-312-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-313-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-313-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-320-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-320-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-321-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-321-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-322-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-322-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-accrual-323-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-323-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-330-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-330-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-accrual-331-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-331-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-accrual-332-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-332-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-accrual-333-d",
+  "lever": "direct",
+  "family": "accrual",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-accrual-333-i",
+  "lever": "indirect",
+  "family": "accrual",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-000-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-000-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-001-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-001-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-002-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-002-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-003-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-003-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-010-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-010-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-011-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-011-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-012-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-012-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-013-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-013-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-threshold-020-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-020-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 25,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-021-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-021-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 20,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-022-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-022-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 40,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-023-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-023-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-030-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-030-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 24,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-031-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-031-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 28,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-032-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-032-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 39,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-033-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-033-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 3,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-100-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-100-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 18,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-101-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-101-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-102-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-102-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-103-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-103-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-110-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-110-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-111-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-111-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-112-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-112-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-113-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-113-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-120-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-120-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 18,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-121-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-121-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 40,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-122-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-122-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 15,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-123-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-123-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 27,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-130-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-130-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 30,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-131-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-131-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 5,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-132-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-132-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 12,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-133-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-133-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 3,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-200-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-200-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-201-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-201-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-202-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-202-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-203-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-203-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-210-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 10,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-210-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-211-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-211-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-212-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-212-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-213-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-213-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-220-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-220-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-221-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-221-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-222-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-222-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-223-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-223-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-230-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-230-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-231-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-231-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-232-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-232-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-233-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-233-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 41,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-300-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-300-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-301-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-301-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-302-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-302-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-303-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-303-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-310-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 9,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-310-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-311-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-311-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-312-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-312-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-313-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-313-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-320-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-320-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-321-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-321-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-322-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-322-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-323-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-323-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-threshold-330-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-330-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-331-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-331-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-332-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-332-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 50,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-threshold-333-d",
+  "lever": "direct",
+  "family": "threshold",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-threshold-333-i",
+  "lever": "indirect",
+  "family": "threshold",
+  "rank": 21,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-000-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-000-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-001-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-001-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-002-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-002-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-003-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-003-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-010-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-010-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-011-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-011-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-012-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-012-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-013-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-013-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-020-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-020-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-021-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-021-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 19,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-022-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-022-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-023-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-023-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-030-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-030-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-031-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-031-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 49,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-032-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-032-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-033-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-033-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-100-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-100-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 7,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-101-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-101-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 29,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-102-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-102-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 7,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-103-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-103-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-110-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-110-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 11,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-111-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-111-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-112-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-112-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 11,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-113-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-113-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 13,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-120-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-120-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 19,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-121-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-121-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-122-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-122-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 40,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-123-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-123-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-130-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-130-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-131-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-131-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-132-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-132-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-133-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-133-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 37,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-200-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-200-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-201-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-201-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-202-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 6,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-202-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-203-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-203-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-210-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-210-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 45,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-211-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-211-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-212-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 5,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-212-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-213-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-213-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-220-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-220-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 14,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-221-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-221-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 15,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-222-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-222-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 11,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-223-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-223-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 34,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-230-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-230-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 14,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-231-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-231-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 6,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-232-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-232-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 8,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-233-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-233-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 20,
+  "legends_in_top10": 1
+ },
+ {
+  "id": "h-diligence-300-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-300-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 33,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-301-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-301-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 31,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-302-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-302-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-303-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-303-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-310-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-310-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-311-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-311-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-312-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 4,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-312-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-313-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-313-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-320-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-320-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-321-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-321-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-322-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 2,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-322-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 50,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-323-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-323-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-330-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-330-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 26,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-331-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-331-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 19,
+  "legends_in_top10": 3
+ },
+ {
+  "id": "h-diligence-332-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 3,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-332-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 35,
+  "legends_in_top10": 2
+ },
+ {
+  "id": "h-diligence-333-d",
+  "lever": "direct",
+  "family": "diligence",
+  "rank": 1,
+  "legends_in_top10": 0
+ },
+ {
+  "id": "h-diligence-333-i",
+  "lever": "indirect",
+  "family": "diligence",
+  "rank": 999,
+  "legends_in_top10": 2
+ }
+]

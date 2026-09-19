@@ -1,0 +1,4768 @@
+{
+ "k": 10,
+ "per_hop": 2,
+ "budget": 0,
+ "steps": 30,
+ "gold": "eval/gold/hard-sample.yaml",
+ "router_model": "claude-opus-5",
+ "rerank_model": "gpt-5",
+ "embed_model": "text-embedding-3-large",
+ "results": [
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-000-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-020-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-100-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-120-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-200-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-220-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-300-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-320-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s2",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-000-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h2-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h4-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h2-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p4",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-020-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h2-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-100-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p2",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-120-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-200-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h2-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h2-place-p3",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-220-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h2-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p4",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-300-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p4",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "payroll"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-overtime-320-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-000-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t1-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-020-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l1",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-100-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-120-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-200-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-220-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t4-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-300-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t4-site-l2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-accrual-320-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t4-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e1-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t4-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-000-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-020-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m1",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-100-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-120-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-200-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c3-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v1-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v1-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m1",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-220-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m1",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-300-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c4-amount-v1-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v1-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v1-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m3",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-threshold-320-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m1",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v1-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m3",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m4",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v4-term-m2",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v1-term-m1",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-000-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w3-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-020-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o1-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-100-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-120-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-200-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-220-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-300-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-320-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-000-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-rates",
+     "area": "expense"
+    },
+    {
+     "id": "travel-overseas",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-grade",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-two-stops-claim-table",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-perdiem-020-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-grade",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-two-stops-claim-table",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-lodging-by-city",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 6,
+   "mrr": 0.16666666666666666,
+   "arm": "B1",
+   "id": "h-perdiem-100-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "overseas-trip-multi-country",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-rates",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "travel-overseas",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-two-stops-claim-table",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-lodging-by-city",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-perdiem-120-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "travel-overseas",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-two-stops-claim-table",
+     "area": "expense"
+    },
+    {
+     "id": "travel-domestic",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-two-stops-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-perdiem-200-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-two-stops-claim-table",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 4,
+   "mrr": 0.25,
+   "arm": "B1",
+   "id": "h-perdiem-220-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-perdiem-300-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-foreign-language",
+     "area": "expense"
+    },
+    {
+     "id": "travel-overseas",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-lodging-by-city",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-perdiem-320-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-overtime-000-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-hours",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-legend-day",
+     "area": "payroll"
+    },
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "trip-approval-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "biz-trip-attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-overtime-020-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "overtime-unrequested-hours-response",
+     "area": "attendance"
+    },
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance-system-guide",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-day",
+     "area": "payroll"
+    },
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "missing-record-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-overtime-100-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-hours",
+     "area": "payroll"
+    },
+    {
+     "id": "attendance-system-guide",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-overtime-120-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance-system-guide",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "weekend-trip-case",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "payroll"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-overtime-200-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-hours",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-legend-day",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "health-check-time-off-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "overseas-trip-per-diem-attendance-role",
+     "area": "expense"
+    },
+    {
+     "id": "expense-trip-days-weekend-lieu-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "hr-desk",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-overtime-220-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-legend-day",
+     "area": "payroll"
+    },
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance-system-guide",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-unrequested-hours-response",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "payroll-desk",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "health-check-time-off-rule",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-overtime-300-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-hours",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p2",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "B1",
+   "id": "h-overtime-320-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "unrequested-overtime-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p1",
+     "area": "payroll"
+    },
+    {
+     "id": "overtime-approval-role",
+     "area": "attendance"
+    },
+    {
+     "id": "overtime-request-procedure",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance-system-guide",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p4",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p3",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p2",
+     "area": "payroll"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p3",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-000-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "proration-table",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance-overview",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll",
+     "area": "payroll"
+    },
+    {
+     "id": "unpaid-leave-return-proration",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-020-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "group-transfer-entitlement",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll",
+     "area": "payroll"
+    },
+    {
+     "id": "unpaid-leave-return-proration",
+     "area": "payroll"
+    },
+    {
+     "id": "january-destruction-list",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-100-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "proration-table",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-lapse-table",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "group-transfer-entitlement",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-120-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "proration-table",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-200-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "proration-table",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "unpaid-leave-return-proration",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-220-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-case",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-300-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-lapse-table",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-type",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "proration-table",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "transfer-in-first-year-table",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "payroll"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-accrual-320-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-type",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "proration-table",
+     "area": "attendance"
+    },
+    {
+     "id": "attendance",
+     "area": "attendance"
+    },
+    {
+     "id": "group-transfer-entitlement",
+     "area": "attendance"
+    },
+    {
+     "id": "transfer-in-first-year-table",
+     "area": "attendance"
+    },
+    {
+     "id": "payroll",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-000-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "card-po-quote-threshold-table",
+     "area": "expense"
+    },
+    {
+     "id": "purchase-quote-count-table",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-quote-format-form",
+     "area": "expense"
+    },
+    {
+     "id": "external-signing-authority-overview",
+     "area": "approval"
+    },
+    {
+     "id": "split-purchase-same-intent",
+     "area": "approval"
+    },
+    {
+     "id": "band-boundary-cases",
+     "area": "procurement"
+    },
+    {
+     "id": "quote-waiver-procedure",
+     "area": "procurement"
+    },
+    {
+     "id": "expense-personal-card-reimbursement-procedure",
+     "area": "expense"
+    },
+    {
+     "id": "card-po-quote-validity-deadline",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-020-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "comparison-proposal-form",
+     "area": "procurement"
+    },
+    {
+     "id": "threshold-table",
+     "area": "procurement"
+    },
+    {
+     "id": "band-reference-table",
+     "area": "procurement"
+    },
+    {
+     "id": "quote-waiver-procedure",
+     "area": "procurement"
+    },
+    {
+     "id": "purchase-quote-count-table",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-quote-threshold-table",
+     "area": "expense"
+    },
+    {
+     "id": "procurement-overview",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-legend-amount",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-quote-validity-deadline",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-100-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "band-reference-table",
+     "area": "procurement"
+    },
+    {
+     "id": "external-signing-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-overview",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-quote-threshold-table",
+     "area": "expense"
+    },
+    {
+     "id": "purchase-quote-count-table",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-quote-format-form",
+     "area": "expense"
+    },
+    {
+     "id": "ceo-band-subjects",
+     "area": "approval"
+    },
+    {
+     "id": "quote-waiver-procedure",
+     "area": "procurement"
+    },
+    {
+     "id": "band-boundary-cases",
+     "area": "procurement"
+    },
+    {
+     "id": "card-po-quote-validity-deadline",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-120-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "comparison-proposal-form",
+     "area": "procurement"
+    },
+    {
+     "id": "threshold-table",
+     "area": "procurement"
+    },
+    {
+     "id": "band-reference-table",
+     "area": "procurement"
+    },
+    {
+     "id": "quote-waiver-procedure",
+     "area": "procurement"
+    },
+    {
+     "id": "external-signing-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "external-signing-authority-overview",
+     "area": "approval"
+    },
+    {
+     "id": "ceo-band-subjects",
+     "area": "approval"
+    },
+    {
+     "id": "contract-draft",
+     "area": "approval"
+    },
+    {
+     "id": "wrong-approver-in-chain",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-supplier-request-procedure",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-200-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "card-po-quote-threshold-table",
+     "area": "expense"
+    },
+    {
+     "id": "purchase-quote-count-table",
+     "area": "approval"
+    },
+    {
+     "id": "overseas-trip-authority",
+     "area": "approval"
+    },
+    {
+     "id": "travel-domestic",
+     "area": "expense"
+    },
+    {
+     "id": "expense-travel-agency-approver-role",
+     "area": "expense"
+    },
+    {
+     "id": "hard-threshold-legend-amount",
+     "area": "approval"
+    },
+    {
+     "id": "expense-travel-agency-overview",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-rates",
+     "area": "expense"
+    },
+    {
+     "id": "card-po-quote-validity-deadline",
+     "area": "expense"
+    },
+    {
+     "id": "quote-comparability-rule",
+     "area": "approval"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-220-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-threshold-legend-amount",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-quote-validity-deadline",
+     "area": "expense"
+    },
+    {
+     "id": "hard-threshold-legend-category",
+     "area": "approval"
+    },
+    {
+     "id": "expense-travel-agency-overview",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-prepaid-lodging-home-billing",
+     "area": "expense"
+    },
+    {
+     "id": "expense-travel-agency-booking-scope-table",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-authority",
+     "area": "approval"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "travel-domestic",
+     "area": "expense"
+    },
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": false,
+   "areas_looked": [
+    "expense",
+    "payroll",
+    "procurement"
+   ],
+   "area_precision": 0.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-300-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "card-po-quote-format-form",
+     "area": "expense"
+    },
+    {
+     "id": "expense-personal-card-reimbursement-procedure",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-guest-attendee-list",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-fixed-headcount-event",
+     "area": "expense"
+    },
+    {
+     "id": "band-boundary-cases",
+     "area": "procurement"
+    },
+    {
+     "id": "entertainment-meal-reclassified-internal",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "evidence-worked-example",
+     "area": "expense"
+    },
+    {
+     "id": "reimbursement-actual-cost-uncapped",
+     "area": "payroll"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-threshold-320-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "comparison-proposal-form",
+     "area": "procurement"
+    },
+    {
+     "id": "external-signing-authority-table",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-legend-amount",
+     "area": "approval"
+    },
+    {
+     "id": "contract-draft",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-supplier-request-procedure",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-guest-attendee-list",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment-fixed-headcount-event",
+     "area": "expense"
+    },
+    {
+     "id": "entertainment",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "card-po-quote-validity-deadline",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-diligence-000-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-goods",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-diligence-020-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-diligence-100-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-origin",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-goods",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-diligence-120-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-origin",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-goods",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-diligence-200-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "vendor-steps",
+     "area": "procurement"
+    },
+    {
+     "id": "quote-swap-after-drafting",
+     "area": "approval"
+    },
+    {
+     "id": "repeat-purchase-creep",
+     "area": "procurement"
+    },
+    {
+     "id": "card-po-repeat-purchase-case",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-diligence-220-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "vendor-steps",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "quote-swap-after-drafting",
+     "area": "approval"
+    },
+    {
+     "id": "card-po-repeat-purchase-case",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-diligence-300-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-origin",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-goods",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "arm": "B1",
+   "id": "h-diligence-320-i",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-diligence-legend-value",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-origin",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-goods",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  }
+ ]
+}

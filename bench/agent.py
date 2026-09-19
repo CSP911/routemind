@@ -7,9 +7,20 @@ the answer is not there, go back and open something else. A question whose answe
 the obvious case: one pass can only ever reach one of them.
 
     OPEN <id>    a node with children -> its table.  Costs a hop.
-    READ <id>    a node with a body   -> collected as an answer. Free.
+    READ <id>    a node with a body   -> **the document comes back**, and is collected. Free.
     BACK         return to hop 0 and choose again. Costs a hop.
     DONE         enough has been collected.
+
+**READ returns the text.** It used to return nothing — the id was recorded and the walk continued
+blind — which made this a router that selects documents rather than an agent that uses them. The
+real server does not work that way: `knowledge_read` in `mcp/knowledge_mcp.py` is documented as
+"Returns the document as written", and RouteMind is agentic precisely because a walk can read
+something and decide what to do next from what it said.
+
+The difference is not cosmetic on any corpus where one document tells you which other document you
+need. On `bench/corpus-hard` every indirect question is exactly that shape — read the legend, learn
+the code, open the row — so a walk that cannot see what it read could not have solved one of them,
+and the arm would have been scored as failing at routing when it had been prevented from routing.
 
 Hop 0 is the five frozen `use_when` sentences. Every table below it prints one row per child with its
 one-liner, which is exactly what `mcp/knowledge_mcp.py` puts in the `why` column. Nothing else is
@@ -32,27 +43,34 @@ not in the harness that measures them.
 """
 import json, os, re, time, urllib.error, urllib.request
 
+READ_CLIP = 6000      # the real server clips too; a walk that reads forty rows must not be free
+
 SYSTEM = (
  "You are finding the documents that answer a question, by walking a routing table.\n\n"
  "At each step you see a table. Each row is either a **table** (open it to see what is inside) or a "
  "**document** (read it — it may contain the answer).\n\n"
  "Reply with one or more commands, one per line, and nothing else:\n"
  "  OPEN <id>    open a table\n"
- "  READ <id>    collect a document as part of the answer\n"
+ "  READ <id>    read a document — its text comes back to you, and it is collected as part of "
+ "the answer\n"
  "  BACK         return to the top-level list of areas and choose differently\n"
  "  DONE         you have collected everything the question needs\n\n"
  "Read every document that contributes to the answer. If the question has two parts that live in "
  "different places, collect both — going BACK to the top and opening another area is the way to do "
- "that, and it is expected rather than a failure. Say DONE only when nothing is missing.")
+ "that, and it is expected rather than a failure. Say DONE only when nothing is missing.\n\n"
+ "Some documents exist to tell you which other document you need — a legend, an index, a table of "
+ "which code means what. Reading one of those and then opening what it points at is a normal way to "
+ "answer, not a detour.")
 
 
 class Agent:
     def __init__(self, rows, children, one_liner, has_body, budget=None, steps=30,
-                 model=None, provider=None):
+                 model=None, provider=None, body=None):
         self.rows = rows                # area -> frozen use_when
         self.children = children        # id -> [child ids]
         self.one_liner = one_liner
         self.has_body = has_body
+        self.body = body or {}          # id -> the document text READ hands back
         self.budget = budget            # returns to hop 0; None is unbounded, and is the default
         self.steps = steps              # turns, a runaway stop
         # Pinned. The first run used gpt-4o and it invented row names that were not in the table —
@@ -69,19 +87,31 @@ class Agent:
 
     def _ask(self, convo):
         if self.provider == "openai":
-            url, hdr = self.base + "/v1/chat/completions", {"Authorization": f"Bearer {self.key}"}
+            url, hdr = self.base + "/v1/chat/completions", {}
             body = {"model": self.model, "max_tokens": 2000,
                     "messages": [{"role": "system", "content": SYSTEM}] + convo}
         else:
             url, hdr = self.base + "/v1/messages", {"x-api-key": self.key, "anthropic-version": "2023-06-01"}
             body = {"model": self.model, "max_tokens": 2000, "system": SYSTEM, "messages": convo}
+        if self.provider == "openai":
+            # Through the shared helper: the newer OpenAI models refuse `max_tokens` and name the
+            # replacement in the error body, and this path was hand-rolling the request and throwing
+            # the body away — a 400 arrived as "HTTP Error 400: Bad Request" with nothing to act on,
+            # three times, because it also retried a 4xx that could not fix itself.
+            from retrieve import openai_post
+            d = openai_post(url, self.key, body)
+            return d["choices"][0]["message"]["content"] or ""
         req = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST",
                                      headers={"Content-Type": "application/json", **hdr})
         for attempt in range(4):
             try:
                 with urllib.request.urlopen(req, timeout=120) as r: d = json.load(r)
-                if self.provider == "openai": return d["choices"][0]["message"]["content"]
                 return "".join(b.get("text", "") for b in d["content"] if b.get("type") == "text")
+            except urllib.error.HTTPError as e:
+                detail = e.read().decode("utf-8", "replace")[:300]
+                if e.code in (429, 500, 502, 503, 529) and attempt < 3:
+                    time.sleep(3 * (attempt + 1)); continue
+                raise RuntimeError(f"agent: HTTP {e.code}: {detail}")
             except Exception as e:
                 if attempt < 3: time.sleep(3 * (attempt + 1)); continue
                 raise RuntimeError(f"agent: {type(e).__name__}: {e}")
@@ -102,7 +132,7 @@ class Agent:
     def walk(self, question):
         convo = [{"role": "user", "content": f"Question: {question}\n\n{self._hop0()}"}]
         collected, visited, log = [], [], []
-        returns, opens, turns = 0, 0, 0
+        returns, opens, turns, read_chars = 0, 0, 0, 0
         while turns < self.steps:
             turns += 1
             out = self._ask(convo)
@@ -126,6 +156,12 @@ class Agent:
                     continue
                 if verb == "READ":
                     collected.append(arg); visited.append(arg)
+                    # Clipped the way the real server clips, and counted, because reading is the
+                    # part of a walk whose cost is invisible in a hop count.
+                    body = self.body.get(arg) or ""
+                    read_chars += len(body[:READ_CLIP])
+                    shown.append(f"`{arg}`:\n\n{body[:READ_CLIP]}"
+                                 if body else f"`{arg}` has no text.")
                 else:
                     opens += 1; visited.append(arg); shown.append(self._table(arg))
             if done: break
@@ -143,5 +179,6 @@ class Agent:
         # count that ends at the ceiling means the ceiling, not the question.
         return {"collected": list(dict.fromkeys(collected)), "visited": visited,
                 "returns": returns, "opens": opens, "turns": turns,
+                "read_chars": read_chars,
                 "hops": opens + returns, "exhausted": turns >= self.steps and not done,
                 "log": log}

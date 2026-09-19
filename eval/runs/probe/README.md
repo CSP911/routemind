@@ -14,3 +14,14 @@ copies that survive.
 What they say is in `../2026-09-19-break-search.md`. The short version: B1 equals fusion recall@20 to
 the second decimal, so the reranker recovers exactly what fusion puts in its top 20 — and a
 paraphrase destroys BM25 (recall@20 0.13) while barely touching the dense side (0.95).
+
+## The collapse dataset
+
+| | |
+|---|---|
+| `2026-09-19-collapse-fusion.json` | all 640 hard questions on fusion, at N=64 |
+| `2026-09-19-collapse-curve.json` | the dose-response sweep, N = 16 · 32 · 64 · 128 · 256 |
+| `2026-09-19-collapse-curve-3-small.json` | the same at N=16 and 64 under `text-embedding-3-small` |
+
+Read alongside `../2026-09-19-hard-b1-sample.json` (80 questions through the real reranker) and
+`../2026-09-19-hard-a1-smoke.json` (three walks, harness end to end). The account is `../../COLLAPSE.md`.

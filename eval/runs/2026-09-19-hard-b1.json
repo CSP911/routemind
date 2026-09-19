@@ -1,0 +1,1841 @@
+{
+ "k": 10,
+ "per_hop": 2,
+ "budget": 0,
+ "steps": 30,
+ "gold": "eval/gold/hard.yaml",
+ "router_model": "claude-opus-5",
+ "rerank_model": "gpt-5",
+ "embed_model": "text-embedding-3-large",
+ "results": [
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-00-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-00-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-01-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-01-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-02-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-02-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-03-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-03-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-10-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 3,
+   "mrr": 0.3333333333333333,
+   "arm": "B1",
+   "id": "h-perdiem-10-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-rates",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-11-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 3,
+   "mrr": 0.3333333333333333,
+   "arm": "B1",
+   "id": "h-perdiem-11-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-12-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 4,
+   "mrr": 0.25,
+   "arm": "B1",
+   "id": "h-perdiem-12-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-13-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 3,
+   "mrr": 0.3333333333333333,
+   "arm": "B1",
+   "id": "h-perdiem-13-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-20-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 4,
+   "mrr": 0.25,
+   "arm": "B1",
+   "id": "h-perdiem-20-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-rates",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-trip-multi-country-band-table",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-21-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 3,
+   "mrr": 0.3333333333333333,
+   "arm": "B1",
+   "id": "h-perdiem-21-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-22-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-22-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "case-overseas-settlement",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-23-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-23-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-30-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "arm": "B1",
+   "id": "h-perdiem-30-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-3-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "overseas-rates",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "case-overseas-settlement",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "expense-travel-agency-approver-role",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-31-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-31-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "expense-travel-agency-approver-role",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-a",
+     "area": "expense"
+    },
+    {
+     "id": "domestic-trip-same-day-overrun",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-32-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-32-p",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "case-overseas-settlement",
+     "area": "expense"
+    },
+    {
+     "id": "case-lost-receipt",
+     "area": "expense"
+    },
+    {
+     "id": "expense-overview",
+     "area": "expense"
+    },
+    {
+     "id": "expense-travel-agency-approver-role",
+     "area": "expense"
+    },
+    {
+     "id": "expense",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-b",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "arm": "B1",
+   "id": "h-perdiem-33-d",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": null,
+   "top": [
+    {
+     "id": "hard-perdiem-7-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-7-b",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-3-d",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-c",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-5-a",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-1-c",
+     "area": "expense"
+    }
+   ]
+  }
+ ]
+}

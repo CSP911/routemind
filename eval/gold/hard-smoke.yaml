@@ -1,0 +1,43 @@
+# Three questions, to prove the harness end to end before it is trusted with a run.
+# Two indirect (the legend-then-row walk) and one direct control.
+
+questions:
+
+- id: h-perdiem-111-d
+  q: "For grade G2, band B2, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
+  A_true: [expense]
+  D_true: [hard-perdiem-row-grade-g2-band-b2-stay-s2]
+  needs: any
+  intent_A: 0
+  intent_B: 0
+  family: perdiem
+  lever: direct
+  support: []
+
+- id: h-perdiem-111-i
+  q: "I'm a team manager — Singapore, four nights — what can I put on a hotel each night, and above what amount do I have to keep the receipt?"
+  A_true: [expense]
+  D_true: [hard-perdiem-row-grade-g2-band-b2-stay-s2]
+  needs: any
+  intent_A: 3
+  intent_B: 0
+  family: perdiem
+  lever: indirect
+  support:
+  - hard-perdiem-legend-grade
+  - hard-perdiem-legend-band
+  - hard-perdiem-legend-stay
+
+- id: h-accrual-222-i
+  q: "In three days a week, been here five years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?"
+  A_true: [attendance]
+  D_true: [hard-accrual-row-type-e3-tenure-t3-site-l3]
+  needs: any
+  intent_A: 3
+  intent_B: 0
+  family: accrual
+  lever: indirect
+  support:
+  - hard-accrual-legend-type
+  - hard-accrual-legend-tenure
+  - hard-accrual-legend-site
