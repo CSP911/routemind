@@ -368,6 +368,12 @@ first would make two things vary at once.
 - Area weights, a floor under them, deliberate decay
 - A drift monitor (sample an area, summarise it, diff against the human sentence). Note that Q2's
   coverage measure is the same instrument used as a measurement rather than a monitor.
+- **Model size as an axis.** Running the router at two or three sizes would answer a real question —
+  whether a written table lets a cheap model route as well as an expensive one without, which is the
+  most practical form the core claim could take. Excluded **on 2026-09-19, before any result was
+  read**: it doubles the runs while the core question is still unanswered, and adding a second thing
+  to vary makes it harder to say what produced the first. Recorded here rather than left unsaid so
+  that "we should have measured that" is visibly a decision and not an omission.
 - **Continuity fields on entities** — `state` (active · superseded · withdrawn), `age`, and a pointer
   to what an entity supersedes. Proposed in the same discussion. Deferred until Q5 has run against
   the baseline tag, for the reason given under Q5. One note for when they come: supersession in the
