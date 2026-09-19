@@ -140,7 +140,10 @@ def main():
     # the retriever are reading the identical corpus and no arm sees a word the others cannot.
     agent = Agent(rows(), children, one_liner, has_body,
                   budget=a.budget or None, steps=a.steps, body=texts)
-    arms = [a.arm] if a.arm else ["B1", "A3", "A1"]
+    # A3 is no longer scheduled. Its job — "is the gain the table or just a smaller haystack?" — is
+    # done more tightly by A1's `scoped` score, which runs retrieval over the exact subtree the walk
+    # opened rather than over two areas a separate call named. `--arm A3` still works.
+    arms = [a.arm] if a.arm else ["B1", "A1"]
 
     out = a.out or f"eval/runs/{time.strftime('%Y-%m-%d')}-pilot.json"
     outp = ROOT.parent / out

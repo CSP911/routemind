@@ -72,6 +72,29 @@ the routing layer.
 
 ---
 
+### A3 is dropped, and its job moves inside A1 (2026-09-19)
+
+A3 — one routing decision, then retrieval inside the areas it named — was the ablation that answered
+*"is the gain the table, or just a smaller haystack?"*. It is no longer run.
+
+Not because the question stopped mattering, but because **A1 already answers it more tightly.** Every
+A1 question is scored twice:
+
+    read     the documents the agent actually collected — what a consumer is handed
+    scoped   retrieval inside the subtree the walk opened, filled to k — the same haystack, without
+             the reading
+
+`scoped` is a stricter control than A3 was. A3 narrowed to two areas chosen by a separate call, so a
+difference could always be attributed to *which* areas it picked; `scoped` runs on the identical
+scope the walk itself produced, for the identical question, in the identical turn. Nothing varies but
+whether the agent was allowed to read.
+
+The harness check already shows the two coming apart: on both indirect questions `scoped` missed and
+`read` hit — the same documents in scope, retrieval failing on them and reading succeeding.
+
+`bench/route.py` stays in the tree. The arm is not deleted, only unscheduled, and one flag brings it
+back if a reader wants the weaker control as well.
+
 ## 4. Corpus
 
 `bench/corpus` — `examples/back-office` (79 documents, 5 areas, all with prose as of 2026-09-14)
