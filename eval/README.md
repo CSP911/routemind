@@ -23,6 +23,7 @@ strangely the question is worded. A corpus built on that principle measures **hi
 | | |
 |---|---|
 | [PREREGISTRATION.md](PREREGISTRATION.md) | the design, fixed before any arm runs — arms, failure definitions, sub-questions, statistics, open parameters, threats |
+| **[OVERVIEW.md](OVERVIEW.md)** | **the argument end to end** — the core question, the sub-questions it forces, the data those demand, the sampling and controls that follow, and the history including the answers that were wrong |
 | **[DESIGN.md](DESIGN.md)** | the experiment as an experiment — variables held and unheld, the sampling frame, pairing, power, and what would falsify the claim |
 | **[DATASETS.md](DATASETS.md)** | **start here if you are new** — every dataset, how it was made, what it is checked against, and where a contributor fits |
 | **[COLLAPSE.md](COLLAPSE.md)** | the collapse threshold, what `hit@10` and `recall@20` mean, and the corpus built to cross it |
