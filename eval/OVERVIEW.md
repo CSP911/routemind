@@ -97,29 +97,63 @@ Full account: **[DESIGN.md](DESIGN.md) §3**.
 
 ---
 
-## 5. Controls, as consequences rather than a checklist
+## 5. Variables — what varies, what is measured, what is pinned
 
-The control list is short because the arms were built to share everything except the thing under test.
+### Independent: what is deliberately varied
 
-**Held, and enforced rather than promised:** one corpus loader, so the string the agent reads is the
-string the retriever indexes; the embedding cache keyed by model, so switching models cannot silently
-reuse the old vectors; the same BM25 constants, the same 20 candidates, the same `k`, the same
-reranker — which is never told which area a candidate came from; byte-identical question text across
-arms; one scoring function, so the arms differ in what they hand it and never in how it is judged;
-sorted child lists, because the agent is shown that list verbatim and it used to come from the
-filesystem.
+| | levels | varied |
+|---|---|---|
+| **arm** | `B1` (no table) · `A1` (walk the table) | **within question** — every question goes through both |
+| **question purpose** | `direct` · `indirect` · `stale` | between questions, by construction |
+| **corpus** | 779 base · 1,114 with the extension | between runs, one environment variable |
+| **family** | perdiem · overtime · accrual · threshold · diligence | between questions — a **block**, not a treatment |
 
-**Not held, with the direction each leans** — because a confound running against the hypothesis is a
-discount and one running with it is a reason to distrust the result:
+`arm × purpose` is the design. Corpus and family are blocks: they exist so an effect can be shown to
+hold in five subjects and at two corpus sizes, not so it can be averaged over them.
 
-| | leans |
+### Dependent: what is measured
+
+| | | |
+|---|---|---|
+| `hit@10` | is an answer document among the ten returned | **primary** |
+| `recall@20` | among the twenty candidates, before reranking | a proved **bound** on the above, and free to compute |
+| `rank` | where the first answer sits; 999 = outside the top 50 | secondary |
+| `routing_hit` | did the arm land in an area that holds an answer | diagnostic — Q3 |
+| `hops` · `read_chars` · tokens in/out/cached | what a walk spent | **the cost side** — Q4 |
+
+A1 is scored twice and both are always printed: **`read`** over what the agent collected, and
+**`scoped`** over retrieval inside the subtree the walk opened. The second is the control that says
+whether the gain was the reading or merely a smaller haystack.
+
+### Controlled: held identical across arms, and enforced rather than promised
+
+| held | how |
 |---|---|
-| router below the model floor (`claude-sonnet-5`) | **against** — makes the intervention look worse |
-| GPT wrote the sweep's questions and GPT reranks them | **with** — inflates the baseline it is compared to |
-| provenance lines dilute short documents | **with** — makes the baseline worse |
-| the reranker is stochastic and was run once | unknown |
+| corpus text | one loader — the string `READ` hands the agent is the string the retriever indexes |
+| embedding model | cache keyed by `model\0text`, so switching models cannot silently reuse old vectors |
+| BM25, candidate count, `k` | one implementation, one constant each |
+| reranker | `gpt-5`, and it is **never told which area a candidate came from** |
+| question text | byte-identical across arms — one gold file, read once |
+| scoring | one function; arms differ in what they hand it, never in how it is judged |
+| table row order | sorted by id — it used to come from `rglob`, so the agent's prompt depended on directory order |
 
-Full table, and how the last two were measured rather than asserted: **[DESIGN.md](DESIGN.md) §2**.
+Two of those were defects found by checking rather than by running: the agent used to read a
+different string than the retriever indexed, and the table it saw was in filesystem order.
+
+### Confounds: not held, with the direction each leans
+
+A confound running **against** the hypothesis is a discount on the result. One running **with** it is
+a reason to distrust the whole thing. The direction matters more than the name.
+
+| | leans | |
+|---|---|---|
+| router below the model floor (`claude-sonnet-5`) | **against** | makes the intervention look worse. Recorded with its evidence; failures a conclusion rests on are re-run on Opus 5 |
+| GPT wrote the lexical sweep's questions, GPT reranks them | **with** | inflates the baseline. Does not touch the 0.02 (templated) but does touch the 0.80 it is compared to |
+| provenance lines dilute short documents | **with** | makes the baseline worse. Measured: the incumbent's share moved 38 → 81 → 64 → 62% as the notice shrank |
+| the reranker is stochastic, run once | unknown | repeat measurement owed |
+| one domain, one fictional company | unknown | external validity is an argument, not a sampling claim |
+
+Full tables and how the measured ones were measured: **[DESIGN.md](DESIGN.md) §2**.
 
 ---
 
