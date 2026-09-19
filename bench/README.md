@@ -35,9 +35,11 @@ unnamed model cannot be compared with anything later.
 
 | | | why |
 |---|---|---|
-| router / agent | `claude-opus-5` | the first run used a weaker model that invented row names — an instruction failure that would have been scored as a routing failure |
-| reranker | `gpt-5` | a different vendor from the router on purpose; a reranker sharing the router's blind spots cannot correct for them |
+| router / agent | `claude-opus-5` | the floor is that class. A weaker model invented row names that were in no table — an instruction failure scored as a routing failure |
+| reranker | GPT-5.6 or better | a different vendor from the router on purpose; one sharing the router's blind spots cannot correct for them |
 | embeddings | `text-embedding-3-large` | also computes two difficulty factors. That overlap is a known limitation, measured: `eval/DIFFICULTY.md` |
+
+**Validation runs at Opus 5 or above, and GPT-5.6 or above.** Below that class a routing failure cannot be told apart from a model that could not follow the format, which is the distinction the whole of Q3 rests on.
 
 Override with `ROUTER_MODEL`, `BENCH_RERANK_MODEL`, `EMBED_MODEL`, `FACTOR_EMBED_MODEL`.
 

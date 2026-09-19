@@ -322,8 +322,24 @@ What a fixture measures is Q5. It is scored on its own questions, not on the gol
 | k | retrieved documents that count as "found" | **10** | pilot |
 | areas per hop | areas the single-decision router may pick | **2** | pilot |
 | hop budget | **returns to hop 0**, not descents — the two are separate budgets, and spending one on both starves the walk before it reads anything | **3** | pilot |
-| router / agent model | pinned and named. A weaker model invented row names that were in no table, which is an instruction failure being scored as a routing failure | **`claude-opus-5`** | pilot |
-| reranker model | a different vendor from the router: one that shares the router's blind spots cannot correct for them | **`gpt-5`** | pilot |
+| router / agent model | **`claude-opus-5`**, and the floor is that class | pilot |
+| reranker model | **GPT-5.6 or better**, a different vendor from the router | pilot |
+
+**The model floor, and why there is one.** Anything the router gets wrong under a weak model is
+three failures wearing one coat: the description never named the subject, the routing decision was
+genuinely hard, or the model could not follow an instruction. Q3 exists to separate the first two,
+and it cannot while the third is in play. An early run used gpt-4o and it invented row names that
+appeared in no table — scored as a routing failure, caused by nothing of the sort.
+
+So validation runs at **Opus 5 or above on the Anthropic side and GPT-5.6 or above on the OpenAI
+side**, and a failure that survives that class is a failure the model cannot be blamed for. The cost
+is speed: the agent calls its model once per hop, three to eight times a question, and Opus 5 spends
+reasoning tokens on each. That is a price paid deliberately for a baseline that does not wobble.
+
+*(GPT-5.6 ships as `luna`, `sol` and `terra`. On a single routing decision all three answered
+identically and within 1.4–1.9 s, with `sol` spending 6 output tokens against 55 for the others —
+suggestive of much less reasoning, which matters where a model is called eight times a question, and
+not enough to choose on. The variant is picked by measurement before the full run, not here.)*
 | `needs` | default when a question spans areas | `any` unless marked `all` | ✓ |
 | labeller | who writes A_true | **open** — see §7 | |
 
