@@ -76,49 +76,56 @@ The notes are data. On the first six walks a fresh reader found two things the d
 — a second "receipt threshold" of a different kind sitting in the same area, and a delegation limit
 of 450 thousand KRW on a twelve-million-won purchase. Neither would have survived being summarised.
 
-## Known defects in this fingerprint, carried deliberately
+## Known defects in this fingerprint — one real, two of them my mistake
 
-These were found by walking agents on `a84ac6cf463a1a6d` and are **not** fixed in it. Fixing a
-corpus mid-campaign is the mistake this whole file exists to prevent: the routing arm would then
-have run on one corpus and the retrieval census on another, which has already happened once. They
-are written down here, they are the work list for the next fingerprint, and each has a `mapcheck`
-rule attached so it cannot come back silently.
+Written from the n=50 sample as three defects. Then R6 was implemented and the 700-question census
+ran, and two of the three turned out not to be defects at all. Both errors were mine and both are
+the same error: **reading the corpus doing what it was built to do and calling it broken.**
 
-**D1 — a forwarding note that knows only two eras.** `hard-moved-overtime` sits in `payroll` and
-says the rule there is "correct only before 2026-01-01". It is not: that page is the *oldest* of
-three versions and was superseded on 2024-07-01, eighteen months before the move it describes. An
-agent that trusts the note and stops answers a 2025 claim from the 2023 rule. Found by `t-overtime-04`,
-independently again by `t-overtime-08`. The same shape applies to every `hard-moved-*` note.
-→ **mapcheck R6**: a forwarding note must name every version of the subject, not only the two either
-side of the move.
+### D1 — a forwarding note that knows only two eras. Real, and it costs hits.
 
-**D2 — a path that bypasses the revision notice.** `purchase-request → approval-threshold` reaches
-the subject without passing anything that says it has been rewritten. Every other path passes a
-revision notice; this one does not, so whether the walk is warned is a property of which row it
-picked.
-→ **mapcheck R7**: every path to a subject with more than one version passes a revision notice.
+`hard-moved-overtime` sits in `payroll` and says overtime premiums moved to attendance on
+2026-01-01, and that the payroll page is correct before then. It is not: that page is the *oldest*
+of three versions and was superseded on 2024-07-01, eighteen months before the move it describes.
+`hard-moved-threshold` has the same shape.
 
-**D3 — two band vocabularies and no cross-walk.** `hard-perdiem-v2` gives lodging caps over bands
-`B1`–`B4` and says the meal allowance and receipt threshold "followed the overseas allowance and
-exchange rate rule unchanged". That older rule, `overseas-rates`, is banded `A`/`B`/`C`. Nothing in
-the corpus maps one onto the other, so a v2-era question that needs a meal figure is unanswerable
-on the evidence — correctly reported as such rather than guessed. Found by `t-perdiem-08`.
-→ **mapcheck R8**: a document that defers to another for part of its answer must be in the same
-qualifier vocabulary as the document it defers to, or carry the mapping.
+**Observed, not predicted.** On the 700-question census a walk read the note, did exactly what it
+said, and answered a 2025 claim from the 2023 rule. It is the only miss in 700. The paragraph that
+used to sit here said D1 "costs calls, not hits", on the evidence of fifty walks that had happened
+to go the other way — a statement about a sample presented as a property of the defect.
 
-**D1 costs hits. The line that used to sit here said it did not, and the census disproved it.**
+→ **`mapcheck` R6**, implemented: a forwarding note must name every date its subject's own revision
+legend names, not only the date it moved. Both notes fail it, both are silent about 2024-07-01.
+Carried in this fingerprint with `./bench/mapcheck.py --carry R6`, which prints them as CARRIED and
+has to be typed every run. Fixed in the next fingerprint.
 
-Written on the n=50 sample, this paragraph claimed D1 and D2 "cost calls, not hits" because both had
-been walked past successfully. That was a statement about fifty walks presented as a property of the
-defect. On the 700-question census a fresh agent took the payroll path on `t-overtime-08`, trusted
-`hard-moved-overtime`, read `payslip-overtime`, and answered a 2025 claim with the 2023 premium
-rates — the exact failure D1 describes, now observed rather than predicted. The sample had drawn the
-agent that happened to go to attendance instead; nothing about the defect changed between the two.
+### D2 — "a path that bypasses the revision notice". Not a defect. Designed.
 
-This is what the census was run for, and it is worth stating plainly because the error is the easy
-one to make: **a defect that a sample walks past is not a defect that costs nothing.** It is a defect
-whose rate the sample was too small to see. D2 is now in the same position — no walk has failed on
-it yet, and that is a smaller claim than it sounds.
+Recorded as: `purchase-request → approval-threshold` reaches the subject without passing anything
+saying it has been rewritten. True — and true of every path to every superseded document, because
+`bench/crowd.py:479` says so on purpose: *"None of them were withdrawn, and the oldest says nothing
+at all about having been replaced."* That silence is the difficulty the `stale-old` questions are
+made of. A rule requiring the old page to announce itself would delete the thing being measured.
 
-D3 remains a genuine gap in the material: there is a question shape the corpus cannot answer, and
-the honest outcome for it is "not found".
+The guarantee the design actually offers is R4 — the notice sits **at the area**, which every walk
+sees at hop 0 before it descends anywhere. R4 passes. There is no R7 and there should not be one.
+
+### D3 — "two band vocabularies and no cross-walk". Real, but I overstated it.
+
+`hard-perdiem-v2` is banded `B1`–`B4` and defers the meal allowance to `overseas-rates`, which is
+banded `A`/`B`/`C`. I wrote that this made a question shape *unanswerable*. It does not:
+`hard-perdiem-legend-band` maps Tokyo→B1, Singapore→B2, Jakarta→B3, Dhaka→B4, and `overseas-rates`
+bands by region, so B2 → Singapore → South-East Asia → Band B resolves in two hops.
+
+What is true is narrower and worth keeping: the two hops are never stated as a route, and a careful
+reader declines to invent one — which is what the walk on `t-perdiem-08` did, correctly, flagging it
+rather than guessing. That is a documentation gap, not a hole in the material, and no rule enforces
+a thing a good reader already handles by refusing.
+
+### What this episode is
+
+Three defects recorded from a sample; one survived contact with a census and a check. The two that
+did not were both cases of me treating a designed property as a fault, and neither would have been
+caught by looking harder at the sample — one needed 700 walks, the other needed reading the
+generator. The run records for this fingerprint say `mapcheck R1–R5 pass`, which was accurate when
+they were written; R6 did not exist yet, and where it matters the census result says what happened.

@@ -49,6 +49,20 @@ WANT=$(cat bench/corpus-hard/.fingerprint 2>/dev/null)
 [ -n "$FP" ] && [ "$FP" = "$WANT" ] || { echo "  fingerprint mismatch: served=$FP want=$WANT"; exit 1; }
 echo "  $GOLD · $ARM · $PAR at a time · fingerprint $FP · hop 0 $BENCH_USE_WHEN"
 
+# The overlay arm needs an endpoint that answers, and a container can wedge on exactly that path
+# while /healthz and /v1/regions both keep returning 200 — which is how it was found, by hand, after
+# it had already been up for seven hours. A census that starts against a wedged endpoint produces
+# 700 walks that cannot keep a working set and no signal that anything was wrong. One call first.
+if [ "$ARM" = "routing+overlay" ]; then
+  local ov
+  ov=$(./bench/rmcli.py overlay create --question "preflight" --member /v1/regions/expense "preflight" 2>&1 \
+       | grep -oE "ov_[0-9-]+_[0-9a-f]+" | head -1)
+  [ -n "$ov" ] || { echo "  overlay endpoint is not answering — restart routemind-bench first"; exit 1; }
+  ./bench/rmcli.py overlay close --id "$ov" --outcome not_found --used /v1/regions/expense >/dev/null 2>&1
+  rm -f "data/bench-overlays/$ov.json"
+  echo "  overlay endpoint: answering"
+fi
+
 local ALL DONE TODO N
 ALL=$(python3 -c "
 import sys, yaml
