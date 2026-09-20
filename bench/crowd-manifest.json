@@ -1,0 +1,6053 @@
+{
+ "sec-hard-perdiem": {
+  "id": "sec-hard-perdiem",
+  "area": "expense",
+  "section": true,
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "parent": "expense"
+ },
+ "hard-perdiem-legend-grade": {
+  "id": "hard-perdiem-legend-grade",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "legend": "grade",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1"
+ },
+ "hard-perdiem-legend-band": {
+  "id": "hard-perdiem-legend-band",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "legend": "band",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1"
+ },
+ "hard-perdiem-legend-stay": {
+  "id": "hard-perdiem-legend-stay",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "legend": "stay",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1"
+ },
+ "hard-perdiem-v2": {
+  "id": "hard-perdiem-v2",
+  "area": "expense",
+  "parent": "expense",
+  "version": 2,
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1"
+ },
+ "hard-perdiem-legend-revision": {
+  "id": "hard-perdiem-legend-revision",
+  "area": "expense",
+  "parent": "expense",
+  "legend": "revision",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1"
+ },
+ "hard-perdiem-row-grade-g1-band-b1-stay-s1": {
+  "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B1",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "A",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b1-stay-s2": {
+  "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B1",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "A",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b1-stay-s3": {
+  "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B1",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "A",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b1-stay-s4": {
+  "id": "hard-perdiem-row-grade-g1-band-b1-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B1",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "A",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b2-stay-s1": {
+  "id": "hard-perdiem-row-grade-g1-band-b2-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B2",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "B",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b2-stay-s2": {
+  "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B2",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "B",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b2-stay-s3": {
+  "id": "hard-perdiem-row-grade-g1-band-b2-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B2",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "B",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b2-stay-s4": {
+  "id": "hard-perdiem-row-grade-g1-band-b2-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B2",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "B",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b3-stay-s1": {
+  "id": "hard-perdiem-row-grade-g1-band-b3-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B3",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "C",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b3-stay-s2": {
+  "id": "hard-perdiem-row-grade-g1-band-b3-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B3",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "C",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b3-stay-s3": {
+  "id": "hard-perdiem-row-grade-g1-band-b3-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B3",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "C",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b3-stay-s4": {
+  "id": "hard-perdiem-row-grade-g1-band-b3-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B3",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "C",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b4-stay-s1": {
+  "id": "hard-perdiem-row-grade-g1-band-b4-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B4",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "D",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b4-stay-s2": {
+  "id": "hard-perdiem-row-grade-g1-band-b4-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B4",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "D",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b4-stay-s3": {
+  "id": "hard-perdiem-row-grade-g1-band-b4-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B4",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "D",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g1-band-b4-stay-s4": {
+  "id": "hard-perdiem-row-grade-g1-band-b4-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G1",
+   "band": "band B4",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "1",
+   "band": "D",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b1-stay-s1": {
+  "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B1",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "A",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b1-stay-s2": {
+  "id": "hard-perdiem-row-grade-g2-band-b1-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B1",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "A",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b1-stay-s3": {
+  "id": "hard-perdiem-row-grade-g2-band-b1-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B1",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "A",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b1-stay-s4": {
+  "id": "hard-perdiem-row-grade-g2-band-b1-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B1",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "A",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b2-stay-s1": {
+  "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B2",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "B",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b2-stay-s2": {
+  "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B2",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "B",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b2-stay-s3": {
+  "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B2",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "B",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b2-stay-s4": {
+  "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B2",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "B",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b3-stay-s1": {
+  "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B3",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "C",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b3-stay-s2": {
+  "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B3",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "C",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b3-stay-s3": {
+  "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B3",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "C",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b3-stay-s4": {
+  "id": "hard-perdiem-row-grade-g2-band-b3-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B3",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "C",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b4-stay-s1": {
+  "id": "hard-perdiem-row-grade-g2-band-b4-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B4",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "D",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b4-stay-s2": {
+  "id": "hard-perdiem-row-grade-g2-band-b4-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B4",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "D",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b4-stay-s3": {
+  "id": "hard-perdiem-row-grade-g2-band-b4-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B4",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "D",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g2-band-b4-stay-s4": {
+  "id": "hard-perdiem-row-grade-g2-band-b4-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G2",
+   "band": "band B4",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "3",
+   "band": "D",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b1-stay-s1": {
+  "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B1",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "A",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b1-stay-s2": {
+  "id": "hard-perdiem-row-grade-g3-band-b1-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B1",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "A",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b1-stay-s3": {
+  "id": "hard-perdiem-row-grade-g3-band-b1-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B1",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "A",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b1-stay-s4": {
+  "id": "hard-perdiem-row-grade-g3-band-b1-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B1",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "A",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b2-stay-s1": {
+  "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B2",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "B",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b2-stay-s2": {
+  "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B2",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "B",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b2-stay-s3": {
+  "id": "hard-perdiem-row-grade-g3-band-b2-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B2",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "B",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b2-stay-s4": {
+  "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B2",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "B",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b3-stay-s1": {
+  "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B3",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "C",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b3-stay-s2": {
+  "id": "hard-perdiem-row-grade-g3-band-b3-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B3",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "C",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b3-stay-s3": {
+  "id": "hard-perdiem-row-grade-g3-band-b3-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B3",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "C",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b3-stay-s4": {
+  "id": "hard-perdiem-row-grade-g3-band-b3-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B3",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "C",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b4-stay-s1": {
+  "id": "hard-perdiem-row-grade-g3-band-b4-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B4",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "D",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b4-stay-s2": {
+  "id": "hard-perdiem-row-grade-g3-band-b4-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B4",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "D",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b4-stay-s3": {
+  "id": "hard-perdiem-row-grade-g3-band-b4-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B4",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "D",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g3-band-b4-stay-s4": {
+  "id": "hard-perdiem-row-grade-g3-band-b4-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G3",
+   "band": "band B4",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "5",
+   "band": "D",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b1-stay-s1": {
+  "id": "hard-perdiem-row-grade-g4-band-b1-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B1",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "A",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b1-stay-s2": {
+  "id": "hard-perdiem-row-grade-g4-band-b1-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B1",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "A",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b1-stay-s3": {
+  "id": "hard-perdiem-row-grade-g4-band-b1-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B1",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "A",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b1-stay-s4": {
+  "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B1",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "A",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b2-stay-s1": {
+  "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B2",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "B",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b2-stay-s2": {
+  "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B2",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "B",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b2-stay-s3": {
+  "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B2",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "B",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b2-stay-s4": {
+  "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B2",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "B",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b3-stay-s1": {
+  "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B3",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "C",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b3-stay-s2": {
+  "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B3",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "C",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b3-stay-s3": {
+  "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B3",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "C",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b3-stay-s4": {
+  "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B3",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "C",
+   "stay": "over 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b4-stay-s1": {
+  "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B4",
+   "stay": "stay S1"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "D",
+   "stay": "1 to 2 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b4-stay-s2": {
+  "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B4",
+   "stay": "stay S2"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "D",
+   "stay": "3 to 5 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b4-stay-s3": {
+  "id": "hard-perdiem-row-grade-g4-band-b4-stay-s3",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B4",
+   "stay": "stay S3"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "D",
+   "stay": "6 to 10 nights"
+  }
+ },
+ "hard-perdiem-row-grade-g4-band-b4-stay-s4": {
+  "id": "hard-perdiem-row-grade-g4-band-b4-stay-s4",
+  "area": "expense",
+  "parent": "sec-hard-perdiem",
+  "cluster": "Overseas per-diem",
+  "family": "perdiem",
+  "stratum": "S1",
+  "axes": {
+   "grade": "grade G4",
+   "band": "band B4",
+   "stay": "stay S4"
+  },
+  "meaning": {
+   "grade": "7",
+   "band": "D",
+   "stay": "over 10 nights"
+  }
+ },
+ "sec-hard-overtime": {
+  "id": "sec-hard-overtime",
+  "area": "attendance",
+  "section": true,
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "parent": "attendance"
+ },
+ "hard-overtime-legend-day": {
+  "id": "hard-overtime-legend-day",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "legend": "day",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1"
+ },
+ "hard-overtime-legend-hours": {
+  "id": "hard-overtime-legend-hours",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "legend": "hours",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1"
+ },
+ "hard-overtime-legend-place": {
+  "id": "hard-overtime-legend-place",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "legend": "place",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1"
+ },
+ "hard-overtime-v2": {
+  "id": "hard-overtime-v2",
+  "area": "attendance",
+  "parent": "attendance",
+  "version": 2,
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1"
+ },
+ "hard-overtime-legend-revision": {
+  "id": "hard-overtime-legend-revision",
+  "area": "attendance",
+  "parent": "attendance",
+  "legend": "revision",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1"
+ },
+ "hard-overtime-row-day-d1-hours-h1-place-p1": {
+  "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H1",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "first 2 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h1-place-p2": {
+  "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H1",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "first 2 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h1-place-p3": {
+  "id": "hard-overtime-row-day-d1-hours-h1-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H1",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "first 2 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h1-place-p4": {
+  "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H1",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "first 2 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h2-place-p1": {
+  "id": "hard-overtime-row-day-d1-hours-h2-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H2",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "2 to 4 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h2-place-p2": {
+  "id": "hard-overtime-row-day-d1-hours-h2-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H2",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "2 to 4 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h2-place-p3": {
+  "id": "hard-overtime-row-day-d1-hours-h2-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H2",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "2 to 4 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h2-place-p4": {
+  "id": "hard-overtime-row-day-d1-hours-h2-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H2",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "2 to 4 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h3-place-p1": {
+  "id": "hard-overtime-row-day-d1-hours-h3-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H3",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "4 to 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h3-place-p2": {
+  "id": "hard-overtime-row-day-d1-hours-h3-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H3",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "4 to 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h3-place-p3": {
+  "id": "hard-overtime-row-day-d1-hours-h3-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H3",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "4 to 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h3-place-p4": {
+  "id": "hard-overtime-row-day-d1-hours-h3-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H3",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "4 to 8 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h4-place-p1": {
+  "id": "hard-overtime-row-day-d1-hours-h4-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H4",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "over 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h4-place-p2": {
+  "id": "hard-overtime-row-day-d1-hours-h4-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H4",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "over 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h4-place-p3": {
+  "id": "hard-overtime-row-day-d1-hours-h4-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H4",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "over 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d1-hours-h4-place-p4": {
+  "id": "hard-overtime-row-day-d1-hours-h4-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D1",
+   "hours": "hours H4",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekday",
+   "hours": "over 8 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h1-place-p1": {
+  "id": "hard-overtime-row-day-d2-hours-h1-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H1",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "first 2 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h1-place-p2": {
+  "id": "hard-overtime-row-day-d2-hours-h1-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H1",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "first 2 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h1-place-p3": {
+  "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H1",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "first 2 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h1-place-p4": {
+  "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H1",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "first 2 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h2-place-p1": {
+  "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H2",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "2 to 4 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h2-place-p2": {
+  "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H2",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "2 to 4 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h2-place-p3": {
+  "id": "hard-overtime-row-day-d2-hours-h2-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H2",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "2 to 4 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h2-place-p4": {
+  "id": "hard-overtime-row-day-d2-hours-h2-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H2",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "2 to 4 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h3-place-p1": {
+  "id": "hard-overtime-row-day-d2-hours-h3-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H3",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "4 to 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h3-place-p2": {
+  "id": "hard-overtime-row-day-d2-hours-h3-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H3",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "4 to 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h3-place-p3": {
+  "id": "hard-overtime-row-day-d2-hours-h3-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H3",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "4 to 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h3-place-p4": {
+  "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H3",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "4 to 8 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h4-place-p1": {
+  "id": "hard-overtime-row-day-d2-hours-h4-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H4",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "over 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h4-place-p2": {
+  "id": "hard-overtime-row-day-d2-hours-h4-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H4",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "over 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h4-place-p3": {
+  "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H4",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "over 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d2-hours-h4-place-p4": {
+  "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D2",
+   "hours": "hours H4",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "weekend",
+   "hours": "over 8 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h1-place-p1": {
+  "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H1",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "first 2 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h1-place-p2": {
+  "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H1",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "first 2 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h1-place-p3": {
+  "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H1",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "first 2 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h1-place-p4": {
+  "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H1",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "first 2 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h2-place-p1": {
+  "id": "hard-overtime-row-day-d3-hours-h2-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H2",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "2 to 4 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h2-place-p2": {
+  "id": "hard-overtime-row-day-d3-hours-h2-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H2",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "2 to 4 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h2-place-p3": {
+  "id": "hard-overtime-row-day-d3-hours-h2-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H2",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "2 to 4 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h2-place-p4": {
+  "id": "hard-overtime-row-day-d3-hours-h2-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H2",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "2 to 4 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h3-place-p1": {
+  "id": "hard-overtime-row-day-d3-hours-h3-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H3",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "4 to 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h3-place-p2": {
+  "id": "hard-overtime-row-day-d3-hours-h3-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H3",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "4 to 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h3-place-p3": {
+  "id": "hard-overtime-row-day-d3-hours-h3-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H3",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "4 to 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h3-place-p4": {
+  "id": "hard-overtime-row-day-d3-hours-h3-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H3",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "4 to 8 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h4-place-p1": {
+  "id": "hard-overtime-row-day-d3-hours-h4-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H4",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "over 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h4-place-p2": {
+  "id": "hard-overtime-row-day-d3-hours-h4-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H4",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "over 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h4-place-p3": {
+  "id": "hard-overtime-row-day-d3-hours-h4-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H4",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "over 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d3-hours-h4-place-p4": {
+  "id": "hard-overtime-row-day-d3-hours-h4-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D3",
+   "hours": "hours H4",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "public holiday",
+   "hours": "over 8 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h1-place-p1": {
+  "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H1",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "first 2 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h1-place-p2": {
+  "id": "hard-overtime-row-day-d4-hours-h1-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H1",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "first 2 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h1-place-p3": {
+  "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H1",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "first 2 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h1-place-p4": {
+  "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H1",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "first 2 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h2-place-p1": {
+  "id": "hard-overtime-row-day-d4-hours-h2-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H2",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "2 to 4 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h2-place-p2": {
+  "id": "hard-overtime-row-day-d4-hours-h2-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H2",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "2 to 4 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h2-place-p3": {
+  "id": "hard-overtime-row-day-d4-hours-h2-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H2",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "2 to 4 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h2-place-p4": {
+  "id": "hard-overtime-row-day-d4-hours-h2-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H2",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "2 to 4 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h3-place-p1": {
+  "id": "hard-overtime-row-day-d4-hours-h3-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H3",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "4 to 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h3-place-p2": {
+  "id": "hard-overtime-row-day-d4-hours-h3-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H3",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "4 to 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h3-place-p3": {
+  "id": "hard-overtime-row-day-d4-hours-h3-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H3",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "4 to 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h3-place-p4": {
+  "id": "hard-overtime-row-day-d4-hours-h3-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H3",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "4 to 8 hours",
+   "place": "remote"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h4-place-p1": {
+  "id": "hard-overtime-row-day-d4-hours-h4-place-p1",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H4",
+   "place": "place P1"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "over 8 hours",
+   "place": "on site"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h4-place-p2": {
+  "id": "hard-overtime-row-day-d4-hours-h4-place-p2",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H4",
+   "place": "place P2"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "over 8 hours",
+   "place": "at a client"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h4-place-p3": {
+  "id": "hard-overtime-row-day-d4-hours-h4-place-p3",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H4",
+   "place": "place P3"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "over 8 hours",
+   "place": "on standby"
+  }
+ },
+ "hard-overtime-row-day-d4-hours-h4-place-p4": {
+  "id": "hard-overtime-row-day-d4-hours-h4-place-p4",
+  "area": "attendance",
+  "parent": "sec-hard-overtime",
+  "cluster": "Overtime rate",
+  "family": "overtime",
+  "stratum": "S1",
+  "axes": {
+   "day": "day D4",
+   "hours": "hours H4",
+   "place": "place P4"
+  },
+  "meaning": {
+   "day": "night",
+   "hours": "over 8 hours",
+   "place": "remote"
+  }
+ },
+ "sec-hard-accrual": {
+  "id": "sec-hard-accrual",
+  "area": "attendance",
+  "section": true,
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "parent": "attendance"
+ },
+ "hard-accrual-legend-type": {
+  "id": "hard-accrual-legend-type",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "legend": "type",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1"
+ },
+ "hard-accrual-legend-tenure": {
+  "id": "hard-accrual-legend-tenure",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "legend": "tenure",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1"
+ },
+ "hard-accrual-legend-site": {
+  "id": "hard-accrual-legend-site",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "legend": "site",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1"
+ },
+ "hard-accrual-v2": {
+  "id": "hard-accrual-v2",
+  "area": "attendance",
+  "parent": "attendance",
+  "version": 2,
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1"
+ },
+ "hard-accrual-legend-revision": {
+  "id": "hard-accrual-legend-revision",
+  "area": "attendance",
+  "parent": "attendance",
+  "legend": "revision",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1"
+ },
+ "hard-accrual-row-type-e1-tenure-t1-site-l1": {
+  "id": "hard-accrual-row-type-e1-tenure-t1-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T1",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "under 1 year",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t1-site-l2": {
+  "id": "hard-accrual-row-type-e1-tenure-t1-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T1",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "under 1 year",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t1-site-l3": {
+  "id": "hard-accrual-row-type-e1-tenure-t1-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T1",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "under 1 year",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t1-site-l4": {
+  "id": "hard-accrual-row-type-e1-tenure-t1-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T1",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "under 1 year",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t2-site-l1": {
+  "id": "hard-accrual-row-type-e1-tenure-t2-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T2",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "1 to 3 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t2-site-l2": {
+  "id": "hard-accrual-row-type-e1-tenure-t2-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T2",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "1 to 3 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t2-site-l3": {
+  "id": "hard-accrual-row-type-e1-tenure-t2-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T2",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "1 to 3 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t2-site-l4": {
+  "id": "hard-accrual-row-type-e1-tenure-t2-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T2",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "1 to 3 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t3-site-l1": {
+  "id": "hard-accrual-row-type-e1-tenure-t3-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T3",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "3 to 7 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t3-site-l2": {
+  "id": "hard-accrual-row-type-e1-tenure-t3-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T3",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "3 to 7 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t3-site-l3": {
+  "id": "hard-accrual-row-type-e1-tenure-t3-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T3",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "3 to 7 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t3-site-l4": {
+  "id": "hard-accrual-row-type-e1-tenure-t3-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T3",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "3 to 7 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t4-site-l1": {
+  "id": "hard-accrual-row-type-e1-tenure-t4-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T4",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "7 years or more",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t4-site-l2": {
+  "id": "hard-accrual-row-type-e1-tenure-t4-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T4",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "7 years or more",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t4-site-l3": {
+  "id": "hard-accrual-row-type-e1-tenure-t4-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T4",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "7 years or more",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e1-tenure-t4-site-l4": {
+  "id": "hard-accrual-row-type-e1-tenure-t4-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E1",
+   "tenure": "tenure T4",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "permanent",
+   "tenure": "7 years or more",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t1-site-l1": {
+  "id": "hard-accrual-row-type-e2-tenure-t1-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T1",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "under 1 year",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t1-site-l2": {
+  "id": "hard-accrual-row-type-e2-tenure-t1-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T1",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "under 1 year",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t1-site-l3": {
+  "id": "hard-accrual-row-type-e2-tenure-t1-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T1",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "under 1 year",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t1-site-l4": {
+  "id": "hard-accrual-row-type-e2-tenure-t1-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T1",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "under 1 year",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t2-site-l1": {
+  "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T2",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "1 to 3 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t2-site-l2": {
+  "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T2",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "1 to 3 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t2-site-l3": {
+  "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T2",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "1 to 3 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t2-site-l4": {
+  "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T2",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "1 to 3 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t3-site-l1": {
+  "id": "hard-accrual-row-type-e2-tenure-t3-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T3",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "3 to 7 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t3-site-l2": {
+  "id": "hard-accrual-row-type-e2-tenure-t3-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T3",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "3 to 7 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t3-site-l3": {
+  "id": "hard-accrual-row-type-e2-tenure-t3-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T3",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "3 to 7 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t3-site-l4": {
+  "id": "hard-accrual-row-type-e2-tenure-t3-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T3",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "3 to 7 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t4-site-l1": {
+  "id": "hard-accrual-row-type-e2-tenure-t4-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T4",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "7 years or more",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t4-site-l2": {
+  "id": "hard-accrual-row-type-e2-tenure-t4-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T4",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "7 years or more",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t4-site-l3": {
+  "id": "hard-accrual-row-type-e2-tenure-t4-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T4",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "7 years or more",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e2-tenure-t4-site-l4": {
+  "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E2",
+   "tenure": "tenure T4",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "fixed-term",
+   "tenure": "7 years or more",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t1-site-l1": {
+  "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T1",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "under 1 year",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t1-site-l2": {
+  "id": "hard-accrual-row-type-e3-tenure-t1-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T1",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "under 1 year",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t1-site-l3": {
+  "id": "hard-accrual-row-type-e3-tenure-t1-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T1",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "under 1 year",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t1-site-l4": {
+  "id": "hard-accrual-row-type-e3-tenure-t1-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T1",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "under 1 year",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t2-site-l1": {
+  "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T2",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "1 to 3 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t2-site-l2": {
+  "id": "hard-accrual-row-type-e3-tenure-t2-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T2",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "1 to 3 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t2-site-l3": {
+  "id": "hard-accrual-row-type-e3-tenure-t2-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T2",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "1 to 3 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t2-site-l4": {
+  "id": "hard-accrual-row-type-e3-tenure-t2-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T2",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "1 to 3 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t3-site-l1": {
+  "id": "hard-accrual-row-type-e3-tenure-t3-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T3",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "3 to 7 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t3-site-l2": {
+  "id": "hard-accrual-row-type-e3-tenure-t3-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T3",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "3 to 7 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t3-site-l3": {
+  "id": "hard-accrual-row-type-e3-tenure-t3-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T3",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "3 to 7 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t3-site-l4": {
+  "id": "hard-accrual-row-type-e3-tenure-t3-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T3",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "3 to 7 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t4-site-l1": {
+  "id": "hard-accrual-row-type-e3-tenure-t4-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T4",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "7 years or more",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t4-site-l2": {
+  "id": "hard-accrual-row-type-e3-tenure-t4-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T4",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "7 years or more",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t4-site-l3": {
+  "id": "hard-accrual-row-type-e3-tenure-t4-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T4",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "7 years or more",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e3-tenure-t4-site-l4": {
+  "id": "hard-accrual-row-type-e3-tenure-t4-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E3",
+   "tenure": "tenure T4",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "part-time",
+   "tenure": "7 years or more",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t1-site-l1": {
+  "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T1",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "under 1 year",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t1-site-l2": {
+  "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T1",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "under 1 year",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t1-site-l3": {
+  "id": "hard-accrual-row-type-e4-tenure-t1-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T1",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "under 1 year",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t1-site-l4": {
+  "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T1",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "under 1 year",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t2-site-l1": {
+  "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T2",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "1 to 3 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t2-site-l2": {
+  "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T2",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "1 to 3 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t2-site-l3": {
+  "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T2",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "1 to 3 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t2-site-l4": {
+  "id": "hard-accrual-row-type-e4-tenure-t2-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T2",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "1 to 3 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t3-site-l1": {
+  "id": "hard-accrual-row-type-e4-tenure-t3-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T3",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "3 to 7 years",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t3-site-l2": {
+  "id": "hard-accrual-row-type-e4-tenure-t3-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T3",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "3 to 7 years",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t3-site-l3": {
+  "id": "hard-accrual-row-type-e4-tenure-t3-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T3",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "3 to 7 years",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t3-site-l4": {
+  "id": "hard-accrual-row-type-e4-tenure-t3-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T3",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "3 to 7 years",
+   "site": "home-based"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t4-site-l1": {
+  "id": "hard-accrual-row-type-e4-tenure-t4-site-l1",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T4",
+   "site": "site L1"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "7 years or more",
+   "site": "head office"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t4-site-l2": {
+  "id": "hard-accrual-row-type-e4-tenure-t4-site-l2",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T4",
+   "site": "site L2"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "7 years or more",
+   "site": "branch"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t4-site-l3": {
+  "id": "hard-accrual-row-type-e4-tenure-t4-site-l3",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T4",
+   "site": "site L3"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "7 years or more",
+   "site": "overseas"
+  }
+ },
+ "hard-accrual-row-type-e4-tenure-t4-site-l4": {
+  "id": "hard-accrual-row-type-e4-tenure-t4-site-l4",
+  "area": "attendance",
+  "parent": "sec-hard-accrual",
+  "cluster": "Leave accrual",
+  "family": "accrual",
+  "stratum": "S1",
+  "axes": {
+   "type": "type E4",
+   "tenure": "tenure T4",
+   "site": "site L4"
+  },
+  "meaning": {
+   "type": "secondee",
+   "tenure": "7 years or more",
+   "site": "home-based"
+  }
+ },
+ "sec-hard-threshold": {
+  "id": "sec-hard-threshold",
+  "area": "procurement",
+  "section": true,
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "parent": "procurement"
+ },
+ "hard-threshold-legend-category": {
+  "id": "hard-threshold-legend-category",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "legend": "category",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1"
+ },
+ "hard-threshold-legend-amount": {
+  "id": "hard-threshold-legend-amount",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "legend": "amount",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1"
+ },
+ "hard-threshold-legend-term": {
+  "id": "hard-threshold-legend-term",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "legend": "term",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1"
+ },
+ "hard-threshold-v2": {
+  "id": "hard-threshold-v2",
+  "area": "procurement",
+  "parent": "procurement",
+  "version": 2,
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1"
+ },
+ "hard-threshold-legend-revision": {
+  "id": "hard-threshold-legend-revision",
+  "area": "procurement",
+  "parent": "procurement",
+  "legend": "revision",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1"
+ },
+ "hard-threshold-row-category-c1-amount-v1-term-m1": {
+  "id": "hard-threshold-row-category-c1-amount-v1-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V1",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "under 1m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v1-term-m2": {
+  "id": "hard-threshold-row-category-c1-amount-v1-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V1",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "under 1m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v1-term-m3": {
+  "id": "hard-threshold-row-category-c1-amount-v1-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V1",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "under 1m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v1-term-m4": {
+  "id": "hard-threshold-row-category-c1-amount-v1-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V1",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "under 1m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v2-term-m1": {
+  "id": "hard-threshold-row-category-c1-amount-v2-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V2",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "1m to 5m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v2-term-m2": {
+  "id": "hard-threshold-row-category-c1-amount-v2-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V2",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "1m to 5m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v2-term-m3": {
+  "id": "hard-threshold-row-category-c1-amount-v2-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V2",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "1m to 5m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v2-term-m4": {
+  "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V2",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "1m to 5m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v3-term-m1": {
+  "id": "hard-threshold-row-category-c1-amount-v3-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V3",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "5m to 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v3-term-m2": {
+  "id": "hard-threshold-row-category-c1-amount-v3-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V3",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "5m to 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v3-term-m3": {
+  "id": "hard-threshold-row-category-c1-amount-v3-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V3",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "5m to 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v3-term-m4": {
+  "id": "hard-threshold-row-category-c1-amount-v3-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V3",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "5m to 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v4-term-m1": {
+  "id": "hard-threshold-row-category-c1-amount-v4-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V4",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "over 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v4-term-m2": {
+  "id": "hard-threshold-row-category-c1-amount-v4-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V4",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "over 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v4-term-m3": {
+  "id": "hard-threshold-row-category-c1-amount-v4-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V4",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "over 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c1-amount-v4-term-m4": {
+  "id": "hard-threshold-row-category-c1-amount-v4-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C1",
+   "amount": "amount V4",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "equipment",
+   "amount": "over 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v1-term-m1": {
+  "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V1",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "under 1m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v1-term-m2": {
+  "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V1",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "under 1m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v1-term-m3": {
+  "id": "hard-threshold-row-category-c2-amount-v1-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V1",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "under 1m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v1-term-m4": {
+  "id": "hard-threshold-row-category-c2-amount-v1-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V1",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "under 1m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v2-term-m1": {
+  "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V2",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "1m to 5m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v2-term-m2": {
+  "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V2",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "1m to 5m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v2-term-m3": {
+  "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V2",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "1m to 5m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v2-term-m4": {
+  "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V2",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "1m to 5m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v3-term-m1": {
+  "id": "hard-threshold-row-category-c2-amount-v3-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V3",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "5m to 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v3-term-m2": {
+  "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V3",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "5m to 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v3-term-m3": {
+  "id": "hard-threshold-row-category-c2-amount-v3-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V3",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "5m to 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v3-term-m4": {
+  "id": "hard-threshold-row-category-c2-amount-v3-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V3",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "5m to 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v4-term-m1": {
+  "id": "hard-threshold-row-category-c2-amount-v4-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V4",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "over 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v4-term-m2": {
+  "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V4",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "over 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v4-term-m3": {
+  "id": "hard-threshold-row-category-c2-amount-v4-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V4",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "over 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c2-amount-v4-term-m4": {
+  "id": "hard-threshold-row-category-c2-amount-v4-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C2",
+   "amount": "amount V4",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "services",
+   "amount": "over 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v1-term-m1": {
+  "id": "hard-threshold-row-category-c3-amount-v1-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V1",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "under 1m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v1-term-m2": {
+  "id": "hard-threshold-row-category-c3-amount-v1-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V1",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "under 1m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v1-term-m3": {
+  "id": "hard-threshold-row-category-c3-amount-v1-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V1",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "under 1m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v1-term-m4": {
+  "id": "hard-threshold-row-category-c3-amount-v1-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V1",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "under 1m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v2-term-m1": {
+  "id": "hard-threshold-row-category-c3-amount-v2-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V2",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "1m to 5m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v2-term-m2": {
+  "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V2",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "1m to 5m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v2-term-m3": {
+  "id": "hard-threshold-row-category-c3-amount-v2-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V2",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "1m to 5m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v2-term-m4": {
+  "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V2",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "1m to 5m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v3-term-m1": {
+  "id": "hard-threshold-row-category-c3-amount-v3-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V3",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "5m to 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v3-term-m2": {
+  "id": "hard-threshold-row-category-c3-amount-v3-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V3",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "5m to 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v3-term-m3": {
+  "id": "hard-threshold-row-category-c3-amount-v3-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V3",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "5m to 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v3-term-m4": {
+  "id": "hard-threshold-row-category-c3-amount-v3-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V3",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "5m to 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v4-term-m1": {
+  "id": "hard-threshold-row-category-c3-amount-v4-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V4",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "over 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v4-term-m2": {
+  "id": "hard-threshold-row-category-c3-amount-v4-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V4",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "over 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v4-term-m3": {
+  "id": "hard-threshold-row-category-c3-amount-v4-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V4",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "over 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c3-amount-v4-term-m4": {
+  "id": "hard-threshold-row-category-c3-amount-v4-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C3",
+   "amount": "amount V4",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "travel",
+   "amount": "over 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v1-term-m1": {
+  "id": "hard-threshold-row-category-c4-amount-v1-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V1",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "under 1m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v1-term-m2": {
+  "id": "hard-threshold-row-category-c4-amount-v1-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V1",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "under 1m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v1-term-m3": {
+  "id": "hard-threshold-row-category-c4-amount-v1-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V1",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "under 1m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v1-term-m4": {
+  "id": "hard-threshold-row-category-c4-amount-v1-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V1",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "under 1m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v2-term-m1": {
+  "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V2",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "1m to 5m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v2-term-m2": {
+  "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V2",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "1m to 5m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v2-term-m3": {
+  "id": "hard-threshold-row-category-c4-amount-v2-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V2",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "1m to 5m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v2-term-m4": {
+  "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V2",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "1m to 5m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v3-term-m1": {
+  "id": "hard-threshold-row-category-c4-amount-v3-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V3",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "5m to 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v3-term-m2": {
+  "id": "hard-threshold-row-category-c4-amount-v3-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V3",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "5m to 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v3-term-m3": {
+  "id": "hard-threshold-row-category-c4-amount-v3-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V3",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "5m to 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v3-term-m4": {
+  "id": "hard-threshold-row-category-c4-amount-v3-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V3",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "5m to 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v4-term-m1": {
+  "id": "hard-threshold-row-category-c4-amount-v4-term-m1",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V4",
+   "term": "term M1"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "over 20m KRW",
+   "term": "one-off"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v4-term-m2": {
+  "id": "hard-threshold-row-category-c4-amount-v4-term-m2",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V4",
+   "term": "term M2"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "over 20m KRW",
+   "term": "annual"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v4-term-m3": {
+  "id": "hard-threshold-row-category-c4-amount-v4-term-m3",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V4",
+   "term": "term M3"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "over 20m KRW",
+   "term": "multi-year"
+  }
+ },
+ "hard-threshold-row-category-c4-amount-v4-term-m4": {
+  "id": "hard-threshold-row-category-c4-amount-v4-term-m4",
+  "area": "procurement",
+  "parent": "sec-hard-threshold",
+  "cluster": "Approval threshold",
+  "family": "threshold",
+  "stratum": "S1",
+  "axes": {
+   "category": "category C4",
+   "amount": "amount V4",
+   "term": "term M4"
+  },
+  "meaning": {
+   "category": "entertainment",
+   "amount": "over 20m KRW",
+   "term": "open-ended"
+  }
+ },
+ "sec-hard-diligence": {
+  "id": "sec-hard-diligence",
+  "area": "procurement",
+  "section": true,
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "parent": "procurement"
+ },
+ "hard-diligence-legend-origin": {
+  "id": "hard-diligence-legend-origin",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "legend": "origin",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1"
+ },
+ "hard-diligence-legend-value": {
+  "id": "hard-diligence-legend-value",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "legend": "value",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1"
+ },
+ "hard-diligence-legend-goods": {
+  "id": "hard-diligence-legend-goods",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "legend": "goods",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1"
+ },
+ "hard-diligence-v2": {
+  "id": "hard-diligence-v2",
+  "area": "procurement",
+  "parent": "procurement",
+  "version": 2,
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1"
+ },
+ "hard-diligence-legend-revision": {
+  "id": "hard-diligence-legend-revision",
+  "area": "procurement",
+  "parent": "procurement",
+  "legend": "revision",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1"
+ },
+ "hard-diligence-row-origin-o1-value-w1-goods-k1": {
+  "id": "hard-diligence-row-origin-o1-value-w1-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W1",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "under 10m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w1-goods-k2": {
+  "id": "hard-diligence-row-origin-o1-value-w1-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W1",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "under 10m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w1-goods-k3": {
+  "id": "hard-diligence-row-origin-o1-value-w1-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W1",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "under 10m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w1-goods-k4": {
+  "id": "hard-diligence-row-origin-o1-value-w1-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W1",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "under 10m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w2-goods-k1": {
+  "id": "hard-diligence-row-origin-o1-value-w2-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W2",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "10m to 100m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w2-goods-k2": {
+  "id": "hard-diligence-row-origin-o1-value-w2-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W2",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "10m to 100m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w2-goods-k3": {
+  "id": "hard-diligence-row-origin-o1-value-w2-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W2",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "10m to 100m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w2-goods-k4": {
+  "id": "hard-diligence-row-origin-o1-value-w2-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W2",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "10m to 100m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w3-goods-k1": {
+  "id": "hard-diligence-row-origin-o1-value-w3-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W3",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "100m to 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w3-goods-k2": {
+  "id": "hard-diligence-row-origin-o1-value-w3-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W3",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "100m to 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w3-goods-k3": {
+  "id": "hard-diligence-row-origin-o1-value-w3-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W3",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "100m to 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w3-goods-k4": {
+  "id": "hard-diligence-row-origin-o1-value-w3-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W3",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "100m to 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w4-goods-k1": {
+  "id": "hard-diligence-row-origin-o1-value-w4-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W4",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "over 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w4-goods-k2": {
+  "id": "hard-diligence-row-origin-o1-value-w4-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W4",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "over 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w4-goods-k3": {
+  "id": "hard-diligence-row-origin-o1-value-w4-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W4",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "over 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o1-value-w4-goods-k4": {
+  "id": "hard-diligence-row-origin-o1-value-w4-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O1",
+   "value": "value W4",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "domestic",
+   "value": "over 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w1-goods-k1": {
+  "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W1",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "under 10m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w1-goods-k2": {
+  "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W1",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "under 10m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w1-goods-k3": {
+  "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W1",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "under 10m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w1-goods-k4": {
+  "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W1",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "under 10m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w2-goods-k1": {
+  "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W2",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "10m to 100m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w2-goods-k2": {
+  "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W2",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "10m to 100m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w2-goods-k3": {
+  "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W2",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "10m to 100m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w2-goods-k4": {
+  "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W2",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "10m to 100m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w3-goods-k1": {
+  "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W3",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "100m to 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w3-goods-k2": {
+  "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W3",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "100m to 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w3-goods-k3": {
+  "id": "hard-diligence-row-origin-o2-value-w3-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W3",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "100m to 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w3-goods-k4": {
+  "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W3",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "100m to 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w4-goods-k1": {
+  "id": "hard-diligence-row-origin-o2-value-w4-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W4",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "over 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w4-goods-k2": {
+  "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W4",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "over 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w4-goods-k3": {
+  "id": "hard-diligence-row-origin-o2-value-w4-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W4",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "over 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o2-value-w4-goods-k4": {
+  "id": "hard-diligence-row-origin-o2-value-w4-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O2",
+   "value": "value W4",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "EU",
+   "value": "over 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w1-goods-k1": {
+  "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W1",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "under 10m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w1-goods-k2": {
+  "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W1",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "under 10m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w1-goods-k3": {
+  "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W1",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "under 10m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w1-goods-k4": {
+  "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W1",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "under 10m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w2-goods-k1": {
+  "id": "hard-diligence-row-origin-o3-value-w2-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W2",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "10m to 100m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w2-goods-k2": {
+  "id": "hard-diligence-row-origin-o3-value-w2-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W2",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "10m to 100m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w2-goods-k3": {
+  "id": "hard-diligence-row-origin-o3-value-w2-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W2",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "10m to 100m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w2-goods-k4": {
+  "id": "hard-diligence-row-origin-o3-value-w2-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W2",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "10m to 100m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w3-goods-k1": {
+  "id": "hard-diligence-row-origin-o3-value-w3-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W3",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "100m to 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w3-goods-k2": {
+  "id": "hard-diligence-row-origin-o3-value-w3-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W3",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "100m to 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w3-goods-k3": {
+  "id": "hard-diligence-row-origin-o3-value-w3-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W3",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "100m to 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w3-goods-k4": {
+  "id": "hard-diligence-row-origin-o3-value-w3-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W3",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "100m to 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w4-goods-k1": {
+  "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W4",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "over 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w4-goods-k2": {
+  "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W4",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "over 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w4-goods-k3": {
+  "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W4",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "over 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o3-value-w4-goods-k4": {
+  "id": "hard-diligence-row-origin-o3-value-w4-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O3",
+   "value": "value W4",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "US",
+   "value": "over 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w1-goods-k1": {
+  "id": "hard-diligence-row-origin-o4-value-w1-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W1",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "under 10m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w1-goods-k2": {
+  "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W1",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "under 10m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w1-goods-k3": {
+  "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W1",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "under 10m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w1-goods-k4": {
+  "id": "hard-diligence-row-origin-o4-value-w1-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W1",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "under 10m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w2-goods-k1": {
+  "id": "hard-diligence-row-origin-o4-value-w2-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W2",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "10m to 100m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w2-goods-k2": {
+  "id": "hard-diligence-row-origin-o4-value-w2-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W2",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "10m to 100m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w2-goods-k3": {
+  "id": "hard-diligence-row-origin-o4-value-w2-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W2",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "10m to 100m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w2-goods-k4": {
+  "id": "hard-diligence-row-origin-o4-value-w2-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W2",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "10m to 100m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w3-goods-k1": {
+  "id": "hard-diligence-row-origin-o4-value-w3-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W3",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "100m to 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w3-goods-k2": {
+  "id": "hard-diligence-row-origin-o4-value-w3-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W3",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "100m to 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w3-goods-k3": {
+  "id": "hard-diligence-row-origin-o4-value-w3-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W3",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "100m to 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w3-goods-k4": {
+  "id": "hard-diligence-row-origin-o4-value-w3-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W3",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "100m to 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w4-goods-k1": {
+  "id": "hard-diligence-row-origin-o4-value-w4-goods-k1",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W4",
+   "goods": "goods K1"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "over 500m KRW",
+   "goods": "commodity"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w4-goods-k2": {
+  "id": "hard-diligence-row-origin-o4-value-w4-goods-k2",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W4",
+   "goods": "goods K2"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "over 500m KRW",
+   "goods": "bespoke"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w4-goods-k3": {
+  "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W4",
+   "goods": "goods K3"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "over 500m KRW",
+   "goods": "professional services"
+  }
+ },
+ "hard-diligence-row-origin-o4-value-w4-goods-k4": {
+  "id": "hard-diligence-row-origin-o4-value-w4-goods-k4",
+  "area": "procurement",
+  "parent": "sec-hard-diligence",
+  "cluster": "Supplier due diligence",
+  "family": "diligence",
+  "stratum": "S1",
+  "axes": {
+   "origin": "origin O4",
+   "value": "value W4",
+   "goods": "goods K4"
+  },
+  "meaning": {
+   "origin": "other overseas",
+   "value": "over 500m KRW",
+   "goods": "software"
+  }
+ },
+ "hard-moved-overtime": {
+  "id": "hard-moved-overtime",
+  "area": "payroll",
+  "parent": "payroll",
+  "legend": "moved",
+  "cluster": "Overtime premiums",
+  "family": "overtime",
+  "stratum": "S1"
+ },
+ "hard-moved-threshold": {
+  "id": "hard-moved-threshold",
+  "area": "approval",
+  "parent": "approval",
+  "legend": "moved",
+  "cluster": "Spend approval thresholds",
+  "family": "threshold",
+  "stratum": "S1"
+ },
+ "_grid": {
+  "grid": [
+   4,
+   4,
+   4
+  ],
+  "rows_per_family": 64
+ }
+}

@@ -32,13 +32,15 @@ __pycache__/
 #
 # Still ignored below: things derived from the corpus rather than the corpus itself — embeddings,
 # section indexes, probe results, logs — all of which any checkout can rebuild from what is here.
-/bench/manifest.json
+# The manifests are not derived from the corpus — they are what says which documents are *sections*,
+# the signposts this study added, which are walkable but must stay out of the retrieval pool. Drop
+# them and every section page gets indexed, which changes the fingerprint and every retrieval number
+# with it. 316KB, and without them a clean clone cannot recompute anything.
 /bench/sections.json
 /bench/embeddings*.json
 /bench/factors.csv
 /bench/*.log
 bench/.probe.lock
-/bench/crowd-manifest.json
 /bench/probe-questions.json
 /bench/probe2-questions.json
 /bench/probe-results.json

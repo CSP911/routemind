@@ -1,0 +1,6331 @@
+{
+ "supplier-due-diligence": {
+  "id": "supplier-due-diligence",
+  "area": "procurement",
+  "parent": "sec-supplier-due-diligence",
+  "stratum": "S4",
+  "cluster": "Supplier due diligence",
+  "pair": null
+ },
+ "sanctions-ownership-checks": {
+  "id": "sanctions-ownership-checks",
+  "area": "procurement",
+  "parent": "sec-supplier-due-diligence",
+  "stratum": "S4",
+  "cluster": "Supplier due diligence",
+  "pair": null
+ },
+ "supplier-code-of-conduct": {
+  "id": "supplier-code-of-conduct",
+  "area": "procurement",
+  "parent": "sec-supplier-due-diligence",
+  "stratum": "S4",
+  "cluster": "Supplier due diligence",
+  "pair": null
+ },
+ "disqualification-triggers": {
+  "id": "disqualification-triggers",
+  "area": "procurement",
+  "parent": "sec-supplier-due-diligence",
+  "stratum": "S4",
+  "cluster": "Supplier due diligence",
+  "pair": null
+ },
+ "evidence-foreign-language": {
+  "id": "evidence-foreign-language",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-ereceipt-reissue": {
+  "id": "evidence-ereceipt-reissue",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-no-tax-invoice": {
+  "id": "evidence-no-tax-invoice",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-vat-exempt": {
+  "id": "evidence-vat-exempt",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-third-party-name": {
+  "id": "evidence-third-party-name",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-split-payment": {
+  "id": "evidence-split-payment",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-refund-after-claim": {
+  "id": "evidence-refund-after-claim",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-awkward-cases-overview": {
+  "id": "evidence-awkward-cases-overview",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-statement-procedure": {
+  "id": "evidence-statement-procedure",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-disbursement-form-fields": {
+  "id": "evidence-disbursement-form-fields",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-deadline-reference": {
+  "id": "evidence-deadline-reference",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-2percent-penalty": {
+  "id": "evidence-2percent-penalty",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-approver-discretion": {
+  "id": "evidence-approver-discretion",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-worked-example": {
+  "id": "evidence-worked-example",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-cash-receipt-types": {
+  "id": "evidence-cash-receipt-types",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-reissue-system": {
+  "id": "evidence-reissue-system",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-foreign-language-translation": {
+  "id": "evidence-foreign-language-translation",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-ereceipt-merchant-closed": {
+  "id": "evidence-ereceipt-merchant-closed",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-individual-seller": {
+  "id": "evidence-individual-seller",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-vat-exempt-categories": {
+  "id": "evidence-vat-exempt-categories",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-shared-ride-name": {
+  "id": "evidence-shared-ride-name",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-partial-refund": {
+  "id": "evidence-partial-refund",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-split-payment-mixed-card": {
+  "id": "evidence-split-payment-mixed-card",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-2",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "evidence-exception-owner": {
+  "id": "evidence-exception-owner",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases-1",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null
+ },
+ "card-use-subscriptions": {
+  "id": "card-use-subscriptions",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-conference-fees": {
+  "id": "card-use-conference-fees",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-taxi-rideshare": {
+  "id": "card-use-taxi-rideshare",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-fuel-parking": {
+  "id": "card-use-fuel-parking",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-mobile-topups": {
+  "id": "card-use-mobile-topups",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-deposits-prepayments": {
+  "id": "card-use-deposits-prepayments",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-foreign-currency": {
+  "id": "card-use-foreign-currency",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-annual-licence": {
+  "id": "card-use-annual-licence",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-situation-summary": {
+  "id": "card-use-situation-summary",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-subscription-cancellation": {
+  "id": "card-use-subscription-cancellation",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-conference-early-registration": {
+  "id": "card-use-conference-early-registration",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-subscription-renewal-table": {
+  "id": "card-use-subscription-renewal-table",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-conference-fee-table": {
+  "id": "card-use-conference-fee-table",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-taxi-late-night": {
+  "id": "card-use-taxi-late-night",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-fuel-parking-monthly-passes": {
+  "id": "card-use-fuel-parking-monthly-passes",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-mobile-topup-approval": {
+  "id": "card-use-mobile-topup-approval",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-deposit-refund-procedure": {
+  "id": "card-use-deposit-refund-procedure",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-foreign-currency-worked-example": {
+  "id": "card-use-foreign-currency-worked-example",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-annual-licence-renewal-deadline": {
+  "id": "card-use-annual-licence-renewal-deadline",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-subscription-budget-owner": {
+  "id": "card-use-subscription-budget-owner",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-conference-personal-card-reimbursement": {
+  "id": "card-use-conference-personal-card-reimbursement",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-taxi-receipt-table": {
+  "id": "card-use-taxi-receipt-table",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-fuel-card-vs-mileage": {
+  "id": "card-use-fuel-card-vs-mileage",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-mobile-topup-monthly-cycle": {
+  "id": "card-use-mobile-topup-monthly-cycle",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-2",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-deposit-forfeiture": {
+  "id": "card-use-deposit-forfeiture",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "card-use-annual-licence-multi-user": {
+  "id": "card-use-annual-licence-multi-user",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation-1",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null
+ },
+ "domestic-trip-mode-choice": {
+  "id": "domestic-trip-mode-choice",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-lodging-by-city": {
+  "id": "domestic-trip-lodging-by-city",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-same-day-overrun": {
+  "id": "domestic-trip-same-day-overrun",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-cancelled-leg": {
+  "id": "domestic-trip-cancelled-leg",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-own-car-tolls": {
+  "id": "domestic-trip-own-car-tolls",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-cases-index": {
+  "id": "domestic-trip-cases-index",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-rail-air-fare-table": {
+  "id": "domestic-trip-rail-air-fare-table",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-two-stops-worked-example": {
+  "id": "domestic-trip-two-stops-worked-example",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-client-site-allowance-table": {
+  "id": "domestic-trip-client-site-allowance-table",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-same-day-overrun-deadline": {
+  "id": "domestic-trip-same-day-overrun-deadline",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-cancelled-leg-refund-procedure": {
+  "id": "domestic-trip-cancelled-leg-refund-procedure",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-own-car-claim-form": {
+  "id": "domestic-trip-own-car-claim-form",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-approver-role": {
+  "id": "domestic-trip-approver-role",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-case-system": {
+  "id": "domestic-trip-case-system",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-mode-choice-worked-example": {
+  "id": "domestic-trip-mode-choice-worked-example",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-client-site-multi-day": {
+  "id": "domestic-trip-client-site-multi-day",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-same-day-overrun-resubmission": {
+  "id": "domestic-trip-same-day-overrun-resubmission",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-cancelled-leg-partial-trip": {
+  "id": "domestic-trip-cancelled-leg-partial-trip",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-own-car-carpool": {
+  "id": "domestic-trip-own-car-carpool",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-mode-choice-jeju": {
+  "id": "domestic-trip-mode-choice-jeju",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-two-stops-claim-table": {
+  "id": "domestic-trip-two-stops-claim-table",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-cancelled-return-leg": {
+  "id": "domestic-trip-cancelled-return-leg",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-own-car-mixed-mode": {
+  "id": "domestic-trip-own-car-mixed-mode",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-own-car-toll-evidence": {
+  "id": "domestic-trip-own-car-toll-evidence",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-mode-choice-approver": {
+  "id": "domestic-trip-mode-choice-approver",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-same-day-overrun-cost-table": {
+  "id": "domestic-trip-same-day-overrun-cost-table",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "domestic-trip-client-site-no-lodging-role": {
+  "id": "domestic-trip-client-site-no-lodging-role",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null
+ },
+ "overseas-trip-band-country-table": {
+  "id": "overseas-trip-band-country-table",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-multi-country": {
+  "id": "overseas-trip-multi-country",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-band-change-midtrip": {
+  "id": "overseas-trip-band-change-midtrip",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-stopover": {
+  "id": "overseas-trip-stopover",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-exchange-rate-move": {
+  "id": "overseas-trip-exchange-rate-move",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-prepaid-lodging-home-billing": {
+  "id": "overseas-trip-prepaid-lodging-home-billing",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-cases-index": {
+  "id": "overseas-trip-cases-index",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-multi-country-band-table": {
+  "id": "overseas-trip-multi-country-band-table",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-band-change-notice": {
+  "id": "overseas-trip-band-change-notice",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-stopover-worked-example": {
+  "id": "overseas-trip-stopover-worked-example",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-exchange-rate-receipt-tagging": {
+  "id": "overseas-trip-exchange-rate-receipt-tagging",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-prepaid-lodging-settlement": {
+  "id": "overseas-trip-prepaid-lodging-settlement",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-per-diem-day-types": {
+  "id": "overseas-trip-per-diem-day-types",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-multi-country-approver": {
+  "id": "overseas-trip-multi-country-approver",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-band-system-defaults": {
+  "id": "overseas-trip-band-system-defaults",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-multi-country-currency-table": {
+  "id": "overseas-trip-multi-country-currency-table",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-band-change-approver": {
+  "id": "overseas-trip-band-change-approver",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-stopover-duration-table": {
+  "id": "overseas-trip-stopover-duration-table",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-exchange-rate-move-deadline": {
+  "id": "overseas-trip-exchange-rate-move-deadline",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-prepaid-lodging-cancellation": {
+  "id": "overseas-trip-prepaid-lodging-cancellation",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-prepaid-lodging-evidence-form": {
+  "id": "overseas-trip-prepaid-lodging-evidence-form",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-per-diem-attendance-role": {
+  "id": "overseas-trip-per-diem-attendance-role",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-multi-country-leg-deadline": {
+  "id": "overseas-trip-multi-country-leg-deadline",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-case-comparison-table": {
+  "id": "overseas-trip-case-comparison-table",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-1",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "overseas-trip-per-diem-worked-example": {
+  "id": "overseas-trip-per-diem-worked-example",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases-2",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null
+ },
+ "entertainment-seasonal-gifts": {
+  "id": "entertainment-seasonal-gifts",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "entertainment-seasonal-gifts-table": {
+  "id": "entertainment-seasonal-gifts-table",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "entertainment-fixed-headcount-event": {
+  "id": "entertainment-fixed-headcount-event",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "entertainment-guest-attendee-list": {
+  "id": "entertainment-guest-attendee-list",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "entertainment-condolence-congratulation": {
+  "id": "entertainment-condolence-congratulation",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "entertainment-condolence-evidence-form": {
+  "id": "entertainment-condolence-evidence-form",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "entertainment-meal-reclassified-internal": {
+  "id": "entertainment-meal-reclassified-internal",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "entertainment-public-official-present": {
+  "id": "entertainment-public-official-present",
+  "area": "expense",
+  "parent": "sec-entertainment-cases",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null
+ },
+ "card-lost-abroad": {
+  "id": "card-lost-abroad",
+  "area": "expense",
+  "parent": "sec-lost-card-and-disputed-charges",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null
+ },
+ "card-blocked-while-travelling": {
+  "id": "card-blocked-while-travelling",
+  "area": "expense",
+  "parent": "sec-lost-card-and-disputed-charges",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null
+ },
+ "card-charge-merchant-alias": {
+  "id": "card-charge-merchant-alias",
+  "area": "expense",
+  "parent": "sec-lost-card-and-disputed-charges",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null
+ },
+ "card-dispute-deadline": {
+  "id": "card-dispute-deadline",
+  "area": "expense",
+  "parent": "sec-lost-card-and-disputed-charges",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null
+ },
+ "card-subscription-persists": {
+  "id": "card-subscription-persists",
+  "area": "expense",
+  "parent": "sec-lost-card-and-disputed-charges",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null
+ },
+ "card-dispute-scenario-table": {
+  "id": "card-dispute-scenario-table",
+  "area": "expense",
+  "parent": "sec-lost-card-and-disputed-charges",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null
+ },
+ "card-dispute-owner": {
+  "id": "card-dispute-owner",
+  "area": "expense",
+  "parent": "sec-lost-card-and-disputed-charges",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null
+ },
+ "expense-budget-variance-overview": {
+  "id": "expense-budget-variance-overview",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-variance-report-procedure": {
+  "id": "expense-budget-variance-report-procedure",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-variance-threshold-table": {
+  "id": "expense-budget-variance-threshold-table",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-variance-explanation-role": {
+  "id": "expense-budget-variance-explanation-role",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-reforecast-cycle": {
+  "id": "expense-budget-reforecast-cycle",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-reforecast-deadline": {
+  "id": "expense-budget-reforecast-deadline",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-variance-carryover-case": {
+  "id": "expense-budget-variance-carryover-case",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-owner": {
+  "id": "expense-budget-owner",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-monthly-report-deadline": {
+  "id": "expense-budget-monthly-report-deadline",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-overspend-escalation-case": {
+  "id": "expense-budget-overspend-escalation-case",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-line-item-table": {
+  "id": "expense-budget-line-item-table",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-reforecast-approver": {
+  "id": "expense-budget-reforecast-approver",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-variance-report-system": {
+  "id": "expense-budget-variance-report-system",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "expense-budget-variance-narrative-form": {
+  "id": "expense-budget-variance-narrative-form",
+  "area": "expense",
+  "parent": "sec-budget-against-actual",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null
+ },
+ "prepaid-card-issuance-criteria": {
+  "id": "prepaid-card-issuance-criteria",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-virtual-vendor-table": {
+  "id": "prepaid-card-virtual-vendor-table",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-topup-procedure": {
+  "id": "prepaid-card-topup-procedure",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-topup-approver": {
+  "id": "prepaid-card-topup-approver",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-unused-balance": {
+  "id": "prepaid-card-unused-balance",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-virtual-number-expiry": {
+  "id": "prepaid-card-virtual-number-expiry",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-issuance-approval-table": {
+  "id": "prepaid-card-issuance-approval-table",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-lost-virtual-number-case": {
+  "id": "prepaid-card-lost-virtual-number-case",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-loss-report": {
+  "id": "prepaid-card-loss-report",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-evidence-requirements": {
+  "id": "prepaid-card-evidence-requirements",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-virtual-number-generation": {
+  "id": "prepaid-card-virtual-number-generation",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "prepaid-card-shared-team-accountability": {
+  "id": "prepaid-card-shared-team-accountability",
+  "area": "expense",
+  "parent": "sec-prepaid-and-virtual-cards",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null
+ },
+ "expense-subscription-lifecycle-overview": {
+  "id": "expense-subscription-lifecycle-overview",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-registration-form": {
+  "id": "expense-subscription-registration-form",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-ownership-transfer": {
+  "id": "expense-subscription-ownership-transfer",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-cancellation-notice-table": {
+  "id": "expense-subscription-cancellation-notice-table",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-seat-count-audit": {
+  "id": "expense-subscription-seat-count-audit",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-seat-drift-case": {
+  "id": "expense-subscription-seat-drift-case",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-duplicate-registration": {
+  "id": "expense-subscription-duplicate-registration",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-registry-system": {
+  "id": "expense-subscription-registry-system",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-renewal-approval-role": {
+  "id": "expense-subscription-renewal-approval-role",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-seat-tier-table": {
+  "id": "expense-subscription-seat-tier-table",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-cancellation-confirmation-deadline": {
+  "id": "expense-subscription-cancellation-confirmation-deadline",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-subscription-vendor-price-change-case": {
+  "id": "expense-subscription-vendor-price-change-case",
+  "area": "expense",
+  "parent": "sec-subscription-lifecycle",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null
+ },
+ "expense-reimbursement-overview": {
+  "id": "expense-reimbursement-overview",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-personal-card-reimbursement-procedure": {
+  "id": "expense-personal-card-reimbursement-procedure",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-personal-card-reimbursement-evidence": {
+  "id": "expense-personal-card-reimbursement-evidence",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-advance-request-form": {
+  "id": "expense-advance-request-form",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-advance-settlement-deadline": {
+  "id": "expense-advance-settlement-deadline",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-petty-cash-limit": {
+  "id": "expense-petty-cash-limit",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-float-reconciliation-case": {
+  "id": "expense-float-reconciliation-case",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-disbursement-form-scope": {
+  "id": "expense-disbursement-form-scope",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-advance-approver-role": {
+  "id": "expense-advance-approver-role",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-petty-cash-replenishment": {
+  "id": "expense-petty-cash-replenishment",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-reimbursement-method-comparison-table": {
+  "id": "expense-reimbursement-method-comparison-table",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-advance-shortfall-case": {
+  "id": "expense-advance-shortfall-case",
+  "area": "expense",
+  "parent": "sec-reimbursement-without-a-card",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null
+ },
+ "expense-close-overview": {
+  "id": "expense-close-overview",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-close-calendar": {
+  "id": "expense-close-calendar",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-audit-sample-criteria": {
+  "id": "expense-audit-sample-criteria",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-audit-common-findings-table": {
+  "id": "expense-audit-common-findings-table",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-audit-finding-response-procedure": {
+  "id": "expense-audit-finding-response-procedure",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-audit-finding-response-deadline": {
+  "id": "expense-audit-finding-response-deadline",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-audit-finding-owner": {
+  "id": "expense-audit-finding-owner",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-audit-close-worked-case": {
+  "id": "expense-audit-close-worked-case",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-close-system": {
+  "id": "expense-close-system",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-audit-finding-response-form": {
+  "id": "expense-audit-finding-response-form",
+  "area": "expense",
+  "parent": "sec-month-end-close-and-expense-audit",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null
+ },
+ "expense-ceiling-overview": {
+  "id": "expense-ceiling-overview",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-band-table": {
+  "id": "expense-ceiling-band-table",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-owner": {
+  "id": "expense-ceiling-owner",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-80-percent-notice": {
+  "id": "expense-ceiling-80-percent-notice",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-100-percent-freeze": {
+  "id": "expense-ceiling-100-percent-freeze",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-no-carryover": {
+  "id": "expense-ceiling-no-carryover",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-reset-deadline": {
+  "id": "expense-ceiling-reset-deadline",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-breach-case": {
+  "id": "expense-ceiling-breach-case",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-exception-request-procedure": {
+  "id": "expense-ceiling-exception-request-procedure",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-ceiling-underspend-case": {
+  "id": "expense-ceiling-underspend-case",
+  "area": "expense",
+  "parent": "sec-team-spending-ceilings",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null
+ },
+ "expense-payroll-allowance-overview": {
+  "id": "expense-payroll-allowance-overview",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-payroll-allowance-rate-table": {
+  "id": "expense-payroll-allowance-rate-table",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-meal-allowance": {
+  "id": "expense-meal-allowance",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-own-car-allowance": {
+  "id": "expense-own-car-allowance",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-remote-work-stipend": {
+  "id": "expense-remote-work-stipend",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-payroll-cutoff": {
+  "id": "expense-allowance-payroll-cutoff",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-mileage-overlap-case": {
+  "id": "expense-allowance-mileage-overlap-case",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-owner": {
+  "id": "expense-allowance-owner",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-eligibility-form": {
+  "id": "expense-allowance-eligibility-form",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-change-report-deadline": {
+  "id": "expense-allowance-change-report-deadline",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-untracked-taxable-case": {
+  "id": "expense-allowance-untracked-taxable-case",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-payroll-system": {
+  "id": "expense-allowance-payroll-system",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-allowance-stop-start-procedure": {
+  "id": "expense-allowance-stop-start-procedure",
+  "area": "expense",
+  "parent": "sec-allowances-that-ride-on-pay",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": "payroll"
+ },
+ "expense-trip-days-overview": {
+  "id": "expense-trip-days-overview",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-late-confirmation-case": {
+  "id": "expense-trip-days-late-confirmation-case",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-attendance-gap": {
+  "id": "expense-trip-days-attendance-gap",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-weekend-lieu": {
+  "id": "expense-trip-days-weekend-lieu",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-month-boundary": {
+  "id": "expense-trip-days-month-boundary",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-discrepancy-owner": {
+  "id": "expense-trip-days-discrepancy-owner",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-correction-deadline": {
+  "id": "expense-trip-days-correction-deadline",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-scenario-table": {
+  "id": "expense-trip-days-scenario-table",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-system": {
+  "id": "expense-trip-days-system",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-correction-form": {
+  "id": "expense-trip-days-correction-form",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-weekend-lieu-worked-example": {
+  "id": "expense-trip-days-weekend-lieu-worked-example",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "expense-trip-days-month-boundary-worked-example": {
+  "id": "expense-trip-days-month-boundary-worked-example",
+  "area": "expense",
+  "parent": "sec-trip-days-versus-allowance-days",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": "attendance"
+ },
+ "card-po-choice-overview": {
+  "id": "card-po-choice-overview",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-quote-threshold-table": {
+  "id": "card-po-quote-threshold-table",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-supplier-request-procedure": {
+  "id": "card-po-supplier-request-procedure",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-approver-role": {
+  "id": "card-po-approver-role",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-request-form": {
+  "id": "card-po-request-form",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-repeat-purchase-case": {
+  "id": "card-po-repeat-purchase-case",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-quote-validity-deadline": {
+  "id": "card-po-quote-validity-deadline",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-request-system": {
+  "id": "card-po-request-system",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-quote-format-form": {
+  "id": "card-po-quote-format-form",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "card-po-repeat-purchase-deadline": {
+  "id": "card-po-repeat-purchase-deadline",
+  "area": "expense",
+  "parent": "sec-card-or-purchase-order",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": "procurement"
+ },
+ "expense-draft-approval-overview": {
+  "id": "expense-draft-approval-overview",
+  "area": "expense",
+  "parent": "sec-spending-that-needs-a-draft-first",
+  "stratum": "S3",
+  "cluster": "Spending that needs a draft first",
+  "pair": "approval"
+ },
+ "expense-draft-approval-threshold-table": {
+  "id": "expense-draft-approval-threshold-table",
+  "area": "expense",
+  "parent": "sec-spending-that-needs-a-draft-first",
+  "stratum": "S3",
+  "cluster": "Spending that needs a draft first",
+  "pair": "approval"
+ },
+ "expense-draft-approval-request-form": {
+  "id": "expense-draft-approval-request-form",
+  "area": "expense",
+  "parent": "sec-spending-that-needs-a-draft-first",
+  "stratum": "S3",
+  "cluster": "Spending that needs a draft first",
+  "pair": "approval"
+ },
+ "expense-draft-approval-emergency-procedure": {
+  "id": "expense-draft-approval-emergency-procedure",
+  "area": "expense",
+  "parent": "sec-spending-that-needs-a-draft-first",
+  "stratum": "S3",
+  "cluster": "Spending that needs a draft first",
+  "pair": "approval"
+ },
+ "expense-draft-approval-emergency-deadline": {
+  "id": "expense-draft-approval-emergency-deadline",
+  "area": "expense",
+  "parent": "sec-spending-that-needs-a-draft-first",
+  "stratum": "S3",
+  "cluster": "Spending that needs a draft first",
+  "pair": "approval"
+ },
+ "expense-draft-approval-emergency-case": {
+  "id": "expense-draft-approval-emergency-case",
+  "area": "expense",
+  "parent": "sec-spending-that-needs-a-draft-first",
+  "stratum": "S3",
+  "cluster": "Spending that needs a draft first",
+  "pair": "approval"
+ },
+ "travel-insurance-overview": {
+  "id": "travel-insurance-overview",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-coverage-table": {
+  "id": "travel-insurance-coverage-table",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-incident-procedure": {
+  "id": "travel-insurance-incident-procedure",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-claim-deadline": {
+  "id": "travel-insurance-claim-deadline",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-restricted-country-list": {
+  "id": "travel-insurance-restricted-country-list",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-restricted-country-exception-role": {
+  "id": "travel-insurance-restricted-country-exception-role",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-incident-case": {
+  "id": "travel-insurance-incident-case",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-owner": {
+  "id": "travel-insurance-owner",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-claim-form": {
+  "id": "travel-insurance-claim-form",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "travel-insurance-restricted-country-worked-case": {
+  "id": "travel-insurance-restricted-country-worked-case",
+  "area": "expense",
+  "parent": "sec-business-travel-insurance-and-risk",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null
+ },
+ "expense-travel-emissions-overview": {
+  "id": "expense-travel-emissions-overview",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-factor-table": {
+  "id": "expense-travel-emissions-factor-table",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-per-trip-form": {
+  "id": "expense-travel-emissions-per-trip-form",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-system": {
+  "id": "expense-travel-emissions-system",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-annual-report-deadline": {
+  "id": "expense-travel-emissions-annual-report-deadline",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-rail-preference-rule": {
+  "id": "expense-travel-emissions-rail-preference-rule",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-mode-flag-case": {
+  "id": "expense-travel-emissions-mode-flag-case",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-owner": {
+  "id": "expense-travel-emissions-owner",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-correction-procedure": {
+  "id": "expense-travel-emissions-correction-procedure",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-emissions-rail-preferred-case": {
+  "id": "expense-travel-emissions-rail-preferred-case",
+  "area": "expense",
+  "parent": "sec-travel-emissions-reporting",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null
+ },
+ "expense-travel-agency-overview": {
+  "id": "expense-travel-agency-overview",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "expense-travel-agency-booking-scope-table": {
+  "id": "expense-travel-agency-booking-scope-table",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "expense-travel-agency-service-fee-table": {
+  "id": "expense-travel-agency-service-fee-table",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "expense-travel-agency-out-of-policy-procedure": {
+  "id": "expense-travel-agency-out-of-policy-procedure",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "expense-travel-agency-approver-role": {
+  "id": "expense-travel-agency-approver-role",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "expense-travel-agency-direct-booking-case": {
+  "id": "expense-travel-agency-direct-booking-case",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "expense-travel-agency-booking-deadline": {
+  "id": "expense-travel-agency-booking-deadline",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "expense-travel-agency-system": {
+  "id": "expense-travel-agency-system",
+  "area": "expense",
+  "parent": "sec-corporate-travel-agency",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null
+ },
+ "group-transfer-entitlement": {
+  "id": "group-transfer-entitlement",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "rehire-service-continuity": {
+  "id": "rehire-service-continuity",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "loa-service-continuity": {
+  "id": "loa-service-continuity",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "milestone-year-accrual": {
+  "id": "milestone-year-accrual",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "final-leave-settlement": {
+  "id": "final-leave-settlement",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-recalc-trigger": {
+  "id": "entitlement-recalc-trigger",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-correction-request": {
+  "id": "entitlement-correction-request",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "service-start-date-record": {
+  "id": "service-start-date-record",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "group-transfer-case": {
+  "id": "group-transfer-case",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "rehire-case": {
+  "id": "rehire-case",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "loa-milestone-case": {
+  "id": "loa-milestone-case",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "milestone-year-case": {
+  "id": "milestone-year-case",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "leaver-final-balance-case": {
+  "id": "leaver-final-balance-case",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-2",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "combined-transfer-milestone-case": {
+  "id": "combined-transfer-milestone-case",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-matrix": {
+  "id": "entitlement-case-matrix",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-review": {
+  "id": "entitlement-case-review",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-approval-authority": {
+  "id": "entitlement-case-approval-authority",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-evidence-checklist": {
+  "id": "entitlement-case-evidence-checklist",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-default-outcome": {
+  "id": "entitlement-case-default-outcome",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-payroll-cutoff": {
+  "id": "entitlement-case-payroll-cutoff",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-transfer-vs-rehire": {
+  "id": "entitlement-case-transfer-vs-rehire",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-loa-categories": {
+  "id": "entitlement-case-loa-categories",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-notification": {
+  "id": "entitlement-case-notification",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "entitlement-case-overview": {
+  "id": "entitlement-case-overview",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases-1",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null
+ },
+ "half-and-quarter-day-leave": {
+  "id": "half-and-quarter-day-leave",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "leave-cancellation-case": {
+  "id": "leave-cancellation-case",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "year-end-leave-window": {
+  "id": "year-end-leave-window",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "same-morning-leave-rule": {
+  "id": "same-morning-leave-rule",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "public-holiday-leave-case": {
+  "id": "public-holiday-leave-case",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "short-balance-rejection-case": {
+  "id": "short-balance-rejection-case",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "leave-request-notice-table": {
+  "id": "leave-request-notice-table",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "leave-balance-check-timing": {
+  "id": "leave-balance-check-timing",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "booking-cases-index": {
+  "id": "booking-cases-index",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "half-day-approval-routing": {
+  "id": "half-day-approval-routing",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "cancellation-deadline-table": {
+  "id": "cancellation-deadline-table",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "december-booking-priority": {
+  "id": "december-booking-priority",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "same-morning-leave-contact": {
+  "id": "same-morning-leave-contact",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "public-holiday-floating-days": {
+  "id": "public-holiday-floating-days",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "short-balance-half-day-case": {
+  "id": "short-balance-half-day-case",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "leave-request-amendment-form": {
+  "id": "leave-request-amendment-form",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "half-quarter-day-conversion-table": {
+  "id": "half-quarter-day-conversion-table",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "cancelled-day-payroll-timing": {
+  "id": "cancelled-day-payroll-timing",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "december-leave-booking-deadline": {
+  "id": "december-leave-booking-deadline",
+  "area": "attendance",
+  "parent": "sec-booking-cases-1",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "same-morning-leave-form": {
+  "id": "same-morning-leave-form",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "public-holiday-leave-booking-table": {
+  "id": "public-holiday-leave-booking-table",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "short-balance-appeal-procedure": {
+  "id": "short-balance-appeal-procedure",
+  "area": "attendance",
+  "parent": "sec-booking-cases-2",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null
+ },
+ "mid-year-joiner-overview": {
+  "id": "mid-year-joiner-overview",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "mid-year-joiner-lapse-table": {
+  "id": "mid-year-joiner-lapse-table",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "first-january-reset-rule": {
+  "id": "first-january-reset-rule",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "mid-year-joiner-loa-case": {
+  "id": "mid-year-joiner-loa-case",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "mid-year-joiner-transfer-case": {
+  "id": "mid-year-joiner-transfer-case",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "mid-year-joiner-approval-role": {
+  "id": "mid-year-joiner-approval-role",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "mid-year-joiner-confirmation-deadline": {
+  "id": "mid-year-joiner-confirmation-deadline",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "mid-year-joiner-notification-procedure": {
+  "id": "mid-year-joiner-notification-procedure",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "mid-year-joiner-case-index": {
+  "id": "mid-year-joiner-case-index",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "joining-month-rounding-rule": {
+  "id": "joining-month-rounding-rule",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "loa-start-during-first-year-deadline": {
+  "id": "loa-start-during-first-year-deadline",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "transfer-in-first-year-table": {
+  "id": "transfer-in-first-year-table",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "early-loa-before-accrual-case": {
+  "id": "early-loa-before-accrual-case",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "midyear-join-date-correction-deadline": {
+  "id": "midyear-join-date-correction-deadline",
+  "area": "attendance",
+  "parent": "sec-mid-year-joiner-cases",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null
+ },
+ "parental-leave-both-parents-eligibility": {
+  "id": "parental-leave-both-parents-eligibility",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-two-block-split": {
+  "id": "parental-leave-two-block-split",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-early-return-case": {
+  "id": "parental-leave-early-return-case",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-extension-procedure": {
+  "id": "parental-leave-extension-procedure",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-team-reassignment-case": {
+  "id": "parental-leave-team-reassignment-case",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-insurance-coverage": {
+  "id": "parental-leave-insurance-coverage",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-overlap-case": {
+  "id": "parental-leave-overlap-case",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-case-index": {
+  "id": "parental-leave-case-index",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-block-notice-table": {
+  "id": "parental-leave-block-notice-table",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-change-approval-role": {
+  "id": "parental-leave-change-approval-role",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-change-request-form": {
+  "id": "parental-leave-change-request-form",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "parental-leave-premium-payment-table": {
+  "id": "parental-leave-premium-payment-table",
+  "area": "attendance",
+  "parent": "sec-parental-leave-cases",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null
+ },
+ "trip-attendance-case-index": {
+  "id": "trip-attendance-case-index",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "weekend-trip-case": {
+  "id": "weekend-trip-case",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "overseas-trip-dateline-case": {
+  "id": "overseas-trip-dateline-case",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "trip-cancellation-after-approval-case": {
+  "id": "trip-cancellation-after-approval-case",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "unauthorized-trip-case": {
+  "id": "unauthorized-trip-case",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "trip-month-close-case": {
+  "id": "trip-month-close-case",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "trip-request-form": {
+  "id": "trip-request-form",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "trip-hours-recording-table": {
+  "id": "trip-hours-recording-table",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "trip-attendance-outcomes-table": {
+  "id": "trip-attendance-outcomes-table",
+  "area": "attendance",
+  "parent": "sec-trip-attendance-cases",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null
+ },
+ "overtime-overview": {
+  "id": "overtime-overview",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "overtime-request-procedure": {
+  "id": "overtime-request-procedure",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "overtime-rate-table": {
+  "id": "overtime-rate-table",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "night-and-holiday-hours": {
+  "id": "night-and-holiday-hours",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "weekly-overtime-cap": {
+  "id": "weekly-overtime-cap",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "unrequested-overtime-case": {
+  "id": "unrequested-overtime-case",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "overtime-approval-role": {
+  "id": "overtime-approval-role",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "overtime-system-entry": {
+  "id": "overtime-system-entry",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "overtime-compensatory-leave": {
+  "id": "overtime-compensatory-leave",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "overtime-cap-scope-table": {
+  "id": "overtime-cap-scope-table",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "overtime-unrequested-hours-response": {
+  "id": "overtime-unrequested-hours-response",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "holiday-work-consent-form": {
+  "id": "holiday-work-consent-form",
+  "area": "attendance",
+  "parent": "sec-overtime-and-hours",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null
+ },
+ "sec-allowances-that-ride-on-pay": {
+  "id": "sec-allowances-that-ride-on-pay",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S3",
+  "cluster": "Allowances that ride on pay",
+  "pair": null,
+  "section": true
+ },
+ "sec-budget-against-actual": {
+  "id": "sec-budget-against-actual",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S2",
+  "cluster": "Budget against actual",
+  "pair": null,
+  "section": true
+ },
+ "sec-business-travel-insurance-and-risk": {
+  "id": "sec-business-travel-insurance-and-risk",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S4",
+  "cluster": "Business travel insurance and risk",
+  "pair": null,
+  "section": true
+ },
+ "sec-card-or-purchase-order": {
+  "id": "sec-card-or-purchase-order",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S3",
+  "cluster": "Card or purchase order",
+  "pair": null,
+  "section": true
+ },
+ "sec-card-use-by-situation": {
+  "id": "sec-card-use-by-situation",
+  "area": "expense",
+  "parent": "corp-card",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null,
+  "section": true
+ },
+ "sec-card-use-by-situation-1": {
+  "id": "sec-card-use-by-situation-1",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null,
+  "section": true
+ },
+ "sec-card-use-by-situation-2": {
+  "id": "sec-card-use-by-situation-2",
+  "area": "expense",
+  "parent": "sec-card-use-by-situation",
+  "stratum": "S1",
+  "cluster": "Card use by situation",
+  "pair": null,
+  "section": true
+ },
+ "sec-corporate-travel-agency": {
+  "id": "sec-corporate-travel-agency",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S4",
+  "cluster": "Corporate travel agency",
+  "pair": null,
+  "section": true
+ },
+ "sec-domestic-trip-cases": {
+  "id": "sec-domestic-trip-cases",
+  "area": "expense",
+  "parent": "travel-domestic",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-domestic-trip-cases-1": {
+  "id": "sec-domestic-trip-cases-1",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-domestic-trip-cases-2": {
+  "id": "sec-domestic-trip-cases-2",
+  "area": "expense",
+  "parent": "sec-domestic-trip-cases",
+  "stratum": "S1",
+  "cluster": "Domestic trip cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-entertainment-cases": {
+  "id": "sec-entertainment-cases",
+  "area": "expense",
+  "parent": "entertainment",
+  "stratum": "S1",
+  "cluster": "Entertainment cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-evidence-in-awkward-cases": {
+  "id": "sec-evidence-in-awkward-cases",
+  "area": "expense",
+  "parent": "evidence",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-evidence-in-awkward-cases-1": {
+  "id": "sec-evidence-in-awkward-cases-1",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-evidence-in-awkward-cases-2": {
+  "id": "sec-evidence-in-awkward-cases-2",
+  "area": "expense",
+  "parent": "sec-evidence-in-awkward-cases",
+  "stratum": "S1",
+  "cluster": "Evidence in awkward cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-lost-card-and-disputed-charges": {
+  "id": "sec-lost-card-and-disputed-charges",
+  "area": "expense",
+  "parent": "card-loss",
+  "stratum": "S1",
+  "cluster": "Lost card and disputed charges",
+  "pair": null,
+  "section": true
+ },
+ "sec-month-end-close-and-expense-audit": {
+  "id": "sec-month-end-close-and-expense-audit",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S2",
+  "cluster": "Month-end close and expense audit",
+  "pair": null,
+  "section": true
+ },
+ "sec-overseas-trip-cases": {
+  "id": "sec-overseas-trip-cases",
+  "area": "expense",
+  "parent": "travel-overseas",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-overseas-trip-cases-1": {
+  "id": "sec-overseas-trip-cases-1",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-overseas-trip-cases-2": {
+  "id": "sec-overseas-trip-cases-2",
+  "area": "expense",
+  "parent": "sec-overseas-trip-cases",
+  "stratum": "S1",
+  "cluster": "Overseas trip cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-prepaid-and-virtual-cards": {
+  "id": "sec-prepaid-and-virtual-cards",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S2",
+  "cluster": "Prepaid and virtual cards",
+  "pair": null,
+  "section": true
+ },
+ "sec-reimbursement-without-a-card": {
+  "id": "sec-reimbursement-without-a-card",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S2",
+  "cluster": "Reimbursement without a card",
+  "pair": null,
+  "section": true
+ },
+ "sec-spending-that-needs-a-draft-first": {
+  "id": "sec-spending-that-needs-a-draft-first",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S3",
+  "cluster": "Spending that needs a draft first",
+  "pair": null,
+  "section": true
+ },
+ "sec-team-spending-ceilings": {
+  "id": "sec-team-spending-ceilings",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S2",
+  "cluster": "Team spending ceilings",
+  "pair": null,
+  "section": true
+ },
+ "sec-travel-emissions-reporting": {
+  "id": "sec-travel-emissions-reporting",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S4",
+  "cluster": "Travel emissions reporting",
+  "pair": null,
+  "section": true
+ },
+ "sec-trip-days-versus-allowance-days": {
+  "id": "sec-trip-days-versus-allowance-days",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S3",
+  "cluster": "Trip days versus allowance days",
+  "pair": null,
+  "section": true
+ },
+ "sec-booking-cases": {
+  "id": "sec-booking-cases",
+  "area": "attendance",
+  "parent": "leave-use",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-booking-cases-1": {
+  "id": "sec-booking-cases-1",
+  "area": "attendance",
+  "parent": "sec-booking-cases",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-booking-cases-2": {
+  "id": "sec-booking-cases-2",
+  "area": "attendance",
+  "parent": "sec-booking-cases",
+  "stratum": "S1",
+  "cluster": "Booking cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-entitlement-cases": {
+  "id": "sec-entitlement-cases",
+  "area": "attendance",
+  "parent": "leave-accrual",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-entitlement-cases-1": {
+  "id": "sec-entitlement-cases-1",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-entitlement-cases-2": {
+  "id": "sec-entitlement-cases-2",
+  "area": "attendance",
+  "parent": "sec-entitlement-cases",
+  "stratum": "S1",
+  "cluster": "Entitlement cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-mid-year-joiner-cases": {
+  "id": "sec-mid-year-joiner-cases",
+  "area": "attendance",
+  "parent": "leave-accrual-midyear",
+  "stratum": "S1",
+  "cluster": "Mid-year joiner cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-overtime-and-hours": {
+  "id": "sec-overtime-and-hours",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S2",
+  "cluster": "Overtime and hours",
+  "pair": null,
+  "section": true
+ },
+ "sec-parental-leave-cases": {
+  "id": "sec-parental-leave-cases",
+  "area": "attendance",
+  "parent": "childcare-leave",
+  "stratum": "S1",
+  "cluster": "Parental leave cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-trip-attendance-cases": {
+  "id": "sec-trip-attendance-cases",
+  "area": "attendance",
+  "parent": "biz-trip-attendance",
+  "stratum": "S1",
+  "cluster": "Trip attendance cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-supplier-due-diligence": {
+  "id": "sec-supplier-due-diligence",
+  "area": "procurement",
+  "parent": "procurement",
+  "stratum": "S2",
+  "cluster": "Supplier due diligence",
+  "pair": null,
+  "section": true
+ },
+ "sec-subscription-lifecycle": {
+  "id": "sec-subscription-lifecycle",
+  "area": "expense",
+  "parent": "expense",
+  "stratum": "S2",
+  "cluster": "Subscription lifecycle",
+  "pair": null,
+  "section": true
+ },
+ "flexwork-overview": {
+  "id": "flexwork-overview",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "core-hours-table": {
+  "id": "core-hours-table",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "flexitime-month-rule": {
+  "id": "flexitime-month-rule",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "wfh-recording-procedure": {
+  "id": "wfh-recording-procedure",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "hybrid-week-pattern": {
+  "id": "hybrid-week-pattern",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "flexwork-system-entry": {
+  "id": "flexwork-system-entry",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "flexitime-shortfall-case": {
+  "id": "flexitime-shortfall-case",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "flexwork-approval-role": {
+  "id": "flexwork-approval-role",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "flexitime-carryover-table": {
+  "id": "flexitime-carryover-table",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "hybrid-week-swap-procedure": {
+  "id": "hybrid-week-swap-procedure",
+  "area": "attendance",
+  "parent": "sec-flexible-and-remote-working",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null
+ },
+ "loa-other-than-parental-overview": {
+  "id": "loa-other-than-parental-overview",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "loa-category-table": {
+  "id": "loa-category-table",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "military-leave-service-continuity": {
+  "id": "military-leave-service-continuity",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "study-leave-approval-procedure": {
+  "id": "study-leave-approval-procedure",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "family-care-leave-eligibility": {
+  "id": "family-care-leave-eligibility",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "unpaid-personal-leave-form": {
+  "id": "unpaid-personal-leave-form",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "loa-return-notice-table": {
+  "id": "loa-return-notice-table",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "study-leave-cap-case": {
+  "id": "study-leave-cap-case",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "loa-start-notice-table": {
+  "id": "loa-start-notice-table",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "loa-pay-and-insurance-status": {
+  "id": "loa-pay-and-insurance-status",
+  "area": "attendance",
+  "parent": "sec-leave-of-absence-other-than-parental",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null
+ },
+ "sick-leave-overview": {
+  "id": "sick-leave-overview",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "sick-leave-evidence-table": {
+  "id": "sick-leave-evidence-table",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "sick-leave-annual-leave-offset": {
+  "id": "sick-leave-annual-leave-offset",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "sick-leave-certificate-form": {
+  "id": "sick-leave-certificate-form",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "industrial-accident-leave": {
+  "id": "industrial-accident-leave",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "industrial-accident-report-procedure": {
+  "id": "industrial-accident-report-procedure",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "long-term-illness-conversion": {
+  "id": "long-term-illness-conversion",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "long-term-illness-case": {
+  "id": "long-term-illness-case",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "sick-leave-approval-role": {
+  "id": "sick-leave-approval-role",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "long-term-illness-return-procedure": {
+  "id": "long-term-illness-return-procedure",
+  "area": "attendance",
+  "parent": "sec-sick-leave-and-injury",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null
+ },
+ "attendance-correction-overview": {
+  "id": "attendance-correction-overview",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "attendance-correction-deadline": {
+  "id": "attendance-correction-deadline",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "post-close-correction-table": {
+  "id": "post-close-correction-table",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "attendance-correction-request-form": {
+  "id": "attendance-correction-request-form",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "attendance-correction-approval-role": {
+  "id": "attendance-correction-approval-role",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "missing-record-case": {
+  "id": "missing-record-case",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "duplicate-record-case": {
+  "id": "duplicate-record-case",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "attendance-dispute-escalation-procedure": {
+  "id": "attendance-dispute-escalation-procedure",
+  "area": "attendance",
+  "parent": "sec-attendance-corrections-and-disputes",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null
+ },
+ "days-that-decide-money-overview": {
+  "id": "days-that-decide-money-overview",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "trip-day-allowance-table": {
+  "id": "trip-day-allowance-table",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "trip-allowance-claim-form": {
+  "id": "trip-allowance-claim-form",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "leaving-month-leave-day-rule": {
+  "id": "leaving-month-leave-day-rule",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "leaving-month-leave-day-case": {
+  "id": "leaving-month-leave-day-case",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "unused-leave-payout-rate-table": {
+  "id": "unused-leave-payout-rate-table",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "unused-leave-payout-timing": {
+  "id": "unused-leave-payout-timing",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "joining-month-salary-proration-table": {
+  "id": "joining-month-salary-proration-table",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "trip-allowance-claim-deadline": {
+  "id": "trip-allowance-claim-deadline",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "leaving-month-leave-day-pay-table": {
+  "id": "leaving-month-leave-day-pay-table",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "unused-leave-payout-request-form": {
+  "id": "unused-leave-payout-request-form",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "joining-month-proration-approval-role": {
+  "id": "joining-month-proration-approval-role",
+  "area": "attendance",
+  "parent": "sec-days-that-decide-money",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": "payroll"
+ },
+ "trip-approval-overview": {
+  "id": "trip-approval-overview",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "trip-request-draft-stage": {
+  "id": "trip-request-draft-stage",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "trip-approval-role": {
+  "id": "trip-approval-role",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "trip-approval-deadline": {
+  "id": "trip-approval-deadline",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "trip-approval-escalation-procedure": {
+  "id": "trip-approval-escalation-procedure",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "late-trip-approval-procedure": {
+  "id": "late-trip-approval-procedure",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "trip-approval-exception-form": {
+  "id": "trip-approval-exception-form",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "post-departure-trip-approval-case": {
+  "id": "post-departure-trip-approval-case",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "overseas-trip-approver-sequence": {
+  "id": "overseas-trip-approver-sequence",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "post-departure-approval-allowance-effect": {
+  "id": "post-departure-approval-allowance-effect",
+  "area": "attendance",
+  "parent": "sec-trip-approval-before-the-trip",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": "approval"
+ },
+ "attendance-to-claim-handoff-overview": {
+  "id": "attendance-to-claim-handoff-overview",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "trip-date-confirmation-before-claim": {
+  "id": "trip-date-confirmation-before-claim",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "claim-filed-before-attendance-confirmed-case": {
+  "id": "claim-filed-before-attendance-confirmed-case",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "attendance-claim-system-mismatch-procedure": {
+  "id": "attendance-claim-system-mismatch-procedure",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "attendance-claim-mismatch-resolution-role": {
+  "id": "attendance-claim-mismatch-resolution-role",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "attendance-claim-data-crosscheck-table": {
+  "id": "attendance-claim-data-crosscheck-table",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "claim-system-of-record": {
+  "id": "claim-system-of-record",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "attendance-claim-handoff-deadline": {
+  "id": "attendance-claim-handoff-deadline",
+  "area": "attendance",
+  "parent": "sec-the-handover-to-a-claim",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": "expense"
+ },
+ "workplace-safety-check-overview": {
+  "id": "workplace-safety-check-overview",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "annual-health-check-rule": {
+  "id": "annual-health-check-rule",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "health-check-record-table": {
+  "id": "health-check-record-table",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "health-check-time-off-rule": {
+  "id": "health-check-time-off-rule",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "health-check-completion-deadline": {
+  "id": "health-check-completion-deadline",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "health-check-noshow-case": {
+  "id": "health-check-noshow-case",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "workplace-accident-attendance-entry": {
+  "id": "workplace-accident-attendance-entry",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "health-check-follow-up-role": {
+  "id": "health-check-follow-up-role",
+  "area": "attendance",
+  "parent": "sec-workplace-safety-and-health-checks",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null
+ },
+ "equipment-lending-overview": {
+  "id": "equipment-lending-overview",
+  "area": "attendance",
+  "parent": "sec-equipment-lending",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null
+ },
+ "equipment-loan-agreement-form": {
+  "id": "equipment-loan-agreement-form",
+  "area": "attendance",
+  "parent": "sec-equipment-lending",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null
+ },
+ "equipment-loa-holding-procedure": {
+  "id": "equipment-loa-holding-procedure",
+  "area": "attendance",
+  "parent": "sec-equipment-lending",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null
+ },
+ "equipment-return-deadline": {
+  "id": "equipment-return-deadline",
+  "area": "attendance",
+  "parent": "sec-equipment-lending",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null
+ },
+ "equipment-loss-damage-table": {
+  "id": "equipment-loss-damage-table",
+  "area": "attendance",
+  "parent": "sec-equipment-lending",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null
+ },
+ "equipment-return-case": {
+  "id": "equipment-return-case",
+  "area": "attendance",
+  "parent": "sec-equipment-lending",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null
+ },
+ "equipment-lending-approval-role": {
+  "id": "equipment-lending-approval-role",
+  "area": "attendance",
+  "parent": "sec-equipment-lending",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null
+ },
+ "working-abroad-overview": {
+  "id": "working-abroad-overview",
+  "area": "attendance",
+  "parent": "sec-working-abroad",
+  "stratum": "S4",
+  "cluster": "Working abroad",
+  "pair": null
+ },
+ "working-abroad-approval-procedure": {
+  "id": "working-abroad-approval-procedure",
+  "area": "attendance",
+  "parent": "sec-working-abroad",
+  "stratum": "S4",
+  "cluster": "Working abroad",
+  "pair": null
+ },
+ "working-abroad-approval-role": {
+  "id": "working-abroad-approval-role",
+  "area": "attendance",
+  "parent": "sec-working-abroad",
+  "stratum": "S4",
+  "cluster": "Working abroad",
+  "pair": null
+ },
+ "working-abroad-tax-day-table": {
+  "id": "working-abroad-tax-day-table",
+  "area": "attendance",
+  "parent": "sec-working-abroad",
+  "stratum": "S4",
+  "cluster": "Working abroad",
+  "pair": null
+ },
+ "working-abroad-case": {
+  "id": "working-abroad-case",
+  "area": "attendance",
+  "parent": "sec-working-abroad",
+  "stratum": "S4",
+  "cluster": "Working abroad",
+  "pair": null
+ },
+ "payslip-payment-lines": {
+  "id": "payslip-payment-lines",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-deduction-lines": {
+  "id": "payslip-deduction-lines",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-prorated-month": {
+  "id": "payslip-prorated-month",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-retroactive-rise": {
+  "id": "payslip-retroactive-rise",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-correction": {
+  "id": "payslip-correction",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-leaving": {
+  "id": "payslip-leaving",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-overtime": {
+  "id": "payslip-overtime",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-withholding-tax": {
+  "id": "payslip-withholding-tax",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-basic-pay": {
+  "id": "payslip-basic-pay",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-allowance-lines": {
+  "id": "payslip-allowance-lines",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-prorated-example": {
+  "id": "payslip-prorated-example",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-retroactive-example": {
+  "id": "payslip-retroactive-example",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-correction-procedure": {
+  "id": "payslip-correction-procedure",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-leaving-checklist": {
+  "id": "payslip-leaving-checklist",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-issue-date": {
+  "id": "payslip-issue-date",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-change-signoff": {
+  "id": "payslip-change-signoff",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-line-summary": {
+  "id": "payslip-line-summary",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "payslip-correction-leaver": {
+  "id": "payslip-correction-leaver",
+  "area": "payroll",
+  "parent": "sec-payslip-lines-in-detail",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null
+ },
+ "nontaxable-meal-cap-month": {
+  "id": "nontaxable-meal-cap-month",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-car-mileage-conflict": {
+  "id": "nontaxable-car-mileage-conflict",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-childcare-age-out": {
+  "id": "nontaxable-childcare-age-out",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-research-role-check": {
+  "id": "nontaxable-research-role-check",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-travel-receipt-double-count": {
+  "id": "nontaxable-travel-receipt-double-count",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-allowance-claim-form": {
+  "id": "nontaxable-allowance-claim-form",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-allowance-review": {
+  "id": "nontaxable-allowance-review",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-allowance-summary": {
+  "id": "nontaxable-allowance-summary",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-car-allowance-overcap-month": {
+  "id": "nontaxable-car-allowance-overcap-month",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-car-allowance-condition-fail": {
+  "id": "nontaxable-car-allowance-condition-fail",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-research-allowance-overcap-month": {
+  "id": "nontaxable-research-allowance-overcap-month",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-meal-in-kind-condition": {
+  "id": "nontaxable-meal-in-kind-condition",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "nontaxable-childcare-receipt-double-count": {
+  "id": "nontaxable-childcare-receipt-double-count",
+  "area": "payroll",
+  "parent": "sec-tax-free-allowances-case-by-case",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null
+ },
+ "year-end-prefilled-scope": {
+  "id": "year-end-prefilled-scope",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-manual-deductions": {
+  "id": "year-end-manual-deductions",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-dependant-registration": {
+  "id": "year-end-dependant-registration",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-dependant-double-claim": {
+  "id": "year-end-dependant-double-claim",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-internal-cutoff": {
+  "id": "year-end-internal-cutoff",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-amendment": {
+  "id": "year-end-amendment",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-overclaim-clawback": {
+  "id": "year-end-overclaim-clawback",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-adjustment-recovery": {
+  "id": "year-end-adjustment-recovery",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-manual-deduction-items": {
+  "id": "year-end-manual-deduction-items",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-manual-deduction-rent-condition": {
+  "id": "year-end-manual-deduction-rent-condition",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-dependant-status-snapshot": {
+  "id": "year-end-dependant-status-snapshot",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-missed-cutoff-may-filing": {
+  "id": "year-end-missed-cutoff-may-filing",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-amendment-request-form": {
+  "id": "year-end-amendment-request-form",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "year-end-overclaim-penalty": {
+  "id": "year-end-overclaim-penalty",
+  "area": "payroll",
+  "parent": "sec-year-end-settlement",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null
+ },
+ "insurance-enrolment": {
+  "id": "insurance-enrolment",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-leaving-deregistration": {
+  "id": "insurance-leaving-deregistration",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-april-health-settlement": {
+  "id": "insurance-april-health-settlement",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-july-pension-reset": {
+  "id": "insurance-july-pension-reset",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-reported-pay-change": {
+  "id": "insurance-reported-pay-change",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-second-job": {
+  "id": "insurance-second-job",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-movement-triggers": {
+  "id": "insurance-movement-triggers",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-standard-monthly-income": {
+  "id": "insurance-standard-monthly-income",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-second-job-annual-events": {
+  "id": "insurance-second-job-annual-events",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-pay-change-during-settlement": {
+  "id": "insurance-pay-change-during-settlement",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "insurance-movements-partial-year": {
+  "id": "insurance-movements-partial-year",
+  "area": "payroll",
+  "parent": "sec-social-insurance-movements",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null
+ },
+ "bonus-types-overview": {
+  "id": "bonus-types-overview",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "bonus-payment-timing": {
+  "id": "bonus-payment-timing",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "bonus-withholding-method": {
+  "id": "bonus-withholding-method",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "bonus-insurance-contributions": {
+  "id": "bonus-insurance-contributions",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "bonus-year-end-reconciliation": {
+  "id": "bonus-year-end-reconciliation",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "bonus-leaving-month": {
+  "id": "bonus-leaving-month",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "signing-bonus-clawback-condition": {
+  "id": "signing-bonus-clawback-condition",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "signing-bonus-clawback-recovery": {
+  "id": "signing-bonus-clawback-recovery",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "bonus-tax-method-comparison": {
+  "id": "bonus-tax-method-comparison",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "bonus-leaving-month-clawback-overlap": {
+  "id": "bonus-leaving-month-clawback-overlap",
+  "area": "payroll",
+  "parent": "sec-bonuses-and-incentives",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null
+ },
+ "severance-overview": {
+  "id": "severance-overview",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-eligibility": {
+  "id": "severance-eligibility",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-calculation": {
+  "id": "severance-calculation",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-worked-example": {
+  "id": "severance-worked-example",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-retirement-pension-types": {
+  "id": "severance-retirement-pension-types",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-dc-contribution": {
+  "id": "severance-dc-contribution",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-payment-timing": {
+  "id": "severance-payment-timing",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-tax": {
+  "id": "severance-tax",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "severance-at-a-glance": {
+  "id": "severance-at-a-glance",
+  "area": "payroll",
+  "parent": "sec-severance-and-leaving-pay",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null
+ },
+ "garnishment-overview": {
+  "id": "garnishment-overview",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "garnishment-protected-portion": {
+  "id": "garnishment-protected-portion",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "garnishment-payslip-line": {
+  "id": "garnishment-payslip-line",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "garnishment-order-receipt-procedure": {
+  "id": "garnishment-order-receipt-procedure",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "garnishment-priority-multiple-orders": {
+  "id": "garnishment-priority-multiple-orders",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "garnishment-order-requirements": {
+  "id": "garnishment-order-requirements",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "garnishment-severance-interaction": {
+  "id": "garnishment-severance-interaction",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "garnishment-response-deadline": {
+  "id": "garnishment-response-deadline",
+  "area": "payroll",
+  "parent": "sec-garnishment-and-deductions-by-order",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null
+ },
+ "pay-annual-figure-components": {
+  "id": "pay-annual-figure-components",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "pay-band-structure": {
+  "id": "pay-band-structure",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "pay-band-movement-rules": {
+  "id": "pay-band-movement-rules",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "pay-review-cycle": {
+  "id": "pay-review-cycle",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "pay-promotion-midyear-adjustment": {
+  "id": "pay-promotion-midyear-adjustment",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "pay-review-notification-signoff": {
+  "id": "pay-review-notification-signoff",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "pay-structure-vs-monthly-payslip": {
+  "id": "pay-structure-vs-monthly-payslip",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "pay-review-new-hire-eligibility": {
+  "id": "pay-review-new-hire-eligibility",
+  "area": "payroll",
+  "parent": "sec-pay-structure-and-review",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null
+ },
+ "allowance-reimbursement-overview": {
+  "id": "allowance-reimbursement-overview",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "allowance-reimbursement-tax-comparison": {
+  "id": "allowance-reimbursement-tax-comparison",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "reimbursement-evidence-requirements": {
+  "id": "reimbursement-evidence-requirements",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "allowance-reimbursement-election": {
+  "id": "allowance-reimbursement-election",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "reimbursement-claim-form": {
+  "id": "reimbursement-claim-form",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "reimbursement-missing-evidence": {
+  "id": "reimbursement-missing-evidence",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "reimbursement-actual-cost-uncapped": {
+  "id": "reimbursement-actual-cost-uncapped",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "reimbursement-payslip-timing": {
+  "id": "reimbursement-payslip-timing",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "allowance-reimbursement-switch-procedure": {
+  "id": "allowance-reimbursement-switch-procedure",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "allowance-reimbursement-double-payment": {
+  "id": "allowance-reimbursement-double-payment",
+  "area": "payroll",
+  "parent": "sec-allowance-or-reimbursement",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": "expense"
+ },
+ "leave-payout-overview": {
+  "id": "leave-payout-overview",
+  "area": "payroll",
+  "parent": "sec-days-into-money",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": "attendance"
+ },
+ "leave-payout-daily-rate": {
+  "id": "leave-payout-daily-rate",
+  "area": "payroll",
+  "parent": "sec-days-into-money",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": "attendance"
+ },
+ "leave-payout-timing": {
+  "id": "leave-payout-timing",
+  "area": "payroll",
+  "parent": "sec-days-into-money",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": "attendance"
+ },
+ "unpaid-leave-overview": {
+  "id": "unpaid-leave-overview",
+  "area": "payroll",
+  "parent": "sec-days-into-money",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": "attendance"
+ },
+ "unpaid-leave-deduction-calculation": {
+  "id": "unpaid-leave-deduction-calculation",
+  "area": "payroll",
+  "parent": "sec-days-into-money",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": "attendance"
+ },
+ "unpaid-leave-return-proration": {
+  "id": "unpaid-leave-return-proration",
+  "area": "payroll",
+  "parent": "sec-days-into-money",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": "attendance"
+ },
+ "leave-payout-vs-severance": {
+  "id": "leave-payout-vs-severance",
+  "area": "payroll",
+  "parent": "sec-days-into-money",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": "attendance"
+ },
+ "pay-change-decision-overview": {
+  "id": "pay-change-decision-overview",
+  "area": "payroll",
+  "parent": "sec-pay-changes-that-need-a-decision",
+  "stratum": "S3",
+  "cluster": "Pay changes that need a decision",
+  "pair": "approval"
+ },
+ "pay-change-draft-rise-cutoff": {
+  "id": "pay-change-draft-rise-cutoff",
+  "area": "payroll",
+  "parent": "sec-pay-changes-that-need-a-decision",
+  "stratum": "S3",
+  "cluster": "Pay changes that need a decision",
+  "pair": "approval"
+ },
+ "off-cycle-payment-procedure": {
+  "id": "off-cycle-payment-procedure",
+  "area": "payroll",
+  "parent": "sec-pay-changes-that-need-a-decision",
+  "stratum": "S3",
+  "cluster": "Pay changes that need a decision",
+  "pair": "approval"
+ },
+ "pay-advance-procedure": {
+  "id": "pay-advance-procedure",
+  "area": "payroll",
+  "parent": "sec-pay-changes-that-need-a-decision",
+  "stratum": "S3",
+  "cluster": "Pay changes that need a decision",
+  "pair": "approval"
+ },
+ "equity-overview": {
+  "id": "equity-overview",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "equity-grant-award-types": {
+  "id": "equity-grant-award-types",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "equity-vesting-schedule": {
+  "id": "equity-vesting-schedule",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "equity-tax-event-withholding": {
+  "id": "equity-tax-event-withholding",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "equity-leaving-unvested-forfeiture": {
+  "id": "equity-leaving-unvested-forfeiture",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "equity-leaving-vested-exercise-window": {
+  "id": "equity-leaving-vested-exercise-window",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "equity-vesting-vs-sale-tax": {
+  "id": "equity-vesting-vs-sale-tax",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "equity-year-end-treatment": {
+  "id": "equity-year-end-treatment",
+  "area": "payroll",
+  "parent": "sec-stock-and-long-term-incentives",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null
+ },
+ "contractors-overview": {
+  "id": "contractors-overview",
+  "area": "payroll",
+  "parent": "sec-paying-people-who-are-not-employees",
+  "stratum": "S4",
+  "cluster": "Paying people who are not employees",
+  "pair": null
+ },
+ "contractor-withholding-freelancer-rate": {
+  "id": "contractor-withholding-freelancer-rate",
+  "area": "payroll",
+  "parent": "sec-paying-people-who-are-not-employees",
+  "stratum": "S4",
+  "cluster": "Paying people who are not employees",
+  "pair": null
+ },
+ "contractor-withholding-procedure": {
+  "id": "contractor-withholding-procedure",
+  "area": "payroll",
+  "parent": "sec-paying-people-who-are-not-employees",
+  "stratum": "S4",
+  "cluster": "Paying people who are not employees",
+  "pair": null
+ },
+ "contractor-misclassification-risk": {
+  "id": "contractor-misclassification-risk",
+  "area": "payroll",
+  "parent": "sec-paying-people-who-are-not-employees",
+  "stratum": "S4",
+  "cluster": "Paying people who are not employees",
+  "pair": null
+ },
+ "overseas-contractor-payment": {
+  "id": "overseas-contractor-payment",
+  "area": "payroll",
+  "parent": "sec-paying-people-who-are-not-employees",
+  "stratum": "S4",
+  "cluster": "Paying people who are not employees",
+  "pair": null
+ },
+ "contractor-invoice-requirements": {
+  "id": "contractor-invoice-requirements",
+  "area": "payroll",
+  "parent": "sec-paying-people-who-are-not-employees",
+  "stratum": "S4",
+  "cluster": "Paying people who are not employees",
+  "pair": null
+ },
+ "purchase-draft": {
+  "id": "purchase-draft",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "hire-draft": {
+  "id": "hire-draft",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "contract-draft": {
+  "id": "contract-draft",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "policy-change-draft": {
+  "id": "policy-change-draft",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "urgent-after-the-fact": {
+  "id": "urgent-after-the-fact",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "after-the-fact-deadline": {
+  "id": "after-the-fact-deadline",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "withdrawn-and-refiled": {
+  "id": "withdrawn-and-refiled",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "draft-kinds-table": {
+  "id": "draft-kinds-table",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "mixed-kind-draft": {
+  "id": "mixed-kind-draft",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "kind-misclassification": {
+  "id": "kind-misclassification",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "draft-kind-effective-date": {
+  "id": "draft-kind-effective-date",
+  "area": "approval",
+  "parent": "sec-drafts-by-kind",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null
+ },
+ "consenting-teams-table": {
+  "id": "consenting-teams-table",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "consent-vs-signoff": {
+  "id": "consent-vs-signoff",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "consent-objection": {
+  "id": "consent-objection",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "missing-consent-found-late": {
+  "id": "missing-consent-found-late",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "wrong-approver-in-chain": {
+  "id": "wrong-approver-in-chain",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "consent-silence-deadline": {
+  "id": "consent-silence-deadline",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "consent-record-procedure": {
+  "id": "consent-record-procedure",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "chain-roles-not-interchangeable": {
+  "id": "chain-roles-not-interchangeable",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "consent-chain-separation": {
+  "id": "consent-chain-separation",
+  "area": "approval",
+  "parent": "sec-chains-and-consent",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null
+ },
+ "team-lead-band-practice": {
+  "id": "team-lead-band-practice",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "division-head-band-practice": {
+  "id": "division-head-band-practice",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "ceo-band-subjects": {
+  "id": "ceo-band-subjects",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "deputy-approval-authority": {
+  "id": "deputy-approval-authority",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "split-purchase-same-intent": {
+  "id": "split-purchase-same-intent",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "annual-agreement-band": {
+  "id": "annual-agreement-band",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "overseas-trip-authority": {
+  "id": "overseas-trip-authority",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "delegation-is-per-draft": {
+  "id": "delegation-is-per-draft",
+  "area": "approval",
+  "parent": "sec-delegation-in-practice",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null
+ },
+ "retention-clock-start": {
+  "id": "retention-clock-start",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "contract-ended-early": {
+  "id": "contract-ended-early",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "audit-hold-suspends-destruction": {
+  "id": "audit-hold-suspends-destruction",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "january-destruction-list": {
+  "id": "january-destruction-list",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "early-destruction-violation": {
+  "id": "early-destruction-violation",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "destruction-log-procedure": {
+  "id": "destruction-log-procedure",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "destruction-approval-band": {
+  "id": "destruction-approval-band",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "records-desk-audit-duty": {
+  "id": "records-desk-audit-duty",
+  "area": "approval",
+  "parent": "sec-retention-cases",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null
+ },
+ "seal-types": {
+  "id": "seal-types",
+  "area": "approval",
+  "parent": "sec-seals",
+  "stratum": "S1",
+  "cluster": "Seals",
+  "pair": null
+ },
+ "seal-certificate": {
+  "id": "seal-certificate",
+  "area": "approval",
+  "parent": "sec-seals",
+  "stratum": "S1",
+  "cluster": "Seals",
+  "pair": null
+ },
+ "overseas-document-sealing": {
+  "id": "overseas-document-sealing",
+  "area": "approval",
+  "parent": "sec-seals",
+  "stratum": "S1",
+  "cluster": "Seals",
+  "pair": null
+ },
+ "electronic-signature-substitution": {
+  "id": "electronic-signature-substitution",
+  "area": "approval",
+  "parent": "sec-seals",
+  "stratum": "S1",
+  "cluster": "Seals",
+  "pair": null
+ },
+ "seal-authority-mismatch": {
+  "id": "seal-authority-mismatch",
+  "area": "approval",
+  "parent": "sec-seals",
+  "stratum": "S1",
+  "cluster": "Seals",
+  "pair": null
+ },
+ "seal-custody-and-checkout": {
+  "id": "seal-custody-and-checkout",
+  "area": "approval",
+  "parent": "sec-seals",
+  "stratum": "S1",
+  "cluster": "Seals",
+  "pair": null
+ },
+ "policy-lifecycle-overview": {
+  "id": "policy-lifecycle-overview",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-proposal-fields": {
+  "id": "policy-proposal-fields",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-review-period": {
+  "id": "policy-review-period",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-publication-effective-date": {
+  "id": "policy-publication-effective-date",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-withdrawal-procedure": {
+  "id": "policy-withdrawal-procedure",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-ownership-role": {
+  "id": "policy-ownership-role",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-conflict-supersession": {
+  "id": "policy-conflict-supersession",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-version-history": {
+  "id": "policy-version-history",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-amendment-procedure": {
+  "id": "policy-amendment-procedure",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "policy-lifecycle-authority-table": {
+  "id": "policy-lifecycle-authority-table",
+  "area": "approval",
+  "parent": "sec-policy-and-its-own-lifecycle",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null
+ },
+ "meeting-minutes-overview": {
+  "id": "meeting-minutes-overview",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "minuted-meeting-criteria": {
+  "id": "minuted-meeting-criteria",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "minute-required-contents": {
+  "id": "minute-required-contents",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "minute-filing-deadline": {
+  "id": "minute-filing-deadline",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "minute-retention-inheritance": {
+  "id": "minute-retention-inheritance",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "minute-custody-location": {
+  "id": "minute-custody-location",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "minute-signoff-procedure": {
+  "id": "minute-signoff-procedure",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "unminuted-decision-case": {
+  "id": "unminuted-decision-case",
+  "area": "approval",
+  "parent": "sec-meetings-and-minutes",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null
+ },
+ "external-signing-authority-overview": {
+  "id": "external-signing-authority-overview",
+  "area": "approval",
+  "parent": "sec-signing-authority-for-outside-parties",
+  "stratum": "S2",
+  "cluster": "Signing authority for outside parties",
+  "pair": null
+ },
+ "power-of-attorney-scope": {
+  "id": "power-of-attorney-scope",
+  "area": "approval",
+  "parent": "sec-signing-authority-for-outside-parties",
+  "stratum": "S2",
+  "cluster": "Signing authority for outside parties",
+  "pair": null
+ },
+ "power-of-attorney-issuance": {
+  "id": "power-of-attorney-issuance",
+  "area": "approval",
+  "parent": "sec-signing-authority-for-outside-parties",
+  "stratum": "S2",
+  "cluster": "Signing authority for outside parties",
+  "pair": null
+ },
+ "evidence-of-authority-request": {
+  "id": "evidence-of-authority-request",
+  "area": "approval",
+  "parent": "sec-signing-authority-for-outside-parties",
+  "stratum": "S2",
+  "cluster": "Signing authority for outside parties",
+  "pair": null
+ },
+ "external-signing-authority-table": {
+  "id": "external-signing-authority-table",
+  "area": "approval",
+  "parent": "sec-signing-authority-for-outside-parties",
+  "stratum": "S2",
+  "cluster": "Signing authority for outside parties",
+  "pair": null
+ },
+ "expired-poa-relied-upon": {
+  "id": "expired-poa-relied-upon",
+  "area": "approval",
+  "parent": "sec-signing-authority-for-outside-parties",
+  "stratum": "S2",
+  "cluster": "Signing authority for outside parties",
+  "pair": null
+ },
+ "audit-request-overview": {
+  "id": "audit-request-overview",
+  "area": "approval",
+  "parent": "sec-audit-requests",
+  "stratum": "S2",
+  "cluster": "Audit requests",
+  "pair": null
+ },
+ "audit-document-release-procedure": {
+  "id": "audit-document-release-procedure",
+  "area": "approval",
+  "parent": "sec-audit-requests",
+  "stratum": "S2",
+  "cluster": "Audit requests",
+  "pair": null
+ },
+ "audit-clearance-authority-table": {
+  "id": "audit-clearance-authority-table",
+  "area": "approval",
+  "parent": "sec-audit-requests",
+  "stratum": "S2",
+  "cluster": "Audit requests",
+  "pair": null
+ },
+ "external-auditor-seal-request-case": {
+  "id": "external-auditor-seal-request-case",
+  "area": "approval",
+  "parent": "sec-audit-requests",
+  "stratum": "S2",
+  "cluster": "Audit requests",
+  "pair": null
+ },
+ "purchase-quote-count-table": {
+  "id": "purchase-quote-count-table",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "quote-comparability-rule": {
+  "id": "quote-comparability-rule",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "quote-swap-after-drafting": {
+  "id": "quote-swap-after-drafting",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "purchase-draft-quote-attachments": {
+  "id": "purchase-draft-quote-attachments",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "quote-validity-window": {
+  "id": "quote-validity-window",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "related-vendor-quotes-case": {
+  "id": "related-vendor-quotes-case",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "band-set-by-quote-at-drafting": {
+  "id": "band-set-by-quote-at-drafting",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "purchase-draft-quote-correction": {
+  "id": "purchase-draft-quote-correction",
+  "area": "approval",
+  "parent": "sec-the-approval-behind-a-purchase",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": "procurement"
+ },
+ "over-cap-spending-authority": {
+  "id": "over-cap-spending-authority",
+  "area": "approval",
+  "parent": "sec-approvals-that-move-money",
+  "stratum": "S3",
+  "cluster": "Approvals that move money",
+  "pair": "expense"
+ },
+ "advance-authority-table": {
+  "id": "advance-authority-table",
+  "area": "approval",
+  "parent": "sec-approvals-that-move-money",
+  "stratum": "S3",
+  "cluster": "Approvals that move money",
+  "pair": "expense"
+ },
+ "advance-reconciliation-deadline": {
+  "id": "advance-reconciliation-deadline",
+  "area": "approval",
+  "parent": "sec-approvals-that-move-money",
+  "stratum": "S3",
+  "cluster": "Approvals that move money",
+  "pair": "expense"
+ },
+ "emergency-spend-ceiling": {
+  "id": "emergency-spend-ceiling",
+  "area": "approval",
+  "parent": "sec-approvals-that-move-money",
+  "stratum": "S3",
+  "cluster": "Approvals that move money",
+  "pair": "expense"
+ },
+ "advance-shortfall-case": {
+  "id": "advance-shortfall-case",
+  "area": "approval",
+  "parent": "sec-approvals-that-move-money",
+  "stratum": "S3",
+  "cluster": "Approvals that move money",
+  "pair": "expense"
+ },
+ "leave-of-absence-authority-table": {
+  "id": "leave-of-absence-authority-table",
+  "area": "approval",
+  "parent": "sec-approvals-about-people",
+  "stratum": "S3",
+  "cluster": "Approvals about people",
+  "pair": "attendance"
+ },
+ "working-abroad-request": {
+  "id": "working-abroad-request",
+  "area": "approval",
+  "parent": "sec-approvals-about-people",
+  "stratum": "S3",
+  "cluster": "Approvals about people",
+  "pair": "attendance"
+ },
+ "trip-extends-overseas-case": {
+  "id": "trip-extends-overseas-case",
+  "area": "approval",
+  "parent": "sec-approvals-about-people",
+  "stratum": "S3",
+  "cluster": "Approvals about people",
+  "pair": "attendance"
+ },
+ "personal-data-overview": {
+  "id": "personal-data-overview",
+  "area": "approval",
+  "parent": "sec-personal-data",
+  "stratum": "S4",
+  "cluster": "Personal data",
+  "pair": null
+ },
+ "personal-data-collection-scope": {
+  "id": "personal-data-collection-scope",
+  "area": "approval",
+  "parent": "sec-personal-data",
+  "stratum": "S4",
+  "cluster": "Personal data",
+  "pair": null
+ },
+ "personal-data-consent-requirement": {
+  "id": "personal-data-consent-requirement",
+  "area": "approval",
+  "parent": "sec-personal-data",
+  "stratum": "S4",
+  "cluster": "Personal data",
+  "pair": null
+ },
+ "subject-access-request-procedure": {
+  "id": "subject-access-request-procedure",
+  "area": "approval",
+  "parent": "sec-personal-data",
+  "stratum": "S4",
+  "cluster": "Personal data",
+  "pair": null
+ },
+ "personal-data-breach-notification-deadline": {
+  "id": "personal-data-breach-notification-deadline",
+  "area": "approval",
+  "parent": "sec-personal-data",
+  "stratum": "S4",
+  "cluster": "Personal data",
+  "pair": null
+ },
+ "personal-data-breach-case": {
+  "id": "personal-data-breach-case",
+  "area": "approval",
+  "parent": "sec-personal-data",
+  "stratum": "S4",
+  "cluster": "Personal data",
+  "pair": null
+ },
+ "ai-tools-overview": {
+  "id": "ai-tools-overview",
+  "area": "approval",
+  "parent": "sec-use-of-ai-tools",
+  "stratum": "S4",
+  "cluster": "Use of AI tools",
+  "pair": null
+ },
+ "approved-ai-tools-table": {
+  "id": "approved-ai-tools-table",
+  "area": "approval",
+  "parent": "sec-use-of-ai-tools",
+  "stratum": "S4",
+  "cluster": "Use of AI tools",
+  "pair": null
+ },
+ "ai-tool-input-restrictions": {
+  "id": "ai-tool-input-restrictions",
+  "area": "approval",
+  "parent": "sec-use-of-ai-tools",
+  "stratum": "S4",
+  "cluster": "Use of AI tools",
+  "pair": null
+ },
+ "ai-tool-approval-procedure": {
+  "id": "ai-tool-approval-procedure",
+  "area": "approval",
+  "parent": "sec-use-of-ai-tools",
+  "stratum": "S4",
+  "cluster": "Use of AI tools",
+  "pair": null
+ },
+ "ai-tool-data-leak-case": {
+  "id": "ai-tool-data-leak-case",
+  "area": "approval",
+  "parent": "sec-use-of-ai-tools",
+  "stratum": "S4",
+  "cluster": "Use of AI tools",
+  "pair": null
+ },
+ "band-reference-table": {
+  "id": "band-reference-table",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "sole-quote-exception": {
+  "id": "sole-quote-exception",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "split-purchase-trap": {
+  "id": "split-purchase-trap",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "annual-agreement-banding": {
+  "id": "annual-agreement-banding",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "repeat-purchase-creep": {
+  "id": "repeat-purchase-creep",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "comparison-proposal-form": {
+  "id": "comparison-proposal-form",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "quote-waiver-procedure": {
+  "id": "quote-waiver-procedure",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "band-boundary-cases": {
+  "id": "band-boundary-cases",
+  "area": "procurement",
+  "parent": "sec-bands-and-quotes-in-practice",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null
+ },
+ "sole-trader-vendor-registration": {
+  "id": "sole-trader-vendor-registration",
+  "area": "procurement",
+  "parent": "sec-vendor-registration-cases",
+  "stratum": "S1",
+  "cluster": "Vendor registration cases",
+  "pair": null
+ },
+ "overseas-vendor-registration": {
+  "id": "overseas-vendor-registration",
+  "area": "procurement",
+  "parent": "sec-vendor-registration-cases",
+  "stratum": "S1",
+  "cluster": "Vendor registration cases",
+  "pair": null
+ },
+ "account-holder-mismatch": {
+  "id": "account-holder-mismatch",
+  "area": "procurement",
+  "parent": "sec-vendor-registration-cases",
+  "stratum": "S1",
+  "cluster": "Vendor registration cases",
+  "pair": null
+ },
+ "one-off-purchase-vendor-registration": {
+  "id": "one-off-purchase-vendor-registration",
+  "area": "procurement",
+  "parent": "sec-vendor-registration-cases",
+  "stratum": "S1",
+  "cluster": "Vendor registration cases",
+  "pair": null
+ },
+ "supplier-refuses-documentation": {
+  "id": "supplier-refuses-documentation",
+  "area": "procurement",
+  "parent": "sec-vendor-registration-cases",
+  "stratum": "S1",
+  "cluster": "Vendor registration cases",
+  "pair": null
+ },
+ "vendor-registration-shortcuts-table": {
+  "id": "vendor-registration-shortcuts-table",
+  "area": "procurement",
+  "parent": "sec-vendor-registration-cases",
+  "stratum": "S1",
+  "cluster": "Vendor registration cases",
+  "pair": null
+ },
+ "electronic-contract-custody": {
+  "id": "electronic-contract-custody",
+  "area": "procurement",
+  "parent": "sec-contract-custody-cases",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null
+ },
+ "contract-expiry-custody": {
+  "id": "contract-expiry-custody",
+  "area": "procurement",
+  "parent": "sec-contract-custody-cases",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null
+ },
+ "borrowing-original-procedure": {
+  "id": "borrowing-original-procedure",
+  "area": "procurement",
+  "parent": "sec-contract-custody-cases",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null
+ },
+ "contract-under-audit-hold": {
+  "id": "contract-under-audit-hold",
+  "area": "procurement",
+  "parent": "sec-contract-custody-cases",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null
+ },
+ "missing-original-case": {
+  "id": "missing-original-case",
+  "area": "procurement",
+  "parent": "sec-contract-custody-cases",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null
+ },
+ "custody-checkout-log": {
+  "id": "custody-checkout-log",
+  "area": "procurement",
+  "parent": "sec-contract-custody-cases",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null
+ },
+ "custody-retention-periods": {
+  "id": "custody-retention-periods",
+  "area": "procurement",
+  "parent": "sec-contract-custody-cases",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null
+ },
+ "receiving-overview": {
+  "id": "receiving-overview",
+  "area": "procurement",
+  "parent": "sec-receiving-and-inspection",
+  "stratum": "S2",
+  "cluster": "Receiving and inspection",
+  "pair": null
+ },
+ "receiving-inspection-checklist": {
+  "id": "receiving-inspection-checklist",
+  "area": "procurement",
+  "parent": "sec-receiving-and-inspection",
+  "stratum": "S2",
+  "cluster": "Receiving and inspection",
+  "pair": null
+ },
+ "short-delivery-handling": {
+  "id": "short-delivery-handling",
+  "area": "procurement",
+  "parent": "sec-receiving-and-inspection",
+  "stratum": "S2",
+  "cluster": "Receiving and inspection",
+  "pair": null
+ },
+ "damaged-goods-on-arrival": {
+  "id": "damaged-goods-on-arrival",
+  "area": "procurement",
+  "parent": "sec-receiving-and-inspection",
+  "stratum": "S2",
+  "cluster": "Receiving and inspection",
+  "pair": null
+ },
+ "rejecting-a-delivery": {
+  "id": "rejecting-a-delivery",
+  "area": "procurement",
+  "parent": "sec-receiving-and-inspection",
+  "stratum": "S2",
+  "cluster": "Receiving and inspection",
+  "pair": null
+ },
+ "goods-receipt-note": {
+  "id": "goods-receipt-note",
+  "area": "procurement",
+  "parent": "sec-receiving-and-inspection",
+  "stratum": "S2",
+  "cluster": "Receiving and inspection",
+  "pair": null
+ },
+ "vendor-performance-review": {
+  "id": "vendor-performance-review",
+  "area": "procurement",
+  "parent": "sec-vendor-performance-and-renewal",
+  "stratum": "S2",
+  "cluster": "Vendor performance and renewal",
+  "pair": null
+ },
+ "missed-delivery-dates": {
+  "id": "missed-delivery-dates",
+  "area": "procurement",
+  "parent": "sec-vendor-performance-and-renewal",
+  "stratum": "S2",
+  "cluster": "Vendor performance and renewal",
+  "pair": null
+ },
+ "ending-a-vendor-relationship": {
+  "id": "ending-a-vendor-relationship",
+  "area": "procurement",
+  "parent": "sec-vendor-performance-and-renewal",
+  "stratum": "S2",
+  "cluster": "Vendor performance and renewal",
+  "pair": null
+ },
+ "renewal-decision": {
+  "id": "renewal-decision",
+  "area": "procurement",
+  "parent": "sec-vendor-performance-and-renewal",
+  "stratum": "S2",
+  "cluster": "Vendor performance and renewal",
+  "pair": null
+ },
+ "renewal-notice-deadline": {
+  "id": "renewal-notice-deadline",
+  "area": "procurement",
+  "parent": "sec-vendor-performance-and-renewal",
+  "stratum": "S2",
+  "cluster": "Vendor performance and renewal",
+  "pair": null
+ },
+ "standard-contract-clauses": {
+  "id": "standard-contract-clauses",
+  "area": "procurement",
+  "parent": "sec-contract-terms-the-company-insists-on",
+  "stratum": "S2",
+  "cluster": "Contract terms the company insists on",
+  "pair": null
+ },
+ "standard-payment-terms": {
+  "id": "standard-payment-terms",
+  "area": "procurement",
+  "parent": "sec-contract-terms-the-company-insists-on",
+  "stratum": "S2",
+  "cluster": "Contract terms the company insists on",
+  "pair": null
+ },
+ "liability-and-indemnity-position": {
+  "id": "liability-and-indemnity-position",
+  "area": "procurement",
+  "parent": "sec-contract-terms-the-company-insists-on",
+  "stratum": "S2",
+  "cluster": "Contract terms the company insists on",
+  "pair": null
+ },
+ "negotiable-contract-terms": {
+  "id": "negotiable-contract-terms",
+  "area": "procurement",
+  "parent": "sec-contract-terms-the-company-insists-on",
+  "stratum": "S2",
+  "cluster": "Contract terms the company insists on",
+  "pair": null
+ },
+ "sec-attendance-corrections-and-disputes": {
+  "id": "sec-attendance-corrections-and-disputes",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S2",
+  "cluster": "Attendance corrections and disputes",
+  "pair": null,
+  "section": true
+ },
+ "sec-days-that-decide-money": {
+  "id": "sec-days-that-decide-money",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S3",
+  "cluster": "Days that decide money",
+  "pair": null,
+  "section": true
+ },
+ "sec-equipment-lending": {
+  "id": "sec-equipment-lending",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S4",
+  "cluster": "Equipment lending",
+  "pair": null,
+  "section": true
+ },
+ "sec-flexible-and-remote-working": {
+  "id": "sec-flexible-and-remote-working",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S2",
+  "cluster": "Flexible and remote working",
+  "pair": null,
+  "section": true
+ },
+ "sec-leave-of-absence-other-than-parental": {
+  "id": "sec-leave-of-absence-other-than-parental",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S2",
+  "cluster": "Leave of absence other than parental",
+  "pair": null,
+  "section": true
+ },
+ "sec-sick-leave-and-injury": {
+  "id": "sec-sick-leave-and-injury",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S2",
+  "cluster": "Sick leave and injury",
+  "pair": null,
+  "section": true
+ },
+ "sec-the-handover-to-a-claim": {
+  "id": "sec-the-handover-to-a-claim",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S3",
+  "cluster": "The handover to a claim",
+  "pair": null,
+  "section": true
+ },
+ "sec-trip-approval-before-the-trip": {
+  "id": "sec-trip-approval-before-the-trip",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S3",
+  "cluster": "Trip approval before the trip",
+  "pair": null,
+  "section": true
+ },
+ "sec-working-abroad": {
+  "id": "sec-working-abroad",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S4",
+  "cluster": "Working abroad",
+  "pair": null,
+  "section": true
+ },
+ "sec-workplace-safety-and-health-checks": {
+  "id": "sec-workplace-safety-and-health-checks",
+  "area": "attendance",
+  "parent": "attendance",
+  "stratum": "S4",
+  "cluster": "Workplace safety and health checks",
+  "pair": null,
+  "section": true
+ },
+ "sec-allowance-or-reimbursement": {
+  "id": "sec-allowance-or-reimbursement",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S3",
+  "cluster": "Allowance or reimbursement",
+  "pair": null,
+  "section": true
+ },
+ "sec-bonuses-and-incentives": {
+  "id": "sec-bonuses-and-incentives",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S2",
+  "cluster": "Bonuses and incentives",
+  "pair": null,
+  "section": true
+ },
+ "sec-days-into-money": {
+  "id": "sec-days-into-money",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S3",
+  "cluster": "Days into money",
+  "pair": null,
+  "section": true
+ },
+ "sec-garnishment-and-deductions-by-order": {
+  "id": "sec-garnishment-and-deductions-by-order",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S2",
+  "cluster": "Garnishment and deductions by order",
+  "pair": null,
+  "section": true
+ },
+ "sec-pay-changes-that-need-a-decision": {
+  "id": "sec-pay-changes-that-need-a-decision",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S3",
+  "cluster": "Pay changes that need a decision",
+  "pair": null,
+  "section": true
+ },
+ "sec-pay-structure-and-review": {
+  "id": "sec-pay-structure-and-review",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S2",
+  "cluster": "Pay structure and review",
+  "pair": null,
+  "section": true
+ },
+ "sec-paying-people-who-are-not-employees": {
+  "id": "sec-paying-people-who-are-not-employees",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S4",
+  "cluster": "Paying people who are not employees",
+  "pair": null,
+  "section": true
+ },
+ "sec-payslip-lines-in-detail": {
+  "id": "sec-payslip-lines-in-detail",
+  "area": "payroll",
+  "parent": "payslip",
+  "stratum": "S1",
+  "cluster": "Payslip lines in detail",
+  "pair": null,
+  "section": true
+ },
+ "sec-severance-and-leaving-pay": {
+  "id": "sec-severance-and-leaving-pay",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S2",
+  "cluster": "Severance and leaving pay",
+  "pair": null,
+  "section": true
+ },
+ "sec-social-insurance-movements": {
+  "id": "sec-social-insurance-movements",
+  "area": "payroll",
+  "parent": "insurance",
+  "stratum": "S1",
+  "cluster": "Social insurance movements",
+  "pair": null,
+  "section": true
+ },
+ "sec-stock-and-long-term-incentives": {
+  "id": "sec-stock-and-long-term-incentives",
+  "area": "payroll",
+  "parent": "payroll",
+  "stratum": "S4",
+  "cluster": "Stock and long-term incentives",
+  "pair": null,
+  "section": true
+ },
+ "sec-tax-free-allowances-case-by-case": {
+  "id": "sec-tax-free-allowances-case-by-case",
+  "area": "payroll",
+  "parent": "nontaxable",
+  "stratum": "S1",
+  "cluster": "Tax-free allowances, case by case",
+  "pair": null,
+  "section": true
+ },
+ "sec-year-end-settlement": {
+  "id": "sec-year-end-settlement",
+  "area": "payroll",
+  "parent": "year-end-tax",
+  "stratum": "S1",
+  "cluster": "Year-end settlement",
+  "pair": null,
+  "section": true
+ },
+ "sec-approvals-about-people": {
+  "id": "sec-approvals-about-people",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S3",
+  "cluster": "Approvals about people",
+  "pair": null,
+  "section": true
+ },
+ "sec-approvals-that-move-money": {
+  "id": "sec-approvals-that-move-money",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S3",
+  "cluster": "Approvals that move money",
+  "pair": null,
+  "section": true
+ },
+ "sec-audit-requests": {
+  "id": "sec-audit-requests",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S2",
+  "cluster": "Audit requests",
+  "pair": null,
+  "section": true
+ },
+ "sec-chains-and-consent": {
+  "id": "sec-chains-and-consent",
+  "area": "approval",
+  "parent": "approval-line",
+  "stratum": "S1",
+  "cluster": "Chains and consent",
+  "pair": null,
+  "section": true
+ },
+ "sec-delegation-in-practice": {
+  "id": "sec-delegation-in-practice",
+  "area": "approval",
+  "parent": "delegated-approval",
+  "stratum": "S1",
+  "cluster": "Delegation in practice",
+  "pair": null,
+  "section": true
+ },
+ "sec-drafts-by-kind": {
+  "id": "sec-drafts-by-kind",
+  "area": "approval",
+  "parent": "draft-doc",
+  "stratum": "S1",
+  "cluster": "Drafts by kind",
+  "pair": null,
+  "section": true
+ },
+ "sec-meetings-and-minutes": {
+  "id": "sec-meetings-and-minutes",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S2",
+  "cluster": "Meetings and minutes",
+  "pair": null,
+  "section": true
+ },
+ "sec-personal-data": {
+  "id": "sec-personal-data",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S4",
+  "cluster": "Personal data",
+  "pair": null,
+  "section": true
+ },
+ "sec-policy-and-its-own-lifecycle": {
+  "id": "sec-policy-and-its-own-lifecycle",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S2",
+  "cluster": "Policy and its own lifecycle",
+  "pair": null,
+  "section": true
+ },
+ "sec-retention-cases": {
+  "id": "sec-retention-cases",
+  "area": "approval",
+  "parent": "retention",
+  "stratum": "S1",
+  "cluster": "Retention cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-seals": {
+  "id": "sec-seals",
+  "area": "approval",
+  "parent": "doc-admin",
+  "stratum": "S1",
+  "cluster": "Seals",
+  "pair": null,
+  "section": true
+ },
+ "sec-signing-authority-for-outside-parties": {
+  "id": "sec-signing-authority-for-outside-parties",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S2",
+  "cluster": "Signing authority for outside parties",
+  "pair": null,
+  "section": true
+ },
+ "sec-the-approval-behind-a-purchase": {
+  "id": "sec-the-approval-behind-a-purchase",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S3",
+  "cluster": "The approval behind a purchase",
+  "pair": null,
+  "section": true
+ },
+ "sec-use-of-ai-tools": {
+  "id": "sec-use-of-ai-tools",
+  "area": "approval",
+  "parent": "approval",
+  "stratum": "S4",
+  "cluster": "Use of AI tools",
+  "pair": null,
+  "section": true
+ },
+ "sec-bands-and-quotes-in-practice": {
+  "id": "sec-bands-and-quotes-in-practice",
+  "area": "procurement",
+  "parent": "approval-threshold",
+  "stratum": "S1",
+  "cluster": "Bands and quotes in practice",
+  "pair": null,
+  "section": true
+ },
+ "sec-contract-custody-cases": {
+  "id": "sec-contract-custody-cases",
+  "area": "procurement",
+  "parent": "contract-custody",
+  "stratum": "S1",
+  "cluster": "Contract custody cases",
+  "pair": null,
+  "section": true
+ },
+ "sec-contract-terms-the-company-insists-on": {
+  "id": "sec-contract-terms-the-company-insists-on",
+  "area": "procurement",
+  "parent": "procurement",
+  "stratum": "S2",
+  "cluster": "Contract terms the company insists on",
+  "pair": null,
+  "section": true
+ },
+ "sec-receiving-and-inspection": {
+  "id": "sec-receiving-and-inspection",
+  "area": "procurement",
+  "parent": "procurement",
+  "stratum": "S2",
+  "cluster": "Receiving and inspection",
+  "pair": null,
+  "section": true
+ },
+ "sec-vendor-performance-and-renewal": {
+  "id": "sec-vendor-performance-and-renewal",
+  "area": "procurement",
+  "parent": "procurement",
+  "stratum": "S2",
+  "cluster": "Vendor performance and renewal",
+  "pair": null,
+  "section": true
+ },
+ "sec-vendor-registration-cases": {
+  "id": "sec-vendor-registration-cases",
+  "area": "procurement",
+  "parent": "vendor",
+  "stratum": "S1",
+  "cluster": "Vendor registration cases",
+  "pair": null,
+  "section": true
+ }
+}
