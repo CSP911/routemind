@@ -38,6 +38,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-001-d
@@ -64,6 +65,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-002-d
@@ -90,6 +92,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-003-d
@@ -116,6 +119,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-010-d
@@ -142,6 +146,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-011-d
@@ -168,6 +173,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-012-d
@@ -194,6 +200,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-013-d
@@ -220,6 +227,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-020-d
@@ -246,6 +254,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-021-d
@@ -272,6 +281,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-022-d
@@ -298,6 +308,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-023-d
@@ -324,6 +335,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-030-d
@@ -350,6 +362,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-031-d
@@ -376,6 +389,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-032-d
@@ -402,6 +416,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-033-d
@@ -428,6 +443,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-100-d
@@ -454,6 +470,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-101-d
@@ -480,6 +497,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-102-d
@@ -506,6 +524,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-103-d
@@ -532,6 +551,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-110-d
@@ -558,6 +578,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-111-d
@@ -584,6 +605,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-112-d
@@ -610,6 +632,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-113-d
@@ -636,6 +659,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-120-d
@@ -662,6 +686,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-121-d
@@ -688,6 +713,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-122-d
@@ -714,6 +740,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-123-d
@@ -740,6 +767,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-130-d
@@ -766,6 +794,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-131-d
@@ -792,6 +821,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-132-d
@@ -818,6 +848,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-133-d
@@ -844,6 +875,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-200-d
@@ -870,6 +902,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-201-d
@@ -896,6 +929,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-202-d
@@ -922,6 +956,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-203-d
@@ -948,6 +983,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-210-d
@@ -974,6 +1010,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-211-d
@@ -1000,6 +1037,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-212-d
@@ -1026,6 +1064,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-213-d
@@ -1052,6 +1091,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-220-d
@@ -1078,6 +1118,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-221-d
@@ -1104,6 +1145,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-222-d
@@ -1130,6 +1172,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-223-d
@@ -1156,6 +1199,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-230-d
@@ -1182,6 +1226,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-231-d
@@ -1208,6 +1253,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-232-d
@@ -1234,6 +1280,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-233-d
@@ -1260,6 +1307,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-300-d
@@ -1286,6 +1334,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-301-d
@@ -1312,6 +1361,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-302-d
@@ -1338,6 +1388,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-303-d
@@ -1364,6 +1415,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-310-d
@@ -1390,6 +1442,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-311-d
@@ -1416,6 +1469,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-312-d
@@ -1442,6 +1496,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-313-d
@@ -1468,6 +1523,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-320-d
@@ -1494,6 +1550,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-321-d
@@ -1520,6 +1577,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-322-d
@@ -1546,6 +1604,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-323-d
@@ -1572,6 +1631,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-330-d
@@ -1598,6 +1658,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-331-d
@@ -1624,6 +1685,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-332-d
@@ -1650,6 +1712,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-333-d
@@ -1676,10 +1739,11 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-overtime-000-d
-  q: "For day D1, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H1, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
   needs: any
@@ -1690,7 +1754,7 @@ questions:
   support: []
 
 - id: h-overtime-000-i
-  q: "An ordinary tuesday, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
   needs: any
@@ -1702,10 +1766,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-001-d
-  q: "For day D1, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H1, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p2]
   needs: any
@@ -1716,7 +1781,7 @@ questions:
   support: []
 
 - id: h-overtime-001-i
-  q: "An ordinary tuesday, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, about ninety minutes, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p2]
   needs: any
@@ -1728,10 +1793,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-002-d
-  q: "For day D1, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H1, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p3]
   needs: any
@@ -1742,7 +1808,7 @@ questions:
   support: []
 
 - id: h-overtime-002-i
-  q: "An ordinary tuesday, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, about ninety minutes, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p3]
   needs: any
@@ -1754,10 +1820,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-003-d
-  q: "For day D1, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H1, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p4]
   needs: any
@@ -1768,7 +1835,7 @@ questions:
   support: []
 
 - id: h-overtime-003-i
-  q: "An ordinary tuesday, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, about ninety minutes, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p4]
   needs: any
@@ -1780,10 +1847,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-010-d
-  q: "For day D1, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H2, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p1]
   needs: any
@@ -1794,7 +1862,7 @@ questions:
   support: []
 
 - id: h-overtime-010-i
-  q: "An ordinary tuesday, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, three hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p1]
   needs: any
@@ -1806,10 +1874,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-011-d
-  q: "For day D1, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H2, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p2]
   needs: any
@@ -1820,7 +1889,7 @@ questions:
   support: []
 
 - id: h-overtime-011-i
-  q: "An ordinary tuesday, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, three hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p2]
   needs: any
@@ -1832,10 +1901,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-012-d
-  q: "For day D1, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H2, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p3]
   needs: any
@@ -1846,7 +1916,7 @@ questions:
   support: []
 
 - id: h-overtime-012-i
-  q: "An ordinary tuesday, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, three hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p3]
   needs: any
@@ -1858,10 +1928,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-013-d
-  q: "For day D1, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H2, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p4]
   needs: any
@@ -1872,7 +1943,7 @@ questions:
   support: []
 
 - id: h-overtime-013-i
-  q: "An ordinary tuesday, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, three hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h2-place-p4]
   needs: any
@@ -1884,10 +1955,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-020-d
-  q: "For day D1, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H3, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p1]
   needs: any
@@ -1898,7 +1970,7 @@ questions:
   support: []
 
 - id: h-overtime-020-i
-  q: "An ordinary tuesday, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p1]
   needs: any
@@ -1910,10 +1982,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-021-d
-  q: "For day D1, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H3, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p2]
   needs: any
@@ -1924,7 +1997,7 @@ questions:
   support: []
 
 - id: h-overtime-021-i
-  q: "An ordinary tuesday, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, six hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p2]
   needs: any
@@ -1936,10 +2009,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-022-d
-  q: "For day D1, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H3, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p3]
   needs: any
@@ -1950,7 +2024,7 @@ questions:
   support: []
 
 - id: h-overtime-022-i
-  q: "An ordinary tuesday, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p3]
   needs: any
@@ -1962,10 +2036,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-023-d
-  q: "For day D1, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H3, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p4]
   needs: any
@@ -1976,7 +2051,7 @@ questions:
   support: []
 
 - id: h-overtime-023-i
-  q: "An ordinary tuesday, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p4]
   needs: any
@@ -1988,10 +2063,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-030-d
-  q: "For day D1, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H4, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p1]
   needs: any
@@ -2002,7 +2078,7 @@ questions:
   support: []
 
 - id: h-overtime-030-i
-  q: "An ordinary tuesday, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, eleven hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p1]
   needs: any
@@ -2014,10 +2090,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-031-d
-  q: "For day D1, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H4, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p2]
   needs: any
@@ -2028,7 +2105,7 @@ questions:
   support: []
 
 - id: h-overtime-031-i
-  q: "An ordinary tuesday, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, eleven hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p2]
   needs: any
@@ -2040,10 +2117,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-032-d
-  q: "For day D1, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H4, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p3]
   needs: any
@@ -2054,7 +2132,7 @@ questions:
   support: []
 
 - id: h-overtime-032-i
-  q: "An ordinary tuesday, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, eleven hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p3]
   needs: any
@@ -2066,10 +2144,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-033-d
-  q: "For day D1, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H4, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p4]
   needs: any
@@ -2080,7 +2159,7 @@ questions:
   support: []
 
 - id: h-overtime-033-i
-  q: "An ordinary tuesday, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, eleven hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h4-place-p4]
   needs: any
@@ -2092,10 +2171,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-100-d
-  q: "For day D2, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H1, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p1]
   needs: any
@@ -2106,7 +2186,7 @@ questions:
   support: []
 
 - id: h-overtime-100-i
-  q: "A saturday, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p1]
   needs: any
@@ -2118,10 +2198,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-101-d
-  q: "For day D2, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H1, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p2]
   needs: any
@@ -2132,7 +2213,7 @@ questions:
   support: []
 
 - id: h-overtime-101-i
-  q: "A saturday, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, about ninety minutes, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p2]
   needs: any
@@ -2144,10 +2225,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-102-d
-  q: "For day D2, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H1, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p3]
   needs: any
@@ -2158,7 +2240,7 @@ questions:
   support: []
 
 - id: h-overtime-102-i
-  q: "A saturday, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, about ninety minutes, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p3]
   needs: any
@@ -2170,10 +2252,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-103-d
-  q: "For day D2, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H1, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p4]
   needs: any
@@ -2184,7 +2267,7 @@ questions:
   support: []
 
 - id: h-overtime-103-i
-  q: "A saturday, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, about ninety minutes, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h1-place-p4]
   needs: any
@@ -2196,10 +2279,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-110-d
-  q: "For day D2, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H2, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p1]
   needs: any
@@ -2210,7 +2294,7 @@ questions:
   support: []
 
 - id: h-overtime-110-i
-  q: "A saturday, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, three hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p1]
   needs: any
@@ -2222,10 +2306,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-111-d
-  q: "For day D2, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H2, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p2]
   needs: any
@@ -2236,7 +2321,7 @@ questions:
   support: []
 
 - id: h-overtime-111-i
-  q: "A saturday, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, three hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p2]
   needs: any
@@ -2248,10 +2333,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-112-d
-  q: "For day D2, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H2, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p3]
   needs: any
@@ -2262,7 +2348,7 @@ questions:
   support: []
 
 - id: h-overtime-112-i
-  q: "A saturday, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, three hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p3]
   needs: any
@@ -2274,10 +2360,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-113-d
-  q: "For day D2, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H2, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p4]
   needs: any
@@ -2288,7 +2375,7 @@ questions:
   support: []
 
 - id: h-overtime-113-i
-  q: "A saturday, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, three hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h2-place-p4]
   needs: any
@@ -2300,10 +2387,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-120-d
-  q: "For day D2, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H3, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p1]
   needs: any
@@ -2314,7 +2402,7 @@ questions:
   support: []
 
 - id: h-overtime-120-i
-  q: "A saturday, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p1]
   needs: any
@@ -2326,10 +2414,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-121-d
-  q: "For day D2, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H3, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p2]
   needs: any
@@ -2340,7 +2429,7 @@ questions:
   support: []
 
 - id: h-overtime-121-i
-  q: "A saturday, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, six hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p2]
   needs: any
@@ -2352,10 +2441,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-122-d
-  q: "For day D2, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H3, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p3]
   needs: any
@@ -2366,7 +2456,7 @@ questions:
   support: []
 
 - id: h-overtime-122-i
-  q: "A saturday, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p3]
   needs: any
@@ -2378,10 +2468,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-123-d
-  q: "For day D2, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H3, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p4]
   needs: any
@@ -2392,7 +2483,7 @@ questions:
   support: []
 
 - id: h-overtime-123-i
-  q: "A saturday, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h3-place-p4]
   needs: any
@@ -2404,10 +2495,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-130-d
-  q: "For day D2, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H4, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p1]
   needs: any
@@ -2418,7 +2510,7 @@ questions:
   support: []
 
 - id: h-overtime-130-i
-  q: "A saturday, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, eleven hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p1]
   needs: any
@@ -2430,10 +2522,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-131-d
-  q: "For day D2, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H4, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p2]
   needs: any
@@ -2444,7 +2537,7 @@ questions:
   support: []
 
 - id: h-overtime-131-i
-  q: "A saturday, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, eleven hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p2]
   needs: any
@@ -2456,10 +2549,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-132-d
-  q: "For day D2, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H4, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p3]
   needs: any
@@ -2470,7 +2564,7 @@ questions:
   support: []
 
 - id: h-overtime-132-i
-  q: "A saturday, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, eleven hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p3]
   needs: any
@@ -2482,10 +2576,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-133-d
-  q: "For day D2, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D2, hours H4, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p4]
   needs: any
@@ -2496,7 +2591,7 @@ questions:
   support: []
 
 - id: h-overtime-133-i
-  q: "A saturday, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "A saturday, eleven hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d2-hours-h4-place-p4]
   needs: any
@@ -2508,10 +2603,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-200-d
-  q: "For day D3, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H1, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p1]
   needs: any
@@ -2522,7 +2618,7 @@ questions:
   support: []
 
 - id: h-overtime-200-i
-  q: "Liberation day, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p1]
   needs: any
@@ -2534,10 +2630,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-201-d
-  q: "For day D3, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H1, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p2]
   needs: any
@@ -2548,7 +2645,7 @@ questions:
   support: []
 
 - id: h-overtime-201-i
-  q: "Liberation day, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, about ninety minutes, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p2]
   needs: any
@@ -2560,10 +2657,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-202-d
-  q: "For day D3, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H1, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p3]
   needs: any
@@ -2574,7 +2672,7 @@ questions:
   support: []
 
 - id: h-overtime-202-i
-  q: "Liberation day, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, about ninety minutes, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p3]
   needs: any
@@ -2586,10 +2684,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-203-d
-  q: "For day D3, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H1, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p4]
   needs: any
@@ -2600,7 +2699,7 @@ questions:
   support: []
 
 - id: h-overtime-203-i
-  q: "Liberation day, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, about ninety minutes, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h1-place-p4]
   needs: any
@@ -2612,10 +2711,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-210-d
-  q: "For day D3, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H2, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p1]
   needs: any
@@ -2626,7 +2726,7 @@ questions:
   support: []
 
 - id: h-overtime-210-i
-  q: "Liberation day, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, three hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p1]
   needs: any
@@ -2638,10 +2738,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-211-d
-  q: "For day D3, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H2, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p2]
   needs: any
@@ -2652,7 +2753,7 @@ questions:
   support: []
 
 - id: h-overtime-211-i
-  q: "Liberation day, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, three hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p2]
   needs: any
@@ -2664,10 +2765,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-212-d
-  q: "For day D3, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H2, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p3]
   needs: any
@@ -2678,7 +2780,7 @@ questions:
   support: []
 
 - id: h-overtime-212-i
-  q: "Liberation day, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, three hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p3]
   needs: any
@@ -2690,10 +2792,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-213-d
-  q: "For day D3, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H2, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p4]
   needs: any
@@ -2704,7 +2807,7 @@ questions:
   support: []
 
 - id: h-overtime-213-i
-  q: "Liberation day, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, three hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h2-place-p4]
   needs: any
@@ -2716,10 +2819,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-220-d
-  q: "For day D3, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H3, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p1]
   needs: any
@@ -2730,7 +2834,7 @@ questions:
   support: []
 
 - id: h-overtime-220-i
-  q: "Liberation day, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p1]
   needs: any
@@ -2742,10 +2846,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-221-d
-  q: "For day D3, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H3, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p2]
   needs: any
@@ -2756,7 +2861,7 @@ questions:
   support: []
 
 - id: h-overtime-221-i
-  q: "Liberation day, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, six hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p2]
   needs: any
@@ -2768,10 +2873,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-222-d
-  q: "For day D3, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H3, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p3]
   needs: any
@@ -2782,7 +2888,7 @@ questions:
   support: []
 
 - id: h-overtime-222-i
-  q: "Liberation day, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p3]
   needs: any
@@ -2794,10 +2900,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-223-d
-  q: "For day D3, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H3, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p4]
   needs: any
@@ -2808,7 +2915,7 @@ questions:
   support: []
 
 - id: h-overtime-223-i
-  q: "Liberation day, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h3-place-p4]
   needs: any
@@ -2820,10 +2927,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-230-d
-  q: "For day D3, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H4, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p1]
   needs: any
@@ -2834,7 +2942,7 @@ questions:
   support: []
 
 - id: h-overtime-230-i
-  q: "Liberation day, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, eleven hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p1]
   needs: any
@@ -2846,10 +2954,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-231-d
-  q: "For day D3, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H4, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p2]
   needs: any
@@ -2860,7 +2969,7 @@ questions:
   support: []
 
 - id: h-overtime-231-i
-  q: "Liberation day, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, eleven hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p2]
   needs: any
@@ -2872,10 +2981,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-232-d
-  q: "For day D3, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H4, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p3]
   needs: any
@@ -2886,7 +2996,7 @@ questions:
   support: []
 
 - id: h-overtime-232-i
-  q: "Liberation day, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, eleven hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p3]
   needs: any
@@ -2898,10 +3008,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-233-d
-  q: "For day D3, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D3, hours H4, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p4]
   needs: any
@@ -2912,7 +3023,7 @@ questions:
   support: []
 
 - id: h-overtime-233-i
-  q: "Liberation day, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Liberation day, eleven hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d3-hours-h4-place-p4]
   needs: any
@@ -2924,10 +3035,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-300-d
-  q: "For day D4, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H1, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p1]
   needs: any
@@ -2938,7 +3050,7 @@ questions:
   support: []
 
 - id: h-overtime-300-i
-  q: "Two in the morning, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p1]
   needs: any
@@ -2950,10 +3062,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-301-d
-  q: "For day D4, hours H1, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H1, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p2]
   needs: any
@@ -2964,7 +3077,7 @@ questions:
   support: []
 
 - id: h-overtime-301-i
-  q: "Two in the morning, about ninety minutes, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, about ninety minutes, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p2]
   needs: any
@@ -2976,10 +3089,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-302-d
-  q: "For day D4, hours H1, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H1, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p3]
   needs: any
@@ -2990,7 +3104,7 @@ questions:
   support: []
 
 - id: h-overtime-302-i
-  q: "Two in the morning, about ninety minutes, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, about ninety minutes, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p3]
   needs: any
@@ -3002,10 +3116,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-303-d
-  q: "For day D4, hours H1, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H1, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p4]
   needs: any
@@ -3016,7 +3131,7 @@ questions:
   support: []
 
 - id: h-overtime-303-i
-  q: "Two in the morning, about ninety minutes, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, about ninety minutes, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h1-place-p4]
   needs: any
@@ -3028,10 +3143,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-310-d
-  q: "For day D4, hours H2, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H2, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p1]
   needs: any
@@ -3042,7 +3158,7 @@ questions:
   support: []
 
 - id: h-overtime-310-i
-  q: "Two in the morning, three hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, three hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p1]
   needs: any
@@ -3054,10 +3170,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-311-d
-  q: "For day D4, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H2, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p2]
   needs: any
@@ -3068,7 +3185,7 @@ questions:
   support: []
 
 - id: h-overtime-311-i
-  q: "Two in the morning, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, three hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p2]
   needs: any
@@ -3080,10 +3197,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-312-d
-  q: "For day D4, hours H2, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H2, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p3]
   needs: any
@@ -3094,7 +3212,7 @@ questions:
   support: []
 
 - id: h-overtime-312-i
-  q: "Two in the morning, three hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, three hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p3]
   needs: any
@@ -3106,10 +3224,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-313-d
-  q: "For day D4, hours H2, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H2, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p4]
   needs: any
@@ -3120,7 +3239,7 @@ questions:
   support: []
 
 - id: h-overtime-313-i
-  q: "Two in the morning, three hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, three hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p4]
   needs: any
@@ -3132,10 +3251,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-320-d
-  q: "For day D4, hours H3, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H3, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p1]
   needs: any
@@ -3146,7 +3266,7 @@ questions:
   support: []
 
 - id: h-overtime-320-i
-  q: "Two in the morning, six hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p1]
   needs: any
@@ -3158,10 +3278,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-321-d
-  q: "For day D4, hours H3, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H3, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p2]
   needs: any
@@ -3172,7 +3293,7 @@ questions:
   support: []
 
 - id: h-overtime-321-i
-  q: "Two in the morning, six hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, six hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p2]
   needs: any
@@ -3184,10 +3305,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-322-d
-  q: "For day D4, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H3, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p3]
   needs: any
@@ -3198,7 +3320,7 @@ questions:
   support: []
 
 - id: h-overtime-322-i
-  q: "Two in the morning, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p3]
   needs: any
@@ -3210,10 +3332,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-323-d
-  q: "For day D4, hours H3, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H3, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p4]
   needs: any
@@ -3224,7 +3347,7 @@ questions:
   support: []
 
 - id: h-overtime-323-i
-  q: "Two in the morning, six hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h3-place-p4]
   needs: any
@@ -3236,10 +3359,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-330-d
-  q: "For day D4, hours H4, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H4, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p1]
   needs: any
@@ -3250,7 +3374,7 @@ questions:
   support: []
 
 - id: h-overtime-330-i
-  q: "Two in the morning, eleven hours, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, eleven hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p1]
   needs: any
@@ -3262,10 +3386,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-331-d
-  q: "For day D4, hours H4, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H4, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p2]
   needs: any
@@ -3276,7 +3401,7 @@ questions:
   support: []
 
 - id: h-overtime-331-i
-  q: "Two in the morning, eleven hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, eleven hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p2]
   needs: any
@@ -3288,10 +3413,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-332-d
-  q: "For day D4, hours H4, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H4, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p3]
   needs: any
@@ -3302,7 +3428,7 @@ questions:
   support: []
 
 - id: h-overtime-332-i
-  q: "Two in the morning, eleven hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, eleven hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p3]
   needs: any
@@ -3314,10 +3440,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-333-d
-  q: "For day D4, hours H4, place P4, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H4, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p4]
   needs: any
@@ -3328,7 +3455,7 @@ questions:
   support: []
 
 - id: h-overtime-333-i
-  q: "Two in the morning, eleven hours, from home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, eleven hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h4-place-p4]
   needs: any
@@ -3340,6 +3467,7 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-accrual-000-d
@@ -3366,6 +3494,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-001-d
@@ -3392,6 +3521,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-002-d
@@ -3418,6 +3548,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-003-d
@@ -3444,6 +3575,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-010-d
@@ -3470,6 +3602,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-011-d
@@ -3496,6 +3629,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-012-d
@@ -3522,6 +3656,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-013-d
@@ -3548,6 +3683,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-020-d
@@ -3574,6 +3710,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-021-d
@@ -3600,6 +3737,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-022-d
@@ -3626,6 +3764,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-023-d
@@ -3652,6 +3791,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-030-d
@@ -3678,6 +3818,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-031-d
@@ -3704,6 +3845,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-032-d
@@ -3730,6 +3872,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-033-d
@@ -3756,6 +3899,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-100-d
@@ -3782,6 +3926,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-101-d
@@ -3808,6 +3953,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-102-d
@@ -3834,6 +3980,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-103-d
@@ -3860,6 +4007,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-110-d
@@ -3886,6 +4034,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-111-d
@@ -3912,6 +4061,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-112-d
@@ -3938,6 +4088,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-113-d
@@ -3964,6 +4115,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-120-d
@@ -3990,6 +4142,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-121-d
@@ -4016,6 +4169,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-122-d
@@ -4042,6 +4196,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-123-d
@@ -4068,6 +4223,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-130-d
@@ -4094,6 +4250,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-131-d
@@ -4120,6 +4277,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-132-d
@@ -4146,6 +4304,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-133-d
@@ -4172,6 +4331,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-200-d
@@ -4198,6 +4358,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-201-d
@@ -4224,6 +4385,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-202-d
@@ -4250,6 +4412,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-203-d
@@ -4276,6 +4439,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-210-d
@@ -4302,6 +4466,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-211-d
@@ -4328,6 +4493,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-212-d
@@ -4354,6 +4520,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-213-d
@@ -4380,6 +4547,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-220-d
@@ -4406,6 +4574,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-221-d
@@ -4432,6 +4601,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-222-d
@@ -4458,6 +4628,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-223-d
@@ -4484,6 +4655,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-230-d
@@ -4510,6 +4682,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-231-d
@@ -4536,6 +4709,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-232-d
@@ -4562,6 +4736,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-233-d
@@ -4588,6 +4763,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-300-d
@@ -4614,6 +4790,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-301-d
@@ -4640,6 +4817,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-302-d
@@ -4666,6 +4844,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-303-d
@@ -4692,6 +4871,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-310-d
@@ -4718,6 +4898,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-311-d
@@ -4744,6 +4925,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-312-d
@@ -4770,6 +4952,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-313-d
@@ -4796,6 +4979,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-320-d
@@ -4822,6 +5006,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-321-d
@@ -4848,6 +5033,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-322-d
@@ -4874,6 +5060,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-323-d
@@ -4900,6 +5087,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-330-d
@@ -4926,6 +5114,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-331-d
@@ -4952,6 +5141,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-332-d
@@ -4978,6 +5168,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-333-d
@@ -5004,6 +5195,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-threshold-000-d
@@ -5030,6 +5222,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-001-d
@@ -5056,6 +5249,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-002-d
@@ -5082,6 +5276,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-003-d
@@ -5108,6 +5303,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-010-d
@@ -5134,6 +5330,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-011-d
@@ -5160,6 +5357,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-012-d
@@ -5186,6 +5384,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-013-d
@@ -5212,6 +5411,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-020-d
@@ -5238,6 +5438,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-021-d
@@ -5264,6 +5465,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-022-d
@@ -5290,6 +5492,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-023-d
@@ -5316,6 +5519,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-030-d
@@ -5342,6 +5546,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-031-d
@@ -5368,6 +5573,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-032-d
@@ -5394,6 +5600,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-033-d
@@ -5420,6 +5627,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-100-d
@@ -5446,6 +5654,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-101-d
@@ -5472,6 +5681,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-102-d
@@ -5498,6 +5708,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-103-d
@@ -5524,6 +5735,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-110-d
@@ -5550,6 +5762,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-111-d
@@ -5576,6 +5789,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-112-d
@@ -5602,6 +5816,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-113-d
@@ -5628,6 +5843,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-120-d
@@ -5654,6 +5870,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-121-d
@@ -5680,6 +5897,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-122-d
@@ -5706,6 +5924,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-123-d
@@ -5732,6 +5951,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-130-d
@@ -5758,6 +5978,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-131-d
@@ -5784,6 +6005,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-132-d
@@ -5810,6 +6032,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-133-d
@@ -5836,6 +6059,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-200-d
@@ -5862,6 +6086,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-201-d
@@ -5888,6 +6113,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-202-d
@@ -5914,6 +6140,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-203-d
@@ -5940,6 +6167,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-210-d
@@ -5966,6 +6194,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-211-d
@@ -5992,6 +6221,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-212-d
@@ -6018,6 +6248,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-213-d
@@ -6044,6 +6275,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-220-d
@@ -6070,6 +6302,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-221-d
@@ -6096,6 +6329,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-222-d
@@ -6122,6 +6356,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-223-d
@@ -6148,6 +6383,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-230-d
@@ -6174,6 +6410,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-231-d
@@ -6200,6 +6437,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-232-d
@@ -6226,6 +6464,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-233-d
@@ -6252,6 +6491,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-300-d
@@ -6278,6 +6518,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-301-d
@@ -6304,6 +6545,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-302-d
@@ -6330,6 +6572,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-303-d
@@ -6356,6 +6599,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-310-d
@@ -6382,6 +6626,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-311-d
@@ -6408,6 +6653,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-312-d
@@ -6434,6 +6680,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-313-d
@@ -6460,6 +6707,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-320-d
@@ -6486,6 +6734,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-321-d
@@ -6512,6 +6761,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-322-d
@@ -6538,6 +6788,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-323-d
@@ -6564,6 +6815,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-330-d
@@ -6590,6 +6842,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-331-d
@@ -6616,6 +6869,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-332-d
@@ -6642,6 +6896,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-333-d
@@ -6668,6 +6923,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-diligence-000-d
@@ -6694,6 +6950,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-001-d
@@ -6720,6 +6977,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-002-d
@@ -6746,6 +7004,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-003-d
@@ -6772,6 +7031,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-010-d
@@ -6798,6 +7058,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-011-d
@@ -6824,6 +7085,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-012-d
@@ -6850,6 +7112,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-013-d
@@ -6876,6 +7139,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-020-d
@@ -6902,6 +7166,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-021-d
@@ -6928,6 +7193,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-022-d
@@ -6954,6 +7220,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-023-d
@@ -6980,6 +7247,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-030-d
@@ -7006,6 +7274,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-031-d
@@ -7032,6 +7301,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-032-d
@@ -7058,6 +7328,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-033-d
@@ -7084,6 +7355,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-100-d
@@ -7110,6 +7382,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-101-d
@@ -7136,6 +7409,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-102-d
@@ -7162,6 +7436,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-103-d
@@ -7188,6 +7463,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-110-d
@@ -7214,6 +7490,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-111-d
@@ -7240,6 +7517,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-112-d
@@ -7266,6 +7544,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-113-d
@@ -7292,6 +7571,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-120-d
@@ -7318,6 +7598,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-121-d
@@ -7344,6 +7625,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-122-d
@@ -7370,6 +7652,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-123-d
@@ -7396,6 +7679,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-130-d
@@ -7422,6 +7706,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-131-d
@@ -7448,6 +7733,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-132-d
@@ -7474,6 +7760,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-133-d
@@ -7500,6 +7787,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-200-d
@@ -7526,6 +7814,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-201-d
@@ -7552,6 +7841,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-202-d
@@ -7578,6 +7868,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-203-d
@@ -7604,6 +7895,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-210-d
@@ -7630,6 +7922,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-211-d
@@ -7656,6 +7949,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-212-d
@@ -7682,6 +7976,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-213-d
@@ -7708,6 +8003,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-220-d
@@ -7734,6 +8030,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-221-d
@@ -7760,6 +8057,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-222-d
@@ -7786,6 +8084,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-223-d
@@ -7812,6 +8111,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-230-d
@@ -7838,6 +8138,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-231-d
@@ -7864,6 +8165,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-232-d
@@ -7890,6 +8192,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-233-d
@@ -7916,6 +8219,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-300-d
@@ -7942,6 +8246,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-301-d
@@ -7968,6 +8273,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-302-d
@@ -7994,6 +8300,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-303-d
@@ -8020,6 +8327,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-310-d
@@ -8046,6 +8354,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-311-d
@@ -8072,6 +8381,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-312-d
@@ -8098,6 +8408,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-313-d
@@ -8124,6 +8435,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-320-d
@@ -8150,6 +8462,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-321-d
@@ -8176,6 +8489,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-322-d
@@ -8202,6 +8516,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-323-d
@@ -8228,6 +8543,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-330-d
@@ -8254,6 +8570,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-331-d
@@ -8280,6 +8597,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-332-d
@@ -8306,6 +8624,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-333-d
@@ -8332,4 +8651,5 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision

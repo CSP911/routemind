@@ -1,0 +1,748 @@
+# The time axis — 60 questions over three versions of each subject.
+#
+# Generated: ./bench/temporal.py > eval/gold/hard-temporal.yaml
+#
+#   both 10 · boundary 10 · changed 10 · stale-mid 15 · stale-old 15
+#
+# Three versions exist per subject: the frozen corpus's own page (one qualifier, no dates on it at
+# all), an intermediate table (2024-07-01 to 2025-12-31, two qualifiers), and the current 64-row table
+# (2026-01-01 onwards, three qualifiers). A question dated in 2025 needs the middle one, so an arm cannot
+# pass by preferring the newest document or the oldest.
+#
+# `boundary` pairs differ by two days and by nothing else, and have different answers.
+# `changed` asks for the revision notice itself — a document that was measured as never retrieved,
+# which until now meant only that nobody had asked for it.
+#
+# Check with ./bench/audit.py before running anything against this.
+
+questions:
+- id: t-perdiem-01
+  q: "In March 2023, what was the nightly lodging cap for a trip to a band B destination? Answer under the version of the overseas per-diem that was in force on that date."
+  A_true: [expense]
+  D_true:
+  - overseas-rates
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: stale-old
+  support: []
+
+- id: t-perdiem-02
+  q: "In September 2023, what was the nightly lodging cap for a trip to a band B destination? Answer under the version of the overseas per-diem that was in force on that date."
+  A_true: [expense]
+  D_true:
+  - overseas-rates
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: stale-old
+  support: []
+
+- id: t-perdiem-03
+  q: "In January 2024, what was the nightly lodging cap for a trip to a band B destination? Answer under the version of the overseas per-diem that was in force on that date."
+  A_true: [expense]
+  D_true:
+  - overseas-rates
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: stale-old
+  support: []
+
+- id: t-perdiem-04
+  q: "In October 2024, what was the nightly lodging cap for a grade 2 traveller going to a band B2 destination? Answer under the version of the overseas per-diem that was in force on that date."
+  A_true: [expense]
+  D_true:
+  - hard-perdiem-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: stale-mid
+  support: []
+
+- id: t-perdiem-05
+  q: "In March 2025, what was the nightly lodging cap for a grade 2 traveller going to a band B2 destination? Answer under the version of the overseas per-diem that was in force on that date."
+  A_true: [expense]
+  D_true:
+  - hard-perdiem-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: stale-mid
+  support: []
+
+- id: t-perdiem-06
+  q: "In August 2025, what was the nightly lodging cap for a grade 2 traveller going to a band B2 destination? Answer under the version of the overseas per-diem that was in force on that date."
+  A_true: [expense]
+  D_true:
+  - hard-perdiem-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: stale-mid
+  support: []
+
+- id: t-perdiem-07
+  q: "How many times has the overseas per-diem been rewritten, and from what date does each version apply?"
+  A_true: [expense]
+  D_true:
+  - hard-perdiem-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: changed
+  support: []
+
+- id: t-perdiem-08
+  q: "I have a claim dated in 2025 and I am not sure which version of the overseas per-diem applies to it. Where is that written down?"
+  A_true: [expense]
+  D_true:
+  - hard-perdiem-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: changed
+  support: []
+
+- id: t-perdiem-09
+  q: "For something dated 29 June 2024 — two days before the first change — what was the nightly lodging cap for a trip to a band B destination? Use the version in force on that day."
+  A_true: [expense]
+  D_true:
+  - overseas-rates
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: boundary
+  support: []
+
+- id: t-perdiem-10
+  q: "For something dated 3 July 2024 — two days after the first change — what was the nightly lodging cap for a grade 2 traveller going to a band B2 destination? Use the version in force on that day."
+  A_true: [expense]
+  D_true:
+  - hard-perdiem-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: boundary
+  support: []
+
+- id: t-perdiem-11
+  q: "What was the nightly lodging cap for a trip to a band B destination in 2023, and what had it become by 2025? I need both versions of the overseas per-diem, not just the current one."
+  A_true: [expense]
+  D_true:
+  - overseas-rates
+  - hard-perdiem-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: both
+  support: []
+
+- id: t-perdiem-12
+  q: "We are reconciling claims from 2023 and from 2025 against the overseas per-diem. Which two versions do I need, and what was the nightly lodging cap under each?"
+  A_true: [expense]
+  D_true:
+  - overseas-rates
+  - hard-perdiem-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: perdiem
+  lever: both
+  support: []
+
+- id: t-overtime-01
+  q: "In March 2023, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - overtime-rate-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: stale-old
+  support: []
+
+- id: t-overtime-02
+  q: "In September 2023, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - overtime-rate-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: stale-old
+  support: []
+
+- id: t-overtime-03
+  q: "In January 2024, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - overtime-rate-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: stale-old
+  support: []
+
+- id: t-overtime-04
+  q: "In October 2024, what multiplier was paid for day D2 work in hour band H2? Answer under the version of the overtime rate that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - hard-overtime-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: stale-mid
+  support: []
+
+- id: t-overtime-05
+  q: "In March 2025, what multiplier was paid for day D2 work in hour band H2? Answer under the version of the overtime rate that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - hard-overtime-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: stale-mid
+  support: []
+
+- id: t-overtime-06
+  q: "In August 2025, what multiplier was paid for day D2 work in hour band H2? Answer under the version of the overtime rate that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - hard-overtime-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: stale-mid
+  support: []
+
+- id: t-overtime-07
+  q: "How many times has the overtime rate been rewritten, and from what date does each version apply?"
+  A_true: [attendance]
+  D_true:
+  - hard-overtime-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: changed
+  support: []
+
+- id: t-overtime-08
+  q: "I have a claim dated in 2025 and I am not sure which version of the overtime rate applies to it. Where is that written down?"
+  A_true: [attendance]
+  D_true:
+  - hard-overtime-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: changed
+  support: []
+
+- id: t-overtime-09
+  q: "For something dated 29 June 2024 — two days before the first change — what multiplier was paid for ordinary overtime beyond the forty-hour week? Use the version in force on that day."
+  A_true: [attendance]
+  D_true:
+  - overtime-rate-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: boundary
+  support: []
+
+- id: t-overtime-10
+  q: "For something dated 3 July 2024 — two days after the first change — what multiplier was paid for day D2 work in hour band H2? Use the version in force on that day."
+  A_true: [attendance]
+  D_true:
+  - hard-overtime-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: boundary
+  support: []
+
+- id: t-overtime-11
+  q: "What multiplier was paid for ordinary overtime beyond the forty-hour week in 2023, and what had it become by 2025? I need both versions of the overtime rate, not just the current one."
+  A_true: [attendance]
+  D_true:
+  - overtime-rate-table
+  - hard-overtime-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: both
+  support: []
+
+- id: t-overtime-12
+  q: "We are reconciling claims from 2023 and from 2025 against the overtime rate. Which two versions do I need, and what multiplier was paid under each?"
+  A_true: [attendance]
+  D_true:
+  - overtime-rate-table
+  - hard-overtime-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: overtime
+  lever: both
+  support: []
+
+- id: t-accrual-01
+  q: "In March 2023, how much leave was accrued or granted for someone with two years of continuous service? Answer under the version of leave accrual that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - leave-accrual
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: stale-old
+  support: []
+
+- id: t-accrual-02
+  q: "In September 2023, how much leave was accrued or granted for someone with two years of continuous service? Answer under the version of leave accrual that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - leave-accrual
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: stale-old
+  support: []
+
+- id: t-accrual-03
+  q: "In January 2024, how much leave was accrued or granted for someone with two years of continuous service? Answer under the version of leave accrual that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - leave-accrual
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: stale-old
+  support: []
+
+- id: t-accrual-04
+  q: "In October 2024, how much leave was accrued or granted for type E2 staff in service band T2? Answer under the version of leave accrual that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - hard-accrual-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: stale-mid
+  support: []
+
+- id: t-accrual-05
+  q: "In March 2025, how much leave was accrued or granted for type E2 staff in service band T2? Answer under the version of leave accrual that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - hard-accrual-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: stale-mid
+  support: []
+
+- id: t-accrual-06
+  q: "In August 2025, how much leave was accrued or granted for type E2 staff in service band T2? Answer under the version of leave accrual that was in force on that date."
+  A_true: [attendance]
+  D_true:
+  - hard-accrual-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: stale-mid
+  support: []
+
+- id: t-accrual-07
+  q: "How many times has leave accrual been rewritten, and from what date does each version apply?"
+  A_true: [attendance]
+  D_true:
+  - hard-accrual-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: changed
+  support: []
+
+- id: t-accrual-08
+  q: "I have a claim dated in 2025 and I am not sure which version of leave accrual applies to it. Where is that written down?"
+  A_true: [attendance]
+  D_true:
+  - hard-accrual-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: changed
+  support: []
+
+- id: t-accrual-09
+  q: "For something dated 29 June 2024 — two days before the first change — how much leave was accrued or granted for someone with two years of continuous service? Use the version in force on that day."
+  A_true: [attendance]
+  D_true:
+  - leave-accrual
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: boundary
+  support: []
+
+- id: t-accrual-10
+  q: "For something dated 3 July 2024 — two days after the first change — how much leave was accrued or granted for type E2 staff in service band T2? Use the version in force on that day."
+  A_true: [attendance]
+  D_true:
+  - hard-accrual-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: boundary
+  support: []
+
+- id: t-accrual-11
+  q: "How much leave was accrued or granted for someone with two years of continuous service in 2023, and what had it become by 2025? I need both versions of leave accrual, not just the current one."
+  A_true: [attendance]
+  D_true:
+  - leave-accrual
+  - hard-accrual-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: both
+  support: []
+
+- id: t-accrual-12
+  q: "We are reconciling claims from 2023 and from 2025 against leave accrual. Which two versions do I need, and how much leave was accrued or granted under each?"
+  A_true: [attendance]
+  D_true:
+  - leave-accrual
+  - hard-accrual-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: accrual
+  lever: both
+  support: []
+
+- id: t-threshold-01
+  q: "In March 2023, what was the delegation limit or who signed for a purchase of two million won net of VAT? Answer under the version of the approval threshold that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - threshold-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: stale-old
+  support: []
+
+- id: t-threshold-02
+  q: "In September 2023, what was the delegation limit or who signed for a purchase of two million won net of VAT? Answer under the version of the approval threshold that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - threshold-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: stale-old
+  support: []
+
+- id: t-threshold-03
+  q: "In January 2024, what was the delegation limit or who signed for a purchase of two million won net of VAT? Answer under the version of the approval threshold that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - threshold-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: stale-old
+  support: []
+
+- id: t-threshold-04
+  q: "In October 2024, what was the delegation limit or who signed for category C2 spend in amount band V2? Answer under the version of the approval threshold that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - hard-threshold-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: stale-mid
+  support: []
+
+- id: t-threshold-05
+  q: "In March 2025, what was the delegation limit or who signed for category C2 spend in amount band V2? Answer under the version of the approval threshold that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - hard-threshold-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: stale-mid
+  support: []
+
+- id: t-threshold-06
+  q: "In August 2025, what was the delegation limit or who signed for category C2 spend in amount band V2? Answer under the version of the approval threshold that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - hard-threshold-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: stale-mid
+  support: []
+
+- id: t-threshold-07
+  q: "How many times has the approval threshold been rewritten, and from what date does each version apply?"
+  A_true: [procurement]
+  D_true:
+  - hard-threshold-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: changed
+  support: []
+
+- id: t-threshold-08
+  q: "I have a claim dated in 2025 and I am not sure which version of the approval threshold applies to it. Where is that written down?"
+  A_true: [procurement]
+  D_true:
+  - hard-threshold-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: changed
+  support: []
+
+- id: t-threshold-09
+  q: "For something dated 29 June 2024 — two days before the first change — what was the delegation limit or who signed for a purchase of two million won net of VAT? Use the version in force on that day."
+  A_true: [procurement]
+  D_true:
+  - threshold-table
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: boundary
+  support: []
+
+- id: t-threshold-10
+  q: "For something dated 3 July 2024 — two days after the first change — what was the delegation limit or who signed for category C2 spend in amount band V2? Use the version in force on that day."
+  A_true: [procurement]
+  D_true:
+  - hard-threshold-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: boundary
+  support: []
+
+- id: t-threshold-11
+  q: "What was the delegation limit or who signed for a purchase of two million won net of VAT in 2023, and what had it become by 2025? I need both versions of the approval threshold, not just the current one."
+  A_true: [procurement]
+  D_true:
+  - threshold-table
+  - hard-threshold-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: both
+  support: []
+
+- id: t-threshold-12
+  q: "We are reconciling claims from 2023 and from 2025 against the approval threshold. Which two versions do I need, and what was the delegation limit or who signed under each?"
+  A_true: [procurement]
+  D_true:
+  - threshold-table
+  - hard-threshold-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: threshold
+  lever: both
+  support: []
+
+- id: t-diligence-01
+  q: "In March 2023, what screening was required for a new supplier? Answer under the version of supplier due diligence that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - supplier-due-diligence
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: stale-old
+  support: []
+
+- id: t-diligence-02
+  q: "In September 2023, what screening was required for a new supplier? Answer under the version of supplier due diligence that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - supplier-due-diligence
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: stale-old
+  support: []
+
+- id: t-diligence-03
+  q: "In January 2024, what screening was required for a new supplier? Answer under the version of supplier due diligence that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - supplier-due-diligence
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: stale-old
+  support: []
+
+- id: t-diligence-04
+  q: "In October 2024, what screening was required for an origin O2 supplier at contract value W2? Answer under the version of supplier due diligence that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - hard-diligence-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: stale-mid
+  support: []
+
+- id: t-diligence-05
+  q: "In March 2025, what screening was required for an origin O2 supplier at contract value W2? Answer under the version of supplier due diligence that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - hard-diligence-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: stale-mid
+  support: []
+
+- id: t-diligence-06
+  q: "In August 2025, what screening was required for an origin O2 supplier at contract value W2? Answer under the version of supplier due diligence that was in force on that date."
+  A_true: [procurement]
+  D_true:
+  - hard-diligence-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: stale-mid
+  support: []
+
+- id: t-diligence-07
+  q: "How many times has supplier due diligence been rewritten, and from what date does each version apply?"
+  A_true: [procurement]
+  D_true:
+  - hard-diligence-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: changed
+  support: []
+
+- id: t-diligence-08
+  q: "I have a claim dated in 2025 and I am not sure which version of supplier due diligence applies to it. Where is that written down?"
+  A_true: [procurement]
+  D_true:
+  - hard-diligence-legend-revision
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: changed
+  support: []
+
+- id: t-diligence-09
+  q: "For something dated 29 June 2024 — two days before the first change — what screening was required for a new supplier? Use the version in force on that day."
+  A_true: [procurement]
+  D_true:
+  - supplier-due-diligence
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: boundary
+  support: []
+
+- id: t-diligence-10
+  q: "For something dated 3 July 2024 — two days after the first change — what screening was required for an origin O2 supplier at contract value W2? Use the version in force on that day."
+  A_true: [procurement]
+  D_true:
+  - hard-diligence-v2
+  needs: any
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: boundary
+  support: []
+
+- id: t-diligence-11
+  q: "What screening was required for a new supplier in 2023, and what had it become by 2025? I need both versions of supplier due diligence, not just the current one."
+  A_true: [procurement]
+  D_true:
+  - supplier-due-diligence
+  - hard-diligence-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: both
+  support: []
+
+- id: t-diligence-12
+  q: "We are reconciling claims from 2023 and from 2025 against supplier due diligence. Which two versions do I need, and what screening was required under each?"
+  A_true: [procurement]
+  D_true:
+  - supplier-due-diligence
+  - hard-diligence-v2
+  needs: all
+  intent_A: 1
+  intent_B: 0
+  family: diligence
+  lever: both
+  support: []
+

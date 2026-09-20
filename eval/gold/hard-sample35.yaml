@@ -1,11 +1,7 @@
-# A 35-question probe before the 300 — three per family per lever, plus one stale per family.
+# A 30-question probe before anything long — three per family per lever.
 #
-# It exists because the last full run was thrown away: two families had been placed in areas where
-# the frozen corpus does not keep those subjects, so the walks went where hop 0 correctly pointed and
-# were scored as failures. That was a labelling error, not a routing one, and a small pass across
-# every family would have caught it in twenty minutes instead of a hundred and eighteen questions.
-#
-# What it checks: does every family route, and does every lever behave, before anything long runs.
+# The time axis is not here: it is eval/gold/hard-temporal.yaml, sixty questions over three
+# versions of each subject, and it is run as its own campaign.
 
 questions:
 
@@ -55,6 +51,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-022-i
@@ -70,6 +67,7 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-perdiem-311-i
@@ -85,10 +83,11 @@ questions:
   - hard-perdiem-legend-grade
   - hard-perdiem-legend-band
   - hard-perdiem-legend-stay
+  - hard-perdiem-v2
   - hard-perdiem-legend-revision
 
 - id: h-overtime-000-d
-  q: "For day D1, hours H1, place P1, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H1, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
   needs: any
@@ -99,7 +98,7 @@ questions:
   support: []
 
 - id: h-overtime-022-d
-  q: "For day D1, hours H3, place P3, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D1, hours H3, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p3]
   needs: any
@@ -110,7 +109,7 @@ questions:
   support: []
 
 - id: h-overtime-311-d
-  q: "For day D4, hours H2, place P2, what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "For day D4, hours H2, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p2]
   needs: any
@@ -121,7 +120,7 @@ questions:
   support: []
 
 - id: h-overtime-000-i
-  q: "An ordinary tuesday, about ninety minutes, at my desk: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h1-place-p1]
   needs: any
@@ -133,10 +132,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-022-i
-  q: "An ordinary tuesday, six hours, on standby at home: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "An ordinary tuesday, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d1-hours-h3-place-p3]
   needs: any
@@ -148,10 +148,11 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-overtime-311-i
-  q: "Two in the morning, three hours, out at a client's office: what do I actually get paid for that time, and did it need clearing with anyone beforehand?"
+  q: "Two in the morning, three hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?"
   A_true: [attendance]
   D_true: [hard-overtime-row-day-d4-hours-h2-place-p2]
   needs: any
@@ -163,6 +164,7 @@ questions:
   - hard-overtime-legend-day
   - hard-overtime-legend-hours
   - hard-overtime-legend-place
+  - hard-overtime-v2
   - hard-overtime-legend-revision
 
 - id: h-accrual-000-d
@@ -211,6 +213,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-022-i
@@ -226,6 +229,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-accrual-311-i
@@ -241,6 +245,7 @@ questions:
   - hard-accrual-legend-type
   - hard-accrual-legend-tenure
   - hard-accrual-legend-site
+  - hard-accrual-v2
   - hard-accrual-legend-revision
 
 - id: h-threshold-000-d
@@ -289,6 +294,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-022-i
@@ -304,6 +310,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-threshold-311-i
@@ -319,6 +326,7 @@ questions:
   - hard-threshold-legend-category
   - hard-threshold-legend-amount
   - hard-threshold-legend-term
+  - hard-threshold-v2
   - hard-threshold-legend-revision
 
 - id: h-diligence-000-d
@@ -367,6 +375,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-022-i
@@ -382,6 +391,7 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
 
 - id: h-diligence-311-i
@@ -397,59 +407,5 @@ questions:
   - hard-diligence-legend-origin
   - hard-diligence-legend-value
   - hard-diligence-legend-goods
+  - hard-diligence-v2
   - hard-diligence-legend-revision
-
-- id: s-overseas--01
-  q: "A colleague flew to Frankfurt for five nights in August 2025 — what was the nightly lodging cap on that trip?"
-  A_true: [expense]
-  D_true: [overseas-rates]
-  needs: any
-  intent_A: 2
-  intent_B: 0
-  family: perdiem
-  lever: stale
-  support: []
-
-- id: s-overtime--01
-  q: "For overtime worked in October 2025, what premium applied to hours beyond the forty-hour week?"
-  A_true: [attendance]
-  D_true: [overtime-rate-table]
-  needs: any
-  intent_A: 2
-  intent_B: 0
-  family: overtime
-  lever: stale
-  support: []
-
-- id: s-leave-acc-01
-  q: "Someone joined in March 2025. Under the rule in force then, how much leave had they accrued by that October?"
-  A_true: [attendance]
-  D_true: [leave-accrual]
-  needs: any
-  intent_A: 2
-  intent_B: 0
-  family: accrual
-  lever: stale
-  support: []
-
-- id: s-threshold-01
-  q: "A 2,000,000 KRW purchase in 2025 — who signed it off and how many quotes were needed?"
-  A_true: [procurement]
-  D_true: [threshold-table]
-  needs: any
-  intent_A: 2
-  intent_B: 0
-  family: threshold
-  lever: stale
-  support: []
-
-- id: s-supplier--01
-  q: "In 2025, which checks ran before a new vendor could be registered?"
-  A_true: [procurement]
-  D_true: [supplier-due-diligence]
-  needs: any
-  intent_A: 2
-  intent_B: 0
-  family: diligence
-  lever: stale
-  support: []

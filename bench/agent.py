@@ -7,9 +7,26 @@ the answer is not there, go back and open something else. A question whose answe
 the obvious case: one pass can only ever reach one of them.
 
     OPEN <id>    a node with children -> its table.  Costs a hop.
+    PICK <id> — <why>   put a row in the working set, with the reason.   (overlay mode only)
+    DROP <id> — <why>   take it out again, with the reason.              (overlay mode only)
     READ <id>    a node with a body   -> **the document comes back**, and is collected. Free.
     BACK         return to hop 0 and choose again. Costs a hop.
     DONE         enough has been collected.
+
+**The working set (`overlay`).** The real server gives an agent three tools, not two: alongside the
+table and the read there is `knowledge_overlay` — create a working set from the rows the question
+belongs to, each with the reason you picked it, narrow it as you go, and close it naming what you
+actually used. This harness implemented two of the three, so what it measured was RouteMind with its
+working set removed.
+
+That absence has a shape in the logs. A walk that goes wrong does not fail cleanly; it drifts —
+attendance, back, expense, back, attendance — reading six documents and re-deciding from scratch each
+time it returns, because nothing carries forward except a transcript it has to re-read. The working
+set is where a judgement is written down so the next step does not have to make it again.
+
+`overlay=True` turns it on: PICK and DROP maintain the set, and the set is printed back at the top of
+every turn. Off, the agent has OPEN/READ/BACK/DONE and nothing persists but the conversation — which
+is the honest way to measure the two against each other, so both are run.
 
 **READ returns the text.** It used to return nothing — the id was recorded and the walk continued
 blind — which made this a router that selects documents rather than an agent that uses them. The
@@ -45,6 +62,15 @@ import json, os, re, time, urllib.error, urllib.request
 
 READ_CLIP = 6000      # the real server clips too; a walk that reads forty rows must not be free
 
+OVERLAY_RULES = (
+ "\n\nYou also keep a **working set** — the rows you think the answer is in.\n"
+ "  PICK <id> — <why>    put a row in it, with the reason you think it belongs\n"
+ "  DROP <id> — <why>    take one out, with the reason it turned out not to\n\n"
+ "Build it from the first table you see, before opening anything. Narrow it as you learn more. It is "
+ "printed back to you every turn, so it is where a decision you have already made is kept — use it "
+ "instead of working the same choice out again after you go BACK. Say DONE only when the answer is "
+ "in something you have read.")
+
 SYSTEM = (
  "You are finding the documents that answer a question, by walking a routing table.\n\n"
  "At each step you see a table. Each row is either a **table** (open it to see what is inside) or a "
@@ -65,12 +91,14 @@ SYSTEM = (
 
 class Agent:
     def __init__(self, rows, children, one_liner, has_body, budget=None, steps=30,
-                 model=None, provider=None, body=None):
+                 model=None, provider=None, body=None, overlay=False):
         self.rows = rows                # area -> frozen use_when
         self.children = children        # id -> [child ids]
         self.one_liner = one_liner
         self.has_body = has_body
         self.body = body or {}          # id -> the document text READ hands back
+        self.overlay = overlay          # the working set, the third tool the real server has
+        self._sys = SYSTEM + (OVERLAY_RULES if overlay else "")
         # Counted rather than estimated. What a walk costs is a result of this study, not a footnote.
         self.usage = {"in": 0, "out": 0, "cache_write": 0, "cache_read": 0}
         self.budget = budget            # returns to hop 0; None is unbounded, and is the default
@@ -91,7 +119,7 @@ class Agent:
         if self.provider == "openai":
             url, hdr = self.base + "/v1/chat/completions", {}
             body = {"model": self.model, "max_tokens": 2000,
-                    "messages": [{"role": "system", "content": SYSTEM}] + convo}
+                    "messages": [{"role": "system", "content": self._sys}] + convo}
         else:
             url, hdr = self.base + "/v1/messages", {"x-api-key": self.key, "anthropic-version": "2023-06-01"}
             # Prompt caching. A walk resends the whole conversation every turn, and the section table
@@ -105,7 +133,7 @@ class Agent:
                         "content": [{"type": "text", "text": msgs[-1]["content"],
                                      "cache_control": {"type": "ephemeral"}}]}
             body = {"model": self.model, "max_tokens": 2000,
-                    "system": [{"type": "text", "text": SYSTEM,
+                    "system": [{"type": "text", "text": self._sys,
                                 "cache_control": {"type": "ephemeral"}}],
                     "messages": msgs}
         if self.provider == "openai":
@@ -152,6 +180,7 @@ class Agent:
     def walk(self, question):
         convo = [{"role": "user", "content": f"Question: {question}\n\n{self._hop0()}"}]
         collected, visited, log = [], [], []
+        working, ops = {}, []           # the working set and every change to it, with reasons
         returns, opens, turns, read_chars = 0, 0, 0, 0
         while turns < self.steps:
             turns += 1
@@ -160,9 +189,16 @@ class Agent:
             convo.append({"role": "assistant", "content": out})
             done, shown, refused, bad = False, [], False, []
             for c in [l.strip() for l in out.splitlines() if l.strip()]:
-                m = re.match(r"(OPEN|READ|BACK|DONE)\b\s*(\S*)", c, re.I)
+                m = re.match(r"(OPEN|READ|BACK|DONE|PICK|DROP)\b\s*(\S*)", c, re.I)
                 if not m: continue
                 verb, arg = m.group(1).upper(), m.group(2).strip("`,.")
+                if verb in ("PICK", "DROP"):
+                    if not self.overlay: continue
+                    why = c.split("—", 1)[-1].strip() if "—" in c else c.split("-", 1)[-1].strip()
+                    if verb == "PICK": working[arg] = why[:160]
+                    else: working.pop(arg, None)
+                    ops.append({"op": verb, "id": arg, "why": why[:160]})
+                    continue
                 if verb == "DONE": done = True; break
                 if verb == "BACK":
                     if self.budget is not None and returns >= self.budget:
@@ -191,6 +227,11 @@ class Agent:
             if bad:
                 shown.insert(0, "Not in the table: " + ", ".join(sorted(set(bad))[:5])
                              + ". Use an id exactly as it is printed in the rows above.")
+            if self.overlay:
+                ws = ("Your working set:\n" +
+                      "\n".join(f"  {i}  —  {w}" for i, w in working.items())) if working \
+                     else "Your working set is empty. PICK the rows the answer could be in."
+                shown.insert(0, ws)
             if not shown:
                 shown = ["That named nothing in the table. Reply with OPEN, READ, BACK or DONE and an "
                          "id exactly as printed.\n\n" + self._hop0()]
@@ -199,6 +240,6 @@ class Agent:
         # count that ends at the ceiling means the ceiling, not the question.
         return {"collected": list(dict.fromkeys(collected)), "visited": visited,
                 "returns": returns, "opens": opens, "turns": turns,
-                "read_chars": read_chars,
+                "read_chars": read_chars, "working_set": working, "overlay_ops": ops,
                 "hops": opens + returns, "exhausted": turns >= self.steps and not done,
                 "log": log}

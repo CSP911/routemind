@@ -4,15 +4,27 @@
     ./bench/run.py eval/gold/pilot.yaml               both arms
     ./bench/run.py eval/gold/pilot.yaml --arm B1      one
 
-Three arms:
+**Four arms, and they are a 2x2: routing on or off, reranking on or off.** They are named for what
+they are rather than by a letter, because a reader should not have to hold a key in their head to
+know which line of a table is the baseline.
 
-    A1   the agent walks the tree — hop 0, open a table, read documents, go back if the answer is
-         somewhere else — with a hop budget. What the system actually is.
-    A3   the routing layer as a single decision: pick areas from hop 0 once, then hybrid + reranker
-         inside them. The hierarchy is not descended. This is the ablation, not the design.
-    B1   hybrid + reranker over the whole corpus, no routing at all.
+    rag               hybrid retrieval over the whole corpus. Top k. Nothing else.
+    rag+rerank        the same, then an LLM reorders the 20 candidates. What a sceptic builds.
+    routing           the agent walks the human-written tree — open a table, read a document, go
+                      back — and answers from what it collected. No ranking step anywhere, which is
+                      what the product actually does.
+    routing+rerank    the same walk, then the reranker orders what it collected.
 
-A1 against A3 is what the tree is worth. A3 against B1 is what one routing decision is worth.
+Three comparisons come out of it, and the middle one is the one that matters:
+
+    rag        vs routing          what routing is worth with the reranker taken off both sides
+    rag+rerank vs routing          the sceptic's build against routing alone — routing gives up a
+                                   component and still has to win. If it wins here the rest follows
+    rag+rerank vs routing+rerank   the same component on both sides
+
+`--arm routing-scoped` is a diagnostic rather than a fourth comparison: retrieval restricted to the
+subtree the walk opened. It answers "was the gain the reading, or just a smaller haystack?" and is
+reported beside the walk, never as a row of the main table.
 
 Everything except the routing layer is held identical: same corpus, same embeddings, same BM25, same
 reranker, same k, and the same questions through both.
@@ -133,22 +145,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("gold"); ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--per-hop", type=int, default=2)
-    ap.add_argument("--arm", choices=["A1", "A3", "B1"]); ap.add_argument("--out")
+    ap.add_argument("--arm", action="append",
+                    choices=["rag", "rag+rerank", "routing", "routing+overlay", "routing-scoped"],
+                    help="repeatable; default runs all four")
+    ap.add_argument("--out")
     # 0 is unbounded, and is the default: the pilot showed the cap, not the routing, was what the
     # severe band measured. --steps is a runaway stop, not a budget.
     ap.add_argument("--budget", type=int, default=0)
     ap.add_argument("--steps", type=int, default=30)
-    # **A1's read score has no ranking step, and never should have had one.** The product walks,
-    # reads, and answers; nothing in it reorders a candidate list. Reranking what the agent collected
-    # was a scoring convenience — it put A1 in the same unit as B1's top ten — and dropping it is the
-    # more faithful measurement rather than a concession. It is also exact: reranking four collected
-    # documents and keeping the top ten returns the same four. It would only bite on a walk that
-    # collected more than k, which `read_n` records and `read_exact` flags.
-    #
-    # `scoped` is different. That one is retrieval, so it does have a ranking step, and under this
-    # flag it is fusion-only and labelled as such.
+    # Only `routing-scoped` still consults this: which arm reranks is now decided by the arm's name.
     ap.add_argument("--no-rerank", action="store_true",
-                    help="score A1 without the reranker: exact for `read`, fusion-only for `scoped`")
+                    help="routing-scoped only: score it on fusion order, without a reranking call")
     ap.add_argument("--skip-hopeless", action="store_true",
                     help="do not spend a reranking call on a question whose answer is not among the "
                          "candidates; the miss is already decided")
@@ -167,10 +174,17 @@ def main():
     # the retriever are reading the identical corpus and no arm sees a word the others cannot.
     agent = Agent(rows(), children, one_liner, has_body,
                   budget=a.budget or None, steps=a.steps, body=texts)
-    # A3 is no longer scheduled. Its job — "is the gain the table or just a smaller haystack?" — is
-    # done more tightly by A1's `scoped` score, which runs retrieval over the exact subtree the walk
-    # opened rather than over two areas a separate call named. `--arm A3` still works.
-    arms = [a.arm] if a.arm else ["B1", "A1"]
+    agent_ov = Agent(rows(), children, one_liner, has_body,
+                     budget=a.budget or None, steps=a.steps, body=texts, overlay=True)
+    # The single-decision router is gone from the default set. Its question — "is the gain the
+    # table or just a smaller haystack?" — is answered more tightly by `routing-scoped`, which
+    # retrieves over the exact subtree the walk opened rather than over two areas a separate call
+    # named, so nothing varies but whether reading was allowed. `bench/route.py` stays in the tree.
+    arms = a.arm or ["rag", "rag+rerank", "routing", "routing+overlay"]
+    # Two walkers, because the working set changes how the walk goes rather than what is done with
+    # it afterwards. The reranker could be bolted on after the fact; this cannot, so the two routing
+    # arms each walk for themselves and `walks` is keyed by arm as well as question.
+    walks = {}
 
     out = a.out or f"eval/runs/{time.strftime('%Y-%m-%d')}-pilot.json"
     outp = ROOT.parent / out
@@ -186,74 +200,61 @@ def main():
 
     results = []
     for arm in arms:
+        use_routing = arm.startswith("routing")
+        use_rerank = arm == "rag+rerank"
         for n, q in enumerate(g, 1):
-            picked, raw, hops, walk = None, "", None, None
-            if arm == "A1":
-                # Scored two ways, because they answer different questions and comparing the first
-                # against B1 is not a fair fight: the agent reads one or two documents, B1 returns
-                # ten candidates, and "did it pick exactly right" is strictly harder than "was it in
-                # the top ten".
-                #
-                #   read     what the agent actually collected. What a consumer is handed.
-                #   scoped   retrieval inside the subtrees the walk opened, filled to k. Same unit
-                #            as B1 and A3 — the walk chooses where, retrieval chooses what.
-                before = dict(agent.usage)
-                walk = agent.walk(q["q"])
-                walk["usage"] = {k: agent.usage[k] - before[k] for k in agent.usage}
+            picked, raw, hops, walk, hopeless = None, "", None, None, False
+            if use_routing:
+                ag = agent_ov if arm == "routing+overlay" else agent
+                key = (arm if arm != "routing-scoped" else "routing", q["id"])
+                if key not in walks:
+                    before = dict(ag.usage)
+                    w = ag.walk(q["q"])
+                    w["usage"] = {k: ag.usage[k] - before[k] for k in ag.usage}
+                    walks[key] = w
+                walk = walks[key]
                 hops = walk["hops"]
                 got = [i for i in walk["collected"] if i in texts]
-                read_ranked = got if (a.no_rerank or len(got) <= 1) else rr.rank(q["q"], got, texts)
                 picked = sorted({area[i] for i in walk["visited"] if i in area})
-                reach = subtree(walk["visited"], children, texts)
-                cand = h.search(q["q"], scope=reach or None, n=max(a.k, 20))
-                ranked = cand if a.no_rerank else rr.rank(q["q"], cand[:20], texts) + cand[20:]
                 raw = " | ".join(walk["log"])[:400]
+                if arm == "routing-scoped":
+                    # The diagnostic: retrieval inside the subtree the walk opened, not what it read.
+                    reach = subtree(walk["visited"], children, texts)
+                    cand = h.search(q["q"], scope=reach or None, n=max(a.k, 20))
+                    ranked = cand if a.no_rerank else rr.rank(q["q"], cand[:20], texts) + cand[20:]
+                else:
+                    # What the agent collected, in the order it collected it. Reranking a handful of
+                    # documents and keeping the top k returns the same handful, so `routing` and
+                    # `routing+rerank` can only differ once a walk collects more than k.
+                    # No ranking step on either routing arm: the product walks, reads and answers.
+                    # What separates them is how the walk went, not what happened to it afterwards.
+                    ranked = got
             else:
-                scope = None
-                if arm == "A3":
-                    picked, raw = router.pick(q["q"])
-                    scope = [i for i in texts if area[i] in picked] or None
-                cand = h.search(q["q"], scope=scope, n=max(a.k, 20))
-                # An exact saving, not an approximation. The reranker only reorders the candidates it
-                # is given, so a question whose answer is not among them cannot be rescued by it — the
-                # miss is already decided and the call would only pay to confirm it. On the hard
-                # extension that is 161 of 192 indirect questions. `reranked` records which rows were
-                # settled this way so nobody has to take it on trust.
-                hopeless = a.skip_hopeless and not (set(q["D_true"]) & set(cand[:20]))
-                ranked = cand if hopeless else rr.rank(q["q"], cand[:20], texts) + cand[20:]
+                cand = h.search(q["q"], scope=None, n=max(a.k, 20))
+                hopeless = a.skip_hopeless and use_rerank and not (set(q["D_true"]) & set(cand[:20]))
+                ranked = cand if (not use_rerank or hopeless) else \
+                         rr.rank(q["q"], cand[:20], texts) + cand[20:]
             r = score(q, ranked, area, picked, a.k)
-            if arm != "A1": r["reranked"] = not hopeless
-            if arm == "A1":
-                rd = score(q, read_ranked, area, picked, a.k)
-                r["read_retrieval_hit"] = rd["retrieval_hit"]
-                r["read_rank"] = rd["rank"]
-                r["read_mrr"] = rd["mrr"]
-                r["read_n"] = len(read_ranked)
-                r["reach_n"] = len(reach)
-                r["returns"] = walk["returns"]
-                r["opens"] = walk["opens"]
-                r["read_chars"] = walk["read_chars"]
-                # What the walk cost, per question, measured rather than estimated. Q4a asks what the
-                # intervention costs and this is the answer in the only unit that is not arguable.
-                r["usage"] = walk["usage"]
-                r["read_exact"] = bool(not a.no_rerank or len(got) <= a.k)
-                # A walk that hit the turn ceiling never said DONE. Its hop count is the ceiling
-                # speaking, not the question, and the report has to be able to drop it.
+            r["reranked"] = use_rerank and not hopeless
+            if use_routing and arm != "routing-scoped":
+                r["working_set"] = walk.get("working_set") or {}
+                r["overlay_ops"] = len(walk.get("overlay_ops") or [])
+            if use_routing:
+                r["hops"] = hops
+                r["read_n"] = len(got)
+                r["returns"] = walk["returns"]; r["opens"] = walk["opens"]
+                r["read_chars"] = walk["read_chars"]; r["usage"] = walk["usage"]
                 r["exhausted"] = walk["exhausted"]
+                r["read_exact"] = bool(use_rerank or len(got) <= a.k)
             r.update(arm=arm, id=q["id"], needs=q["needs"], picked=picked, router_said=raw,
-                     hops=hops, collected=len(read_ranked) if arm == "A1" else None,
+                     hops=hops, collected=len(ranked),
                      top=[{"id": i, "area": area[i]} for i in ranked[:a.k]])
             results.append(r); save()
-            extra = (f"  read {'ok ' if r['read_retrieval_hit'] else 'MISS'}({r['read_n']})"
-                     f" scope {r['reach_n']:>3} back {r['returns']}"
-                     f" read {r['read_chars']//1000}k"
-                     f" tok {(r['usage']['in']+r['usage']['cache_write']+r['usage']['cache_read'])//1000}k"
-                     f"{' EXHAUSTED' if r['exhausted'] else ''}") if arm == "A1" else ""
-            print(f"    {arm} {q['id']:<4} routing {'ok ' if r['routing_hit'] else 'MISS'}"
-                  f"  retrieval {'ok ' if r['retrieval_hit'] else 'MISS'}"
-                  f"  rank {str(r['rank'] or '-'):<4}"
-                  f"  hops {hops if hops is not None else '-'}{extra}"
-                  f"  {','.join(picked) if picked else ''}", file=sys.stderr)
+            extra = (f"  hops {r['hops']} read {r['read_chars']//1000}k"
+                     f" tok {sum(r['usage'].values())//1000}k") if use_routing else ""
+            print(f"    {arm:<15} {q['id']:<20} {'ok  ' if r['retrieval_hit'] else 'MISS'}"
+                  f"  rank {str(r['rank'] or '-'):<4} routing {'ok ' if r['routing_hit'] else '-- '}"
+                  f"{extra}", file=sys.stderr)
 
     save()
     print(f"\n  written to {out}", file=sys.stderr)

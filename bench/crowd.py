@@ -139,7 +139,11 @@ FAMILIES = [
                        ("Rounding", f"to the nearest {5 + 5*(i[1] % 4)} minutes"),
                        ("Approval needed in advance", "yes" if (i[0] + i[1]) >= 3 else "no"),
                        ("Counts toward the monthly cap", "yes" if i[1] >= 1 else "no")],
-  ask="what do I actually get paid for that time, and did it need clearing with anyone beforehand",
+  # "…and did it need clearing with anyone beforehand" was the second half until a desk audit found
+  # the frozen corpus answers it: `overtime-request-procedure` and `unrequested-overtime-case` are
+  # both about clearing hours in advance. A question half of which another document answers is half a
+  # mislabelled question. Rounding is the field the old rate table does not carry, so it separates.
+  ask="what multiplier applies to that time, and to what rounding are the minutes taken",
   was="one multiplier per day type, with no hour banding and no work-location distinction",
   supersedes=[("overtime-rate-table", "Overtime rates"),
               ("overtime-approval-role", "Who approves overtime"),
@@ -197,7 +201,13 @@ FAMILIES = [
                     ("monthly", "billed every month"), ("per-use", "only when we call on them"),
                     ("pilot", "a trial for now"), ("framework", "a standing arrangement we draw down on")],
     "Which commitment term a purchase has")],
-  fields=lambda i, x: [("Delegation limit", f"{200 + 25*x} thousand KRW"),
+  # The delegation limit has to sit in the same world as the amount band it belongs to. It was
+  # `200 + 25 * row index` — a figure invented purely to make each row's answer unique, which put
+  # 450 thousand KRW on a twelve-million-won purchase. A fresh reader spotted it on their first walk
+  # and called it a copy-paste leftover, which is what it looked like. Uniqueness now rides on a
+  # small offset inside a band-appropriate base, so the figure is both distinct and sane.
+  fields=lambda i, x: [("Delegation limit",
+                        f"{[500, 3000, 10000, 50000][min(3, i[1])] + x} thousand KRW"),
                        ("Signs it off", ["the team lead", "the department head", "the division director",
                                          "the CFO", "the board"][min(4, (i[1] + i[2]) // 2)]),
                        ("Competing quotes", ["none", "two", "three", "three and a written comparison"][min(3, i[1])]),
@@ -244,8 +254,20 @@ FAMILIES = [
 ]
 
 
+# Three versions, not two. With a single revision the whole temporal axis is a two-way choice and
+# "reach for the newest" is a winning strategy that looks like understanding. A middle version breaks
+# that: a question dated in 2025 needs the one in the middle, so an arm has to read two dates rather
+# than prefer one document.
+#
+#   v1  the frozen corpus's own page   one axis        until MID
+#   v2  an intermediate table          two axes        MID .. EFFECTIVE
+#   v3  the 64-row table               three axes      EFFECTIVE onwards
+#
+# v1 states no dates, which is the realistic part and half the difficulty: nothing in a superseded
+# page says it has been superseded. The dates live in v2, v3 and the revision notice.
 EFFECTIVE = "2026-01-01"
-PRIOR = "2024-07-01"
+MID = "2024-07-01"
+MID_END = "2025-12-31"
 
 
 # **The section's one-liner is the only line the walker sees.** A walk opens an area and is handed one
@@ -262,6 +284,35 @@ PRIOR = "2024-07-01"
 # delta is what one sentence of human writing is worth, which is the study's own question in
 # miniature. Once — repeating it until the number improves would be tuning, not measurement — and
 # without any word the questions use, so it cannot be teaching to the test.
+
+
+def midversion(fam, axes):
+    """The middle table: the first two axes, as one document, in force between MID and EFFECTIVE."""
+    a_name, a_vals = axes[0][0], axes[0][1]
+    b_name, b_vals = axes[1][0], axes[1][1]
+    hdr = " | ".join(code_for(b_name, j).split()[-1] for j in range(len(b_vals)))
+    sep = "|".join("---" for _ in b_vals)
+    body = "\n".join(
+        "| " + code_for(a_name, i).split()[-1] + " | " +
+        " | ".join(str(fam["fields"]((i, j, 0), i * len(b_vals) + j)[0][1]) for j in range(len(b_vals)))
+        + " |" for i in range(len(a_vals)))
+    return f"""# {fam['subject']}, {MID} to {MID_END}
+
+## The version this was
+In force from **{MID}** until **{MID_END}**. It is **not current** — from {EFFECTIVE} the table in
+`sec-hard-{fam['key']}` applies, which adds {axes[2][0]} as a third qualifier. Before {MID} the rule
+was the one in `{fam['supersedes'][0][0]}`, which had neither {a_name} nor {axes[2][0]}.
+
+Use this one, and only this one, for anything dated between {MID} and {MID_END}.
+
+## {fam['unit'].split(',')[0].capitalize()}, by {a_name} and {b_name}
+| {a_name} \\ {b_name} | {hdr} |
+|---|{sep}|
+{body}
+
+The other figures were not varied in this version; {fam['unit']} beyond the column above followed the
+{fam['supersedes'][0][1].lower()} rule unchanged until {EFFECTIVE}.
+"""
 
 
 def provenance(fam):
@@ -294,7 +345,8 @@ def provenance(fam):
     record of what the documents say rather than a ruling handed down from outside them.
     """
     sup = fam["supersedes"]
-    return (f"*In force from {EFFECTIVE}; supersedes `{sup[0][0]}`. "
+    return (f"*In force from {EFFECTIVE}. The version before this one ({MID} to {MID_END}) is "
+            f"`hard-{fam['key']}-v2`; before that, `{sup[0][0]}`. "
             f"See `hard-{fam['key']}-legend-revision`.*\n\n")
 
 
@@ -377,30 +429,45 @@ If what you have is not listed, take the nearest entry above it and record the c
         # opened the *incumbent's* section, read the superseded table and answered from it. A warning
         # filed inside the thing it is warning you about is not a warning. At the area it sits beside
         # both sections and is one of the first lines any walk into that area is handed.
-        rid = f"hard-{fam['key']}-legend-revision"
-        sup_rows = "\n".join(f"| {n} | `{i}` | superseded from {EFFECTIVE} |"
-                             for i, n in fam["supersedes"])
-        docs.append((fam["area"], rid, f"""---
-id: {rid}
-name: "{fam['subject']} — what changed on {EFFECTIVE}"
+        vid = f"hard-{fam['key']}-v2"
+        docs.append((fam["area"], vid, f"""---
+id: {vid}
+name: "{fam['subject']} — the version in force from {MID} to {MID_END}"
 kind: reference
-one_liner: "WARNING — {fam['subject'].lower()} changed on {EFFECTIVE}. `{fam['supersedes'][0][0]}` and the pages around it are the OLD rule. Read this before answering from anything in this area about {fam['subject'].lower()}"
+one_liner: "SUPERSEDED — this is the {MID} to {MID_END} version of {fam['subject'].lower()}, by {axes[0][0]} and {axes[1][0]}. Use it only for dates in that window; it is not current and it is not the oldest"
 parent: {fam['area']}
 ---
-# {fam['subject']} — what changed on {EFFECTIVE}
+{midversion(fam, axes)}"""))
+        manifest[vid] = {"id": vid, "area": fam["area"], "parent": fam["area"], "version": 2,
+                         "cluster": fam["subject"], "family": fam["key"], "stratum": "S1"}
+        support.setdefault(fam["key"], []).append(vid)
 
-Until {EFFECTIVE} this subject was written as {fam['was']}. From {EFFECTIVE} it is the table in this
-section, indexed by {' and '.join(a[0] for a in axes)}.
+        rid = f"hard-{fam['key']}-legend-revision"
+        sup_rows = "\n".join(f"| until {MID} | {n} | `{i}` | {len(fam['axes'][0][2]) and ''}one qualifier |"
+                             for i, n in fam["supersedes"][:1]) + f"""
+| {MID} to {MID_END} | {fam['subject']}, second version | `{vid}` | two qualifiers |
+| {EFFECTIVE} onwards | {fam['subject']}, current | `sec-hard-{fam['key']}` | three qualifiers |"""
+        docs.append((fam["area"], rid, f"""---
+id: {rid}
+name: "{fam['subject']} — which version covers which dates"
+kind: reference
+one_liner: "WARNING — {fam['subject'].lower()} has THREE versions with different dates ({MID}, {EFFECTIVE}). Read this before answering anything dated, in this area, about {fam['subject'].lower()}"
+parent: {fam['area']}
+---
+# {fam['subject']} — the three versions, and which date each covers
 
-| replaced document | id | status |
-|---|---|---|
+This subject has been written three times. **The date on the question decides which one answers it**,
+and reaching for the newest is wrong for anything before {EFFECTIVE}.
+
+| in force | what it was | where | indexed by |
+|---|---|---|---|
 {sup_rows}
 
-Those documents were not withdrawn. They remain correct for anything dated before {EFFECTIVE}, and
-that is the only thing they are correct for. Nothing in them says so, which is why this page exists.
+None of them were withdrawn, and **the oldest says nothing at all about having been replaced** —
+which is why this page exists and why a date has to be checked rather than assumed.
 
-Every row in this section repeats the same notice, so a reader who lands on one row without passing
-through here still learns which version they are holding.
+For a question dated in 2025 the answer is the middle one, not the oldest and not the current table.
+That is the case worth being careful about: it is the one where taking either extreme is wrong.
 """))
         manifest[rid] = {"id": rid, "area": fam["area"], "parent": fam["area"], "legend": "revision",
                          "cluster": fam["subject"], "family": fam["key"], "stratum": "S1"}
@@ -824,6 +891,26 @@ def cmd_anatomy(a):
     print("                     study names, and no longer an arguable alternative\n")
 
 
+def cmd_fingerprint(a):
+    """One hash over the retrieval pool, so "the same corpus" is checkable rather than asserted.
+
+    The extension is not in version control — it is regenerated from this file in seconds, so the
+    generator is the artefact and the corpus is its output. That is only sound if the output can be
+    shown to be the same, and today it changed seven times, twice in ways nobody would have noticed
+    from a diff of the generator alone (a provenance line naming the middle version rewrote all 320
+    rows). The fingerprint goes in every run record beside the git tag.
+    """
+    import os, hashlib
+    os.environ.setdefault("BENCH_EXTRA_CORPUS", "bench/corpus-hard")
+    sys.path.insert(0, str(ROOT))
+    import run as runner
+    texts, _a, _o, _k, _h = runner.corpus()
+    h = hashlib.sha256()
+    for i in sorted(texts):
+        h.update(i.encode()); h.update(texts[i].encode())
+    print(f"  {len(texts)} documents   sha256 {h.hexdigest()[:16]}")
+
+
 def cmd_routecheck(a):
     """What the walker is handed. A family big enough to break retrieval has to stay walkable."""
     import os, yaml as _y
@@ -860,7 +947,8 @@ def cmd_routecheck(a):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("write", "stats", "bm25", "routecheck", "fusion", "curve", "anatomy"):
+    for name in ("write", "stats", "bm25", "routecheck", "fusion", "curve", "anatomy",
+                 "fingerprint"):
         s = sub.add_parser(name); s.add_argument("--grid", default="4x4x4")
         if name in ("fusion", "anatomy"): s.add_argument("--sample", type=int, default=0)
         if name == "curve":
@@ -870,4 +958,4 @@ if __name__ == "__main__":
     a = ap.parse_args()
     {"write": cmd_write, "stats": cmd_stats, "bm25": cmd_bm25,
      "routecheck": cmd_routecheck, "fusion": cmd_fusion, "curve": cmd_curve,
-     "anatomy": cmd_anatomy}[a.cmd](a)
+     "anatomy": cmd_anatomy, "fingerprint": cmd_fingerprint}[a.cmd](a)
