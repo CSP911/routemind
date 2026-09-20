@@ -1,0 +1,139 @@
+{
+ "walks": [
+  {
+   "id": "h-accrual-000-i",
+   "arm": "routing",
+   "lever": "indirect",
+   "family": "accrual",
+   "needs": "any",
+   "d_true": [
+    "hard-accrual-row-type-e1-tenure-t1-site-l1"
+   ],
+   "sources": [
+    "hard-accrual-legend-revision",
+    "hard-accrual-legend-type",
+    "hard-accrual-legend-tenure",
+    "hard-accrual-legend-site",
+    "hard-accrual-row-type-e1-tenure-t1-site-l1"
+   ],
+   "hit": true,
+   "commands": 8,
+   "source_section": true,
+   "at": "2026-09-20T13:23:20",
+   "report": "1. **Commands**:\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/regions/attendance\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-accrual-legend-revision/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/nodes/sec-hard-accrual\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-accrual-legend-type/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-accrual-legend-tenure/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-accrual-legend-site/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-accrual-row-type-e1-tenure-t1-site-l1/body\n\n2. **Answer**:\nYou accrue 0.40 days of leave per month (type E1 / tenure T1 / site L1 row). The carry-over limit into the next period (what you can still be holding going into January) is 4 days.\n\n3. **Source**:\n/v1/nodes/hard-accrual-legend-revision/body\n/v1/nodes/hard-accrual-legend-type/body\n/v1/nodes/hard-accrual-legend-tenure/body\n/v1/nodes/hard-accrual-legend-site/body\n/v1/nodes/hard-accrual-row-type-e1-tenure-t1-site-l1/body\n\n4. **Notes**:\nThe attendance table flags up front that leave accrual has three versions in force over different date ranges (pre-2024-07-01, 2024-07-01–2025-12-31, and 2026-01-01 onward), with an explicit warning that \"the oldest says nothing at all about having been replaced\" — it would be easy to grab the wrong version by just searching for \"leave accrual\" and landing on a superseded page. Today's date (2026-09-20) puts this squarely in the current table (`sec-hard-accrual`, in force since 2026-01-01), so no ambiguity there, but it's the kind of question where checking the date-validity legend first is mandatory, not optional.\n\nThe three qualifiers in the question (\"regular payroll,\" \"eight months,\" \"Seoul office\") mapped cleanly and exactly to legend entries (E1, T1, L1 respectively) with no fuzzy nearest-match judgment calls needed — each legend explicitly says to use the nearest entry if there's no exact match, but here all three were exact.\n\nThe one place I had to interpret rather than just read: the question asks \"how much can I still be holding in January,\" which isn't phrased as \"carry-over limit\" — I read that as asking for the carry-over cap (4 days), the maximum unused balance that survives into the new year/period, as opposed to a running total of accrued days by January (which isn't something the tool computes and isn't stated anywhere — no cumulative/YTD balance field exists in this row, only the monthly rate and the carry-over ceiling). If \"January\" was meant as \"after some number of months of accrual\" rather than \"carried over past year-end,\" this document does not give a running total, and I did not fabricate one.\n"
+  },
+  {
+   "id": "h-overtime-000-i",
+   "arm": "routing",
+   "lever": "indirect",
+   "family": "overtime",
+   "needs": "any",
+   "d_true": [
+    "hard-overtime-row-day-d1-hours-h1-place-p1"
+   ],
+   "sources": [
+    "hard-moved-overtime",
+    "hard-overtime-legend-revision",
+    "hard-overtime-legend-day",
+    "hard-overtime-legend-hours",
+    "hard-overtime-legend-place",
+    "hard-overtime-row-day-d1-hours-h1-place-p1"
+   ],
+   "hit": true,
+   "commands": 10,
+   "source_section": true,
+   "at": "2026-09-20T13:23:21",
+   "report": "1. **Commands**:\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/payroll\n./bench/rmcli.py read /v1/nodes/hard-moved-overtime/body\n./bench/rmcli.py table /v1/regions/attendance\n./bench/rmcli.py read /v1/nodes/hard-overtime-legend-revision/body\n./bench/rmcli.py table /v1/nodes/sec-hard-overtime\n./bench/rmcli.py read /v1/nodes/hard-overtime-legend-day/body\n./bench/rmcli.py read /v1/nodes/hard-overtime-legend-hours/body\n./bench/rmcli.py read /v1/nodes/hard-overtime-legend-place/body\n./bench/rmcli.py read /v1/nodes/hard-overtime-row-day-d1-hours-h1-place-p1/body\n\n2. **Answer**: Multiplier 1.20x. Minutes are rounded to the nearest 5 minutes.\n\n3. **Source**:\n/v1/regions/payroll (led to the moved notice)\n/v1/nodes/hard-moved-overtime/body (redirects to attendance for dates on/after 2026-01-01)\n/v1/regions/attendance (found the current overtime table and the warning of three versions)\n/v1/nodes/hard-overtime-legend-revision/body (confirmed 2026-01-01-onward version, i.e. `sec-hard-overtime`, is the one for today, 2026-09-20)\n/v1/nodes/hard-overtime-legend-day/body (an ordinary Tuesday = day D1)\n/v1/nodes/hard-overtime-legend-hours/body (about ninety minutes = hours H1)\n/v1/nodes/hard-overtime-legend-place/body (at my desk = place P1)\n/v1/nodes/hard-overtime-row-day-d1-hours-h1-place-p1/body (final answer: 1.20x, rounding to nearest 5 minutes)\n\n4. **Notes**: The path had a trap: payroll is the first plausible area for \"overtime pay,\" and it has a full old table (`payslip-overtime`) sitting there looking authoritative, but a notice (`hard-moved-overtime`) says overtime premiums moved to attendance on 2026-01-01 and the payroll page is only correct before that date. Easy to stop at payroll and get a stale answer. Then attendance itself has a second trap: there are THREE historical versions of the overtime rate table (pre-2024-07-01, 2024-07-01–2025-12-31, and 2026-01-01-onward), and the warning page explicitly says grabbing the newest is only sometimes right — for a 2025-dated question the middle version would be correct, not the current one. Since today is 2026-09-20, the current table (`sec-hard-overtime`) was correct here, but this only holds because of today's date, not because \"current\" is always right. All three qualifiers in the question (Tuesday, ~90 minutes, at desk) mapped cleanly and exactly to legend entries (D1/H1/P1) with no fuzzy \"nearest entry\" judgment calls needed, so no ambiguity there.\n"
+  },
+  {
+   "id": "h-perdiem-000-i",
+   "arm": "routing",
+   "lever": "indirect",
+   "family": "perdiem",
+   "needs": "any",
+   "d_true": [
+    "hard-perdiem-row-grade-g1-band-b1-stay-s1"
+   ],
+   "sources": [
+    "hard-perdiem-legend-revision",
+    "hard-perdiem-legend-grade",
+    "hard-perdiem-legend-band",
+    "hard-perdiem-legend-stay",
+    "hard-perdiem-row-grade-g1-band-b1-stay-s1"
+   ],
+   "hit": true,
+   "commands": 8,
+   "source_section": true,
+   "at": "2026-09-20T13:23:21",
+   "report": "1. **Commands**:\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/regions/expense\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-perdiem-legend-revision/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/nodes/sec-hard-perdiem\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-perdiem-legend-grade/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-perdiem-legend-band/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-perdiem-legend-stay/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-perdiem-row-grade-g1-band-b1-stay-s1/body\n\n2. **Answer**: Lodging cap is 95 USD per night. The receipt threshold is 18 USD — spend above that amount requires a receipt.\n\n3. **Source**:\n- /v1/nodes/hard-perdiem-legend-revision/body (established which of three per-diem versions applies to today's date)\n- /v1/nodes/hard-perdiem-legend-grade/body (junior analyst → grade G1)\n- /v1/nodes/hard-perdiem-legend-band/body (Tokyo → band B1)\n- /v1/nodes/hard-perdiem-legend-stay/body (one night → stay S1)\n- /v1/nodes/hard-perdiem-row-grade-g1-band-b1-stay-s1/body (the answer: lodging 95 USD/night, receipt threshold 18 USD)\n\n4. **Notes**: The expense area lists three per-diem documents side by side (`hard-perdiem-legend-revision`, `hard-perdiem-v2`, and the current `sec-hard-perdiem`) with no obvious flag on which is \"current\" until you actually read the legend-revision file — it's easy to grab `hard-perdiem-v2` by mistake since it sits right next to the table entry and looks equally authoritative. The revision legend makes clear today (2026-09-20) falls under the 2026-01-01-onwards version (`sec-hard-perdiem`), so that's the one used. The current table is indexed by three qualifiers (grade, band, stay length) that must each be translated through a separate legend file rather than guessed — \"junior analyst,\" \"Tokyo,\" and \"one night\" are plain-language inputs, and the legends map them to G1, B1, and S1 respectively. Constructing the row address by hand felt natural (the pattern is obvious after seeing two rows) but the instructions are explicit never to build an address, so it was fetched only after the table listing printed it verbatim. The row itself conveniently answers both halves of the question (lodging cap and receipt threshold) in one document, so no further table needed to be opened for the receipt-threshold half.\n"
+  },
+  {
+   "id": "t-perdiem-01",
+   "arm": "routing",
+   "lever": "stale-old",
+   "family": "perdiem",
+   "needs": "any",
+   "d_true": [
+    "overseas-rates"
+   ],
+   "sources": [
+    "hard-perdiem-legend-revision",
+    "overseas-rates"
+   ],
+   "hit": true,
+   "commands": 6,
+   "source_section": true,
+   "at": "2026-09-20T13:23:22",
+   "report": "1. **Commands**:\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/regions/expense\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-perdiem-legend-revision/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/nodes/travel-expense\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/nodes/travel-overseas\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/overseas-rates/body\n\n2. **Answer**: USD 180 per night (Band B: China, South-East Asia, Eastern Europe — daily allowance USD 60, lodging cap USD 180). This is the value under the pre-2024-07-01 version of the overseas per-diem, which was the version in force in March 2023.\n\n3. **Source**:\n- /v1/nodes/hard-perdiem-legend-revision/body (established which of the three per-diem versions covers March 2023)\n- /v1/nodes/overseas-rates/body (the actual figures — Band B lodging cap USD 180)\n\n4. **Notes**: The expense area table surfaces two per-diem documents prominently — `hard-perdiem-v2` (2024-07-01 to 2025-12-31) and `sec-hard-perdiem` (current, since 2026-01-01) — with an explicit note that \"older band-only caps are still here and are superseded.\" Neither of those two is right for March 2023; the correct document (`overseas-rates`, the pre-2024-07-01 \"band-only\" version) isn't listed directly under the expense area at all — it only surfaces two levels deeper, under travel-expense → travel-overseas. The legend/revision doc (`hard-perdiem-legend-revision`) is what flags this: it explicitly warns that \"the oldest says nothing at all about having been replaced,\" so if I'd opened `overseas-rates` first without reading the legend, nothing on that page itself would have told me it wasn't the current or only answer — it looks self-contained and authoritative on its own. The legend also warns the trap case is a 2025 date (which lands on the *middle* version, not the oldest or newest); a March 2023 date is comparatively unambiguous once you've read the legend, but I would have found the wrong (superseded-in-the-other-direction, i.e. too new) document first if I had skipped straight to `sec-hard-perdiem` or `hard-perdiem-v2` from the expense area listing without checking dates.\n"
+  },
+  {
+   "id": "h-diligence-000-i",
+   "arm": "routing",
+   "lever": "indirect",
+   "family": "diligence",
+   "needs": "any",
+   "d_true": [
+    "hard-diligence-row-origin-o1-value-w1-goods-k1"
+   ],
+   "sources": [
+    "hard-diligence-legend-revision",
+    "hard-diligence-legend-origin",
+    "hard-diligence-legend-value",
+    "hard-diligence-legend-goods",
+    "hard-diligence-row-origin-o1-value-w1-goods-k1"
+   ],
+   "hit": true,
+   "commands": 10,
+   "source_section": true,
+   "at": "2026-09-20T13:23:57",
+   "report": "1. **Commands**:\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/regions/procurement\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/nodes/sec-supplier-due-diligence\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/sec-supplier-due-diligence/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-diligence-legend-revision/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/nodes/sec-hard-diligence\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-diligence-legend-origin/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-diligence-legend-value/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-diligence-legend-goods/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k1/body\n\n2. **Answer**: No, a site visit is not required. The supplier's file gets re-reviewed every 36 months. (Also on this row: screening score required is 30, financial statements not required.) This is under the current supplier due diligence table, in force from 2026-01-01.\n\n3. **Source**:\n- /v1/nodes/hard-diligence-legend-revision/body (established today's date, 2026-09-20, falls under the current 2026-01-01 version, not the superseded ones)\n- /v1/nodes/hard-diligence-legend-origin/body (Daejeon → origin O1)\n- /v1/nodes/hard-diligence-legend-value/body (eight million won → value W1)\n- /v1/nodes/hard-diligence-legend-goods/body (just office consumables → goods K1)\n- /v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k1/body (the row with the site-visit and re-review answer)\n\n4. **Notes**: The procurement table lists both the current diligence table (sec-hard-diligence) and a superseded one (hard-diligence-v2) side by side with similar names, and only the legend-revision page makes clear that a 2026-09-20 question needs the \"sec-\" prefixed current table, not hard-diligence-v2 — easy to grab the wrong one since v2's row-address style looks structurally identical. The three qualifiers (origin/value/goods) are each banded by a separate legend page rather than stated directly, so the \"eight million won\" and \"Daejeon\" and \"office consumables\" in the question have to be translated through three separate lookups before the row address can be built; skipping any one of the three legends would have made it impossible to construct the correct address (which the tool also warns never to construct by guessing — here it's assembled from the parts the legends provide, not guessed). Also worth flagging: this row's site-visit/re-review answer sits in a supplier due-diligence table, not an approval-threshold table — a question phrased around a purchase amount could easily be misrouted to /v1/nodes/sec-hard-threshold instead, which answers a different question (how far up the amount needs approval), not whether a site visit is needed or how often the file is re-reviewed.\n"
+  },
+  {
+   "id": "h-threshold-000-i",
+   "arm": "routing",
+   "lever": "indirect",
+   "family": "threshold",
+   "needs": "any",
+   "d_true": [
+    "hard-threshold-row-category-c1-amount-v1-term-m1"
+   ],
+   "sources": [
+    "hard-threshold-legend-revision",
+    "hard-threshold-legend-category",
+    "hard-threshold-legend-amount",
+    "hard-threshold-legend-term",
+    "hard-threshold-row-category-c1-amount-v1-term-m1"
+   ],
+   "hit": true,
+   "commands": 8,
+   "source_section": true,
+   "at": "2026-09-20T13:23:57",
+   "report": "1. **Commands**:\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/regions/procurement\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-threshold-legend-revision/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py table /v1/nodes/sec-hard-threshold\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-threshold-legend-category/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-threshold-legend-amount/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-threshold-legend-term/body\nPYTHONPATH=$BENCH_PYLIB python3 ./bench/rmcli.py read /v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m1/body\n\n2. **Answer**:\nThe team lead's signature is needed, and no competing quotes have to be obtained first (\"Competing quotes: none\"). Expect about 2 working days for the sign-off.\n\n(Legend mapping used: \"a couple of laptops\" = category C1; \"about 700,000 won\" = amount V1; \"just the once\" = term M1. This C1/V1/M1 row is the one in force today, 2026-09-20, under the table effective since 2026-01-01.)\n\n3. **Source**:\n- /v1/nodes/hard-threshold-legend-revision/body (confirms which of the three threshold-table versions applies to today's date)\n- /v1/nodes/hard-threshold-legend-category/body (maps \"a couple of laptops\" → C1)\n- /v1/nodes/hard-threshold-legend-amount/body (maps \"about 700,000 won\" → V1)\n- /v1/nodes/hard-threshold-legend-term/body (maps \"just the once\" → M1)\n- /v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m1/body (the matched row: team lead signs, no competing quotes, 2 working days)\n\n4. **Notes**:\n- The approval-threshold subject exists in three superseded versions (`threshold-table`, `hard-threshold-v2`, `sec-hard-threshold`), and a plain top-level listing would let you grab the wrong one — the legend-revision page is explicit that reaching for the newest is wrong for anything dated before 2026-01-01, and today (2026-09-20) is the one date range where the newest happens to be correct, which makes it easy to skip that check and get lucky rather than actually verify it. I read it anyway rather than assume.\n- The one thing that gave me pause: the matched row's own \"Delegation limit\" is stated as \"500 thousand KRW,\" while the amount-legend row that routed me there is labelled \"about 700,000 won\" for band V1. Read carelessly, that looks like a contradiction — the actual sum (700,000) exceeds the delegation limit named inside the row that's supposed to cover it (500,000), which could suggest the team lead can't actually sign off and the \"exceeded\" escalation clause (to the budget holder) should apply instead. I did not apply that escalation: the legend table is explicit that its bands are the only mapping from a real-world figure to a row, banding is by \"nearest entry\" rather than a hard ceiling, and the \"if exceeded\" clause on the row describes settling an overspend against actual figures, not re-routing the signature based on the band's illustrative label. But this is the part of the walk I'd flag as genuinely ambiguous rather than settled — a stricter reading could argue the excess clause should trigger here.\n- Nothing else in the procurement area contradicted the row's own \"Competing quotes: none,\" so I didn't need to open `purchase-request` to double check the quote requirement.\n"
+  }
+ ],
+ "meta": {
+  "fingerprint": "7dfd5538de294fcb",
+  "use_when": "maintained",
+  "redaction": "Reports verbatim except the machine-specific interpreter path in echoed command lines, replaced by $BENCH_PYLIB (40 occurrences). Nothing else altered."
+ }
+}

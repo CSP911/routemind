@@ -190,8 +190,22 @@ def main():
     outp = ROOT.parent / out
     outp.parent.mkdir(parents=True, exist_ok=True)
 
+    # The corpus these numbers came from, written into the file at the moment they are produced.
+    # The walk campaigns recorded this and the retrieval runs did not, so two retrieval files with
+    # 1280 results each and a 0.002 difference between them could only be told apart by their
+    # timestamps against the hour the corpus was rebuilt. That is not a record, it is a recollection.
+    import hashlib as _h
+    _fp = _h.sha256()
+    for _i in sorted(texts):
+        _fp.update(_i.encode()); _fp.update(texts[_i].encode())
+    FINGERPRINT = _fp.hexdigest()[:16]
+    print(f"  corpus {len(texts)} documents   fingerprint {FINGERPRINT}")
+
     def save():
-        outp.write_text(json.dumps({"k": a.k, "per_hop": a.per_hop, "budget": a.budget,
+        outp.write_text(json.dumps({"fingerprint": FINGERPRINT, "documents": len(texts),
+                                    "use_when": os.environ.get("BENCH_USE_WHEN", "frozen"),
+                                    "extra_corpus": os.environ.get("BENCH_EXTRA_CORPUS", ""),
+                                    "k": a.k, "per_hop": a.per_hop, "budget": a.budget,
                                     "steps": a.steps, "gold": a.gold,
                                     "no_rerank": bool(a.no_rerank),
                                     "router_model": router.model, "rerank_model": rr.model,

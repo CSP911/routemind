@@ -49,3 +49,14 @@ bench/.probe.lock
 /bench/harden-state.json
 /bench/crowd-fusion.json
 /bench/crowd-curve*.json
+
+# Runs whose corpus can no longer be identified. The 13:31 rebuild on 2026-09-20 overwrote all 353
+# extension documents, so a run from that morning cannot be checked by anyone — the corpus it saw is
+# gone. Kept on disk as history; not tracked, because a number nobody can verify sitting beside
+# numbers anybody can makes the directory look like more evidence than it holds. eval/runs/README.md
+# says what they were and where their conclusions went.
+/eval/runs/superseded/
+
+# The census runner's own scratch: a log, and the per-walk helper it writes next to the reports.
+/eval/runs/census.log
+/eval/runs/walks-census/.walk.sh

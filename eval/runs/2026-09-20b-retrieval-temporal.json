@@ -1,0 +1,7223 @@
+{
+ "fingerprint": "a84ac6cf463a1a6d",
+ "documents": 1126,
+ "fingerprint_provenance": "not stamped at runtime; established afterwards — the run post-dates the 13:31 corpus rebuild and bench/corpus-hard has not been written since",
+ "use_when": "maintained",
+ "extra_corpus": "bench/corpus-hard",
+ "k": 10,
+ "per_hop": 2,
+ "budget": 0,
+ "steps": 30,
+ "gold": "eval/gold/hard-temporal.yaml",
+ "no_rerank": false,
+ "router_model": "claude-opus-5",
+ "rerank_model": "gpt-5",
+ "embed_model": "text-embedding-3-large",
+ "results": [
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 4,
+   "mrr": 0.25,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 6,
+   "mrr": 0.16666666666666666,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 4,
+   "mrr": 0.25,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-legend-revision",
+     "area": "expense"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-legend-revision",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s2",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-perdiem-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-revision",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h4-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-day",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-hours",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-overtime-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 4,
+   "mrr": 0.25,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 4,
+   "mrr": 0.25,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t3-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-accrual-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance",
+    "expense",
+    "procurement"
+   ],
+   "area_precision": 0.3333333333333333,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-perdiem-legend-revision",
+     "area": "expense"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "procurement"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-legend-term",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-legend-amount",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-moved-threshold",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v4-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 5,
+   "mrr": 0.2,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-threshold-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 3,
+   "mrr": 0.3333333333333333,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 3,
+   "mrr": 0.3333333333333333,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 7,
+   "mrr": 0.14285714285714285,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag",
+   "id": "t-diligence-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-legend-revision",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b1-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-legend-revision",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s2",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b4-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s4",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s4",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s1",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g3-band-b4-stay-s3",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "expense"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-perdiem-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-perdiem-v2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-legend-revision",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b1-stay-s1",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g1-band-b1-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b4-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b2-stay-s2",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g2-band-b3-stay-s3",
+     "area": "expense"
+    },
+    {
+     "id": "hard-perdiem-row-grade-g4-band-b2-stay-s2",
+     "area": "expense"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-overtime-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-overtime-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-overtime-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h4-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h2-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h3-place-p4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h2-place-p2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-overtime-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h2-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h4-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h3-place-p3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d4-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-overtime-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-overtime-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d1-hours-h1-place-p1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d2-hours-h1-place-p3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-overtime-row-day-d3-hours-h1-place-p1",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "loa-milestone-case",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-accrual-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-accrual-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t3-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual-midyear",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "group-transfer-entitlement",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-overview",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t4-site-l4",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l4",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "leave-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "annual-leave",
+     "area": "attendance"
+    },
+    {
+     "id": "accrual-rule",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "milestone-year-accrual",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-tenure",
+     "area": "attendance"
+    },
+    {
+     "id": "mid-year-joiner-loa-case",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t3-site-l1",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "attendance"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-accrual-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-accrual-v2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-legend-revision",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l3",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e3-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l2",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t2-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e4-tenure-t1-site-l1",
+     "area": "attendance"
+    },
+    {
+     "id": "hard-accrual-row-type-e2-tenure-t2-site-l3",
+     "area": "attendance"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-threshold-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-threshold-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v4-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v4-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v4-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-threshold-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v4-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v3-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v1-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "approval",
+    "procurement"
+   ],
+   "area_precision": 0.5,
+   "retrieval_hit": true,
+   "rank": 2,
+   "mrr": 0.5,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-threshold-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "purchase-draft",
+     "area": "approval"
+    },
+    {
+     "id": "hard-threshold-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-legend-amount",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-threshold-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-threshold-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c1-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c4-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c3-amount-v2-term-m1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-threshold-row-category-c2-amount-v2-term-m1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-diligence-01",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-diligence-02",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-diligence-03",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-diligence-04",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-diligence-05",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-diligence-06",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-diligence-07",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k1",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-diligence-08",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o1-value-w1-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-diligence-09",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w2-goods-k2",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-diligence-10",
+   "needs": "any",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w1-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k3",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": true,
+   "rank": 1,
+   "mrr": 1.0,
+   "reranked": true,
+   "arm": "rag+rerank",
+   "id": "t-diligence-11",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-v2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w4-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w2-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w4-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w1-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  },
+  {
+   "routing_hit": true,
+   "areas_looked": [
+    "procurement"
+   ],
+   "area_precision": 1.0,
+   "retrieval_hit": false,
+   "rank": null,
+   "mrr": 0.0,
+   "reranked": false,
+   "arm": "rag+rerank",
+   "id": "t-diligence-12",
+   "needs": "all",
+   "picked": null,
+   "router_said": "",
+   "hops": null,
+   "collected": 20,
+   "top": [
+    {
+     "id": "hard-diligence-legend-revision",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k3",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o3-value-w3-goods-k4",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o2-value-w3-goods-k1",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k2",
+     "area": "procurement"
+    },
+    {
+     "id": "hard-diligence-row-origin-o4-value-w3-goods-k4",
+     "area": "procurement"
+    }
+   ]
+  }
+ ]
+}
