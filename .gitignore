@@ -22,17 +22,22 @@ __pycache__/
 /data-depot/
 /data-partner-ix/
 
-# The retrieval experiment (eval/). What is generated is ignored; what generates it is not — the
-# study claims to be reproducible, and a tool nobody can read is not. The corpus itself grew from
-# examples/back-office, which is versioned.
-/bench/corpus/
+# The retrieval experiment (eval/). "What is generated is ignored; what generates it is not" was the
+# rule here, and it was half wrong. It holds for `crowd.py`, which imports nothing but the standard
+# library and writes the same 352 documents every time — the generator really is the artefact there.
+# It does not hold for `generate.py`, which asks an LLM to write the base corpus. Nobody can run it
+# and get the same 861 documents back, so with the corpus ignored, the fingerprint every run record
+# is stamped with could not be reproduced by an outside reader **or by us on a fresh checkout**. The
+# corpus is now tracked: 4.8MB of markdown against a study that is otherwise unverifiable.
+#
+# Still ignored below: things derived from the corpus rather than the corpus itself — embeddings,
+# section indexes, probe results, logs — all of which any checkout can rebuild from what is here.
 /bench/manifest.json
 /bench/sections.json
 /bench/embeddings*.json
 /bench/factors.csv
 /bench/*.log
 bench/.probe.lock
-/bench/corpus-hard/
 /bench/crowd-manifest.json
 /bench/probe-questions.json
 /bench/probe2-questions.json

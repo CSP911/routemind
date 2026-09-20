@@ -171,5 +171,17 @@ material for the severe band.
 ./bench/coverage.py            # coverage per stratum
 ```
 
-`bench/` is gitignored — generated, large, and not part of the product. What is versioned is the spec
-that produces it, the tools, and this page.
+**The corpus is versioned, and it has to be.** The rule used to be "version the generator, not its
+output", which is sound for `bench/crowd.py` — standard library only, same 352 documents every run,
+so the generator genuinely is the artefact. It is not sound for `bench/generate.py`, which asks an
+LLM to write the base corpus: run it twice and you get two different corpora. With the corpus
+ignored, the fingerprint stamped on every run record was unreproducible by anyone, including us on a
+fresh checkout, which quietly cost this study the property it claims. `bench/corpus/` and
+`bench/corpus-hard/` are now tracked — 4.8MB of markdown. What stays ignored is what is *derived*
+from them: embeddings, section indexes, probe results, logs.
+
+So a reader can now check the fingerprint rather than take it:
+
+```sh
+BENCH_EXTRA_CORPUS=bench/corpus-hard ./bench/crowd.py fingerprint   # expect a84ac6cf463a1a6d
+```
