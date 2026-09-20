@@ -74,7 +74,7 @@ version of this file exists at all.
     ./bench/crowd.py bm25                     half the prediction, free
     ./bench/crowd.py routecheck               can the walker use it
 """
-import argparse, json, pathlib, re, sys
+import argparse, json, os, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 OUT = ROOT / "corpus-hard"
@@ -206,8 +206,21 @@ FAMILIES = [
   # 450 thousand KRW on a twelve-million-won purchase. A fresh reader spotted it on their first walk
   # and called it a copy-paste leftover, which is what it looked like. Uniqueness now rides on a
   # small offset inside a band-appropriate base, so the figure is both distinct and sane.
+  # Third attempt, and the first two are the lesson. This figure exists to make each row's answers
+  # unique — the other three fields all key off amount and term and ignore category, so without it
+  # four rows in a group are identical and a retriever that returns the twin is scored as missing.
+  # Version one was `200 + 25 * row index`, which put 450 thousand KRW on a twelve-million-won
+  # purchase. Version two moved the base into the band but took the band's floor, so a row covering
+  # "about 700,000 won" carried a 500 thousand limit — lower than the sum it governs, which reads as
+  # the signer not being allowed to sign. A walking agent flagged it all three times; the third time
+  # it said the honest thing, that a stricter reading would trigger the excess clause.
+  #
+  # It is now the band's **ceiling**, so the limit is never below what the row is for, plus the row
+  # index to keep it distinct. Uniqueness cannot simply be dropped here: sixty-four rows need
+  # sixty-four distinguishable answers, and no plausible small-integer field has that range — money
+  # is the only one that does, so the figure has to be money and it has to be coherent.
   fields=lambda i, x: [("Delegation limit",
-                        f"{[500, 3000, 10000, 50000][min(3, i[1])] + x} thousand KRW"),
+                        f"{[1000, 5000, 20000, 100000][min(3, i[1])] + x} thousand KRW"),
                        ("Signs it off", ["the team lead", "the department head", "the division director",
                                          "the CFO", "the board"][min(4, (i[1] + i[2]) // 2)]),
                        ("Competing quotes", ["none", "two", "three", "three and a written comparison"][min(3, i[1])]),
@@ -633,6 +646,17 @@ questions:
   support:{sup}
 """)
     GOLD.write_text("\n".join(lines), encoding="utf-8")
+    # The fingerprint is written beside the corpus, so anything serving it can prove it is serving
+    # this one. Two arms measured against two different corpora for an hour today because a copy
+    # made before a fix was never re-made, and the only thing that caught it was a walking agent
+    # noticing a delegation limit that did not fit its own amount band.
+    import subprocess as _sp
+    _fp = _sp.run([sys.executable, str(ROOT / "crowd.py"), "fingerprint"], capture_output=True,
+                  text=True, env={**os.environ, "BENCH_EXTRA_CORPUS": "bench/corpus-hard"})
+    if _fp.returncode == 0 and _fp.stdout.strip():
+        (OUT / ".fingerprint").write_text(_fp.stdout.strip().split()[-1] + "\n", encoding="utf-8")
+    else:
+        print(f"  WARNING: fingerprint not written — {_fp.stderr.strip()[:120]}", file=sys.stderr)
     rows = sum(1 for _, i, _ in docs if manifest.get(i, {}).get("axes"))
     legs = sum(1 for _, i, _ in docs if manifest.get(i, {}).get("legend"))
     print(f"  grid {a.grid} · {rows} rows + {legs} legends + {len(FAMILIES)} sections "

@@ -62,3 +62,47 @@ it is a second reader, which is the first thing `DATASETS.md` asks a contributor
 What it does do is separate the two questions that kept getting confused: **is this question
 answerable and uniquely so** — decided here, before any arm runs — and **did the arm find it**, which
 is what the arms are for.
+
+## One key defect, found three times, fixed for the family — 2026-09-20
+
+A key widened after seeing a result is the easiest way to manufacture a hit, so this is written out
+in full: what was wrong, how it was checked, and how far the fix was applied.
+
+**The defect.** `leave-accrual` is the prose page for the oldest leave rule — "the table is on the
+page below" — and `accrual-rule` is that table, carrying the identical three tiers. The gold set
+named only the prose page. `mapcheck` R5 lists **both** as supersession targets for the accrual
+subject, which is the corpus itself saying they are two faces of one answer.
+
+**How it surfaced.** Three `routing+overlay` walks answered correctly and cited the table:
+`t-accrual-01` (15 days for two years, pre-2024-07-01), `t-accrual-09` (the boundary question, same
+figure, correctly reasoning that 29 June is two days before the change), `t-accrual-11` (both
+versions, and it declined to annualise a monthly rate rather than invent one). Each scored a
+mechanical miss. The `routing` arm passed all three only because it happened to name every document
+it opened — an accident, not a difference in skill, and the accident is what hid the defect.
+
+**How far the fix goes.** `D_alt: {leave-accrual: [accrual-rule]}` is on **all six** questions keyed
+on `leave-accrual` — `t-accrual-01, -02, -03, -09, -11, -12` — not only the three that tripped on
+it. Applying a correction to the family rather than to the failures is what keeps it a correction.
+Then `./bench/walkscore.py rescore` re-ran every walk of **both** arms against the new keys from
+their kept verbatim reports. Nothing was re-walked; no report was altered; only `hit` recomputed.
+
+**A bug in the fix, caught by the fix not working.** `D_alt` was first a flat list, added to what the
+walk named. That is right for `needs: any` by accident and wrong for `needs: all`: `t-accrual-11`
+named the substitute *and* the second required document and still failed, because the substitute
+satisfied nothing. It is now a per-entry mapping — an alternative stands in for the one key entry it
+is equivalent to. The first `rescore` reported "0 changed" when one walk should have flipped, which
+is the only reason the bug was found.
+
+Nothing was changed about the corpus or the questions. This is the fourth time this campaign that a
+"routing failure" turned out to be a defect in the answer key.
+
+## Two walks stalled on a tool that never answers — 2026-09-20
+
+`h-threshold-023-d` and `t-accrual-11` (both `routing+overlay`) stopped mid-walk having decided to
+wait for a background-monitor notification, and wrote no report. Neither was a routing failure and
+neither is data: the agent simply stopped. Both were relaunched from the same generated prompt.
+
+The prompt now says every call is synchronous and forbids background, monitor and waiting tools, so
+the next agent cannot make the same choice. Worth noting because a stall looks like nothing at all
+in a campaign file — the only sign was a report file that was never written, which is why
+`walkscore record` is fed from the file rather than from whatever the agent replied.

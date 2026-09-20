@@ -1,0 +1,61 @@
+# The routing campaign's 50 questions — stratified, and fixed before any walk.
+#
+#   indirect  20   four per family
+#   direct    10   two per family, the control
+#   temporal  20   four per lever
+#
+# The retrieval arms run on all 700; these are the fifty a fresh agent walks, twice — once as
+# `routing` and once as `routing+overlay`. Chosen here rather than as the campaign goes, so the
+# set cannot drift towards whatever was going well.
+
+questions:
+- h-perdiem-000-i   # indirect   perdiem
+- h-perdiem-120-i   # indirect   perdiem
+- h-perdiem-023-i   # indirect   perdiem
+- h-perdiem-222-i   # indirect   perdiem
+- h-perdiem-000-d   # direct     perdiem
+- h-perdiem-023-d   # direct     perdiem
+- h-overtime-000-i   # indirect   overtime
+- h-overtime-120-i   # indirect   overtime
+- h-overtime-023-i   # indirect   overtime
+- h-overtime-222-i   # indirect   overtime
+- h-overtime-000-d   # direct     overtime
+- h-overtime-023-d   # direct     overtime
+- h-accrual-000-i   # indirect   accrual
+- h-accrual-120-i   # indirect   accrual
+- h-accrual-023-i   # indirect   accrual
+- h-accrual-222-i   # indirect   accrual
+- h-accrual-000-d   # direct     accrual
+- h-accrual-023-d   # direct     accrual
+- h-threshold-000-i   # indirect   threshold
+- h-threshold-120-i   # indirect   threshold
+- h-threshold-023-i   # indirect   threshold
+- h-threshold-222-i   # indirect   threshold
+- h-threshold-000-d   # direct     threshold
+- h-threshold-023-d   # direct     threshold
+- h-diligence-000-i   # indirect   diligence
+- h-diligence-120-i   # indirect   diligence
+- h-diligence-023-i   # indirect   diligence
+- h-diligence-222-i   # indirect   diligence
+- h-diligence-000-d   # direct     diligence
+- h-diligence-023-d   # direct     diligence
+- t-accrual-01   # stale-old  accrual
+- t-diligence-01   # stale-old  diligence
+- t-overtime-02   # stale-old  overtime
+- t-perdiem-03   # stale-old  perdiem
+- t-accrual-04   # stale-mid  accrual
+- t-diligence-04   # stale-mid  diligence
+- t-overtime-05   # stale-mid  overtime
+- t-perdiem-06   # stale-mid  perdiem
+- t-accrual-07   # changed    accrual
+- t-diligence-07   # changed    diligence
+- t-overtime-08   # changed    overtime
+- t-perdiem-08   # changed    perdiem
+- t-accrual-09   # boundary   accrual
+- t-diligence-09   # boundary   diligence
+- t-overtime-10   # boundary   overtime
+- t-perdiem-10   # boundary   perdiem
+- t-accrual-11   # both       accrual
+- t-diligence-11   # both       diligence
+- t-overtime-12   # both       overtime
+- t-perdiem-12   # both       perdiem

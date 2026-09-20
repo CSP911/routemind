@@ -8,7 +8,7 @@ is the line.
 
 | | |
 |---|---|
-| corpus fingerprint | **`7dfd5538de294fcb`** over 1,126 retrievable documents |
+| corpus fingerprint | **`a84ac6cf463a1a6d`** over 1,126 retrievable documents |
 | generator | `bench/crowd.py write --grid 4x4x4` — the extension is not in version control because it is regenerated from that file in seconds; the fingerprint is what makes "the same corpus" checkable |
 | base corpus | `bench/corpus`, 779 retrievable, untouched since it was generated |
 | routing table | `bench/use_when_maintained.yaml`. `bench/spec.yaml`'s frozen sentences are kept and **fail** the precondition by four |
@@ -17,7 +17,7 @@ is the line.
 
 Check it before any run:
 
-    ./bench/crowd.py fingerprint                    ->  1126 documents  sha256 7dfd5538de294fcb
+    ./bench/crowd.py fingerprint                    ->  1126 documents  sha256 a84ac6cf463a1a6d
     BENCH_USE_WHEN=maintained ./bench/mapcheck.py   ->  passes
     ./bench/audit.py eval/gold/hard.yaml            ->  360 clean, 280 shortlisted (judged in gold/AUDIT.md)
 
@@ -75,3 +75,37 @@ retrieval figure without the n.
 The notes are data. On the first six walks a fresh reader found two things the desk audit had missed
 — a second "receipt threshold" of a different kind sitting in the same area, and a delegation limit
 of 450 thousand KRW on a twelve-million-won purchase. Neither would have survived being summarised.
+
+## Known defects in this fingerprint, carried deliberately
+
+These were found by walking agents on `a84ac6cf463a1a6d` and are **not** fixed in it. Fixing a
+corpus mid-campaign is the mistake this whole file exists to prevent: the routing arm would then
+have run on one corpus and the retrieval census on another, which has already happened once. They
+are written down here, they are the work list for the next fingerprint, and each has a `mapcheck`
+rule attached so it cannot come back silently.
+
+**D1 — a forwarding note that knows only two eras.** `hard-moved-overtime` sits in `payroll` and
+says the rule there is "correct only before 2026-01-01". It is not: that page is the *oldest* of
+three versions and was superseded on 2024-07-01, eighteen months before the move it describes. An
+agent that trusts the note and stops answers a 2025 claim from the 2023 rule. Found by `t-overtime-04`,
+independently again by `t-overtime-08`. The same shape applies to every `hard-moved-*` note.
+→ **mapcheck R6**: a forwarding note must name every version of the subject, not only the two either
+side of the move.
+
+**D2 — a path that bypasses the revision notice.** `purchase-request → approval-threshold` reaches
+the subject without passing anything that says it has been rewritten. Every other path passes a
+revision notice; this one does not, so whether the walk is warned is a property of which row it
+picked.
+→ **mapcheck R7**: every path to a subject with more than one version passes a revision notice.
+
+**D3 — two band vocabularies and no cross-walk.** `hard-perdiem-v2` gives lodging caps over bands
+`B1`–`B4` and says the meal allowance and receipt threshold "followed the overseas allowance and
+exchange rate rule unchanged". That older rule, `overseas-rates`, is banded `A`/`B`/`C`. Nothing in
+the corpus maps one onto the other, so a v2-era question that needs a meal figure is unanswerable
+on the evidence — correctly reported as such rather than guessed. Found by `t-perdiem-08`.
+→ **mapcheck R8**: a document that defers to another for part of its answer must be in the same
+qualifier vocabulary as the document it defers to, or carry the mapping.
+
+D1 and D2 affect what a walk is warned about, not what the answer key says, and both were walked
+past successfully — they cost calls, not hits. D3 is a genuine gap in the material: there is a
+question shape the corpus cannot answer, and the honest outcome for it is "not found".

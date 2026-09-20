@@ -313,6 +313,11 @@ questions:
   A_true: [attendance]
   D_true:
   - leave-accrual
+  # accrual-rule is the table page leave-accrual points at, and carries the same figures.
+  # Added 2026-09-20 after t-accrual-01 (routing+overlay) answered correctly from it and was
+  # scored a miss. Both arms rescored against the widened key. See eval/gold/AUDIT.md.
+  D_alt:
+    leave-accrual: [accrual-rule]
   needs: any
   intent_A: 1
   intent_B: 0
@@ -325,6 +330,8 @@ questions:
   A_true: [attendance]
   D_true:
   - leave-accrual
+  D_alt:
+    leave-accrual: [accrual-rule]
   needs: any
   intent_A: 1
   intent_B: 0
@@ -337,6 +344,8 @@ questions:
   A_true: [attendance]
   D_true:
   - leave-accrual
+  D_alt:
+    leave-accrual: [accrual-rule]
   needs: any
   intent_A: 1
   intent_B: 0
@@ -409,6 +418,9 @@ questions:
   A_true: [attendance]
   D_true:
   - leave-accrual
+  # Same pair as t-accrual-01: accrual-rule is the table leave-accrual points at.
+  D_alt:
+    leave-accrual: [accrual-rule]
   needs: any
   intent_A: 1
   intent_B: 0
@@ -434,6 +446,8 @@ questions:
   D_true:
   - leave-accrual
   - hard-accrual-v2
+  D_alt:
+    leave-accrual: [accrual-rule]
   needs: all
   intent_A: 1
   intent_B: 0
@@ -447,6 +461,8 @@ questions:
   D_true:
   - leave-accrual
   - hard-accrual-v2
+  D_alt:
+    leave-accrual: [accrual-rule]
   needs: all
   intent_A: 1
   intent_B: 0

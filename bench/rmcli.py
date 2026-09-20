@@ -31,7 +31,34 @@ import knowledge_mcp as K
 API = os.environ.get("KNOWLEDGE_API", "http://127.0.0.1:8101/v1")
 
 
+def guard():
+    """Refuse to walk a corpus that is not the one under measurement.
+
+    `bench/corpus-hard` is what the retrieval arms index and what the fingerprint in the run records
+    names. `data/bench-repo` is the copy the server reads. They are two paths to the same thing only
+    for as long as somebody keeps them equal, and today they were not: a copy taken before a fix went
+    on being served for an hour, so the routing arm and the retrieval arm were measured against
+    different corpora and the comparison between them meant nothing.
+
+    Nothing about that was visible from either side. What caught it was a walking agent remarking
+    that a delegation limit of 200 thousand KRW did not fit the amount band its own row was indexed
+    by — twice, because the first time it was waved off as already fixed.
+
+    So the assumption becomes a check, and it costs two file reads.
+    """
+    want = ROOT / "bench" / "corpus-hard" / ".fingerprint"
+    served = ROOT / "data" / "bench-repo" / "FINGERPRINT"
+    if not want.exists() or not served.exists():
+        sys.exit("error: no fingerprint to compare — run ./bench/serve.py")
+    a, b = want.read_text().strip(), served.read_text().strip()
+    if a != b:
+        sys.exit(f"error: the served corpus is not the one under measurement\n"
+                 f"  bench/corpus-hard  {a}\n  data/bench-repo    {b}\n"
+                 f"  run ./bench/serve.py to rebuild and restart")
+
+
 def main():
+    guard()
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = p.add_subparsers(dest="cmd", required=True)
     t = sub.add_parser("table"); t.add_argument("path", nargs="?", default="")
