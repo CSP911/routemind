@@ -180,8 +180,23 @@ fresh checkout, which quietly cost this study the property it claims. `bench/cor
 `bench/corpus-hard/` are now tracked — 4.8MB of markdown. What stays ignored is what is *derived*
 from them: embeddings, section indexes, probe results, logs.
 
-So a reader can now check the fingerprint rather than take it:
+The two manifests go with them. They are not derived either: they are what marks a document as a
+*section*, a signpost this study added, walkable but kept out of the retrieval pool. Without them
+every section page gets indexed and the fingerprint changes.
+
+**How this was checked, and why it had to be.** The paragraph above was first written with the
+corpus tracked and the manifests still ignored, advertising a command that did not run. Reading the
+ignore file and reasoning about it is not a check. Cloning the repository into an empty directory
+and running the command is:
 
 ```sh
-BENCH_EXTRA_CORPUS=bench/corpus-hard ./bench/crowd.py fingerprint   # expect a84ac6cf463a1a6d
+git clone <this repo> /tmp/check && cd /tmp/check
+BENCH_EXTRA_CORPUS=bench/corpus-hard ./bench/crowd.py fingerprint
+#   1126 documents   sha256 a84ac6cf463a1a6d
+
+BENCH_EXTRA_CORPUS=bench/corpus-hard BENCH_USE_WHEN=maintained ./bench/mapcheck.py   # R1-R5 pass
+BENCH_EXTRA_CORPUS=bench/corpus-hard ./bench/crowd.py stats                          # 0/320, 0/320
 ```
+
+A clean clone is the standing test for "is the dataset complete". Anything that only works in the
+author's working directory is not in the dataset, whatever the ignore file says.
