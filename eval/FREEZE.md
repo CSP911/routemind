@@ -106,6 +106,19 @@ on the evidence — correctly reported as such rather than guessed. Found by `t-
 → **mapcheck R8**: a document that defers to another for part of its answer must be in the same
 qualifier vocabulary as the document it defers to, or carry the mapping.
 
-D1 and D2 affect what a walk is warned about, not what the answer key says, and both were walked
-past successfully — they cost calls, not hits. D3 is a genuine gap in the material: there is a
-question shape the corpus cannot answer, and the honest outcome for it is "not found".
+**D1 costs hits. The line that used to sit here said it did not, and the census disproved it.**
+
+Written on the n=50 sample, this paragraph claimed D1 and D2 "cost calls, not hits" because both had
+been walked past successfully. That was a statement about fifty walks presented as a property of the
+defect. On the 700-question census a fresh agent took the payroll path on `t-overtime-08`, trusted
+`hard-moved-overtime`, read `payslip-overtime`, and answered a 2025 claim with the 2023 premium
+rates — the exact failure D1 describes, now observed rather than predicted. The sample had drawn the
+agent that happened to go to attendance instead; nothing about the defect changed between the two.
+
+This is what the census was run for, and it is worth stating plainly because the error is the easy
+one to make: **a defect that a sample walks past is not a defect that costs nothing.** It is a defect
+whose rate the sample was too small to see. D2 is now in the same position — no walk has failed on
+it yet, and that is a smaller claim than it sounds.
+
+D3 remains a genuine gap in the material: there is a question shape the corpus cannot answer, and
+the honest outcome for it is "not found".
