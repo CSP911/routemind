@@ -76,8 +76,20 @@ A system can score perfectly on the first and fail the second. That is the findi
 ./eval/fixtures/check.py eval/fixtures/<name>.yaml     # shape, ids, kinds, area — before you send it
 ```
 
-The scoring run belongs to the study (`eval/PREREGISTRATION.md`, Q5) and runs every fixture against
-the baseline tag first. Results are preserved beside the fixture once they exist.
+```sh
+./eval/fixtures/score.py eval/fixtures/<name>.yaml     # Q5a — found, and ranked above its distractors
+```
+
+Results are preserved beside the fixture as `<name>.results.md`. The first one is
+`supplier-selection.results.md`.
+
+**About "runs against the baseline tag first".** That was the instruction, and it cannot be followed
+literally: `baseline-pre-continuity` is from 2026-09-18 19:07 and has no `bench/` directory — the
+retrieval harness was built after it, so there is nothing at that commit to run a fixture through.
+What the tag marks is the *service* before any state, age or supersession field. `score.py` checks
+that intent instead of asserting it: every run diffs `ontology/service/` between the tag and HEAD and
+prints `baseline: yes` only when it is empty. The day something continuity-aware lands there, the
+line changes on its own and a result recorded afterwards stops claiming to be a baseline.
 
 ## Contributing
 

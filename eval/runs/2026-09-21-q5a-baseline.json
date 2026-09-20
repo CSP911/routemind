@@ -1,0 +1,99 @@
+{
+ "tag": "corpus-2026-09-20-6-g27cb5a6",
+ "k": 10,
+ "n": 20,
+ "fixtures": [
+  "supplier-selection-x"
+ ],
+ "contributed_by": [
+  "GovKM (the scenario); written up here as the worked example"
+ ],
+ "documents_in_pool": 783,
+ "from_fixtures": {
+  "x-supplier-a-approved": "supplier-selection-x",
+  "x-supplier-a-late-delivery": "supplier-selection-x",
+  "x-supplier-b-approved": "supplier-selection-x",
+  "x-sourcing-retrospective-2025": "supplier-selection-x"
+ },
+ "at": "2026-09-21T00:27:12",
+ "results": [
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-x",
+   "q": "Which supplier is currently approved for the X component?",
+   "operative": "x-supplier-b-approved",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {
+    "x-supplier-a-approved": 2,
+    "x-sourcing-retrospective-2025": 3
+   },
+   "outranked_by": [],
+   "beats_distractors": true
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-x",
+   "q": "Which supplier is currently approved for the X component?",
+   "operative": "x-supplier-b-approved",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {
+    "x-supplier-a-approved": 4,
+    "x-sourcing-retrospective-2025": 2
+   },
+   "outranked_by": [],
+   "beats_distractors": true
+  },
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-x",
+   "q": "Who was the original supplier chosen for X, and why was it changed?",
+   "operative": "x-sourcing-retrospective-2025",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {},
+   "outranked_by": [],
+   "beats_distractors": true
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-x",
+   "q": "Who was the original supplier chosen for X, and why was it changed?",
+   "operative": "x-sourcing-retrospective-2025",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {},
+   "outranked_by": [],
+   "beats_distractors": true
+  },
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-x",
+   "q": "Can I place a new order for X with Supplier A?",
+   "operative": "x-supplier-b-approved",
+   "rank": 14,
+   "found": false,
+   "distractor_ranks": {
+    "x-supplier-a-approved": 6
+   },
+   "outranked_by": [
+    "x-supplier-a-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-x",
+   "q": "Can I place a new order for X with Supplier A?",
+   "operative": "x-supplier-b-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "x-supplier-a-approved": 3
+   },
+   "outranked_by": [],
+   "beats_distractors": true
+  }
+ ]
+}
