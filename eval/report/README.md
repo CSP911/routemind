@@ -1,30 +1,40 @@
 # The report
 
-Chapters, written to be read in order by someone who has not seen this repository before. Each one
-stands on measurements recorded in `eval/runs/` and names the fingerprint it belongs to.
+Chapters, written to be read in order by someone who has not seen this repository before. Each rests
+on measurements recorded in `eval/runs/` and names the fingerprint it belongs to.
+
+The registered question is `eval/PREREGISTRATION.md` §1: **how useful is human intervention in RAG,
+and where does it stop paying for itself?** The intervention is a human-authored routing table. The
+chapters take that question in three parts — when the intervention *fails*, what it *costs* when it
+works, and what it *buys*.
 
 | | | source |
 |---|---|---|
-| 1 | Where retrieval breaks | *not yet written* — `eval/COLLAPSE.md`, `eval/runs/2026-09-20-campaign.md` |
+| **1** | **[The moment human intervention fails](01-when-the-intervention-fails.md)** | `eval/runs/2026-09-21-r6-fix.md`, `eval/COLLAPSE.md` |
 | **2** | **[What it costs](02-what-it-costs.md)** | `eval/runs/2026-09-22-cost.md` |
-| 3 | A wrong routing table | *not yet written* — `eval/runs/2026-09-21-r6-fix.md` |
+| 3 | What it buys, and for which questions | *not yet written* — `eval/runs/2026-09-20-campaign.md` |
 
-**Chapter 2 was written first.** Not the usual order, and there is a reason worth keeping: every
-accuracy number this study produced favours routing, and a result reported only on the side it wins
-on is an advertisement. The cost column existed as scattered measurements and no chapter. Writing it
-first fixes the shape of the argument before the winning numbers get written up around it.
+## The order these were written in, and why it is not the reading order
 
-Chapter 1 has to establish, for Chapter 2 to mean anything:
+**Chapter 2 was written first, then Chapter 1. Chapter 3 — the one with the winning numbers — last.**
 
-- the corpus and the fingerprint, and that questions and arms share both
-- `rag` 0.516 / `rag+rerank` 0.541 / `routing` 0.999 / `routing+overlay` 0.999 over 700 questions
+Every accuracy figure this study produced favours routing, several by more than an order of
+magnitude. A result reported only on the side it wins on is an advertisement. So the cost column was
+written up before the accuracy column, and the failure modes before either, to fix the shape of the
+argument before the good news got written around it.
+
+Chapter 1 carries the two ways the intervention fails:
+
+1. the table is **wrong**, or stale without anyone meaning it to — measured, one defect, one miss in
+   700, both routing arms identically
+2. the table is entirely **correct** and at some point fails anyway — **not measured.** One corpus
+   size, and a scaling limit cannot be seen from one point
+
+Chapter 3 has to establish, and must not quietly restate Chapter 1's caveats as solved:
+
+- `rag` 0.516 · `rag+rerank` 0.541 · `routing` 0.999 · `routing+overlay` 0.999, over 700 questions
 - the lever breakdown, and `indirect` at 0.028 against 1.000 in particular
-- that the retrieval arms are a census and the routing arms are now a census too
-
-Chapter 3 has to establish:
-
-- the single miss in 700, and that both routing arms committed it identically
-- that the cause was one false sentence in a forwarding note, not a failure of the reader
-- `mapcheck` as a precondition, and R6 as the rule written after that failure
-- the ten re-walked questions: 0.900 → 1.000 on a new fingerprint, and why those two corpora do not
-  merge
+- that all four arms are now a census, not a sample
+- that 320 of the 700 are questions retrieval already answers first time, and this study does not
+  argue for walking those
+- that `routing+overlay` matches `routing` exactly and costs ×1.16 — a negative result, kept
