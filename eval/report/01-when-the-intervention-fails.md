@@ -39,6 +39,33 @@ So the two arms fail in different currencies:
 
 A wrong routing table does not degrade gracefully. It returns a clean-looking success.
 
+### 1.1.1 How much one wrong element can reach, measured
+
+The temptation is to say a bad routing table is *far* more dangerous than a bad document. The census
+supports a narrower version of that, and the narrow version is the defensible one.
+
+| | how far one wrong element reaches |
+|---|---|
+| a map row — `procurement` | on the path of **278 of 700 walks (39.7%)** |
+| a map row — top 20 rows, median | 108 walks (15.4%) |
+| a document — the most-retrieved one | in the top ten of **106 of 700 questions (15.1%)** |
+| a document — median | 11 questions (1.6%) |
+
+**About 2.6× at the top, not orders of magnitude.** And the note that actually caused the miss,
+`hard-moved-overtime`, lay on only 28 paths (4%) — of which one went wrong, because only questions
+falling in the mis-described era were exposed.
+
+So reach is not the whole asymmetry, and on its own it is a weak argument. Two things matter more:
+
+**A document competes; a map row is obeyed.** A wrong document in a candidate list is one of ten,
+weighed against nine others and often outranked. A wrong sentence in the map is not weighed at all —
+it is the instruction the walk follows.
+
+**And the failure hides.** Retrieval's wrong answer looks wrong: thin, off-topic, or absent.
+Routing's looks right — a specific figure, a named source, and a walk log that reads as a clean
+success. That is why this defect needed a 700-question census to surface: a 50-question sample had
+drawn the agent that happened to go the other way, and reported 1.000.
+
 ## 1.2 Indicator 1 — a wrong table, and staleness nobody intended
 
 ### 1.2.1 It happened, once in 700, and it was one sentence
@@ -188,11 +215,26 @@ some distance before a limit. It is not evidence of where the limit is.
 
 ### 1.3.4 What would actually measure it
 
-The sweep retrieval already had, run on the routing side: **the same questions against corpora of
-increasing size, with the map kept correct at every size** — so that the only thing varying is how
-much one sentence per area is being asked to carry. The prediction worth registering in advance is
-that calls per question rises first and accuracy holds, until the description can no longer separate
-what sits beneath it.
+Not the corpus-growth sweep, which was the first idea and is the wrong one: growing the corpus also
+changes what the map must say, so two things move at once and indicator 2 arrives wearing indicator
+1's clothes.
+
+**Hold the corpus still and move the map instead.** The same 1,126 documents and the same 700
+questions, re-partitioned into 5, 3, 2 and finally 1 area — each partition correct by construction,
+each required to pass `mapcheck` before it is walked. One sentence then covers 225 documents, then
+500, then 1,126, and nothing else varies.
+
+The design has a property worth the whole experiment: a document's **parent is not part of the
+corpus fingerprint**, which hashes name, one-liner and body. Re-parenting leaves the fingerprint at
+`a84ac6cf463a1a6d`, so the retrieval arms are untouched and any movement belongs to the map alone.
+
+The single-area partition is also the control this study has wanted from the start. It separates
+*the gain is the partition* from *the gain is walking and reading at all* — and if the one-area map
+holds near 0.99, Chapter 3's framing is wrong and the table has been getting credit that belongs to
+the walk.
+
+Written up in full, with the prediction and the falsifiers fixed in advance, in
+[`eval/DESIGN-SCALE.md`](../DESIGN-SCALE.md). 300 walks, about $48.
 
 Until that runs, the honest statement is the narrow one:
 
