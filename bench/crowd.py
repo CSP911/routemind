@@ -571,7 +571,13 @@ def moved_docs():
     out = []
     for m in MOVED:
         did = f"hard-moved-{m['key']}"
-        olds = "\n".join(f"| {n} | `{i}` | the old rule, correct only before {EFFECTIVE} |"
+        # "correct only before EFFECTIVE" was a lie, and it cost the only miss in a 700-question
+        # census. The page left behind is the **oldest** of three versions and was superseded at MID,
+        # eighteen months before the move this note describes. A walk read the note, believed it, and
+        # answered a 2025 claim from the 2023 rule — not carelessly, but by following a correct-
+        # looking instruction. A forwarding note that knows only the move is a trap, and `mapcheck`
+        # R6 now refuses a corpus that contains one.
+        olds = "\n".join(f"| {n} | `{i}` | the **oldest** rule, correct only before {MID} |"
                           for i, n in m["old"])
         out.append((m["frm"], did, f"""---
 id: {did}
@@ -589,9 +595,19 @@ From **{EFFECTIVE}**, {m['subject'].lower()} are set by the table in **{m['to']}
 |---|---|---|
 {olds}
 
-The pages above were not withdrawn and nothing in them says they were replaced. They remain correct
-for anything dated before {EFFECTIVE} and for nothing after it. If the question is about a date on or
-after {EFFECTIVE}, leave {m['frm']} and open `sec-hard-{m['key']}` in {m['to']}.
+The pages above were not withdrawn and nothing in them says they were replaced. **They are the
+oldest version and they stopped being correct at {MID}** — eighteen months before this move. There
+are three versions in all:
+
+| in force | where |
+|---|---|
+| until {MID} | the pages above, here in {m['frm']} |
+| {MID} to {MID_END} | `hard-{m['key']}-v2`, in {m['to']} |
+| from {EFFECTIVE} | `sec-hard-{m['key']}`, in {m['to']} |
+
+So a question dated anywhere after {MID} is answered in {m['to']}, not here — including dates before
+{EFFECTIVE}, which is the case this note used to get wrong. `hard-{m['key']}-legend-revision` in
+{m['to']} is the full version table.
 """))
     return out
 
