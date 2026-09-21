@@ -21,7 +21,7 @@ applied where it hurts.
 
     ./bench/mapcheck.py
 """
-import json, os, re, sys
+import collections, json, os, re, sys
 import yaml
 
 ROOT = __import__("pathlib").Path(__file__).resolve().parent
@@ -127,6 +127,35 @@ def main():
 
     carried = [(r, d) for r, d in fails if r.split()[0] in carry]
     fails = [(r, d) for r, d in fails if r.split()[0] not in carry]
+    # R7 — the cross-reference graph has no cycles. Every other rule here asks whether one row is
+    # true. This one asks whether the rows are true *together*, and it is the only failure in the set
+    # that no single sentence can be blamed for: payroll saying "for the rate, see attendance" and
+    # attendance saying "for how it appears in pay, see payroll" are both accurate, neither is stale,
+    # and there is nothing to correct. A walk that arrives at the boundary between them is sent back
+    # and forth until its hop ceiling stops it.
+    #
+    # It is written while the corpus passes, which is the point: a rule added after the failure can
+    # only confirm what was already known, and this one is here to refuse the corpus that has not
+    # been built yet.
+    refs = collections.defaultdict(set)
+    known = set(texts) | set(one)
+    for i, t in texts.items():
+        for m in re.findall(r"`([a-z0-9][a-z0-9-]{3,})`", t):
+            if m in known and m != i: refs[i].add(m)
+    colour, cycles = collections.defaultdict(int), []
+    def visit(n, stack):
+        if colour[n] == 1:
+            if n in stack: cycles.append(stack[stack.index(n):] + [n])
+            return
+        if colour[n] == 2: return
+        colour[n] = 1; stack.append(n)
+        for m in refs.get(n, ()): visit(m, stack)
+        stack.pop(); colour[n] = 2
+    for n in list(refs): visit(n, [])
+    check(not cycles, "R7 no cycle in the cross-reference graph",
+          f"{sum(len(v) for v in refs.values())} references across {len(refs)} documents"
+          + ("" if not cycles else " — " + " -> ".join(cycles[0])))
+
     print(f"\n  routing table vs corpus — {len(notes)} pass, {len(fails)} fail"
           f"{f', {len(carried)} carried' if carried else ''}\n")
     for rule, detail in notes:
