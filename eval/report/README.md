@@ -14,6 +14,15 @@ works, and what it *buys*.
 | **2** | **[What it costs](02-what-it-costs.md)** | `eval/runs/2026-09-22-cost.md` |
 | 3 | What it buys, and for which questions | *not yet written* — `eval/runs/2026-09-20-campaign.md` |
 
+## Typeset
+
+`report-en.html` and `report-ko.html` are chapters 1 and 2 together as a single page, with the
+figures drawn — hit rate by lever, the collapse curve against its two-parameter fit, cost per
+question, and what share of the tree a walk can see. Same content in both, typeset for the language.
+Open either in a browser; they need no server and no build.
+
+The markdown chapters remain the source. If a number changes, it changes there first.
+
 ## The order these were written in, and why it is not the reading order
 
 **Chapter 2 was written first, then Chapter 1. Chapter 3 — the one with the winning numbers — last.**

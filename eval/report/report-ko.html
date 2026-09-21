@@ -1,0 +1,423 @@
+<title>라우팅과 검색: 실패와 비용</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --ink:#16181d; --paper:#fbfbfa; --muted:#6a6f7a; --rule:#e2e2df; --panel:#f4f4f1;
+  --retrieval:#5b7c99; --routing:#2f6b5f; --alarm:#b4472e; --accentbg:#eef2f0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8e8e4; --paper:#14161a; --muted:#99a0ac; --rule:#2b2f36; --panel:#1b1e23;
+    --retrieval:#8db0cc; --routing:#63b3a0; --alarm:#e08267; --accentbg:#1a2420;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8e8e4; --paper:#14161a; --muted:#99a0ac; --rule:#2b2f36; --panel:#1b1e23;
+  --retrieval:#8db0cc; --routing:#63b3a0; --alarm:#e08267; --accentbg:#1a2420;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);
+  font-family:"Noto Sans KR",system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.78;padding-block:0;padding-left:20px;padding-right:20px;
+  word-break:keep-all;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding-block:64px 96px}
+h1,h2,h3,.dek{font-family:"Noto Serif KR",Georgia,serif;text-wrap:balance}
+h1{font-size:2.4rem;line-height:1.24;font-weight:600;margin:0 0 .6rem;letter-spacing:-.01em}
+.dek{font-size:1.14rem;line-height:1.6;color:var(--muted);margin:0 0 2rem;font-weight:400}
+h2{font-size:1.58rem;font-weight:600;margin:3.4rem 0 .3rem;line-height:1.35}
+h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.68em;color:var(--muted);font-weight:400;margin-right:.6em}
+h3{font-size:1.12rem;font-weight:600;margin:2.2rem 0 .5rem;line-height:1.5}
+p{margin:0 0 1.1rem;max-width:44em}
+a{color:inherit;text-decoration-color:var(--rule);text-underline-offset:3px}
+strong{font-weight:700}
+code,.mono{font-family:"IBM Plex Mono",monospace;font-size:.86em}
+code{background:var(--panel);padding:.08em .34em;border-radius:3px}
+hr{border:0;border-top:1px solid var(--rule);margin:3rem 0}
+
+.meta{font-family:"IBM Plex Mono",monospace;font-size:.76rem;line-height:1.9;color:var(--muted);
+  background:var(--panel);border-left:2px solid var(--rule);padding:14px 18px;margin:0 0 2.4rem;
+  overflow-x:auto;white-space:pre}
+
+table{border-collapse:collapse;width:100%;margin:1.2rem 0 1.6rem;font-size:.88rem;
+  font-variant-numeric:tabular-nums;line-height:1.6}
+.tablewrap{overflow-x:auto}
+th,td{text-align:right;padding:8px 10px;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:.72rem;letter-spacing:.04em;color:var(--muted);
+  font-weight:700;border-bottom:1px solid var(--ink)}
+tbody tr:last-child td{border-bottom:1px solid var(--ink)}
+td.hi{color:var(--routing);font-weight:700}
+td.lo{color:var(--retrieval)}
+td.bad{color:var(--alarm);font-weight:700}
+
+figure{margin:2rem 0 2.4rem}
+figcaption{font-size:.82rem;color:var(--muted);margin-top:.7rem;line-height:1.7;max-width:44em}
+.figlabel{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+svg{display:block;width:100%;height:auto;max-width:100%;overflow:visible}
+.s-label{font-family:"Noto Sans KR",sans-serif;font-size:12px;fill:var(--ink)}
+.s-mut{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--muted)}
+.s-ko{font-family:"Noto Sans KR",sans-serif;font-size:11px;fill:var(--muted)}
+.s-val{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600}
+
+.key{display:flex;flex-wrap:wrap;gap:16px;font-size:.8rem;color:var(--muted);margin:.2rem 0 1rem}
+.key span{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+blockquote{margin:1.6rem 0;padding:2px 0 2px 20px;border-left:3px solid var(--routing);
+  font-family:"Noto Serif KR",Georgia,serif;font-size:1.06rem;line-height:1.8;color:var(--ink)}
+blockquote p{margin:0 0 .6rem;max-width:40em}
+blockquote p:last-child{margin:0}
+
+.callout{background:var(--accentbg);border:1px solid var(--rule);border-radius:4px;
+  padding:18px 22px;margin:1.8rem 0}
+.callout p:last-child{margin:0}
+.callout .figlabel{color:var(--routing)}
+
+.limits{font-size:.9rem;color:var(--muted)}
+ul{padding-left:1.15rem}
+li{margin-bottom:.5rem;max-width:44em}
+
+.foot{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--rule);
+  font-size:.78rem;color:var(--muted);font-family:"IBM Plex Mono",monospace;line-height:1.9}
+@media (max-width:520px){
+  body{font-size:15px}
+  h1{font-size:1.85rem}
+  .wrap{padding-block:40px 64px}
+  .meta{font-size:.68rem}
+}
+</style>
+
+<div class="wrap">
+
+<h1>라우팅과 검색</h1>
+<p class="dek">사람이 쓴 라우팅 계층은 어디서 무너지고, 작동할 때 무엇을 치르는가. 측정 보고서 1·2장.</p>
+
+<div class="meta">코퍼스 지문   a84ac6cf463a1a6d        700문항, 고정된 코퍼스 하나
+비교군        rag · rag+rerank · routing · routing+overlay — 네 arm 모두 전수
+모델          걸음 claude-sonnet-5 · 리랭커 gpt-5 · 임베딩 text-embedding-3-large
+전제조건      mapcheck R1–R7 을 매 실행 기록에 남김</div>
+
+<p>등록된 연구 질문은 <strong>“RAG에서 사람의 개입은 얼마나 유용하며, 어디서 본전을 잃는가”</strong>입니다. 개입은 라우팅 테이블 — 코퍼스를 영역으로 나누고, 각 영역을 한 문장으로 설명하고, 그 아래에 계층을 두는 것입니다. 에이전트는 이 표를 읽고 어디를 볼지 결정합니다.</p>
+
+<p>1장은 <strong>그것이 언제 작동을 멈추는가</strong>를, 2장은 <strong>작동할 때 무엇을 치르는가</strong>를 묻습니다. 이기는 숫자를 보고하는 장은 의도적으로 맨 뒤에 씁니다. 여기 실린 정확도 수치는 전부 라우팅에 유리하고, <strong>이긴 쪽만 보고하는 결과는 광고</strong>이기 때문입니다.</p>
+
+<hr>
+
+<h2><span class="num">1</span>사람의 개입이 무너지는 순간</h2>
+
+<p>라우팅 테이블이 실패하는 방식은 두 가지이고, 같은 실패가 아닙니다.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>지표</th><th>상태</th></tr></thead>
+<tbody>
+<tr><td>1 — 테이블이 <strong>틀렸거나</strong>, 의도치 않게 낡음</td><td>측정됨</td></tr>
+<tr><td>2 — 테이블이 <strong>전부 정상</strong>인데도 실패</td><td class="bad">미측정</td></tr>
+</tbody></table></div>
+
+<h3>1.1 이 실패 방식이 흥미로운 이유</h3>
+
+<p>검색에는 지도가 없습니다. 그게 약점이자 <strong>정확히 그만큼의 면역</strong>입니다. 융합 검색은 코드로 색인된 문서에 사람 말투로 던진 질문에서 <strong>0.028</strong>을 받습니다 — 나빠지는 게 아니라 그냥 실패합니다. 하지만 <em>속을</em> 수는 없습니다. 믿을 대상이 없으니까요.</p>
+
+<p>라우팅 에이전트는 테이블을 믿습니다. 이득이 거기서 나오고, <strong>노출도 전부 거기</strong>입니다. <strong>지도를 믿는 에이전트는 지도의 오류를 그대로, 조용히 물려받습니다.</strong></p>
+
+<figure>
+  <div class="figlabel">그림 1 — 질문 유형별 적중률 (700문항 전수)</div>
+  <div class="key">
+    <span><i class="dot" style="background:var(--retrieval)"></i>rag</span>
+    <span><i class="dot" style="background:var(--retrieval);opacity:.5"></i>rag + rerank</span>
+    <span><i class="dot" style="background:var(--routing)"></i>routing</span>
+  </div>
+  <svg viewBox="0 0 680 300" role="img" aria-label="레버별 적중률. 라우팅은 거의 모든 행에서 1.0, 검색은 indirect와 stale-old에서 붕괴">
+    <line x1="130" y1="16" x2="130" y2="262" stroke="var(--rule)"/>
+    <line x1="390" y1="16" x2="390" y2="262" stroke="var(--rule)" stroke-dasharray="2 4"/>
+    <line x1="650" y1="16" x2="650" y2="262" stroke="var(--rule)"/>
+    <text class="s-mut" x="130" y="282" text-anchor="middle">0.0</text>
+    <text class="s-mut" x="390" y="282" text-anchor="middle">0.5</text>
+    <text class="s-mut" x="650" y="282" text-anchor="middle">1.0</text>
+
+    <g><text class="s-label" x="120" y="36" text-anchor="end">직접</text>
+      <circle cx="645" cy="32" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="650" cy="32" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="36">n=320</text></g>
+
+    <g><text class="s-label" x="120" y="74" text-anchor="end">간접</text>
+      <line x1="145" y1="70" x2="650" y2="70" stroke="var(--alarm)" stroke-width="1.5" opacity=".45"/>
+      <circle cx="145" cy="70" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="166" cy="70" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="70" r="5.5" fill="var(--routing)"/>
+      <text class="s-val" x="120" y="92" text-anchor="end" fill="var(--retrieval)">0.028</text>
+      <text class="s-mut" x="668" y="74">n=320</text></g>
+
+    <g><text class="s-label" x="120" y="112" text-anchor="end">두 판 전</text>
+      <line x1="199" y1="108" x2="650" y2="108" stroke="var(--alarm)" stroke-width="1.5" opacity=".45"/>
+      <circle cx="199" cy="108" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="234" cy="108" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="108" r="5.5" fill="var(--routing)"/>
+      <text class="s-val" x="120" y="130" text-anchor="end" fill="var(--retrieval)">0.133</text>
+      <text class="s-mut" x="668" y="112">n=15</text></g>
+
+    <g><text class="s-label" x="120" y="150" text-anchor="end">한 판 전</text>
+      <line x1="442" y1="146" x2="650" y2="146" stroke="var(--rule)" stroke-width="1.5"/>
+      <circle cx="442" cy="146" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="477" cy="146" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="146" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="150">n=15</text></g>
+
+    <g><text class="s-label" x="120" y="188" text-anchor="end">경계일</text>
+      <line x1="442" y1="184" x2="650" y2="184" stroke="var(--rule)" stroke-width="1.5"/>
+      <circle cx="442" cy="184" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="442" cy="184" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="184" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="188">n=10</text></g>
+
+    <g><text class="s-label" x="120" y="226" text-anchor="end">양쪽 필요</text>
+      <line x1="546" y1="222" x2="650" y2="222" stroke="var(--rule)" stroke-width="1.5"/>
+      <circle cx="546" cy="222" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="546" cy="222" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="222" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="226">n=10</text></g>
+
+    <g><text class="s-label" x="120" y="264" text-anchor="end">현행 규칙</text>
+      <circle cx="650" cy="260" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="598" cy="260" r="5.5" fill="var(--alarm)"/>
+      <text class="s-val" x="592" y="248" text-anchor="end" fill="var(--alarm)">0.900 ←</text>
+      <text class="s-mut" x="668" y="264">n=10</text></g>
+  </svg>
+  <figcaption><strong>라우팅이 지는 유일한 자리는 ‘현행 규칙’이고, 그건 라우팅의 성질이 아닙니다.</strong> 지도에 있던 거짓 문장 하나 때문이며 아래에서 다룹니다. <code>routing+overlay</code>는 뺐습니다 — 모든 행에서 <code>routing</code>과 소수점 셋째 자리까지 같고, 같은 한 문항을 틀립니다.</figcaption>
+</figure>
+
+<h3>1.2 지표 1 — 문장 하나, 그리고 700 중 유일한 실패</h3>
+
+<p>이 코퍼스의 두 문서는 <em>이관 안내문</em>입니다. 주제가 떠난 영역에 남아서 걸음에게 어디로 갔는지 알려줍니다. 둘 다 남은 페이지에 대해 이렇게 말했습니다.</p>
+
+<blockquote><p>이 페이지들은 <strong>2026-01-01</strong> 이전 날짜에 대해서는 여전히 맞고, 그 이후에는 맞지 않는다.</p></blockquote>
+
+<p>거짓입니다. 그 페이지는 세 판 중 <strong>가장 오래된 것</strong>이고 <strong>2024-07-01</strong>에 이미 맞지 않게 됐습니다 — 안내문이 설명하는 이관보다 18개월 전입니다. 안내문은 이관에 대해 틀린 게 아니라, <strong>그 전에 있었던 개정에 대해 침묵</strong>합니다. 그리고 침묵은 <em>더 알 게 없다</em>로 읽힙니다.</p>
+
+<p>어떤 걸음이 그 안내문을 읽고, 시킨 대로 정확히 해서, 2025년 청구를 2023년 규칙으로 답했습니다.</p>
+
+<div class="callout">
+  <div class="figlabel">결함이 독자가 아니라 지도에 있었다는 증거</div>
+  <p>라우팅 arm은 둘입니다. <code>routing</code>은 걷고 읽습니다. <code>routing+overlay</code>는 같은 일을 하면서 작업 세트를 명시적으로 들고 다닙니다. <strong>둘이 같은 문항을, 같은 두 문서를 거쳐, 같은 잘못된 시대로 실패했습니다.</strong></p>
+  <p>아무 맥락도 공유하지 않는 에이전트 둘, 그중 하나는 자기 결정의 기억까지 들고 있었습니다. 작업 세트가 도울 수 없습니다. <strong>아무것도 잊지 않았으니까요.</strong> 안내문은 읽혔고, 이해됐고, 따라졌습니다.</p>
+</div>
+
+<p>문장을 고치니 걸음이 고쳐졌습니다. 안내문은 이제 전체 판본 표를 담고, 2024-07-01 이후 날짜의 질문은 <em>이관 이전 날짜를 포함해</em> 다른 곳에서 답한다고 명시합니다. 고친 코퍼스에서 ‘현행 규칙’ 10문항을 다시 걸었습니다.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th></th><th>고치기 전</th><th>고친 후</th></tr></thead>
+<tbody>
+<tr><td>현행 규칙, routing</td><td class="bad">0.900</td><td class="hi">1.000</td></tr>
+<tr><td>실패했던 걸음</td><td class="mono">안내문 → 2023 규칙</td><td class="mono">안내문 → 범례 → 2025 규칙</td></tr>
+</tbody></table></div>
+
+<p><strong>같은 안내문, 다른 목적지.</strong> 에이전트가 더 신중해진 게 아닙니다. <strong>참인 문장을 받았을 뿐입니다.</strong></p>
+
+<h3>1.3 틀린 요소 하나가 닿는 범위</h3>
+
+<p>“나쁜 라우팅 테이블이 나쁜 문서보다 <em>훨씬</em> 위험하다”고 말하고 싶어집니다. 전수 데이터는 그보다 좁은 주장만 뒷받침하고, 좁은 쪽이 방어 가능한 주장입니다.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>틀린 요소 하나</th><th>닿는 범위</th></tr></thead>
+<tbody>
+<tr><td>지도 행 — <code>procurement</code></td><td>700걸음 중 278 — <strong>39.7%</strong></td></tr>
+<tr><td>지도 행 — 상위 20, 중앙</td><td>108걸음 — 15.4%</td></tr>
+<tr><td>문서 — 가장 많이 검색된 것</td><td>700후보목록 중 106 — <strong>15.1%</strong></td></tr>
+<tr><td>문서 — 중앙값</td><td>11문항 — 1.6%</td></tr>
+</tbody></table></div>
+
+<p><strong>상위에서 약 2.6배지, 자릿수 차이가 아닙니다.</strong> 게다가 실제로 사고를 낸 안내문은 28개 경로에만 실렸습니다. 그러니 도달 범위는 이 논증에서 가장 약한 부분입니다. 대신 버티는 것은 둘입니다.</p>
+
+<ul>
+<li><strong>문서는 경쟁하고, 지도 행은 복종됩니다.</strong> 나쁜 문서는 후보 10개 중 하나로 아홉과 저울질됩니다. 지도의 나쁜 문장은 저울질되지 않습니다 — 걸음이 따르는 지시입니다.</li>
+<li><strong>실패가 숨습니다.</strong> 검색의 오답은 오답처럼 보입니다. 얇거나, 엉뚱하거나, 없습니다. 라우팅의 오답은 맞는 것처럼 보입니다 — 구체적 수치, 명시된 출처, 깔끔한 성공으로 읽히는 걸음 기록. <strong>그래서 700문항 전수가 필요했습니다.</strong> 50문항 표본은 다른 길로 간 에이전트를 뽑아 1.000을 보고했습니다.</li>
+</ul>
+
+<h3>1.4 지표 2 — 정상인 테이블이 그래도 멈추는 지점</h3>
+
+<p><strong>이 코퍼스에서 정상인 지도는 무너지지 않습니다.</strong> 1,126문서, 5영역, 700문항에서 699적중이고, 유일한 실패는 틀린 지도였습니다. 한계가 보이지 않습니다.</p>
+
+<p>안심할 일이 아닙니다. <strong>축 위의 점 하나</strong>이고, 점 하나로는 규모 한계를 볼 수 없습니다. 불편한 부분은 비대칭입니다. <strong>검색의 붕괴는 특징지어져 있고 라우팅의 붕괴는 아닙니다</strong> — 규모를 한쪽에서만 변화시켰기 때문입니다.</p>
+
+<figure>
+  <div class="figlabel">그림 2 — 검색의 붕괴에는 법칙이 있고, 라우팅에는 점 하나가 있다</div>
+  <svg viewBox="0 0 680 250" role="img" aria-label="코퍼스 크기에 따른 recall@20, 관측값과 두 파라미터 예측">
+    <line x1="70" y1="20" x2="70" y2="196" stroke="var(--rule)"/>
+    <line x1="70" y1="196" x2="620" y2="196" stroke="var(--rule)"/>
+    <text class="s-mut" x="60" y="26" text-anchor="end">0.28</text>
+    <text class="s-mut" x="60" y="115" text-anchor="end">0.14</text>
+    <text class="s-mut" x="60" y="200" text-anchor="end">0</text>
+    <text class="s-mut" x="70" y="218" text-anchor="middle">16</text>
+    <text class="s-mut" x="207" y="218" text-anchor="middle">32</text>
+    <text class="s-mut" x="345" y="218" text-anchor="middle">64</text>
+    <text class="s-mut" x="482" y="218" text-anchor="middle">128</text>
+    <text class="s-mut" x="620" y="218" text-anchor="middle">256</text>
+    <text class="s-ko" x="345" y="240" text-anchor="middle">질의가 가리키는 끝에 선 경쟁 문서 수 (N)</text>
+
+    <polyline points="70,38 207,97 345,146 482,171 620,183"
+      fill="none" stroke="var(--retrieval)" stroke-width="1.4" stroke-dasharray="4 4" opacity=".8"/>
+    <polyline points="70,38 207,101 345,114 482,158 620,183"
+      fill="none" stroke="var(--retrieval)" stroke-width="2.2"/>
+    <circle cx="70" cy="38" r="4" fill="var(--retrieval)"/>
+    <circle cx="207" cy="101" r="4" fill="var(--retrieval)"/>
+    <circle cx="345" cy="114" r="4" fill="var(--retrieval)"/>
+    <circle cx="482" cy="158" r="4" fill="var(--retrieval)"/>
+    <circle cx="620" cy="183" r="4" fill="var(--retrieval)"/>
+    <text class="s-ko" x="360" y="132" fill="var(--retrieval)">관측</text>
+    <text class="s-mut" x="360" y="166" fill="var(--muted)">예측  p × min(1, 20/N)</text>
+
+    <line x1="70" y1="22" x2="620" y2="22" stroke="var(--routing)" stroke-width="2"/>
+    <circle cx="345" cy="22" r="5" fill="var(--routing)"/>
+    <text class="s-ko" x="356" y="16" fill="var(--routing)">라우팅 — 크기 하나에서만 측정됨</text>
+  </svg>
+  <figcaption>코퍼스 크기 다섯 개가 <code>recall@20 ≈ p × min(1, 20/N)</code>에 <code>p ≈ 0.25</code>로 맞습니다. <em>p</em>는 질문이 답의 가족에 도달할 확률, <code>min(1, 20/N)</code>은 후보 20개가 그 가족에서 담을 수 있는 비중입니다. <strong>검색의 실패는 아무것도 돌리기 전에 예측됩니다. 라우팅의 실패는 아닙니다</strong> — 초록 선이 평평한 건 평평함이 입증돼서가 아니라 <strong>측정이 하나뿐</strong>이기 때문입니다.</figcaption>
+</figure>
+
+<p>오늘 보이는 유일한 선행 신호는 꼬리입니다. 700 중 여덟 걸음(1.1%)이 15회 이상 호출했고 <strong>여덟 개 전부 적중</strong>했습니다. 중앙값은 모든 가족에서 6~7로 평평합니다. 성공한 긴 걸음의 꼬리는 <em>힘들지만 되고 있다</em>의 모습입니다 — 한계까지 얼마간 거리가 있다는 것과는 양립하지만, <strong>한계가 어디인지의 증거는 아닙니다.</strong></p>
+
+<h3>1.5 여기서 나온 검사 두 개</h3>
+
+<p>결함은 걸음이 실패해서 찾았는데, 그건 비싸고 모호한 방법입니다 — 잘못된 걸음은 지도 탓인지 모델 탓인지 알려주지 않습니다. 그래서 둘 다 이제 arm이 돌기 전에 코퍼스만 보고 판정합니다.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>규칙</th><th>거부하는 것</th></tr></thead>
+<tbody>
+<tr><td><code>mapcheck R6</code></td><td>자기 주제의 개정 범례보다 적은 날짜를 말하는 이관 안내문</td></tr>
+<tr><td><code>mapcheck R7</code></td><td>상호참조 그래프의 사이클</td></tr>
+</tbody></table></div>
+
+<p>R7은 <strong>코퍼스가 통과하는 상태에서</strong> 썼고 — 문서 332개에 걸친 참조 993개, 사이클 없음 — 사이클을 주입해 실제로 걸리는지 확인했습니다. 이 규칙 세트에서 <strong>어느 한 문장 탓도 할 수 없는 유일한 규칙</strong>입니다. payroll이 <em>“요율은 attendance 참조”</em>라 하고 attendance가 <em>“지급 방식은 payroll 참조”</em>라 할 때, 둘 다 정확하고 고칠 것은 구조뿐입니다.</p>
+
+<p>그래서 사이클을 일부러 만들어 걸어봤습니다. <strong>비용이 없었습니다</strong> — 두 코퍼스 모두 10/10, 문항당 5.5호출로 동일. 에이전트는 payroll → attendance로 가서 원하던 걸 얻고, 되돌아오는 링크를 따라가지 않았습니다. <strong>각 간선이 구분자를 달고 있었기 때문</strong>입니다. <strong>fixture가 너무 쉬웠고, 그걸 “사이클은 무해하다”로 기록하는 것보다 이렇게 적는 편이 낫습니다.</strong> R7은 남깁니다. 그래프에서는 무해한 사이클과 해로운 사이클이 똑같이 생겼고, 검사는 어느 쪽을 만들었는지 알기 전에 돌아야 합니다.</p>
+
+<hr>
+
+<h2><span class="num">2</span>무엇을 치르는가</h2>
+
+<p>위의 정확도 수치는 전부 라우팅에 유리합니다. 그중 어느 것도 <strong>라우팅이 무엇을 치르는지</strong> 말하지 않았습니다.</p>
+
+<h3>2.1 문항당 각 arm이 하는 일</h3>
+
+<div class="tablewrap"><table>
+<thead><tr><th></th><th><code>rag</code></th><th><code>rag+rerank</code></th><th><code>routing</code></th></tr></thead>
+<tbody>
+<tr><td>네트워크 왕복</td><td>1</td><td>1.56</td><td class="hi">6.7</td></tr>
+<tr><td>새로 처리한 내용</td><td>~30 토큰</td><td>~2,500 토큰</td><td class="hi">14k–26k 토큰</td></tr>
+<tr><td>응답 시간</td><td>1초 미만</td><td>수 초</td><td class="hi">23–111초</td></tr>
+<tr><td>측정 비용</td><td>무시 가능</td><td>모델에 따라 다름</td><td class="hi">$0.12–$0.28</td></tr>
+</tbody></table></div>
+
+<p>리랭커가 1.0이 아니라 <strong>0.56</strong>회인 이유는, 융합 후보에 답이 없는 질문은 애초에 보내지 않기 때문입니다 — 실패가 이미 결정됐으니까요. 700 중 390회.</p>
+
+<figure>
+  <div class="figlabel">그림 3 — 문항당 비용은 답이 딛는 문서 수를 따라간다</div>
+  <svg viewBox="0 0 680 210" role="img" aria-label="레버별 걸음 비용, 0.122달러에서 0.281달러">
+    <line x1="120" y1="12" x2="120" y2="164" stroke="var(--rule)"/>
+    <text class="s-mut" x="120" y="184" text-anchor="middle">$0</text>
+    <text class="s-mut" x="305" y="184" text-anchor="middle">$0.10</text>
+    <text class="s-mut" x="490" y="184" text-anchor="middle">$0.20</text>
+    <text class="s-mut" x="675" y="184" text-anchor="end">$0.30</text>
+
+    <text class="s-label" x="110" y="26" text-anchor="end">직접</text>
+    <rect x="120" y="16" width="226" height="14" fill="var(--routing)" opacity=".55" rx="1"/>
+    <text class="s-val" x="356" y="27" fill="var(--muted)">$0.122 · 23초 · 6턴</text>
+
+    <text class="s-label" x="110" y="58" text-anchor="end">현행 규칙</text>
+    <rect x="120" y="48" width="237" height="14" fill="var(--routing)" opacity=".6" rx="1"/>
+    <text class="s-val" x="367" y="59" fill="var(--muted)">$0.128 · 24초 · 8턴</text>
+
+    <text class="s-label" x="110" y="90" text-anchor="end">간접</text>
+    <rect x="120" y="80" width="298" height="14" fill="var(--routing)" opacity=".7" rx="1"/>
+    <text class="s-val" x="428" y="91" fill="var(--muted)">$0.161 · 43초 · 9턴</text>
+
+    <text class="s-label" x="110" y="122" text-anchor="end">간접</text>
+    <rect x="120" y="112" width="315" height="14" fill="var(--routing)" opacity=".8" rx="1"/>
+    <text class="s-val" x="445" y="123" fill="var(--muted)">$0.170 · 47초 · 10턴</text>
+
+    <text class="s-label" x="110" y="154" text-anchor="end">양쪽 필요</text>
+    <rect x="120" y="144" width="520" height="14" fill="var(--routing)" rx="1"/>
+    <text class="s-val" x="650" y="155" text-anchor="end" fill="var(--paper)">$0.281 · 111초 · 14턴</text>
+  </svg>
+  <figcaption><strong>n=5</strong>, 레버당 한 걸음씩 직접 측정했습니다. 중앙값($0.161)보다 퍼짐이 더 많은 걸 말해줍니다. <strong>문서 두 개가 필요한 질문은 한 행이면 되는 질문의 약 2배 비용, 5배 시간</strong>입니다. 비용은 답이 딛는 문서 수를 따라가고, 그건 질문이 요구한 것이므로 <strong>더 나은 엔지니어링이 없앨 오버헤드가 아니라 일 그 자체</strong>입니다.</figcaption>
+</figure>
+
+<h3>2.2 반드시 잘못 인용될 숫자 하나</h3>
+
+<p>원시 사용량은 <strong>걸음당 20만~50만 입력 토큰</strong>으로 나옵니다. 실제 값입니다. 단서 없이 인용하면 <strong>비용을 한 자릿수 과장</strong>합니다. 도구 호출마다 지금까지의 대화를 다시 보내는데, 거의 전부가 캐시에서 제공되기 때문입니다.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>레버</th><th>신규 입력</th><th>캐시 쓰기</th><th>캐시 읽기</th><th>출력</th></tr></thead>
+<tbody>
+<tr><td>직접</td><td>12</td><td class="hi">16,842</td><td class="lo">198,549</td><td>1,330</td></tr>
+<tr><td>간접</td><td>20</td><td class="hi">18,591</td><td class="lo">358,535</td><td>2,286</td></tr>
+<tr><td>양쪽 필요</td><td>28</td><td class="hi">25,633</td><td class="lo">498,935</td><td>7,694</td></tr>
+</tbody></table></div>
+
+<p>쓸 수 있는 숫자가 셋인데 둘이 오도합니다. <strong>500,000</strong>은 한 자릿수 과장 — 같은 텍스트를 여러 번 셉니다. <strong>~20</strong>은 세 자릿수 축소 — 캐시를 완전히 빗나간 것만 셉니다. <strong>$0.12–$0.28</strong>이 측정값이고, 이 보고서가 쓰는 값입니다.</p>
+
+<h3>2.3 위의 가격은 지도가 작동할 때의 가격</h3>
+
+<p>트리를 세어봅니다. <strong>128</strong>개 노드 아래에 뭔가 열리고, <strong>1,212</strong>개가 본문을 가집니다. 전수 순회 — 모든 표를 열고 모든 문서를 읽기 — 는 <strong>1,340 호출</strong>입니다. 측정된 호출당 새 내용 2,041 토큰으로 약 <strong>2.7M 토큰</strong>이고, <strong>어떤 컨텍스트도 담지 못합니다.</strong> 러너는 40턴에서 멈추는데 약 82k 토큰이며, 이는 올려달라고 기다리는 설정값이 아니라 대략 <strong>한 세션의 용량</strong>입니다.</p>
+
+<figure>
+  <div class="figlabel">그림 4 — 한 걸음이 이 코퍼스에서 볼 수 있는 것</div>
+  <svg viewBox="0 0 680 150" role="img" aria-label="전수 순회는 1340호출, 중앙 걸음 7회는 그중 0.52퍼센트">
+    <rect x="20" y="40" width="640" height="34" fill="var(--panel)" stroke="var(--rule)"/>
+    <rect x="20" y="40" width="19.1" height="34" fill="var(--routing)" opacity=".35"/>
+    <rect x="20" y="40" width="3.3" height="34" fill="var(--routing)"/>
+    <text class="s-ko" x="660" y="32" text-anchor="end">전수 순회 — 1,340 호출 · 약 2.7M 토큰 · 도달 불가</text>
+    <line x1="23.3" y1="78" x2="23.3" y2="98" stroke="var(--routing)" stroke-width="1.5"/>
+    <line x1="23.3" y1="98" x2="120" y2="98" stroke="var(--routing)" stroke-width="1.5"/>
+    <text class="s-ko" x="126" y="102" fill="var(--routing)">중앙 걸음 — 7 호출, 0.52%</text>
+    <line x1="39.1" y1="40" x2="39.1" y2="20" stroke="var(--muted)" stroke-width="1.5"/>
+    <line x1="39.1" y1="20" x2="150" y2="20" stroke="var(--muted)" stroke-width="1.5"/>
+    <text class="s-ko" x="156" y="24" fill="var(--muted)">러너 상한 — 40 호출, 3.0%</text>
+    <text class="s-ko" x="20" y="132">초록 조각이 라우팅이 보는 전부입니다. 회색 상자가 코퍼스입니다.</text>
+  </svg>
+  <figcaption><strong>한 걸음이 볼 수 있는 트리는 약 3%, 실제 중앙 걸음은 0.52%입니다.</strong> 이것이 2.1절의 직관적 독해를 교정합니다 — 라우팅은 전부 읽기보다 190배 빠른 게 아닙니다. <strong>전부 읽기가 선택지가 아니기 때문</strong>입니다.</figcaption>
+</figure>
+
+<blockquote>
+<p>테이블의 일은 호출을 아끼는 것이 아닙니다. 걸음이 감당할 수 있는 0.5%가 <strong>옳은 0.5%</strong>가 되게 하는 것입니다.</p>
+</blockquote>
+
+<h3>2.4 두 방식의 진짜 차이</h3>
+
+<div class="tablewrap"><table>
+<thead><tr><th></th><th>기제가 작동을 멈출 때</th></tr></thead>
+<tbody>
+<tr><td>검색</td><td><strong>완만하게 나빠짐</strong> — 답이 순위에서 밀리고, 후보 목록을 늘리면 일부 회복</td></tr>
+<tr><td>라우팅</td><td><strong>나빠지지 않음</strong> — 코퍼스의 3%를 본 채 예산이 끝나고, 거기까지 본 걸로 보고</td></tr>
+</tbody></table></div>
+
+<p>검색에는 곡선이 알려진 다이얼이 있습니다. 라우팅의 대응 다이얼은 턴 상한인데 같은 방식으로 작동하지 않습니다. 80턴으로 두 배 올리면 3.0%가 6.0%가 될 뿐 — 두 배 값을 치르고도 <strong>94%는 여전히 못 봅니다.</strong> 답이 1,126개 중 하나인 코퍼스에서요.</p>
+
+<p>이것이 1장의 실패가 왜 그 모양이었는지도 설명합니다. 문장 하나에 속은 걸음은 헤매다 회복하지 않습니다. 그럴듯한 곳에 가서, 자기가 받았다고 믿는 질문에 답하고, <strong>40 중 6을 쓰고 멈춥니다</strong> — 나머지 34를 쓰게 만들 기제가 없습니다.</p>
+
+<h3>2.5 두 장이 함께 세우는 것</h3>
+
+<blockquote>
+<p>검색은 이름 붙일 수 있는 특정 부류에서 무너집니다 — 코드로 색인된 문서에 사람 말투로 던진 질문, 혹은 이미 대체된 판을 묻는 질문. 그 부류에서 검색은 <strong>완만하게 나빠지지 않고 그냥 실패</strong>합니다(0.028). 테이블을 걷는 건 문항당 <strong>20~100배</strong>를 쓰고 정확히 그 부류를 고칩니다.</p>
+<p>그리고: <strong>어느 쪽도 우아하게 실패하지 않습니다.</strong> 서로 <em>다르게</em> 우아하지 않을 뿐이고, 그중 하나만 밖에서 보면 성공처럼 보입니다.</p>
+</blockquote>
+
+<p><strong>이 700문항 중 320개는 검색이 이미 첫 번에 맞히는 종류</strong>입니다(0.991, 값싼 리랭킹 한 번으로 1.000). 이 연구의 어느 데이터도 그걸 걸어서 풀자고 말하지 않습니다. 어느 쪽을 쓸지는 <strong>실제로 받는 질문의 구성</strong>에 달린 문제이고, 여기서는 이 코퍼스 말고 누구의 구성도 측정하지 않았습니다.</p>
+
+<h3 class="limits">한계</h3>
+<ul class="limits">
+<li><strong>코퍼스 크기가 하나.</strong> 지표 2는 미측정이며, 정상인 지도의 규모 한계는 점 하나로 알 수 없습니다.</li>
+<li><strong>비용·지연은 n=5.</strong> 레버당 한 걸음, 각 1회. 모양은 분명하지만 구간 추정은 붙이지 않았습니다.</li>
+<li><strong>리랭커는 1회 실행.</strong> 모든 <code>rag+rerank</code> 수치가 한 번 뽑기이고 분산 추정이 없습니다. 큰 격차는 어떤 흔들림에도 결론이 안 바뀌지만, “리랭킹이 도움이 된다”는 작은 주장은 반복 전까지 성립하지 않습니다.</li>
+<li><strong>arm마다 모델 하나.</strong> 모든 걸음은 <code>claude-sonnet-5</code>입니다.</li>
+<li><strong>테이블을 쓰고 유지하는 비용은 미측정.</strong> 비용이라고 말했을 뿐 수치화하지 않았습니다.</li>
+<li><strong>1,340은 관측이 아니라 계수.</strong> 전수 순회를 시도한 에이전트는 없고, 트리를 세고 측정된 호출당 토큰으로 값을 매긴 것입니다.</li>
+</ul>
+
+<div class="foot">코퍼스 a84ac6cf463a1a6d · 안내문 수정본 2e0e821a7d9f667b · 사이클본 5f09cde305f9e388
+지문이 다르면 결과를 절대 합치지 않음 · 모든 걸음 기록은 원문 그대로 보존
+2장을 1장보다 먼저 썼고, 이기는 숫자를 담는 장을 맨 뒤에 둠</div>
+
+</div>

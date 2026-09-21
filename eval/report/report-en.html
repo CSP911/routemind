@@ -1,0 +1,425 @@
+<title>Routing vs Retrieval: Failure and Cost</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ink:#16181d; --paper:#fbfbfa; --muted:#6a6f7a; --rule:#e2e2df; --panel:#f4f4f1;
+  --retrieval:#5b7c99; --routing:#2f6b5f; --alarm:#b4472e; --accentbg:#eef2f0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8e8e4; --paper:#14161a; --muted:#99a0ac; --rule:#2b2f36; --panel:#1b1e23;
+    --retrieval:#8db0cc; --routing:#63b3a0; --alarm:#e08267; --accentbg:#1a2420;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8e8e4; --paper:#14161a; --muted:#99a0ac; --rule:#2b2f36; --panel:#1b1e23;
+  --retrieval:#8db0cc; --routing:#63b3a0; --alarm:#e08267; --accentbg:#1a2420;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.62;padding-block:0;padding-left:20px;padding-right:20px;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding-block:64px 96px}
+h1,h2,h3,.dek{font-family:Newsreader,Georgia,serif;text-wrap:balance}
+h1{font-size:2.6rem;line-height:1.14;font-weight:600;margin:0 0 .5rem;letter-spacing:-.01em}
+.dek{font-size:1.24rem;line-height:1.45;color:var(--muted);font-style:italic;margin:0 0 2rem;font-weight:400}
+h2{font-size:1.66rem;font-weight:600;margin:3.4rem 0 .2rem;line-height:1.2}
+h2 .num{font-family:"IBM Plex Mono",monospace;font-size:.72em;color:var(--muted);font-weight:400;margin-right:.6em}
+h3{font-size:1.16rem;font-weight:600;margin:2.2rem 0 .4rem}
+p{margin:0 0 1.05rem;max-width:68ch}
+a{color:inherit;text-decoration-color:var(--rule);text-underline-offset:3px}
+strong{font-weight:600}
+code,.mono{font-family:"IBM Plex Mono",monospace;font-size:.88em}
+code{background:var(--panel);padding:.08em .34em;border-radius:3px}
+hr{border:0;border-top:1px solid var(--rule);margin:3rem 0}
+
+.meta{font-family:"IBM Plex Mono",monospace;font-size:.78rem;line-height:1.85;color:var(--muted);
+  background:var(--panel);border-left:2px solid var(--rule);padding:14px 18px;margin:0 0 2.4rem;
+  overflow-x:auto;white-space:pre}
+
+table{border-collapse:collapse;width:100%;margin:1.2rem 0 1.6rem;font-size:.9rem;
+  font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+th,td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;border-bottom:1px solid var(--ink)}
+tbody tr:last-child td{border-bottom:1px solid var(--ink)}
+td.hi{color:var(--routing);font-weight:600}
+td.lo{color:var(--retrieval)}
+td.bad{color:var(--alarm);font-weight:600}
+tr.total td{font-weight:600}
+
+figure{margin:2rem 0 2.4rem}
+figcaption{font-size:.82rem;color:var(--muted);margin-top:.7rem;line-height:1.5;max-width:64ch}
+.figlabel{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+svg{display:block;width:100%;height:auto;max-width:100%;overflow:visible}
+.s-label{font-family:"IBM Plex Sans",sans-serif;font-size:12px;fill:var(--ink)}
+.s-mut{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--muted)}
+.s-val{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600}
+
+.key{display:flex;flex-wrap:wrap;gap:16px;font-size:.8rem;color:var(--muted);margin:.2rem 0 1rem}
+.key span{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+blockquote{margin:1.6rem 0;padding:2px 0 2px 20px;border-left:3px solid var(--routing);
+  font-family:Newsreader,Georgia,serif;font-size:1.13rem;line-height:1.5;color:var(--ink)}
+blockquote p{margin:0 0 .6rem;max-width:62ch}
+blockquote p:last-child{margin:0}
+
+.callout{background:var(--accentbg);border:1px solid var(--rule);border-radius:4px;
+  padding:18px 22px;margin:1.8rem 0}
+.callout p:last-child{margin:0}
+.callout .figlabel{color:var(--routing)}
+
+.limits{font-size:.9rem;color:var(--muted)}
+.limits li{margin-bottom:.5rem;max-width:66ch}
+ul{padding-left:1.15rem}
+li{margin-bottom:.4rem;max-width:66ch}
+
+.foot{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--rule);
+  font-size:.8rem;color:var(--muted);font-family:"IBM Plex Mono",monospace;line-height:1.8}
+@media (max-width:520px){
+  body{font-size:15px}
+  h1{font-size:2rem}
+  .wrap{padding-block:40px 64px}
+  .meta{font-size:.7rem}
+}
+</style>
+
+<div class="wrap">
+
+<h1>Routing vs Retrieval</h1>
+<p class="dek">Where a human-authored routing layer fails, and what it costs when it works. Chapters 1&nbsp;and&nbsp;2 of a measurement report.</p>
+
+<div class="meta">corpus fingerprint   a84ac6cf463a1a6d        700 questions, one frozen corpus
+arms                 rag · rag+rerank · routing · routing+overlay — all four a census
+models               walks claude-sonnet-5 · rerank gpt-5 · embed text-embedding-3-large
+precondition         mapcheck R1–R7 recorded with every run</div>
+
+<p>The registered question is: <strong>how useful is human intervention in RAG, and where does it stop paying for itself?</strong> The intervention is a routing table — a partition of the corpus into areas, one sentence describing each, and a hierarchy beneath. An agent reads the table and decides where to look.</p>
+
+<p>Chapter&nbsp;1 asks when that stops working. Chapter&nbsp;2 asks what it costs when it does work. The chapter that reports the winning numbers is written last, deliberately: every accuracy figure here favours routing, and a result reported only on the side it wins on is an advertisement.</p>
+
+<hr>
+
+<h2><span class="num">1</span>The moment human intervention fails</h2>
+
+<p>There are two ways a routing table can fail, and they are not the same failure.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Indicator</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>1 — the table is <strong>wrong</strong>, or stale without anyone meaning it to</td><td>measured</td></tr>
+<tr><td>2 — the table is entirely <strong>correct</strong> and still fails</td><td class="bad">not measured</td></tr>
+</tbody></table></div>
+
+<h3>1.1 Why this failure mode is the interesting one</h3>
+
+<p>Retrieval has no map. That is its weakness and, exactly, its immunity. A fusion retriever scores <strong>0.028</strong> on questions written in a person's words against documents indexed by codes — it does not degrade on those, it fails outright — but it cannot be <em>misled</em>, because there is nothing for it to believe.</p>
+
+<p>A routing agent believes the table. That is where the gain comes from, and it is also the whole exposure. <strong>An agent that trusts the map inherits the map's errors, and inherits them silently.</strong></p>
+
+<figure>
+  <div class="figlabel">Figure 1 — hit rate by question type, 700-question census</div>
+  <div class="key">
+    <span><i class="dot" style="background:var(--retrieval)"></i>rag</span>
+    <span><i class="dot" style="background:var(--retrieval);opacity:.5"></i>rag + rerank</span>
+    <span><i class="dot" style="background:var(--routing)"></i>routing</span>
+  </div>
+  <svg viewBox="0 0 680 300" role="img" aria-label="Hit rate by lever: routing at or near 1.0 everywhere, retrieval collapsing on indirect and stale-old">
+    <line x1="130" y1="16" x2="130" y2="262" stroke="var(--rule)"/>
+    <line x1="390" y1="16" x2="390" y2="262" stroke="var(--rule)" stroke-dasharray="2 4"/>
+    <line x1="650" y1="16" x2="650" y2="262" stroke="var(--rule)"/>
+    <text class="s-mut" x="130" y="282" text-anchor="middle">0.0</text>
+    <text class="s-mut" x="390" y="282" text-anchor="middle">0.5</text>
+    <text class="s-mut" x="650" y="282" text-anchor="middle">1.0</text>
+
+    <g><text class="s-label" x="120" y="36" text-anchor="end">direct</text>
+      <line x1="645" y1="32" x2="650" y2="32" stroke="var(--muted)" stroke-width="1"/>
+      <circle cx="645" cy="32" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="650" cy="32" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="36">n=320</text></g>
+
+    <g><text class="s-label" x="120" y="74" text-anchor="end">indirect</text>
+      <line x1="145" y1="70" x2="650" y2="70" stroke="var(--alarm)" stroke-width="1.5" opacity=".45"/>
+      <circle cx="145" cy="70" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="166" cy="70" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="70" r="5.5" fill="var(--routing)"/>
+      <text class="s-val" x="120" y="92" text-anchor="end" fill="var(--retrieval)">0.028</text>
+      <text class="s-mut" x="668" y="74">n=320</text></g>
+
+    <g><text class="s-label" x="120" y="112" text-anchor="end">stale-old</text>
+      <line x1="199" y1="108" x2="650" y2="108" stroke="var(--alarm)" stroke-width="1.5" opacity=".45"/>
+      <circle cx="199" cy="108" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="234" cy="108" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="108" r="5.5" fill="var(--routing)"/>
+      <text class="s-val" x="120" y="130" text-anchor="end" fill="var(--retrieval)">0.133</text>
+      <text class="s-mut" x="668" y="112">n=15</text></g>
+
+    <g><text class="s-label" x="120" y="150" text-anchor="end">stale-mid</text>
+      <line x1="442" y1="146" x2="650" y2="146" stroke="var(--rule)" stroke-width="1.5"/>
+      <circle cx="442" cy="146" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="477" cy="146" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="146" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="150">n=15</text></g>
+
+    <g><text class="s-label" x="120" y="188" text-anchor="end">boundary</text>
+      <line x1="442" y1="184" x2="650" y2="184" stroke="var(--rule)" stroke-width="1.5"/>
+      <circle cx="442" cy="184" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="442" cy="184" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="184" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="188">n=10</text></g>
+
+    <g><text class="s-label" x="120" y="226" text-anchor="end">both</text>
+      <line x1="546" y1="222" x2="650" y2="222" stroke="var(--rule)" stroke-width="1.5"/>
+      <circle cx="546" cy="222" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="546" cy="222" r="4.5" fill="var(--retrieval)" opacity=".5"/>
+      <circle cx="650" cy="222" r="4.5" fill="var(--routing)"/>
+      <text class="s-mut" x="668" y="226">n=10</text></g>
+
+    <g><text class="s-label" x="120" y="264" text-anchor="end">changed</text>
+      <circle cx="650" cy="260" r="4.5" fill="var(--retrieval)"/>
+      <circle cx="598" cy="260" r="5.5" fill="var(--alarm)"/>
+      <text class="s-val" x="592" y="248" text-anchor="end" fill="var(--alarm)">0.900 ←</text>
+      <text class="s-mut" x="668" y="264">n=10</text></g>
+  </svg>
+  <figcaption><strong>The one place routing loses is <code>changed</code>, and it is not a property of routing.</strong> It is one false sentence in the map, described below. <code>routing+overlay</code> is omitted: it matches <code>routing</code> to three decimals on every row, and misses the same single question.</figcaption>
+</figure>
+
+<h3>1.2 Indicator 1 — one sentence, and the only miss in 700</h3>
+
+<p>Two documents in this corpus are <em>forwarding notes</em>: they sit in the area a subject moved out of and tell a walk where it went. Both said, of the page left behind:</p>
+
+<blockquote><p>They remain correct for anything dated before <strong>2026-01-01</strong> and for nothing after it.</p></blockquote>
+
+<p>False. That page is the <strong>oldest</strong> of three versions and stopped being correct at <strong>2024-07-01</strong> — eighteen months before the move the note describes. The note is not wrong about the move. It is silent about a revision that happened before it, and silence reads as <em>nothing else to know</em>.</p>
+
+<p>One walk read the note, did exactly what it said, and answered a claim dated 2025 from the 2023 rule.</p>
+
+<div class="callout">
+  <div class="figlabel">The part that proves it was the map, not the reader</div>
+  <p>Two routing arms ran. <code>routing</code> walks and reads; <code>routing+overlay</code> does the same while keeping an explicit working set. <strong>Both failed the same question, by the same two documents, in the same wrong era.</strong></p>
+  <p>Two agents sharing no context, one of them carrying memory of its own decisions. A working set cannot help here, because <strong>nothing was forgotten</strong>. The note was read, understood, and obeyed.</p>
+</div>
+
+<p>Fixing the sentence fixed the walk. The note now carries the full version table and says outright that a question dated after 2024-07-01 is answered elsewhere — <em>including dates before the move</em>. Ten <code>changed</code> questions re-walked on the corrected corpus:</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th></th><th>before</th><th>after</th></tr></thead>
+<tbody>
+<tr><td><code>changed</code>, routing</td><td class="bad">0.900</td><td class="hi">1.000</td></tr>
+<tr><td>the failing walk</td><td class="mono">note → 2023 rule</td><td class="mono">note → legend → 2025 rule</td></tr>
+</tbody></table></div>
+
+<p><strong>Same note, different destination.</strong> The agent did not become more careful. It was given a sentence that was true.</p>
+
+<h3>1.3 How far one wrong element reaches</h3>
+
+<p>The temptation is to say a bad routing table is <em>far</em> more dangerous than a bad document. The census supports a narrower version, and the narrow version is the defensible one.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>One wrong element</th><th>reaches</th></tr></thead>
+<tbody>
+<tr><td>a map row — <code>procurement</code></td><td>278 of 700 walks — <strong>39.7%</strong></td></tr>
+<tr><td>a map row — top 20, median</td><td>108 walks — 15.4%</td></tr>
+<tr><td>a document — most retrieved</td><td>106 of 700 lists — <strong>15.1%</strong></td></tr>
+<tr><td>a document — median</td><td>11 questions — 1.6%</td></tr>
+</tbody></table></div>
+
+<p><strong>About 2.6× at the top, not orders of magnitude.</strong> And the note that caused the miss lay on only 28 paths. So reach is the weakest part of the argument. Two things carry it instead:</p>
+
+<ul>
+<li><strong>A document competes; a map row is obeyed.</strong> A wrong document is one of ten candidates, weighed against nine others. A wrong sentence in the map is not weighed at all — it is the instruction the walk follows.</li>
+<li><strong>The failure hides.</strong> Retrieval's wrong answer looks wrong: thin, off-topic, absent. Routing's looks right — a specific figure, a named source, and a walk log that reads as a clean success. That is why this needed a 700-question census to surface: a 50-question sample drew the agent that went the other way and reported 1.000.</li>
+</ul>
+
+<h3>1.4 Indicator 2 — a correct table that stops working anyway</h3>
+
+<p><strong>At this corpus, a correct map does not fail.</strong> 1,126 documents, 5 areas, 700 questions: 699 hits, and the single miss was a wrong map. Nothing here shows a limit.</p>
+
+<p>That is not reassurance. It is one point on an axis, and a scaling limit cannot be seen from one point. The uncomfortable part is the asymmetry: <strong>retrieval's collapse is characterised and routing's is not</strong>, because scale was varied on one side only.</p>
+
+<figure>
+  <div class="figlabel">Figure 2 — retrieval's collapse has a law; routing's has one data point</div>
+  <svg viewBox="0 0 680 250" role="img" aria-label="recall at 20 against corpus size, observed against a two-parameter prediction">
+    <line x1="70" y1="20" x2="70" y2="196" stroke="var(--rule)"/>
+    <line x1="70" y1="196" x2="620" y2="196" stroke="var(--rule)"/>
+    <text class="s-mut" x="60" y="26" text-anchor="end">0.28</text>
+    <text class="s-mut" x="60" y="115" text-anchor="end">0.14</text>
+    <text class="s-mut" x="60" y="200" text-anchor="end">0</text>
+    <text class="s-mut" x="70" y="218" text-anchor="middle">16</text>
+    <text class="s-mut" x="207" y="218" text-anchor="middle">32</text>
+    <text class="s-mut" x="345" y="218" text-anchor="middle">64</text>
+    <text class="s-mut" x="482" y="218" text-anchor="middle">128</text>
+    <text class="s-mut" x="620" y="218" text-anchor="middle">256</text>
+    <text class="s-mut" x="345" y="240" text-anchor="middle">rivals at the end of the query (N)</text>
+
+    <polyline points="70,38 207,97 345,146 482,171 620,183"
+      fill="none" stroke="var(--retrieval)" stroke-width="1.4" stroke-dasharray="4 4" opacity=".8"/>
+    <polyline points="70,38 207,101 345,114 482,158 620,183"
+      fill="none" stroke="var(--retrieval)" stroke-width="2.2"/>
+    <circle cx="70" cy="38" r="4" fill="var(--retrieval)"/>
+    <circle cx="207" cy="101" r="4" fill="var(--retrieval)"/>
+    <circle cx="345" cy="114" r="4" fill="var(--retrieval)"/>
+    <circle cx="482" cy="158" r="4" fill="var(--retrieval)"/>
+    <circle cx="620" cy="183" r="4" fill="var(--retrieval)"/>
+    <text class="s-mut" x="360" y="132" fill="var(--retrieval)">observed</text>
+    <text class="s-mut" x="360" y="166" fill="var(--muted)">predicted  p × min(1, 20/N)</text>
+
+    <line x1="70" y1="22" x2="620" y2="22" stroke="var(--routing)" stroke-width="2"/>
+    <circle cx="345" cy="22" r="5" fill="var(--routing)"/>
+    <text class="s-mut" x="356" y="16" fill="var(--routing)">routing — measured at one size only</text>
+  </svg>
+  <figcaption>Five corpus sizes fit <code>recall@20 ≈ p × min(1, 20/N)</code> with <code>p ≈ 0.25</code>: <em>p</em> is the chance the question reaches its answer's family at all, and <code>min(1, 20/N)</code> the share of that family a twenty-candidate list can hold. <strong>Retrieval's failure is predictable before running anything. Routing's is not</strong> — the green line is drawn flat because there is one measurement, not because it was shown to be flat.</figcaption>
+</figure>
+
+<p>The only leading indicator visible today is a tail: eight walks in 700 (1.1%) took fifteen calls or more, and <strong>all eight hit</strong>. The median is flat at 6–7 across every family. A tail of successful long walks is what <em>working, with effort</em> looks like — consistent with being some distance before a limit, and not evidence of where the limit is.</p>
+
+<h3>1.5 Two checks that came out of this</h3>
+
+<p>The defect was found by a walk failing, which is expensive and ambiguous: a walk that goes wrong cannot tell you whether the map or the model was at fault. So both are now decided from the corpus, before any arm runs.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Rule</th><th>What it refuses</th></tr></thead>
+<tbody>
+<tr><td><code>mapcheck R6</code></td><td>a forwarding note that names fewer dates than its subject's own revision legend</td></tr>
+<tr><td><code>mapcheck R7</code></td><td>a cycle in the cross-reference graph</td></tr>
+</tbody></table></div>
+
+<p>R7 was written <strong>while the corpus passes</strong> — 993 references across 332 documents, no cycle — and verified by injecting one and watching it fail. It is the only rule in the set that no single sentence can be blamed for: payroll saying <em>"for the rate, see attendance"</em> and attendance saying <em>"for how it is paid, see payroll"</em> are both accurate, and there is nothing to correct except the structure.</p>
+
+<p>A deliberate cycle was then built and walked. It cost <strong>nothing</strong> — 10/10 on both corpora, 5.5 calls per question on both. The agent went payroll → attendance, got what it came for, and never followed the back-pointer, because each edge carried a discriminator. <strong>The fixture was too easy, and saying so is better than filing a negative result as a finding about cycles in general.</strong> R7 stays: the harmless case and the harmful ones look identical in the graph, and the check runs before anyone knows which they have built.</p>
+
+<hr>
+
+<h2><span class="num">2</span>What it costs</h2>
+
+<p>Every accuracy figure above favours routing. None of them said what routing costs.</p>
+
+<h3>2.1 What each arm does, per question</h3>
+
+<div class="tablewrap"><table>
+<thead><tr><th></th><th><code>rag</code></th><th><code>rag+rerank</code></th><th><code>routing</code></th></tr></thead>
+<tbody>
+<tr><td>network round trips</td><td>1</td><td>1.56</td><td class="hi">6.7</td></tr>
+<tr><td>new content processed</td><td>~30 tok</td><td>~2,500 tok</td><td class="hi">14k–26k tok</td></tr>
+<tr><td>wall clock</td><td>&lt;1 s</td><td>a few s</td><td class="hi">23–111 s</td></tr>
+<tr><td>measured cost</td><td>negligible</td><td>model-dependent</td><td class="hi">$0.12–$0.28</td></tr>
+</tbody></table></div>
+
+<p>The reranker averages <strong>0.56</strong> calls rather than 1.0 because a question whose answer is not among the fused candidates is never sent to it — the miss is already decided. 390 of 700.</p>
+
+<figure>
+  <div class="figlabel">Figure 3 — cost per question tracks how many documents the answer rests on</div>
+  <svg viewBox="0 0 680 210" role="img" aria-label="Dollar cost per walk by lever, from 0.122 to 0.281">
+    <line x1="120" y1="12" x2="120" y2="164" stroke="var(--rule)"/>
+    <text class="s-mut" x="120" y="184" text-anchor="middle">$0</text>
+    <text class="s-mut" x="305" y="184" text-anchor="middle">$0.10</text>
+    <text class="s-mut" x="490" y="184" text-anchor="middle">$0.20</text>
+    <text class="s-mut" x="675" y="184" text-anchor="end">$0.30</text>
+
+    <text class="s-label" x="110" y="26" text-anchor="end">direct</text>
+    <rect x="120" y="16" width="226" height="14" fill="var(--routing)" opacity=".55" rx="1"/>
+    <text class="s-val" x="356" y="27" fill="var(--muted)">$0.122 · 23s · 6 turns</text>
+
+    <text class="s-label" x="110" y="58" text-anchor="end">changed</text>
+    <rect x="120" y="48" width="237" height="14" fill="var(--routing)" opacity=".6" rx="1"/>
+    <text class="s-val" x="367" y="59" fill="var(--muted)">$0.128 · 24s · 8 turns</text>
+
+    <text class="s-label" x="110" y="90" text-anchor="end">indirect</text>
+    <rect x="120" y="80" width="298" height="14" fill="var(--routing)" opacity=".7" rx="1"/>
+    <text class="s-val" x="428" y="91" fill="var(--muted)">$0.161 · 43s · 9 turns</text>
+
+    <text class="s-label" x="110" y="122" text-anchor="end">indirect</text>
+    <rect x="120" y="112" width="315" height="14" fill="var(--routing)" opacity=".8" rx="1"/>
+    <text class="s-val" x="445" y="123" fill="var(--muted)">$0.170 · 47s · 10 turns</text>
+
+    <text class="s-label" x="110" y="154" text-anchor="end">both</text>
+    <rect x="120" y="144" width="520" height="14" fill="var(--routing)" rx="1"/>
+    <text class="s-val" x="650" y="155" text-anchor="end" fill="var(--paper)">$0.281 · 111s · 14 turns</text>
+  </svg>
+  <figcaption><strong>n=5</strong>, one walk per lever, measured directly. The spread is more informative than the median ($0.161): a question needing two documents costs roughly twice one needing a single row, and takes five times as long. Cost tracks the number of documents the answer rests on — which is what the question asked for, so it is the work, not overhead that engineering removes.</figcaption>
+</figure>
+
+<h3>2.2 One number that will be quoted wrongly</h3>
+
+<p>Raw usage reports <strong>200,000–500,000 input tokens per walk.</strong> That figure is real. Repeating it without qualification overstates the cost by an order of magnitude, because every tool call resends the conversation and almost all of it is served from cache.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>lever</th><th>fresh input</th><th>cache write</th><th>cache read</th><th>output</th></tr></thead>
+<tbody>
+<tr><td>direct</td><td>12</td><td class="hi">16,842</td><td class="lo">198,549</td><td>1,330</td></tr>
+<tr><td>indirect</td><td>20</td><td class="hi">18,591</td><td class="lo">358,535</td><td>2,286</td></tr>
+<tr><td>both</td><td>28</td><td class="hi">25,633</td><td class="lo">498,935</td><td>7,694</td></tr>
+</tbody></table></div>
+
+<p>Three numbers are available and two mislead. <strong>500,000</strong> overstates by an order of magnitude — it counts the same text many times. <strong>~20</strong> understates by three — it counts only what missed cache entirely. <strong>$0.12–$0.28</strong> is measured, and it is the one this report uses.</p>
+
+<h3>2.3 The price above is the price when the map works</h3>
+
+<p>Count the tree: <strong>128</strong> nodes have something beneath them, <strong>1,212</strong> have a body. A full traversal — open every table, read every document — is <strong>1,340 calls</strong>. At the measured 2,041 tokens of new content per call that is about <strong>2.7M tokens</strong>, and no context holds it. The runner stops a walk at 40 turns, roughly 82k tokens, which is approximately a session rather than a setting waiting to be raised.</p>
+
+<figure>
+  <div class="figlabel">Figure 4 — what a walk can see of this corpus</div>
+  <svg viewBox="0 0 680 150" role="img" aria-label="A full traversal is 1340 calls; a median walk of 7 calls is 0.52 percent of it">
+    <rect x="20" y="40" width="640" height="34" fill="var(--panel)" stroke="var(--rule)"/>
+    <rect x="20" y="40" width="19.1" height="34" fill="var(--routing)" opacity=".35"/>
+    <rect x="20" y="40" width="3.3" height="34" fill="var(--routing)"/>
+    <text class="s-mut" x="660" y="32" text-anchor="end">full traversal — 1,340 calls · ~2.7M tokens · unreachable</text>
+    <line x1="23.3" y1="78" x2="23.3" y2="98" stroke="var(--routing)" stroke-width="1.5"/>
+    <line x1="23.3" y1="98" x2="120" y2="98" stroke="var(--routing)" stroke-width="1.5"/>
+    <text class="s-val" x="126" y="102" fill="var(--routing)">median walk — 7 calls, 0.52%</text>
+    <line x1="39.1" y1="40" x2="39.1" y2="20" stroke="var(--muted)" stroke-width="1.5"/>
+    <line x1="39.1" y1="20" x2="150" y2="20" stroke="var(--muted)" stroke-width="1.5"/>
+    <text class="s-val" x="156" y="24" fill="var(--muted)">the runner's ceiling — 40 calls, 3.0%</text>
+    <text class="s-mut" x="20" y="132">The green sliver is the whole of what routing sees. The grey box is the corpus.</text>
+  </svg>
+  <figcaption><strong>A walk can see about 3% of this tree; its median walk sees 0.52%.</strong> Which corrects the intuitive reading of §2.1 — routing is not a 190× speed-up over reading everything, because reading everything is not on the menu.</figcaption>
+</figure>
+
+<blockquote>
+<p>The table's job is not to save calls. It is to make the half a percent a walk can afford to look at be <strong>the right half a percent</strong>.</p>
+</blockquote>
+
+<h3>2.4 Which is the real difference between the arms</h3>
+
+<div class="tablewrap"><table>
+<thead><tr><th></th><th>when its mechanism stops helping</th></tr></thead>
+<tbody>
+<tr><td>retrieval</td><td><strong>degrades</strong> — the answer slides down the ranking; a longer candidate list recovers some of it</td></tr>
+<tr><td>routing</td><td><strong>does not degrade</strong> — the walk runs out of budget having seen 3% of the corpus and reports what it has</td></tr>
+</tbody></table></div>
+
+<p>Retrieval has a dial with a known curve. Routing's equivalent dial is the turn ceiling, and it does not behave the same way: doubling it to 80 turns takes a walk from 3.0% of the tree to 6.0% — double the cost, and still 94% unseen, on a corpus where the answer is one document in 1,126.</p>
+
+<p>This also explains the shape of the failure in Chapter 1. A walk misled by one sentence does not wander and recover. It goes somewhere plausible, answers the question it believes it was asked, and <strong>stops after six of a possible forty calls</strong> — with no mechanism that would make it spend the other thirty-four.</p>
+
+<h3>2.5 What the two chapters establish together</h3>
+
+<blockquote>
+<p>Retrieval collapses on a specific, nameable class of question — one written in a person's words against documents indexed by codes, or one asking about a version since replaced. On that class it does not degrade gracefully; it fails outright, at <strong>0.028</strong>. Walking the table costs <strong>20–100×</strong> more per question and fixes exactly that class.</p>
+<p>And: neither arm has a graceful failure. They have <em>different</em> ungraceful ones — and only one of them looks like a success from the outside.</p>
+</blockquote>
+
+<p><strong>320 of these 700 questions are ones retrieval already answers first time</strong>, at 0.991, taken to 1.000 by one cheap reranking call. Nothing in this study argues for walking those. Which arm to use is a question about the mix of questions a system actually receives, and nothing here measures that mix for anyone but this corpus.</p>
+
+<h3 class="limits">Limits</h3>
+<ul class="limits">
+<li><strong>One corpus size.</strong> Indicator 2 is unmeasured; the scaling limit of a correct map is not known from one point.</li>
+<li><strong>n=5 for dollars and latency.</strong> One walk per lever, one run each. The shape is clear; no interval is quoted.</li>
+<li><strong>The reranker ran once.</strong> Every <code>rag+rerank</code> figure is a single draw with no variance estimate. The wide gaps survive any plausible wobble; the small claim that reranking helps does not, until it is repeated.</li>
+<li><strong>One model per arm.</strong> All walks are <code>claude-sonnet-5</code>.</li>
+<li><strong>Cost of authoring and maintaining the table is unmeasured.</strong> Stated as a cost, not quantified as one.</li>
+<li><strong>1,340 is counted, not observed.</strong> No agent was made to attempt a full traversal; the number comes from the tree and the measured per-call tokens.</li>
+</ul>
+
+<div class="foot">corpus a84ac6cf463a1a6d · fixed-note corpus 2e0e821a7d9f667b · cycle corpus 5f09cde305f9e388
+results never pooled across fingerprints · every walk report kept verbatim
+chapter 2 was written before chapter 1, and the chapter with the winning numbers last</div>
+
+</div>
