@@ -47,6 +47,24 @@ local FP WANT
 FP=$(cat data/bench-repo/FINGERPRINT 2>/dev/null)
 WANT=$(cat bench/corpus-hard/.fingerprint 2>/dev/null)
 [ -n "$FP" ] && [ "$FP" = "$WANT" ] || { echo "  fingerprint mismatch: served=$FP want=$WANT"; exit 1; }
+# Each walk is a headless Claude — a Node runtime holding its own context, a few hundred MB apiece.
+# Four at once on an 8 GB machine already carrying Docker's VM and an interactive session ran it out
+# of memory 134 walks into a 700-walk run, and the kill arrived as "system is running low on memory"
+# with no hint of which knob caused it. One GB of headroom per parallel walk, measured rather than
+# guessed, and refuse rather than start something that will die three hours in.
+#
+# The first version of this guard computed (RAM - 4GB) / 1GB and returned 4 on the 8GB machine that
+# had just died at 4 — a check that permits exactly the thing it was written to prevent. Measured
+# instead of reasoned: the baseline load here (Docker VM, an interactive session, a browser) is about
+# 5GB before any walk starts, and a headless walk peaks near 1.5GB.
+local GB PMAX
+GB=$(( $(sysctl -n hw.memsize 2>/dev/null || echo 8589934592) / 1073741824 ))
+PMAX=$(( (GB - 5) * 2 / 3 )); [ "$PMAX" -lt 1 ] && PMAX=1
+if [ "$PAR" -gt "$PMAX" ]; then
+  echo "  $PAR parallel walks on a ${GB}GB machine will run it out of memory — $PMAX is the ceiling here."
+  echo "  re-run with: ./bench/walkcensus.sh $GOLD $ARM $PMAX"
+  exit 1
+fi
 echo "  $GOLD · $ARM · $PAR at a time · fingerprint $FP · hop 0 $BENCH_USE_WHEN"
 
 # The overlay arm needs an endpoint that answers, and a container can wedge on exactly that path
