@@ -53,14 +53,19 @@ def guard():
 
     So the assumption becomes a check, and it costs two file reads.
     """
-    want = ROOT / "bench" / "corpus-hard" / ".fingerprint"
+    # Which corpus is under measurement, not which one usually is. An experiment serving a variant
+    # (`BENCH_EXTRA_CORPUS=bench/corpus-cycle ./bench/serve.py`) was refused ten walks in a row by a
+    # guard still comparing against bench/corpus-hard — correctly, since the two really did differ,
+    # but for the wrong reason. The guard was right and its idea of the subject was hard-coded.
+    ext = os.environ.get("BENCH_EXTRA_CORPUS", "bench/corpus-hard")
+    want = ROOT / ext / ".fingerprint"
     served = ROOT / "data" / "bench-repo" / "FINGERPRINT"
     if not want.exists() or not served.exists():
         sys.exit("error: no fingerprint to compare — run ./bench/serve.py")
     a, b = want.read_text().strip(), served.read_text().strip()
     if a != b:
         sys.exit(f"error: the served corpus is not the one under measurement\n"
-                 f"  bench/corpus-hard  {a}\n  data/bench-repo    {b}\n"
+                 f"  {ext:<18} {a}\n  data/bench-repo    {b}\n"
                  f"  run ./bench/serve.py to rebuild and restart")
 
 
