@@ -90,17 +90,65 @@ So there are three numbers available and two of them mislead:
 Anyone reproducing this will see the 500k figure first. It is flagged here so the correction arrives
 before the objection does.
 
-## 2.5 What is actually being traded
+## 2.5 The number above is the price when the map works
+
+Everything so far prices a walk that went where it was told. The other end of that axis is not a
+larger number of the same kind, and getting it wrong changes what the chapter means.
+
+**Count the tree.** 128 nodes have something beneath them; 1,212 have a body. A full traversal —
+open every table, read every document — is **1,340 calls**. At the 2,041 tokens of new content a
+call carries, that is about **2.7M tokens**, and no context holds it. The runner stops a walk at 40
+turns, roughly 82k tokens, and that ceiling is approximately a session rather than a setting waiting
+to be raised.
+
+| | calls | share of the tree |
+|---|---|---|
+| median walk | 7 | **0.52%** |
+| longest walk in 700 | 28 | 2.1% |
+| the runner's ceiling | 40 | **3.0%** |
+| full traversal | 1,340 | 100% — unreachable |
+
+### 2.5.1 So the table is not a 190× speed-up
+
+That is the reading §2.2 invites — 1,340 compressed into 7 — and it is wrong. **Routing is not
+faster than reading everything, because reading everything is not on the menu.** An agent cannot
+fall back to traversal; it exhausts the session and answers from whatever it reached.
+
+The table's job is not to save calls. It is to make the half a percent a walk can afford to look at
+be **the right half a percent**.
+
+### 2.5.2 Which is the real difference between the arms
+
+| | when its mechanism stops helping |
+|---|---|
+| retrieval | **degrades** — the answer slides down the ranking; a longer candidate list recovers some of it |
+| routing | **does not degrade** — the walk runs out of budget having seen 3% of the corpus and reports what it has |
+
+Retrieval has a dial with a known curve: `k` goes up and `recall@20 ≈ p × min(1, 20/N)` says what
+that buys. Routing's equivalent dial is the turn ceiling, and it does not behave the same way.
+Doubling it to 80 turns takes a walk from 3.0% of this tree to 6.0% — double the cost, and still
+94% unseen, on a corpus where the answer is one document in 1,126.
+
+This also explains the shape of the failure in Chapter 1. A walk misled by one sentence does not
+wander and recover. It goes somewhere plausible, answers the question it believes it was asked, and
+stops after six of a possible forty calls — with no mechanism that would make it spend the other
+thirty-four.
+
+Counted and priced in [`eval/runs/2026-09-22-worst-case.md`](../runs/2026-09-22-worst-case.md).
+
+## 2.6 What is actually being traded
 
 **Latency is the one a user feels.** Sub-second against 23 to 111 seconds is not a tuning
 difference; it is a different kind of interaction. Retrieval answers inside a request. A walk is a
 job you wait for, and at the hardest lever it is nearly two minutes. No amount of parallelism fixes
 this for a single user asking a single question.
 
-**Cost is one to two orders of magnitude.** A reranking call moves about 2,500 tokens once. A walk
-moves 14k–26k of new content across six to fourteen turns. The exact multiple depends on which
-models are priced, which is why this chapter gives tokens and calls beside the dollars rather than a
-single ratio.
+**Cost is one to two orders of magnitude — when it works.** A reranking call moves about 2,500
+tokens once. A walk moves 14k–26k of new content across six to fourteen turns. The exact multiple
+depends on which models are priced, which is why this chapter gives tokens and calls beside the
+dollars rather than a single ratio. When it does not work, §2.5 applies and the comparison is not a
+multiple at all: retrieval returns a worse list, routing returns whatever it reached before its
+budget ran out.
 
 **The table is written and kept by hand, and appears in no column above.** The map in this corpus is
 five area descriptions and a set of revision notices — small, but authored and maintained by a
@@ -114,7 +162,7 @@ routing arms failed it identically, including the one carrying a working set, wh
 establishes the fault was in the map rather than in the reader. Retrieval cannot fail this way,
 because it reads no map. Chapter 3 takes this up in full.
 
-## 2.6 What this chapter establishes
+## 2.7 What this chapter establishes
 
 Putting the two columns together, for this corpus:
 
@@ -122,6 +170,13 @@ Putting the two columns together, for this corpus:
 > against documents indexed by codes, or one asking about a version that has since been replaced.
 > On that class it does not degrade gracefully; it fails outright, at 0.028. Walking the table costs
 > 20–100× more per question and fixes exactly that class.
+
+And the symmetric statement, which §2.5 is what makes it sayable:
+
+> When retrieval's mechanism stops helping it degrades and a bigger `k` recovers some of it. When
+> routing's stops helping it does not degrade — the walk sees 3% of the corpus, runs out of budget,
+> and answers from what it reached. Neither arm has a graceful failure; they have *different*
+> ungraceful ones, and only one of them looks like a success from the outside.
 
 And the part that follows from the cost column, which Chapter 1 alone could not support:
 
