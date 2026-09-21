@@ -1,0 +1,50 @@
+{
+ "id": "ov_2026-09-21_0329ae",
+ "question": "For category C3, amount V3, term M2, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:23:01Z",
+ "touched_at": "2026-09-21T14:23:10Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01, matches today's date 2026-09-20",
+   "at": "2026-09-21T14:23:01Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed before purchase - covers 'other prices first' question",
+   "at": "2026-09-21T14:23:01Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01, matches today's date 2026-09-20",
+   "at": "2026-09-21T14:23:01Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed before purchase - covers 'other prices first' question",
+   "at": "2026-09-21T14:23:01Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:23:10Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v3-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:23:10Z"
+}

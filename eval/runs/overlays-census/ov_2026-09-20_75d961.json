@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-20_75d961",
+ "question": "For origin O2, value W1, goods K2, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:02:40Z",
+ "touched_at": "2026-09-20T23:03:02Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds the O2/W1/K2 row",
+   "at": "2026-09-20T23:02:40Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table, need to confirm which is in force today 2026-09-21",
+   "at": "2026-09-20T23:02:40Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds the O2/W1/K2 row",
+   "at": "2026-09-20T23:02:40Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table, need to confirm which is in force today 2026-09-21",
+   "at": "2026-09-20T23:02:40Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "superseded 2024-07-01 to 2025-12-31 version, kept in case dates matter",
+   "at": "2026-09-20T23:02:40Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "confirmed by legend-revision: today 2026-09-21 falls under current table sec-hard-diligence, not the 2024-07-01/2025-12-31 version",
+   "at": "2026-09-20T23:02:51Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:03:02Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w1-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:03:02Z"
+}

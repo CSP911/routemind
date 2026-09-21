@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-21_1209b3",
+ "question": "MD, Tokyo, one night — hotel per-night cap and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:41:03Z",
+ "touched_at": "2026-09-21T13:41:22Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "trip expense, hotel allowance and receipt rules",
+   "at": "2026-09-21T13:41:03Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "trip expense, hotel allowance and receipt rules",
+   "at": "2026-09-21T13:41:03Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:41:22Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b1-stay-s1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:41:22Z"
+}

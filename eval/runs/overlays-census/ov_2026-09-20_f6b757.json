@@ -1,0 +1,81 @@
+{
+ "id": "ov_2026-09-20_f6b757",
+ "question": "What screening was required for a new supplier in 2023, and what had it become by 2025?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:57:57Z",
+ "touched_at": "2026-09-20T15:58:39Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "explains which diligence version covers which date range",
+   "at": "2026-09-20T15:57:56Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, covers 2025",
+   "at": "2026-09-20T15:57:56Z"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "oldest version, in force until 2024-07-01, covers 2023",
+   "at": "2026-09-20T15:58:16Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "explains which diligence version covers which date range",
+   "at": "2026-09-20T15:57:56Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, covers 2025",
+   "at": "2026-09-20T15:57:56Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current table, in force from 2026-01-01, for context only",
+   "at": "2026-09-20T15:57:56Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "oldest version, in force until 2024-07-01, covers 2023",
+   "at": "2026-09-20T15:58:16Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current table (2026-01-01 onwards), not relevant to 2023 or 2025 question",
+   "at": "2026-09-20T15:58:20Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:58:39Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T15:58:39Z"
+}

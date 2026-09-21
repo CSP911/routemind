@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-21_c2b16d",
+ "question": "For category C2, amount V4, term M2, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:15:24Z",
+ "touched_at": "2026-09-21T14:15:51Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - directly answers signature/who approves",
+   "at": "2026-09-21T14:15:24Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - directly answers signature/who approves",
+   "at": "2026-09-21T14:15:24Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request flow including quotes needed - answers whether other prices (quotes) are required first",
+   "at": "2026-09-21T14:15:24Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/purchase-request",
+   "why": "row itself states the quote requirement (three quotes + written comparison), no need for the general purchase-request flow page",
+   "at": "2026-09-21T14:15:43Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:15:51Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v4-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:15:51Z"
+}

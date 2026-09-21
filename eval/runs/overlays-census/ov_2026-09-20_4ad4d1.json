@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_4ad4d1",
+ "question": "For day D1, hours H2, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:43:53Z",
+ "touched_at": "2026-09-20T23:44:13Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding likely a payroll rule",
+   "at": "2026-09-20T23:43:53Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "day/hours/place classification for overtime may be defined in attendance",
+   "at": "2026-09-20T23:43:53Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding likely a payroll rule",
+   "at": "2026-09-20T23:43:53Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "day/hours/place classification for overtime may be defined in attendance",
+   "at": "2026-09-20T23:43:53Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:44:13Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h2-place-p1/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:44:13Z"
+}

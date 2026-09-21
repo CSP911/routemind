@@ -26,6 +26,13 @@ import argparse, os, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "mcp"))
+# The host python has no pyyaml and the one in the image cannot be reached from outside it, so it is
+# vendored into a scratch directory named by BENCH_PYLIB. Putting that on the path **here** rather
+# than in the caller's environment is what lets a walking agent run `./bench/rmcli.py table` with no
+# prefix — which matters because a prefix is the difference between a permission rule that matches
+# and one that does not, and a headless run that cannot match its own allow-rule just stops.
+if os.environ.get("BENCH_PYLIB"):
+    sys.path.insert(0, os.environ["BENCH_PYLIB"])
 import knowledge_mcp as K
 
 API = os.environ.get("KNOWLEDGE_API", "http://127.0.0.1:8101/v1")

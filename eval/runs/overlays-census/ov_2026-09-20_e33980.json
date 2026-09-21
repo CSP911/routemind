@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_e33980",
+ "question": "For origin O4, value W2, goods K4, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:34:26Z",
+ "touched_at": "2026-09-20T23:34:36Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin/value/goods, in force since 2026-01-01",
+   "at": "2026-09-20T23:34:26Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table, need to confirm which is current for today's date",
+   "at": "2026-09-20T23:34:26Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin/value/goods, in force since 2026-01-01",
+   "at": "2026-09-20T23:34:26Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table, need to confirm which is current for today's date",
+   "at": "2026-09-20T23:34:26Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:34:36Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w2-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:34:36Z"
+}

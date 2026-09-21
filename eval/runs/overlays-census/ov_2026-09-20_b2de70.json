@@ -1,0 +1,111 @@
+{
+ "id": "ov_2026-09-20_b2de70",
+ "question": "What multiplier was paid for ordinary overtime beyond the 40-hour week in 2023, and what had it become by 2025?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:01:25Z",
+ "touched_at": "2026-09-20T16:02:21Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime rates now live here per payroll's redirect note",
+   "at": "2026-09-20T16:01:25Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "confirms which of the three overtime rate versions applies to 2023 vs 2025",
+   "at": "2026-09-20T16:02:10Z"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "oldest version (until 2024-07-01), covers 2023: ordinary overtime beyond 40hr week = +50%",
+   "at": "2026-09-20T16:02:11Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "why": "defines day code D1 = an ordinary weekday, needed to pick the right cell in the v2 grid",
+   "at": "2026-09-20T16:02:13Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "why": "defines hours code H1 = about ninety minutes, the entry band, needed to pick the right cell in the v2 grid",
+   "at": "2026-09-20T16:02:15Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "payroll page notes overtime premiums moved to attendance 2026-01-01; this old page may hold historical rates",
+   "at": "2026-09-20T16:01:25Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime rates now live here per payroll's redirect note",
+   "at": "2026-09-20T16:01:25Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "confirms which of the three overtime rate versions applies to 2023 vs 2025",
+   "at": "2026-09-20T16:02:10Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "oldest version (until 2024-07-01), covers 2023: ordinary overtime beyond 40hr week = +50%",
+   "at": "2026-09-20T16:02:11Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "why": "defines day code D1 = an ordinary weekday, needed to pick the right cell in the v2 grid",
+   "at": "2026-09-20T16:02:13Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "why": "defines hours code H1 = about ninety minutes, the entry band, needed to pick the right cell in the v2 grid",
+   "at": "2026-09-20T16:02:15Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "navigational redirect only, not a source of the answer",
+   "at": "2026-09-20T16:02:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:02:21Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:02:21Z"
+}

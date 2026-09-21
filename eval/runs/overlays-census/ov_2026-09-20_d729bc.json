@@ -1,0 +1,73 @@
+{
+ "id": "ov_2026-09-20_d729bc",
+ "question": "How many times has the overtime rate been rewritten, and from what date does each version apply?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:59:57Z",
+ "touched_at": "2026-09-20T16:00:42Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime rate is a payroll concept",
+   "at": "2026-09-20T15:59:57Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explicit legend of overtime rate versions and their dates",
+   "at": "2026-09-20T16:00:08Z"
+  },
+  {
+   "address": "/v1/nodes/payslip-overtime/body",
+   "why": "the oldest version (until 2024-07-01), reached via payroll's payslip-lines table",
+   "at": "2026-09-20T16:00:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime rate is a payroll concept",
+   "at": "2026-09-20T15:59:57Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explicit legend of overtime rate versions and their dates",
+   "at": "2026-09-20T16:00:08Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/payslip-overtime/body",
+   "why": "the oldest version (until 2024-07-01), reached via payroll's payslip-lines table",
+   "at": "2026-09-20T16:00:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:00:42Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/payslip-overtime/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:00:42Z"
+}

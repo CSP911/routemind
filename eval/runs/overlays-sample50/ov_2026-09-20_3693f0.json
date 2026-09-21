@@ -1,0 +1,40 @@
+{
+ "id": "ov_2026-09-20_3693f0",
+ "question": "Claim dated 2025 - which version of the overtime rate applies? Where is that written down?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:27:03Z",
+ "touched_at": "2026-09-20T09:27:03Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "Payroll's overtime page - flagged as moved to attendance on 2026-01-01, so this may be the old rule applicable to a 2025 claim",
+   "at": "2026-09-20T09:26:40Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "Overtime rates moved here 2026-01-01; need to check if it has version or effective-date info covering 2025",
+   "at": "2026-09-20T09:26:45Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "Payroll's overtime page - flagged as moved to attendance on 2026-01-01, so this may be the old rule applicable to a 2025 claim",
+   "at": "2026-09-20T09:26:40Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "Overtime rates moved here 2026-01-01; need to check if it has version or effective-date info covering 2025",
+   "at": "2026-09-20T09:26:45Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

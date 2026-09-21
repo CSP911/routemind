@@ -59,4 +59,5 @@ bench/.probe.lock
 
 # The census runner's own scratch: a log, and the per-walk helper it writes next to the reports.
 /eval/runs/census.log
+/eval/runs/census-overlay.log
 /eval/runs/walks-census/.walk.sh

@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_c1c0db",
+ "question": "Partner firm employee, 5 years tenure, Busan branch: monthly leave accrual rate and January carry-over cap",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:32:22Z",
+ "touched_at": "2026-09-20T16:32:46Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rate and carryover/holding limits are attendance domain topics",
+   "at": "2026-09-20T16:32:22Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rate and carryover/holding limits are attendance domain topics",
+   "at": "2026-09-20T16:32:22Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:32:46Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:32:46Z"
+}

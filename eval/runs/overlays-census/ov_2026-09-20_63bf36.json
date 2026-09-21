@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_63bf36",
+ "question": "Da Nang supplier, 8M KRW, made-to-spec: site visit required? file review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:29:36Z",
+ "touched_at": "2026-09-20T23:29:53Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement domain covers supplier approval thresholds and likely site visit / periodic review rules",
+   "at": "2026-09-20T23:29:36Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement domain covers supplier approval thresholds and likely site visit / periodic review rules",
+   "at": "2026-09-20T23:29:36Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:29:53Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w1-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:29:53Z"
+}

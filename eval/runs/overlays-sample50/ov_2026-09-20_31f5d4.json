@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_31f5d4",
+ "question": "Nightly lodging cap for a grade 2 traveller going to a band B2 destination on 3 July 2024 (version in force that day)",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:24:14Z",
+ "touched_at": "2026-09-20T09:25:32Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explains which per-diem version covers which date range",
+   "at": "2026-09-20T09:24:10Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "why": "candidate: version in force 2024-07-01 to 2025-12-31, covers 2024-07-03",
+   "at": "2026-09-20T09:24:34Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explains which per-diem version covers which date range",
+   "at": "2026-09-20T09:24:10Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "why": "candidate: version in force 2024-07-01 to 2025-12-31, covers 2024-07-03",
+   "at": "2026-09-20T09:24:34Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:25:32Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:25:32Z"
+}

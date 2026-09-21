@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-20_f10bc5",
+ "question": "Stuttgart firm, KRW 300,000,000 contract, office consumables: site visit required? review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:09:02Z",
+ "touched_at": "2026-09-20T23:09:16Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview page ties together the due diligence pages",
+   "at": "2026-09-20T23:09:02Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table by origin, value, goods",
+   "at": "2026-09-20T23:09:02Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns which version covers which dates, need to confirm current version applies to 2026-09-21",
+   "at": "2026-09-20T23:09:02Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview page ties together the due diligence pages",
+   "at": "2026-09-20T23:09:02Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table by origin, value, goods",
+   "at": "2026-09-20T23:09:02Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns which version covers which dates, need to confirm current version applies to 2026-09-21",
+   "at": "2026-09-20T23:09:02Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:09:16Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w3-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:09:16Z"
+}

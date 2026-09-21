@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_7d139c",
+ "question": "In January 2024, how much leave was accrued or granted for someone with two years of continuous service? Answer under the version of leave accrual that was in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:53:50Z",
+ "touched_at": "2026-09-20T15:54:20Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual by tenure/service years is covered under attendance",
+   "at": "2026-09-20T15:53:50Z"
+  },
+  {
+   "address": "/v1/nodes/leave-accrual",
+   "why": "legend says version in force until 2024-07-01 lives here, indexed by one qualifier — this is the version for Jan 2024",
+   "at": "2026-09-20T15:54:10Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual by tenure/service years is covered under attendance",
+   "at": "2026-09-20T15:53:50Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/leave-accrual",
+   "why": "legend says version in force until 2024-07-01 lives here, indexed by one qualifier — this is the version for Jan 2024",
+   "at": "2026-09-20T15:54:10Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:54:20Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/accrual-rule/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:54:20Z"
+}

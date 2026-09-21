@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_bb1406",
+ "question": "Junior analyst, Singapore, one night — hotel per-night cap and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:06:59Z",
+ "touched_at": "2026-09-21T13:07:31Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table, likely has hotel caps by grade/destination band/stay length",
+   "at": "2026-09-21T13:06:59Z"
+  },
+  {
+   "address": "/v1/nodes/evidence",
+   "why": "evidence table likely states receipt threshold above which a receipt must be kept",
+   "at": "2026-09-21T13:06:59Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table, likely has hotel caps by grade/destination band/stay length",
+   "at": "2026-09-21T13:06:59Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "evidence table likely states receipt threshold above which a receipt must be kept",
+   "at": "2026-09-21T13:06:59Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:07:31Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g1-band-b2-stay-s1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:07:31Z"
+}

@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_fa0dfe",
+ "question": "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:22:51Z",
+ "touched_at": "2026-09-20T09:23:56Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m1/body",
+   "why": "the exact current-table row for C1/V1/M1 - gives signer and quotes required",
+   "at": "2026-09-20T09:22:49Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirms today (2026-09-20) falls under the current table sec-hard-threshold, not v2 or the oldest version",
+   "at": "2026-09-20T09:23:10Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m1/body",
+   "why": "the exact current-table row for C1/V1/M1 - gives signer and quotes required",
+   "at": "2026-09-20T09:22:49Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirms today (2026-09-20) falls under the current table sec-hard-threshold, not v2 or the oldest version",
+   "at": "2026-09-20T09:23:10Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:23:56Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m1/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:23:56Z"
+}

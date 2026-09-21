@@ -1,0 +1,65 @@
+{
+ "id": "ov_2026-09-20_eb8570",
+ "question": "In March 2023, what was the nightly lodging cap for a trip to a band B destination, under the overseas per-diem policy in force then?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:02:12Z",
+ "touched_at": "2026-09-20T16:02:33Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "expense table covers business trip pay including per-diem rates",
+   "at": "2026-09-20T16:02:12Z"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates",
+   "why": "legend says pre-2024-07-01 dates are answered by the original overseas-rates doc",
+   "at": "2026-09-20T16:02:20Z"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "the actual document with the region band table; found band B lodging cap = USD 180",
+   "at": "2026-09-20T16:02:29Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "expense table covers business trip pay including per-diem rates",
+   "at": "2026-09-20T16:02:12Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overseas-rates",
+   "why": "legend says pre-2024-07-01 dates are answered by the original overseas-rates doc",
+   "at": "2026-09-20T16:02:20Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "the actual document with the region band table; found band B lodging cap = USD 180",
+   "at": "2026-09-20T16:02:29Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:02:33Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:02:33Z"
+}

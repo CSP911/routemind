@@ -1,0 +1,78 @@
+{
+ "id": "ov_2026-09-20_ce1655",
+ "question": "Sept 2023: approval threshold/signer for a 2,000,000 KRW (net of VAT) purchase",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:04:46Z",
+ "touched_at": "2026-09-20T16:05:20Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "explains which threshold version covers which dates",
+   "at": "2026-09-20T16:04:45Z"
+  },
+  {
+   "address": "/v1/nodes/threshold-table/body",
+   "why": "the oldest version, in force until 2024-07-01, covers Sept 2023; this is the actual answer table",
+   "at": "2026-09-20T16:05:06Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "explains which threshold version covers which dates",
+   "at": "2026-09-20T16:04:45Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "why": "in force 2024-07-01 to 2025-12-31, may not cover Sept 2023",
+   "at": "2026-09-20T16:04:45Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current table since 2026-01-01, may not cover Sept 2023",
+   "at": "2026-09-20T16:04:45Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/threshold-table/body",
+   "why": "the oldest version, in force until 2024-07-01, covers Sept 2023; this is the actual answer table",
+   "at": "2026-09-20T16:05:06Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "why": "in force 2024-07-01 to 2025-12-31, does not cover Sept 2023",
+   "at": "2026-09-20T16:05:09Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current table since 2026-01-01, does not cover Sept 2023",
+   "at": "2026-09-20T16:05:13Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:05:20Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/threshold-table/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:05:20Z"
+}

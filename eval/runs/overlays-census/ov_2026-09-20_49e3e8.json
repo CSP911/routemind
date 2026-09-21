@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_49e3e8",
+ "question": "For origin O1, value W2, goods K1: is a premises visit required, and how often is the file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:52:14Z",
+ "touched_at": "2026-09-20T22:52:25Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, should have the matrix by origin/value/goods",
+   "at": "2026-09-20T22:52:14Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of supplier due diligence, need to confirm which applies today",
+   "at": "2026-09-20T22:52:14Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, should have the matrix by origin/value/goods",
+   "at": "2026-09-20T22:52:14Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of supplier due diligence, need to confirm which applies today",
+   "at": "2026-09-20T22:52:14Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:52:25Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w2-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:52:25Z"
+}

@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_f46d27",
+ "question": "Liberation day, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T00:55:47Z",
+ "touched_at": "2026-09-21T01:10:25Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table since 2026-01-01, likely has multiplier by day type/hours/place",
+   "at": "2026-09-21T00:55:46Z"
+  },
+  {
+   "address": "/v1/nodes/sec-overtime-and-hours",
+   "why": "overview of overtime and hours area, may cover rounding rules",
+   "at": "2026-09-21T00:55:46Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table since 2026-01-01, likely has multiplier by day type/hours/place",
+   "at": "2026-09-21T00:55:46Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-overtime-and-hours",
+   "why": "overview of overtime and hours area, may cover rounding rules",
+   "at": "2026-09-21T00:55:46Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T01:10:25Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h1-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T01:10:25Z"
+}

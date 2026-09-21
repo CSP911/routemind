@@ -1,0 +1,47 @@
+{
+ "id": "ov_2026-09-21_a7dd0e",
+ "question": "For day D3, hours H2, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T05:14:37Z",
+ "touched_at": "2026-09-21T05:30:58Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime multipliers by day type, hour band, and location are likely attendance rules",
+   "at": "2026-09-21T05:14:37Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime multipliers by day type, hour band, and location are likely attendance rules",
+   "at": "2026-09-21T05:14:37Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T05:30:58Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h2-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T05:30:58Z"
+}

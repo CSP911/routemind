@@ -1,0 +1,110 @@
+{
+ "id": "ov_2026-09-21_5f9ad7",
+ "question": "2am, 11 hours, at desk: overtime multiplier and minute rounding",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T12:34:34Z",
+ "touched_at": "2026-09-21T12:35:06Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place, in force since 2026-01-01",
+   "at": "2026-09-21T12:34:34Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different date ranges - need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T12:34:34Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "why": "maps 'two in the morning' to day D4",
+   "at": "2026-09-21T12:34:52Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "why": "maps 'eleven hours' to hours H4",
+   "at": "2026-09-21T12:34:56Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "why": "maps 'at my desk' to place P1",
+   "at": "2026-09-21T12:34:59Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h4-place-p1/body",
+   "why": "the row for D4/H4/P1: multiplier and rounding",
+   "at": "2026-09-21T12:35:03Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place, in force since 2026-01-01",
+   "at": "2026-09-21T12:34:34Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different date ranges - need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T12:34:34Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "why": "maps 'two in the morning' to day D4",
+   "at": "2026-09-21T12:34:52Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "why": "maps 'eleven hours' to hours H4",
+   "at": "2026-09-21T12:34:56Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "why": "maps 'at my desk' to place P1",
+   "at": "2026-09-21T12:34:59Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h4-place-p1/body",
+   "why": "the row for D4/H4/P1: multiplier and rounding",
+   "at": "2026-09-21T12:35:03Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T12:35:06Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h4-place-p1/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T12:35:06Z"
+}

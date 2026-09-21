@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-21_7141d4",
+ "question": "A couple of laptops, around 12 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:02:07Z",
+ "touched_at": "2026-09-21T14:02:26Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement threshold table covers approval by category, amount and term",
+   "at": "2026-09-21T14:02:07Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement threshold table covers approval by category, amount and term",
+   "at": "2026-09-21T14:02:07Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:02:26Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v3-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:02:26Z"
+}

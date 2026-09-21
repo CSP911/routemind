@@ -1,0 +1,99 @@
+{
+ "id": "ov_2026-09-20_44c494",
+ "question": "Partner firm employee, 5 years tenure, fully remote (from home): monthly leave accrual rate and max carryover/holding into January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:32:55Z",
+ "touched_at": "2026-09-20T16:33:37Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carryover rules likely live here",
+   "at": "2026-09-20T16:32:54Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "why": "maps 'here from our partner firm' to type E4",
+   "at": "2026-09-20T16:33:18Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "maps 'been here five years' to tenure T3",
+   "at": "2026-09-20T16:33:23Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "why": "maps 'fully from home' to site L4",
+   "at": "2026-09-20T16:33:28Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l4/body",
+   "why": "exact row for E4/T3/L4: 1.58 days/month accrual, 13-day carry-over limit",
+   "at": "2026-09-20T16:33:32Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carryover rules likely live here",
+   "at": "2026-09-20T16:32:54Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "why": "maps 'here from our partner firm' to type E4",
+   "at": "2026-09-20T16:33:18Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "maps 'been here five years' to tenure T3",
+   "at": "2026-09-20T16:33:23Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "why": "maps 'fully from home' to site L4",
+   "at": "2026-09-20T16:33:28Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l4/body",
+   "why": "exact row for E4/T3/L4: 1.58 days/month accrual, 13-day carry-over limit",
+   "at": "2026-09-20T16:33:32Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:33:37Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l4/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:33:37Z"
+}

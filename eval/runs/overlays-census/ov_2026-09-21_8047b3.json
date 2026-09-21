@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-21_8047b3",
+ "question": "A consultant's time, about 700,000 won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:06:39Z",
+ "touched_at": "2026-09-21T14:07:00Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "recurring service contract ~700,000 won - approval threshold by amount/category/term is a procurement question",
+   "at": "2026-09-21T14:06:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "recurring service contract ~700,000 won - approval threshold by amount/category/term is a procurement question",
+   "at": "2026-09-21T14:06:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:07:00Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v1-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:07:00Z"
+}

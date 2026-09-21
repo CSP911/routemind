@@ -1,0 +1,58 @@
+{
+ "id": "ov_2026-09-20_3c0933",
+ "question": "In September 2023, how much leave was accrued/granted for two years continuous service, under the version in force on that date?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:53:47Z",
+ "touched_at": "2026-09-20T15:54:07Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rules by service length live here",
+   "at": "2026-09-20T15:53:47Z"
+  },
+  {
+   "address": "/v1/nodes/leave-accrual",
+   "why": "oldest version, in force until 2024-07-01, covers Sept 2023",
+   "at": "2026-09-20T15:53:56Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rules by service length live here",
+   "at": "2026-09-20T15:53:47Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/leave-accrual",
+   "why": "oldest version, in force until 2024-07-01, covers Sept 2023",
+   "at": "2026-09-20T15:53:56Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:54:07Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/leave-accrual",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/accrual-rule/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:54:07Z"
+}

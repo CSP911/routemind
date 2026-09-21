@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-20_db8e2e",
+ "question": "Partner-firm employee, 8 months tenure, Busan branch: monthly leave accrual rate, and max days that can be held/carried into January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:29:17Z",
+ "touched_at": "2026-09-20T16:29:35Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - matches monthly accrual rate question",
+   "at": "2026-09-20T16:29:15Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explains which accrual version applies to which dates, need to confirm current version applies",
+   "at": "2026-09-20T16:29:16Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - matches monthly accrual rate question",
+   "at": "2026-09-20T16:29:15Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explains which accrual version applies to which dates, need to confirm current version applies",
+   "at": "2026-09-20T16:29:16Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:29:35Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t1-site-l2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:29:35Z"
+}

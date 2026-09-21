@@ -1,0 +1,89 @@
+{
+ "id": "ov_2026-09-20_3cc84b",
+ "question": "For something dated 3 July 2024 (two days after the first change), what multiplier was paid for day D2 work in hour band H2? Use the version in force on that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:01:04Z",
+ "touched_at": "2026-09-20T16:01:49Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier by day/hour band is a payroll concept",
+   "at": "2026-09-20T16:01:04Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which of the three overtime versions covers 3 July 2024",
+   "at": "2026-09-20T16:01:39Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, covers 3 July 2024",
+   "at": "2026-09-20T16:01:40Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier by day/hour band is a payroll concept",
+   "at": "2026-09-20T16:01:04Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/payslip-overtime",
+   "why": "old overtime rule, correct for dates before 2026-01-01, per hard-moved-overtime note",
+   "at": "2026-09-20T16:01:10Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/payslip-overtime",
+   "why": "wrong address, not printed by any table; correct one is /v1/nodes/payslip-overtime/body",
+   "at": "2026-09-20T16:01:18Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/payslip-overtime/body",
+   "why": "overtime premium multipliers by day/hour band, correct address as printed by sec-payslip-lines-in-detail",
+   "at": "2026-09-20T16:01:19Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/payslip-overtime/body",
+   "why": "payroll overtime page has no D2/H2 band notation and predates the versioned attendance tables; wrong document",
+   "at": "2026-09-20T16:01:37Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which of the three overtime versions covers 3 July 2024",
+   "at": "2026-09-20T16:01:39Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, covers 3 July 2024",
+   "at": "2026-09-20T16:01:40Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:01:49Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:01:49Z"
+}

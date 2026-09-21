@@ -1,0 +1,110 @@
+{
+ "id": "ov_2026-09-21_346c74",
+ "question": "MD, Singapore, 3-week trip: nightly hotel cap and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:46:42Z",
+ "touched_at": "2026-09-21T13:47:19Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "expense table covers business trip caps and receipt rules",
+   "at": "2026-09-21T13:46:42Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b2-stay-s4/body",
+   "why": "the exact row: MD (G4), Singapore (B2), 3 weeks (S4) — has lodging cap and receipt threshold",
+   "at": "2026-09-21T13:47:07Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "resolves managing director to grade G4",
+   "at": "2026-09-21T13:47:09Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "resolves Singapore to band B2",
+   "at": "2026-09-21T13:47:10Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "resolves three weeks to stay S4",
+   "at": "2026-09-21T13:47:11Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "confirms current table (2026-01-01 onwards) applies for a 2026-09-21 question",
+   "at": "2026-09-21T13:47:13Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "expense table covers business trip caps and receipt rules",
+   "at": "2026-09-21T13:46:42Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b2-stay-s4/body",
+   "why": "the exact row: MD (G4), Singapore (B2), 3 weeks (S4) — has lodging cap and receipt threshold",
+   "at": "2026-09-21T13:47:07Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "resolves managing director to grade G4",
+   "at": "2026-09-21T13:47:09Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "resolves Singapore to band B2",
+   "at": "2026-09-21T13:47:10Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "resolves three weeks to stay S4",
+   "at": "2026-09-21T13:47:11Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "confirms current table (2026-01-01 onwards) applies for a 2026-09-21 question",
+   "at": "2026-09-21T13:47:13Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:47:19Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b2-stay-s4/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T13:47:19Z"
+}

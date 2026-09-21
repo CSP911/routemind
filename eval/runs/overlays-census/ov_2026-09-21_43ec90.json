@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_43ec90",
+ "question": "Dinner with a client, about 700,000 won, locked in for three years: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:30:29Z",
+ "touched_at": "2026-09-21T14:30:51Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "client dinner sounds like an entertainment expense",
+   "at": "2026-09-21T14:30:29Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "if this is really a procurement/contract matter, approval threshold depends on amount, category, and term",
+   "at": "2026-09-21T14:30:29Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "quotes requirement lives here if it's a purchase",
+   "at": "2026-09-21T14:30:29Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "client dinner sounds like an entertainment expense",
+   "at": "2026-09-21T14:30:29Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "if this is really a procurement/contract matter, approval threshold depends on amount, category, and term",
+   "at": "2026-09-21T14:30:29Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "quotes requirement lives here if it's a purchase",
+   "at": "2026-09-21T14:30:29Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:30:51Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v1-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:30:51Z"
+}

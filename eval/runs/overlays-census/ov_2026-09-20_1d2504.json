@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_1d2504",
+ "question": "Partner firm employee, 8 months tenure, Singapore entity: monthly leave accrual rate and max carry-forward/holding balance allowed in January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:29:47Z",
+ "touched_at": "2026-09-20T16:30:07Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, mid-year joiner leave, and carry-forward rules live here",
+   "at": "2026-09-20T16:29:47Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, mid-year joiner leave, and carry-forward rules live here",
+   "at": "2026-09-20T16:29:47Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:30:07Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t1-site-l3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:30:07Z"
+}

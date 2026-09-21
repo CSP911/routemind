@@ -1,0 +1,96 @@
+{
+ "id": "ov_2026-09-20_543860",
+ "question": "For day D2, hours H3, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:58:52Z",
+ "touched_at": "2026-09-20T23:59:54Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "day/hours/place could be attendance overtime request classification",
+   "at": "2026-09-20T23:58:52Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - directly matches question",
+   "at": "2026-09-20T23:59:11Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different date ranges - must confirm which applies for 2026-09-20",
+   "at": "2026-09-20T23:59:17Z"
+  },
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "warns overtime premiums moved from payroll to attendance on 2026-01-01 - confirms right region",
+   "at": "2026-09-20T23:59:24Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding sound like payroll pay-rate rules",
+   "at": "2026-09-20T23:58:52Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "day/hours/place could be attendance overtime request classification",
+   "at": "2026-09-20T23:58:52Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - directly matches question",
+   "at": "2026-09-20T23:59:11Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different date ranges - must confirm which applies for 2026-09-20",
+   "at": "2026-09-20T23:59:17Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "warns overtime premiums moved from payroll to attendance on 2026-01-01 - confirms right region",
+   "at": "2026-09-20T23:59:24Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/regions/payroll",
+   "why": "overtime now lives in attendance per hard-moved-overtime warning",
+   "at": "2026-09-20T23:59:29Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:59:54Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h3-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:59:54Z"
+}

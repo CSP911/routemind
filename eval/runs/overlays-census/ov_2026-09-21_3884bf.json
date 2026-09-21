@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_3884bf",
+ "question": "Team manager, Tokyo, four nights: hotel per-diem cap and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:17:17Z",
+ "touched_at": "2026-09-21T13:17:44Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, likely has hotel cap for Tokyo by grade",
+   "at": "2026-09-21T13:17:17Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns of three per-diem versions by date, need to confirm which applies now",
+   "at": "2026-09-21T13:17:17Z"
+  },
+  {
+   "address": "/v1/nodes/evidence",
+   "why": "receipt threshold - above what amount a receipt must be kept",
+   "at": "2026-09-21T13:17:17Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, likely has hotel cap for Tokyo by grade",
+   "at": "2026-09-21T13:17:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns of three per-diem versions by date, need to confirm which applies now",
+   "at": "2026-09-21T13:17:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "receipt threshold - above what amount a receipt must be kept",
+   "at": "2026-09-21T13:17:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:17:44Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b1-stay-s2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T13:17:44Z"
+}

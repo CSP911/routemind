@@ -1,0 +1,65 @@
+{
+ "id": "ov_2026-09-20_f8b89b",
+ "question": "For origin O3, value W4, goods K2, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:25:55Z",
+ "touched_at": "2026-09-20T23:26:08Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin, value, goods",
+   "at": "2026-09-20T23:25:55Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warning about three versions of diligence table, need to confirm which is current for today's date",
+   "at": "2026-09-20T23:25:55Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together",
+   "at": "2026-09-20T23:25:55Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin, value, goods",
+   "at": "2026-09-20T23:25:55Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warning about three versions of diligence table, need to confirm which is current for today's date",
+   "at": "2026-09-20T23:25:55Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together",
+   "at": "2026-09-20T23:25:55Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:26:08Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w4-goods-k2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T23:26:08Z"
+}

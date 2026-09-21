@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-20_4a7b95",
+ "question": "Vendor in Austin, KRW 300M, office consumables only: is an on-site premises visit required, and how often is the file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:22:18Z",
+ "touched_at": "2026-09-20T23:22:53Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table, in force since 2026-01-01 - likely holds the site-visit and review-frequency rules by origin/value/goods",
+   "at": "2026-09-20T23:22:18Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together - may clarify which page governs review cadence",
+   "at": "2026-09-20T23:22:18Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence rules - need to confirm which applies as of 2026-09-20",
+   "at": "2026-09-20T23:22:18Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table, in force since 2026-01-01 - likely holds the site-visit and review-frequency rules by origin/value/goods",
+   "at": "2026-09-20T23:22:18Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together - may clarify which page governs review cadence",
+   "at": "2026-09-20T23:22:18Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence rules - need to confirm which applies as of 2026-09-20",
+   "at": "2026-09-20T23:22:18Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:22:53Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w3-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:22:53Z"
+}

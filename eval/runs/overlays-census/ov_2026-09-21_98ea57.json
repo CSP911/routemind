@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-21_98ea57",
+ "question": "Department head, Dhaka, one night — hotel cap per night and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:38:10Z",
+ "touched_at": "2026-09-21T13:38:32Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip expense rules likely cover hotel per-night caps and receipt requirements by grade/city",
+   "at": "2026-09-21T13:38:10Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip expense rules likely cover hotel per-night caps and receipt requirements by grade/city",
+   "at": "2026-09-21T13:38:10Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:38:32Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g3-band-b4-stay-s1/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:38:32Z"
+}

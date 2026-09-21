@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_341cb1",
+ "question": "Liberation day, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T06:32:45Z",
+ "touched_at": "2026-09-21T07:07:17Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "holiday work-from-home hours, overtime multiplier and rounding rules likely tracked here",
+   "at": "2026-09-21T06:32:45Z"
+  },
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and pay rounding rules could be a payroll policy",
+   "at": "2026-09-21T06:32:45Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "holiday work-from-home hours, overtime multiplier and rounding rules likely tracked here",
+   "at": "2026-09-21T06:32:45Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and pay rounding rules could be a payroll policy",
+   "at": "2026-09-21T06:32:45Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T07:07:17Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h3-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T07:07:17Z"
+}

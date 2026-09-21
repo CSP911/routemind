@@ -1,0 +1,92 @@
+{
+ "id": "ov_2026-09-21_084d69",
+ "question": "A saturday, eleven hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T00:40:36Z",
+ "touched_at": "2026-09-21T00:55:25Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multipliers and pay-related rounding rules are typically in payroll",
+   "at": "2026-09-21T00:40:36Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "attendance rules may cover work-from-home and time tracking/rounding",
+   "at": "2026-09-21T00:40:36Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table, in force from 2026-01-01, by day/hours/place — matches Saturday/11h/home",
+   "at": "2026-09-21T00:40:44Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has 3 versions with different dates — need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T00:40:49Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multipliers and pay-related rounding rules are typically in payroll",
+   "at": "2026-09-21T00:40:36Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "attendance rules may cover work-from-home and time tracking/rounding",
+   "at": "2026-09-21T00:40:36Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table, in force from 2026-01-01, by day/hours/place — matches Saturday/11h/home",
+   "at": "2026-09-21T00:40:44Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has 3 versions with different dates — need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T00:40:49Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T00:55:25Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h4-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T00:55:25Z"
+}

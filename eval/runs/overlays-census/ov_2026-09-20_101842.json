@@ -1,0 +1,58 @@
+{
+ "id": "ov_2026-09-20_101842",
+ "question": "For day D1, hours H3, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:46:31Z",
+ "touched_at": "2026-09-20T23:46:55Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding are payroll topics",
+   "at": "2026-09-20T23:46:31Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime moved-notice says overtime premiums are now set in attendance's sec-hard-overtime table",
+   "at": "2026-09-20T23:46:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding are payroll topics",
+   "at": "2026-09-20T23:46:31Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/regions/attendance",
+   "why": "overtime moved-notice says overtime premiums are now set in attendance's sec-hard-overtime table",
+   "at": "2026-09-20T23:46:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:46:55Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h3-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:46:55Z"
+}

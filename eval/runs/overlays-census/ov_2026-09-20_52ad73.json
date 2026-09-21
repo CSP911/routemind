@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-20_52ad73",
+ "question": "Stuttgart firm, KRW 300 million contract, licence required: site visit needed? review/renewal frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:11:27Z",
+ "touched_at": "2026-09-20T23:11:45Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds site visit and review frequency requirements by origin/value/goods",
+   "at": "2026-09-20T23:11:27Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns there are three versions of due diligence rules - need to confirm which version applies to today's date 2026-09-21",
+   "at": "2026-09-20T23:11:27Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the due diligence pages fit together, may clarify site visit vs periodic review distinction",
+   "at": "2026-09-20T23:11:27Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds site visit and review frequency requirements by origin/value/goods",
+   "at": "2026-09-20T23:11:27Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns there are three versions of due diligence rules - need to confirm which version applies to today's date 2026-09-21",
+   "at": "2026-09-20T23:11:27Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the due diligence pages fit together, may clarify site visit vs periodic review distinction",
+   "at": "2026-09-20T23:11:27Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:11:45Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w3-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:11:45Z"
+}

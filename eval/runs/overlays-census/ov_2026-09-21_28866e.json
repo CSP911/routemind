@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_28866e",
+ "question": "Flights and hotels, around 12 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:24:43Z",
+ "touched_at": "2026-09-21T14:24:57Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term - need signature authority",
+   "at": "2026-09-21T14:24:43Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "how quotes work in a purchase request",
+   "at": "2026-09-21T14:24:43Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warning about three threshold versions, need to confirm which applies",
+   "at": "2026-09-21T14:24:43Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term - need signature authority",
+   "at": "2026-09-21T14:24:43Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "how quotes work in a purchase request",
+   "at": "2026-09-21T14:24:43Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warning about three threshold versions, need to confirm which applies",
+   "at": "2026-09-21T14:24:43Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:24:57Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v3-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:24:57Z"
+}

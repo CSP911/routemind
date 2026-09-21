@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_caf2c6",
+ "question": "On a two-year contract, been here eight months, fully remote: monthly leave accrual and January cap",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:18:01Z",
+ "touched_at": "2026-09-20T16:18:18Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "accrual rates, remote-work leave rules, and carryover/cap details are likely here",
+   "at": "2026-09-20T16:18:01Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "accrual rates, remote-work leave rules, and carryover/cap details are likely here",
+   "at": "2026-09-20T16:18:01Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:18:18Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t1-site-l4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:18:18Z"
+}

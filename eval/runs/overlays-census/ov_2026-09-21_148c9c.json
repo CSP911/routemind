@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_148c9c",
+ "question": "Flights and hotels, about 40 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:26:41Z",
+ "touched_at": "2026-09-21T14:27:00Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount/term threshold by category determines approval level and whether competitive quotes are required",
+   "at": "2026-09-21T14:26:40Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "whose signature is needed depends on the approval chain rules",
+   "at": "2026-09-21T14:26:40Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount/term threshold by category determines approval level and whether competitive quotes are required",
+   "at": "2026-09-21T14:26:40Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "whose signature is needed depends on the approval chain rules",
+   "at": "2026-09-21T14:26:40Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:27:00Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v4-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:27:00Z"
+}

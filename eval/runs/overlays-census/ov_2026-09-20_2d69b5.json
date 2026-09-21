@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_2d69b5",
+ "question": "For origin O4, value W2, goods K2: is a site visit required, and what is the re-review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:32:17Z",
+ "touched_at": "2026-09-20T23:32:28Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds origin/value/goods matrix with site visit and review frequency columns",
+   "at": "2026-09-20T23:32:16Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table; need to confirm which is current for today's date 2026-09-20",
+   "at": "2026-09-20T23:32:16Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds origin/value/goods matrix with site visit and review frequency columns",
+   "at": "2026-09-20T23:32:16Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table; need to confirm which is current for today's date 2026-09-20",
+   "at": "2026-09-20T23:32:16Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:32:28Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w2-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:32:28Z"
+}

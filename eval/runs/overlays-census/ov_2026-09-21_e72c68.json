@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_e72c68",
+ "question": "Liberation day, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T05:31:37Z",
+ "touched_at": "2026-09-21T05:48:02Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "confirms overtime premiums moved to attendance region 2026-01-01, this payroll page is the old rule",
+   "at": "2026-09-21T05:31:37Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table in force since 2026-01-01, by day type/hours/place",
+   "at": "2026-09-21T05:31:43Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "confirms overtime premiums moved to attendance region 2026-01-01, this payroll page is the old rule",
+   "at": "2026-09-21T05:31:37Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table in force since 2026-01-01, by day type/hours/place",
+   "at": "2026-09-21T05:31:43Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T05:48:02Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h3-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T05:48:02Z"
+}

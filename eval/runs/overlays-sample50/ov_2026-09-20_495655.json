@@ -1,0 +1,99 @@
+{
+ "id": "ov_2026-09-20_495655",
+ "question": "test",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:29:54Z",
+ "touched_at": "2026-09-20T09:33:30Z",
+ "members": [
+  {
+   "address": "/v1/nodes/accrual-rule/body",
+   "why": "test",
+   "at": "2026-09-20T09:29:49Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "which of the three accrual versions covers which date range",
+   "at": "2026-09-20T09:30:19Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "why": "second version, 2024-07-01 to 2025-12-31, covers 2025",
+   "at": "2026-09-20T09:31:17Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "tenure T2 = two years of continuous service, needed to read the v2 grid",
+   "at": "2026-09-20T09:32:07Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "why": "employment-type code needed for the v2 grid; question doesn't state a type so assumed E1 (regular payroll) as default",
+   "at": "2026-09-20T09:32:57Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/accrual-rule/body",
+   "why": "test",
+   "at": "2026-09-20T09:29:49Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "which of the three accrual versions covers which date range",
+   "at": "2026-09-20T09:30:19Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "why": "second version, 2024-07-01 to 2025-12-31, covers 2025",
+   "at": "2026-09-20T09:31:17Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "tenure T2 = two years of continuous service, needed to read the v2 grid",
+   "at": "2026-09-20T09:32:07Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "why": "employment-type code needed for the v2 grid; question doesn't state a type so assumed E1 (regular payroll) as default",
+   "at": "2026-09-20T09:32:57Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:33:30Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/accrual-rule/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:33:30Z"
+}

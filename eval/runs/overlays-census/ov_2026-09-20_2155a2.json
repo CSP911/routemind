@@ -1,0 +1,63 @@
+{
+ "id": "ov_2026-09-20_2155a2",
+ "question": "Vendor in Austin, 700 million won, holds a licence: is an on-site visit required, and what is the periodic review frequency for their file?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:28:07Z",
+ "touched_at": "2026-09-20T23:28:37Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor onboarding/site-visit and periodic review requirements are likely procurement policy",
+   "at": "2026-09-20T23:28:07Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor onboarding/site-visit and periodic review requirements are likely procurement policy",
+   "at": "2026-09-20T23:28:07Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:28:37Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/procurement",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w4-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:28:37Z"
+}

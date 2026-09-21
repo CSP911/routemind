@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-21_1539fb",
+ "question": "Two in the morning, three hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T11:56:30Z",
+ "touched_at": "2026-09-21T11:56:45Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - in force from 2026-01-01, matches the question's date context (2026-09-20)",
+   "at": "2026-09-21T11:56:30Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - in force from 2026-01-01, matches the question's date context (2026-09-20)",
+   "at": "2026-09-21T11:56:30Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T11:56:45Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h2-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T11:56:45Z"
+}

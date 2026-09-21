@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_eb44ae",
+ "question": "Reconciling claims from 2023 and 2025 against the overtime rate - which two versions and what multiplier under each",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:27:36Z",
+ "touched_at": "2026-09-20T09:27:36Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "legend: three dated versions",
+   "at": "2026-09-20T09:27:14Z"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "pre-2024-07-01 version for 2023 claim",
+   "at": "2026-09-20T09:27:18Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "2024-07-01 to 2025-12-31 version for 2025 claim",
+   "at": "2026-09-20T09:27:22Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "legend: three dated versions",
+   "at": "2026-09-20T09:27:14Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "pre-2024-07-01 version for 2023 claim",
+   "at": "2026-09-20T09:27:18Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "2024-07-01 to 2025-12-31 version for 2025 claim",
+   "at": "2026-09-20T09:27:22Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

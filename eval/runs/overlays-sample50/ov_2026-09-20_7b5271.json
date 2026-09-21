@@ -1,0 +1,40 @@
+{
+ "id": "ov_2026-09-20_7b5271",
+ "question": "For something dated 3 July 2024 (two days after the first change), what multiplier was paid for day D2 work in hour band H2? Use the version in force on that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:29:45Z",
+ "touched_at": "2026-09-20T09:29:45Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains three versions of overtime rate and which date ranges each covers",
+   "at": "2026-09-20T09:29:33Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "the version in force 2024-07-01 to 2025-12-31, covers 2024-07-03, has D2/H2 table",
+   "at": "2026-09-20T09:29:37Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains three versions of overtime rate and which date ranges each covers",
+   "at": "2026-09-20T09:29:33Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "the version in force 2024-07-01 to 2025-12-31, covers 2024-07-03, has D2/H2 table",
+   "at": "2026-09-20T09:29:37Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

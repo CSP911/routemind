@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_0b3b63",
+ "question": "Liberation day, three hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T04:47:00Z",
+ "touched_at": "2026-09-21T05:14:37Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime/holiday pay multipliers and rounding rules likely live in payroll",
+   "at": "2026-09-21T04:47:00Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime premiums moved to attendance region effective 2026-01-01, per hard-moved-overtime note in payroll",
+   "at": "2026-09-21T04:47:13Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime/holiday pay multipliers and rounding rules likely live in payroll",
+   "at": "2026-09-21T04:47:00Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/regions/attendance",
+   "why": "overtime premiums moved to attendance region effective 2026-01-01, per hard-moved-overtime note in payroll",
+   "at": "2026-09-21T04:47:13Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T05:14:37Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h2-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T05:14:37Z"
+}

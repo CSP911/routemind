@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-21_9eeedc",
+ "question": "Consultant's time, about 40 million won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:15:29Z",
+ "touched_at": "2026-09-21T14:15:47Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "threshold/approval and competitive-quote requirement lives in procurement region",
+   "at": "2026-09-21T14:15:29Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "threshold/approval and competitive-quote requirement lives in procurement region",
+   "at": "2026-09-21T14:15:29Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:15:47Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v4-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:15:47Z"
+}

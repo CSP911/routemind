@@ -1,0 +1,61 @@
+{
+ "id": "ov_2026-09-20_54cc9c",
+ "question": "For type E4, tenure T3, site L1, how much time off am I building up each month, and how much can I still be holding in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:31:46Z",
+ "touched_at": "2026-09-20T16:31:56Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current accrual table by type, tenure, site since 2026-01-01",
+   "at": "2026-09-20T16:31:46Z"
+  },
+  {
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and booking, may cover carryover/holding cap",
+   "at": "2026-09-20T16:31:46Z"
+  },
+  {
+   "address": "/v1/nodes/sec-days-that-decide-money",
+   "why": "key days affecting allowances/payouts, may relate to January cap",
+   "at": "2026-09-20T16:31:46Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current accrual table by type, tenure, site since 2026-01-01",
+   "at": "2026-09-20T16:31:46Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and booking, may cover carryover/holding cap",
+   "at": "2026-09-20T16:31:46Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-days-that-decide-money",
+   "why": "key days affecting allowances/payouts, may relate to January cap",
+   "at": "2026-09-20T16:31:46Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:31:56Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:31:56Z"
+}

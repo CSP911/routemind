@@ -1,0 +1,122 @@
+{
+ "id": "ov_2026-09-21_bf8da1",
+ "question": "Managing director, Dhaka, eight nights: hotel per-night cap and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:52:29Z",
+ "touched_at": "2026-09-21T13:53:18Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay length, likely has hotel cap",
+   "at": "2026-09-21T13:52:29Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision",
+   "why": "warns per-diem has 3 versions with different dates, need to confirm which applies",
+   "at": "2026-09-21T13:52:29Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "confirms managing director = grade G4",
+   "at": "2026-09-21T13:53:00Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "confirms Dhaka = band B4",
+   "at": "2026-09-21T13:53:03Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "confirms eight nights = stay S3",
+   "at": "2026-09-21T13:53:06Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b4-stay-s3/body",
+   "why": "the actual row: G4/B4/S3 gives lodging 343 USD/night and receipt threshold 63 USD",
+   "at": "2026-09-21T13:53:11Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay length, likely has hotel cap",
+   "at": "2026-09-21T13:52:29Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision",
+   "why": "warns per-diem has 3 versions with different dates, need to confirm which applies",
+   "at": "2026-09-21T13:52:29Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "receipt requirement threshold",
+   "at": "2026-09-21T13:52:29Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/evidence",
+   "why": "qualified-evidence/qualified-list turned out to be domestic KRW receipt-evidence rules (30,000 KRW threshold), unrelated to the overseas per-diem receipt threshold already given in the per-diem row itself",
+   "at": "2026-09-21T13:52:55Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "confirms managing director = grade G4",
+   "at": "2026-09-21T13:53:00Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "confirms Dhaka = band B4",
+   "at": "2026-09-21T13:53:03Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "confirms eight nights = stay S3",
+   "at": "2026-09-21T13:53:06Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b4-stay-s3/body",
+   "why": "the actual row: G4/B4/S3 gives lodging 343 USD/night and receipt threshold 63 USD",
+   "at": "2026-09-21T13:53:11Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:53:18Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b4-stay-s3/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T13:53:18Z"
+}

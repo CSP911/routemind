@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_d22beb",
+ "question": "Dinner with a client, roughly 3 million won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:32:58Z",
+ "touched_at": "2026-09-21T14:33:16Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "client entertainment expense — signature/approval needed for dinner cost",
+   "at": "2026-09-21T14:32:58Z"
+  },
+  {
+   "address": "/v1/regions/procurement",
+   "why": "recurring annual spend — approval threshold by amount/term, and whether competitive quotes are required",
+   "at": "2026-09-21T14:32:58Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "client entertainment expense — signature/approval needed for dinner cost",
+   "at": "2026-09-21T14:32:58Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "recurring annual spend — approval threshold by amount/term, and whether competitive quotes are required",
+   "at": "2026-09-21T14:32:58Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:33:16Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v2-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:33:16Z"
+}

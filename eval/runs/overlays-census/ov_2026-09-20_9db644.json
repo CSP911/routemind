@@ -1,0 +1,59 @@
+{
+ "id": "ov_2026-09-20_9db644",
+ "question": "Vendor in Austin, 8M KRW, made-to-spec: site visit required? how often re-reviewed?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:16:33Z",
+ "touched_at": "2026-09-20T23:16:52Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement covers approval thresholds and vendor rules by amount/category/term",
+   "at": "2026-09-20T23:16:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement covers approval thresholds and vendor rules by amount/category/term",
+   "at": "2026-09-20T23:16:33Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:16:52Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w1-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:16:52Z"
+}

@@ -1,0 +1,61 @@
+{
+ "id": "ov_2026-09-20_8b4f66",
+ "question": "For type E4, tenure T2, site L1, how much time off am I building up each month, and how much can I still be holding in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:30:14Z",
+ "touched_at": "2026-09-20T16:30:30Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type/tenure/site, in force since 2026-01-01",
+   "at": "2026-09-20T16:30:14Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explains which accrual version applies to which dates",
+   "at": "2026-09-20T16:30:14Z"
+  },
+  {
+   "address": "/v1/nodes/annual-leave",
+   "why": "annual leave entitlement and carryover/cap rules that might explain 'holding in January'",
+   "at": "2026-09-20T16:30:14Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type/tenure/site, in force since 2026-01-01",
+   "at": "2026-09-20T16:30:14Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explains which accrual version applies to which dates",
+   "at": "2026-09-20T16:30:14Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/annual-leave",
+   "why": "annual leave entitlement and carryover/cap rules that might explain 'holding in January'",
+   "at": "2026-09-20T16:30:14Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:30:30Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t2-site-l1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:30:30Z"
+}

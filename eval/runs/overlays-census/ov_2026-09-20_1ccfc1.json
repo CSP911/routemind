@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_1ccfc1",
+ "question": "In January 2024, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:59:15Z",
+ "touched_at": "2026-09-20T15:59:33Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime premium rates now live here; may have effective-dated history",
+   "at": "2026-09-20T15:59:15Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "old payroll page about overtime rates, may hold historical Jan 2024 rate before 2026-01-01 move",
+   "at": "2026-09-20T15:59:15Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime premium rates now live here; may have effective-dated history",
+   "at": "2026-09-20T15:59:15Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "payroll page only points elsewhere; actual old-version rate found under attendance/overtime-and-hours instead",
+   "at": "2026-09-20T15:59:32Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:59:33Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:59:33Z"
+}

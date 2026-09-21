@@ -1,0 +1,65 @@
+{
+ "id": "ov_2026-09-21_869721",
+ "question": "For category C2, amount V4, term M1, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:14:41Z",
+ "touched_at": "2026-09-21T14:15:00Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, likely has the C2/V4/M1 lookup",
+   "at": "2026-09-21T14:14:41Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions, need to confirm which is in force today (2026-09-21)",
+   "at": "2026-09-21T14:14:41Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "may cover how many quotes needed before approval",
+   "at": "2026-09-21T14:14:41Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, likely has the C2/V4/M1 lookup",
+   "at": "2026-09-21T14:14:41Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions, need to confirm which is in force today (2026-09-21)",
+   "at": "2026-09-21T14:14:41Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "may cover how many quotes needed before approval",
+   "at": "2026-09-21T14:14:41Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:15:00Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v4-term-m1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:15:00Z"
+}

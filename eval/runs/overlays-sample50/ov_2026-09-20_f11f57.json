@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_f11f57",
+ "question": "Company in Daejeon, KRW 300,000,000, requires a licence: site visit required? review/re-diligence frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:19:39Z",
+ "touched_at": "2026-09-20T09:19:39Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force from 2026-01-01 - likely has thresholds by value/origin/licence and site visit + review cadence",
+   "at": "2026-09-20T09:19:35Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns diligence table has three versions - need to confirm which is in force for today's date 2026-09-20",
+   "at": "2026-09-20T09:19:35Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together - orientation before reading the current table",
+   "at": "2026-09-20T09:19:36Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force from 2026-01-01 - likely has thresholds by value/origin/licence and site visit + review cadence",
+   "at": "2026-09-20T09:19:35Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns diligence table has three versions - need to confirm which is in force for today's date 2026-09-20",
+   "at": "2026-09-20T09:19:35Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together - orientation before reading the current table",
+   "at": "2026-09-20T09:19:36Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

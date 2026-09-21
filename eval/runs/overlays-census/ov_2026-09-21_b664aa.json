@@ -1,0 +1,63 @@
+{
+ "id": "ov_2026-09-21_b664aa",
+ "question": "Tokyo dept head, one night: hotel cap per night and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:28:45Z",
+ "touched_at": "2026-09-21T13:29:09Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip lodging caps and receipt rules likely here",
+   "at": "2026-09-21T13:28:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip lodging caps and receipt rules likely here",
+   "at": "2026-09-21T13:28:44Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:29:09Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/expense",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g3-band-b1-stay-s1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:29:09Z"
+}

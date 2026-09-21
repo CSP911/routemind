@@ -1,0 +1,39 @@
+{
+ "id": "ov_2026-09-20_a70fc5",
+ "question": "How many times has supplier due diligence been rewritten, and from what date does each version apply?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:57:13Z",
+ "touched_at": "2026-09-20T15:57:29Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence is a procurement-related topic",
+   "at": "2026-09-20T15:57:13Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence is a procurement-related topic",
+   "at": "2026-09-20T15:57:13Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:57:29Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:57:29Z"
+}

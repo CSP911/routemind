@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_3e32fe",
+ "question": "Liberation day, three hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T03:04:25Z",
+ "touched_at": "2026-09-21T03:12:43Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay multipliers and payslip line explanations likely live here",
+   "at": "2026-09-21T03:04:25Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "attendance rules may define holiday work and rounding of hours/minutes",
+   "at": "2026-09-21T03:04:25Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay multipliers and payslip line explanations likely live here",
+   "at": "2026-09-21T03:04:25Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "attendance rules may define holiday work and rounding of hours/minutes",
+   "at": "2026-09-21T03:04:25Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T03:12:43Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h2-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T03:12:43Z"
+}

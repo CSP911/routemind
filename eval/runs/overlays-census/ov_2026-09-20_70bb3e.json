@@ -1,0 +1,89 @@
+{
+ "id": "ov_2026-09-20_70bb3e",
+ "question": "In January 2024, what was the delegation limit or who signed for a purchase of two million won net of VAT? Answer under the version of the approval threshold in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:05:48Z",
+ "touched_at": "2026-09-20T16:07:16Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category/amount/term lives here",
+   "at": "2026-09-20T16:05:48Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "approval chain and who can sign off lives here",
+   "at": "2026-09-20T16:05:48Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "nests approval-threshold, the by-amount-only table matching the oldest 'threshold-table' version",
+   "at": "2026-09-20T16:07:01Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category/amount/term lives here",
+   "at": "2026-09-20T16:05:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "approval chain and who can sign off lives here",
+   "at": "2026-09-20T16:05:48Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/sec-approvals-that-move-money",
+   "why": "likely nests delegation-scope and the oldest threshold-table referenced by hard-moved-threshold",
+   "at": "2026-09-20T16:06:17Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/sec-approvals-that-move-money",
+   "why": "no delegation-scope or threshold-table nested here",
+   "at": "2026-09-20T16:06:28Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/purchase-request",
+   "why": "nests approval-threshold, the by-amount-only table matching the oldest 'threshold-table' version",
+   "at": "2026-09-20T16:07:01Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:07:16Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/approval-threshold",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/threshold-table/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:07:16Z"
+}

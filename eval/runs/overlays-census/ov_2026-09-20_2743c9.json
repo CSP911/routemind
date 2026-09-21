@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-20_2743c9",
+ "question": "Stuttgart firm, KRW 300,000,000 contract, custom-spec goods: site visit required? how often is vendor file re-reviewed?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:09:46Z",
+ "touched_at": "2026-09-20T23:10:05Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin, value, goods - likely has site visit rule",
+   "at": "2026-09-20T23:09:46Z"
+  },
+  {
+   "address": "/v1/nodes/sec-vendor-performance-and-renewal",
+   "why": "vendor performance/renewal review - likely covers re-review frequency",
+   "at": "2026-09-20T23:09:46Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision",
+   "why": "warns diligence has 3 versions, need to confirm which applies",
+   "at": "2026-09-20T23:09:46Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin, value, goods - likely has site visit rule",
+   "at": "2026-09-20T23:09:46Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-vendor-performance-and-renewal",
+   "why": "vendor performance/renewal review - likely covers re-review frequency",
+   "at": "2026-09-20T23:09:46Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision",
+   "why": "warns diligence has 3 versions, need to confirm which applies",
+   "at": "2026-09-20T23:09:46Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:10:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w3-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:10:05Z"
+}

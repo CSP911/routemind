@@ -1,0 +1,89 @@
+{
+ "id": "ov_2026-09-20_486849",
+ "question": "An ordinary tuesday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:15:54Z",
+ "touched_at": "2026-09-20T09:16:42Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table, in force since 2026-01-01, by day type/hours/place",
+   "at": "2026-09-20T09:15:54Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different dates - need to confirm which applies today",
+   "at": "2026-09-20T09:15:54Z"
+  },
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "payroll note confirming overtime premiums moved to attendance on 2026-01-01",
+   "at": "2026-09-20T09:15:54Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table, in force since 2026-01-01, by day type/hours/place",
+   "at": "2026-09-20T09:15:54Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different dates - need to confirm which applies today",
+   "at": "2026-09-20T09:15:54Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "superseded version 2024-07-01 to 2025-12-31, likely not applicable but check",
+   "at": "2026-09-20T09:15:54Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "payroll note confirming overtime premiums moved to attendance on 2026-01-01",
+   "at": "2026-09-20T09:15:54Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "wrong version - current 2026-01-01 table applies since today is 2026-09-20",
+   "at": "2026-09-20T09:16:26Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:16:42Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h1-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T09:16:42Z"
+}

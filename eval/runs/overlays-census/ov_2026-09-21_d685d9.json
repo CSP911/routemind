@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_d685d9",
+ "question": "Dinner with a client, roughly 3 million won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:32:17Z",
+ "touched_at": "2026-09-21T14:32:39Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "client dinner is likely entertainment expense; need approval threshold",
+   "at": "2026-09-21T14:32:17Z"
+  },
+  {
+   "address": "/v1/regions/procurement",
+   "why": "competitive quotes/prices requirement may live here",
+   "at": "2026-09-21T14:32:17Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "client dinner is likely entertainment expense; need approval threshold",
+   "at": "2026-09-21T14:32:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "competitive quotes/prices requirement may live here",
+   "at": "2026-09-21T14:32:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:32:39Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v2-term-m1/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:32:39Z"
+}

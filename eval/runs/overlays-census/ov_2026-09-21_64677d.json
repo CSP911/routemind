@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_64677d",
+ "question": "Liberation day, three hours, out at a client's office: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T04:04:12Z",
+ "touched_at": "2026-09-21T04:13:54Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "holiday overtime pay multiplier likely defined here",
+   "at": "2026-09-21T04:04:12Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "holiday work / overtime hours logging and rounding rules likely here",
+   "at": "2026-09-21T04:04:12Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "holiday overtime pay multiplier likely defined here",
+   "at": "2026-09-21T04:04:12Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "holiday work / overtime hours logging and rounding rules likely here",
+   "at": "2026-09-21T04:04:12Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T04:13:54Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h2-place-p2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T04:13:54Z"
+}

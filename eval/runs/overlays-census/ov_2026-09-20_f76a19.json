@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_f76a19",
+ "question": "How many times has the overseas per-diem been rewritten, and from what date does each version apply?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:03:20Z",
+ "touched_at": "2026-09-20T16:04:09Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "per-diem / overseas travel allowance rates and history likely live in the expense region",
+   "at": "2026-09-20T16:03:20Z"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "the oldest of the three per-diem versions, in force until 2024-07-01, confirmed by the legend-revision doc and by hard-perdiem-v2's own text",
+   "at": "2026-09-20T16:04:03Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "per-diem / overseas travel allowance rates and history likely live in the expense region",
+   "at": "2026-09-20T16:03:20Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "the oldest of the three per-diem versions, in force until 2024-07-01, confirmed by the legend-revision doc and by hard-perdiem-v2's own text",
+   "at": "2026-09-20T16:04:03Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:04:09Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:04:09Z"
+}

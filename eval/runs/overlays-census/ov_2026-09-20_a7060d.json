@@ -1,0 +1,59 @@
+{
+ "id": "ov_2026-09-20_a7060d",
+ "question": "Stuttgart firm, KRW 8,000,000, office consumables only: is a site visit required, and how often is the vendor file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:02:05Z",
+ "touched_at": "2026-09-20T23:02:26Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor/supplier due diligence, site visit requirement, and review cadence would be under procurement",
+   "at": "2026-09-20T23:02:05Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor/supplier due diligence, site visit requirement, and review cadence would be under procurement",
+   "at": "2026-09-20T23:02:05Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:02:26Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/procurement",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w1-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:02:26Z"
+}

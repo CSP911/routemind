@@ -1,0 +1,58 @@
+{
+ "id": "ov_2026-09-21_49a9f2",
+ "question": "For category C1, amount V2, term M3, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:58:11Z",
+ "touched_at": "2026-09-21T13:58:30Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category, amount and term - directly matches question",
+   "at": "2026-09-21T13:58:10Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "signature/approval chain info might live here too",
+   "at": "2026-09-21T13:58:10Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category, amount and term - directly matches question",
+   "at": "2026-09-21T13:58:10Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "signature/approval chain info might live here too",
+   "at": "2026-09-21T13:58:10Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:58:30Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/procurement",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v2-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:58:30Z"
+}

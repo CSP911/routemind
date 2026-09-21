@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_c314d7",
+ "question": "Ordinary Tuesday, 11 hours at desk: overtime multiplier and minute rounding rule?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:50:03Z",
+ "touched_at": "2026-09-20T23:50:25Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and pay rules likely live in payroll",
+   "at": "2026-09-20T23:50:03Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "attendance may define ordinary working hours / overtime thresholds and time rounding",
+   "at": "2026-09-20T23:50:03Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and pay rules likely live in payroll",
+   "at": "2026-09-20T23:50:03Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "attendance may define ordinary working hours / overtime thresholds and time rounding",
+   "at": "2026-09-20T23:50:03Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:50:25Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h4-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:50:25Z"
+}

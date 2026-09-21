@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_001731",
+ "question": "Supplier in Da Nang, 700 million won, staffing/people's time category: is an on-site premises visit required, and how often is the supplier file re-reviewed?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:39:49Z",
+ "touched_at": "2026-09-20T23:40:05Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement table covers approval thresholds and likely vendor diligence rules by category/amount",
+   "at": "2026-09-20T23:39:49Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement table covers approval thresholds and likely vendor diligence rules by category/amount",
+   "at": "2026-09-20T23:39:49Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:40:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w4-goods-k3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:40:05Z"
+}

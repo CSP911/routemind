@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-20_a94596",
+ "question": "Stuttgart firm, 60M KRW contract, licence supplied - site visit required? review/renewal frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:08:03Z",
+ "touched_at": "2026-09-20T23:08:32Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, likely has site-visit and review-frequency rules by origin/value/goods",
+   "at": "2026-09-20T23:08:03Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, may point to the right sub-page for site visits/reviews",
+   "at": "2026-09-20T23:08:03Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence rules with different dates - need to confirm which version applies today",
+   "at": "2026-09-20T23:08:03Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, likely has site-visit and review-frequency rules by origin/value/goods",
+   "at": "2026-09-20T23:08:03Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, may point to the right sub-page for site visits/reviews",
+   "at": "2026-09-20T23:08:03Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence rules with different dates - need to confirm which version applies today",
+   "at": "2026-09-20T23:08:03Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:08:32Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w2-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:08:32Z"
+}

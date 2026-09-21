@@ -1,0 +1,110 @@
+{
+ "id": "ov_2026-09-21_8943fe",
+ "question": "2am, three hours, at a client's office: overtime multiplier and minute rounding?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T10:36:33Z",
+ "touched_at": "2026-09-21T11:20:53Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - in force since 2026-01-01, matches late-night hours at a client site",
+   "at": "2026-09-21T10:36:33Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warning that overtime rate has three versions with different dates - need to confirm which version applies to today 2026-09-21",
+   "at": "2026-09-21T10:36:33Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "why": "maps 'two in the morning' to day D4",
+   "at": "2026-09-21T11:10:59Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "why": "maps 'three hours' to hours H2",
+   "at": "2026-09-21T11:11:02Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "why": "maps 'out at a client's office' to place P2",
+   "at": "2026-09-21T11:11:05Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h2-place-p2/body",
+   "why": "the D4/H2/P2 row: multiplier 2.79x, rounding to nearest 10 minutes",
+   "at": "2026-09-21T11:20:41Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - in force since 2026-01-01, matches late-night hours at a client site",
+   "at": "2026-09-21T10:36:33Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warning that overtime rate has three versions with different dates - need to confirm which version applies to today 2026-09-21",
+   "at": "2026-09-21T10:36:33Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "why": "maps 'two in the morning' to day D4",
+   "at": "2026-09-21T11:10:59Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "why": "maps 'three hours' to hours H2",
+   "at": "2026-09-21T11:11:02Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "why": "maps 'out at a client's office' to place P2",
+   "at": "2026-09-21T11:11:05Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h2-place-p2/body",
+   "why": "the D4/H2/P2 row: multiplier 2.79x, rounding to nearest 10 minutes",
+   "at": "2026-09-21T11:20:41Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T11:20:53Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h2-place-p2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T11:20:53Z"
+}

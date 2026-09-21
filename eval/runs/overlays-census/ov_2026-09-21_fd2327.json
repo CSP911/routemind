@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_fd2327",
+ "question": "MD, Singapore, 8 nights: hotel per-night cap and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:45:44Z",
+ "touched_at": "2026-09-21T13:46:09Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade, band, stay length - likely has hotel component",
+   "at": "2026-09-21T13:45:44Z"
+  },
+  {
+   "address": "/v1/nodes/evidence",
+   "why": "receipt/evidence threshold for expense claims",
+   "at": "2026-09-21T13:45:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade, band, stay length - likely has hotel component",
+   "at": "2026-09-21T13:45:44Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "receipt/evidence threshold for expense claims",
+   "at": "2026-09-21T13:45:44Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:46:09Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b2-stay-s3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:46:09Z"
+}

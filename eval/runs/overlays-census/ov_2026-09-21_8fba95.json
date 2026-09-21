@@ -1,0 +1,61 @@
+{
+ "id": "ov_2026-09-21_8fba95",
+ "question": "For day D3, hours H4, place P2, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T07:07:42Z",
+ "touched_at": "2026-09-21T07:16:44Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place, in force since 2026-01-01",
+   "at": "2026-09-21T07:07:42Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "superseded 2024-07-01 to 2025-12-31 version, keep for comparison only",
+   "at": "2026-09-21T07:07:42Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which version covers which dates",
+   "at": "2026-09-21T07:07:42Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place, in force since 2026-01-01",
+   "at": "2026-09-21T07:07:42Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "superseded 2024-07-01 to 2025-12-31 version, keep for comparison only",
+   "at": "2026-09-21T07:07:42Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which version covers which dates",
+   "at": "2026-09-21T07:07:42Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T07:16:44Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h4-place-p2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T07:16:44Z"
+}

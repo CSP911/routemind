@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_531424",
+ "question": "Liberation day, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T06:15:36Z",
+ "touched_at": "2026-09-21T06:32:18Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding likely documented under payroll",
+   "at": "2026-09-21T06:15:36Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "payroll node says overtime premiums moved to attendance sec-hard-overtime as of 2026-01-01; Liberation day 2026 falls after that date",
+   "at": "2026-09-21T06:15:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding likely documented under payroll",
+   "at": "2026-09-21T06:15:36Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/regions/attendance",
+   "why": "payroll node says overtime premiums moved to attendance sec-hard-overtime as of 2026-01-01; Liberation day 2026 falls after that date",
+   "at": "2026-09-21T06:15:44Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T06:32:18Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h3-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T06:32:18Z"
+}

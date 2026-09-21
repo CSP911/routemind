@@ -1,0 +1,84 @@
+{
+ "id": "ov_2026-09-20_903e04",
+ "question": "How many times has supplier due diligence been rewritten, and from what date does each version apply?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:25:06Z",
+ "touched_at": "2026-09-20T09:27:34Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warning page enumerating all three versions",
+   "at": "2026-09-20T09:25:02Z"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "original version, in force until 2024-07-01, undated in itself",
+   "at": "2026-09-20T09:25:29Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "second version, in force 2024-07-01 to 2025-12-31",
+   "at": "2026-09-20T09:26:10Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "third/current version, in force from 2026-01-01",
+   "at": "2026-09-20T09:26:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warning page enumerating all three versions",
+   "at": "2026-09-20T09:25:02Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "original version, in force until 2024-07-01, undated in itself",
+   "at": "2026-09-20T09:25:29Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "second version, in force 2024-07-01 to 2025-12-31",
+   "at": "2026-09-20T09:26:10Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "third/current version, in force from 2026-01-01",
+   "at": "2026-09-20T09:26:44Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:27:34Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:27:34Z"
+}

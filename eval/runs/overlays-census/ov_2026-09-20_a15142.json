@@ -1,0 +1,95 @@
+{
+ "id": "ov_2026-09-20_a15142",
+ "question": "Two-year contract, 5 years tenure, Busan branch: monthly accrual and January holding cap for leave?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:20:18Z",
+ "touched_at": "2026-09-20T16:21:03Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - directly answers monthly accrual rate",
+   "at": "2026-09-20T16:20:18Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "why": "maps two-year contract to type E2",
+   "at": "2026-09-20T16:20:42Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "maps five years service to tenure T3",
+   "at": "2026-09-20T16:20:45Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "why": "maps Busan branch to site L2",
+   "at": "2026-09-20T16:20:50Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t3-site-l2/body",
+   "why": "the matching row: E2/T3/L2 gives monthly accrual and carry-over limit",
+   "at": "2026-09-20T16:20:56Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - directly answers monthly accrual rate",
+   "at": "2026-09-20T16:20:18Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "why": "maps two-year contract to type E2",
+   "at": "2026-09-20T16:20:42Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "maps five years service to tenure T3",
+   "at": "2026-09-20T16:20:45Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "why": "maps Busan branch to site L2",
+   "at": "2026-09-20T16:20:50Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t3-site-l2/body",
+   "why": "the matching row: E2/T3/L2 gives monthly accrual and carry-over limit",
+   "at": "2026-09-20T16:20:56Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:21:03Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t3-site-l2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:21:03Z"
+}

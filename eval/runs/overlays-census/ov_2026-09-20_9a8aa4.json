@@ -1,0 +1,81 @@
+{
+ "id": "ov_2026-09-20_9a8aa4",
+ "question": "Reconciling claims from 2023 and 2025 against approval threshold - which two versions needed, delegation limit or signer under each?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:07:57Z",
+ "touched_at": "2026-09-20T16:10:10Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "explains which version covers which date range",
+   "at": "2026-09-20T16:07:57Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, likely covers 2025 claim",
+   "at": "2026-09-20T16:07:57Z"
+  },
+  {
+   "address": "/v1/nodes/threshold-table/body",
+   "why": "the oldest approval-threshold version, in force until 2024-07-01, covers the 2023 claim",
+   "at": "2026-09-20T16:10:07Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "explains which version covers which date range",
+   "at": "2026-09-20T16:07:57Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, likely covers 2025 claim",
+   "at": "2026-09-20T16:07:57Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current table in force from 2026-01-01, need to check if it covers any part of question",
+   "at": "2026-09-20T16:07:57Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current table, in force only from 2026-01-01, does not cover 2023 or 2025",
+   "at": "2026-09-20T16:10:03Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/threshold-table/body",
+   "why": "the oldest approval-threshold version, in force until 2024-07-01, covers the 2023 claim",
+   "at": "2026-09-20T16:10:07Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:10:10Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/threshold-table/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:10:10Z"
+}

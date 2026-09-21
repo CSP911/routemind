@@ -1,0 +1,99 @@
+{
+ "id": "ov_2026-09-20_446616",
+ "question": "Flights and hotels, around 12 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:25:57Z",
+ "touched_at": "2026-09-20T09:29:05Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v3-term-m3/body",
+   "why": "the matching threshold row: category C3 flights/hotels, amount V3 ~12M won, term M3 three years",
+   "at": "2026-09-20T09:25:53Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "why": "confirms flights and hotels = category C3",
+   "at": "2026-09-20T09:26:23Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "why": "confirms ~12 million won = amount V3",
+   "at": "2026-09-20T09:26:53Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "why": "confirms locked in for three years = term M3",
+   "at": "2026-09-20T09:27:23Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirms current table (2026-01-01 onwards) applies since today is 2026-09-20",
+   "at": "2026-09-20T09:28:05Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v3-term-m3/body",
+   "why": "the matching threshold row: category C3 flights/hotels, amount V3 ~12M won, term M3 three years",
+   "at": "2026-09-20T09:25:53Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "why": "confirms flights and hotels = category C3",
+   "at": "2026-09-20T09:26:23Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "why": "confirms ~12 million won = amount V3",
+   "at": "2026-09-20T09:26:53Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "why": "confirms locked in for three years = term M3",
+   "at": "2026-09-20T09:27:23Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirms current table (2026-01-01 onwards) applies since today is 2026-09-20",
+   "at": "2026-09-20T09:28:05Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:29:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v3-term-m3/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:29:05Z"
+}

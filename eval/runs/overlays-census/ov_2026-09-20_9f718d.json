@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_9f718d",
+ "question": "For origin O4, value W3, goods K3: is a premises visit required, and how often is the file reviewed?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:36:37Z",
+ "touched_at": "2026-09-20T23:36:53Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, likely holds origin/value/goods matrix",
+   "at": "2026-09-20T23:36:37Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns diligence table has three versions with different date ranges - need to confirm which version applies today",
+   "at": "2026-09-20T23:36:37Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, likely holds origin/value/goods matrix",
+   "at": "2026-09-20T23:36:37Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns diligence table has three versions with different date ranges - need to confirm which version applies today",
+   "at": "2026-09-20T23:36:37Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:36:53Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w3-goods-k3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:36:53Z"
+}

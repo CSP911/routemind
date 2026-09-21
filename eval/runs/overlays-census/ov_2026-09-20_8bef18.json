@@ -1,0 +1,58 @@
+{
+ "id": "ov_2026-09-20_8bef18",
+ "question": "We are reconciling claims from 2023 and from 2025 against supplier due diligence. Which two versions do I need, and what screening was required under each?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:58:19Z",
+ "touched_at": "2026-09-20T15:59:08Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence and screening requirements are procurement policy territory",
+   "at": "2026-09-20T15:58:19Z"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "oldest version, in force until 2024-07-01, covers 2023 claims",
+   "at": "2026-09-20T15:58:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence and screening requirements are procurement policy territory",
+   "at": "2026-09-20T15:58:19Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "oldest version, in force until 2024-07-01, covers 2023 claims",
+   "at": "2026-09-20T15:58:33Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:59:08Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:59:08Z"
+}

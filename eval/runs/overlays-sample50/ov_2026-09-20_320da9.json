@@ -1,0 +1,73 @@
+{
+ "id": "ov_2026-09-20_320da9",
+ "question": "Daejeon company, 8M won, office consumables only: site visit required? review cadence?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:22:07Z",
+ "touched_at": "2026-09-20T09:22:07Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "maps Daejeon to origin O1",
+   "at": "2026-09-20T09:21:47Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "maps 8M won to value W1",
+   "at": "2026-09-20T09:21:49Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "maps office consumables to goods K1",
+   "at": "2026-09-20T09:21:51Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k1/body",
+   "why": "the actual row: site visit no, re-review every 36 months",
+   "at": "2026-09-20T09:21:54Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "confirms 2026-09-20 falls under current table, not v2 or oldest",
+   "at": "2026-09-20T09:21:56Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "maps Daejeon to origin O1",
+   "at": "2026-09-20T09:21:47Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "maps 8M won to value W1",
+   "at": "2026-09-20T09:21:49Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "maps office consumables to goods K1",
+   "at": "2026-09-20T09:21:51Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k1/body",
+   "why": "the actual row: site visit no, re-review every 36 months",
+   "at": "2026-09-20T09:21:54Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "confirms 2026-09-20 falls under current table, not v2 or oldest",
+   "at": "2026-09-20T09:21:56Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

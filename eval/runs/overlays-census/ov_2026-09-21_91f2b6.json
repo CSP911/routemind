@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_91f2b6",
+ "question": "Consultant time, ~3M won, locked in for 3 years: whose signature, and do I need other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:10:08Z",
+ "touched_at": "2026-09-21T14:10:23Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01",
+   "at": "2026-09-21T14:10:08Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process incl. how many quotes needed",
+   "at": "2026-09-21T14:10:08Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warning about three versions of threshold table, need to check which applies",
+   "at": "2026-09-21T14:10:08Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01",
+   "at": "2026-09-21T14:10:08Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process incl. how many quotes needed",
+   "at": "2026-09-21T14:10:08Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warning about three versions of threshold table, need to check which applies",
+   "at": "2026-09-21T14:10:08Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:10:23Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v2-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:10:23Z"
+}

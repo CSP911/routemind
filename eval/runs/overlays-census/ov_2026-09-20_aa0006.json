@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_aa0006",
+ "question": "For origin O1, value W3, goods K3, do we have to visit their premises, and how often does their file get reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:56:45Z",
+ "touched_at": "2026-09-20T22:56:58Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin/value/goods",
+   "at": "2026-09-20T22:56:45Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warning about 3 versions of diligence table, need to confirm current one applies",
+   "at": "2026-09-20T22:56:45Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin/value/goods",
+   "at": "2026-09-20T22:56:45Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warning about 3 versions of diligence table, need to confirm current one applies",
+   "at": "2026-09-20T22:56:45Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:56:58Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k3/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T22:56:58Z"
+}

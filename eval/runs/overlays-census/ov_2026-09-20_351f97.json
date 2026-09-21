@@ -1,0 +1,95 @@
+{
+ "id": "ov_2026-09-20_351f97",
+ "question": "Stuttgart firm, KRW 8,000,000, services (people's time): is a premises visit required, and what is the re-review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:03:59Z",
+ "touched_at": "2026-09-20T23:04:35Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table - by origin, value, goods, likely has premises visit and review frequency by tier",
+   "at": "2026-09-20T23:03:59Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "confirms Stuttgart = origin O2",
+   "at": "2026-09-20T23:04:19Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "confirms eight million won = value W1",
+   "at": "2026-09-20T23:04:24Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "confirms people's time = goods K3",
+   "at": "2026-09-20T23:04:27Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w1-goods-k3/body",
+   "why": "the matching row: site visit no, re-review every 36 months",
+   "at": "2026-09-20T23:04:30Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table - by origin, value, goods, likely has premises visit and review frequency by tier",
+   "at": "2026-09-20T23:03:59Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "confirms Stuttgart = origin O2",
+   "at": "2026-09-20T23:04:19Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "confirms eight million won = value W1",
+   "at": "2026-09-20T23:04:24Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "confirms people's time = goods K3",
+   "at": "2026-09-20T23:04:27Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w1-goods-k3/body",
+   "why": "the matching row: site visit no, re-review every 36 months",
+   "at": "2026-09-20T23:04:30Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:04:35Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w1-goods-k3/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T23:04:35Z"
+}

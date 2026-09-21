@@ -1,0 +1,88 @@
+{
+ "id": "ov_2026-09-21_f9ff64",
+ "question": "Dinner with a client, about 700,000 won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:31:19Z",
+ "touched_at": "2026-09-21T14:31:49Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "client entertainment expense of ~700,000 won - need signature/approval threshold",
+   "at": "2026-09-21T14:31:18Z"
+  },
+  {
+   "address": "/v1/regions/procurement",
+   "why": "term is open-ended ('until we cancel') which may make this a contract subject to procurement approval threshold and competitive quote (other prices) requirements",
+   "at": "2026-09-21T14:31:19Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v1-term-m4/body",
+   "why": "exact row: category C4 (dinner with a client), amount V1 (about 700,000 won), term M4 (until we cancel it)",
+   "at": "2026-09-21T14:31:37Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "check which threshold table version is in force for today's date 2026-09-21",
+   "at": "2026-09-21T14:31:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "client entertainment expense of ~700,000 won - need signature/approval threshold",
+   "at": "2026-09-21T14:31:18Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "term is open-ended ('until we cancel') which may make this a contract subject to procurement approval threshold and competitive quote (other prices) requirements",
+   "at": "2026-09-21T14:31:19Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v1-term-m4/body",
+   "why": "exact row: category C4 (dinner with a client), amount V1 (about 700,000 won), term M4 (until we cancel it)",
+   "at": "2026-09-21T14:31:37Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "check which threshold table version is in force for today's date 2026-09-21",
+   "at": "2026-09-21T14:31:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:31:49Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v1-term-m4/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T14:31:49Z"
+}

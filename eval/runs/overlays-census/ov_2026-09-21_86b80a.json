@@ -1,0 +1,84 @@
+{
+ "id": "ov_2026-09-21_86b80a",
+ "question": "Dinner with a client, roughly 3 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:34:48Z",
+ "touched_at": "2026-09-21T14:35:02Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, and term - need signature level",
+   "at": "2026-09-21T14:34:48Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed before approval",
+   "at": "2026-09-21T14:34:48Z"
+  },
+  {
+   "address": "/v1/nodes/corp-card",
+   "why": "entertainment cap and card use, since this is a client dinner",
+   "at": "2026-09-21T14:34:48Z"
+  },
+  {
+   "address": "/v1/nodes/sec-spending-that-needs-a-draft-first",
+   "why": "may need draft approval before spend if over cap",
+   "at": "2026-09-21T14:34:48Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, and term - need signature level",
+   "at": "2026-09-21T14:34:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed before approval",
+   "at": "2026-09-21T14:34:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/corp-card",
+   "why": "entertainment cap and card use, since this is a client dinner",
+   "at": "2026-09-21T14:34:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-spending-that-needs-a-draft-first",
+   "why": "may need draft approval before spend if over cap",
+   "at": "2026-09-21T14:34:48Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:35:02Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v2-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:35:02Z"
+}

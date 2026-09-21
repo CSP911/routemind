@@ -1,0 +1,84 @@
+{
+ "id": "ov_2026-09-20_52411c",
+ "question": "Laptops (a couple), ~12M won, until we cancel it: whose signature, and are competing quotes required first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:21:46Z",
+ "touched_at": "2026-09-20T09:21:46Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table (in force 2026-01-01 onward, question dated 2026-09-20 so this version applies)",
+   "at": "2026-09-20T09:21:19Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "why": "maps 'a couple of laptops' to category C1",
+   "at": "2026-09-20T09:21:20Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "why": "maps 'around 12 million won' to amount V3",
+   "at": "2026-09-20T09:21:22Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "why": "maps 'until we cancel it' to term M4",
+   "at": "2026-09-20T09:21:24Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v3-term-m4/body",
+   "why": "the row for C1/V3/M4 - gives signer and quote count",
+   "at": "2026-09-20T09:21:26Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirms which of three threshold table versions applies to a 2026-09-20 question",
+   "at": "2026-09-20T09:21:28Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table (in force 2026-01-01 onward, question dated 2026-09-20 so this version applies)",
+   "at": "2026-09-20T09:21:19Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "why": "maps 'a couple of laptops' to category C1",
+   "at": "2026-09-20T09:21:20Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "why": "maps 'around 12 million won' to amount V3",
+   "at": "2026-09-20T09:21:22Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "why": "maps 'until we cancel it' to term M4",
+   "at": "2026-09-20T09:21:24Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v3-term-m4/body",
+   "why": "the row for C1/V3/M4 - gives signer and quote count",
+   "at": "2026-09-20T09:21:26Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirms which of three threshold table versions applies to a 2026-09-20 question",
+   "at": "2026-09-20T09:21:28Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

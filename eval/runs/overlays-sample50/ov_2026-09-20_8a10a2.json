@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_8a10a2",
+ "question": "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:20:37Z",
+ "touched_at": "2026-09-20T09:20:37Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force from 2026-01-01 - C1/V1/M1 look like category/amount/term placeholders",
+   "at": "2026-09-20T09:20:27Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold table has THREE versions - need to confirm which applies",
+   "at": "2026-09-20T09:20:27Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request flow covers quotes needed (other prices first) alongside approval",
+   "at": "2026-09-20T09:20:29Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force from 2026-01-01 - C1/V1/M1 look like category/amount/term placeholders",
+   "at": "2026-09-20T09:20:27Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold table has THREE versions - need to confirm which applies",
+   "at": "2026-09-20T09:20:27Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request flow covers quotes needed (other prices first) alongside approval",
+   "at": "2026-09-20T09:20:29Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

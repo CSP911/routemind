@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_29c86b",
+ "question": "How much leave was accrued or granted for someone with two years of continuous service in 2023, and what had it become by 2025?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:32:19Z",
+ "touched_at": "2026-09-20T09:32:19Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explains which of the three accrual versions applies to which date range",
+   "at": "2026-09-20T09:32:01Z"
+  },
+  {
+   "address": "/v1/nodes/accrual-rule/body",
+   "why": "oldest version, in force until 2024-07-01, covers the 2023 date; two years is in the 1-year-and-over bracket = 15 days",
+   "at": "2026-09-20T09:32:04Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "why": "second version, in force 2024-07-01 to 2025-12-31, covers the 2025 date; needs type+tenure",
+   "at": "2026-09-20T09:32:06Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "maps 'two years' of continuous service to tenure code T2, used to read the v2 table",
+   "at": "2026-09-20T09:32:09Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explains which of the three accrual versions applies to which date range",
+   "at": "2026-09-20T09:32:01Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/accrual-rule/body",
+   "why": "oldest version, in force until 2024-07-01, covers the 2023 date; two years is in the 1-year-and-over bracket = 15 days",
+   "at": "2026-09-20T09:32:04Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "why": "second version, in force 2024-07-01 to 2025-12-31, covers the 2025 date; needs type+tenure",
+   "at": "2026-09-20T09:32:06Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "why": "maps 'two years' of continuous service to tenure code T2, used to read the v2 table",
+   "at": "2026-09-20T09:32:09Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

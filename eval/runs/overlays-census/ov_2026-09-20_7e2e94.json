@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_7e2e94",
+ "question": "An ordinary tuesday, eleven hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:52:22Z",
+ "touched_at": "2026-09-20T23:52:37Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multipliers are typically payroll rules",
+   "at": "2026-09-20T23:52:22Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "attendance covers work hours, overtime, and location-based work rules",
+   "at": "2026-09-20T23:52:22Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multipliers are typically payroll rules",
+   "at": "2026-09-20T23:52:22Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "attendance covers work hours, overtime, and location-based work rules",
+   "at": "2026-09-20T23:52:22Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:52:37Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h4-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:52:37Z"
+}

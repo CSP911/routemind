@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_0335ab",
+ "question": "How many times has leave accrual been rewritten, and from what date does each version apply?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:24:39Z",
+ "touched_at": "2026-09-20T09:24:39Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explicit versions-and-dates doc: three versions, until 2024-07-01 / 2024-07-01 to 2025-12-31 / 2026-01-01 onwards",
+   "at": "2026-09-20T09:24:13Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "why": "confirms middle version's own dates: 2024-07-01 to 2025-12-31",
+   "at": "2026-09-20T09:24:17Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "confirms current version's date: in force from 2026-01-01, replaces leave-accrual and older rules",
+   "at": "2026-09-20T09:24:21Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "explicit versions-and-dates doc: three versions, until 2024-07-01 / 2024-07-01 to 2025-12-31 / 2026-01-01 onwards",
+   "at": "2026-09-20T09:24:13Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "why": "confirms middle version's own dates: 2024-07-01 to 2025-12-31",
+   "at": "2026-09-20T09:24:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "confirms current version's date: in force from 2026-01-01, replaces leave-accrual and older rules",
+   "at": "2026-09-20T09:24:21Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

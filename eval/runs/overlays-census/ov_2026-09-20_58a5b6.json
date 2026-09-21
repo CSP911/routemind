@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_58a5b6",
+ "question": "For type E2, tenure T1, site L3, how much time off am I building up each month, and how much can I still be holding in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:17:32Z",
+ "touched_at": "2026-09-20T16:17:48Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - has the monthly accrual figure",
+   "at": "2026-09-20T16:17:32Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "warns about three versions of accrual rules, need to confirm current version applies",
+   "at": "2026-09-20T16:17:32Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - has the monthly accrual figure",
+   "at": "2026-09-20T16:17:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "warns about three versions of accrual rules, need to confirm current version applies",
+   "at": "2026-09-20T16:17:32Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:17:48Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t1-site-l3/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:17:48Z"
+}

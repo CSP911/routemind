@@ -1,0 +1,39 @@
+{
+ "id": "ov_2026-09-20_96ff53",
+ "question": "Which version of the overseas per-diem applies to a claim dated in 2025?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:28:14Z",
+ "touched_at": "2026-09-20T09:28:41Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explicitly says which version covers which dates and that 2025 falls to the middle version",
+   "at": "2026-09-20T09:28:09Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explicitly says which version covers which dates and that 2025 falls to the middle version",
+   "at": "2026-09-20T09:28:09Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:28:41Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:28:41Z"
+}

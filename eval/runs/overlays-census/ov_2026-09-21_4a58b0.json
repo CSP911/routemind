@@ -1,0 +1,63 @@
+{
+ "id": "ov_2026-09-21_4a58b0",
+ "question": "Team manager, Jakarta, one night: hotel cap per night, and above what amount is a receipt required?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:22:39Z",
+ "touched_at": "2026-09-21T13:23:00Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "expense table covers business trip amounts, hotel allowances, and receipt thresholds",
+   "at": "2026-09-21T13:22:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "expense table covers business trip amounts, hotel allowances, and receipt thresholds",
+   "at": "2026-09-21T13:22:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:23:00Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/expense",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b3-stay-s1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:23:00Z"
+}

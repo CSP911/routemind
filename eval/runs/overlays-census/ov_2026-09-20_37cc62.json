@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_37cc62",
+ "question": "For origin O3, value W1, goods K4: site visit required? file review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:17:34Z",
+ "touched_at": "2026-09-20T23:17:43Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, matches today's date 2026-09-21",
+   "at": "2026-09-20T23:17:33Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns diligence table has three versions with different effective dates - need to confirm which version applies",
+   "at": "2026-09-20T23:17:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force since 2026-01-01, matches today's date 2026-09-21",
+   "at": "2026-09-20T23:17:33Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns diligence table has three versions with different effective dates - need to confirm which version applies",
+   "at": "2026-09-20T23:17:33Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:17:43Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w1-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:17:43Z"
+}

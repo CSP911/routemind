@@ -1,0 +1,99 @@
+{
+ "id": "ov_2026-09-20_b34e14",
+ "question": "Da Nang supplier, 8M KRW, licence: site visit required? review frequency for their file?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:31:11Z",
+ "touched_at": "2026-09-20T23:31:42Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement area covers vendor approval/diligence thresholds",
+   "at": "2026-09-20T23:31:11Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "maps Da Nang to origin O4",
+   "at": "2026-09-20T23:31:32Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "maps 8M won to value W1",
+   "at": "2026-09-20T23:31:34Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "maps licence to goods K4",
+   "at": "2026-09-20T23:31:36Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w1-goods-k4/body",
+   "why": "answer row: site visit no, re-review every 36 months",
+   "at": "2026-09-20T23:31:37Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement area covers vendor approval/diligence thresholds",
+   "at": "2026-09-20T23:31:11Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "maps Da Nang to origin O4",
+   "at": "2026-09-20T23:31:32Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "maps 8M won to value W1",
+   "at": "2026-09-20T23:31:34Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "maps licence to goods K4",
+   "at": "2026-09-20T23:31:36Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w1-goods-k4/body",
+   "why": "answer row: site visit no, re-review every 36 months",
+   "at": "2026-09-20T23:31:37Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:31:42Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w1-goods-k4/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T23:31:42Z"
+}

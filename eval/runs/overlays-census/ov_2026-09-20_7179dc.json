@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_7179dc",
+ "question": "Vendor in Austin, 300M KRW, license: on-site visit required? review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:24:42Z",
+ "touched_at": "2026-09-20T23:25:11Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement threshold/vendor diligence table is most likely to cover site visits and review cadence for vendors",
+   "at": "2026-09-20T23:24:42Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement threshold/vendor diligence table is most likely to cover site visits and review cadence for vendors",
+   "at": "2026-09-20T23:24:42Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:25:11Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w3-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:25:11Z"
+}

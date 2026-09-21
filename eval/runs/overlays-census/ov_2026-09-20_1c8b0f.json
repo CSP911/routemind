@@ -1,0 +1,74 @@
+{
+ "id": "ov_2026-09-20_1c8b0f",
+ "question": "Partner firm employee, 2 years tenure, Busan branch: monthly leave accrual amount, and max leave holdable/carryover into January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:31:00Z",
+ "touched_at": "2026-09-20T16:31:20Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - since 2026-01-01",
+   "at": "2026-09-20T16:31:00Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "warns which accrual version covers which dates",
+   "at": "2026-09-20T16:31:00Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - since 2026-01-01",
+   "at": "2026-09-20T16:31:00Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and booking procedure, may cover carryover cap",
+   "at": "2026-09-20T16:31:00Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "warns which accrual version covers which dates",
+   "at": "2026-09-20T16:31:00Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/annual-leave",
+   "why": "not needed once hard-accrual row for E4/T2/L2 answered both accrual rate and carry-over limit",
+   "at": "2026-09-20T16:31:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:31:20Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t2-site-l2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:31:20Z"
+}

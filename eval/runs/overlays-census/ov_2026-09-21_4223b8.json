@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-21_4223b8",
+ "question": "A consultant's time, around 12 million won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:12:23Z",
+ "touched_at": "2026-09-21T14:12:45Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount+term threshold and approval signature, and whether competitive quotes/bids required",
+   "at": "2026-09-21T14:12:22Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount+term threshold and approval signature, and whether competitive quotes/bids required",
+   "at": "2026-09-21T14:12:22Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:12:45Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v3-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:12:45Z"
+}

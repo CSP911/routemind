@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_0009a5",
+ "question": "2-year contract, 5 years tenure, Seoul office: monthly accrual and max holding in January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:19:52Z",
+ "touched_at": "2026-09-20T16:20:05Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current accrual table by employment type, tenure, site since 2026-01-01",
+   "at": "2026-09-20T16:19:52Z"
+  },
+  {
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and booking procedure, may cover carryover/holding cap",
+   "at": "2026-09-20T16:19:52Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current accrual table by employment type, tenure, site since 2026-01-01",
+   "at": "2026-09-20T16:19:52Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and booking procedure, may cover carryover/holding cap",
+   "at": "2026-09-20T16:19:52Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:20:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t3-site-l1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:20:05Z"
+}

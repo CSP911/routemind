@@ -1,0 +1,47 @@
+{
+ "id": "ov_2026-09-20_bf02dc",
+ "question": "For origin O2, value W2, goods K2, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:05:59Z",
+ "touched_at": "2026-09-20T23:06:18Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor/site visit requirement and review frequency by origin/value/goods risk tier sounds like procurement due diligence",
+   "at": "2026-09-20T23:05:58Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor/site visit requirement and review frequency by origin/value/goods risk tier sounds like procurement due diligence",
+   "at": "2026-09-20T23:05:58Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:06:18Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w2-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:06:18Z"
+}

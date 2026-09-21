@@ -1,0 +1,29 @@
+{
+ "id": "ov_2026-09-20_ee8e0b",
+ "question": "preflight, ignore",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T15:51:17Z",
+ "touched_at": "2026-09-20T15:51:17Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "preflight",
+   "at": "2026-09-20T15:51:15Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "preflight",
+   "at": "2026-09-20T15:51:15Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_062572",
+ "question": "For origin O1, value W4, goods K4, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:00:40Z",
+ "touched_at": "2026-09-20T23:00:57Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "origin/value/goods classification and site visit + review frequency for vendor diligence sounds like procurement due diligence rules",
+   "at": "2026-09-20T23:00:40Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "origin/value/goods classification and site visit + review frequency for vendor diligence sounds like procurement due diligence rules",
+   "at": "2026-09-20T23:00:40Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:00:57Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w4-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:00:57Z"
+}

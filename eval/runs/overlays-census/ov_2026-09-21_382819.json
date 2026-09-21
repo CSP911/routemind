@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_382819",
+ "question": "For category C4, amount V2, term M4, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:33:52Z",
+ "touched_at": "2026-09-21T14:34:15Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, likely holds signature-by-category/amount/term",
+   "at": "2026-09-21T14:33:52Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision",
+   "why": "warns threshold has THREE versions with different date ranges - need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T14:33:52Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, likely holds signature-by-category/amount/term",
+   "at": "2026-09-21T14:33:52Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision",
+   "why": "warns threshold has THREE versions with different date ranges - need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T14:33:52Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request table may cover quote requirements (other prices first)",
+   "at": "2026-09-21T14:33:52Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/purchase-request",
+   "why": "not needed - the threshold row itself states the quote count",
+   "at": "2026-09-21T14:34:09Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:34:15Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v2-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:34:15Z"
+}

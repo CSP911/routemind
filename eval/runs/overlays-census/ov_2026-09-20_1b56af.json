@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_1b56af",
+ "question": "Supplier in Da Nang, KRW 60,000,000, holds a licence: is an on-site visit required, and how often is the supplier file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:34:26Z",
+ "touched_at": "2026-09-20T23:34:45Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "supplier diligence, site visits, and review cadence are procurement policy matters",
+   "at": "2026-09-20T23:34:26Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "supplier diligence, site visits, and review cadence are procurement policy matters",
+   "at": "2026-09-20T23:34:26Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:34:45Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w2-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:34:45Z"
+}

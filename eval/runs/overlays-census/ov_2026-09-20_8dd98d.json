@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_8dd98d",
+ "question": "Stuttgart firm, KRW 60M, custom spec order: site visit required? Re-review frequency for their vendor file?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:06:17Z",
+ "touched_at": "2026-09-20T23:06:41Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement covers approval thresholds, vendor assessment, site visits, supplier requalification",
+   "at": "2026-09-20T23:06:17Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement covers approval thresholds, vendor assessment, site visits, supplier requalification",
+   "at": "2026-09-20T23:06:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:06:41Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w2-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:06:41Z"
+}

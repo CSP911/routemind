@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_6dfcb3",
+ "question": "Stuttgart supplier, KRW 8,000,000, custom made-to-spec goods: is a site visit to their premises required, and how often is their vendor file reassessed?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:02:56Z",
+ "touched_at": "2026-09-20T23:03:27Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement table covers approval thresholds and likely vendor assessment/site-visit rules",
+   "at": "2026-09-20T23:02:56Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement table covers approval thresholds and likely vendor assessment/site-visit rules",
+   "at": "2026-09-20T23:02:56Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:03:27Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w1-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:03:27Z"
+}
