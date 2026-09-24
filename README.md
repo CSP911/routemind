@@ -37,6 +37,39 @@ what was actually used to answer. The agent draws it; RouteMind serves it and ke
 
 ---
 
+## Measured
+
+700 questions over one frozen corpus of 1,126 documents. Four arms, all of them a census — no
+sampling. One fresh agent per question, nothing shared between questions.
+
+| | plain RAG | + reranker | RouteMind |
+|---|---|---|---|
+| a question in codes the rows use | 0.991 | 1.000 | **1.000** |
+| **a question in a person's words** | **0.028** | **0.069** | **1.000** |
+| **a rule two revisions back** | **0.133** | **0.200** | **1.000** |
+| overall | 0.516 | 0.541 | **0.999** |
+
+The two bold rows are the point. Retrieval does not *degrade* there — it fails outright, because
+every newer version of a subject outranks the one being asked for and they all look alike.
+
+**And what it costs.** A walk is 6.7 tool calls, 23–111 seconds, and $0.12–$0.28 a question, against
+one sub-second embedding call. **320 of those 700 questions are ones retrieval already answers first
+time** — nothing here argues for walking those. Which arm to use is a question about the mix of
+questions you actually get, and that is not measured here for anyone but this corpus.
+
+**The one miss in 700 was a wrong sentence in the map**, not a wrong document: a forwarding note said
+a superseded page was still current, and both routing arms obeyed it identically. An agent that
+trusts the map inherits the map's errors silently — retrieval cannot fail that way, because it reads
+no map. `mapcheck` now refuses that class of defect before any run starts.
+
+Still unmeasured: whether a **correct** map has a size at which it stops working. One corpus size,
+and a limit cannot be seen from one point.
+
+**[eval/report/report-en.html](eval/report/report-en.html)** — the whole thing with figures ·
+**[한국어](eval/report/report-ko.html)** · **[eval/](eval/)** — corpus, gold sets, every run record.
+
+---
+
 ## Quickstart
 
 Docker, with `docker compose`. That is all the service needs — the containers carry python and git.
