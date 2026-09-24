@@ -26,6 +26,7 @@ gets. There is one advertisement, and every engine reads it.
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 import json
 import re
 import os
@@ -275,6 +276,119 @@ def overlay_call(api: Api, args: dict) -> str:
     raise ApiError("op must be create | get | add | remove | close")
 
 
+WORKSPACE = "workspace"
+
+
+def workspace_available(api: Api) -> bool:
+    """Whether this install keeps a workspace area, asked rather than assumed.
+
+    Same rule as overlays: no area, no tool, and nothing in the instructions about one. It also makes
+    turning the feature on a single act a person takes deliberately — creating the area — rather than
+    a flag somebody sets and forgets. An install that has not decided it wants machine-written notes
+    does not get a tool that writes them.
+    """
+    try:
+        rs = (api.json("/v1/regions") or {}).get("regions") or []
+        return any((r.get("source") or r.get("id")) == WORKSPACE for r in rs)
+    except ApiError:
+        return False
+
+
+def _slug(text: str, limit: int = 48) -> str:
+    out = re.sub(r"[^a-z0-9]+", "-", (text or "").lower()).strip("-")
+    return out[:limit].rstrip("-") or "entry"
+
+
+def write_call(api: Api, args: dict) -> str:
+    """Record what an agent just did, in the workspace area, under today's date.
+
+    **The area is not a parameter.** Deciding where a subject lives changes the map, and the map is
+    the text every walk reads before it chooses anything — one wrong row in it reached 39.7% of walks
+    in the 700-question census, and the single miss in that census was one such row. So a machine
+    writes a dated note and a person decides, later and by hand, which area it belongs to. Writing a
+    note is cheap and reversible; changing the map is neither.
+    """
+    title = (args.get("title") or "").strip()
+    body = (args.get("what_happened") or "").strip()
+    if not title: return "title is required — one line naming what this is about."
+    if not body: return "what_happened is required — this is the note itself."
+
+    day = args.get("date") or _dt.date.today().isoformat()
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+        return f"date must be YYYY-MM-DD, got {day!r}"
+    day_id = f"{WORKSPACE}-{day}"
+
+    # One topic node per day, holding that day's entries. `topic` is the vocabulary's own word for a
+    # node that groups and has nothing to read in itself, so the day needs no invented kind.
+    try:
+        api.json(f"/v1/nodes/{day_id}")
+    except ApiError as e:
+        if e.status != 404: raise
+        api.send("POST", "/v1/nodes", {
+            "region": WORKSPACE, "id": day_id, "kind": "topic", "name": day,
+            "one_liner": f"What was recorded on {day}",
+            "edges": [{"from": WORKSPACE, "rel": "CONSISTS_OF", "to": day_id}]})
+
+    eid = f"{day_id}-{_slug(title)}"
+    note = body
+    sup = (args.get("supersedes") or "").strip()
+    if sup:
+        # In prose, not a field. The vocabulary has no SUPERSEDES relation, and the corpus convention
+        # is that a document says so in its own words — which is also what the person who later files
+        # this needs, since they will be reading it rather than querying it.
+        note += f"\n\n## Supersedes\n\n{sup}"
+    note += (f"\n\n---\n\nRecorded by an agent on {day}. Unfiled: nobody has decided which area this "
+             f"belongs to, and nothing here has been checked for currency.")
+
+    # Create, then write the body, then read it back.
+    #
+    # Three steps for what looks like one, and each is here because the shorter version failed. The
+    # create accepts a `content` field and — through the web proxy at least — silently drops it,
+    # leaving a node the tables mark `empty`: "nobody has written it yet. Do not fetch it." The tool
+    # reported success. A note that cannot be read is worse than no note, because the agent that
+    # wrote it believes the work is kept.
+    made = api.send("POST", "/v1/nodes", {
+        "region": WORKSPACE, "id": eid, "kind": args.get("kind") or "case", "name": title,
+        "one_liner": (args.get("one_liner") or title)[:200],
+        # `parent`, not only an edge. An edge relates two nodes; `parent` is what puts this one
+        # *under* the day in the tree a walk descends. With the edge alone the day node listed
+        # "(nothing here)" while the entry sat flat in the area.
+        "parent": day_id,
+        "content": note,
+        "edges": [{"from": day_id, "rel": "CONSISTS_OF", "to": eid}]})
+    got = (made or {}).get("id") or eid
+    try:
+        api.text(f"/v1/nodes/{got}/body")
+    except ApiError as e:
+        return (f"WROTE THE ROW BUT NOT THE NOTE  /v1/nodes/{got}\n  {e}\n\n"
+                "  The entry exists and is empty, which tables advertise as `empty` — a row with\n"
+                "  nothing behind it. Say so rather than treating the work as recorded.")
+
+    # The service's own warnings about *this* write. It said, the first time, that a node with no
+    # document "advertises as `empty`, which is a row with nothing behind it" — and the wrapper threw
+    # that away and printed success.
+    #
+    # Only the ones naming what was just written. The service returns its whole repository health
+    # report on every write: forty-eight lines here, about nodes nobody touched and fields nobody
+    # fills. Printing all of it buries the one line that is about the caller, every time, in the
+    # context of an agent that has work to do.
+    mine = [w for w in ((made or {}).get("warnings") or []) if got in w or day_id in w]
+    warn = "".join(f"\n  ! {w}" for w in mine)
+
+    # The one-liner is echoed back on purpose. It is the only line a reader sees before opening this,
+    # and an agent that has just spent a run inside one subject writes it in that run's vocabulary —
+    # which is the exact failure this study measured at 0.028: a question in a person's words against
+    # rows indexed by the words the writer happened to use.
+    return ("RECORDED  /v1/nodes/" + got + f"\n  in {WORKSPACE}, under {day}" + warn + "\n\n"
+            f"  one-liner:  {(args.get('one_liner') or title)[:200]}\n\n"
+            "  That line is all a later reader sees before opening this. Would somebody who was not\n"
+            "  in this run — searching in their own words, months from now — recognise it? If not,\n"
+            "  write it again with a better one_liner; this note is unfiled and cheap\n"
+            "  to replace.\n\n"
+            "  It is not an answer to anything yet. Filing it into the area that owns its subject is\n"
+            "  a person's edit, and that is when it gets a home and a statement of what it replaces.")
+
+
 def overlays_available(api: Api) -> bool:
     """Whether this install keeps overlays. Asked, not assumed: 404 (an ontology without them) or 501
     (the store is not configured) means no, and then there is no tool and nothing in the instructions
@@ -397,10 +511,50 @@ OVERLAY_TOOL = {
                  "description": "close: every address you actually took the answer from, member or not"}}}}
 
 
+WRITE_TOOL = {
+    "name": "knowledge_write",
+    "description": "Record what you just did, so it is not lost when this session ends. Use it at the "
+                   "end of a piece of work — a decision you reached, a case the rules did not settle "
+                   "and how you settled it, a procedure you worked out. It writes a dated note into "
+                   "the workspace area.\n\n"
+                   "You do not choose where it goes. Everything lands in `workspace` under today's "
+                   "date, and a person files it into the area that owns its subject later. That is "
+                   "deliberate: which area a subject belongs to is part of the routing table every "
+                   "search reads first, and moving it is a decision with consequences a note does "
+                   "not have.\n\n"
+                   "What you write here is NOT an answer to anything yet. It is unreviewed, it is not "
+                   "checked against what it might replace, and nothing will route a later question to "
+                   "it. If you learned that a rule is now different, say so in `supersedes` — the "
+                   "person filing this will need it and will not be able to reconstruct it.",
+    "inputSchema": {"type": "object", "required": ["title", "what_happened"], "properties": {
+        "title": {"type": "string",
+                  "description": "One line naming what this is about, in the words somebody looking "
+                                 "for it later would use — not the words this run happened to use"},
+        "what_happened": {"type": "string",
+                          "description": "The note itself, in markdown. What the situation was, what "
+                                         "you did, and what you concluded"},
+        "one_liner": {"type": "string",
+                      "description": "The single line a reader sees before opening this. Defaults to "
+                                     "the title"},
+        "supersedes": {"type": "string",
+                       "description": "If this changes or replaces something already written down, "
+                                      "what — in your own words, naming the document if you know it"},
+        "kind": {"type": "string",
+                 "enum": ["case", "rule", "procedure", "form", "table", "system", "role", "deadline"],
+                 "description": "Defaults to `case` — a situation the rules did not settle and what "
+                                "was actually done. That is usually what a run produces"},
+        "date": {"type": "string", "description": "YYYY-MM-DD. Defaults to today"}}}}
+
+
 class Server:
     def __init__(self, api: Api):
         self.api = api
         self._overlays = None
+        self._workspace = None
+
+    def workspace(self) -> bool:
+        if self._workspace is None: self._workspace = workspace_available(self.api)
+        return self._workspace
 
     def overlays(self) -> bool:
         if self._overlays is None: self._overlays = overlays_available(self.api)
@@ -461,6 +615,7 @@ class Server:
         except ApiError as e:
             tools[0]["description"] += f"\n\n(The area list could not be fetched: {e})"
         if self.overlays(): tools.append(dict(OVERLAY_TOOL))
+        if self.workspace(): tools.append(dict(WRITE_TOOL))
         return tools
 
     def call(self, name: str, args: dict) -> tuple[str, bool]:
@@ -468,6 +623,7 @@ class Server:
             if name == "knowledge_table": return table_for(self.api, str(args.get("path") or "")), False
             if name == "knowledge_read":  return read_for(self.api, str(args.get("path") or "")), False
             if name == "knowledge_overlay" and self.overlays(): return overlay_call(self.api, args), False
+            if name == "knowledge_write" and self.workspace(): return write_call(self.api, args), False
             return f"No such tool: {name}", True
         except ApiError as e:
             return str(e), True

@@ -745,6 +745,17 @@ def api_knowledge_create_node(payload: dict, request: Request) -> dict[str, Any]
         "holds": holds, "injected_by": str(data.get("injected_by") or "operator"),
         "files": files, "edges": edges,
     }
+    # The node's own document, when the caller has one to write. Knowledge's `create_node` has always
+    # accepted `content` and writes it straight into the file; Web simply never forwarded it, so a
+    # node created through this endpoint came out with frontmatter and an empty body — which the
+    # tables then advertise as `empty`: "nobody has written it yet. Do not fetch it." The caller got
+    # a 200 and a row nothing can read.
+    #
+    # The other route to a body — a `holds: pointers` node plus PUT .../files/<name> — is not a
+    # substitute: `put_file` composes `<entity>/note.md` while `entity_path` is `<entity>.md`, so it
+    # raises NotADirectoryError. No node in this repository uses it.
+    if str(data.get("content") or "").strip():
+        body["content"] = str(data["content"])
     # Sent only when supplied; absent means Knowledge derives it. `kind` decides which relations the
     # validator will allow, and relations are the curator's business — so this is not a value Web
     # invents a default for (operator, 2026-09-10).
