@@ -355,7 +355,14 @@ class Writer:
 
     def child_id(self, parent: str, stem: str) -> str:
         """An id for a child named `<stem>.md`. Ids are global, so a stem already taken elsewhere is
-        prefixed with the parent — the same rule the migration used, kept in one place."""
+        prefixed with the parent — the same rule the migration used, kept in one place.
+
+        Which means **whoever gets there first keeps the short id**: a `note.md` on a minor node
+        takes the global `note`, and a real node wanting that id later gets 409. It also makes the id
+        depend on what the repository already held, so building the same content in a different order
+        names some children differently. Both are consequences of ids being global and of matching
+        what the migration wrote; neither can be fixed here without renaming every child on disk.
+        """
         taken = {n["id"] for n in self.store.nodes()}
         return stem if stem not in taken else f"{parent}-{stem}"
 
