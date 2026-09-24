@@ -187,7 +187,20 @@ def validate(store: Store) -> dict:
     for n in nodes:
         if n["holds"] != "pointers": continue
         for f in n["present_files"]:
-            for ln in (store.root / n["path"] / f).read_text(encoding="utf-8", errors="replace").splitlines():
+            # The child's own path, not the parent's joined with a name. A node used to be a
+            # directory holding files; it is now one file, and a "file" is a sibling entity that
+            # declares this node as its `parent` — see Store, where `files` is derived from the
+            # children as `<child-id>.md`. This line was left composing `<parent>.md/<name>`, so
+            # validating any pointer node that had a file raised NotADirectoryError — inside
+            # `transact`, which meant the write that added the file was refused and rolled back.
+            # Writing a file to a pointer node has therefore been impossible since the conversion,
+            # and no node in the shipped example uses one, which is why nothing caught it.
+            kid = by_id.get(f[:-3])
+            if not kid: continue          # listed but absent is already an error above
+            # The child's **body**, not its file. A pointer file used to be plain text; the child is
+            # now an entity, so the file opens with frontmatter — and reading the whole thing made
+            # the validator try to resolve `id: note` as a reference.
+            for ln in (kid.get("body") or "").splitlines():
                 ref = ln.strip().lstrip("-").strip()
                 if not ref or ref.startswith("#") or ref in by_id or _ref_exists(store, ref): continue
                 errors.append(f"pointer node {n['id']}: {f} line {ref[:60]!r} is not a reference that resolves (node id or REGION/path.md)")
