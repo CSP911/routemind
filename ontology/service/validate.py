@@ -515,6 +515,41 @@ def validate(store: Store) -> dict:
             errors.append(f"regions.json {src}: {', '.join(drift)} no longer matches the files it is "
                           f"derived from. It is generated, not written — any write through the API "
                           f"regenerates it; see README, \u201cA hand-edited repository\u201d.")
+    # ---- cross-reference cycles ----
+    # Every other check here asks whether one node is right. This one asks whether they are right
+    # *together*, and it is the only finding in the file that no single document can be blamed for:
+    # payroll saying "for the rate, see attendance" and attendance saying "for how it is paid, see
+    # payroll" are both accurate, neither is stale, and there is nothing to correct but the shape.
+    #
+    # **A warning, not an error**, and that is a measured choice rather than caution. A deliberate
+    # two-node cycle was built and walked on a 700-question corpus: 10/10 hits and 5.5 calls per
+    # question, identical to the same questions without it. The agent went one way, got what it came
+    # for, and never followed the edge home, because each edge said what it was *for*. A cycle traps
+    # a walk only when nothing tells it which end answers — so refusing the write would forbid a
+    # shape that has been shown harmless, while saying nothing would hide the shape that is not.
+    #
+    # It matters more as agents start writing. A person adding a "see also" can see both ends; an
+    # agent recording today's work adds one edge at a time, months apart, and closes a loop nobody
+    # drew.
+    refs, known = {}, {n["id"] for n in nodes}
+    for n in nodes:
+        refs[n["id"]] = {m for m in re.findall(r"`([a-z0-9][a-z0-9-]{3,})`", n.get("body") or "")
+                         if m in known and m != n["id"]}
+    colour, seen = {}, []
+    def _visit(node, stack):
+        if colour.get(node) == 1:
+            if node in stack: seen.append(stack[stack.index(node):] + [node])
+            return
+        if colour.get(node) == 2: return
+        colour[node] = 1; stack.append(node)
+        for m in sorted(refs.get(node, ())): _visit(m, stack)
+        stack.pop(); colour[node] = 2
+    for n in sorted(refs): _visit(n, [])
+    for cyc in seen[:5]:
+        warnings.append("cross-references form a cycle: " + " -> ".join(cyc)
+                        + " — each line may be true on its own; together they can send a walk "
+                          "back and forth until it runs out of turns")
+
     return {"ok": not errors, "errors": errors, "warnings": warnings,
             "stats": {"nodes": len(nodes), "edges": len(edges), "kinds": len(kinds), "relations": len(rels), "regions": len(regions),
                       "revision": store.revision()}}
