@@ -34,6 +34,23 @@ to `mcp`. Both also read the environment — `KNOWLEDGE_API` and `KNOWLEDGE_ACTO
 give you no way to pass arguments. Point `--api` at another host and it works the same: the agent does
 not have to be where RouteMind is.
 
+### In a container
+
+Normally there is no need: the server is one stdlib-only file and the client launches it. `mcp/Dockerfile`
+is for directories and harnesses that want to start a server and introspect it without standing up a
+backbone first.
+
+```sh
+docker build -t routemind-mcp -f mcp/Dockerfile .
+docker run -i --rm routemind-mcp                       # introspection only
+docker run -i --rm -e KNOWLEDGE_API=http://host.docker.internal:8080/api/knowledge routemind-mcp
+```
+
+`-i` and no `-t`: the protocol is JSON-RPC on stdin and stdout, and a tty in the middle of that is a
+tty in the middle of the protocol. With nothing at `--api`, `initialize` and `tools/list` still
+answer — the area list a tool description would have carried is replaced by the reason it could not
+be fetched, so an agent is told why rather than handed an empty table.
+
 ### Claude Code
 
 Nothing to configure. `./install.sh` has already written `.mcp.json` at the repository root, so:

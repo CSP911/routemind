@@ -93,3 +93,49 @@ questions retrieval scores 0.028 on, the alternative is a confident wrong answer
 **"Why not just fine-tune / bigger context / better chunking?"** — Untested here, and I will say so
 rather than guess. The failure I measured is about *which* document is returned when several are
 plausible and only one is current; a longer context does not decide that, it includes them all.
+
+---
+
+# awesome-mcp-servers
+
+The PR is open and has been since 2026-09-12:
+**[punkpeye/awesome-mcp-servers#14212](https://github.com/punkpeye/awesome-mcp-servers/pull/14212)**
+
+It is blocked on the list's own requirement, not on the entry. The maintainer and their bot both
+asked for the same thing:
+
+1. **List the server on Glama** — https://glama.ai/mcp/servers. It needs an account, a claim on the
+   repository, and a Dockerfile pasted into Glama's own form. The bar is low: *"we only need the
+   server to start and respond to introspection requests."*
+2. **Then add the badge** to the PR, after the description:
+
+```
+[![CSP911/routemind MCP server](https://glama.ai/mcp/servers/CSP911/routemind/badges/score.svg)](https://glama.ai/mcp/servers/CSP911/routemind)
+```
+
+Step 1 is an account action on somebody else's service, so it is yours to do. Step 2 is one line and
+takes a minute afterwards.
+
+**What is ready for it.** `mcp/Dockerfile` builds an image that starts the server over stdio and
+answers `initialize` and `tools/list` with **no backend reachable at all** — which is exactly the
+check. Verified:
+
+```
+docker run -i --rm routemind-mcp
+  initialize: knowledge · protocol 2024-11-05
+  tools/list: knowledge_table, knowledge_read, knowledge_circuit
+```
+
+That is the file to paste into Glama's form.
+
+**The entry itself is also ready to improve when the PR is next touched.** The version in the open PR
+predates the Glama requirement and carries no badge; a better one is drafted here — the format copied
+from its neighbours, and the description trimmed to 142 characters because the list's own most recent
+commit is "shorten long descriptions" and the entries around it run 144 median, 160 max:
+
+```
+- [CSP911/routemind](https://github.com/CSP911/routemind) [![CSP911/routemind MCP server](https://glama.ai/mcp/servers/CSP911/routemind/badges/score.svg)](https://glama.ai/mcp/servers/CSP911/routemind) 🐍 🏠 🍎 🪟 🐧 - Routes before it retrieves: each area advertises in one line when it is relevant, so the agent picks before it reads. Git-backed, no database.
+```
+
+Under **Knowledge & Memory**. The PR title already carries `🤖🤖🤖`, which their CONTRIBUTING asks for
+when an automated agent prepared it.
