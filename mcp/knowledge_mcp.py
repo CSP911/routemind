@@ -27,7 +27,9 @@ from __future__ import annotations
 
 import argparse
 import datetime as _dt
+import ipaddress
 import json
+import socket
 import re
 import os
 import sys
@@ -274,6 +276,152 @@ def overlay_call(api: Api, args: dict) -> str:
         return closed_text(api.send("POST", f"/v1/overlays/{urllib.parse.quote(need_id(), safe='')}/close",
                                     {"outcome": args.get("outcome") or "", "used": args.get("used") or []}))
     raise ApiError("op must be create | get | add | remove | close")
+
+
+# ---- circuits: this session reading another RouteMind ---------------------------------------
+#
+# A *peer* links two backbones: declared in `peers.yaml`, reviewed, committed, tokens in the
+# environment, and both sides configured. That weight is the point — it is a standing relationship
+# between two ontologies, and it belongs in git.
+#
+# A *circuit* is the light version and a different thing: **this session** reading a remote
+# backbone, for as long as this connection lasts. Nothing is written, nothing is committed, the
+# remote is not told, and closing the client ends it. It exists because "let me look at theirs for a
+# minute" should not require an operator, a restart, and a commit to two repositories.
+#
+# It needs no server change on either side. The remote already serves `/v1/export/…` to anyone with
+# a valid `X-Peer-Token`, and that surface is built from the exported set rather than filtered on
+# the way out — so a circuit can reach exactly what its token's owner decided to share and nothing
+# else. The line it sees is `use_when_export`, written for an outside reader, never the local one.
+#
+# Read-only, and that is not a limitation to lift later. `server.py`: "a link is read-only — write
+# to the backbone that owns it... Two ontologies that write to each other have been merged."
+CIRCUITS: dict[str, dict] = {}
+
+
+def _public_address(url: str) -> bool:
+    """Would a token sent here cross a network nobody in this deployment controls?
+
+    The same question `peers.public_address` asks, asked again here because a circuit sends the same
+    kind of secret to the same kind of place, and a check that exists on one path and not the other
+    protects nothing. Unresolvable is not public — a remote that is simply down should not produce a
+    lecture about secrecy, which sends the reader looking in entirely the wrong place.
+    """
+    try:
+        parts = urllib.parse.urlsplit(url)
+        if parts.scheme != "http": return False
+        host = parts.hostname or ""
+        if not host: return False
+        try: infos = socket.getaddrinfo(host, None)
+        except OSError: return False
+        for info in infos:
+            ip = ipaddress.ip_address(info[4][0])
+            if not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved):
+                return True
+        return False
+    except Exception:
+        return False
+
+
+def circuit_fetch(name: str, path: str, accept: str) -> str:
+    """One read across a circuit. `path` is written the way tables print it, beginning `/v1/`."""
+    c = CIRCUITS.get(name)
+    if not c: raise ApiError(f"no circuit named {name} — open one first", 404)
+    tail = path[len("/v1/"):] if path.startswith("/v1/") else path.lstrip("/")
+    url = c["url"] + "/v1/export/" + tail
+    req = urllib.request.Request(url, headers={"Accept": accept, "X-Peer-Token": c["token"]})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        detail = (e.read().decode("utf-8", "replace") or "").strip()[:200]
+        raise ApiError(f"circuit {name}: HTTP {e.code} from /v1/export/{tail}"
+                       + (f" — {detail}" if detail else ""), e.code)
+    except urllib.error.URLError as e:
+        raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e.reason})")
+
+
+def circuit_table(name: str, payload: str) -> str:
+    """What a circuit returned, rendered as a table whose addresses go back through the circuit.
+
+    Rewriting the addresses is the whole of it. The remote prints its own — `/v1/regions/expense` —
+    and an agent that followed one verbatim would read this backbone's `expense` instead, silently
+    and with an answer that looks entirely reasonable. Every row leaves here as
+    `/v1/circuits/<name>/…`, so "use the address exactly as printed" stays true across a circuit.
+    """
+    try: d = json.loads(payload)
+    except json.JSONDecodeError: return payload
+    pre = f"/v1/circuits/{name}"
+    rows = []
+    for r in (d.get("regions") or []):
+        src = r.get("source") or r.get("id") or ""
+        rows.append({"kind": KIND["table"], "address": f"{pre}/regions/{src}",
+                     "why": r.get("use_when_export") or r.get("use_when")
+                            or r.get("description") or r.get("title") or ""})
+    # A node's children come back under `entries`, each already carrying the address the remote
+    # would print and whether anything is written there — the same shape the local tables are built
+    # from. Guessed at `children`/`nodes` first, and the area table came out empty while the remote
+    # had five rows: an empty table is the one wrong answer that looks like a fact.
+    for e in (d.get("entries") or d.get("children") or d.get("nodes") or []):
+        eid = e.get("id") or ""
+        has = bool(e.get("has_body", True))
+        kids = e.get("children")
+        kind = KIND["table"] if kids else (KIND["file"] if has else KIND["empty"])
+        tail = f"nodes/{eid}/body" if (kind == KIND["file"]) else f"nodes/{eid}"
+        rows.append({"kind": kind, "address": f"{pre}/{tail}",
+                     "why": e.get("one_liner") or e.get("name") or ""})
+    # An area's own row points at the representative that holds it: `/v1/export/regions/<a>` answers
+    # with the area's description, not its contents.
+    if not rows and d.get("representative"):
+        rows.append({"kind": KIND["table"], "address": f"{pre}/nodes/{d['representative']}",
+                     "why": d.get("use_when_export") or d.get("advertises") or d.get("use_when") or ""})
+    title = f"CIRCUIT {name} — {d.get('name') or d.get('title') or 'a remote RouteMind'}"
+    lead = ("Read-only, and only what its owner exported. The lines below were written for an "
+            "outside reader, not for their own list of areas.")
+    return _table(rows, title, lead,
+                  "Not finding something here does not mean they do not have it — it means they "
+                  "did not export it. Ask them, do not conclude.")
+
+
+def circuit_call(args: dict) -> str:
+    op = str(args.get("op") or "").strip()
+    if op == "list":
+        if not CIRCUITS: return "No circuits are open."
+        out = ["OPEN CIRCUITS", ""]
+        for n, c in sorted(CIRCUITS.items()):
+            out.append(f"  {n:<16} {c['url']}   → /v1/circuits/{n}/regions")
+        return "\n".join(out) + ("\n\nThese last for this connection only. "
+                                 "Nothing is written anywhere.")
+    if op == "close":
+        n = str(args.get("name") or "").strip()
+        return f"Circuit {n} closed." if CIRCUITS.pop(n, None) else f"No circuit named {n}."
+    if op != "open":
+        return "op must be open, list or close."
+
+    url = str(args.get("url") or "").strip().rstrip("/")
+    token = str(args.get("token") or "").strip()
+    name = str(args.get("name") or "").strip() or (urllib.parse.urlsplit(url).hostname or "remote")
+    if not url or not token:
+        return "url and token are both required — a circuit is a read into somebody else's ontology."
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
+        return f"name must be ascii kebab-case, got {name!r}"
+    if _public_address(url):
+        return (f"refusing to send a token to {url} — that is a public address over plain http, so "
+                "the token would cross the wire in clear text. Use https, or a private address.")
+
+    CIRCUITS[name] = {"url": url, "token": token}
+    try:
+        circuit_fetch(name, "/v1/regions", "application/json")
+    except ApiError as e:
+        CIRCUITS.pop(name, None)
+        # Opened and immediately closed. A circuit that is listed but does not answer is worse than
+        # none: the agent spends its hops discovering that, and the table said it was there.
+        return f"Could not open circuit {name} — {e}\n\nNothing was kept."
+    return (f"CIRCUIT {name} open  \u2192  {url}\n\n"
+            f"  Read it at /v1/circuits/{name}/regions, then follow the addresses it prints.\n"
+            "  It is read-only and holds only what its owner chose to export; the lines you see\n"
+            "  were written for an outside reader, not for their own hop 0.\n"
+            "  This lasts for this connection. Nothing was written on either side.")
 
 
 WORKSPACE = "workspace"
@@ -546,6 +694,28 @@ WRITE_TOOL = {
         "date": {"type": "string", "description": "YYYY-MM-DD. Defaults to today"}}}}
 
 
+CIRCUIT_TOOL = {
+    "name": "knowledge_circuit",
+    "description": "Read another RouteMind for the length of this connection. Give it the address "
+                   "and token somebody handed you, and their shared areas appear alongside this "
+                   "backbone's — you walk them the same way, with the addresses their tables "
+                   "print.\n\n"
+                   "It is read-only, and it holds only what its owner chose to export. The lines you "
+                   "see there were written for an outside reader, not for their own list of areas, "
+                   "so an area may describe itself differently than its owners would to each "
+                   "other.\n\n"
+                   "Nothing is written on either side and nothing outlives this connection. This is "
+                   "not the same as linking two backbones, which is a standing arrangement somebody "
+                   "configures and commits; this is you borrowing a reader's view of theirs.",
+    "inputSchema": {"type": "object", "required": ["op"], "properties": {
+        "op": {"type": "string", "enum": ["open", "list", "close"]},
+        "url": {"type": "string", "description": "open: the remote RouteMind's address, e.g. https://kb.example.com"},
+        "token": {"type": "string", "description": "open: the read token its owner gave you"},
+        "name": {"type": "string",
+                 "description": "open: a short name to address it by (ascii kebab-case; defaults to "
+                                "the host). close: which one to close"}}}}
+
+
 class Server:
     def __init__(self, api: Api):
         self.api = api
@@ -616,12 +786,25 @@ class Server:
             tools[0]["description"] += f"\n\n(The area list could not be fetched: {e})"
         if self.overlays(): tools.append(dict(OVERLAY_TOOL))
         if self.workspace(): tools.append(dict(WRITE_TOOL))
+        tools.append(dict(CIRCUIT_TOOL))
         return tools
 
     def call(self, name: str, args: dict) -> tuple[str, bool]:
         try:
-            if name == "knowledge_table": return table_for(self.api, str(args.get("path") or "")), False
-            if name == "knowledge_read":  return read_for(self.api, str(args.get("path") or "")), False
+            if name == "knowledge_circuit": return circuit_call(args), False
+            # An address into an open circuit is answered by the circuit, not this backbone. The
+            # agent never composes one: it follows what a circuit's own tables printed, the same
+            # discipline as every other address here.
+            path = str(args.get("path") or "")
+            if name in ("knowledge_table", "knowledge_read") and path.startswith("/v1/circuits/"):
+                rest = path[len("/v1/circuits/"):]
+                cname, _, tail = rest.partition("/")
+                doc = name == "knowledge_read"
+                body = circuit_fetch(cname, "/v1/" + tail,
+                                     "text/markdown" if doc else "application/json")
+                return (body if doc else circuit_table(cname, body)), False
+            if name == "knowledge_table": return table_for(self.api, path), False
+            if name == "knowledge_read":  return read_for(self.api, path), False
             if name == "knowledge_overlay" and self.overlays(): return overlay_call(self.api, args), False
             if name == "knowledge_write" and self.workspace(): return write_call(self.api, args), False
             return f"No such tool: {name}", True
