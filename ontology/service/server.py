@@ -1130,7 +1130,12 @@ class Handler(BaseHTTPRequestHandler):
             # Under one type a file IS a child: one row per entity, carrying its own address.
             # Listing `files` as well would advertise everything twice, at two addresses, for one
             # thing — which is what made a single-file node draw itself as a node on the map.
-            return self._send(200, {**{k: v for k, v in n.items() if k not in _NODE_INTERNAL},
+            # Its own two times, beside its children's. A node's table lists its entries *and*, when
+            # it has a body, a first row that is the node itself — and that row had no age while
+            # every row under it did, so the one document a reader is most likely to quote was the
+            # one the page said nothing about.
+            own = {k: v for k, v in (ages.of(DATA, head(DATA)).get(parts[1]) or {}).items() if v}
+            return self._send(200, {**{k: v for k, v in n.items() if k not in _NODE_INTERNAL}, **own,
                                     "entries": [_advert_child(c) for c in advertised(parts[1])],
                                     "body": n.get("body") or ""})
         if len(parts) == 3 and parts[0] == "nodes" and parts[2] == "body":

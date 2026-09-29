@@ -95,13 +95,38 @@ you set a working directory.
 
 ### The tools
 
+Two do the reading, and the rest appear only where the install has the thing they need — a tool for
+a feature that is not configured would be a tool that fails when used, which is worse than absent.
+
 ```
 knowledge_table(path?)   a routing table — what is here, and where to go next.
                          No argument = the list of areas. That is where every search starts.
 knowledge_read(path)     one document, as written.
+
 knowledge_overlay(op)    the working set for one question (a VRF) — only where the install keeps
                          overlays (ONTOLOGY_OVERLAYS). create · get · add · remove · close.
+knowledge_write(...)     record what was done, into the `workspace` area, under today's date —
+                         only where that area exists. Creating it is how the feature is turned on.
+knowledge_circuit(op)    read another backbone for the length of this connection. open · list ·
+                         close. Always offered: it needs nothing of this install to work.
 ```
+
+So an install offers between three and five. `check/mcp-check.py` asserts the set against the same
+conditions the server uses rather than a fixed count, because it once expected three while the server
+offered five and was right to.
+
+### Prompts
+
+Clients that show MCP prompts get two, and a prompt is where a *person* starts something rather than
+an agent reaching for it:
+
+```
+knowledge_start          the list of areas — the same text as `instructions`.
+circuit                  open a circuit. Arguments: url, token, name — so a client can show
+                         fields instead of asking somebody to compose a tool call.
+```
+
+In Claude Code this repository also carries `/circuit <url> <token> [name]` as a project command.
 
 Where overlays exist, the `instructions` describe the flow in docs/OVERLAY.md: pick every row the
 question belongs to, create the overlay with a reason for each, work from its one table, come back to

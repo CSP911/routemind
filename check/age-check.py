@@ -27,6 +27,22 @@ import knowledge_mcp as mcp                                               # noqa
 results = []
 
 
+# Printed however this ends. A check that dies instead of reporting looks, to anyone reading the
+# output, exactly like a check that never ran — and the bug this file exists to hold down is one that
+# raises rather than returning something wrong.
+import atexit, traceback                                                  # noqa: E402
+
+
+@atexit.register
+def _report():
+    if results: print("\n".join(results))
+
+
+sys.excepthook = lambda k, v, t: (
+    results.append("FAIL the check crashed: " + "".join(traceback.format_exception_only(k, v)).strip()),
+    sys.stderr.write("".join(traceback.format_exception(k, v, t))))
+
+
 def check(name, cond, detail=""):
     results.append(("ok  " if cond else "FAIL") + " " + name)
     if not cond and detail: results.append("     " + detail)
@@ -102,10 +118,34 @@ check("  and the settled row reads differently from the revised one",
       "3y / 3y" in _settled and "3y / " in _revised and "3y / 3y" not in _revised,
       f"{_settled.strip()}  ||  {_revised.strip()}")
 
+# A node that has **both** a body and children. Its first row is its own document, and that row is
+# the node rather than one of its entries — written against the loop variable at first, which is an
+# UnboundLocalError and a 500 on every such node.
+#
+# Checked here, with a stub, because the repository the suite runs against has none: `data/repo` has
+# 0 nodes of this shape and the shipped example has 42, so twenty-five suites passed over a path they
+# could not reach. A clean install caught it on its first boot.
+class _StubApi:
+    def json(self, path):
+        return {"id": "both", "name": "Both", "body": "it has a document too",
+                "route_since": "2023-01-05T00:00:00Z", "changed": "2026-09-28T00:00:00Z",
+                "entries": [{"id": "kid", "name": "Kid", "type": "data",
+                             "fetch": "/v1/nodes/kid/body", "one_liner": "a child",
+                             "route_since": "2023-01-05T00:00:00Z",
+                             "changed": "2023-01-05T00:00:00Z"}]}
+    def text(self, path): return ""
+
+
+both = mcp.node(_StubApi(), "/v1/nodes/both")
+check("a node with a body and children renders", "/v1/nodes/both/body" in both, both[:150])
+check("  and its own row carries its own age, not an entry's",
+      any("/v1/nodes/both/body" in l and "1d" in l or "/v1/nodes/both/body" in l and "today" in l
+          for l in both.splitlines()),
+      "\n".join(l for l in both.splitlines() if "/v1/nodes/" in l))
+
 # A table of rows that all lack ages must not grow an empty column.
 plain = mcp._table([{"kind": "file", "address": "/a", "why": "w"}], "T", "l", None)
 check("a table with no ages at all prints no AGE column", "AGE" not in plain, plain[:110])
 
 shutil.rmtree(T, ignore_errors=True)
-print("\n".join(results))
 sys.exit(1 if any(r.startswith("FAIL") for r in results) else 0)

@@ -32,6 +32,44 @@ Some questions do not sit in one area: settling a trip is three at once, and pic
 third of it. An **overlay** is that working set made as an object — the areas, why each is in it, and
 what was actually used to answer. The agent draws it; RouteMind serves it and keeps the record.
 
+### Back-Bone, AS, and the line between them
+
+Three words, and the screen uses them too.
+
+```
+   BACK-BONE ─ the whole of this ontology, and the only place absence may be claimed
+       │       hop 0: one row per AS, nothing else
+       │
+       ├── AS  expense       "what to do with a receipt · whether the corporate card
+       │                      may be used here · how much a business trip pays"
+       │        │
+       │        ├── AS  corp-card        ← an AS holds AS's. The map draws both the same
+       │        │    ├── card-limit      because they are the same thing: a row that
+       │        │    └── card-loss         advertises itself and may hold more
+       │        └── AS  evidence
+       │
+       ├── AS  approval      "whom to put in the approval chain · whether a team
+       │                      lead can sign this off"
+       └── AS  payroll       "what this payslip line means · whether an allowance
+                              is tax free"
+```
+
+**The Back-Bone holds one row per AS and nothing more.** Not a summary of what is inside, not a
+sample — one line saying *when you would come here*. That line is `use_when`, and it is the only text
+an agent reads before choosing.
+
+**An AS advertises; it does not expose.** What is inside an AS is invisible from hop 0 and stays
+invisible until something picks it. So hop 0 is the same size at 80 documents and at 8,000, and the
+cost of choosing does not grow with what you have.
+
+**Absence belongs to the Back-Bone alone.** An AS's own table says what that AS holds — never what
+RouteMind lacks. An agent told otherwise answers "there is no such thing" from inside one area, with
+five others unlooked-at. Every table says which of the two it is, in its own footer.
+
+Advertising is the same act one level down: `corp-card` advertises to `expense` exactly as `expense`
+advertises to the Back-Bone. That is why the map draws an AS and a node identically — they are the
+same kind of thing, and a walk is the same step repeated.
+
 **[docs/ROUTING.html](docs/ROUTING.html)** — the whole structure in detail, in a browser.
 **[docs/OVERLAY.md](docs/OVERLAY.md)** — overlays.
 
@@ -73,25 +111,30 @@ and a limit cannot be seen from one point.
 ## Quickstart
 
 Docker, with `docker compose`. That is all the service needs — the containers carry python and git.
-The checks at the end use the host's `curl`, `python3` and `node` if they are there; without them the
-install still comes up, it just verifies less.
 
 ```sh
-git clone https://github.com/CSP911/routemind.git knowledge && cd knowledge
-./install.sh
+git clone https://github.com/CSP911/routemind.git routemind && cd routemind
+./install.sh --name acme --port 9000
 ```
 
-→ **http://localhost:8080**
+→ **http://localhost:9000**
 
-In order, `install.sh` copies `.env.example` to `.env` and appends **your own uid/gid**; asks once
-whether you have an LLM (Enter skips it); `mkdir -p`s all six bind-mount directories **before**
-compose, on purpose; brings the stack up; reads `/api/app-config` and tells you which mode you ended
-up in; and runs `check/smoke.sh`.
+Two answers, and both have working defaults. Run `./install.sh` bare and it asks for them:
 
-Safe to run again — an existing `.env` is kept and only what you pass is replaced. `--no-llm` skips
-the question entirely; `--llm-provider openai --llm-url … --llm-key … --llm-model …` answers it
-without being asked. An LLM is optional and changes exactly one thing: a **✨ Suggest** button that
-drafts a routing line for you to edit. **[docs/LLM.md](docs/LLM.md)**.
+    --name    what this domain is called. One word, lowercase.
+              A domain is one exchange and the backbones that meet in it, and this
+              name is in every address a linked backbone prints: /v1/peers/acme/…
+              Asked once, at install — renaming it later rewrites addresses
+              somebody may already have followed.
+
+    --port    where the map answers. 8080 if you say nothing.
+
+It then asks whether you have an LLM; Enter skips it. `--no-llm` does not ask, and
+`--llm-provider … --llm-url … --llm-key … --llm-model …` answers without being asked. An LLM changes
+exactly one thing: a **✨ Suggest** button that drafts a routing line for you to edit.
+**[docs/LLM.md](docs/LLM.md)**.
+
+Safe to run again — an existing `.env` is kept and only what you pass is replaced.
 
 **Three containers, no database.** `ontology` is the API and the only thing that touches your git
 repository; `web` is the map and a proxy in front of it; `exchange` is where backbones meet — **empty
@@ -178,10 +221,16 @@ One file, stdlib only, python 3.7 or newer: no install, no virtualenv, nothing t
 this repository in Claude Code is the whole setup** — `.mcp.json` registers it. For Codex, Cursor,
 Claude Desktop and anything else, one config block each in **[docs/AGENTS.md](docs/AGENTS.md)**.
 
-Three tools: `knowledge_table(path?)` for a routing table, `knowledge_read(path)` for one document,
-and `knowledge_overlay(op)` for a working set where the install keeps overlays. The area list travels
-in the server's `instructions`, so **you do not have to name RouteMind in the question** — what
-decides whether the agent comes here is the `use_when` line on each area.
+Two tools do the reading — `knowledge_table(path?)` for a routing table and `knowledge_read(path)` for
+one document — and the rest of the set appears only where the install has the thing it needs:
+`knowledge_overlay(op)` where overlays are kept, `knowledge_write(...)` where there is a `workspace`
+AS to write into, and `knowledge_circuit(op)` always. Five here; your install may offer three.
+
+`/circuit <url> <token>` is the same thing from a person's side, and the MCP `circuit` prompt is the
+same again with fields instead of a tool call.
+
+The area list travels in the server's `instructions`, so **you do not have to name RouteMind in the
+question** — what decides whether the agent comes here is the `use_when` line on each area.
 
 Without MCP, **Copy for an agent** on the map puts the same advertisement on the clipboard. All three
 ways hand over one formatter's output; three descriptions of one ontology would drift.
@@ -190,6 +239,52 @@ ways hand over one formatter's output; three descriptions of one ontology would 
 ./check/mcp-check.py http://localhost:8080/api/knowledge      # the protocol and a whole walk
 ./check/all.sh                                                # and everything else — docs/CHECKS.md
 ```
+
+---
+
+## How old is this row
+
+Material goes stale and gets replaced; the old record still has to exist. Both versions are in the
+map, both look valid, and an agent reads both as current — so it sometimes answers from the one that
+was replaced. That is the failure this is for.
+
+Every routing row carries two times:
+
+```
+  KIND   ADDRESS                          AGE          WHY YOU WOULD PICK THIS ROW
+  table  /v1/nodes/card-limit             2y / today   Card limits — what the card may be used for …
+  file   /v1/nodes/qualified-list/body    2y / 2y      What qualifies as evidence, and the ceiling …
+  table  /v1/peers/acme/…/regions/payroll  —           what this payslip line means …
+
+         └─ route ─┘ └─ document ─┘
+            how long        when what it
+            this path       points at last
+            has been here   moved
+```
+
+**Two, because one cannot say both.** A route laid down two years ago whose document was rewritten
+today is **current** — somebody is maintaining it. The same route over a document that has not moved
+in two years is the one worth asking about before quoting it. A single "age" collapses those into one
+warning, and the first is most of a healthy map: a rule that has not needed changing is the most
+reliable row in the table, not the least.
+
+So the second number answers *"should I look for something newer"*, and the first says whether this
+path is settled or was only just laid down.
+
+**Both come from git** — the last commit that added the file, the last that touched it. Not a stored
+field: that would be a second copy that drifts, and a wrong date here is worse than none, because it
+is a reason to trust the wrong row. One pass over the log per commit, cached on the revision.
+
+**`—` is not "new". It is *not known*** — usually a row that came across a link, whose history belongs
+to the backbone that owns it. It was blank at first, which reads as a row somehow outside time and
+would have made a reader quietly prefer the row the system knows least about.
+
+**What this is not: a supersession record.** Old is not wrong and new is not right — an agent that
+prefers the newest row picks a draft over a rule that has held for a decade. The column supports
+*asking*, not deciding. What settles which of two documents is current is somebody's statement that
+one replaced the other, and that is not this.
+
+**[docs/AGE.md](docs/AGE.md)**.
 
 ---
 
@@ -223,7 +318,100 @@ The screen draws one card per domain — what this backbone holds, what reaches 
 is not answering. `./examples/seed-demo.sh` builds six backbones across two rooms, one deliberately
 down, which is the shape the screens are designed against.
 
+### Two ways to reach another backbone
+
+```
+  PEERING — a standing arrangement, committed, everyone sees it
+  ─────────────────────────────────────────────────────────────
+     your BB ──── peers.yaml ────▶  EXCHANGE  ◀──── members.yaml ──── their BB
+                  (in git)                              (in git)
+
+     their AS appears in YOUR hop 0, mixed in with your own rows.
+     An agent never learns there is a link.
+
+
+  CIRCUIT — this session only, nothing written on either side
+  ──────────────────────────────────────────────────────────
+     /circuit http://their-host:8100 <token>
+
+     you ────────────────────────────────────────▶ their BB
+                                                   read-only
+
+     their AS appears under /v1/circuits/<name>/… , beside yours but
+     never in it. Closing the connection ends it. No file changes.
+```
+
+Both halves of a **peering** are declarations — the backbone names the room, the room names the
+backbone — so nobody is enrolled by one side alone. A **circuit** is the opposite by design: one
+person, one session, one address and a token somebody handed them.
+
+Use peering for a relationship. Use a circuit to look at somebody's ontology now.
+
+### The credential is good for six hours
+
+The secret in `.env` used to be presented on every read across every link — so it was in every
+request, every proxy log and every transcript, and it never expired.
+
+```
+     enrolment key ──▶  POST /v1/peers/token  ──▶  session token, 6h
+     (in .env, rarely used)                        (what every read carries)
+```
+
+The key now opens one thing: asking for a session. It is presented about four times a day per link
+instead of thousands of times, and a session that leaks off the read path stops being worth anything
+by the end of the shift. **A session cannot mint another** — otherwise a leaked one renews itself for
+ever and the six hours bound nothing. Sessions live in memory, so a restart revokes every one of
+them, and clients re-mint on a 401.
+
+It does **not** prove who is at the far end. A short-lived token handed to an endpoint that is not who
+it claims to be is still handed over; what refuses is a separate rule, that a token never crosses
+plain `http` to a public address.
+
 **[docs/PEERING.md](docs/PEERING.md)** is the contract, including the operator's screen at `:8090`.
+
+---
+
+## Carrying one where a link cannot reach
+
+A partner behind a firewall, an air-gapped site, an auditor who gets a copy and nothing else.
+
+```sh
+./transfer/export.py --api http://localhost:8100 --token "$TOK" --out partner.rmx
+```
+
+or **Export** in the map's header, which downloads the same file.
+
+```
+  their BB ──▶  partner.rmx  ──▶  your repository
+                (encrypted)        under a prefix you choose
+
+  AES-256-GCM · scrypt · the header is authenticated, so it says what the file
+  claims to be before anyone types a passphrase at it, and editing a byte of it
+  fails the tag rather than quietly deriving a different key.
+```
+
+**It holds exactly what a peer would have been able to read** — the AS's somebody set `export` on,
+their documents, and the links between them where both ends are inside that set. Nothing else. That
+is not a filter applied on the way out; it is read from the same surface a link reads, so there is no
+path through the code that can serve an AS nobody decided to share.
+
+Opening it:
+
+```sh
+./transfer/import.py partner.rmx --against data/repo      # what would collide
+./transfer/import.py partner.rmx --graft data/repo --prefix partner
+```
+
+Every id takes the prefix, not only the ones that clash, so the same file grafted into two
+repositories comes out the same in both. The receiving repository's **own validator** decides whether
+the result is coherent — a graft it rejects is one the service would refuse to serve. Without
+`--graft` it unpacks to a directory and writes into no ontology at all.
+
+One thing to look at first afterwards: the sender's routing line is now a row in **your** table. It
+is the sentence they route on, which is the right kind of sentence — but it was written about their
+map.
+
+**[transfer/README.md](transfer/README.md)**.
 
 ---
 
@@ -235,6 +423,7 @@ exchange/     where backbones meet. No repository, no areas, no hop 0
 web/          the map and a proxy — one FastAPI file. Knows nothing about any domain
 admin/        the operator's screen for an exchange. Off unless EXCHANGE_ADMIN_TOKEN is set
 mcp/          the MCP server, so any MCP-capable agent can read the ontology
+transfer/     export, import and graft — one encrypted file, for where a link cannot reach
 static/       the map screen
 seed/         an empty ontology, copied into data/repo on first boot
 examples/     one worked ontology, and seed-demo.sh — six backbones across two rooms
@@ -254,7 +443,9 @@ data/access   who read what across a link, one file per UTC day
 | | |
 |---|---|
 | [ROUTING.html](docs/ROUTING.html) | the whole structure, in a browser |
-| [PEERING.md](docs/PEERING.md) | links between backbones, domains, and the operator's screen |
+| [PEERING.md](docs/PEERING.md) | links between backbones, circuits, six-hour sessions, the operator's screen |
+| [AGE.md](docs/AGE.md) | the two times on a routing row, and what they deliberately do not say |
+| [transfer/README.md](transfer/README.md) | carrying a backbone somewhere a link cannot reach |
 | [OVERLAY.md](docs/OVERLAY.md) | the working set for one question |
 | [AGENTS.md](docs/AGENTS.md) | connecting an agent — every client, and the tools |
 | [LLM.md](docs/LLM.md) | the optional ✨ Suggest buttons, and the three provider wires |

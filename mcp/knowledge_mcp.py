@@ -243,8 +243,12 @@ def node(api: Api, path: str) -> str:
     # table and being told "(nothing here)" while a document sits on it is the table disagreeing with
     # the row that sent you: the row said `data`, this said empty. Its body is the first row.
     if str(d.get("body") or "").strip():
+        # The node's own times, not an entry's — this row *is* the node. Written `_age(e)` at first,
+        # against a loop variable that does not exist yet, which is a 500 on every node that has both
+        # a body and children. Nothing in the dev repository has both; the shipped example does, and
+        # a clean install caught it on the first boot.
         rows.append({"kind": KIND["file"], "address": path.rstrip("/") + "/body",
-                     "why": "its own document", "age": _age(e)})
+                     "why": "its own document", "age": _age(d)})
     for e in (d.get("entries") or []):
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or e.get('description') or ''}"
