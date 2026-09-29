@@ -117,6 +117,13 @@ run mcp-check $HOSTPY check/mcp-check.py "$BASE/api/knowledge"
 TRANSFER_TOKEN="${EXCHANGE_TOKEN_HOME:-}"
 [ -n "$TRANSFER_TOKEN" ] || TRANSFER_TOKEN=$(sed -n 's/^EXCHANGE_TOKEN_HOME=//p' .env 2>/dev/null | head -1)
 ROUTEMIND_TOKEN="$TRANSFER_TOKEN" run transfer $HOSTPY check/transfer-check.py
+# The session tokens, run inside the ontology against itself: that service publishes no port, which
+# is the design — the web proxy is the only way in from outside — so this is where it is reachable.
+if [ -n "$ONT" ]; then
+  docker cp check/session-check.py "$ONT:/tmp/session-check.py" >/dev/null 2>&1
+  run session docker exec -i -e ROUTEMIND_TOKEN="$TRANSFER_TOKEN" \
+      -e ROUTEMIND_API=http://127.0.0.1:8100 "$ONT" python3 /tmp/session-check.py
+fi
 
 printf '\n== the slow ones, which start services of their own ==\n'
 if [ "$QUICK" = 1 ]; then

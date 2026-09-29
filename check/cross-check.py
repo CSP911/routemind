@@ -63,6 +63,8 @@ if not os.path.isdir(seed): seed = os.path.join(ROOT, "seed")
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session                              # noqa: E402
 
 TOK = {"TOK_AY": "t-ay", "TOK_BEE": "t-bee"}
 def _need_areas(names, n, what):
@@ -157,7 +159,7 @@ def call(port, path, method="GET", body=None, token=None, raw=False):
     data = json.dumps(body).encode() if body is not None else None
     r = urllib.request.Request(f"http://127.0.0.1:{port}{path}", data=data, method=method)
     if data is not None: r.add_header("Content-Type", "application/json")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{port}", token))
     r.add_header("X-Actor", "cross-check")
     try:
         with urllib.request.urlopen(r, timeout=30) as x:

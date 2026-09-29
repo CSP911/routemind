@@ -475,6 +475,43 @@ stops at once.
 
 `./check/peer-check.py` — the last 21 of its 87 assertions.
 
+## Six hours, not for ever
+
+The secret above is an **enrolment key**. It opens one thing:
+
+```
+POST /v1/peers/token      X-Peer-Token: <enrolment key>
+  → { "token": "...", "expires_in": 21600 }
+```
+
+and the read path carries that session token instead. Operator, 2026-09-29.
+
+The reason is what a permanent bearer token does when it gets out. It used to ride on every read
+across every link, so it was in every request, every proxy log and every transcript, and nothing
+expired it — two leaked into a working session while this was being built, and both stayed valid
+until somebody rotated them by hand. Now the long-lived secret is used about four times a day per
+link instead of thousands of times, and anything that escapes off the read path stops being worth
+something by the end of the shift.
+
+**A session cannot mint another.** The enrolment key is the only thing `/v1/peers/token` accepts —
+otherwise a leaked session renews itself for ever and the six hours bound nothing.
+
+**Sessions live in memory, so a restart revokes every one of them.** Clients re-mint on a 401, which
+makes that the cheapest revocation there is and costs one extra round trip per link. `drop_sessions()`
+is the same thing without the restart.
+
+**A session records who the far end decided the caller was.** So changing `peers.yaml` or
+`members.yaml` re-opens that question rather than waiting six hours for it: `sessions_follow` drops
+every session when the declared set changes. All of them, not the changed row — an audience is a list,
+and removing one name changes what every other name means.
+
+**What this does not do** is prove who is at the far end. A short-lived token handed to an endpoint
+that is not who it claims to be is still handed over; `public_address` above refuses to send one in
+clear text to a public address, and that is the whole of the endpoint protection today. This change
+shortens how long a leak is worth something. It is not authentication of the other side.
+
+`./check/session-check.py`, and every link check goes through the mint because every client does.
+
 ## Two exchanges
 
 A member of an exchange may itself be an exchange (`kind: exchange`), which is how two organisations

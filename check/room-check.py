@@ -65,6 +65,8 @@ if not os.path.isdir(seed): seed = os.path.join(ROOT, "seed")
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session                              # noqa: E402
 
 TOK = {"TOK_AY": "tok-ay", "TOK_BEE": "tok-bee"}
 LINE = {"ay": "what ay answers for the others", "bee": "what bee answers for the others"}
@@ -178,7 +180,7 @@ def export_of(who):
     print the export decision — it is about somebody else's hop 0, not this one — so asking
     hop 0 whether an area is still shared asks the wrong table."""
     r = urllib.request.Request(f"http://127.0.0.1:{PORT[who]}/v1/export/regions")
-    r.add_header("X-Peer-Token", TOK[f"TOK_{who.upper()}"])
+    r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{PORT[who]}", TOK[f"TOK_{who.upper()}"]))
     try:
         with urllib.request.urlopen(r, timeout=20) as x:
             return sorted(q["source"] for q in (json.loads(x.read() or b"{}").get("regions") or []))

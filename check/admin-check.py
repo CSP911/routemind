@@ -62,6 +62,8 @@ repo = os.path.join(T, "repo"); shutil.copytree(seed, repo)
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session, forget as _forget_sessions  # noqa: E402
 
 
 def _share(text, line):
@@ -123,7 +125,11 @@ def call(path, token=None, header="X-Admin-Token", method="GET", body=None):
     data = json.dumps(body).encode() if body is not None else None
     r = urllib.request.Request(f"http://127.0.0.1:{IX_PORT}{path}", data=data, method=method,
                                headers={"Content-Type": "application/json"})
-    if token: r.add_header(header, token)
+    # The members' door takes a six-hour session, minted from the enrolment key. The operator's door
+    # takes its own key directly — it is not a peer and has no session to hold.
+    if token:
+        r.add_header(header, _session(f"http://127.0.0.1:{IX_PORT}", token)
+                             if header == "X-Peer-Token" else token)
     try:
         with urllib.request.urlopen(r, timeout=15) as x: return x.status, json.loads(x.read() or b"{}")
     except urllib.error.HTTPError as e:
@@ -138,14 +144,14 @@ for _ in range(80):
     except Exception: time.sleep(0.25)
 
 # ── with no token configured, there is no door ────────────────────────────────
-ix = start_exchange(None)
+_forget_sessions(); ix = start_exchange(None)
 check("with no admin token there is no operator door", call("/admin/state")[0] == 501)
 check("  and the members' door is unaffected",
       call("/v1/export/regions", MEMBER_TOKEN, "X-Peer-Token")[0] == 200)
 ix.terminate(); time.sleep(0.6)
 
 # ── with one, it is a door and only for the right key ─────────────────────────
-ix = start_exchange(ADMIN_TOKEN)
+_forget_sessions(); ix = start_exchange(ADMIN_TOKEN)
 check("no token is refused", call("/admin/state")[0] == 401)
 check("a wrong token is refused", call("/admin/state", "nope")[0] == 401)
 # Two doors, two keys. A member holding its own secret must not be able to read the operator's view,

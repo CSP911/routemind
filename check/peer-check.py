@@ -59,6 +59,8 @@ shutil.copytree(seed, repo)
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session, forget as _forget_sessions  # noqa: E402
 
 # One area is shared, by writing the line that shares it. Nothing else about the repository changes,
 # which is the point: sharing is one field, and its absence is the default.
@@ -115,7 +117,7 @@ else: raise SystemExit(f"the backbone on {PORT} did not start")
 
 def get(path, token=None):
     r = urllib.request.Request(f"http://127.0.0.1:{PORT}/v1{path}")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{PORT}", token))
     try:
         with urllib.request.urlopen(r, timeout=20) as x: return x.status, json.loads(x.read() or b"{}")
     except urllib.error.HTTPError as e:
@@ -602,6 +604,11 @@ check("  and absence may still be claimed", "may say something is absent" in (cl
 open(os.path.join(repo_b, "peers.yaml"), "w", encoding="utf-8").write(
     f"peers:\n  - name: ay\n    label: AY\n"
     f"    url: http://127.0.0.1:{PORT}\n    token_env: PEERTOK_B\n")
+# A session records who the far end decided the caller was when it was minted, so B starting to
+# recognise A by name has to re-open that question — `sessions_follow` drops every session when the
+# declared set changes, which is why this takes effect now and not in six hours. Dropped on this side
+# too, because the check holds one of its own.
+_forget_sessions()
 time.sleep(0.4)
 st, named = at(PORT, "/regions")
 check("with one secret between them the caller has a name, and is on the list",

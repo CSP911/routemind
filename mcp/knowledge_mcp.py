@@ -323,17 +323,52 @@ def _public_address(url: str) -> bool:
         return False
 
 
+def circuit_session(name: str) -> str:
+    """The circuit's six-hour session, minted from the token the person gave, and held on it."""
+    c = CIRCUITS[name]
+    if c.get("session"): return c["session"]
+    req = urllib.request.Request(c["url"] + "/v1/peers/token", data=b"", method="POST",
+                                 headers={"X-Peer-Token": c["token"], "Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            tok = str(json.loads(r.read().decode("utf-8")).get("token") or "")
+    except urllib.error.HTTPError as e:
+        raise ApiError(f"circuit {name}: {c['url']} refused the token (HTTP {e.code})", e.code)
+    except urllib.error.URLError as e:
+        raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e.reason})")
+    if not tok: raise ApiError(f"circuit {name}: no token came back from {c['url']}", 502)
+    c["session"] = tok
+    return tok
+
+
 def circuit_fetch(name: str, path: str, accept: str) -> str:
     """One read across a circuit. `path` is written the way tables print it, beginning `/v1/`."""
     c = CIRCUITS.get(name)
     if not c: raise ApiError(f"no circuit named {name} — open one first", 404)
     tail = path[len("/v1/"):] if path.startswith("/v1/") else path.lstrip("/")
     url = c["url"] + "/v1/export/" + tail
-    req = urllib.request.Request(url, headers={"Accept": accept, "X-Peer-Token": c["token"]})
-    try:
+    # A six-hour session rather than the token the person typed. The typed one opens the mint and
+    # nothing else, so it appears once per circuit instead of on every hop of a walk — which matters
+    # here more than anywhere, because a walk's reads are the ones that end up in a transcript.
+    def go(tok):
+        req = urllib.request.Request(url, headers={"Accept": accept, "X-Peer-Token": tok})
         with urllib.request.urlopen(req, timeout=30) as r:
             return r.read().decode("utf-8")
+    try:
+        return go(circuit_session(name))
     except urllib.error.HTTPError as e:
+        # The far end restarted, or six hours passed mid-walk. Re-mint once: a restart over there
+        # must cost a round trip, not the rest of the walk.
+        if e.code == 401:
+            c.pop("session", None)
+            try:
+                return go(circuit_session(name))
+            except urllib.error.HTTPError as e2:
+                detail = (e2.read().decode("utf-8", "replace") or "").strip()[:200]
+                raise ApiError(f"circuit {name}: HTTP {e2.code} from /v1/export/{tail}"
+                               + (f" — {detail}" if detail else ""), e2.code)
+            except urllib.error.URLError as e2:
+                raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e2.reason})")
         detail = (e.read().decode("utf-8", "replace") or "").strip()[:200]
         raise ApiError(f"circuit {name}: HTTP {e.code} from /v1/export/{tail}"
                        + (f" — {detail}" if detail else ""), e.code)

@@ -65,6 +65,8 @@ if not os.path.isdir(seed): seed = os.path.join(ROOT, "seed")
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session                              # noqa: E402
 
 
 def _share(text, line):
@@ -137,7 +139,7 @@ def get(port, path):
 
 def refresh(port, token, hops=None):
     r = urllib.request.Request(f"http://127.0.0.1:{port}/v1/export/refresh", data=b"", method="POST")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{port}", token))
     if hops is not None: r.add_header("X-Refresh-Hops", str(hops))
     try:
         with urllib.request.urlopen(r, timeout=20) as x: return x.status, json.loads(x.read() or b"{}")

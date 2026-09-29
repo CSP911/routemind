@@ -65,6 +65,8 @@ if not os.path.isdir(seed): seed = os.path.join(ROOT, "seed")
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session                              # noqa: E402
 
 def _share(text, line):
     """Turn export on for a representative, with `line` as the sentence it crosses with.
@@ -169,7 +171,7 @@ for port in [*BB_PORT.values(), *IX_PORT.values()]:
 
 def get(port, path, token=None, raw=False, kind=None):
     r = urllib.request.Request(f"http://127.0.0.1:{port}{path}")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{port}", token))
     if kind: r.add_header("X-Peer-Kind", kind)
     try:
         with urllib.request.urlopen(r, timeout=20) as x:

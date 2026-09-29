@@ -58,9 +58,37 @@ def _key(passphrase: str, salt: bytes, params: dict) -> bytes:
                   p=params["p"]).derive(passphrase.encode())
 
 
+_HELD: dict[tuple, str] = {}
+
+
+def session(api: str, key: str, timeout: float = 30) -> str:
+    """Trade the enrolment key for a six-hour session, and hold it.
+
+    The key opens `/v1/peers/token` and nothing else since 2026-09-29 — it used to ride on every
+    read, which put a secret that never expires into every request and every log. One mint per run
+    here; an export is a handful of reads and does not outlive its session.
+    """
+    ident = (api.rstrip("/"), key)
+    if ident in _HELD: return _HELD[ident]
+    req = urllib.request.Request(api.rstrip("/") + "/v1/peers/token", data=b"", method="POST",
+                                 headers={"X-Peer-Token": key, "Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            tok = str(json.loads(r.read().decode("utf-8")).get("token") or "")
+    except urllib.error.HTTPError as e:
+        raise BundleError(f"{api} refused the token (HTTP {e.code}) — check ROUTEMIND_TOKEN against "
+                          f"what that backbone accepts")
+    except urllib.error.URLError as e:
+        raise BundleError(f"cannot reach {api} — {e.reason}")
+    if not tok: raise BundleError(f"{api} answered the token request without a token")
+    _HELD[ident] = tok
+    return tok
+
+
 def fetch(api: str, token: str, path: str, accept: str = "application/json", timeout: float = 60):
     url = api.rstrip("/") + "/v1/export/" + path.lstrip("/")
-    req = urllib.request.Request(url, headers={"Accept": accept, "X-Peer-Token": token})
+    req = urllib.request.Request(url, headers={"Accept": accept,
+                                               "X-Peer-Token": session(api, token, timeout)})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             raw = r.read().decode("utf-8")

@@ -808,6 +808,10 @@ class Handler(BaseHTTPRequestHandler):
                 if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
                 return self._export(parts[1:])
             if parts[:1] == ["peers"]:
+                # Not a write to this backbone and not a read of it: the caller is asking for a
+                # credential to read with. It is the one POST a link may make, and it changes
+                # nothing anybody can read — only for how long the caller may keep reading it.
+                if parts[1:] == ["token"] and method == "POST": return self._peer_token()
                 if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
                 if len(parts) < 3: return self._err(404, "unknown peer path")
                 try:
@@ -856,14 +860,37 @@ class Handler(BaseHTTPRequestHandler):
 
     def _refresh(self):
         """Forget what this backbone remembers about the caller, and nothing else."""
-        token = self.headers.get("X-Peer-Token") or ""
-        who = _peer_by_token(token)
+        # A session, like every other call on this surface. Forgetting is per peer, and a caller with
+        # no name says which peer to forget no better than a stranger does — so an unnamed session is
+        # refused here even though it reads fine.
+        session = peering.session_peer(self.headers.get("X-Peer-Token") or "")
+        who = _peer_by_name((session or {}).get("peer")) if session else None
         if not who:
-            # No shared-token fallback here, unlike a read. Forgetting is per peer, and a caller with
-            # no name says which peer to forget no better than a stranger does.
-            return self._err(401, "peer token missing or wrong")
+            return self._err(401, "session token missing, wrong or expired, or it names no peer")
         peering.forget(who["name"])
         return self._send(200, {"ok": True, "forgot": who["name"]})
+
+    def _peer_token(self):
+        """Trade the enrolment key for a session token. The only thing the enrolment key opens.
+
+        The secret in `.env` used to be presented on every read, so it was in every request, every
+        proxy log and every transcript, and it never expired. Now it buys six hours and nothing else
+        — so the long-lived secret is used about four times a day per link instead of thousands, and
+        what does leak off the read path stops being worth anything by the end of the shift.
+
+        A session is in memory, so a restart revokes every one of them. Clients re-mint on a 401,
+        which makes that the cheapest revocation there is.
+        """
+        token = self.headers.get("X-Peer-Token") or ""
+        who = _peer_by_token(token)
+        if not PEER_TOKEN and not any(p["token"] for p in peering.declared(DATA)):
+            return self._err(501, "this backbone advertises to no peer — set ONTOLOGY_PEER_TOKEN to open a link")
+        # The enrolment key only. A session token cannot mint another: a leaked session would
+        # otherwise renew itself for ever and the six hours would bound nothing.
+        if not who and not peering.same_secret(token, PEER_TOKEN):
+            return self._err(401, "peer token missing or wrong")
+        session, ttl = peering.mint_session((who or {}).get("name"))
+        return self._send(200, {"token": session, "expires_in": ttl, "token_type": "session"})
 
     # ---- what crosses a link ----
     def _export(self, parts):
@@ -887,11 +914,20 @@ class Handler(BaseHTTPRequestHandler):
         # link is being probed rather than used.
         self._access = {"path": urlparse(self.path).path, "peer": None, "reader": None}
         token = self.headers.get("X-Peer-Token") or ""
-        who = _peer_by_token(token)
-        if not PEER_TOKEN and not any(p["token"] for p in peering.declared(DATA)):
+        rows = peering.declared(DATA)
+        # Who this backbone recognises may have changed since a session was minted, and a session
+        # carries the answer from its own moment. Re-read here, where the file is already being read.
+        peering.sessions_follow(rows)
+        if not PEER_TOKEN and not any(p["token"] for p in rows):
             return self._err(501, "this backbone advertises to no peer — set ONTOLOGY_PEER_TOKEN to open a link")
-        if not who and not peering.same_secret(token, PEER_TOKEN):
-            return self._err(401, "peer token missing or wrong")
+        # A session token, and not the enrolment key. The enrolment key opens `/v1/peers/token` and
+        # nothing else — if it still worked here, the read path would still carry a secret that never
+        # expires and the six hours would be decoration.
+        session = peering.session_peer(token)
+        if not session:
+            return self._err(401, "session token missing, wrong or expired — POST /v1/peers/token "
+                                  "with the enrolment key to get one (they last six hours)")
+        who = _peer_by_name(session["peer"]) if session.get("peer") else None
 
         # Who is on the other end of the line, and who they are asking for. The two are the same
         # thing on a direct link and are not behind an exchange: there, the caller is the room and
@@ -1330,6 +1366,17 @@ def _peer_by_token(token: str) -> dict | None:
     if not token: return None
     return next((p for p in peering.declared(DATA)
                  if any(peering.same_secret(token, t) for t in p["accept"])), None)
+
+
+def _peer_by_name(name: str | None) -> dict | None:
+    """The declared peer a session belongs to.
+
+    Read from `peers.yaml` at call time and not stored on the session: a session lasts six hours,
+    and a peer removed from the file during them must stop being that peer on the next request
+    rather than at the next mint.
+    """
+    if not name: return None
+    return next((p for p in peering.declared(DATA) if p["name"] == name), None)
 
 
 def _denied_kinds() -> set[str]:
