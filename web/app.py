@@ -1070,17 +1070,17 @@ def api_knowledge_export_bundle(payload: dict, request: Request):
     """
     b = _bundle()
     if not PEER_TOKEN:
-        raise HTTPException(status_code=503, detail=(
+        raise KnowledgeError(503, (
             "This backbone has no peer token set, so its export surface is closed — set "
             "ONTOLOGY_PEER_TOKEN (EXCHANGE_TOKEN_HOME in .env) and restart. The export is the set of "
-            "areas that may cross a link, so it is the same door."))
+            "areas that may cross a link, so it is the same door."), reason="export_closed")
     pw = str((payload or {}).get("passphrase") or "")
     if len(pw) < 12:
         # Checked before anything is read, so a short passphrase costs a message rather than a walk
         # of the whole exported tree.
-        raise HTTPException(status_code=422, detail=(
+        raise KnowledgeError(422, (
             "The passphrase needs at least 12 characters. It is the only thing between this file and "
-            "whoever ends up holding it."))
+            "whoever ends up holding it."), reason="export_passphrase_short")
     try:
         data = b.collect(ONTOLOGY_URL, PEER_TOKEN)
     except b.BundleError as exc:
@@ -1088,9 +1088,12 @@ def api_knowledge_export_bundle(payload: dict, request: Request):
     if not data["regions"]:
         # A valid, encrypted, empty file is the worst possible answer here: whoever receives it has no
         # way to tell it from a mistake at this end. Refuse, and say what would make it non-empty.
-        raise HTTPException(status_code=409, detail=(
+        # The one a fresh install meets: nothing is shared by default and nothing ever will be, so
+        # this is the first thing anybody pressing Export sees. Named, so it is not the one English
+        # sentence on an otherwise translated screen.
+        raise KnowledgeError(409, (
             "This backbone exports no areas, so there is nothing to download. Set `export` "
-            "on the areas that should be allowed to cross, then export again."))
+            "on the areas that should be allowed to cross, then export again."), reason="export_empty")
     try:
         blob = b.seal(data, pw)
     except b.BundleError as exc:
