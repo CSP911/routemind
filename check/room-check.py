@@ -175,7 +175,7 @@ def admin(method, path, body=None):
 
 def export_of(who):
     """What a backbone offers across a link, read the way a peer reads it. `/v1/regions` does not
-    print `use_when_export` — it is the line for somebody else's hop 0, not for this one — so asking
+    print the export decision — it is about somebody else's hop 0, not this one — so asking
     hop 0 whether an area is still shared asks the wrong table."""
     r = urllib.request.Request(f"http://127.0.0.1:{PORT[who]}/v1/export/regions")
     r.add_header("X-Peer-Token", TOK[f"TOK_{who.upper()}"])
@@ -428,7 +428,7 @@ if check("N4c a proposal can be filed against an area that is not there", st == 
     post("bee", f"proposals/{q['id']}/reject", {"why": "tidying up after the peek"})
 
 # ── N6 — a different sentence for one named reader ───────────────────────────
-# `use_when_export` is the line everybody who can see the area is shown. An override is the line one
+# `use_when` is the line everybody who can see the area is shown. There is one of it, and an area
 # named peer is shown instead, and its whole risk is that it looks like it worked from every angle
 # except the reader's: the origin cannot see the reader behind a room, so the room picks — and the
 # ── N7 — the room labelled as an ordinary backbone ───────────────────────────

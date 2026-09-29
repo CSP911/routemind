@@ -8,7 +8,7 @@ answers are the two a person asks before handing the thing to somebody else: *is
 and *is anything in there that should not be*.
 
 The second question is the one with teeth. An area crosses a link only because somebody wrote
-`use_when_export` on it, and this backbone has that line on one area of six. A change that made the
+`export` on it, and this backbone has that on one area of six. A change that made the
 export read the ordinary API — or "helpfully" fall back to it when the export surface 404s — would
 widen that silently, and the file would look exactly the same from outside.
 """
@@ -124,7 +124,7 @@ for r in data["regions"]:
 else:
     results.append("--   no shared area with a line to compare; unchecked")
 
-# The one that matters. An area with no `use_when_export` is not in the file, whatever else changes.
+# The one that matters. An area that is not exported is not in the file, whatever else changes.
 regions_dir = os.path.join(REPO, "data", "repo", "regions")
 all_areas = {d for d in os.listdir(regions_dir) if os.path.isdir(os.path.join(regions_dir, d))} \
     if os.path.isdir(regions_dir) else set()

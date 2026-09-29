@@ -1,7 +1,7 @@
 """Links to other backbones: reading what they advertise, and relaying what they hold.
 
 A peer is another RouteMind, declared in `peers.yaml` in this repository. What crosses is its
-**export advertisement** — the areas it wrote a `use_when_export` for — and, on request, the
+**export advertisement** — the areas it set `export` on — and, on request, the
 documents behind them. Nothing crosses the other way: writes go to the backbone that owns the area.
 
 Three decisions live here, and each of them is the interesting kind.

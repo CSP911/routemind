@@ -455,7 +455,7 @@ check("  and a read across it works again",
       if any(r.get("peer") for r in back.get("regions") or []) else False)
 
 # ── an audience, on a link with no exchange in it ─────────────────────────────
-# `use_when_export` opens the door and `export_to` says who is on the list. On a direct link the
+# `export` opens the door and `export_to` says who is on the list. On a direct link the
 # backbone that owns the area does the filtering itself, which it can only do if it can put a name to
 # whoever is calling — and a name comes from **one secret per link, used in both directions**. That
 # rule is written down in docs/PEERING.md and until now nothing checked what it buys. It buys this.
