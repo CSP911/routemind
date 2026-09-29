@@ -109,6 +109,14 @@ fi
 printf '\n== against the install at %s ==\n' "$BASE"
 run smoke     sh check/smoke.sh "$BASE"
 run mcp-check $HOSTPY check/mcp-check.py "$BASE/api/knowledge"
+# What an export contains and what it refuses. It reads the export surface and needs the peer token
+# for it — from the environment, or from the same .env compose reads, so running the suite needs no
+# extra step. Not skipped when the token is missing: this file's own rule at the top is that a suite
+# which cannot run says so and fails, and the check whose whole point is that an export stays narrow
+# is the last one that should quietly not happen.
+TRANSFER_TOKEN="${EXCHANGE_TOKEN_HOME:-}"
+[ -n "$TRANSFER_TOKEN" ] || TRANSFER_TOKEN=$(sed -n 's/^EXCHANGE_TOKEN_HOME=//p' .env 2>/dev/null | head -1)
+ROUTEMIND_TOKEN="$TRANSFER_TOKEN" run transfer $HOSTPY check/transfer-check.py
 
 printf '\n== the slow ones, which start services of their own ==\n'
 if [ "$QUICK" = 1 ]; then

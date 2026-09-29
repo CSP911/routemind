@@ -83,7 +83,18 @@ def collect(api: str, token: str) -> dict:
     place that has to be correct.
 
     Nodes are gathered by following each area's `entries` rather than by asking for a list, because
-    a list is a second thing that can disagree with the tree.
+    a list is a second thing that can disagree with the tree. Measured against one area: the walk
+    reaches 19 of 19 nodes the region holds on disk. Since the directory→file migration a node's
+    "files" *are* its child nodes, so following the tree is what collects them — there is no separate
+    attachment to fetch.
+
+    **Vocabulary and cross-reference edges are not in the file.** An earlier draft tried
+    `/v1/export/vocab` and `/v1/export/edges` and swallowed the failure, with a comment saying not
+    every backbone serves them. Neither does any: the surface answers `regions` and `nodes` and 404s
+    on everything else. So the attempt was dead code describing a capability that has never existed,
+    and the honest shape is to leave it out. The consequence for whoever opens the file is real — a
+    node's `kind` may name something their own `vocab.yaml` has never heard of — and `import.py`
+    unpacking to files for review rather than writing into an ontology is what keeps that survivable.
     """
     regions = fetch(api, token, "regions")
     nodes, seen = [], set()
@@ -100,14 +111,10 @@ def collect(api: str, token: str) -> dict:
         rep = r.get("representative") or r.get("source")
         if rep: descend(rep)
 
-    out = {"format": "routemind-export/1",
-           "created": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-           "source": {"api": api, "revision": regions.get("revision")},
-           "regions": regions.get("regions") or [], "nodes": nodes}
-    for extra in ("vocab", "edges"):
-        try: out[extra] = fetch(api, token, extra)
-        except BundleError: pass       # not every backbone exports these; the file says what it has
-    return out
+    return {"format": "routemind-export/1",
+            "created": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "source": {"api": api, "revision": regions.get("revision")},
+            "regions": regions.get("regions") or [], "nodes": nodes}
 
 
 def seal(payload: dict, passphrase: str) -> bytes:
