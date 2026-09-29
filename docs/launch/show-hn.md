@@ -67,7 +67,9 @@ Show HN: An ontology you can see the agent reading
 
 ## Before posting
 
-- [ ] `./check/install-check.sh` — a clean clone, installed and walked
+- [x] `./check/install-check.sh` — a clean clone, installed and walked. **Run it.** It found seven
+      failures the day this draft was written: the walk still spoke the pre-merge API, and it is the
+      one suite `check/all.sh` does not run, so nothing else had noticed for a day
 - [ ] the map screenshot in the README still matches what the install draws
 - [ ] no uncommitted work, `main` pushed
 - [ ] post on a weekday morning US Eastern; be at a keyboard for the next four hours

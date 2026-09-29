@@ -60,6 +60,21 @@ def queued(body, wait=2.0):
     return st2, d
 
 
+def reaches(want, seconds=10.0):
+    """Wait for the other backbone's table to say `want` — a list of (peer, line), or [] for gone.
+
+    Waited for rather than slept on. The hint travels on a background thread and the reader holds a
+    five-second cache, so a fixed pause is a number that happened to be right on the machine somebody
+    chose it on: two seconds passed for a year here and failed on a cold clean-clone run, twice, for
+    two different writes. A bound is still a bound — not there in ten seconds is not coming, and that
+    is the failure worth reporting.
+    """
+    for _ in range(int(seconds * 4)):
+        if remote(A) == want: return True
+        time.sleep(0.25)
+    return False
+
+
 # ── the shipped shape ─────────────────────────────────────────────────────────
 d = hop0(A)
 own = [r for r in (d.get("regions") or []) if not r.get("peer")]
@@ -94,11 +109,16 @@ st, r = call(B + "/regions", "POST", {
                        "use_when": "who opens the office · a key is lost · the lift is stuck"}})
 check("the second backbone takes an area of its own", st == 200, json.dumps(r)[:110])
 
-# ── the export decision, all three parts, through the queue ──────────────────
+# ── the export decision, both parts, through the queue ──────────────────────
+# One sentence since 2026-09-29: the line a peer reads is the area's own `use_when`, edited under
+# scope `bb`, and `export` decides whether they get it. This file still spoke the older shape — a
+# second sentence under scope `peer`, and a withdrawal as an empty `after` — and nothing caught it,
+# because install-check is the one suite that is not run by default.
 LINE = "who runs the branch site · keys, access, and the on-call for it"
-FOR_HOME = "the branch site's own access and on-call, not the group's"
 
-st, d = queued({"scope": "peer", "region": "site-ops", "after": LINE, "why": "head office asks"})
+st, _ = queued({"scope": "bb", "region": "site-ops", "after": LINE, "why": "what it is chosen by"})
+st, d = queued({"scope": "export", "region": "site-ops", "before": "no", "after": "yes",
+                "why": "head office asks"})
 check("advertising it reaches the other backbone", st == 200 and remote(A) == [("branch", LINE)],
       f"{st} {json.dumps(remote(A))}")
 check("  and the absence sentence starts naming the room",
@@ -117,21 +137,18 @@ check("an audience naming the reader keeps it there", st == 200 and remote(A) ==
       f"{st} {json.dumps(remote(A))}")
 check("  and does not hand the reader the list", "export_to" not in json.dumps(hop0(A)))
 
-st, _ = queued({"scope": "peer-line", "region": "site-ops", "peer": "home",
-                "after": FOR_HOME, "why": "they have their own"})
-# Immediately, not after a cache: the hint is what makes a narrower line narrow now rather than soon.
-check("a line written for that reader is what it is shown, at once",
-      st == 200 and remote(A) == [("branch", FOR_HOME)], f"{st} {json.dumps(remote(A))}")
+# Editing the one sentence reaches the reader at once, not after a cache — that line is now what a
+# peer reads, so a change to it is no longer an internal edit.
+REVISED = LINE + " · and who holds the spare keys"
+st, _ = queued({"scope": "bb", "region": "site-ops", "before": LINE, "after": REVISED, "why": "clearer"})
+check("editing the line reaches the reader, without waiting out a cache",
+      st == 200 and reaches([("branch", REVISED)]), f"{st} {json.dumps(remote(A))}")
 
-st, e = queued({"scope": "audience", "region": "site-ops", "before": "home",
-                "after": "someone-else", "why": "narrowing past the override"})
-check("narrowing past the reader an override names is refused", st != 200, f"{st} {json.dumps(e)[:110]}")
-
-st, d = queued({"scope": "peer", "region": "site-ops", "before": LINE, "after": "", "why": "stop"})
+st, d = queued({"scope": "export", "region": "site-ops", "before": "yes", "after": "no", "why": "stop"})
 check("withdrawing it works", st == 200, f"{st} {json.dumps(d)[:150]}")
-check("  and it goes from the other backbone's table", remote(A) == [], json.dumps(remote(A)))
+check("  and it goes from the other backbone's table", reaches([]), json.dumps(remote(A)))
 reg = call(B + "/regions/site-ops")[1]
-check("  taking the audience and the override with it",
+check("  taking the audience with it",
       not reg.get("export_to"),
       json.dumps({k: reg.get(k) for k in ("export", "export_to")}))
 d = hop0(A)
@@ -143,9 +160,10 @@ check("  and absence claimable again, naming nobody",
       "may say something is absent" in (d.get("absence") or "")
       and "reaches through" not in (d.get("absence") or ""), (d.get("absence") or "")[:80])
 
-st, e = call(B + "/proposals", "POST", {"scope": "peer", "region": "site-ops", "after": ""})
-check("an empty line against nothing is refused, and says how a withdrawal is filed",
-      st == 422 and "before" in json.dumps(e), f"{st} {json.dumps(e)[:120]}")
+# `export` is yes or no and both are decisions, so an empty one is a missing field rather than a
+# withdrawal. The empty-string withdrawal it used to be was two different acts wearing one value.
+st, e = call(B + "/proposals", "POST", {"scope": "export", "region": "site-ops", "after": ""})
+check("an export decision with nothing in it is refused", st == 422, f"{st} {json.dumps(e)[:120]}")
 
 print("\n".join(results))
 print(f"\n{sum(r.startswith('FAIL') for r in results)} failed of {len(results)}")
