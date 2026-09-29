@@ -411,8 +411,9 @@ def circuit_table(name: str, payload: str) -> str:
         rows.append({"kind": KIND["table"], "address": f"{pre}/nodes/{d['representative']}",
                      "why": d.get("use_when") or d.get("advertises") or ""})
     title = f"CIRCUIT {name} — {d.get('name') or d.get('title') or 'a remote RouteMind'}"
-    lead = ("Read-only, and only what its owner exported. The lines below were written for an "
-            "outside reader, not for their own list of areas.")
+    lead = ("Read-only, and only what its owner chose to let cross. The line on each row is the one "
+            "they route on themselves — there is one sentence per area, not a separate one for "
+            "outsiders.")
     return _table(rows, title, lead,
                   "Not finding something here does not mean they do not have it — it means they "
                   "did not export it. Ask them, do not conclude.")
@@ -454,8 +455,8 @@ def circuit_call(args: dict) -> str:
         return f"Could not open circuit {name} — {e}\n\nNothing was kept."
     return (f"CIRCUIT {name} open  \u2192  {url}\n\n"
             f"  Read it at /v1/circuits/{name}/regions, then follow the addresses it prints.\n"
-            "  It is read-only and holds only what its owner chose to export; the lines you see\n"
-            "  were written for an outside reader, not for their own hop 0.\n"
+            "  It is read-only and holds only what its owner chose to let cross; the line on each\n"
+            "  row is the one they route on themselves.\n"
             "  This lasts for this connection. Nothing was written on either side.")
 
 
@@ -735,10 +736,9 @@ CIRCUIT_TOOL = {
                    "and token somebody handed you, and their shared areas appear alongside this "
                    "backbone's — you walk them the same way, with the addresses their tables "
                    "print.\n\n"
-                   "It is read-only, and it holds only what its owner chose to export. The lines you "
-                   "see there were written for an outside reader, not for their own list of areas, "
-                   "so an area may describe itself differently than its owners would to each "
-                   "other.\n\n"
+                   "It is read-only, and it holds only what its owner chose to let cross. The line "
+                   "on each row is the one that backbone routes on itself — one sentence per area, "
+                   "written by its owner about their own map rather than about yours.\n\n"
                    "Nothing is written on either side and nothing outlives this connection. This is "
                    "not the same as linking two backbones, which is a standing arrangement somebody "
                    "configures and commits; this is you borrowing a reader's view of theirs.",
