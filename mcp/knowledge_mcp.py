@@ -114,6 +114,44 @@ def _clip(text: str, limit: int) -> str:
     return s if len(s) <= limit else s[: limit - 1] + "…"
 
 
+def _since(iso: str | None) -> str:
+    """An ISO stamp as an age: `3y`, `4mo`, `12d`, `today`. Empty when it is not known.
+
+    Relative, because the question a reader is answering is "is this old", and no model reasons about
+    that from a date without also knowing today's. Coarse on purpose — a row is being chosen, not
+    audited, and `2y` says everything `2y 3mo 11d` would.
+    """
+    if not iso: return ""
+    try:
+        t = _dt.datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    days = (_dt.datetime.now(_dt.timezone.utc) - t).days
+    if days < 1: return "today"
+    if days < 60: return f"{days}d"
+    if days < 730: return f"{days // 30}mo"
+    return f"{days // 365}y"
+
+
+def _age(row: dict) -> str:
+    """`route / document` — how long this path has been here, and when what it points at last moved.
+
+    Two numbers because one cannot say both, and the pair is the whole signal: `3y / 2d` is a settled
+    path over material somebody rewrote last week, and `3y / 3y` is the row worth asking about. A
+    single "age" would have collapsed those two into the same warning.
+
+    Blank when the history cannot be read. Blank means *not known* and never *new* — a document whose
+    age is unavailable must not be the one that looks freshest on the page.
+    """
+    a, b = _since(row.get("route_since")), _since(row.get("changed"))
+    # `—`, not blank. A blank cell beside columns of `18d / 18d` reads as *no age* — as if this row
+    # were somehow outside time — when what it means is that the age is not ours to know. The row
+    # most often in that state is one that came across a link, where the history belongs to the
+    # backbone that owns it and has not crossed.
+    if not a and not b: return "—"
+    return f"{a or '?'} / {b or '?'}"
+
+
 def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) -> str:
     if not rows:
         # An empty table still has to say what its emptiness means. Without the footer, "(nothing
@@ -123,11 +161,27 @@ def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) ->
         return f"{title}\n{lead}\n\n  (nothing here){tail}"
     addr_w = max(len(r["address"]) for r in rows)
     kind_w = max(len(r["kind"]) for r in rows)
+    ages = {id(r): (r.get("age") or "") for r in rows}
+    age_w = max((len(v) for v in ages.values()), default=0)
     out = [title, lead, ""]
-    out.append(f"  {'KIND'.ljust(kind_w)}  {'ADDRESS'.ljust(addr_w)}  WHY YOU WOULD PICK THIS ROW")
+    head = f"  {'KIND'.ljust(kind_w)}  {'ADDRESS'.ljust(addr_w)}  "
+    if age_w: head += f"{'AGE'.ljust(age_w)}  "
+    out.append(head + "WHY YOU WOULD PICK THIS ROW")
     for r in rows:
-        out.append(f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  {_clip(r['why'], 110)}")
+        line = f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  "
+        if age_w: line += f"{ages[id(r)].ljust(age_w)}  "
+        out.append(line + _clip(r["why"], 100))
     out.append("")
+    if age_w:
+        # Said once, under the table, because a column of `3y / 2d` with nothing explaining it is
+        # read as one number twice. The second half is the one that answers "should I look for
+        # something newer"; the first says whether this path has been settled or was just laid down.
+        out.append("  AGE is how long this route has been here / when its document last changed.")
+        out.append("  An old route over a recently changed document is current. An old route over a")
+        out.append("  document that has not moved is the one to ask about before quoting it.")
+        if any((r.get("age") or "") in ("—", "") or "?" in (r.get("age") or "") for r in rows):
+            out.append("  `—` is not known here — usually a row from across a link, whose history stays")
+            out.append("  with the backbone that owns it. Not known is not the same as new.")
     out.append("  table → knowledge_table({ path })    ·    file → knowledge_read({ path })")
     if any(r["kind"] == KIND["empty"] for r in rows):
         out.append("  empty → nobody has written it yet. Do not fetch it; say so if it is what was asked for.")
@@ -148,7 +202,8 @@ def hop0(api: Api) -> str:
     """
     d = api.json("/v1/regions")
     rows = [{"kind": KIND["table"], "address": r.get("fetch") or f"/v1/regions/{r.get('source')}",
-             "why": r.get("use_when") or r.get("description") or r.get("title") or ""}
+             "why": r.get("use_when") or r.get("description") or r.get("title") or "",
+             "age": _age(r)}
             for r in (d.get("regions") or [])]
     # The API supplies this sentence when it is not the plain one — when this backbone is linked to
     # others, and above all when a link is down. Whether the list is still the whole world is not
@@ -173,7 +228,7 @@ def area(api: Api, path: str) -> str:
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
     head = f"{d.get('key') or path} — {d.get('advertises') or ''}".strip(" —")
     lead = (f"When to be here: {d['use_when']}" if d.get("use_when") else "") or "What this area holds:"
     return _table(rows, head, lead,
@@ -189,12 +244,12 @@ def node(api: Api, path: str) -> str:
     # the row that sent you: the row said `data`, this said empty. Its body is the first row.
     if str(d.get("body") or "").strip():
         rows.append({"kind": KIND["file"], "address": path.rstrip("/") + "/body",
-                     "why": "its own document"})
+                     "why": "its own document", "age": _age(e)})
     for e in (d.get("entries") or []):
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or e.get('description') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
     head = f"{d.get('name') or path}"
     return _table(rows, head, str(d.get("one_liner") or ""),
                   "This lists what this node holds. If what you need is not here, go back to /v1/regions.")
@@ -204,7 +259,7 @@ def _row(e: dict) -> dict:
     kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
     why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
     if kind == KIND["empty"]: why += "  (nothing written here yet)"
-    return {"kind": kind, "address": e.get("fetch") or "", "why": why}
+    return {"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)}
 
 
 def overlay_text(d: dict) -> str:

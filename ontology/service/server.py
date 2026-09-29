@@ -23,6 +23,7 @@ from urllib.parse import urlparse, unquote
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from service.store import Store                     # noqa: E402
 from service.validate import validate, export_kinds  # noqa: E402
+from service import ages  # noqa: E402
 from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E402
 from service.service_store import ServiceStore              # noqa: E402
 from service.validate_service import validate_services      # noqa: E402
@@ -682,8 +683,15 @@ def _advert_child(c: dict) -> dict:
     kids = store.children_of(c["id"])
     has_body = bool((c.get("body") or "").strip())
     kind = "dr" if kids else ("data" if has_body else "empty")
+    # Two times, because they answer different questions and one number cannot do both. A route laid
+    # down in 2023 whose document was rewritten last week is fresh; the same route whose document has
+    # not moved in three years is the one worth asking about. Read from git rather than stored — see
+    # ages.py. Absent when there is no history to read, and absent means *not known*, never new.
+    age = ages.of(DATA, head(DATA)).get(c["id"]) or {}
     row = {"id": c["id"], "name": c["name"], "kind": c["kind"], "one_liner": c["one_liner"],
            "type": kind, "has_body": has_body, "children": len(kids),
+           **({"route_since": age["route_since"]} if age.get("route_since") else {}),
+           **({"changed": age["changed"]} if age.get("changed") else {}),
            # The row carries the call that answers it. A document is not read at the address that
            # lists a table — the two verbs need two addresses, or "read" has to call "table".
            "fetch": f"/v1/nodes/{c['id']}/body" if kind == "data" else f"/v1/nodes/{c['id']}"}
@@ -1054,9 +1062,15 @@ class Handler(BaseHTTPRequestHandler):
                 rep = next((n for n in store.nodes() if n["id"] == rep_id), None)
                 if not rep: return []
                 return [_advert_child(c) for c in advertised(rep_id)]
+            # An area's age is its representative's: that node is the area's face, and its two
+            # times are what somebody choosing between areas at hop 0 is actually choosing on.
+            _ages = ages.of(DATA, head(DATA))
+            def _area_age(rep_id):
+                return {k: v for k, v in (_ages.get(rep_id) or {}).items() if v}
             mine = [
                 {"id": r["id"], "source": r["source"], "title": r["title"], "description": r.get("description", ""),
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
+                 **_area_age(r.get("representative")),
                  "fetch": f"/v1/regions/{r['source'].replace('_', '-')}",
                  **({"entries": entries_of(r.get("representative"))} if expand else {})}
                 for r in rj.get("regions", [])]

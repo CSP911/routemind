@@ -85,6 +85,9 @@ fi
 run env-check  $HOSTPY check/env-check.py
 run eol-check  $HOSTPY check/eol-check.py
 run romanize   $HOSTPY check/romanize-check.py
+# The two times on a routing row. It builds its own repository and commits into it, so it needs git
+# and nothing else — no service, no containers.
+run age        $HOSTPY check/age-check.py
 
 printf '\n== in the containers ==\n'
 if [ -n "$ONT" ]; then
