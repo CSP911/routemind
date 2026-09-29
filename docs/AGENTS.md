@@ -36,15 +36,37 @@ not have to be where RouteMind is.
 
 ### Claude Code
 
+Nothing to configure. `./install.sh` has already written `.mcp.json` at the repository root, so:
+
 ```sh
-claude mcp add knowledge -- python3 /abs/path/to/knowledge/mcp/knowledge_mcp.py \
+cd routemind
+claude
+```
+
+Claude Code sees the file, offers the server, and one approval is the whole setup. `/mcp` inside the
+session lists the tools; `claude mcp list` shows whether it registered at all.
+
+**The port follows your install.** `install.sh --port 9000` rewrites `.mcp.json` to match. It used to
+ship with 8080 hard-coded, which on any other port gave Claude Code a server that registers, lists
+its tools and fails on every call — worse than no server, because the tools are visibly there.
+
+Ask it something your ontology covers, without naming RouteMind. The area list reaches the model
+through the server's `instructions`, so what decides whether it comes here is the `use_when` line on
+each area, not the word "RouteMind" in your question. If it answers from its own knowledge instead,
+that is the finding: some area's `use_when` does not say when to come to it.
+
+`/circuit <url> <token>` is also registered, as a project command — it reads another backbone for the
+length of the session. **[../docs/PEERING.md](PEERING.md)**.
+
+#### Somewhere else, or another project
+
+```sh
+claude mcp add knowledge -- python3 /abs/path/to/routemind/mcp/knowledge_mcp.py \
   --api http://localhost:8080/api/knowledge
 ```
 
-**This repository ships one.** `.mcp.json` at the root registers the server with a path relative to
-the repository, so opening the repo in Claude Code offers it and one approval is the whole setup.
-Point `--api` elsewhere if RouteMind is not on this machine. `claude mcp list` shows whether it
-registered; `/mcp` inside a session shows the tools it exposes.
+Point `--api` at another host and it works the same — the agent does not have to be where RouteMind
+is.
 
 For a different project, put the same block in its own `.mcp.json` with an absolute path:
 

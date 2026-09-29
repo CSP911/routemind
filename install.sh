@@ -85,6 +85,21 @@ if [ -n "$PORT" ]; then
   esac
 fi
 
+# `.mcp.json` is what makes opening this repository in Claude Code the whole setup, and it names the
+# port. It shipped with 8080 in it, so before this an install on any other port handed Claude Code a
+# server that registers, lists its tools, and fails on every call — which is worse than no server at
+# all, because the tools are visibly there.
+#
+# Rewritten rather than templated: Claude Code reads this file directly and nothing expands `.env`
+# for it. The common case writes the same bytes back, so the tree stays clean unless the port moved.
+MCP_PORT="$(grep '^WEB_PORT=' .env 2>/dev/null | cut -d= -f2-)"; MCP_PORT="${MCP_PORT:-8080}"
+if [ -f .mcp.json ] && ! grep -q "localhost:$MCP_PORT/api/knowledge" .mcp.json; then
+  tmp="$(mktemp)"
+  sed "s#localhost:[0-9][0-9]*/api/knowledge#localhost:$MCP_PORT/api/knowledge#" .mcp.json > "$tmp"
+  mv "$tmp" .mcp.json
+  printf '  .mcp.json now points at :%s — Claude Code picks it up on the next session.\n' "$MCP_PORT"
+fi
+
 # Only when there is a terminal AND the .env has no answer yet. A re-run, or a scripted one, must not
 # stop and wait for somebody who is not there.
 if [ "$ASK" = 1 ] && [ -t 0 ] && ! grep -q '^ONTOLOGY_LLM_BASE_URL=.\+' .env; then

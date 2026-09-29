@@ -118,8 +118,9 @@ the list of areas, pick one, fetch that area, read what it points at.** Two oper
 python3 mcp/knowledge_mcp.py --api http://localhost:8080/api/knowledge
 ```
 
-One file, stdlib only: no install, nothing to build. **Opening this repository in Claude Code is the
-whole setup** — `.mcp.json` registers it.
+One file, stdlib only: no install, nothing to build. For **Claude Code** there is nothing to do at
+all — `install.sh` writes `.mcp.json` at the root, pointed at the port you chose, so `cd routemind &&
+claude` is the whole setup and `/mcp` shows the tools.
 
 `knowledge_table(path?)` and `knowledge_read(path)` do the reading. The rest appear only where the
 install has what they need: `knowledge_overlay` where overlays are kept, `knowledge_write` where
