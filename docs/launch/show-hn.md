@@ -116,9 +116,11 @@ asked for the same thing:
 Step 1 is an account action on somebody else's service, so it is yours to do. Step 2 is one line and
 takes a minute afterwards.
 
-**What is ready for it.** `mcp/Dockerfile` builds an image that starts the server over stdio and
-answers `initialize` and `tools/list` with **no backend reachable at all** — which is exactly the
-check. Verified:
+**What is ready for it.** The `Dockerfile` at the repository root — moved there from `mcp/` once the
+listing said "this server cannot be deployed", which is what a directory says when it cannot find a
+way to start the thing it is scoring. It builds an image that starts the server over stdio and
+answers `initialize` and `tools/list` with **no network at all** — which is exactly the check.
+Verified:
 
 ```
 docker run -i --rm routemind-mcp
@@ -126,7 +128,9 @@ docker run -i --rm routemind-mcp
   tools/list: knowledge_table, knowledge_read, knowledge_circuit
 ```
 
-That is the file to paste into Glama's form.
+There is no form: the submission never asked for one and the listing has no edit UI, so the root
+Dockerfile is the way a directory finds it. If the score is still `---` after Glama next crawls the
+repository, their [Discord](https://glama.ai/discord) is the channel the bot itself pointed at.
 
 **The entry itself is also ready to improve when the PR is next touched.** The version in the open PR
 predates the Glama requirement and carries no badge; a better one is drafted here — the format copied
