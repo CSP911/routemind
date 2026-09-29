@@ -81,9 +81,37 @@ which one it was would be guessing.
 
 **Send the passphrase by a different route than the file.**
 
-## Import does not write into an ontology
+## Grafting it in
 
-It unpacks and shows. That is the design, not a missing stage.
+```sh
+./transfer/import.py partner.rmx --graft data/repo --prefix partner
+```
+
+Every id takes the prefix — all of them, not only the ones that clash, so the same export grafted
+into two repositories comes out the same in both. The name takes a suffix too: this repository wants
+names unique as well as ids, and grafting a corpus that shares an ancestor produced 19 collisions of
+each. `regions.json` is regenerated from the files rather than composed here, because it is derived
+and the validator compares it field by field against what the files say.
+
+Then the repository's own validator decides. A graft it rejects is one the service would refuse to
+serve, and hearing that now is better than at the next read. Nothing is rolled back — the files are
+listed and the repository is under git.
+
+Two things a graft cannot bring, and both are the export format's shape rather than an oversight:
+
+- **Cross-references.** An export carries no `edges`, so every grafted node arrives with none.
+  Measured: 19 of 19 drew "no relations" from the validator. The tree is whole, the links across it
+  are not.
+- **Vocabulary.** A `kind` in the file may be one the receiving `vocab.yaml` has never heard of,
+  which `validate` refuses outright. Nothing here writes entries into somebody's vocabulary.
+
+And one thing it does bring that wants reading first: the sender's outward line becomes the area's
+`use_when` in your table. It is the only line the file has, and an area without one is an area no
+walk reaches — but it was written to describe that area to an outsider, not to route your searches.
+
+## Or don't: unpack and look
+
+Without `--graft` it unpacks and shows, and writes into no ontology at all.
 
 An export is somebody else's map. Deciding where a subject lives changes the routing table, and that
 table is the text every search reads before choosing anything — on this design's own 700-question

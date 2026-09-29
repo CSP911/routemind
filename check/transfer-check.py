@@ -153,6 +153,14 @@ out['truncated'] = refused(blob[:40])
 out['bad_header'] = refused(b'RMEXPORT/1\n{nope}\nxxxx')
 print(json.dumps(out, ensure_ascii=False))
 """
+SEAL_ONLY = """
+import sys, os, json, base64
+sys.path.insert(0, '/app/transfer')
+import bundle
+sys.stdout.write(base64.b64encode(
+    bundle.seal(json.loads(os.environ['PAYLOAD']), 'correct horse battery staple')).decode())
+"""
+
 r = json.loads(run_in_web(SEAL, {"API": API, "PAYLOAD": json.dumps(data, ensure_ascii=False)}))
 
 check("the file says what it is in its first eleven bytes", r["magic"] == "RMEXPORT/1\n")
@@ -171,6 +179,61 @@ check("  and a wrong passphrase reads the same as a tampered one",
 # The header's KDF cost is spent before the tag can judge it, so it is read first.
 check("  while a header demanding 1GB of key derivation is refused without spending it",
       "over the" in (r["huge_kdf"] or ""))
+
+# ---- grafting into a repository that already has data ------------------------------------------
+
+# The whole point of the prefix. This grafts an export into a copy of a *different* backbone whose
+# ids collide with it — 19 of 19 on the corpus this was written against — and asks that backbone's
+# own validator whether the result is coherent. Its verdict is the only one that counts: a repository
+# it rejects is one the service would refuse to serve.
+import shutil, tempfile
+
+src_repo = os.path.join(REPO, "data-b", "repo")
+if not os.path.isdir(src_repo):
+    results.append("--   no second repository to graft into; the graft path is unchecked")
+else:
+    tmp = tempfile.mkdtemp()
+    target = os.path.join(tmp, "repo")
+    shutil.copytree(src_repo, target)
+    try:
+        before_docs = len([f for r, _, fs in os.walk(os.path.join(target, "regions"))
+                           for f in fs if f.endswith(".md")])
+        blob = run_in_web(SEAL_ONLY, {"API": API, "PAYLOAD": json.dumps(data, ensure_ascii=False)})
+        bundle_path = os.path.join(tmp, "b.rmx")
+        with open(bundle_path, "wb") as f:
+            f.write(__import__("base64").b64decode(blob))
+
+        env = dict(os.environ, ROUTEMIND_EXPORT_PASSPHRASE="correct horse battery staple",
+                   PYTHONPATH=os.path.join(REPO, "pylib"))
+        p = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,
+                            "--graft", target, "--prefix", "partner"],
+                           capture_output=True, text=True, env=env, cwd=REPO)
+        out = p.stdout + p.stderr
+        check("a graft into a repository with colliding ids succeeds", p.returncode == 0, out[-300:])
+        check("  and that repository validates afterwards", "The repository validates." in out,
+              "its own validator rejected the result")
+
+        after_docs = len([f for r, _, fs in os.walk(os.path.join(target, "regions"))
+                          for f in fs if f.endswith(".md")])
+        check(f"  every node arrived ({after_docs - before_docs} added)",
+              after_docs - before_docs == len(ids))
+
+        # The originals must be exactly as they were. A graft that edited them would be a merge, and
+        # which of two same-named subjects owns a name is a decision, not something to do quietly.
+        orig = subprocess.run(["git", "-C", target, "status", "--short"], capture_output=True, text=True)
+        touched = [l[3:] for l in orig.stdout.splitlines()
+                   if l[3:].endswith(".md") and "partner-" not in l]
+        check("  and nothing that was already there was edited", not touched, f"edited {touched[:5]}")
+
+        # The same prefix twice must not quietly overwrite the first graft.
+        p2 = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,
+                             "--graft", target, "--prefix", "partner"],
+                            capture_output=True, text=True, env=env, cwd=REPO)
+        check("grafting the same bundle under the same prefix is refused",
+              p2.returncode != 0 and "still collide" in (p2.stdout + p2.stderr),
+              "it would have overwritten the first graft")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 print("\n".join(results))
 sys.exit(1 if any(x.startswith("FAIL") for x in results) else 0)

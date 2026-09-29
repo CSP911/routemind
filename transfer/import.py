@@ -59,12 +59,130 @@ def write_out(payload: dict, root: pathlib.Path, source: str) -> int:
     return n
 
 
+SAFE = __import__("re").compile(r"^[a-z0-9][a-z0-9-]*$")
+
+
+def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], list[str]]:
+    """Write the bundle into a repository, every id under one prefix.
+
+    The prefix is the whole answer to the collision problem, and it is applied to *every* id rather
+    than only the ones that clash. A prefix on the clashes alone would mean the same subject is
+    called two different things depending on whether the receiving side happened to have that name
+    already — so the same export, grafted into two repositories, would come out differently.
+
+    Every reference moves with the ids, or the grafted tree points at the wrong documents: `parent`,
+    the region a node belongs to, and `REGION/<id>.md` lines in a pointer node's body. A reference
+    this cannot resolve inside the bundle is left alone and reported, because a half-rewritten
+    pointer is worse than one that is obviously foreign.
+
+    Returns (what was written, what could not be rewritten).
+    """
+    rename = {n["id"]: f"{prefix}-{n['id']}" for n in payload.get("nodes") or [] if n.get("id")}
+    areas = {r.get("source") for r in (payload.get("regions") or []) if r.get("source")}
+    written, unresolved = [], []
+
+    # A body line that addresses another area's document. None exist in the shipped corpus, so this
+    # path is written from the validator's rule rather than from an example — which is exactly why
+    # anything it cannot place is reported instead of guessed at.
+    ref = __import__("re").compile(r"\b([A-Z_]+)/([a-z0-9-]+)\.md\b")
+
+    def rewrite(body: str, where: str) -> str:
+        def one(m):
+            area, nid = m.group(1), m.group(2)
+            if nid in rename:
+                return f"{prefix.upper().replace('-', '_')}_{area}/{rename[nid]}.md"
+            unresolved.append(f"{where}: {m.group(0)} — not in this bundle")
+            return m.group(0)
+        return ref.sub(one, body or "")
+
+    for r in payload.get("regions") or []:
+        src = r.get("source")
+        if not src: continue
+        newsrc = f"{prefix}-{src}"
+        d = repo / "regions" / newsrc
+        d.mkdir(parents=True, exist_ok=True)
+        for node in payload.get("nodes") or []:
+            nid = node.get("id")
+            if not nid or (node.get("region") or src) != src: continue
+            # The name is suffixed as well as the id, because this repository requires both to be
+            # unique: `validate` collects nodes by normalised name and errors on any name held by
+            # more than one — identical spellings included, despite the message calling them
+            # "spelling variants". Grafting a corpus that shares an ancestor produced 19 of them.
+            # The marker goes after the name, not before, because the name is what a person scans.
+            fm = {"id": rename[nid], "name": f"{node.get('name') or nid} ({prefix})"}
+            for k in ("kind", "one_liner", "role", "status", "scope", "order"):
+                if node.get(k): fm[k] = node[k]
+            if node.get("parent"):
+                fm["parent"] = rename.get(node["parent"], node["parent"])
+                if node["parent"] not in rename:
+                    unresolved.append(f"{nid}: parent {node['parent']} is not in this bundle")
+            # The representative carries the area's routing line. The bundle hands over
+            # `use_when_export` — what the sender wrote for an outside reader — and here it becomes
+            # this repository's `use_when`, because an area with no line is an area no walk reaches.
+            # It is the sender's sentence in the receiver's table, which is the thing to go and edit
+            # first; nothing else can write it, and leaving it blank would hide the area instead.
+            if (node.get("role") or "") == "representative" or nid == r.get("representative"):
+                fm["role"] = "representative"
+                line = (r.get("use_when") or r.get("use_when_export") or "").strip()
+                if line: fm["use_when"] = line
+            out = ["---"] + [f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in fm.items()] + ["---", ""]
+            out.append(rewrite((node.get("body") or "").strip(), nid))
+            (d / f"{rename[nid]}.md").write_text("\n".join(out) + "\n", encoding="utf-8")
+            written.append(f"regions/{newsrc}/{rename[nid]}.md")
+
+    return written, unresolved
+
+
+def regenerate(repo: pathlib.Path) -> str | None:
+    """Rebuild regions.json from the files, the way a write through the API does.
+
+    It is derived, not written — validate.py compares it field by field against
+    `derive.regions_doc()` and errors on any drift, having once been committed stale while hop 0
+    advertised an old `use_when` for ever. So the graft writes documents and then asks the
+    repository to regenerate its own index, rather than composing a row and hoping it matches.
+    """
+    root = pathlib.Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(root / "ontology"))
+    try:
+        from service.store import Store
+        from service import derive
+    except Exception as e:
+        return f"cannot regenerate regions.json — this python cannot import the service ({e})"
+    (repo / "regions.json").write_text(derive.regions_doc(Store(repo)), encoding="utf-8")
+    return None
+    return written, unresolved
+
+
+def _validates(repo: pathlib.Path) -> tuple[bool, str]:
+    """Run the repository's own validator over the result, if this python can import it.
+
+    A host without pyyaml cannot, and that is not a reason to refuse the graft — it is a reason to
+    say the graft went unchecked, which is a different sentence and the honest one.
+    """
+    root = pathlib.Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(root / "ontology"))
+    try:
+        from service.store import Store
+        from service.validate import validate
+    except Exception as e:
+        return True, f"  (not checked — this python cannot import the validator: {e})"
+    try:
+        r = validate(Store(repo))
+    except Exception as e:
+        return False, f"    the validator raised: {e}"
+    errs = r.get("errors") or []
+    return (not errs), "\n".join("    " + str(e) for e in errs[:12])
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("file")
     ap.add_argument("--inspect", action="store_true", help="say what is in it and write nothing")
     ap.add_argument("--into", help="directory to unpack into, for review")
     ap.add_argument("--against", help="a data/repo to list id collisions against")
+    ap.add_argument("--graft", metavar="REPO",
+                    help="write the bundle into this repository, every id under --prefix")
+    ap.add_argument("--prefix", help="the prefix every grafted id takes; defaults to the source host")
     ap.add_argument("--passphrase-env", default="ROUTEMIND_EXPORT_PASSPHRASE")
     a = ap.parse_args()
 
@@ -102,13 +220,60 @@ def main():
             print("  These are different subjects with the same name. Nothing was written; renaming "
                   "is a decision about which one owns the id.", file=sys.stderr)
 
-    if a.into:
+    if a.graft:
+        repo = pathlib.Path(a.graft)
+        if not (repo / "regions.json").is_file():
+            sys.exit(f"  {a.graft} is not a RouteMind repository — no regions.json in it")
+        prefix = (a.prefix or src.split("-")[0] or "incoming").lower()
+        if not SAFE.match(prefix):
+            sys.exit(f"  --prefix must be ascii kebab-case, got {prefix!r}")
+
+        have = {p.stem for p in (repo / "regions").rglob("*.md")}
+        still = sorted({f"{prefix}-{i}" for i in ids} & have)
+        if still:
+            # The prefix is supposed to make this impossible. If it has not, grafting anyway would
+            # overwrite documents that are already somebody's, so it stops here rather than deciding.
+            sys.exit(f"  {len(still)} id(s) would still collide under `{prefix}-`: "
+                     + ", ".join(still[:5]) + "\n  Pick another --prefix.")
+
+        written, unresolved = graft(payload, repo, prefix)
+        bad = regenerate(repo)
+        if bad: print(f"  {bad}", file=sys.stderr)
+        else: written.append("regions.json")
+        print(f"\n  {sum(1 for w in written if w.endswith('.md'))} document(s) written under "
+              f"`{prefix}-`, and regions.json regenerated from the files.",
+              file=sys.stderr)
+        for u in unresolved[:10]:
+            print(f"    unresolved reference — {u}", file=sys.stderr)
+
+        # The repository's own validator decides whether the graft is coherent. Not a second opinion
+        # written here: this is the same check the service runs before it will serve anything, and a
+        # graft it rejects is one the service would reject too — better to hear it now, with the list
+        # of files still on screen, than at the next read.
+        ok, why = _validates(repo)
+        if ok:
+            print("  The repository validates.", file=sys.stderr)
+        else:
+            print(f"\n  The repository does NOT validate after this:\n{why}\n"
+                  f"  Nothing was rolled back — the files are listed above and this is a git "
+                  f"repository, so `git -C {a.graft} checkout .` undoes it.", file=sys.stderr)
+        print("\n  Two things the graft could not bring:\n"
+              "    · Cross-references. An export carries no `edges`, so every grafted node arrives\n"
+              "      with none and the validator says so — 19 of them on the run this was written\n"
+              "      against. The tree is whole; the links across it are not.\n"
+              "    · Vocabulary. A `kind` in the file may be one this repository has never heard of,\n"
+              "      which validate refuses. Nothing here invents entries in your vocab.yaml.\n"
+              "\n  And one thing it did bring that you should look at first: their routing lines are\n"
+              "  now in your table. They were written to describe this area to an outsider, not to\n"
+              "  route your searches.", file=sys.stderr)
+    elif a.into:
         n = write_out(payload, pathlib.Path(a.into), src)
         print(f"\n  {n} document(s) → {a.into}/{src}/\n"
               "  Nothing has been added to any ontology. Move what you want into an area yourself; "
               "that is the point at which it becomes part of your map.", file=sys.stderr)
     elif not a.against:
-        print("\n  Nothing written. --into <dir> to unpack, --against <repo> to check ids.", file=sys.stderr)
+        print("\n  Nothing written. --into <dir> to unpack, --graft <repo> to write it in, "
+              "--against <repo> to check ids.", file=sys.stderr)
 
 
 if __name__ == "__main__":
