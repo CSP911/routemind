@@ -154,8 +154,12 @@ def session_for(url: str, key: str, timeout: float | None = None) -> str:
         # 401 here is the enrolment key being wrong, which is a different thing from a session having
         # expired and needs saying differently — one is a configuration error and the other is time
         # passing.
+        # `reachable=False`, and the distinction is the whole of why this flag exists. Declining to
+        # send a token in clear text is **our** refusal, so the absence rule stands — we chose not to
+        # look. A key the far end rejects is the opposite: we asked, we were told no, and we cannot
+        # see what is over there. An agent must not claim absence over a link in that state.
         raise PeerError(f"{ident} refused the enrolment key (HTTP {e.code}) — check the token in the "
-                        f"environment against what that backbone accepts", status=e.code, reachable=True)
+                        f"environment against what that backbone accepts", status=e.code, reachable=False)
     except Exception as e:
         raise PeerError(f"{ident} could not be asked for a session token ({e})", status=504, reachable=False)
     token = str(doc.get("token") or "")
@@ -388,13 +392,18 @@ def advertisement(peer: dict) -> dict:
     hit = _cache.get(peer["name"])
     if hit and (time.monotonic() - hit[0]) < ADVERT_TTL:
         if hit[1] is not None: return hit[1]
-        raise PeerError(hit[2], status=504, reachable=False)
+        # The remembered failure, with the two fields that say what it *was*. They used to be thrown
+        # away and replaced with `504, reachable=False`, so the same failure meant one thing when it
+        # happened and another for the next five seconds — and `reachable` is what decides whether
+        # hop 0 still lets an agent claim absence. A refusal this end made (a token it would not send
+        # in clear text) must never suspend that rule, and it did, five seconds later.
+        raise PeerError(hit[2], status=hit[3], reachable=hit[4])
     try:
         d = _fetch_json(peer, "/v1/export/regions")
     except PeerError as e:
-        _cache[peer["name"]] = (time.monotonic(), None, str(e))
+        _cache[peer["name"]] = (time.monotonic(), None, str(e), e.status, e.reachable)
         raise
-    _cache[peer["name"]] = (time.monotonic(), d, "")
+    _cache[peer["name"]] = (time.monotonic(), d, "", 200, True)
     return d
 
 
@@ -471,7 +480,14 @@ def rows(root: Path) -> tuple[list[dict], list[dict]]:
         try:
             adv = advertisement(peer)
         except PeerError as e:
-            state.update(reachable=False, error=str(e)); links.append(state); continue
+            # `e.reachable`, not False. The flag is set with care at every raise and documented at
+            # each one — "the absence rule must not be suspended over a link this end declined to
+            # use" — and it was honoured on the relay path and thrown away here, which is the path
+            # that decides whether hop 0 lets an agent claim absence. So the one case the flag exists
+            # for was the one case it did not reach: a token this backbone refuses to send in clear
+            # text to a public address is our decision, the rows go either way, and every agent
+            # stopped being allowed to say anything was absent because of it.
+            state.update(reachable=e.reachable, error=str(e)); links.append(state); continue
         state["revision"] = adv.get("revision")
         # What it answered, against what it was called. `kind: exchange` is one word typed by hand
         # into a file, and getting it wrong here fails **silently**: a room is handed the filtered

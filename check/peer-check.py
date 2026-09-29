@@ -224,7 +224,7 @@ for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=peer", "-c", "user.em
 subprocess.run(["git", "-C", repo, "add", "-A"], check=True)
 subprocess.run(["git", "-C", repo, "-c", "user.name=peer", "-c", "user.email=p@l", "commit", "-qm", "link"], check=True)
 
-tokens = {"PEERTOK_A": TOKEN, "PEERTOK_B": TOKEN_B}
+tokens = {"PEERTOK_A": TOKEN, "PEERTOK_B": TOKEN_B, "PEERTOK_WRONG": "not-the-key"}
 env_b = {**os.environ, **tokens, "ONTOLOGY_DATA": repo_b, "PORT": str(PORT_B),
          "ONTOLOGY_PUBLISH": os.path.join(T, "publish-b"), "ONTOLOGY_PEER_TOKEN": TOKEN_B,
          "ONTOLOGY_PEER_TTL": "0"}
@@ -404,6 +404,72 @@ for a, line in _had.items(): set_export(repo_b, a, line)
 time.sleep(0.4)
 check("  and it comes back when something is advertised again",
       "reaches through" in (at(PORT, "/regions")[1].get("absence") or ""))
+
+# ── up, answering, and refusing the key ──────────────────────────────────────
+# A different failure from the one below, and it did not exist until sessions did. The peer is
+# running, the socket opens, HTTP works — and it says no. Before, a wrong secret meant reads 401'd;
+# now the *mint* 401s, which is a path of its own.
+#
+# What has to hold is what the terminated-process case below asserts, because from an agent's side
+# the two are one situation: this backbone cannot see what is over there, so it must drop the rows
+# and stop letting anybody claim absence. Keeping either would be a confident "that does not exist"
+# about an ontology nobody could read.
+#
+# Swung by pointing peers.yaml at a variable holding the wrong value — `declared()` reads the file
+# per request, so this needs no restart and is what an operator fat-fingering `.env` looks like.
+link(repo, "bee", PORT_B, "PEERTOK_WRONG")
+_forget_sessions()
+time.sleep(0.4)
+st, refused = at(PORT, "/regions")
+check("a peer that answers and refuses the key still lets A answer", st == 200, str(st))
+check("  and A keeps its own areas",
+      len([r for r in (refused.get("regions") or []) if not r.get("peer")]) == len(areas))
+check("  and drops the rows it cannot stand behind",
+      len([r for r in (refused.get("regions") or []) if r.get("peer")]) == 0,
+      json.dumps([r.get("source") for r in (refused.get("regions") or []) if r.get("peer")]))
+check("  and says the list is incomplete", "incomplete" in (refused.get("absence") or "").lower(),
+      (refused.get("absence") or "")[:80])
+check("  and forbids claiming absence",
+      "do not say anything is absent" in (refused.get("absence") or ""))
+# The message has to name the credential, or the first person to meet this goes looking at the network.
+check("  naming the credential rather than the network",
+      any("enrolment key" in str(l.get("error") or "") for l in (refused.get("links") or [])),
+      json.dumps([l.get("error") for l in (refused.get("links") or [])])[:140])
+
+link(repo, "bee", PORT_B, "PEERTOK_B")
+_forget_sessions()
+time.sleep(0.4)
+check("  and it comes back when the key is right again",
+      len([r for r in (at(PORT, "/regions")[1].get("regions") or []) if r.get("peer")]) == 1)
+
+# The failure cache, in this process rather than over the wire: it is off in the servers above
+# (ONTOLOGY_PEER_TTL=0), and this is about what it remembers rather than about a link.
+#
+# It used to keep only the message and re-raise `504, reachable=False`. So a refusal *this* end makes
+# — a token it will not send in clear text to a public address, which must NOT suspend the absence
+# rule — became a suspension five seconds later, and the same failure meant two different things
+# depending on how recently it had happened.
+import service.peers as _p                                                # noqa: E402
+_p.forget()
+# A literal public address over plain http, so the refusal is **ours** and carries `reachable=True`
+# — the one shape the cache used to destroy. A probe that simply cannot connect is no probe at all
+# here: its failure is already `504, reachable=False`, which is exactly what the flattening produced,
+# so the check passed whether the bug was there or not. It did, for one revision.
+# No DNS: an IP literal keeps this working on a machine with no resolver.
+_probe = {"name": "cache-probe", "url": "http://8.8.8.8", "token": "x", "accept": [],
+          "self_kind": None, "kind": "backbone"}
+_p.ADVERT_TTL = 30.0
+try:
+    _p.advertisement(_probe)
+except _p.PeerError as e:
+    _first = (e.status, e.reachable)
+try:
+    _p.advertisement(_probe)
+except _p.PeerError as e:
+    _second = (e.status, e.reachable)
+check("a remembered failure keeps what it was", _first == _second, f"{_first} then {_second}")
+_p.forget()
+_p.ADVERT_TTL = 0.0
 
 # ── and with it down ──────────────────────────────────────────────────────────
 # The whole design rests on "only hop 0 may say something is not here", and that is true because hop
