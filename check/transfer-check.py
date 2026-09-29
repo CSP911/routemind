@@ -258,6 +258,39 @@ else:
         check(f"  and the links between them came too ({got})", got == len(edges))
         check("  with both ends renamed", "to: partner-" in text and text.count("to: partner-") == got)
 
+        # A graft that could not regenerate regions.json must say so, and must not also print a
+        # summary claiming it did. It printed both — the failure, then "regions.json regenerated
+        # from the files" — and the summary is the line a reader trusts. The area was then on disk
+        # and in no index: invisible at hop 0, with nothing saying why. Found by grafting from a
+        # python without pyyaml, which is the ordinary case on a host.
+        import re as _re
+        noyaml = dict(env)
+        noyaml["PYTHONPATH"] = os.path.join(tmp, "empty")   # nothing importable
+        os.makedirs(noyaml["PYTHONPATH"], exist_ok=True)
+        bare = os.path.join(tmp, "bare-graft")
+        shutil.copytree(src_repo, bare)
+        p3 = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,
+                             "--graft", bare, "--prefix", "nope"],
+                            capture_output=True, text=True, env=noyaml, cwd=tmp)
+        out3 = p3.stdout + p3.stderr
+        # Detected by what `regenerate()` itself returns, not by the wording of the summary. The
+        # first version of this looked for "NOT regenerated" — which only the *fixed* code prints —
+        # so it passed against the bug and against the fix, which is no check at all.
+        if "cannot regenerate" in out3:
+            check("a graft that could not regenerate regions.json does not claim it did",
+                  "and regions.json regenerated from the files" not in out3,
+                  "it printed the failure and then a summary contradicting it")
+            check("  and says the area is in no index until it is", "in no index" in out3, out3[-240:])
+            check("  and does not call an unvalidated repository validated",
+                  "The repository validates." not in out3, out3[-240:])
+            # The state it leaves behind is the reason any of this matters.
+            listed = json.load(open(os.path.join(bare, "regions.json"))).get("regions") or []
+            check("  which is true: the area really is absent from the index",
+                  not any(str(r.get("source", "")).startswith("nope") for r in listed),
+                  json.dumps([r.get("source") for r in listed]))
+        else:
+            results.append("--   this python can import the service, so the half-done graft is unchecked")
+
         # The same prefix twice must not quietly overwrite the first graft.
         p2 = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,
                              "--graft", target, "--prefix", "partner"],

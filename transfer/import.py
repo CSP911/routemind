@@ -189,7 +189,9 @@ def _validates(repo: pathlib.Path) -> tuple[bool, str]:
         from service.store import Store
         from service.validate import validate
     except Exception as e:
-        return True, f"  (not checked — this python cannot import the validator: {e})"
+        # True so the graft is not reported as *failing* validation — it was not validated at all,
+        # and the caller tells those apart by `why` being set.
+        return True, f" this python cannot import the validator ({e}). Run it where it can."
     try:
         r = validate(Store(repo))
     except Exception as e:
@@ -262,11 +264,24 @@ def main():
 
         written, unresolved = graft(payload, repo, prefix)
         bad = regenerate(repo)
-        if bad: print(f"  {bad}", file=sys.stderr)
-        else: written.append("regions.json")
-        print(f"\n  {sum(1 for w in written if w.endswith('.md'))} document(s) written under "
-              f"`{prefix}-`, and regions.json regenerated from the files.",
-              file=sys.stderr)
+        if not bad: written.append("regions.json")
+        docs = sum(1 for w in written if w.endswith(".md"))
+        # What happened, not what was attempted. This line said "regions.json regenerated from the
+        # files" whatever the previous line had just reported, so a failed regeneration printed the
+        # failure *and* a summary contradicting it — and the summary is the one a reader trusts.
+        # The area is then on disk and in no index: invisible to hop 0, and nothing says why.
+        if bad:
+            print(f"\n  {docs} document(s) written under `{prefix}-` — but regions.json was NOT "
+                  f"regenerated:\n    {bad}\n"
+                  f"  Until it is, this area is on disk and in no index: it will not appear at hop 0.\n"
+                  f"  Finish it from a python that can import the service, or through the API:\n"
+                  f"    PYTHONPATH=<repo>/ontology python3 -c "
+                  f"\"from service.store import Store; from service import derive; "
+                  f"import pathlib; pathlib.Path('{a.graft}/regions.json').write_text("
+                  f"derive.regions_doc(Store('{a.graft}')))\"", file=sys.stderr)
+        else:
+            print(f"\n  {docs} document(s) written under `{prefix}-`, and regions.json regenerated "
+                  f"from the files.", file=sys.stderr)
         for u in unresolved[:10]:
             print(f"    unresolved reference — {u}", file=sys.stderr)
 
@@ -275,7 +290,11 @@ def main():
         # graft it rejects is one the service would reject too — better to hear it now, with the list
         # of files still on screen, than at the next read.
         ok, why = _validates(repo)
-        if ok:
+        if ok and why:
+            # Ran nowhere, so it proved nothing. "Validates" here would be the same lie the line
+            # above used to tell, one step further on: a graft nobody checked, reported as checked.
+            print(f"  NOT checked —{why.strip()}", file=sys.stderr)
+        elif ok:
             print("  The repository validates.", file=sys.stderr)
         else:
             print(f"\n  The repository does NOT validate after this:\n{why}\n"
