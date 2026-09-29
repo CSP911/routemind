@@ -1360,8 +1360,8 @@
       if (s.writable === false) problems.push([t("knowledge.state.readOnly"), String(s.uncommitted || "")]);
       // A link that is up and not doing what somebody thinks it is doing. This belongs in the bar and
       // an open door does not: nothing here is a deployment choice, it is a line in a file that has
-      // stopped an audience and a per-peer line from having any effect, with everything still
-      // looking fine from every screen.
+      // stopped an audience from having any effect, with everything still looking fine from every
+      // screen.
       for (const l of state.links || []) {
         if (l.note) problems.push([`${l.label || l.name}: ${l.note}`, ""]);
       }
@@ -1692,12 +1692,13 @@
   // can change without a moment where either side refuses the other. `dr` stays readable here only
   // until Knowledge drops it: a proposal filed under the old spelling must not stop rendering.
   const SCOPE_KEY = { as: "knowledge.scope.as", dr: "knowledge.scope.as", bb: "knowledge.scope.bb", core: "knowledge.scope.core", entity: "knowledge.scope.entity",
-    // The three that cross a link. A reviewer reads this chip to know what they are being asked
-    // about, and a scope with no entry here renders as its own identifier — which for these three
-    // would leave somebody approving `peer-line` with nothing on screen saying what that is.
-    peer: "knowledge.scope.peer", audience: "knowledge.scope.audience", "peer-line": "knowledge.scope.peerLine" };
+    // The two that cross a link. A reviewer reads this chip to know what they are being asked
+    // about, and a scope with no entry here renders as its own identifier. `peer` and `peer-line`
+    // are the old spellings, kept readable so a proposal filed before 2026-09-29 still renders.
+    export: "knowledge.scope.export", audience: "knowledge.scope.audience",
+    peer: "knowledge.scope.export", "peer-line": "knowledge.scope.export" };
 
-  /** What this area sends across a link, all three parts of it, in one place.
+  /** What this area sends across a link, both parts of it, in one place.
    *
    *  Three decisions and three proposals, not one form with three fields: the line everybody sees,
    *  who sees it, and what one named reader is shown instead. Each goes through the review queue on
@@ -1714,14 +1715,14 @@
     try { r = await request("regions/" + encodeURIComponent(region)); }
     catch (error) { pane.replaceChildren(el("div", "kn-err-box", "")); cardError(error.message); return; }
 
-    const line = String(r.use_when_export || "");
+    const exported = Boolean(r.export);
+    const line = String(r.use_when || "");
     const audience = (r.export_to || []).map(String);
-    const per = r.use_when_export_for || {};
     // Who there is to name. The backbones whose areas this one can already see are the ones a person
     // has evidence of; anybody else has to be typed, because a room can hold a member this backbone
     // has never been offered anything by.
     const known = [...new Set([...(state.regions || []).filter((x) => x.peer).map((x) => String(x.origin || "")),
-                               ...Object.keys(per)])].filter(Boolean).sort();
+                               ...audience])].filter(Boolean).sort();
 
     const card = el("form", "kn-card-form");
     card.addEventListener("submit", (e) => e.preventDefault());
@@ -1737,22 +1738,60 @@
     const send = (box, body, doneKey) => actions(button("knowledge.export.propose", null, (b) =>
       guarded(b, async () => { await post("proposals", body()); await loadFlags(); draw(); }, doneKey)));
 
-    // 1 — the line, and the absence of one. Empty means the area crosses nothing at all, which is
-    // the state every area starts in and the only one that cannot be reached by writing something.
-    const one = section("knowledge.export.line", line ? "knowledge.export.lineLead" : "knowledge.export.lineNone");
+    // 1 — the decision, and the sentence it crosses with, asked in that order.
+    //
+    // Saying yes here is saying "advertise this area", and the next question a person has is *with
+    // what*. So the sentence is in this card, editable, prefilled with the area's own line — one
+    // sentence, `use_when`, which is what a peer reads and what this backbone routes on
+    // (operator, 2026-09-29).
+    //
+    // **It belongs to the area, never to a document.** The advertisement is what a peer chooses the
+    // *area* by; a per-document version would be a second routing table nobody asked for, and the
+    // validator refuses one on any node that is not the area's top representative.
+    //
+    // Two proposals, not one. "Stop advertising this area" and "reword it" must never arrive as one
+    // thing to say yes or no to — so the sentence goes as scope `bb`, the decision as `export`, and
+    // the card sends whichever of them actually changed.
+    const one = section("knowledge.export.line", exported ? "knowledge.export.lineLead" : "knowledge.export.lineNone");
+    const cross = el("select", "kn-select");
+    for (const [v, k] of [["no", "knowledge.export.crossNo"], ["yes", "knowledge.export.crossYes"]]) {
+      const o = el("option", null, t(k)); o.value = v; cross.append(o);
+    }
+    cross.value = exported ? "yes" : "no";
     const lineBox = area(line, 3);
+    // The hint goes after the guide rather than inside the row: `.kn-guide` carries a negative
+    // top margin so it tucks under the control it explains, and a row that ends in a hint has the
+    // guide land on top of it.
+    const lineWrap = el("div", "kn-export-what");
+    lineWrap.append(labelled("knowledge.export.withWhat", lineBox),
+                    guide("knowledge.guide.exportLine"),
+                    el("p", "kn-fhint", t("knowledge.export.withWhatHint")));
     const lineWhy = input("", { maxlength: 600, placeholder: t("knowledge.submit.whyHint") });
-    one.append(labelled("knowledge.ba.after", lineBox, t("knowledge.submit.editable")),
-               guide("knowledge.guide.exportLine"),
+    // Asked only when there is something to advertise. Turning it off needs no sentence, and a box
+    // open at that moment invites somebody to edit a line on their way out of advertising it.
+    const askWhat = () => { lineWrap.hidden = cross.value !== "yes"; };
+    cross.addEventListener("change", askWhat);
+    askWhat();
+    one.append(labelled("knowledge.export.crosses", cross), lineWrap,
                labelled("knowledge.submit.why", lineWhy),
-               send(one, () => {
+               actions(button("knowledge.export.propose", null, (b) => guarded(b, async () => {
+                 const now = cross.value === "yes";
                  const text = lineBox.value.trim();
-                 if (!text && !line) throw new Error(t("knowledge.submit.needsText"));
-                 if (text === line.trim()) throw new Error(t("knowledge.submit.unchanged"));
-                 // Cleared, against a line that exists: the withdrawal, and it is reviewed like
-                 // everything else because it takes knowledge away from another organisation.
-                 return { scope: "peer", region, before: line, after: text, why: lineWhy.value.trim() };
-               }, "knowledge.submit.sent"));
+                 if (now && !text) throw new Error(t("knowledge.export.needsLine"));
+                 const changedLine = now && text !== line.trim();
+                 if (now === exported && !changedLine) throw new Error(t("knowledge.submit.unchanged"));
+                 const why = lineWhy.value.trim();
+                 // The sentence first. If both go and only one is accepted, the area is better left
+                 // advertising the old line than advertising a line nobody approved.
+                 if (changedLine) await post("proposals", { scope: "bb", region, before: line, after: text, why });
+                 if (now !== exported) {
+                   // Turning it off is the withdrawal, and it is reviewed like everything else
+                   // because it takes knowledge away from another organisation.
+                   await post("proposals", { scope: "export", region, before: exported ? "yes" : "no",
+                                             after: now ? "yes" : "no", why });
+                 }
+                 await loadFlags(); draw();
+               }, "knowledge.submit.sent"))));
 
     // 2 — who. Empty is everybody the line already reaches, and is what almost every area wants.
     const two = section("knowledge.export.audience", "knowledge.export.audienceLead");
@@ -1779,33 +1818,9 @@
                           why: audWhy.value.trim() };
                }, "knowledge.submit.sent"));
 
-    // 3 — a different sentence for one named reader, and the ones already written.
-    const three = section("knowledge.export.override", "knowledge.export.overrideLead");
-    if (Object.keys(per).length) {
-      const facts = el("div", "kn-facts");
-      for (const [who, what] of Object.entries(per).sort()) {
-        facts.append(el("span", "kn-fact-k", who));
-        const v = el("span", "kn-fact-v"); v.append(el("code", null, what)); facts.append(v);
-      }
-      three.append(facts);
-    }
-    const whoBox = input("", { placeholder: known[0] || t("knowledge.export.peerHint") });
-    const overBox = area("", 3);
-    const overWhy = input("", { maxlength: 600, placeholder: t("knowledge.submit.whyHint") });
-    whoBox.addEventListener("input", () => { overBox.value = String(per[whoBox.value.trim()] || overBox.value); });
-    three.append(labelled("knowledge.export.peer", whoBox),
-                 labelled("knowledge.ba.after", overBox, t("knowledge.export.overrideClear")),
-                 labelled("knowledge.submit.why", overWhy),
-                 send(three, () => {
-                   const who = whoBox.value.trim();
-                   if (!who) throw new Error(t("knowledge.export.needsPeer"));
-                   return { scope: "peer-line", region, peer: who, before: String(per[who] || ""),
-                            after: overBox.value.trim(), why: overWhy.value.trim() };
-                 }, "knowledge.submit.sent"));
-
     card.append(actions(button("common.cancel", "quiet", closeCard)));
     pane.replaceChildren(card);
-    lineBox.focus();
+    cross.focus();
   }
 
   /** A change to a routing line, as a proposal. It opens on the sentence as it stands — read from the
@@ -2010,9 +2025,9 @@
   function beforeAfter({ field, before, after, region, peer }) {
     const wrap = el("div", "kn-ba");
     const head = el("p", "kn-ba-head");
-    // The peer, when there is one. A `peer-line` proposal rewrites one key of a mapping, and without
-    // the name here a reviewer sees `use_when_export_for` and two sentences with no way to tell whose
-    // line they are — which is the whole of what they are being asked to judge.
+    // The peer, when there is one. No scope writes a per-reader line any more, but a proposal filed
+    // under the old `peer-line` before 2026-09-29 can still be sitting in the queue, and a reviewer
+    // reading two sentences with no way to tell whose they are cannot judge it.
     head.textContent = [region, field, peer ? t("knowledge.scope.forPeer").replace("{peer}", peer) : ""]
       .filter(Boolean).join("  ·  ");
     wrap.append(head);

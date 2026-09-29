@@ -458,9 +458,12 @@ def api_knowledge_one_liner_draft(node_id: str, request: Request) -> dict[str, A
 # worse one, and is what happened to `peer` and `audience`: the ontology API is not published outside
 # the compose network, so a scope missing here is a scope nobody can reach, and the docs describing
 # the road stayed true of a queue with no door. check/room-check.py holds the two lists together.
-QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "peer", "audience", "peer-line")
+QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "export", "audience", "peer", "peer-line")
 # Scopes whose proposal names a peer as well as an area, because the field is a mapping and the
 # proposal has to say whose line it is.
+# Nothing writes a per-reader line since 2026-09-29. `peer-line` stays accepted because one can
+# still be sitting in a queue, and the ontology aliases it; a proposal the screen can file and the
+# queue would refuse is the failure this pairing exists to prevent, and so is its opposite.
 QUEUE_PEER_SCOPES = ("peer-line",)
 
 
@@ -484,11 +487,12 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     # through the review queue" was true of a queue nobody could reach.
     if scope not in QUEUE_SCOPES:
         raise HTTPException(status_code=422,
-                            detail="scope must be as, bb, core, entity, peer or audience.")
+                            detail="scope must be as, bb, core, entity, export or audience.")
     where = "entity" if scope == "entity" else "region"
-    # `peer` may be empty only when it is withdrawing something, which `before` is what says. The
-    # ontology settles it either way; refusing here first is only so the message names the field.
-    empty_ok = scope in ("audience", "peer-line") or (scope == "peer" and str(data.get("before") or "").strip())
+    # `export` is yes or no and both are decisions, so it is never empty. An audience may be, and it
+    # means "everybody this area already crosses to". The ontology settles it either way; refusing
+    # here first is only so the message names the field.
+    empty_ok = scope in ("audience", "peer-line")
     required = [where] if empty_ok else [where, "after"]
     # An empty `after` is a decision for `audience` alone — everybody the area already crosses to —
     # and a missing sentence for every other scope.
@@ -496,8 +500,8 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
         if not str(data.get(field) or "").strip():
             # The ontology says how a withdrawal is filed and this layer refused first with four
             # words, so the guidance never reached anybody going through the screen.
-            hint = (" To withdraw the line, send the one it is withdrawing as `before`."
-                    if field == "after" and scope == "peer" else "")
+            hint = (" To stop this area crossing, send `no` as `after` and `yes` as `before`."
+                    if field == "after" and scope == "export" else "")
             raise HTTPException(status_code=422, detail=f"{field} is required.{hint}")
     if where == "entity" and not _KNOWLEDGE_ID.match(str(data["entity"]).strip()):
         raise HTTPException(status_code=422, detail="entity must be an entity id.")
@@ -690,12 +694,15 @@ def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, An
         "core_description": str(data["core_description"]).strip(),
         # `id` and `kind` are Knowledge's to derive, as they are for a node. Anything a person did
         # supply is passed through; nothing is invented here.
-        # `use_when_export` is optional and its absence is meaningful: an area with none does not
-        # cross a link at all. Passed through like the rest — the decision is the ontology's.
+        # `export` is optional and its absence is meaningful: an area with it unset does not cross a
+        # link at all. Passed through like the rest — the decision is the ontology's. It is a
+        # boolean, so it goes through untouched rather than via the string coercion above: `str(False)`
+        # is "False", which is truthy everywhere it would then be read.
         "representative": {
             **{k: str(rep[k]).strip()
-               for k in ("name", "one_liner", "use_when", "use_when_export", "kind", "id")
+               for k in ("name", "one_liner", "use_when", "kind", "id")
                if str(rep.get(k) or "").strip()},
+            **({"export": bool(rep["export"])} if "export" in rep else {}),
             # A list, and passed as one. Who an area crosses to is the ontology's decision like the
             # rest of this; nothing here narrows or widens it.
             **({"export_to": rep["export_to"]} if rep.get("export_to") else {}),
@@ -1023,7 +1030,7 @@ def app_config(request: Request) -> dict[str, Any]:
 # The token the export surface asks for. Not an escalation: this process already proxies the whole
 # ordinary `/v1` API on the compose network, and the export surface is a strict subset of what that
 # reaches. What the token buys is the *right surface* — the one built from the areas somebody wrote
-# `use_when_export` on, rather than the one that shows everything.
+# `export` on, rather than the one that shows everything.
 PEER_TOKEN = (_iris_playbook_os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
 
 _BUNDLE = None
@@ -1058,7 +1065,7 @@ def api_knowledge_export_bundle(payload: dict, request: Request):
     page loads next. It is never logged here and never comes back in a response.
 
     What goes in the file is read from `/v1/export/…` and nowhere else, so this route cannot widen
-    what leaves: an area crosses only by having `use_when_export` written on it, and that decision
+    what leaves: an area crosses only by having `export` set on it, and that decision
     was made in the repository by a person, not here by a button.
     """
     b = _bundle()
@@ -1082,7 +1089,7 @@ def api_knowledge_export_bundle(payload: dict, request: Request):
         # A valid, encrypted, empty file is the worst possible answer here: whoever receives it has no
         # way to tell it from a mistake at this end. Refuse, and say what would make it non-empty.
         raise HTTPException(status_code=409, detail=(
-            "This backbone exports no areas, so there is nothing to download. Write `use_when_export` "
+            "This backbone exports no areas, so there is nothing to download. Set `export` "
             "on the areas that should be allowed to cross, then export again."))
     try:
         blob = b.seal(data, pw)

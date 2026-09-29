@@ -509,6 +509,13 @@ def apply_proposal(p: dict, actor: str):
         else:
             cur, after = (rep.get(field) or ""), p["after"]
             if isinstance(cur, list): cur = ", ".join(cur)
+            # A yes/no field against a proposal, which carries sentences. The stored value is a
+            # boolean and `before` is the word somebody saw on screen; comparing them directly is a
+            # conflict on every withdrawal, because `"yes" != True` always. Both sides become the
+            # word here, so the comparison is between what was shown and what is there.
+            if isinstance(rep.get(field), bool) or field in curator.BOOL_FIELDS:
+                cur = "yes" if rep.get(field) else "no"
+                after = "yes" if str(p["after"]).strip().lower() in ("yes", "true", "on", "1") else "no"
         if p.get("before") and cur != p["before"]:
             return {"ok": False, "error": "conflict", "code": 409, "field": field,
                     "current": cur, "submitted_before": p["before"]}
@@ -863,15 +870,17 @@ class Handler(BaseHTTPRequestHandler):
         """The only surface a peer backbone can read. See docs/PEERING.md.
 
         **It is a separate surface, not the ordinary one behind a check.** An area reaches a peer only
-        by having written `use_when_export`, and every handler here starts from that set — so there is
+        by somebody setting `export` on it, and every handler here starts from that set — so there is
         no path through this code, and no bug in a token check, that can serve an area nobody decided
         to share. A filter applied on the way out would have to be right every time; a surface built
         from the exported set is right by construction.
 
-        The line a peer sees is `use_when_export`, never `use_when`. An advertisement written for one
-        backbone's hop 0 has no reason to be true in another's — a subsidiary's "needs head-office
-        approval" means nothing read at head office. So each is written for its reader, and the one
-        for the outside goes through the review queue like every other advertisement (scope `peer`).
+        The line a peer sees is `use_when` — the same one this backbone routes on. There used to be
+        a second sentence for the outside, on the argument that a subsidiary's "needs head-office
+        approval" means nothing read at head office. Operator, 2026-09-29: one sentence. Two
+        sentences meaning the same thing is one sentence and one copy, and the copy is the one that
+        goes stale; in the shipped repositories all five had drifted into saying different things.
+        What crosses is still a decision — `export` — and it still goes through the review queue.
         """
         # Before the door, so a wrong token is recorded too. A refused read is the one that matters:
         # a served one is the ordinary case, and a run of refusals is the only signal there is that a
@@ -899,7 +908,7 @@ class Handler(BaseHTTPRequestHandler):
 
         rj = store.regions_json()
         shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", [])
-                  if (r.get("use_when_export") or "").strip()}
+                  if r.get("export")}
         # An audience narrows what the line opened. Fail closed twice over: an unnamed caller is
         # nobody, and a restricted area is invisible to nobody. Only a room is handed rows it may not
         # pass on — it is the one doing the filtering for its members, and it can only do that if it
@@ -927,19 +936,13 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"revision": rev, "schema": rj.get("schema"), "regions": [
                 {"id": r["id"], "source": r["source"], "title": r["title"],
                  "description": r.get("description", ""),
-                 # Named `use_when` because that is what it is to the reader: the line it chooses by.
-                 # Which side of the link it was written for is our business, not theirs — and so is
-                 # the fact that somebody else is shown a different one.
-                 "use_when": _line_for(r, reader), "representative": r.get("representative"),
+                 # The area's own line, which is also the one this backbone routes on. One sentence
+                 # for both readers is the whole of the 2026-09-29 decision.
+                 "use_when": (r.get("use_when") or "").strip(), "representative": r.get("representative"),
                  # Carried only to a room, which needs it to filter for its members. A backbone that
                  # is being answered directly has already been filtered for and has no business
                  # knowing who else was considered.
                  **({"export_to": r.get("export_to") or []} if to_a_room and r.get("export_to") else {}),
-                 # Same reason as the audience: a room is answering for members this end cannot see,
-                 # so it is given what it needs to answer for each of them and picks. It sees more
-                 # than any one member does, which is what being on the data path means.
-                 **({"use_when_for": r.get("use_when_export_for") or {}}
-                    if to_a_room and r.get("use_when_export_for") else {}),
                  "fetch": f"/v1/export/regions/{src}"}
                 for src, r in sorted(shared.items())]})
 
@@ -1041,15 +1044,13 @@ class Handler(BaseHTTPRequestHandler):
                     "dir": r["dir"], "key": r["key"], "representative": r["representative"],
                     "use_when": r.get("use_when") or "",     # should I come here — the same value the listing gave
                     "advertises": r["advertises"],           # how the representative describes itself (one_liner)
-                    # What crosses a link, all three parts of it. Not on the export surface — this is
-                    # the **owner's** view of its own decision, and it is the only place a person can
-                    # read what they have decided: absent means the area crosses nothing, an audience
-                    # means it crosses to those peers only, and a line under a name means that reader
-                    # is shown something else. A screen that could not show these could not be used
-                    # to make them, which is where they were until now.
-                    "use_when_export": r.get("use_when_export") or "",
+                    # What crosses a link, both parts of it. Not on the export surface — this is the
+                    # **owner's** view of its own decision, and the only place a person can read what
+                    # they have decided: `export` says whether this area crosses at all, and an
+                    # audience means it crosses to those peers only. A screen that could not show
+                    # these could not be used to make them.
+                    "export": bool(r.get("export")),
                     "export_to": r.get("export_to") or [],
-                    "use_when_export_for": r.get("use_when_export_for") or {},
                     "entries": [_advert_child(c) for c in advertised(r["representative"])],
 })
                     # `path`, `data_kind`, `authority`, `nodes` and `docs` are kept out of the
@@ -1290,16 +1291,16 @@ def _export_state():
     Deliberately not the git revision — most commits change nothing a peer can see, and a poke on
     every save would tell every peer to re-read for somebody fixing a typo in a document body.
 
-    **Every field a peer can see has to be in here.** `use_when_export_for` was added to the export
-    surface and not to this, so writing a line for one named reader changed what that reader is shown
-    and sent no hint: the row sat stale for a cache at each hop while the change looked done. The one
-    case the hint exists for is a reader being shown something narrower than before, which is exactly
-    what this field is.
+    **Every field a peer can see has to be in here.** A field added to the export surface and not to
+    this is a change that reaches the reader while every cache on the way keeps the old row — the
+    change looks done and is not. It happened once with a per-reader line, which is why this sentence
+    is here. `use_when` is now in the tuple because it is the line a peer reads: editing it used to
+    be an internal change and is not one any more.
     """
     try:
-        return sorted((r.get("source"), r.get("use_when_export") or "",
-                       tuple(r.get("export_to") or []),
-                       tuple(sorted((r.get("use_when_export_for") or {}).items())))
+        return sorted((r.get("source"), bool(r.get("export")),
+                       (r.get("use_when") or "").strip(),
+                       tuple(r.get("export_to") or []))
                       for r in (store.regions_json().get("regions") or []))
     except Exception:
         return None
@@ -1387,8 +1388,7 @@ def _line_for(region: dict, reader: str | None) -> str:
     decides whether anything is read at all and must fail closed, the other decides which sentence is
     read and has a right answer for a stranger.
     """
-    per = region.get("use_when_export_for") or {}
-    return (per.get(reader) if reader and per.get(reader) else region.get("use_when_export")) or ""
+    return (region.get("use_when") or "").strip()
 
 
 def _kind_denied_anywhere(node: dict, denied: set[str]) -> bool:
@@ -1412,7 +1412,7 @@ def _visible(region: dict, reader: str | None) -> bool:
     """May this reader see this area at all.
 
     Absent audience is the common case and means everyone the area is exported to. A named audience
-    narrows it and can never widen it: an area with no `use_when_export` never gets here.
+    narrows it and can never widen it: an area that is not exported never gets here.
 
     Fail closed on both unknowns. A caller this backbone cannot name is not on any list, and neither
     is a reader an exchange declined to name — so a restricted area is invisible to both. The

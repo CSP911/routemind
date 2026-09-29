@@ -35,7 +35,7 @@ docker run --rm --network routemind_default -v "$PWD/transfer:/t:ro" -v "$PWD/ou
 
 **Exactly what a peer would have been able to read, and not a byte more.** `export.py` reads
 `/v1/export/…` and nothing else — not the store, not the ordinary API. That surface is built from
-the areas somebody wrote `use_when_export` on rather than filtered on the way out, and re-deriving
+the areas somebody set `export` on rather than filtered on the way out, and re-deriving
 the filter here would make it a second place that has to be right. So the lines in the file are the
 ones written for an outside reader.
 

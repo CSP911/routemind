@@ -623,8 +623,8 @@ eq(f"  and it really was reading ({_n} clean reads)", _n > 100, True)
 # check that used them called `regenerate` first, so a stale file in the repository was invisible to
 # all of them.
 #
-# It went stale the moment the export fields were added: `use_when_export`, `export_to` and
-# `use_when_export_for` were simply absent from the shipped table. Nothing noticed until the drift
+# It went stale the moment the export fields were added: `export` and `export_to` were simply
+# absent from the shipped table. Nothing noticed until the drift
 # rule started comparing the text — and then the very first thing a new install did was report five
 # validation errors about a file nobody had touched. A worked example that does not validate teaches
 # the wrong lesson on page one.

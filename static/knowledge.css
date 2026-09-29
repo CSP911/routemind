@@ -591,3 +591,20 @@ body.kn-dragging { user-select: none; }
 .kn-export-msg.is-bad { color: var(--kn-danger); }
 .kn-export-msg.is-ok  { color: var(--green, #1c6b3f); }
 .kn-export-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1.3rem; }
+
+/* The yes/no on the export card. The page styles its own controls under its own names — the sheets
+   it inherits restyle bare `select` with `!important`, the same trap `.kn-btn` was written to avoid. */
+.kn-select {
+  font: inherit; padding: .45rem .6rem; border-radius: 7px;
+  border: 1px solid var(--kn-line); background: var(--kn-surface); color: var(--kn-text);
+}
+.kn-select:focus-visible {
+  outline: none; border-color: var(--kn-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--kn-accent) 30%, transparent);
+}
+
+/* The "what will you advertise it with" block: the field, the guide that tucks under it, then the
+   note. A grid rather than bare siblings, because `.kn-guide` has a negative top margin and any
+   sibling after it lands underneath. */
+.kn-export-what { display: grid; gap: 6px; }
+.kn-export-what > .kn-fhint { margin: 2px 0 0; }

@@ -12,15 +12,15 @@ and `seal()` in `bundle.py` — the format lives there rather than in whichever 
 it, because a format defined twice is two formats that agree until they do not.
 
 **It reads `/v1/export/…` and nothing else.** Not the store, not the ordinary API. That surface is
-built from the set of areas somebody wrote `use_when_export` on, rather than filtered on the way
+built from the set of areas somebody set `export` on, rather than filtered on the way
 out — server.py: "there is no path through this code, and no bug in a token check, that can serve an
 area nobody decided to share. A filter applied on the way out would have to be right every time; a
 surface built from the exported set is right by construction." Re-implementing the filter here would
 throw that away and be the second place it has to be correct.
 
-So an export contains exactly what a peer would have been able to read, and the lines in it are
-`use_when_export` — written for an outside reader. That is the right text for a file leaving the
-building.
+So an export contains exactly what a peer would have been able to read, and the line in it is
+`use_when` — the one sentence, the same one this backbone routes on. There used to be a second one
+written for outsiders; operator, 2026-09-29: one sentence, and `export` decides whether it crosses.
 
 The file's layout, the choice of AES-256-GCM, and why the header is authenticated rather than secret
 are all documented in `bundle.py`.
@@ -53,7 +53,7 @@ def main():
         # Not an error and worth stopping for: a backbone with nothing exported produces a valid,
         # encrypted, empty file, and the person who receives it has no way to tell that from a
         # mistake at this end.
-        sys.exit("  this backbone exports no areas — nothing to send. Write `use_when_export` on the "
+        sys.exit("  this backbone exports no areas — nothing to send. Set `export: yes` on the "
                  "areas that should cross, then run this again.")
 
     pw = os.environ.get(a.passphrase_env) or getpass.getpass("  passphrase for the recipient: ")

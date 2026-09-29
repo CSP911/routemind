@@ -388,30 +388,30 @@ def decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply, 
 # with a direct write while the wording needed a second pair of eyes would put the queue in front of
 # the smaller of the two.
 PEER_NAME = re.compile(r"^[a-z][a-z0-9-]{0,30}$")
+# `bb` is `use_when`, and since 2026-09-29 that is the line a peer reads too — there is one sentence
+# and `export` decides whether it crosses. So the review that was already required for the local
+# routing line now covers the exported one, and the separate `peer` scope becomes the yes/no.
 ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "core": "core_row", "entity": "one_liner",
-                "peer": "use_when_export", "audience": "export_to",
-                # The line one **named** peer is shown instead of the one everybody else gets. The
-                # proposal carries `peer`, because the field is a mapping and a proposal that only
-                # said "the export line" could not say whose.
-                "peer-line": "use_when_export_for"}
+                "export": "export", "audience": "export_to"}
 # Scopes whose `after` may be empty, and where empty says something. Everywhere else an empty
 # sentence is a proposal to advertise nothing, which is a mistake rather than a decision; for an
 # audience it is "everybody this area already crosses to", which is the value most areas have.
-EMPTIABLE = {"audience", "peer-line"}
-# `peer` is emptiable too, but only against something. An empty export line is two different acts
-# wearing one string: *I have not written it yet*, which is a mistake, and *stop this area crossing*,
-# which is the most consequential decision on this list and the one most deserving of a review. What
-# tells them apart is `before` — a withdrawal withdraws something. Without this there was no queued
-# way to stop advertising at all, only a direct write, so the one export decision that could not be
-# reviewed was the one that takes knowledge away from another organisation.
-EMPTIABLE_AGAINST = {"peer"}
+EMPTIABLE = {"audience"}
+# `export` is never empty — it is yes or no, and both are decisions. Withdrawing is `no`, which is
+# the most consequential entry on this list and the one most deserving of a review; it used to be an
+# empty string against a non-empty `before`, which was two different acts wearing one string.
+EMPTIABLE_AGAINST = set()
 # Scopes that name a peer as well as an area. The name is the key being written, not evidence.
-PEER_SCOPES = {"peer-line"}
-# Fields that hold a mapping rather than a sentence, so a proposal edits one key of them. Declared,
-# not inferred from whatever is stored: an empty mapping and an unset field look the same from the
-# outside, and deciding by the value means the **first** override of an area silently writes nothing.
-MAPPING_FIELDS = {"use_when_export_for"}
-SCOPE_ALIAS = {"dr": "as"}          # the old value is still accepted; the new name is what gets stored
+PEER_SCOPES = set()
+# Fields that hold a mapping rather than a sentence, so a proposal edits one key of them.
+MAPPING_FIELDS = set()
+# Fields that hold yes/no rather than a sentence. Declared here for the same reason MAPPING_FIELDS is:
+# an unset boolean and a false one look identical from outside, so deciding by the value would make
+# the *first* export decision on an area compare against the wrong thing.
+BOOL_FIELDS = {"export"}
+# The old values are still accepted; the new name is what gets stored. `peer` used to be the second
+# export sentence and is now the decision to export at all — the nearest thing to what it meant.
+SCOPE_ALIAS = {"dr": "as", "peer": "export", "peer-line": "export"}
 
 
 def submit_route(cstore: CuratorStore, body: dict, actor: str) -> dict:

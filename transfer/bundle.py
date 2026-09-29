@@ -76,7 +76,7 @@ def collect(api: str, token: str) -> dict:
     """Everything the export surface will give, walked from the areas down.
 
     **Read from `/v1/export/…` and nowhere else.** That surface is built from the areas somebody
-    wrote `use_when_export` on rather than filtered on the way out — server.py: "there is no path
+    set `export` on rather than filtered on the way out — server.py: "there is no path
     through this code, and no bug in a token check, that can serve an area nobody decided to share.
     A filter applied on the way out would have to be right every time; a surface built from the
     exported set is right by construction." Deriving the filter again here would make it a second

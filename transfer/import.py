@@ -42,11 +42,11 @@ def write_out(payload: dict, root: pathlib.Path, source: str) -> int:
         if not nid: continue
         fm = {k: node[k] for k in ("id", "name", "kind", "region", "one_liner", "parent")
               if node.get(k)}
-        # `use_when_export` is what the sender wrote for an outside reader. It is kept under its own
-        # name rather than promoted to `use_when`: the line that routes a local search has to be
-        # written by whoever owns the local map.
-        outward = node.get("use_when_export") or node.get("use_when")
-        if outward: fm["use_when_export"] = outward
+        # The sender's routing line, kept under a name of its own rather than promoted to
+        # `use_when`. There is one sentence now and this is it — but whose table it routes is still
+        # a decision, and unpacking for review is the stage before anyone has made it.
+        outward = node.get("use_when")
+        if outward: fm["use_when_from_source"] = outward
         out = ["---"] + [f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in fm.items()] + ["---", ""]
         out.append((node.get("body") or "").strip())
         p = base / f"{nid}.md"
@@ -117,13 +117,13 @@ def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], li
                 if node["parent"] not in rename:
                     unresolved.append(f"{nid}: parent {node['parent']} is not in this bundle")
             # The representative carries the area's routing line. The bundle hands over
-            # `use_when_export` — what the sender wrote for an outside reader — and here it becomes
-            # this repository's `use_when`, because an area with no line is an area no walk reaches.
-            # It is the sender's sentence in the receiver's table, which is the thing to go and edit
-            # first; nothing else can write it, and leaving it blank would hide the area instead.
+            # The sender's own routing line becomes this repository's. Since 2026-09-29 there is one
+            # sentence, so this is the line they route on rather than a summary written for
+            # outsiders — but it is still written about their map, and the area it now routes is
+            # yours. It is the thing to go and edit first; leaving it blank would hide the area.
             if (node.get("role") or "") == "representative" or nid == r.get("representative"):
                 fm["role"] = "representative"
-                line = (r.get("use_when") or r.get("use_when_export") or "").strip()
+                line = (r.get("use_when") or "").strip()
                 if line: fm["use_when"] = line
             out = ["---"] + [f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in fm.items()] + ["---", ""]
             out.append(rewrite((node.get("body") or "").strip(), nid))
@@ -232,7 +232,7 @@ def main():
     for r in (payload.get("regions") or []):
         # The surface hands the outward line over as `use_when`, because from the reader's side
         # that is what it is — the sender's own `use_when` never leaves their backbone.
-        line = r.get("use_when") or r.get("use_when_export") or r.get("description") or ""
+        line = r.get("use_when") or r.get("description") or ""
         print(f"    area  {r.get('source')}  —  {line[:90]}", file=sys.stderr)
 
     if a.against:

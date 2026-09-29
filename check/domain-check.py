@@ -13,7 +13,7 @@ somebody can say afterwards what did.
   * **Allow and deny by kind.** `vocab.yaml` says what a kind *is*; it now also says whether that
     sort of thing leaves. One decision per kind rather than one per entity — twelve, not
     seventy-nine — and a deny list rather than an allow list, because the area-level
-    `use_when_export` is already the opt-in and making it a twelve-part act would mean the part
+    `export` is already the opt-in and making it a twelve-part act would mean the part
     everybody skips is the one that matters.
   * **A record at the owner.** A relayed document is held for one request and discarded, which is the
     point of a link rather than a merge — and it means nothing anywhere remembers unless the owner
@@ -99,7 +99,7 @@ for n in BB:
         t = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" in t and "\nparent:" not in t:
             open(q, "w", encoding="utf-8").write(t.replace(
-                "\nrole: representative\n", f"\nrole: representative\nuse_when_export: what {n} answers\n", 1))
+                "\nrole: representative\n", f"\nrole: representative\nexport: yes\nuse_when: what {n} answers\n", 1))
             break
     if n == "far":
         # A sentence that exists in this domain and nowhere else, so "the reader kept no copy" can be

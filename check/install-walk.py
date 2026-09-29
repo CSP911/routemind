@@ -132,8 +132,8 @@ check("withdrawing it works", st == 200, f"{st} {json.dumps(d)[:150]}")
 check("  and it goes from the other backbone's table", remote(A) == [], json.dumps(remote(A)))
 reg = call(B + "/regions/site-ops")[1]
 check("  taking the audience and the override with it",
-      not reg.get("export_to") and not reg.get("use_when_export_for"),
-      json.dumps({k: reg.get(k) for k in ("use_when_export", "export_to", "use_when_export_for")}))
+      not reg.get("export_to"),
+      json.dumps({k: reg.get(k) for k in ("export", "export_to")}))
 d = hop0(A)
 # Nothing here may read as an outage: a withdrawal is somebody's decision, and an outage is the one
 # thing that stops a backbone claiming absence.

@@ -95,7 +95,7 @@ for n in ("ay", "bee"):
         t = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" in t and "\nparent:" not in t:
             open(q, "w", encoding="utf-8").write(t.replace(
-                "\nrole: representative\n", f"\nrole: representative\nuse_when_export: what {n} answers\n", 1))
+                "\nrole: representative\n", f"\nrole: representative\nexport: yes\nuse_when: what {n} answers\n", 1))
             break
     if n == "bee":
         # The seed declares no area that takes drafts, so this copy declares one. `area_rules` is
@@ -250,7 +250,7 @@ def set_audience(who, names):
         if "\nrole: representative\n" not in t or "\nparent:" in t: continue
         out = [l for l in t.splitlines(True) if not l.startswith("export_to:")]
         if names:
-            i = next(j for j, l in enumerate(out) if l.startswith("use_when_export:"))
+            i = next(j for j, l in enumerate(out) if l.startswith("export:"))
             out.insert(i + 1, "export_to: [" + ", ".join(names) + "]\n")
         open(q, "w", encoding="utf-8").write("".join(out))
         break
@@ -288,7 +288,7 @@ st, r = call(B_PORT, "/v1/regions", "POST",
              {"source": "long-one", "core_description": "an area with the longest name there is",
               "representative": {"name": "L" * 40, "one_liner": "the longest id there is",
                                  "use_when": "when the id is as long as it can be",
-                                 "use_when_export": "the longest id there is, across a link",
+                                 "export": True,
                                  "id": LONG}})
 if check("P5 an area whose representative has a 252-character id is created", st in (200, 201), json.dumps(r)[:140]):
     time.sleep(0.5)

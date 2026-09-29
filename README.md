@@ -198,14 +198,14 @@ ways hand over one formatter's output; three descriptions of one ontology would 
 An install is **one backbone and an exchange**. A **domain** is one exchange and the backbones on it —
 head office and a subsidiary are one domain; a company and its supplier are two.
 
-An area crosses by writing the line it wants to show in the *other* backbone's hop 0, and by nothing
-else:
+An area crosses by somebody deciding it does, and by nothing else. The line a peer reads is the
+area's own `use_when` — one sentence, the same one this backbone routes on:
 
 | In the area's own `.md` | What it does |
 |---|---|
-| `use_when_export` | the line strangers see. No line, no crossing — this is the whole opt-in |
+| `export: yes` | this area crosses a link. Absent means it crosses none — the whole opt-in |
+| `use_when` | the sentence it crosses with, and the one this backbone routes on. One, not two |
 | `export_to` | which peers may see it at all. Absent means everyone linked |
-| `use_when_export_for` | say it differently to one named peer |
 | `export: no` on a kind, in `vocab.yaml` | that sort of thing never leaves, whatever an area says |
 
 Three properties are worth knowing before relying on it:

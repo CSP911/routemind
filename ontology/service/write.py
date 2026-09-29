@@ -255,6 +255,16 @@ def _line_map(value) -> dict:
             if str(k).strip() and str(v).strip()}
 
 
+def _yesno(value) -> bool:
+    """yes / no, from a boolean or from the word the review queue carries.
+
+    Anything it does not recognise is False, because the field decides whether an area leaves the
+    building and the safe reading of an unrecognised value is "do not".
+    """
+    if isinstance(value, bool): return value
+    return str(value or "").strip().lower() in ("yes", "true", "on", "1")
+
+
 def _name_list(value) -> list[str]:
     """Peer names off the wire: a list, or one name, or a comma-separated string. Normalised in one
     place so that what is stored does not depend on which of those a caller sent."""
@@ -518,19 +528,20 @@ class Writer:
             # sentence and not a structure. Normalised here rather than at each door, because the
             # cost of getting it wrong is silent — `", ".join("branch")` is `b, r, a, n, c, h`.
             if "export_to" in body: n["export_to"] = _name_list(body["export_to"])
-            if "use_when_export_for" in body:
-                n["use_when_export_for"] = _line_map(body["use_when_export_for"])
-            # Withdrawing takes the whole export decision with it. An audience narrows a line and a
-            # per-peer override replaces one — with no line there is nothing to narrow and nothing to
-            # replace, so leaving them behind leaves state that means nothing and that the validator
-            # rightly refuses. It refused the withdrawal itself, telling somebody deliberately
-            # removing a line to "write the line first", which is the advice for the opposite act.
+            # yes/no, and it arrives as a boolean from the API or as a word from the review queue,
+            # which carries sentences. `bool("no")` is True, so it cannot go through `bool()` — that
+            # is a withdrawal that silently turns export on.
+            if "export" in body: n["export"] = _yesno(body["export"])
+            # Withdrawing takes the audience with it. An audience narrows what `export` opened, so
+            # with export off there is nothing to narrow and what is left is state that means nothing
+            # and that the validator rightly refuses — it refused the withdrawal itself, telling
+            # somebody deliberately turning export off to turn it on first, which is the advice for
+            # the opposite act.
             #
             # Safe because it only ever removes: nothing here can widen what an area shares.
-            if "use_when_export" in body and not (n.get("use_when_export") or "").strip():
-                n["use_when_export"] = None
-                dropped = bool(n.get("export_to")) or bool(n.get("use_when_export_for"))
-                n["export_to"], n["use_when_export_for"] = [], {}
+            if "export" in body and not n.get("export"):
+                dropped = bool(n.get("export_to"))
+                n["export_to"] = []
                 if dropped: withdrew.append(nid)
             # One type: an entity's content is its own field, not a file underneath it. Editing the
             # body and editing the routing line are the same call on the same thing.
@@ -733,14 +744,14 @@ class Writer:
             write_node_index(self.store, {"id": nid, "name": rep["name"], "kind": kind, "region": src,
                                           "holds": "content", "injected_by": None, "status": None,
                                           "role": "representative", "use_when": rep["use_when"],
-                                          # Optional, and absent means this area crosses no link. Export
-                                          # is opt-in per area and in writing — see docs/PEERING.md.
-                                          "use_when_export": (rep.get("use_when_export") or "").strip() or None,
+                                          # Off unless somebody says otherwise: export is opt-in per
+                                          # area and in writing — see docs/PEERING.md. The line it
+                                          # crosses with is `use_when` above; there is one sentence.
+                                          "export": _yesno(rep.get("export")),
                                           # And who, when it is not everybody. Validation refuses an
-                                          # audience without a line above it, so the two arrive or
-                                          # neither does.
+                                          # audience on an area that is not exported, so the two
+                                          # arrive or neither does.
                                           "export_to": _name_list(rep.get("export_to")),
-                                          "use_when_export_for": _line_map(rep.get("use_when_export_for")),
                                           "aliases": [], "one_liner": rep["one_liner"], "body": "",
                                           "path": str(base.relative_to(self.root))})
             end = anchor.end()

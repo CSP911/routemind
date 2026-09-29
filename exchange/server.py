@@ -19,7 +19,7 @@ keeps this from being a second thing to keep in step with the first.
 
 Three things it deliberately does not do:
 
-  * **It does not decide what is shared.** An area crosses because somebody wrote `use_when_export` on
+  * **It does not decide what is shared.** An area crosses because somebody set `export` on
     it, in its own repository, through its own review queue. This reads what each member chose to
     publish and can no more widen that than any other peer can. If the export decision could be made
     here, the point of making it in the ontology would be gone.
@@ -335,7 +335,7 @@ class Handler(BaseHTTPRequestHandler):
         An operator can see that BRANCH is attached, answering, and advertising two areas. What those
         areas are, and what is in them, is between the members — and an admin screen that could read
         it would be a way around the one rule this whole design turns on: an area crosses because
-        somebody wrote `use_when_export` on it, in its own repository, through its own review queue.
+        somebody set `export` on it, in its own repository, through its own review queue.
         Nothing here can make an area cross, and nothing here can read one.
         """
         if not ADMIN_TOKEN:

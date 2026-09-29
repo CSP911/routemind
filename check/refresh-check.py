@@ -22,6 +22,7 @@ that says makes.
   * **It terminates.** A hint carries no path to check itself against, so it carries a budget that
     only goes down.
 """
+import re
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,6 +66,20 @@ sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
 
+
+def _share(text, line):
+    """Turn export on for a representative, with `line` as the sentence it crosses with.
+
+    One sentence since 2026-09-29: a peer reads the area's own `use_when`, and `export` decides
+    whether it gets it. This fixture used to write a second sentence; it sets both now.
+    """
+    text = re.sub(r"^use_when:.*$", f"use_when: {line}", text, count=1, flags=re.M)
+    if "\nuse_when:" not in text:
+        text = text.replace("\nrole: representative\n",
+                            f"\nrole: representative\nuse_when: {line}\n", 1)
+    return text.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1)
+
+
 TOK = {"TOK_A": "tok-a", "TOK_B": "tok-b"}
 LINE = "what the other office may ask us · the questions we answer for them"
 SHARED = sorted(d for d in os.listdir(os.path.join(seed, "regions"))
@@ -79,8 +94,7 @@ for n, port in (("a", A_PORT), ("b", B_PORT)):
             t = open(q, encoding="utf-8").read()
             if "\nrole: representative\n" in t and "\nparent:" not in t:
                 open(q, "w", encoding="utf-8").write(
-                    t.replace("\nrole: representative\n",
-                              f"\nrole: representative\nuse_when_export: {LINE}\n", 1))
+                    _share(t, LINE))
                 break
     open(os.path.join(repo, "peers.yaml"), "w", encoding="utf-8").write(
         f"peers:\n  - name: ix\n    label: EXCHANGE\n    url: http://127.0.0.1:{IX_PORT}\n"
@@ -143,7 +157,7 @@ def withdraw_quietly():
         t = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" not in t or "\nparent:" in t: continue
         open(q, "w", encoding="utf-8").write(
-            "".join(l for l in t.splitlines(True) if not l.startswith("use_when_export:")))
+            "".join(l for l in t.splitlines(True) if not l.startswith("export:")))
         break
     regenerate(Store(repos["b"]))
     subprocess.run(["git", "-C", repos["b"], "add", "-A"], check=True)
@@ -161,7 +175,7 @@ time.sleep(0.6)
 check("withdrawn behind the server's back, it stays on a's table",
       len(at_a()) == 1, json.dumps([r.get("source") for r in at_a()]))
 check("  which is the cache, not a bug — the row is genuinely gone at b",
-      not any(r.get("use_when_export") for r in (get(B_PORT, "/v1/regions")[1].get("regions") or [])))
+      not any(r.get("export") for r in (get(B_PORT, "/v1/regions")[1].get("regions") or [])))
 
 # ── the hint, sent by hand, crossing the room ────────────────────────────────
 # b tells the room; the room tells a. Two hops, and the second is the one that would be missed by
@@ -204,7 +218,7 @@ for f in sorted(os.listdir(os.path.join(repos["b"], "regions", SHARED))):
     if "\nrole: representative\n" not in t or "\nparent:" in t: continue
     node_id = next(l.split(":", 1)[1].strip() for l in t.splitlines() if l.startswith("id:"))
     break
-body = json.dumps({"use_when_export": LINE}).encode()
+body = json.dumps({"export": True, "use_when": LINE}).encode()
 req = urllib.request.Request(f"http://127.0.0.1:{B_PORT}/v1/nodes/{node_id}", data=body,
                              method="PUT", headers={"Content-Type": "application/json",
                                                       "X-Actor": "refresh-check"})
@@ -229,24 +243,28 @@ for f in sorted(os.listdir(os.path.join(repos["b"], "regions", SHARED))):
     if "\nrole: representative\n" in t and "\nparent:" not in t:
         rep_id = next(l.split(":", 1)[1].strip() for l in t.splitlines() if l.startswith("id:"))
         break
-FOR_A = "what b tells a in particular, and nobody else"
-body = json.dumps({"use_when_export": LINE, "use_when_export_for": {"ay": FOR_A}}).encode()
+# Editing the area's own line. Since 2026-09-29 that line is what a peer reads, so a change to it is
+# no longer an internal edit — this is the case the fingerprint was widened for. It used to be a line
+# written for one named reader, a field that had been added to the export surface and not to the
+# fingerprint; the field is gone and the hazard moved to `use_when`, which every area has.
+REVISED = LINE + " (revised)"
+body = json.dumps({"export": True, "use_when": REVISED}).encode()
 req = urllib.request.Request(f"http://127.0.0.1:{B_PORT}/v1/nodes/{rep_id}", data=body, method="PUT",
                              headers={"Content-Type": "application/json", "X-Actor": "refresh-check"})
 try:
     with urllib.request.urlopen(req, timeout=30) as x: wrote = x.status
 except urllib.error.HTTPError as e: wrote = f"{e.code} {e.read().decode(errors='replace')[:120]}"
 except Exception as e: wrote = type(e).__name__
-if check("a line written for one named reader is a write a peer can see", wrote == 200, str(wrote)):
+if check("editing the area's own line is a write a peer can see", wrote == 200, str(wrote)):
     time.sleep(1.5)
     rows = at_a()
     check("  and the row is still on a's table", len(rows) == 1,
           json.dumps([r.get("source") for r in rows]))
     # The whole assertion in one line: with a thirty-second cache at each hop, a's table already
-    # carries the sentence written for a. Without the field in the fingerprint no hint goes out and
-    # this is the old line for the next half-minute, with everything looking done.
-    check("  carrying the line written for it, with no cache waited out",
-          rows and rows[0].get("use_when") == FOR_A,
+    # carries the edited sentence. Without `use_when` in the fingerprint no hint goes out and this is
+    # the old line for the next half-minute, with everything looking done at both ends.
+    check("  carrying the edited line, with no cache waited out",
+          rows and rows[0].get("use_when") == REVISED,
           json.dumps(rows[0].get("use_when") if rows else None))
 
 shutil.rmtree(T, ignore_errors=True)

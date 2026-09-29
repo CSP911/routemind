@@ -111,20 +111,24 @@ def frontmatter(src, key):
 
 for r in data["regions"]:
     src = r.get("source")
-    outward, inward = frontmatter(src, "use_when_export"), frontmatter(src, "use_when")
-    if outward and inward and outward != inward:
-        check(f"the area line that crosses is the outward one ({src})",
-              (r.get("use_when") or "").strip() == outward,
-              "the backbone's own use_when must not leave")
+    inward = frontmatter(src, "use_when")
+    if inward:
+        # One sentence since 2026-09-29: what crosses is the area's own line. This used to check that
+        # the *outward* line crossed and the local one did not; it now checks they are the same
+        # string, which is the same property — a peer reads the line the area is actually chosen by,
+        # never a second copy that can drift from it.
+        check(f"the line that crosses is the area's own ({src})",
+              (r.get("use_when") or "").strip() == inward.strip(),
+              f"crossed {r.get('use_when')!r}, the area says {inward!r}")
         break
 else:
-    results.append("--   no area here writes a different line for the outside; unchecked")
+    results.append("--   no shared area with a line to compare; unchecked")
 
 # The one that matters. An area with no `use_when_export` is not in the file, whatever else changes.
 regions_dir = os.path.join(REPO, "data", "repo", "regions")
 all_areas = {d for d in os.listdir(regions_dir) if os.path.isdir(os.path.join(regions_dir, d))} \
     if os.path.isdir(regions_dir) else set()
-unshared = {a for a in all_areas if not frontmatter(a, "use_when_export")}
+unshared = {a for a in all_areas if (frontmatter(a, "export") or "").strip().lower() not in ("yes", "true")}
 check(f"areas nobody marked to cross are absent ({len(unshared)} of {len(all_areas)} held back)",
       bool(unshared) and not (unshared & set(shared)),
       f"leaked {sorted(unshared & set(shared))}")
@@ -196,7 +200,12 @@ check("  while a header demanding 1GB of key derivation is refused without spend
 # ids collide with it — 19 of 19 on the corpus this was written against — and asks that backbone's
 # own validator whether the result is coherent. Its verdict is the only one that counts: a repository
 # it rejects is one the service would refuse to serve.
-import shutil, tempfile
+import hashlib, shutil, tempfile
+
+
+def _walk_md(root):
+    return sorted(os.path.join(r, f) for r, _, fs in os.walk(os.path.join(root, "regions"))
+                  for f in fs if f.endswith(".md"))
 
 src_repo = os.path.join(REPO, "data-b", "repo")
 if not os.path.isdir(src_repo):
@@ -206,8 +215,8 @@ else:
     target = os.path.join(tmp, "repo")
     shutil.copytree(src_repo, target)
     try:
-        before_docs = len([f for r, _, fs in os.walk(os.path.join(target, "regions"))
-                           for f in fs if f.endswith(".md")])
+        before_docs = len(_walk_md(target))
+        before_state = {q: hashlib.sha256(open(q, "rb").read()).hexdigest() for q in _walk_md(target)}
         blob = run_in_web(SEAL_ONLY, {"API": API, "PAYLOAD": json.dumps(data, ensure_ascii=False)})
         bundle_path = os.path.join(tmp, "b.rmx")
         with open(bundle_path, "wb") as f:
@@ -223,16 +232,21 @@ else:
         check("  and that repository validates afterwards", "The repository validates." in out,
               "its own validator rejected the result")
 
-        after_docs = len([f for r, _, fs in os.walk(os.path.join(target, "regions"))
-                          for f in fs if f.endswith(".md")])
+        after_docs = len(_walk_md(target))
         check(f"  every node arrived ({after_docs - before_docs} added)",
               after_docs - before_docs == len(ids))
 
         # The originals must be exactly as they were. A graft that edited them would be a merge, and
         # which of two same-named subjects owns a name is a decision, not something to do quietly.
-        orig = subprocess.run(["git", "-C", target, "status", "--short"], capture_output=True, text=True)
-        touched = [l[3:] for l in orig.stdout.splitlines()
-                   if l[3:].endswith(".md") and "partner-" not in l]
+        #
+        # Hashed before and after rather than read from `git status`: the fixture is a copy of a live
+        # repository and can carry uncommitted work of its own, which git reports and this must not.
+        # It said so once — a field migration in the source showed up here as a file the graft had
+        # edited, which it had not touched.
+        after_state = {q: hashlib.sha256(open(q, "rb").read()).hexdigest()
+                       for q in _walk_md(target) if "partner-" not in q}
+        touched = sorted(q[len(target) + 1:] for q in after_state
+                         if before_state.get(q) != after_state[q])
         check("  and nothing that was already there was edited", not touched, f"edited {touched[:5]}")
 
         # The links must arrive renamed with the documents, or they point at the receiver's own

@@ -107,10 +107,10 @@ def set_export(who, line=None, audience=None):
         t = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" not in t or "\nparent:" in t: continue
         out = [l for l in t.splitlines(True)
-               if not l.startswith(("use_when_export:", "export_to:"))]
+               if not l.startswith(("export:", "export_to:"))]
         at = next(i for i, l in enumerate(out) if l.strip() == "role: representative") + 1
         if audience: out.insert(at, "export_to: [" + ", ".join(audience) + "]\n")
-        if line: out.insert(at, f"use_when_export: {line}\n")
+        if line: out.insert(at, "export: yes\n")
         open(q, "w", encoding="utf-8").write("".join(out))
         break
     regenerate(Store(repo))
@@ -344,7 +344,7 @@ if check("N4 an audience can be proposed through the queue", st == 201, json.dum
     check("   and the other backbone loses the area", remote("ay") == [], json.dumps(remote("ay")))
     # The other half of the decision is unmoved. A queue that wrote the wrong field would look
     # exactly like this until somebody read the file.
-    check("   while the line it wrote for peers is untouched", export_of("bee") == [SHARE["bee"]],
+    check("   while the decision to export it is untouched", export_of("bee") == [SHARE["bee"]],
           json.dumps(export_of("bee")))
 
 st, pr2 = post("bee", "proposals", {"scope": "audience", "region": SHARE["bee"],
@@ -353,14 +353,15 @@ if check("   an empty audience is a decision here, not a missing field", st == 2
     post("bee", f"proposals/{pr2['id']}/accept", {})
     time.sleep(0.6)
     check("   and accepting it opens the area again", remote("ay") == ["bee"], json.dumps(remote("ay")))
-st, e = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"], "after": ""})
-check("   while an empty export line against nothing is still a mistake", st == 422,
+st, e = post("bee", "proposals", {"scope": "export", "region": SHARE["bee"], "after": ""})
+check("   while an export decision with nothing in it is still a mistake", st == 422,
       f"{st} {json.dumps(e)[:100]}")
-check("     and says how a withdrawal is filed instead", "before" in json.dumps(e), json.dumps(e)[:150])
 # Withdrawing is the most consequential of these — it takes knowledge away from another organisation
 # — and until now it was the one export decision with no queued path at all, only a direct write.
-st, pw = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
-                                   "before": LINE["bee"], "after": "", "why": "stop crossing"})
+# It is `no` now rather than an empty string: yes and no are both decisions, and an empty string was
+# two different acts wearing one value.
+st, pw = post("bee", "proposals", {"scope": "export", "region": SHARE["bee"],
+                                   "before": "yes", "after": "no", "why": "stop crossing"})
 if check("   but withdrawing what is there goes through the queue", st == 201, json.dumps(pw)[:130]):
     post("bee", f"proposals/{pw['id']}/accept", {})
     time.sleep(0.6)
@@ -368,8 +369,8 @@ if check("   but withdrawing what is there goes through the queue", st == 201, j
     check("     with the link still up, and absence still claimable",
           all(l["reachable"] for l in (hop0("ay").get("links") or []))
           and "may say something is absent" in (hop0("ay").get("absence") or ""))
-    st, pb = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
-                                       "after": LINE["bee"], "why": "again"})
+    st, pb = post("bee", "proposals", {"scope": "export", "region": SHARE["bee"],
+                                       "before": "no", "after": "yes", "why": "again"})
     post("bee", f"proposals/{pb['id']}/accept", {})
     time.sleep(0.6)
     check("     and advertising it again brings it back", remote("ay") == ["bee"], json.dumps(remote("ay")))
@@ -377,23 +378,20 @@ st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": "audience"}
 check("   and an audience is never drafted for you", st == 400 and "not drafted" in json.dumps(e),
       f"{st} {json.dumps(e)[:120]}")
 
-# ── N4d — withdrawing takes the whole decision with it ───────────────────────
-# An audience narrows a line and an override replaces one; with no line there is nothing to narrow
-# and nothing to replace. Leaving them behind leaves state that means nothing — and the validator
-# refuses it, so the withdrawal itself failed, telling somebody deliberately removing a line to
-# "write the line first", which is the advice for the opposite act.
+# ── N4d — withdrawing takes the audience with it ─────────────────────────────
+# An audience narrows what `export` opened; with export off there is nothing to narrow. Leaving it
+# behind leaves state that means nothing — and the validator refuses it, so the withdrawal itself
+# failed, telling somebody deliberately turning export off to turn it on first, which is the advice
+# for the opposite act.
 st, a = post("bee", "proposals", {"scope": "audience", "region": SHARE["bee"], "after": "ay", "why": "N4d"})
 post("bee", f"proposals/{a['id']}/accept", {})
-st, o = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "peer": "ay",
-                                  "after": "a line only ay is shown", "why": "N4d"})
-post("bee", f"proposals/{o['id']}/accept", {})
 time.sleep(0.5)
-st, w = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
-                                  "before": LINE["bee"], "after": "", "why": "withdraw everything"})
+st, w = post("bee", "proposals", {"scope": "export", "region": SHARE["bee"],
+                                  "before": "yes", "after": "no", "why": "withdraw everything"})
 st2, d = post("bee", f"proposals/{w['id']}/accept", {})
-check("N4d withdrawing a line with an audience and an override on it works", st2 == 200,
+check("N4d withdrawing an export that has an audience on it works", st2 == 200,
       f"{st2} {json.dumps(d)[:200]}")
-check("   and says the two went with it",
+check("   and says the audience went with it",
       any("took its audience" in x for x in ((d.get("result") or {}).get("warnings") or [])),
       json.dumps(((d.get("result") or {}).get("warnings") or [])[:1]))
 time.sleep(0.6)
@@ -401,10 +399,10 @@ check("   and the area stops crossing", remote("ay") == [], json.dumps(remote("a
 raw = json.loads(urllib.request.urlopen(
     f"http://127.0.0.1:{PORT['bee']}/v1/regions/{SHARE['bee']}", timeout=20).read())
 check("   with nothing left behind to mean nothing",
-      not raw.get("export_to") and not raw.get("use_when_export_for"),
-      json.dumps({k: raw.get(k) for k in ("use_when_export", "export_to", "use_when_export_for")}))
-st, back = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"],
-                                     "after": LINE["bee"], "why": "again"})
+      not raw.get("export_to"),
+      json.dumps({k: raw.get(k) for k in ("export", "export_to")}))
+st, back = post("bee", "proposals", {"scope": "export", "region": SHARE["bee"],
+                                     "before": "no", "after": "yes", "why": "again"})
 post("bee", f"proposals/{back['id']}/accept", {})
 time.sleep(0.6)
 check("   and advertising again starts from a clean line", remote("ay") == ["bee"], json.dumps(remote("ay")))
@@ -433,43 +431,6 @@ if check("N4c a proposal can be filed against an area that is not there", st == 
 # `use_when_export` is the line everybody who can see the area is shown. An override is the line one
 # named peer is shown instead, and its whole risk is that it looks like it worked from every angle
 # except the reader's: the origin cannot see the reader behind a room, so the room picks — and the
-# lines meant for other members must not travel any further than the room.
-OVERRIDE = "what bee tells ay in particular · the questions ay brings"
-st, pr = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "peer": "ay",
-                                   "after": OVERRIDE, "why": "N6"})
-if check("N6 a line for one named peer can be proposed", st == 201, json.dumps(pr)[:150]):
-    st, d = post("bee", f"proposals/{pr['id']}/accept", {})
-    check("   and accepted", st == 200 and d.get("ok") is not False, json.dumps(d)[:150])
-    time.sleep(0.6)
-    row = next((r for r in (hop0("ay").get("regions") or []) if r.get("peer")), None)
-    check("   and it is the line the other backbone is shown",
-          row and row.get("use_when") == OVERRIDE, json.dumps(row.get("use_when") if row else None))
-    # The one that would pass without being right: the room picked, so nothing may leak the map.
-    check("   while nothing tells it there are other versions",
-          "use_when_for" not in json.dumps(hop0("ay")), json.dumps(hop0("ay"))[:140])
-    check("   and the default is untouched for anybody else", export_of("bee") == [SHARE["bee"]])
-
-st, pr2 = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "peer": "ay",
-                                    "before": OVERRIDE, "after": "", "why": "back to the default"})
-if check("   an empty line takes the override away", st == 201, json.dumps(pr2)[:120]):
-    post("bee", f"proposals/{pr2['id']}/accept", {})
-    time.sleep(0.6)
-    row = next((r for r in (hop0("ay").get("regions") or []) if r.get("peer")), None)
-    check("   and the default comes back", row and row.get("use_when") == LINE["bee"],
-          json.dumps(row.get("use_when") if row else None))
-
-st, e = post("bee", "proposals", {"scope": "peer-line", "region": SHARE["bee"], "after": "x"})
-check("   a line for nobody in particular is refused", st == 422 and "peer is required" in json.dumps(e),
-      f"{st} {json.dumps(e)[:110]}")
-st, e = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"], "after": "x", "peer": "ay"})
-check("   and naming a peer where the scope has none is too", st == 422, f"{st} {json.dumps(e)[:110]}")
-# It used to reach WHAT[scope] and come back as 500 internal error, naming neither the mistake nor
-# the fix — for a scope this same function had just accepted as known.
-for sc in ("peer", "peer-line", "audience"):
-    st, e = post("bee", "route-draft", {"region": SHARE["bee"], "scope": sc})
-    check(f"   and drafting `{sc}` is refused with a reason, not a 500",
-          st == 400 and "not drafted" in json.dumps(e), f"{st} {json.dumps(e)[:110]}")
-
 # ── N7 — the room labelled as an ordinary backbone ───────────────────────────
 # The mirror of the exchange's own mislabel check, on the side that has only one lock. `kind:
 # exchange` in peers.yaml is what tells a backbone it is answering a room, and unlike at the exchange
@@ -521,8 +482,13 @@ scopes_api = {k for k in _scopes("ontology/service/curator.py", r"ROUTE_SCOPES =
 scopes_web = _scopes("web/app.py", r"QUEUE_SCOPES = \((.*?)\)")
 check("N5 every scope the queue takes has a door on the screen's side",
       scopes_api <= scopes_web, json.dumps(sorted(scopes_api - scopes_web)))
+# An alias the queue still accepts is a name the screen may keep sending — that is what an alias is
+# for, and a proposal filed under an old spelling can be sitting in the queue for weeks. Read from
+# SCOPE_ALIAS rather than whitelisted here: `dr` was hard-coded, so the next alias added broke this
+# check for being correct.
+aliases = _scopes("ontology/service/curator.py", r"SCOPE_ALIAS = \{(.*?)\}")
 check("   and the proxy invents none the queue would refuse",
-      scopes_web - scopes_api <= {"dr"}, json.dumps(sorted(scopes_web - scopes_api - {"dr"})))
+      scopes_web - scopes_api <= aliases, json.dumps(sorted(scopes_web - scopes_api - aliases)))
 
 shutil.rmtree(T, ignore_errors=True)
 finished.append(True)

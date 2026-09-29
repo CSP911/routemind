@@ -216,7 +216,7 @@ not prepare.
 | Q1 | `install.sh` and docker compose read one `.env` and disagreed about which duplicate line wins — the installer waited on a port nothing served and said the stack had not come up, with a healthy stack behind it. Now `check/env-check.py` lifts the pipeline out of install.sh and runs it |
 | Q2 | An accept that could not be applied answered **200**. Right in substance — nothing written, the proposal left pending — and every caller that branches on a status believed it, the screen included. N4c |
 | Q3 | Withdrawing an export line was refused by its own audience and override, with advice written for the opposite act. They go with it now. N4d |
-| Q4 | The refresh hint's fingerprint did not list `use_when_export_for`, so the newest export field was the only one with no hint behind it — and it is the one usually written to show somebody *less* |
+| Q4 | The refresh hint's fingerprint did not list the newest export field, so that field was the only one with no hint behind it — and it is the one usually written to show somebody *less* |
 | Q5 | The peering checks died with `IndexError` inside the ontology container, whose seed has no areas on purpose. They say so now |
 | Q6 | `mkdir -p data-b/…` was in `install.sh` for the first backbone and in the operator screen's plan, and missing from the one command a person copies out of docs/PEERING.md. Docker creates a missing bind mount **owned by root**, so the second backbone never became healthy |
 

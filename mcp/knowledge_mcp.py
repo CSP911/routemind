@@ -292,7 +292,7 @@ def overlay_call(api: Api, args: dict) -> str:
 # It needs no server change on either side. The remote already serves `/v1/export/…` to anyone with
 # a valid `X-Peer-Token`, and that surface is built from the exported set rather than filtered on
 # the way out — so a circuit can reach exactly what its token's owner decided to share and nothing
-# else. The line it sees is `use_when_export`, written for an outside reader, never the local one.
+# else. The line it sees is `use_when` — one sentence, the same one they route on (2026-09-29).
 #
 # Read-only, and that is not a limitation to lift later. `server.py`: "a link is read-only — write
 # to the backbone that owns it... Two ontologies that write to each other have been merged."
@@ -356,7 +356,7 @@ def circuit_table(name: str, payload: str) -> str:
     for r in (d.get("regions") or []):
         src = r.get("source") or r.get("id") or ""
         rows.append({"kind": KIND["table"], "address": f"{pre}/regions/{src}",
-                     "why": r.get("use_when_export") or r.get("use_when")
+                     "why": r.get("use_when")
                             or r.get("description") or r.get("title") or ""})
     # A node's children come back under `entries`, each already carrying the address the remote
     # would print and whether anything is written there — the same shape the local tables are built
@@ -374,7 +374,7 @@ def circuit_table(name: str, payload: str) -> str:
     # with the area's description, not its contents.
     if not rows and d.get("representative"):
         rows.append({"kind": KIND["table"], "address": f"{pre}/nodes/{d['representative']}",
-                     "why": d.get("use_when_export") or d.get("advertises") or d.get("use_when") or ""})
+                     "why": d.get("use_when") or d.get("advertises") or ""})
     title = f"CIRCUIT {name} — {d.get('name') or d.get('title') or 'a remote RouteMind'}"
     lead = ("Read-only, and only what its owner exported. The lines below were written for an "
             "outside reader, not for their own list of areas.")

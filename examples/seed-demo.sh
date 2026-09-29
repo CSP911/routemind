@@ -17,13 +17,14 @@
 # What each of those is there to show:
 #   * a domain is one exchange and the backbones on it — HOME+BRANCH is one, the partner room another
 #   * no transit: PARTNER-IX offers IX its own three members and never IX's, and vice versa
-#   * an area crosses only if its representative has a `use_when_export` line — that is the whole
-#     opt-in, and every area without one stays home
-#   * `use_when_export_for` says it differently to one named peer (BRANCH does, to HOME)
+#   * an area crosses only if its representative carries `export: yes` — that is the whole opt-in,
+#     and every area without it stays home
+#   * the line a peer reads is the area's own `use_when`: one sentence, and `export` decides whether
+#     it crosses (operator, 2026-09-29)
 #   * a link that is down suspends the absence rule, and looks different from one never configured —
 #     which is why LEGACY has a token in .env.example it will never get to use
 #
-# The five ontologies are copies of examples/back-office with a peers.yaml and one export line each.
+# The five ontologies are copies of examples/back-office with a peers.yaml and one shared area each.
 # They are not in git: 4.5 MB of the same worked example five times says nothing that these forty
 # lines do not, and a copy in git is a copy that drifts from the original.
 #
@@ -35,13 +36,17 @@ say() { printf '%s\n' "$*"; }
 [ -d examples/back-office ] || { say "examples/back-office is missing"; exit 1; }
 IMAGE="knowledge-ontology:${IMAGE_TAG:-0.1.0}"
 
-# `use_when_export` goes in the representative's frontmatter, just before its closing `---`. Written
-# with awk rather than sed -i, whose in-place flag differs between GNU and BSD and quietly leaves
-# a backup file on macOS.
+# `export: yes` goes in the representative's frontmatter, and the sentence it crosses with replaces
+# that area's `use_when` — there is one sentence, so this writes the one the demo wants a peer to
+# read. Written with awk rather than sed -i, whose in-place flag differs between GNU and BSD and
+# quietly leaves a backup file on macOS.
 export_line() {   # export_line <file> <line>
   f=$1; line=$2
-  grep -q "^use_when_export:" "$f" && return 0
-  awk -v add="$line" 'NR>1 && /^---$/ && !done { print add; done=1 } { print }' "$f" > "$f.new"
+  grep -q "^export:" "$f" && return 0
+  awk -v add="$line" '
+    /^use_when:/ { print add; seen=1; next }
+    NR>1 && /^---$/ && !done { if (!seen) print add; print "export: yes"; done=1; print; next }
+    { print }' "$f" > "$f.new"
   mv "$f.new" "$f"
 }
 
@@ -77,22 +82,20 @@ say "== what each one offers across a link =="
 # One line per area that crosses. Everything else in each copy stays home, which is the default and
 # the point: an area is not shared because it exists, it is shared because somebody wrote this line.
 export_line data-b/repo/regions/payroll/payroll.md \
-  'use_when_export: what this office pays and deducts · payslip lines · year-end papers'
+  'use_when: what this office pays and deducts · payslip lines · year-end papers'
 # And the same area, said differently to one named peer.
-grep -q "^use_when_export_for:" data-b/repo/regions/payroll/payroll.md || \
-  awk '/^use_when_export:/ { print; print "use_when_export_for: {home: \"what the branch office pays and deducts, for head office to compare against its own\"}"; next } { print }' \
     data-b/repo/regions/payroll/payroll.md > data-b/repo/regions/payroll/payroll.md.new \
   && mv data-b/repo/regions/payroll/payroll.md.new data-b/repo/regions/payroll/payroll.md
 export_line data-vendor/repo/regions/expense/expense.md \
-  'use_when_export: what we invoice for and how · which receipts we attach'
+  'use_when: what we invoice for and how · which receipts we attach'
 export_line data-vendor/repo/regions/procurement/procurement.md \
-  'use_when_export: which vendors we are registered with · what our forms ask · lead times we quote'
+  'use_when: which vendors we are registered with · what our forms ask · lead times we quote'
 export_line data-audit/repo/regions/approval/approval.md \
-  'use_when_export: which approvals we sample · what evidence an auditor asks for · retention we require'
+  'use_when: which approvals we sample · what evidence an auditor asks for · retention we require'
 export_line data-audit/repo/regions/payroll/payroll.md \
-  'use_when_export: payroll figures we reconcile · the year-end papers we check'
+  'use_when: payroll figures we reconcile · the year-end papers we check'
 export_line data-depot/repo/regions/attendance/attendance.md \
-  'use_when_export: who is on shift at the depot · how a handover is logged'
+  'use_when: who is on shift at the depot · how a handover is logged'
 say "ok   six areas offered, out of nineteen"
 
 # regions.json is derived from those files and is also committed, so it has to be rebuilt here — the

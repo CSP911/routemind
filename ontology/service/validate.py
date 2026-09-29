@@ -88,7 +88,7 @@ def export_kinds(vocab: dict) -> set[str]:
     entity. Twelve, not seventy-nine.
 
     A deny list rather than an allow list. The area-level decision is already the opt-in: an area
-    crosses because somebody wrote `use_when_export` for it. Requiring every kind to be named again
+    crosses because somebody set `export` on it. Requiring every kind to be named again
     would make exporting one area a twelve-part act, and the part everybody would skip is the one
     that matters.
     """
@@ -262,33 +262,40 @@ def validate(store: Store) -> dict:
                 warnings.append(f"node {n['id']}: a representative with no use_when — the advertisement's 'should I come here' goes out blank")
             elif (n.get("use_when") or "").strip() == (n.get("one_liner") or "").strip():
                 errors.append(f"node {n['id']}: use_when is identical to one_liner — a description is not a 'when to come here'")
-            # `use_when_export` is the same sentence written for a *different* backbone's hop 0 — see
-            # docs/PEERING.md. It is checked, not required: an area with none is simply not advertised
-            # across a link, which is how export stays opt-in and in writing rather than a default.
+            # `export` says whether this area crosses a link. One sentence, and a decision about
+            # whether to advertise it — operator, 2026-09-29. There used to be a second sentence,
+            # `use_when_export`, written for a different backbone's hop 0; the argument for it was
+            # that a subsidiary's "needs head-office approval" means nothing read at head office.
+            # The argument against it won: two sentences meaning the same thing is one sentence and
+            # one copy of it, and the copy is the one nobody reads. In the shipped repositories all
+            # five had drifted into saying genuinely different things, which is the same failure seen
+            # from the other side.
             #
-            # Identical to `use_when` is fine and will be the common case between backbones of one
-            # organisation. Identical to `one_liner` is the same mistake as above, arriving by the same
-            # route — someone filled the field by copying the description.
-            exp = (n.get("use_when_export") or "").strip()
+            # So the line a peer reads is `use_when`, the line this backbone routes on. Whoever
+            # writes it now writes it knowing both readers have it, which is the point.
+            exp = n.get("export")
+            if exp is not None and not isinstance(exp, bool):
+                errors.append(f"node {n['id']}: export must be yes or no, got {exp!r} — anything else "
+                              f"would be read as one of them and it is not obvious which")
             if exp:
                 if n.get("parent"):
-                    errors.append(f"node {n['id']}: only an area's top representative can carry use_when_export — "
+                    errors.append(f"node {n['id']}: only an area's top representative can carry export — "
                                   f"an inner node is not what a peer chooses")
-                if exp == (n.get("one_liner") or "").strip():
-                    errors.append(f"node {n['id']}: use_when_export is identical to one_liner — a description is not a 'when to come here'")
-                # It becomes one cell of another backbone's routing table, exactly like use_when.
-                if "|" in exp or "\n" in exp:
-                    errors.append(f"node {n['id']}: use_when_export is one table cell — `|` and newlines are not allowed")
-            # `export_to` narrows who that line reaches. It can only ever narrow: an area with no
-            # `use_when_export` crosses to nobody, and naming an audience for it changes nothing at
-            # all — which is precisely the shape of mistake that looks like it worked. So it is an
-            # error and not a warning.
+                if not (n.get("use_when") or "").strip():
+                    # It would cross with a blank cell in the reader's table, which is an area
+                    # nobody can choose and an advertisement that advertises nothing.
+                    errors.append(f"node {n['id']}: export with no use_when — the one line a peer "
+                                  f"reads is the one this area routes on, and there is none")
+            # `export_to` narrows who that line reaches. It can only ever narrow: an area that is not
+            # exported crosses to nobody, and naming an audience for it changes nothing at all —
+            # which is precisely the shape of mistake that looks like it worked. So it is an error
+            # and not a warning.
             aud = n.get("export_to") or []
             if aud:
                 if not exp:
-                    errors.append(f"node {n['id']}: export_to without use_when_export — an audience "
-                                  f"for an area that crosses to nobody. Write the line, or take the "
-                                  f"audience away too if you are withdrawing it")
+                    errors.append(f"node {n['id']}: export_to without export — an audience for an area "
+                                  f"that crosses to nobody. Set export, or take the audience away too "
+                                  f"if you are withdrawing it")
                 if n.get("parent"):
                     errors.append(f"node {n['id']}: only an area's top representative can carry export_to")
                 for a in aud:
@@ -299,49 +306,16 @@ def validate(store: Store) -> dict:
                     if not PEER_NAME.match(a):
                         errors.append(f"node {n['id']}: export_to names {a!r}, which is not a peer name "
                                       f"— ASCII kebab-case, starting with a letter")
-            # A line written for one named reader instead of the one everybody else gets. Every rule
-            # the default line has applies to each of these, because each becomes exactly the same
-            # cell in exactly the same kind of table — just somebody else's.
-            per = n.get("use_when_export_for") or {}
-            if per:
-                if not exp:
-                    errors.append(f"node {n['id']}: use_when_export_for without use_when_export — a "
-                                  f"line for one peer and nothing for the rest. Write the line, or "
-                                  f"take the override away too if you are withdrawing it")
-                if n.get("parent"):
-                    errors.append(f"node {n['id']}: only an area's top representative can carry use_when_export_for")
-                for who, line in sorted(per.items()):
-                    if not PEER_NAME.match(who):
-                        errors.append(f"node {n['id']}: use_when_export_for names {who!r}, which is not a "
-                                      f"peer name — ASCII kebab-case, starting with a letter")
-                    if "|" in line or "\n" in line:
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is one table cell — "
-                                      f"`|` and newlines are not allowed")
-                    if line.strip() == (n.get("one_liner") or "").strip():
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is identical to one_liner "
-                                      f"— a description is not a 'when to come here'")
-                    if line.strip() == exp:
-                        # Not a warning. It reads as a decision to say something different to that
-                        # peer, and says the same thing — so the day the default changes, one reader
-                        # silently keeps the old sentence and nobody is looking there.
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is identical to "
-                                      f"use_when_export — an override that overrides nothing")
-                    if aud and who not in aud:
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] writes a line for a peer "
-                                      f"that export_to leaves out — it would never be read")
             if not n.get("parent"):
                 if n["region"] in tops:
                     errors.append(f"region {n['region']}: two top representatives ({tops[n['region']]}, {n['id']}) — an area has one face. Give one of them a parent")
                 tops[n["region"]] = n["id"]
-        elif (n.get("use_when_export") or "").strip():
-            errors.append(f"node {n['id']}: use_when_export on a node that does not represent an area — "
+        elif n.get("export"):
+            errors.append(f"node {n['id']}: export on a node that does not represent an area — "
                           f"a peer chooses areas, not nodes")
         elif n.get("export_to"):
             errors.append(f"node {n['id']}: export_to on a node that does not represent an area — "
                           f"an audience is something an area has")
-        elif n.get("use_when_export_for"):
-            errors.append(f"node {n['id']}: use_when_export_for on a node that does not represent an "
-                          f"area — a peer chooses areas, not nodes")
     # A representative that carries nothing and has no expands_in cannot be told apart, from the
     # listing alone, as **empty** or as a **boundary**. If that distinction lives only in a document
     # body, neither the screen nor an agent can use it — and both will state something they cannot know.
