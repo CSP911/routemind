@@ -9,6 +9,19 @@ partner behind a firewall, an air-gapped site, an auditor who gets a copy and no
 ./transfer/import.py partner.rmx --into ./incoming
 ```
 
+Or from the screen: **Export** in the header of `/knowledge`, which asks for the passphrase twice and
+downloads the same file. It is the same `collect()` and `seal()` — `bundle.py` holds the format and
+all three callers import it, rather than each writing out its own idea of the layout.
+
+Typed twice because a mistyped passphrase makes a perfectly valid file that nobody can open, and the
+mistake surfaces at the far end, days later, with nothing to go back to. The passphrase is in the
+POST body, never in a URL: a URL is the part of a request that gets written down everywhere.
+
+The web container needs `ONTOLOGY_PEER_TOKEN` to read the export surface — compose passes it the same
+`EXCHANGE_TOKEN_HOME` the ontology gets. Not an escalation: the web process already proxies the whole
+ordinary API on that network, and the token buys it the *narrower* surface. Without one, the button
+says so instead of failing.
+
 Needs `cryptography`. The ontology image does not carry it; run the tool where it is installed, or
 in a throwaway container:
 
@@ -48,6 +61,23 @@ shape, but one more thing that has to be right in a file whose purpose is to be 
 who cannot check it against the original. The KDF is the library's scrypt rather than
 `hashlib.scrypt`, which is absent on some Python builds — Xcode's among them, found by the file
 failing to open on the machine that made it.
+
+The format lives in `bundle.py` — `export.py`, `import.py` and the web endpoint all import it, so
+there is one definition of the layout rather than one per caller.
+
+### Opening a file that is not one
+
+The KDF parameters sit in the header, and the header is authenticated — but only *after* the key
+exists, and deriving the key is the thing the header describes. So a file claiming `n = 2**30` would
+have a gigabyte or two spent on it before the tag could report it was never an export at all.
+`bundle.py` reads the numbers first and refuses anything over 512MB, which costs nothing and turns
+that into a sentence. Measured: 2**19 (512MB) is admitted and fails the tag in 0.9s; 2**20 and above
+are refused in 0.00s.
+
+Every malformed shape leaves as one sentence rather than a stack trace — truncated, unreadable
+header, not an export at all, wrong passphrase, edited body, edited header. A wrong passphrase and a
+tampered file get the *same* message on purpose: they are the same failure to this code, and naming
+which one it was would be guessing.
 
 **Send the passphrase by a different route than the file.**
 

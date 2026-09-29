@@ -51,7 +51,7 @@ from urllib.request import Request as _IrisPlaybookURLRequest, urlopen as _iris_
 import uvicorn
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi import HTTPException as _IrisPlaybookHTTPException
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 STATIC_DIR = Path(_iris_playbook_os.environ.get("KNOWLEDGE_STATIC", Path(__file__).resolve().parent.parent / "static"))
@@ -1018,6 +1018,93 @@ def app_config(request: Request) -> dict[str, Any]:
             # name it will be signed with before they press anything.
             "actor": _knowledge_actor(request),
             "actor_default": DEFAULT_ACTOR}
+
+
+# The token the export surface asks for. Not an escalation: this process already proxies the whole
+# ordinary `/v1` API on the compose network, and the export surface is a strict subset of what that
+# reaches. What the token buys is the *right surface* — the one built from the areas somebody wrote
+# `use_when_export` on, rather than the one that shows everything.
+PEER_TOKEN = (_iris_playbook_os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
+
+_BUNDLE = None
+
+
+def _bundle():
+    """`transfer/bundle.py`, the one definition of the export file.
+
+    Imported rather than reimplemented, for the reason `_renderer()` imports the MCP's formatter: a
+    format written out in the tool that makes it and read back by hand somewhere else is two formats
+    that agree until they do not. The file this route hands to a browser and the file
+    `./transfer/export.py` writes are byte-for-byte the same kind of thing because they are the same
+    code.
+    """
+    global _BUNDLE
+    if _BUNDLE is None:
+        here = Path(__file__).resolve().parent
+        for cand in (here / "transfer", here.parent / "transfer"):   # in the image, and in a checkout
+            if (cand / "bundle.py").exists():
+                sys.path.insert(0, str(cand)); break
+        import bundle
+        _BUNDLE = bundle
+    return _BUNDLE
+
+
+@_iris_route("POST", "/api/knowledge/export/bundle")
+def api_knowledge_export_bundle(payload: dict, request: Request):
+    """The same encrypted file `transfer/export.py` writes, handed to the browser as a download.
+
+    POST, and the passphrase is in the body. A GET would put it in a URL, and a URL is the one part
+    of a request that gets written down everywhere — history, proxy logs, the Referer of whatever the
+    page loads next. It is never logged here and never comes back in a response.
+
+    What goes in the file is read from `/v1/export/…` and nowhere else, so this route cannot widen
+    what leaves: an area crosses only by having `use_when_export` written on it, and that decision
+    was made in the repository by a person, not here by a button.
+    """
+    b = _bundle()
+    if not PEER_TOKEN:
+        raise HTTPException(status_code=503, detail=(
+            "This backbone has no peer token set, so its export surface is closed — set "
+            "ONTOLOGY_PEER_TOKEN (EXCHANGE_TOKEN_HOME in .env) and restart. The export is the set of "
+            "areas that may cross a link, so it is the same door."))
+    pw = str((payload or {}).get("passphrase") or "")
+    if len(pw) < 12:
+        # Checked before anything is read, so a short passphrase costs a message rather than a walk
+        # of the whole exported tree.
+        raise HTTPException(status_code=422, detail=(
+            "The passphrase needs at least 12 characters. It is the only thing between this file and "
+            "whoever ends up holding it."))
+    try:
+        data = b.collect(ONTOLOGY_URL, PEER_TOKEN)
+    except b.BundleError as exc:
+        raise HTTPException(status_code=502, detail=f"Could not read the export surface — {exc}")
+    if not data["regions"]:
+        # A valid, encrypted, empty file is the worst possible answer here: whoever receives it has no
+        # way to tell it from a mistake at this end. Refuse, and say what would make it non-empty.
+        raise HTTPException(status_code=409, detail=(
+            "This backbone exports no areas, so there is nothing to download. Write `use_when_export` "
+            "on the areas that should be allowed to cross, then export again."))
+    try:
+        blob = b.seal(data, pw)
+    except b.BundleError as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+    import time as _time
+    host = (ONTOLOGY_URL.split("//")[-1].split("/")[0].split(":")[0] or "routemind")
+    name = f"{_iris_re.sub(r'[^A-Za-z0-9._-]', '-', host)}-{_time.strftime('%Y-%m-%d')}.rmx"
+    return Response(
+        blob, media_type="application/octet-stream",
+        headers={
+            "Content-Disposition": f'attachment; filename="{name}"',
+            # The browser must not keep this, and neither must anything between here and it.
+            "Cache-Control": "no-store",
+            # So the page can say what it just handed over without opening the file. These are the
+            # header's own counts, which is what the recipient will also see before they decide to
+            # type a passphrase at it.
+            "X-Export-Regions": str(len(data["regions"])),
+            "X-Export-Nodes": str(len(data["nodes"])),
+            "Access-Control-Expose-Headers": "Content-Disposition, X-Export-Regions, X-Export-Nodes",
+        })
 
 
 @app.middleware("http")

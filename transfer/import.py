@@ -18,41 +18,14 @@ rule `knowledge_write` follows: a machine writes notes, a person changes the map
 The ids are the hazard worth naming. A foreign `payroll` and a local `payroll` are different
 subjects with the same name, and nothing in the file knows that. `--into` writes under one directory
 named for the source so nothing lands on top of anything; `--inspect` lists what would collide.
+
+The file format — magic, header, AEAD — is read from `transfer/bundle.py`, the one place that
+defines it, so this and whatever wrote the file cannot drift apart.
 """
-import argparse, base64, getpass, gzip, hashlib, json, os, pathlib, sys
+import argparse, getpass, json, os, pathlib, sys
 
-MAGIC = b"RMEXPORT/1\n"
-
-
-def unseal(blob: bytes, passphrase: str) -> dict:
-    try:
-        from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-        from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
-        from cryptography.exceptions import InvalidTag
-    except ImportError:
-        sys.exit("  this needs `cryptography` (pip install cryptography)")
-    if not blob.startswith(MAGIC):
-        sys.exit("  not a RouteMind export — it should begin RMEXPORT/1")
-    rest = blob[len(MAGIC):]
-    nl = rest.index(b"\n")
-    hb, ct = rest[:nl], rest[nl + 1:]
-    header = json.loads(hb)
-    key = Scrypt(salt=base64.b64decode(header["salt"]), length=32,
-                 n=header["n"], r=header["r"], p=header["p"]).derive(passphrase.encode())
-    try:
-        body = AESGCM(key).decrypt(base64.b64decode(header["nonce"]), ct, hb)
-    except InvalidTag:
-        # One message for two causes on purpose: a wrong passphrase and a tampered file are the same
-        # failure to this code, and guessing which it was for the reader would be guessing.
-        sys.exit("  cannot open it — wrong passphrase, or the file has been changed since it was "
-                 "made. The header is signed along with the contents, so an edited header fails here "
-                 "too.")
-    return json.loads(gzip.decompress(body))
-
-
-def header_of(blob: bytes) -> dict:
-    rest = blob[len(MAGIC):]
-    return json.loads(rest[:rest.index(b"\n")])
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+from transfer.bundle import MAGIC, BundleError, header_of, unseal
 
 
 def write_out(payload: dict, root: pathlib.Path, source: str) -> int:
@@ -96,8 +69,10 @@ def main():
     a = ap.parse_args()
 
     blob = pathlib.Path(a.file).read_bytes()
-    if not blob.startswith(MAGIC): sys.exit("  not a RouteMind export — it should begin RMEXPORT/1")
-    h = header_of(blob)
+    try:
+        h = header_of(blob)
+    except BundleError as e:
+        sys.exit(f"  {e}")
     print(f"  from {h.get('source', {}).get('api')} · revision {h.get('source', {}).get('revision')}\n"
           f"  made {h.get('created')} · {h.get('counts', {}).get('regions')} area(s), "
           f"{h.get('counts', {}).get('nodes')} node(s)", file=sys.stderr)
@@ -105,7 +80,10 @@ def main():
         print("  (pass --into to unpack, or --against a repo to see id collisions)", file=sys.stderr)
 
     pw = os.environ.get(a.passphrase_env) or getpass.getpass("  passphrase: ")
-    payload = unseal(blob, pw)
+    try:
+        payload = unseal(blob, pw)
+    except BundleError as e:
+        sys.exit(f"  {e}")
     src = (payload.get("source", {}).get("api") or "unknown").split("//")[-1].replace(":", "-").replace("/", "-")
 
     ids = [n["id"] for n in (payload.get("nodes") or []) if n.get("id")]

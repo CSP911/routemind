@@ -65,3 +65,8 @@ bench/.probe.lock
 # Bundles made by transfer/export.py. They are encrypted, but an encrypted copy of the ontology in
 # the ontology's own repository is still a copy nobody meant to keep.
 *.rmx
+
+# A copy of pyyaml lifted out of the ontology image so the checks that import the service can run on
+# a host python that has none (docs/CHECKS.md, "Where each one can run"). It is somebody else's
+# library, sitting here for convenience — not part of this repository.
+pylib/

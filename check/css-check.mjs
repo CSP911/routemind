@@ -67,4 +67,31 @@ if (unexplained.length) {
     `\n  Either style them, or add them to KNOWN in this file with the reason they need none.`);
   process.exit(1);
 }
+// A `var(--name)` whose name no stylesheet ever defines.
+//
+// This one hides behind its own fallback. `var(--kn-ok, #1c6b3f)` renders a perfectly good green, so
+// the page looks right and nothing complains — but the token does not exist, so the fallback is the
+// only value it will ever have. The element is then pinned to one hard-coded colour while everything
+// around it moves, and nothing on screen says so. The export dialog was written this way and was
+// caught only by reading the computed style of an element that looked entirely correct.
+//
+// The nine below predate this check. They are not approved, they are recorded: each is a hard-coded
+// colour wearing a token's name, and each will need a real token or a real value. What the list is
+// for is that a tenth cannot be added without deciding to add it here.
+const NO_SUCH_TOKEN = new Set([
+  "--accent", "--danger", "--dim", "--fg", "--line-strong",
+  "--warn", "--warn-bg", "--warn-fg", "--warn-line",
+]);
+const declared = new Set([...css.matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]));
+const referenced = new Set([...css.matchAll(/var\(\s*(--[\w-]+)/g)].map((m) => m[1]));
+const phantom = [...referenced].filter((n) => !declared.has(n) && !NO_SUCH_TOKEN.has(n)).sort();
+const fixed = [...NO_SUCH_TOKEN].filter((n) => declared.has(n)).sort();
+for (const n of fixed) console.log(`--   ${n} is in NO_SUCH_TOKEN but is now defined; drop the entry`);
+if (phantom.length) {
+  console.log(`FAIL ${phantom.length} CSS variable(s) used but never defined:\n  ` + phantom.join("\n  ") +
+    `\n  Each renders from its fallback and never changes with the theme. Use a token that exists, ` +
+    `define this one, or add it to NO_SUCH_TOKEN in this file.`);
+  process.exit(1);
+}
+console.log(`ok   ${referenced.size} CSS variables referenced, ${NO_SUCH_TOKEN.size} known-undefined and no new ones`);
 console.log(`ok   ${used.size} classes on screen, every one styled or explained`);

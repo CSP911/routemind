@@ -2770,6 +2770,85 @@
     paint();
   }
 
+  // ── export ────────────────────────────────────────────────────────────────
+  /** Ask the server to seal what this backbone exports, and hand the file to the browser.
+   *
+   *  A POST and not a link, because the passphrase is in the body. A URL is the one part of a request
+   *  that gets written down everywhere — history, proxy logs, the Referer of whatever loads next —
+   *  and this one would carry the only secret in the exchange.
+   *
+   *  `fetch` and a Blob rather than a form submission, so a refusal can be read and shown here. A
+   *  form post replaces the page with whatever came back, which for a 409 is a bare JSON body and the
+   *  map gone. */
+  async function exportBundle(passphrase) {
+    const res = await fetch("/api/knowledge/export/bundle", {
+      method: "POST", credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ passphrase }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      const err = new Error(data.detail || data.error || `HTTP ${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+    const blob = await res.blob();
+    const cd = res.headers.get("Content-Disposition") || "";
+    const name = (/filename="([^"]+)"/.exec(cd) || [, "routemind-export.rmx"])[1];
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    // Revoked on the next tick, not immediately: Safari cancels a download whose object URL is
+    // released in the same turn as the click, and does it without an error anywhere.
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+    return { name, bytes: blob.size,
+             regions: Number(res.headers.get("X-Export-Regions") || 0),
+             nodes: Number(res.headers.get("X-Export-Nodes") || 0) };
+  }
+
+  function exportDialog() {
+    const dialog = $("knExportDialog"), form = $("knExportForm");
+    const pass = $("knExportPass"), again = $("knExportPass2"), msg = $("knExportMsg"), go = $("knExportGo");
+
+    const say = (text, kind) => {
+      msg.textContent = text || "";
+      msg.className = "kn-export-msg" + (kind ? ` is-${kind}` : "");
+      msg.hidden = !text;
+    };
+    // Nothing typed here outlives the dialog. The fields are cleared on every close, including the
+    // one that succeeded and the one the Escape key did.
+    const clear = () => { pass.value = ""; again.value = ""; say(""); };
+
+    const open = () => { clear(); if (!dialog.open) dialog.showModal(); pass.focus(); };
+    $("knExport").addEventListener("click", open);
+    $("knExportClose").addEventListener("click", () => dialog.close());
+    $("knExportCancel").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("close", clear);
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();                       // the dialog stays open, so a refusal has somewhere to appear
+      if (pass.value.length < 12) return say(t("knowledge.bundle.tooShort"), "bad");
+      // Checked here rather than server-side because the server cannot check it: it receives one
+      // string and has no way to know it is not the one that was meant.
+      if (pass.value !== again.value) return say(t("knowledge.bundle.mismatch"), "bad");
+      go.disabled = true;
+      say(t("knowledge.bundle.working"));
+      try {
+        const r = await exportBundle(pass.value);
+        clear();
+        say(tv("knowledge.bundle.done", { name: r.name, regions: r.regions, nodes: r.nodes,
+                                          kb: Math.max(1, Math.round(r.bytes / 1024)) }), "ok");
+      } catch (err) {
+        say(err.message, "bad");
+      } finally {
+        go.disabled = false;
+      }
+    });
+  }
+
   function boot() {
     languagePicker();
     zoomControls();
@@ -2801,6 +2880,7 @@
     });
 
     $("knRawClose").addEventListener("click", () => $("knRawDialog").close());
+    exportDialog();
     // Closing the transcript deselects, so the map never shows a highlight for a panel that is gone.
     $("knRawDialog").addEventListener("close", () => { state.selected = null; draw(); });
 

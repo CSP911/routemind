@@ -1,2 +1,5 @@
 fastapi>=0.115,<1
 uvicorn[standard]>=0.34,<1
+# For the encrypted export the screen offers. AES-256-GCM and scrypt from a library
+# rather than a construction assembled here — see transfer/bundle.py.
+cryptography>=42,<47

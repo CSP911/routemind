@@ -168,5 +168,34 @@ if (loose.length) {
     `\n  Either give the element a data-i18n key, or add the text to SAME_IN_EVERY_LANGUAGE in this file.`);
 }
 
+// A key the page's markup labels an element with, that the script *also* names.
+//
+// This is not about duplicate keys — the dictionaries had none, every language was at 100%, and the
+// dialog still rendered somebody else's sentences. `knowledge.export.title` meant "What {area} sends
+// across a link" to the peering panel, and a new export dialog reached for the same obvious name.
+// Nothing was overwritten and nothing was missing; two features simply asked for one string, and the
+// screen showed the other one's.
+//
+// A shared prefix is how it happens: the second feature picks `<prefix>.title` because the first
+// one's name fitted it too. So the rule is structural — a string the markup labels an element with
+// belongs to that element, and one the script builds belongs to the script.
+const SHARED_ON_PURPOSE = new Set([
+  "common.cancel",            // one word, and every form that has a Cancel means the same by it
+  "knowledge.publishCore",    // the button's label, reused as the text of the confirm it opens
+  "knowledge.wall.here",      // the chip on this backbone's own card, drawn in both places
+]);
+const markup = new Set([...html.matchAll(/data-i18n(?:-label|-placeholder)?="([^"]+)"/g)].map((m) => m[1]));
+const script = new Set([...js.matchAll(/"((?:knowledge|common)\.[A-Za-z0-9_.]+)"/g)].map((m) => m[1]));
+const shared = [...markup].filter((k) => script.has(k) && !SHARED_ON_PURPOSE.has(k)).sort();
+if (shared.length) {
+  bad = true;
+  console.log(`FAIL ${shared.length} key(s) used both as a label in knowledge.html and by name in ` +
+    `knowledge.js:\n  ` + shared.join("\n  ") +
+    `\n  Two features are probably sharing one string, and only one of them can be right about what ` +
+    `it says. Give the newer one its own prefix, or add it to SHARED_ON_PURPOSE in this file.`);
+} else {
+  console.log(`ok   ${markup.size} keys label the page, none of them also built in the script`);
+}
+
 if (bad) process.exit(1);
 console.log(`ok   ${base.size} keys in English, ${asked.size} of them reached from the screen, no duplicates`);

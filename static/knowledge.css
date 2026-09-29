@@ -537,3 +537,57 @@ body.kn-dragging { user-select: none; }
    building and the one that can be down — everything else here either exists or does not. */
 .kn-wire.is-link { stroke-dasharray: 7 5; }
 .kn-wire.is-link.is-down { stroke: var(--warn, #b0603a); opacity: .75; }
+
+/* ── the export dialog ─────────────────────────────────────────────────────
+   Deliberately plain. It asks for one secret and hands back one file; anything decorative here
+   competes with the only two sentences on it that matter — what is in the file, and that a lost
+   passphrase is a lost file.
+
+   Every colour is one of this page's own tokens. The first draft invented names — `--kn-ok`,
+   `--kn-panel`, `--kn-ink` — none of which exist, so every one fell through to a hard-coded hex.
+   It rendered correctly, which is exactly why nothing said otherwise: a fallback is indistinguishable
+   from a working token until the token is meant to change.
+   (Measured while checking this: theme.css declares --panel, --line, --text, --muted and the colour
+   names only under `html[data-theme="light"]`, so this page has no dark palette at all — setting
+   data-theme="dark" leaves the whole screen on fallbacks, not just this dialog. That is a separate
+   piece of work. What matters here is that these rules now move with the rest of the page.) */
+.kn-export-dialog {
+  border: 1px solid var(--kn-line);
+  border-radius: 12px;
+  padding: 22px 24px 20px;
+  max-width: 34rem;
+  width: calc(100vw - 32px);
+  background: var(--kn-surface);
+  color: var(--kn-text);
+}
+.kn-export-dialog::backdrop { background: color-mix(in srgb, var(--kn-text) 38%, transparent); }
+.kn-export-lead { margin: .4rem 0 0; font-size: .86rem; line-height: 1.5; color: var(--kn-muted); }
+.kn-export-field { display: flex; flex-direction: column; gap: .3rem; margin-top: 1.1rem; }
+.kn-export-field > span { font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; color: var(--kn-muted); }
+.kn-export-field input {
+  font: inherit; padding: .5rem .6rem; border-radius: 7px;
+  border: 1px solid var(--kn-line);
+  background: var(--kn-surface-2); color: inherit;
+}
+.kn-export-field input:focus-visible {
+  outline: none; border-color: var(--kn-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--kn-accent) 30%, transparent);
+}
+.kn-export-note { margin: .9rem 0 0; font-size: .78rem; line-height: 1.5; color: var(--kn-muted); }
+/* The answer, and it has to be told apart from the note above it at a glance — they sit one under
+   the other and the note is the longer of the two. Weight and a rule do that where colour alone did
+   not: "done" and "refused" were rendering the same grey as the advice nobody needed to re-read.
+
+   It is a `div` in the markup for that same reason, and the reason is worth keeping: theme.css has
+   `html[data-theme="light"] p { color: #4b5b6d !important }`, so every `<p>` on this page is that
+   grey in light mode whatever a class says. The rule above about `.kn-btn` and `.button` is the same
+   trap — a tag the inherited sheets have an opinion about cannot be styled from here at all. The
+   lead and the note below stay `<p>`, because muted is what they are meant to be either way. */
+.kn-export-msg {
+  margin: .9rem 0 0; padding: .55rem .7rem; border-radius: 7px;
+  font-size: .82rem; line-height: 1.5; font-weight: 500; white-space: pre-wrap;
+  border-left: 3px solid currentColor; background: var(--kn-surface-2);
+}
+.kn-export-msg.is-bad { color: var(--kn-danger); }
+.kn-export-msg.is-ok  { color: var(--green, #1c6b3f); }
+.kn-export-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1.3rem; }
