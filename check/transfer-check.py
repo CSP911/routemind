@@ -214,6 +214,16 @@ else:
     tmp = tempfile.mkdtemp()
     target = os.path.join(tmp, "repo")
     shutil.copytree(src_repo, target)
+    # A graft is an ordinary write and goes through `Writer.transact`, which refuses a dirty tree and
+    # commits what it wrote. So the target has to be what every real one is: a git repository with
+    # nothing uncommitted. It used to write files and stop, which is how it ended up with no rollback.
+    # A fresh history, not the source's: copytree brings `.git` along, and initialising over it
+    # leaves a repository whose HEAD already contains everything, so there is nothing to commit and
+    # the seed fails for a reason that has nothing to do with what is being checked.
+    shutil.rmtree(os.path.join(target, ".git"), ignore_errors=True)
+    for cmd in (["init", "-q"], ["add", "-A"],
+                ["-c", "user.name=t", "-c", "user.email=t@l", "commit", "-qm", "seed"]):
+        subprocess.run(["git", "-C", target, *cmd], check=True, capture_output=True)
     try:
         before_docs = len(_walk_md(target))
         before_state = {q: hashlib.sha256(open(q, "rb").read()).hexdigest() for q in _walk_md(target)}
@@ -229,8 +239,11 @@ else:
                            capture_output=True, text=True, env=env, cwd=REPO)
         out = p.stdout + p.stderr
         check("a graft into a repository with colliding ids succeeds", p.returncode == 0, out[-300:])
-        check("  and that repository validates afterwards", "The repository validates." in out,
-              "its own validator rejected the result")
+        # `transact` validates before it commits, so a commit *is* the validation having passed —
+        # there is no separate "it validates" line any more, and asserting the old wording made this
+        # fail against a graft that had done strictly more.
+        check("  and that repository validates afterwards", "validated, and committed as" in out,
+              out[-160:])
 
         after_docs = len(_walk_md(target))
         check(f"  every node arrived ({after_docs - before_docs} added)",
@@ -273,23 +286,27 @@ else:
                              "--graft", bare, "--prefix", "nope"],
                             capture_output=True, text=True, env=noyaml, cwd=tmp)
         out3 = p3.stdout + p3.stderr
-        # Detected by what `regenerate()` itself returns, not by the wording of the summary. The
-        # first version of this looked for "NOT regenerated" — which only the *fixed* code prints —
-        # so it passed against the bug and against the fix, which is no check at all.
-        if "cannot regenerate" in out3:
-            check("a graft that could not regenerate regions.json does not claim it did",
-                  "and regions.json regenerated from the files" not in out3,
-                  "it printed the failure and then a summary contradicting it")
-            check("  and says the area is in no index until it is", "in no index" in out3, out3[-240:])
-            check("  and does not call an unvalidated repository validated",
-                  "The repository validates." not in out3, out3[-240:])
-            # The state it leaves behind is the reason any of this matters.
-            listed = json.load(open(os.path.join(bare, "regions.json"))).get("regions") or []
-            check("  which is true: the area really is absent from the index",
-                  not any(str(r.get("source", "")).startswith("nope") for r in listed),
-                  json.dumps([r.get("source") for r in listed]))
-        else:
-            results.append("--   this python can import the service, so the half-done graft is unchecked")
+        # The half-done graft this used to guard against is now unreachable: `transact`
+        # regenerates, validates and rolls back before anything is reported, so "documents written,
+        # index not rebuilt" is not a state the code can leave behind. What replaces it is the
+        # refusal that gets there first.
+        p3 = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,
+                             "--graft", os.path.join(tmp, "not-a-repo"), "--prefix", "nope"],
+                            capture_output=True, text=True, env=env, cwd=tmp)
+        check("a graft into something that is not a repository is refused",
+              p3.returncode != 0 and "not a RouteMind repository" in (p3.stdout + p3.stderr),
+              (p3.stdout + p3.stderr)[-140:])
+        open(os.path.join(target, "SCRATCH"), "w").write("x")
+        p4 = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,
+                             "--graft", target, "--prefix", "dirty"],
+                            capture_output=True, text=True, env=env, cwd=tmp)
+        out4 = p4.stdout + p4.stderr
+        check("and a graft into a tree somebody is mid-edit on is refused before it writes",
+              p4.returncode != 0 and "dirty" in out4, out4[-140:])
+        check("  saying nothing was written", "Nothing was written" in out4, out4[-140:])
+        check("  and having written nothing",
+              not [q for q in _walk_md(target) if "dirty-" in q], "it left files behind")
+        os.remove(os.path.join(target, "SCRATCH"))
 
         # A graft records where it came from, so a reader choosing between this row and one written
         # here is choosing on a fact rather than on a naming convention. The prefix is a convention:

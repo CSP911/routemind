@@ -93,9 +93,19 @@ names unique as well as ids, and grafting a corpus that shares an ancestor produ
 each. `regions.json` is regenerated from the files rather than composed here, because it is derived
 and the validator compares it field by field against what the files say.
 
-Then the repository's own validator decides. A graft it rejects is one the service would refuse to
-serve, and hearing that now is better than at the next read. Nothing is rolled back — the files are
-listed and the repository is under git.
+**It is an ordinary write.** A graft goes through `Writer.transact`, the same transaction the screen
+and the API use: a dirty tree is refused before anything is written, then mutate, regenerate,
+validate, **roll back on any failure**, commit. So a graft that would not validate leaves the
+repository exactly as it was, and one that succeeds is already committed under its own message.
+
+It used to do its own writing and its own regenerate, and that is where three bugs came from — no
+rollback (files on disk after a failed validate, with "it is a git repository" offered as the undo),
+no commit (a dirty tree, in which every later API write is refused), and an edge list it appended to
+and could not take back. `--ungraft` and `ontology/tidy.py` go the same way now.
+
+Because it is a write, it needs the service — run it in the ontology container, or from a checkout
+whose python has pyyaml. It says so rather than falling back: a second discipline is what produced
+the bugs.
 
 The links between the documents come too, renamed with them. Only those with **both** ends in the
 shared set: an edge naming a node in an area nobody shared would say that node exists, and every 404

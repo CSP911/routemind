@@ -88,6 +88,9 @@ run romanize   $HOSTPY check/romanize-check.py
 # The two times on a routing row. It builds its own repository and commits into it, so it needs git
 # and nothing else — no service, no containers.
 run age        $HOSTPY check/age-check.py
+# What an edit by hand leaves behind. Needs the service's own modules, so it runs wherever those
+# import — the same condition as the other static ones.
+run tidy       $HOSTPY check/tidy-check.py
 
 printf '\n== in the containers ==\n'
 if [ -n "$ONT" ]; then

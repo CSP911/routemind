@@ -5,7 +5,7 @@ Every write through the API must pass this before it is committed.
 """
 from __future__ import annotations
 from collections import Counter
-import json, re
+import json, pathlib, re
 from .store import Store, alias_names, file_scope, region_key, FM_RE
 from . import derive
 
@@ -489,6 +489,29 @@ def validate(store: Store) -> dict:
             errors.append(f"regions.json {src}: {', '.join(drift)} no longer matches the files it is "
                           f"derived from. It is generated, not written — any write through the API "
                           f"regenerates it; see README, \u201cA hand-edited repository\u201d.")
+    # ---- a CORE row with no area behind it ----
+    # CORE.md is carried **whole** into every prompt, and its table is where each area's description
+    # at hop 0 comes from. A row whose area has been deleted therefore advertises something that does
+    # not exist, in the one text every run reads — and nothing said so. Deleting an area by hand left
+    # six dangling edges, which are loud, and this, which was silent.
+    #
+    # An error rather than a warning, for the reason the rest of hop 0 is: an advertisement for
+    # something absent is the failure this design exists to prevent, and a reader cannot tell it from
+    # a real row.
+    try:
+        core_text = store.core()
+    except Exception:
+        core_text = ""
+    if core_text:
+        on_disk = {derive.region_label(d.name)
+                   for d in pathlib.Path(store.root, "regions").iterdir() if d.is_dir()}
+        for m in re.finditer(r"^\| `([A-Z_]+)` \| .+ \|$", core_text, re.M):
+            if m.group(1) not in on_disk:
+                errors.append(f"CORE.md advertises `{m.group(1)}`, which is not an area here — "
+                              f"that table is carried whole into every prompt, so this is hop 0 "
+                              f"offering something that does not exist. Remove the row, or restore "
+                              f"the area. `./ontology/tidy.py <repo> --fix` does the first.")
+
     # ---- cross-reference cycles ----
     # Every other check here asks whether one node is right. This one asks whether they are right
     # *together*, and it is the only finding in the file that no single document can be blamed for:

@@ -203,47 +203,46 @@ def ungraft(repo: pathlib.Path, prefix: str) -> tuple[int, int]:
     return gone, dropped
 
 
-def regenerate(repo: pathlib.Path) -> str | None:
-    """Rebuild regions.json from the files, the way a write through the API does.
+def writer_for(repo: pathlib.Path):
+    """The service's own `Writer`, or None with the reason.
 
-    It is derived, not written — validate.py compares it field by field against
-    `derive.regions_doc()` and errors on any drift, having once been committed stale while hop 0
-    advertised an old `use_when` for ever. So the graft writes documents and then asks the
-    repository to regenerate its own index, rather than composing a row and hoping it matches.
+    A graft is a write into somebody's ontology, and there is one way writes are made here:
+    `Writer.transact` — refuse a dirty tree, mutate, regenerate, validate, **roll back on any
+    failure**, commit. This used to do its own writing and its own regenerate, which is how it ended
+    up with no rollback (files on disk after a failed validate, and "it is a git repository" offered
+    as the undo), no commit (a dirty tree, in which every later API write is refused), and an edge
+    list it appended to and could not take back — while `delete_region`, going through the writer,
+    had cleaned edges correctly from the start.
+
+    Operator, 2026-09-30: the same path. So when the service cannot be imported this does not fall
+    back to the old way — a second discipline is the thing that produced the bugs. It says where to
+    run instead.
     """
     root = pathlib.Path(__file__).resolve().parent.parent
     sys.path.insert(0, str(root / "ontology"))
     try:
-        from service.store import Store
-        from service import derive
+        from service.write import Writer
+        return Writer(repo, None, None), None
     except Exception as e:
-        return f"cannot regenerate regions.json — this python cannot import the service ({e})"
-    (repo / "regions.json").write_text(derive.regions_doc(Store(repo)), encoding="utf-8")
-    return None
+        return None, (f"this python cannot import the service ({e}).\n"
+                      f"  A graft is an ordinary write and goes through the same transaction as any "
+                      f"other, which needs the service. Run it in the ontology container:\n"
+                      f"    docker compose cp {repo} ontology:/tmp/graft-target   # if it is not already mounted\n"
+                      f"    docker compose exec ontology python3 /app/transfer/import.py …\n"
+                      f"  or from a checkout whose python has pyyaml.")
     return written, unresolved
 
 
-def _validates(repo: pathlib.Path) -> tuple[bool, str]:
-    """Run the repository's own validator over the result, if this python can import it.
+def _said(e: Exception) -> str:
+    """A WriteError's own sentence, which is the repository explaining itself, or the exception.
 
-    A host without pyyaml cannot, and that is not a reason to refuse the graft — it is a reason to
-    say the graft went unchecked, which is a different sentence and the honest one.
+    `transact` refuses a dirty tree and refuses a graft that would not validate, and both come back
+    as a `WriteError` carrying the sentence a person needs. Printing `WriteError(409, ...)` instead
+    would be this file paraphrasing an answer it did not write.
     """
-    root = pathlib.Path(__file__).resolve().parent.parent
-    sys.path.insert(0, str(root / "ontology"))
-    try:
-        from service.store import Store
-        from service.validate import validate
-    except Exception as e:
-        # True so the graft is not reported as *failing* validation — it was not validated at all,
-        # and the caller tells those apart by `why` being set.
-        return True, f" this python cannot import the validator ({e}). Run it where it can."
-    try:
-        r = validate(Store(repo))
-    except Exception as e:
-        return False, f"    the validator raised: {e}"
-    errs = r.get("errors") or []
-    return (not errs), "\n".join("    " + str(e) for e in errs[:12])
+    detail = getattr(e, "message", None) or getattr(e, "detail", None) or str(e)
+    rows = getattr(e, "details", None) or []
+    return str(detail) + ("\n" + "\n".join(f"    · {r}" for r in rows[:8]) if rows else "")
 
 
 def main():
@@ -259,6 +258,8 @@ def main():
                     help="remove a graft from this repository — its documents, its area and its "
                          "links. Needs --prefix, and touches nothing else")
     ap.add_argument("--passphrase-env", default="ROUTEMIND_EXPORT_PASSPHRASE")
+    ap.add_argument("--actor", default=os.environ.get("KNOWLEDGE_ACTOR") or "graft",
+                    help="the name on the commit this makes, like any other write")
     a = ap.parse_args()
 
     # Before the file is even read: removing a graft needs the prefix and the repository, not the
@@ -270,19 +271,19 @@ def main():
             sys.exit(f"  {a.ungraft} is not a RouteMind repository — no regions.json in it")
         if not a.prefix or not SAFE.match(a.prefix):
             sys.exit("  --ungraft needs --prefix, in ascii kebab-case — it is what says which graft")
-        gone, dropped = ungraft(repo, a.prefix)
-        if not gone:
+        writer, why = writer_for(repo)
+        if not writer: sys.exit(f"  {why}")
+        counted = {}
+        try:
+            res = writer.transact(f"ungraft: remove everything under `{a.prefix}-`",
+                                  a.actor, lambda: counted.update(
+                                      zip(("gone", "dropped"), ungraft(repo, a.prefix))))
+        except Exception as e:
+            sys.exit(f"  {_said(e)}")
+        if not counted.get("gone"):
             sys.exit(f"  nothing under `{a.prefix}-` in {a.ungraft}. Nothing was removed.")
-        bad = regenerate(repo)
-        print(f"  {gone} document(s) and {dropped} link(s) removed.", file=sys.stderr)
-        if bad:
-            print(f"  regions.json was NOT regenerated:\n    {bad}\n"
-                  f"  The area is off disk and still in the index until it is.", file=sys.stderr)
-            sys.exit(1)
-        ok, why = _validates(repo)
-        if ok and why: print(f"  NOT checked —{why.strip()}", file=sys.stderr)
-        elif ok: print("  The repository validates.", file=sys.stderr)
-        else: print(f"  The repository does NOT validate:\n{why}", file=sys.stderr); sys.exit(1)
+        print(f"  {counted['gone']} document(s) and {counted['dropped']} link(s) removed, "
+              f"validated, and committed as {str(res.get('revision') or '')[:8]}.", file=sys.stderr)
         return
 
     blob = pathlib.Path(a.file).read_bytes()
@@ -335,46 +336,31 @@ def main():
             sys.exit(f"  {len(still)} id(s) would still collide under `{prefix}-`: "
                      + ", ".join(still[:5]) + "\n  Pick another --prefix.")
 
-        written, unresolved = graft(payload, repo, prefix)
-        bad = regenerate(repo)
-        if not bad: written.append("regions.json")
+        writer, why = writer_for(repo)
+        if not writer: sys.exit(f"  {why}")
+        held = {}
+        try:
+            # One transaction, the same one every other write here uses: a dirty tree is refused up
+            # front, and anything that fails after this point puts the repository back as it was
+            # rather than leaving half a graft on disk.
+            res = writer.transact(f"graft: {len(ids)} document(s) from {src} under `{prefix}-`",
+                                  a.actor, lambda: held.update(
+                                      zip(("written", "unresolved"), graft(payload, repo, prefix))))
+        except Exception as e:
+            sys.exit(f"  {_said(e)}\n  Nothing was written — the repository is as it was.")
+        written, unresolved = held.get("written") or [], held.get("unresolved") or []
         docs = sum(1 for w in written if w.endswith(".md"))
-        # What happened, not what was attempted. This line said "regions.json regenerated from the
-        # files" whatever the previous line had just reported, so a failed regeneration printed the
-        # failure *and* a summary contradicting it — and the summary is the one a reader trusts.
-        # The area is then on disk and in no index: invisible to hop 0, and nothing says why.
-        if bad:
-            print(f"\n  {docs} document(s) written under `{prefix}-` — but regions.json was NOT "
-                  f"regenerated:\n    {bad}\n"
-                  f"  Until it is, this area is on disk and in no index: it will not appear at hop 0.\n"
-                  f"  Finish it from a python that can import the service, or through the API:\n"
-                  f"    PYTHONPATH=<repo>/ontology python3 -c "
-                  f"\"from service.store import Store; from service import derive; "
-                  f"import pathlib; pathlib.Path('{a.graft}/regions.json').write_text("
-                  f"derive.regions_doc(Store('{a.graft}')))\"", file=sys.stderr)
-        else:
-            print(f"\n  {docs} document(s) written under `{prefix}-`, and regions.json regenerated "
-                  f"from the files.\n"
-                  f"  To take it back out:  ./transfer/import.py --ungraft {a.graft} --prefix {prefix}",
-                  file=sys.stderr)
+        # A transaction, so there is no half-done state left to describe. The two paragraphs that
+        # used to be here — one for "the index was not rebuilt", one for "this was not validated" —
+        # were both about states `transact` cannot leave behind: it regenerates, validates, and puts
+        # the repository back on any failure before this line is reached.
+        print(f"\n  {docs} document(s) written under `{prefix}-`, validated, and committed as "
+              f"{str(res.get('revision') or '')[:8]}.\n"
+              f"  To take it back out:  ./transfer/import.py --ungraft {a.graft} --prefix {prefix}",
+              file=sys.stderr)
         for u in unresolved[:10]:
             print(f"    unresolved reference — {u}", file=sys.stderr)
 
-        # The repository's own validator decides whether the graft is coherent. Not a second opinion
-        # written here: this is the same check the service runs before it will serve anything, and a
-        # graft it rejects is one the service would reject too — better to hear it now, with the list
-        # of files still on screen, than at the next read.
-        ok, why = _validates(repo)
-        if ok and why:
-            # Ran nowhere, so it proved nothing. "Validates" here would be the same lie the line
-            # above used to tell, one step further on: a graft nobody checked, reported as checked.
-            print(f"  NOT checked —{why.strip()}", file=sys.stderr)
-        elif ok:
-            print("  The repository validates.", file=sys.stderr)
-        else:
-            print(f"\n  The repository does NOT validate after this:\n{why}\n"
-                  f"  Nothing was rolled back — the files are listed above and this is a git "
-                  f"repository, so `git -C {a.graft} checkout .` undoes it.", file=sys.stderr)
         print("\n  What the graft could not bring:\n"
               "    · Names for kinds and relations. Every document has a kind, and every link has a\n"
               "      relation name; both belong to the sender's vocabulary. If yours has never heard\n"

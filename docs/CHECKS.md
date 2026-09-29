@@ -61,6 +61,7 @@ number to trust is the one the check itself prints.
 | `check/transfer-check.py` | 17 | What an export actually carries, and what it refuses. Half of it is about what must **not** be in the file |
 | `check/session-check.py` | 12 | The six-hour session tokens. Mostly about what must **not** work: an enrolment key that still reads, or a session that can mint another |
 | `check/age-check.py` | 13 | The two times on a routing row, built from a repository it commits into itself. Mostly about *not known* staying not known |
+| `check/tidy-check.py` | 13 | What `rm -rf regions/<area>` leaves, and that tidy removes exactly that. Half of it is that a healthy repository is left alone |
 | `check/llm-probe.py` | — | Not a check: asks a real provider what a real key can use. Needs both, so nothing runs it for you |
 
 ### The data model
