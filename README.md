@@ -78,8 +78,14 @@ time.** Nothing here argues for walking those.
 obeyed it identically. An agent that trusts the map inherits the map's errors silently. Still
 unmeasured: whether a *correct* map has a size at which it stops working.
 
+**Check it rather than take it.** The corpus is 865 documents in `bench/corpus/`, the gold sets are
+in `eval/gold/`, the generator that made the corpus is `bench/spec.yaml` + `bench/generate.py`, and
+every run — including the ones that failed — is in `eval/runs/`. Re-running needs an API key and
+`./bench/run.py eval/gold/<set>.yaml`; **[bench/README.md](bench/README.md)** has the order.
+
 **[eval/report/report-en.html](eval/report/report-en.html)** — the whole thing with figures ·
-**[한국어](eval/report/report-ko.html)** · **[eval/](eval/)** — corpus, gold sets, every run record.
+**[한국어](eval/report/report-ko.html)** · **[eval/PREREGISTRATION.md](eval/PREREGISTRATION.md)** —
+written and frozen before any of it ran.
 
 ## Quickstart
 
