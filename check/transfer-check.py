@@ -82,6 +82,16 @@ if on_disk:
 else:
     results.append("--   no shared area on disk to count against; completeness unchecked")
 
+# The links across the tree. Both ends inside the shared set, or it does not cross: an edge naming a
+# node in an area nobody shared would say that node exists, and every 404 on that surface is written
+# so "we do not have it" and "we did not share it" cannot be told apart. On the shipped corpus four
+# edges cross and four more are held back for exactly that reason, so neither side of this is vacuous.
+edges = data.get("edges") or []
+out_of_set = [e for e in edges if e.get("from") not in ids or e.get("to") not in ids]
+check(f"the links between exported documents are in it ({len(edges)})", bool(edges))
+check("  and no link names a document outside the export", not out_of_set,
+      f"leaked {[f'{e.get(chr(34)+chr(34)) if False else e.get("from")}->{e.get("to")}' for e in out_of_set[:3]]}")
+
 bodies = sum(1 for n in data["nodes"] if (n.get("body") or "").strip())
 tables = sum(1 for n in data["nodes"] if n.get("entries"))
 check(f"the documents' text is in it, not just their names ({bodies} with a body, {tables} with rows)",
@@ -224,6 +234,15 @@ else:
         touched = [l[3:] for l in orig.stdout.splitlines()
                    if l[3:].endswith(".md") and "partner-" not in l]
         check("  and nothing that was already there was edited", not touched, f"edited {touched[:5]}")
+
+        # The links must arrive renamed with the documents, or they point at the receiver's own
+        # same-named documents — which is the collision the prefix exists to prevent, reappearing
+        # through the back door.
+        ed = os.path.join(target, "edges.yaml")
+        text = open(ed, encoding="utf-8").read() if os.path.isfile(ed) else ""
+        got = text.count("from: partner-")
+        check(f"  and the links between them came too ({got})", got == len(edges))
+        check("  with both ends renamed", "to: partner-" in text and text.count("to: partner-") == got)
 
         # The same prefix twice must not quietly overwrite the first graft.
         p2 = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,

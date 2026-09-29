@@ -130,6 +130,30 @@ def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], li
             (d / f"{rename[nid]}.md").write_text("\n".join(out) + "\n", encoding="utf-8")
             written.append(f"regions/{newsrc}/{rename[nid]}.md")
 
+
+    # The links across the tree, with both ends renamed. Appended rather than merged: an edge this
+    # brought is the sender's statement about their own documents, and it says nothing about anyone
+    # else's. An edge naming something outside the bundle is dropped and reported — it can only mean
+    # the file is older than this rule, and inventing the far end would be inventing a connection.
+    edges = payload.get("edges") or []
+    if edges:
+        path = repo / "edges.yaml"
+        keep, lost = [], 0
+        for e in edges:
+            f, t = e.get("from"), e.get("to")
+            if f in rename and t in rename:
+                keep.append({"from": rename[f], "rel": e.get("rel"), "to": rename[t]})
+            else:
+                lost += 1
+        if lost: unresolved.append(f"{lost} edge(s) named a document not in this bundle, and were dropped")
+        if keep:
+            text = path.read_text(encoding="utf-8") if path.exists() else ""
+            if text and not text.endswith("\n"): text += "\n"
+            text += f"\n# Grafted from {prefix}.\n"
+            for e in keep:
+                text += f"- from: {e['from']}\n  rel: {e['rel']}\n  to: {e['to']}\n"
+            path.write_text(text, encoding="utf-8")
+            written.append(f"edges.yaml (+{len(keep)})")
     return written, unresolved
 
 
@@ -257,15 +281,14 @@ def main():
             print(f"\n  The repository does NOT validate after this:\n{why}\n"
                   f"  Nothing was rolled back — the files are listed above and this is a git "
                   f"repository, so `git -C {a.graft} checkout .` undoes it.", file=sys.stderr)
-        print("\n  Two things the graft could not bring:\n"
-              "    · Cross-references. An export carries no `edges`, so every grafted node arrives\n"
-              "      with none and the validator says so — 19 of them on the run this was written\n"
-              "      against. The tree is whole; the links across it are not.\n"
-              "    · Vocabulary. A `kind` in the file may be one this repository has never heard of,\n"
-              "      which validate refuses. Nothing here invents entries in your vocab.yaml.\n"
-              "\n  And one thing it did bring that you should look at first: their routing lines are\n"
-              "  now in your table. They were written to describe this area to an outsider, not to\n"
-              "  route your searches.", file=sys.stderr)
+        print("\n  What the graft could not bring:\n"
+              "    · Names for kinds and relations. Every document has a kind, and every link has a\n"
+              "      relation name; both belong to the sender's vocabulary. If yours has never heard\n"
+              "      of one, validate says which — nothing here writes into your vocab.yaml.\n"
+              "\n  And the one thing to look at first: the sender's outward line is now this area's\n"
+              "  routing line in your table. It was written to introduce the area to an outsider,\n"
+              "  not to route your people's searches. One sentence, and it is the one that decides\n"
+              "  where a search goes.", file=sys.stderr)
     elif a.into:
         n = write_out(payload, pathlib.Path(a.into), src)
         print(f"\n  {n} document(s) → {a.into}/{src}/\n"

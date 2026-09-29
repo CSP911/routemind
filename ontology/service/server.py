@@ -973,6 +973,27 @@ class Handler(BaseHTTPRequestHandler):
             self._as_peer = True
             return self._get(parts)
 
+        if parts == ["edges"]:
+            """The links between exported nodes — and only those.
+
+            **Both ends must be visible, not one.** An edge naming a node in an area nobody shared
+            would tell a peer that node exists, and every 404 on this surface is written so that
+            "we do not have it" and "we have it and did not share it" are indistinguishable. One
+            edge would undo that for a whole area.
+
+            Relations are named by the sending vocabulary, and the reader's may not have them. That
+            is the reader's to resolve — this says what is true here rather than guessing what will
+            load there.
+            """
+            ok = set()
+            for n in store.nodes():
+                if (n.get("region") or "") not in {r["source"] for r in visible.values()}: continue
+                if _draft_anywhere(n) or _kind_denied_anywhere(n, _denied_kinds()): continue
+                ok.add(n["id"])
+            self._as_peer = True
+            return self._send(200, {"edges": [e for e in store.edges()
+                                              if e.get("from") in ok and e.get("to") in ok]})
+
         return self._err(404, "unknown export path")
 
     # ---- reads ----

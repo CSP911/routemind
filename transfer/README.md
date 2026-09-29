@@ -97,13 +97,15 @@ Then the repository's own validator decides. A graft it rejects is one the servi
 serve, and hearing that now is better than at the next read. Nothing is rolled back — the files are
 listed and the repository is under git.
 
-Two things a graft cannot bring, and both are the export format's shape rather than an oversight:
+The links between the documents come too, renamed with them. Only those with **both** ends in the
+shared set: an edge naming a node in an area nobody shared would say that node exists, and every 404
+on the export surface is written so "we do not have it" and "we did not share it" read the same. On
+the shipped corpus 4 of 32 edges cross and 4 more are held back for exactly that reason, which leaves
+12 grafted nodes with no relations — the same 12 that have none inside that area to begin with.
 
-- **Cross-references.** An export carries no `edges`, so every grafted node arrives with none.
-  Measured: 19 of 19 drew "no relations" from the validator. The tree is whole, the links across it
-  are not.
-- **Vocabulary.** A `kind` in the file may be one the receiving `vocab.yaml` has never heard of,
-  which `validate` refuses outright. Nothing here writes entries into somebody's vocabulary.
+One thing a graft cannot bring: **the names.** A document's `kind`, and a link's relation, belong to
+the sender's vocabulary. If the receiving `vocab.yaml` has never heard of one, `validate` refuses and
+says which. Nothing here writes entries into somebody else's vocabulary.
 
 And one thing it does bring that wants reading first: the sender's outward line becomes the area's
 `use_when` in your table. It is the only line the file has, and an area without one is an area no

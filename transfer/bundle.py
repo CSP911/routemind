@@ -88,13 +88,11 @@ def collect(api: str, token: str) -> dict:
     "files" *are* its child nodes, so following the tree is what collects them — there is no separate
     attachment to fetch.
 
-    **Vocabulary and cross-reference edges are not in the file.** An earlier draft tried
-    `/v1/export/vocab` and `/v1/export/edges` and swallowed the failure, with a comment saying not
-    every backbone serves them. Neither does any: the surface answers `regions` and `nodes` and 404s
-    on everything else. So the attempt was dead code describing a capability that has never existed,
-    and the honest shape is to leave it out. The consequence for whoever opens the file is real — a
-    node's `kind` may name something their own `vocab.yaml` has never heard of — and `import.py`
-    unpacking to files for review rather than writing into an ontology is what keeps that survivable.
+    **Edges cross; vocabulary does not.** `/v1/export/edges` serves the links whose two ends are
+    both in the shared set, so a grafted tree keeps the connections across it. There is no
+    `/v1/export/vocab` and this does not invent one: the names those edges use — and the `kind` on
+    every node — belong to the sender's vocabulary, and writing entries into somebody else's is not
+    something a file should do quietly. `validate` on the receiving side is what says so, by name.
     """
     regions = fetch(api, token, "regions")
     nodes, seen = [], set()
@@ -111,10 +109,18 @@ def collect(api: str, token: str) -> dict:
         rep = r.get("representative") or r.get("source")
         if rep: descend(rep)
 
+    # The links between the exported nodes. Both ends are inside the shared set or the surface does
+    # not serve it — an edge naming a node in an area nobody shared would say that node exists, and
+    # every 404 here is written so "we do not have it" and "we did not share it" read the same.
+    # Measured on the shipped corpus: 32 edges, 4 cross, 4 more are held back for exactly that reason.
+    try:
+        edges = (fetch(api, token, "edges") or {}).get("edges") or []
+    except BundleError:
+        edges = []            # an older backbone with no such path; the file then simply has none
     return {"format": "routemind-export/1",
             "created": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "source": {"api": api, "revision": regions.get("revision")},
-            "regions": regions.get("regions") or [], "nodes": nodes}
+            "regions": regions.get("regions") or [], "nodes": nodes, "edges": edges}
 
 
 def seal(payload: dict, passphrase: str) -> bytes:
