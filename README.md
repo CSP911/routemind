@@ -10,6 +10,15 @@ repository.
 ![The RouteMind map: a backbone carrying five areas, two of them opened to show the nodes they hold,
 with the routing table each one hands an agent one button away.](docs/img/map.jpg)
 
+On 700 questions over one frozen corpus, asked **in a person's words** rather than in the codes the
+documents use, retrieval scores **0.028** and this scores **1.000** — and it costs 6.7 tool calls and
+20–100× more per question, which is why 320 of those 700 are questions nothing here argues for
+walking. [The study](#measured), the corpus and every run are in this repository.
+
+```sh
+./install.sh --name acme --port 9000   # then `claude` in the same directory
+```
+
 ---
 
 ## How it works
