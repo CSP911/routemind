@@ -866,9 +866,44 @@ class Server:
             text, is_error = self.call(str(params.get("name") or ""), params.get("arguments") or {})
             return ok({"content": [{"type": "text", "text": text}], "isError": is_error})
         if method == "prompts/list":
-            return ok({"prompts": [{"name": "knowledge_start",
-                                    "description": "The areas of this domain, and how to search them."}]})
+            return ok({"prompts": [
+                {"name": "knowledge_start",
+                 "description": "The areas of this domain, and how to search them."},
+                # Arguments, so a client can offer them as fields rather than making somebody
+                # compose a tool call. A circuit is the one thing here a person starts deliberately:
+                # everything else an agent reaches for on its own, and this is somebody saying
+                # "read theirs too, now".
+                {"name": "circuit",
+                 "description": "Open a circuit to another RouteMind and read what it shares — for "
+                                "this connection only, writing nothing on either side.",
+                 "arguments": [
+                     {"name": "url", "description": "the remote RouteMind's address, "
+                                                    "e.g. https://kb.example.com", "required": True},
+                     {"name": "token", "description": "the token its owner gave you", "required": True},
+                     {"name": "name", "description": "what to call it here — ascii kebab-case; "
+                                                     "defaults to the host", "required": False}]}]})
         if method == "prompts/get":
+            # By name. This used to answer hop 0 whatever was asked for, which was correct while
+            # there was one prompt and would have made a second one silently return the first.
+            which = str(params.get("name") or "knowledge_start")
+            args = params.get("arguments") or {}
+            if which == "circuit":
+                url, token = str(args.get("url") or "").strip(), str(args.get("token") or "").strip()
+                if not url or not token:
+                    body = ("A circuit needs the remote's address and a token its owner gave you.\n\n"
+                            "  url:    https://kb.example.com   ·   token: the one you were handed\n"
+                            "  name:   optional — what to call it here")
+                else:
+                    # Opened here rather than handed to the model as an instruction to open: the
+                    # person typed the address and the token, and a prompt that asks an agent to
+                    # please make a tool call is one more place the two can disagree.
+                    body = circuit_call({"op": "open", "url": url, "token": token,
+                                         "name": str(args.get("name") or "").strip()})
+                return ok({"description": "A circuit to another RouteMind",
+                           "messages": [{"role": "user", "content": {"type": "text", "text": body}}]})
+            if which != "knowledge_start":
+                return {"jsonrpc": "2.0", "id": mid,
+                        "error": {"code": -32602, "message": f"Unknown prompt: {which}"}}
             try: body = hop0(self.api)
             except ApiError as e: body = str(e)
             return ok({"description": "Where to start in Knowledge",

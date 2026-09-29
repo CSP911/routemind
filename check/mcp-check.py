@@ -212,6 +212,32 @@ if "empty" in kinds:
 else:
     results.append("--   no empty entity here; that row of the table is unchecked")
 
+
+# ── prompts ──────────────────────────────────────────────────────────────────
+# A client shows these as something a person picks, which is why `circuit` is one: it is the single
+# thing here that a person starts rather than an agent reaching for it.
+pr = c.call("prompts/list")["result"]["prompts"]
+names = {x["name"] for x in pr}
+check("the prompts a client can offer", {"knowledge_start", "circuit"} <= names, json.dumps(sorted(names)))
+circuit = next((x for x in pr if x["name"] == "circuit"), {})
+check("  circuit asks for an address and a token",
+      {(a["name"], bool(a.get("required"))) for a in (circuit.get("arguments") or [])}
+      >= {("url", True), ("token", True)},
+      json.dumps(circuit.get("arguments")))
+
+# Each prompt answers as itself. `prompts/get` ignored the name it was given and returned hop 0 for
+# anything, which was right while there was one prompt and would have made the second silently
+# return the first — the failure that looks like a working feature.
+start = c.call("prompts/get", {"name": "knowledge_start"})["result"]["messages"][0]["content"]["text"]
+none = c.call("prompts/get", {"name": "circuit", "arguments": {}})["result"]["messages"][0]["content"]["text"]
+check("each prompt answers as itself, not as the first one", none != start and "circuit" in none.lower(),
+      none[:90])
+check("  and a circuit with no address says so rather than guessing",
+      "address" in none.lower() and "token" in none.lower(), none[:90])
+bad = c.call("prompts/get", {"name": "no-such-prompt"})
+check("  and a prompt that does not exist is an error, not hop 0",
+      "error" in bad, json.dumps(bad)[:110])
+
 # Refusals have to say what to do instead, not just fail.
 bad, err = c.text("knowledge_read", {"path": "/v1/regions"})
 check("reading a table says to call the other tool", err and "knowledge_table" in bad)

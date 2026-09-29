@@ -475,6 +475,21 @@ stops at once.
 
 `./check/peer-check.py` — the last 21 of its 87 assertions.
 
+## Starting one by hand
+
+A circuit is the one thing here a person starts rather than an agent reaching for it, so it is offered
+two ways beside the tool:
+
+- **`/circuit <url> <token> [name]`** — `.claude/commands/circuit.md`, a project command, typed exactly
+  like that.
+- **the `circuit` MCP prompt** — listed by `prompts/list` with `url`, `token` and `name` as arguments,
+  so a client can show fields instead of asking somebody to compose a tool call. It opens the circuit
+  itself rather than asking the model to; a prompt that politely requests a tool call is one more
+  place the two can disagree.
+
+Neither is a link. `peers.yaml` is a standing arrangement somebody commits and everyone sees in hop 0;
+a circuit lasts for the connection, writes nothing on either side, and is the caller's alone.
+
 ## Six hours, not for ever
 
 The secret above is an **enrolment key**. It opens one thing:
