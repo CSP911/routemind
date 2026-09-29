@@ -55,3 +55,40 @@ unknown still routes correctly, and making git a dependency of reading a documen
 trade in the other direction.
 
 `./check/age-check.py`.
+
+---
+
+# And whose answer it is
+
+The other half of the same question. `AGE` says *when*; `FROM` says *whose*:
+
+```
+  KIND   ADDRESS                        AGE          FROM    WHY YOU WOULD PICK THIS ROW
+  table  /v1/regions/expense            18d / today  ours    what to do with a receipt …
+  table  /v1/regions/beta_procurement   1d / 1d      copied  how far up this amount …
+  table  /v1/peers/beta/regions/…       —            theirs  how far up this amount …
+```
+
+    ours     written here, and maintained here
+    copied   grafted from another backbone — a snapshot of what they had, which
+             nobody here has been keeping up to date since
+    theirs   read across a link, right now. Theirs to change, and about their
+             organisation rather than yours
+
+**Why it exists.** A router picks between two paths to one destination by where each was learned —
+static beats OSPF beats iBGP — because without that it picks differently each time for no reason
+anybody can see. The same situation arrives here as soon as anything is grafted or linked: a backbone
+that had done both carried **three** rows called `procurement`, and nothing said which to read. An
+agent choosing well among them was luck.
+
+**Where it comes from.** `theirs` is known by the reader — it followed a link to get the row.
+`copied` is `grafted_from`, written onto the area's representative by `--graft`, **not** inferred from
+the prefix: a prefix is a naming convention, and somebody using `beta-` for an area of their own makes
+the convention lie with nothing to check it against.
+
+**The column is only drawn when it says something.** A backbone that has grafted nothing and linked to
+nobody would otherwise carry a column of `ours` on every table, which teaches a reader to skip the
+place the answer will eventually appear.
+
+**What it does not do.** It does not pick for you. It says whose answer a row is so that quoting one
+as this organisation's answer becomes a decision rather than an accident.

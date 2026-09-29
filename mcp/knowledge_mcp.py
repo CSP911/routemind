@@ -152,6 +152,12 @@ def _age(row: dict) -> str:
     return f"{a or '?'} / {b or '?'}"
 
 
+# What a reader is choosing on when two rows cover one subject, in the order they should be preferred.
+# The words are plain rather than `own`/`grafted`/`peer`: a person reading a table is deciding whose
+# answer to quote, and "ours" says that where "own" reads like a flag.
+WHOSE = {"ours": "ours", "copied": "copied", "theirs": "theirs"}
+
+
 def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) -> str:
     if not rows:
         # An empty table still has to say what its emptiness means. Without the footer, "(nothing
@@ -163,15 +169,33 @@ def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) ->
     kind_w = max(len(r["kind"]) for r in rows)
     ages = {id(r): (r.get("age") or "") for r in rows}
     age_w = max((len(v) for v in ages.values()), default=0)
+    whose = {id(r): WHOSE.get(r.get("whose") or "", "") for r in rows}
+    # Only where it says something. A table whose rows are all `ours` is every table on a backbone
+    # that has grafted nothing and linked to nobody, and a column of one repeated word there is ink
+    # that teaches a reader to skip the place the answer will eventually appear.
+    show_whose = len({v for v in whose.values() if v}) > 1
+    whose_w = max((len(v) for v in whose.values()), default=0) if show_whose else 0
     out = [title, lead, ""]
     head = f"  {'KIND'.ljust(kind_w)}  {'ADDRESS'.ljust(addr_w)}  "
     if age_w: head += f"{'AGE'.ljust(age_w)}  "
+    if whose_w: head += f"{'FROM'.ljust(whose_w)}  "
     out.append(head + "WHY YOU WOULD PICK THIS ROW")
     for r in rows:
         line = f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  "
         if age_w: line += f"{ages[id(r)].ljust(age_w)}  "
+        if whose_w: line += f"{whose[id(r)].ljust(whose_w)}  "
         out.append(line + _clip(r["why"], 100))
     out.append("")
+    if whose_w:
+        out.append("  FROM says whose answer a row is, and they are not interchangeable:")
+        out.append("    ours    — written here, and maintained here.")
+        out.append("    copied  — grafted from another backbone. A snapshot of what they had, which")
+        out.append("              nobody here has been keeping up to date since.")
+        out.append("    theirs  — read across a link, right now. Theirs to change, and about their")
+        out.append("              organisation rather than yours.")
+        out.append("  When two rows cover the same subject, prefer `ours`. Quoting one of the others")
+        out.append("  as this organisation's answer is the mistake this column exists to prevent —")
+        out.append("  say whose it is.")
     if age_w:
         # Said once, under the table, because a column of `3y / 2d` with nothing explaining it is
         # read as one number twice. The second half is the one that answers "should I look for
@@ -203,7 +227,7 @@ def hop0(api: Api) -> str:
     d = api.json("/v1/regions")
     rows = [{"kind": KIND["table"], "address": r.get("fetch") or f"/v1/regions/{r.get('source')}",
              "why": r.get("use_when") or r.get("description") or r.get("title") or "",
-             "age": _age(r)}
+             "age": _age(r), "whose": r.get("whose")}
             for r in (d.get("regions") or [])]
     # The API supplies this sentence when it is not the plain one — when this backbone is linked to
     # others, and above all when a link is down. Whether the list is still the whole world is not
@@ -228,7 +252,7 @@ def area(api: Api, path: str) -> str:
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
     head = f"{d.get('key') or path} — {d.get('advertises') or ''}".strip(" —")
     lead = (f"When to be here: {d['use_when']}" if d.get("use_when") else "") or "What this area holds:"
     return _table(rows, head, lead,
@@ -248,12 +272,12 @@ def node(api: Api, path: str) -> str:
         # a body and children. Nothing in the dev repository has both; the shipped example does, and
         # a clean install caught it on the first boot.
         rows.append({"kind": KIND["file"], "address": path.rstrip("/") + "/body",
-                     "why": "its own document", "age": _age(d)})
+                     "why": "its own document", "age": _age(d), "whose": d.get("whose")})
     for e in (d.get("entries") or []):
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or e.get('description') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
     head = f"{d.get('name') or path}"
     return _table(rows, head, str(d.get("one_liner") or ""),
                   "This lists what this node holds. If what you need is not here, go back to /v1/regions.")
@@ -263,7 +287,8 @@ def _row(e: dict) -> dict:
     kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
     why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
     if kind == KIND["empty"]: why += "  (nothing written here yet)"
-    return {"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)}
+    return {"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e),
+            "whose": e.get("whose")}
 
 
 def overlay_text(d: dict) -> str:

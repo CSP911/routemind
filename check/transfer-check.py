@@ -291,6 +291,17 @@ else:
         else:
             results.append("--   this python can import the service, so the half-done graft is unchecked")
 
+        # A graft records where it came from, so a reader choosing between this row and one written
+        # here is choosing on a fact rather than on a naming convention. The prefix is a convention:
+        # somebody using `partner-` for an area of their own makes it lie, with nothing to check.
+        rep = os.path.join(target, "regions", "partner-" + shared[0].replace("_", "-"),
+                           "partner-" + (data["regions"][0].get("representative") or "") + ".md")
+        if os.path.isfile(rep):
+            check("  and the grafted area records the backbone it came from",
+                  "grafted_from:" in open(rep, encoding="utf-8").read(), rep)
+        else:
+            results.append("--   could not find the grafted representative; provenance unchecked")
+
         # The same prefix twice must not quietly overwrite the first graft.
         p2 = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"), bundle_path,
                              "--graft", target, "--prefix", "partner"],
@@ -298,6 +309,32 @@ else:
         check("grafting the same bundle under the same prefix is refused",
               p2.returncode != 0 and "still collide" in (p2.stdout + p2.stderr),
               "it would have overwritten the first graft")
+
+        # Undo. The graft appended links to edges.yaml and nothing removed them, so deleting the
+        # directory left four edges pointing at documents that were gone — and an invalid repository
+        # refuses every write, not just the next graft. Found by a combination run, not by a unit.
+        before_all = {q: hashlib.sha256(open(q, "rb").read()).hexdigest()
+                      for q in _walk_md(target)}
+        before_edges = open(os.path.join(target, "edges.yaml"), encoding="utf-8").read() \
+            if os.path.isfile(os.path.join(target, "edges.yaml")) else ""
+        u = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"),
+                            "--ungraft", target, "--prefix", "partner"],
+                           capture_output=True, text=True, env=env, cwd=REPO)
+        uout = u.stdout + u.stderr
+        check("a graft can be taken back out", u.returncode == 0, uout[-200:])
+        check("  and the repository validates afterwards", "does NOT validate" not in uout, uout[-200:])
+        left = [q for q in _walk_md(target) if "partner-" in q]
+        check("  with none of its documents left", not left, json.dumps(left[:3]))
+        now_edges = open(os.path.join(target, "edges.yaml"), encoding="utf-8").read() \
+            if os.path.isfile(os.path.join(target, "edges.yaml")) else ""
+        check("  and none of its links left in edges.yaml", "partner-" not in now_edges,
+              now_edges[-160:])
+        # The half that matters as much: it must take nothing of yours.
+        after_all = {q: hashlib.sha256(open(q, "rb").read()).hexdigest() for q in _walk_md(target)}
+        check("  while every document that was already there is untouched",
+              {k: v for k, v in before_all.items() if "partner-" not in k} == after_all,
+              "an ungraft changed or removed something it did not put there")
+
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

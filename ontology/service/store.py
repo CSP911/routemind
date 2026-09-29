@@ -371,6 +371,9 @@ class Store:
                 # area, in writing. There is one sentence and it is `use_when`; this decides whether
                 # a peer gets to read it (operator, 2026-09-29).
                 "export": _yesno(fm.get("export")),
+                # Set by `transfer/import.py` on a grafted area's representative: the backbone this
+                # came from. Its absence is the ordinary case and means this area was written here.
+                "grafted_from": fm.get("grafted_from"),
                 "export_to": _names(fm.get("export_to")),
                 "role": fm.get("role"), "parent": fm.get("parent"),
                 "expands_in": fm.get("expands_in"), "one_liner": fm.get("one_liner") or "",
@@ -428,6 +431,7 @@ class Store:
                         "advertises": top["one_liner"] if top else None,
                         "use_when": (top.get("use_when") if top else None),
                         "export": (top.get("export") if top else False),
+                        "grafted_from": (top.get("grafted_from") if top else None),
                         "export_to": (top.get("export_to") if top else []),
                         "nodes": [n["id"] for n in mine]})
         return out

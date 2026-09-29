@@ -143,6 +143,33 @@ check("  and its own row carries its own age, not an entry's",
           for l in both.splitlines()),
       "\n".join(l for l in both.splitlines() if "/v1/nodes/" in l))
 
+# ── whose answer a row is ────────────────────────────────────────────────────
+# A router picks between two paths to one destination by where each was learned, because without
+# that it picks differently each time for no reason anyone can see. The same situation arrives here
+# the moment anything is grafted or linked: a backbone that had done both carried three rows called
+# `procurement`, and nothing said which to read. An agent choosing well among them was luck.
+mixed = mcp._table([
+    mcp._row({"type": "data", "fetch": "/v1/regions/a", "name": "a", "whose": "ours"}),
+    mcp._row({"type": "data", "fetch": "/v1/regions/b", "name": "b", "whose": "copied"}),
+    mcp._row({"type": "data", "fetch": "/v1/regions/c", "name": "c", "whose": "theirs"})],
+    "T", "lead", None)
+check("a table of mixed rows prints a FROM column", "FROM" in mixed, mixed[:120])
+check("  with all three words on their own rows",
+      all(w in mixed for w in ("ours", "copied", "theirs")),
+      "\n".join(l for l in mixed.splitlines() if "/v1/regions/" in l))
+check("  and says which to prefer when two cover one subject",
+      "prefer `ours`" in mixed, mixed[-260:])
+check("  and says what the other two are, rather than leaving it to be guessed",
+      "grafted from another backbone" in mixed and "read across a link" in mixed)
+
+# One repeated word is ink. Every backbone that has grafted nothing and linked to nobody would carry
+# a column of `ours` on every table, which teaches a reader to skip the place the answer will
+# eventually appear.
+same = mcp._table([mcp._row({"type": "data", "fetch": "/v1/regions/a", "name": "a", "whose": "ours"}),
+                   mcp._row({"type": "data", "fetch": "/v1/regions/b", "name": "b", "whose": "ours"})],
+                  "T", "lead", None)
+check("a table where every row is ours prints no FROM column", "FROM" not in same, same[:120])
+
 # A table of rows that all lack ages must not grow an empty column.
 plain = mcp._table([{"kind": "file", "address": "/a", "why": "w"}], "T", "l", None)
 check("a table with no ages at all prints no AGE column", "AGE" not in plain, plain[:110])

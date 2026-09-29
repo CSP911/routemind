@@ -22,7 +22,7 @@ named for the source so nothing lands on top of anything; `--inspect` lists what
 The file format — magic, header, AEAD — is read from `transfer/bundle.py`, the one place that
 defines it, so this and whatever wrote the file cannot drift apart.
 """
-import argparse, getpass, json, os, pathlib, sys
+import argparse, getpass, json, os, pathlib, shutil, sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from transfer.bundle import MAGIC, BundleError, header_of, unseal
@@ -125,6 +125,12 @@ def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], li
                 fm["role"] = "representative"
                 line = (r.get("use_when") or "").strip()
                 if line: fm["use_when"] = line
+                # Where it came from, recorded rather than inferred. The prefix is a naming
+                # convention — somebody renames, or uses `beta-` for an area of their own, and the
+                # convention says the wrong thing with nothing to check it against. A reader
+                # choosing between this row and one written here is choosing on whose answer it is,
+                # so that fact belongs in the file.
+                fm["grafted_from"] = str((payload.get("source") or {}).get("api") or "elsewhere")
             out = ["---"] + [f"{k}: {json.dumps(v, ensure_ascii=False)}" for k, v in fm.items()] + ["---", ""]
             out.append(rewrite((node.get("body") or "").strip(), nid))
             (d / f"{rename[nid]}.md").write_text("\n".join(out) + "\n", encoding="utf-8")
@@ -155,6 +161,46 @@ def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], li
             path.write_text(text, encoding="utf-8")
             written.append(f"edges.yaml (+{len(keep)})")
     return written, unresolved
+
+
+def ungraft(repo: pathlib.Path, prefix: str) -> tuple[int, int]:
+    """Take a graft back out: its documents, its area, and its links.
+
+    The counterpart to `--graft`, and it exists because the graft was not reversible. Deleting the
+    directory left every edge it had appended pointing at documents that were gone — four of them on
+    the first repository this was tried against — and the repository stopped validating, which stops
+    every write. A feature that cannot be undone is one people are right to be wary of using.
+
+    Only what carries the prefix, so a graft never takes anything of yours with it. Returns
+    (documents, links) removed.
+    """
+    gone, dropped = 0, 0
+    for d in sorted((repo / "regions").iterdir()):
+        if not d.is_dir() or not d.name.startswith(prefix + "-"): continue
+        gone += len(list(d.glob("*.md")))
+        shutil.rmtree(d)
+    path = repo / "edges.yaml"
+    if path.exists():
+        keep, text = [], path.read_text(encoding="utf-8")
+        # Line-wise on the flow this writes — three lines per edge, `from:` first. Read as YAML and
+        # written back it would be reformatted whole, and edges.yaml is a file people edit.
+        block, drop = [], False
+        for line in text.splitlines(True):
+            if line.startswith("- from:"):
+                if block and not drop: keep.extend(block)
+                elif block: dropped += 1
+                block, drop = [line], f" {prefix}-" in line
+            elif block:
+                block.append(line)
+                if line.strip().startswith("to:") and f" {prefix}-" in line: drop = True
+            else:
+                keep.append(line)
+        if block and not drop: keep.extend(block)
+        elif block: dropped += 1
+        # The comment the graft left behind, once nothing under it remains.
+        out = "".join(keep).replace(f"\n# Grafted from {prefix}.\n", "\n")
+        path.write_text(out.rstrip("\n") + "\n", encoding="utf-8")
+    return gone, dropped
 
 
 def regenerate(repo: pathlib.Path) -> str | None:
@@ -202,15 +248,42 @@ def _validates(repo: pathlib.Path) -> tuple[bool, str]:
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("file")
+    ap.add_argument("file", nargs="?", help="the .rmx to open; not needed with --ungraft")
     ap.add_argument("--inspect", action="store_true", help="say what is in it and write nothing")
     ap.add_argument("--into", help="directory to unpack into, for review")
     ap.add_argument("--against", help="a data/repo to list id collisions against")
     ap.add_argument("--graft", metavar="REPO",
                     help="write the bundle into this repository, every id under --prefix")
     ap.add_argument("--prefix", help="the prefix every grafted id takes; defaults to the source host")
+    ap.add_argument("--ungraft", metavar="REPO",
+                    help="remove a graft from this repository — its documents, its area and its "
+                         "links. Needs --prefix, and touches nothing else")
     ap.add_argument("--passphrase-env", default="ROUTEMIND_EXPORT_PASSPHRASE")
     a = ap.parse_args()
+
+    # Before the file is even read: removing a graft needs the prefix and the repository, not the
+    # bundle it came from — which may be long gone, and requiring it would make the undo depend on
+    # keeping a copy of the thing you are undoing.
+    if a.ungraft:
+        repo = pathlib.Path(a.ungraft)
+        if not (repo / "regions.json").is_file():
+            sys.exit(f"  {a.ungraft} is not a RouteMind repository — no regions.json in it")
+        if not a.prefix or not SAFE.match(a.prefix):
+            sys.exit("  --ungraft needs --prefix, in ascii kebab-case — it is what says which graft")
+        gone, dropped = ungraft(repo, a.prefix)
+        if not gone:
+            sys.exit(f"  nothing under `{a.prefix}-` in {a.ungraft}. Nothing was removed.")
+        bad = regenerate(repo)
+        print(f"  {gone} document(s) and {dropped} link(s) removed.", file=sys.stderr)
+        if bad:
+            print(f"  regions.json was NOT regenerated:\n    {bad}\n"
+                  f"  The area is off disk and still in the index until it is.", file=sys.stderr)
+            sys.exit(1)
+        ok, why = _validates(repo)
+        if ok and why: print(f"  NOT checked —{why.strip()}", file=sys.stderr)
+        elif ok: print("  The repository validates.", file=sys.stderr)
+        else: print(f"  The repository does NOT validate:\n{why}", file=sys.stderr); sys.exit(1)
+        return
 
     blob = pathlib.Path(a.file).read_bytes()
     try:
@@ -281,7 +354,9 @@ def main():
                   f"derive.regions_doc(Store('{a.graft}')))\"", file=sys.stderr)
         else:
             print(f"\n  {docs} document(s) written under `{prefix}-`, and regions.json regenerated "
-                  f"from the files.", file=sys.stderr)
+                  f"from the files.\n"
+                  f"  To take it back out:  ./transfer/import.py --ungraft {a.graft} --prefix {prefix}",
+                  file=sys.stderr)
         for u in unresolved[:10]:
             print(f"    unresolved reference — {u}", file=sys.stderr)
 

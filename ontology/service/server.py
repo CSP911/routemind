@@ -667,6 +667,25 @@ def advertised(node_id: str) -> list[dict]:
     return [c for c in store.children_of(node_id) if c.get("status") != "draft"]
 
 
+def _whose(node: dict, region_row: dict | None = None) -> str:
+    """Whose answer this row is: `ours`, `copied`, or `theirs`.
+
+    A router picks between two paths to one destination by where each was learned — static beats
+    OSPF beats iBGP — because without that it picks differently each time for no reason anyone can
+    see. The same situation arrives here as soon as anything is grafted or linked: on a backbone that
+    had done both, hop 0 carried **three** rows called `procurement`, and nothing said which to read.
+    An agent choosing well among them was luck.
+
+    `theirs` is decided by the caller, which knows it read the row across a link. `copied` is
+    `grafted_from`, written by the graft rather than guessed from the prefix — a prefix is a naming
+    convention, and somebody using `beta-` for an area of their own would make the convention lie
+    with nothing to check it against.
+    """
+    if node.get("peer"): return "theirs"
+    if node.get("grafted_from") or (region_row or {}).get("grafted_from"): return "copied"
+    return "ours"
+
+
 def _advert_child(c: dict) -> dict:
     """The type comes from **what you get when you call it**, not from where it sits.
 
@@ -688,8 +707,13 @@ def _advert_child(c: dict) -> dict:
     # not moved in three years is the one worth asking about. Read from git rather than stored — see
     # ages.py. Absent when there is no history to read, and absent means *not known*, never new.
     age = ages.of(DATA, head(DATA)).get(c["id"]) or {}
+    # Inherited from the area, because a grafted area's documents are grafted too and only its
+    # representative carries the record. A row that said `ours` inside a copied area would be the
+    # most misleading one on the page.
+    _from = (store.node(c.get("region")) or {}).get("grafted_from") if c.get("region") else None
     row = {"id": c["id"], "name": c["name"], "kind": c["kind"], "one_liner": c["one_liner"],
            "type": kind, "has_body": has_body, "children": len(kids),
+           "whose": _whose(c, {"grafted_from": _from}),
            **({"route_since": age["route_since"]} if age.get("route_since") else {}),
            **({"changed": age["changed"]} if age.get("changed") else {}),
            # The row carries the call that answers it. A document is not read at the address that
@@ -1070,11 +1094,15 @@ class Handler(BaseHTTPRequestHandler):
             mine = [
                 {"id": r["id"], "source": r["source"], "title": r["title"], "description": r.get("description", ""),
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
+                 "whose": _whose({}, r),
                  **_area_age(r.get("representative")),
                  "fetch": f"/v1/regions/{r['source'].replace('_', '-')}",
                  **({"entries": entries_of(r.get("representative"))} if expand else {})}
                 for r in rj.get("regions", [])]
             theirs, links = peering.rows(DATA)
+            # Through the same function as the local rows, so one place decides and the two halves
+            # of hop 0 cannot disagree about what the word means.
+            theirs = [{**r, "whose": _whose(r)} for r in theirs]
             return self._send(200, {"revision": head(DATA), "schema": rj.get("schema"),
                                     "regions": mine + theirs,
                                     **({"links": links, "absence": _absence(links)} if links else {})})
