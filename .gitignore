@@ -61,3 +61,7 @@ bench/.probe.lock
 /eval/runs/census.log
 /eval/runs/census-overlay.log
 /eval/runs/walks-census/.walk.sh
+
+# Bundles made by transfer/export.py. They are encrypted, but an encrypted copy of the ontology in
+# the ontology's own repository is still a copy nobody meant to keep.
+*.rmx
