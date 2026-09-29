@@ -27,6 +27,7 @@ strangely the question is worded. A corpus built on that principle measures **hi
 | **[DESIGN.md](DESIGN.md)** | the experiment as an experiment — variables held and unheld, the sampling frame, pairing, power, and what would falsify the claim |
 | **[DATASETS.md](DATASETS.md)** | **start here if you are new** — every dataset, how it was made, what it is checked against, and where a contributor fits |
 | **[COLLAPSE.md](COLLAPSE.md)** | the collapse threshold, what `hit@10` and `recall@20` mean, and the corpus built to cross it |
+| [DESIGN-AGENTIC.md](DESIGN-AGENTIC.md) | the missing baseline — an agent with search tools and the same budget, so the table can be told apart from the agency reading it. Designed, not run |
 | [DIFFICULTY.md](DIFFICULTY.md) | the difficulty scale — five factors, and rev. 6 on why four of them did nothing |
 | [CORPUS.md](CORPUS.md) | what the corpus is, how it was built, what was checked, what it cannot support |
 | [gold/](gold/) | the answer key — questions, where their answers are, and how each is graded |
