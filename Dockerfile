@@ -1,13 +1,20 @@
-# The MCP server alone, over stdio. Not part of `docker compose up` — that runs the ontology, the
-# map and the exchange, and the MCP server is normally launched by the client, on the client's
-# machine, as one python file with nothing to install.
+# The MCP server alone, over stdio.
+#
+# **This is not how you run RouteMind.** That is `./install.sh`, which brings up the ontology, the
+# map and the exchange through `docker compose`; the MCP server is normally launched by the client,
+# on the client's machine, as one python file with nothing to install.
+#
+# It is at the repository root because that is where MCP directories and harnesses look for one —
+# they build the image, start it, and introspect it. Glama listed this server and then said "this
+# server cannot be deployed", which is what a directory says when it cannot find a way to start the
+# thing it is scoring.
 #
 # This image exists for directories and harnesses that want to start a server and introspect it
 # without standing up a backbone first. That works: with nothing at `--api`, `initialize` and
 # `tools/list` still answer, and the area list a tool description would have carried is replaced by
 # the reason it could not be fetched. An agent is told why rather than handed an empty table.
 #
-#   docker build -t routemind-mcp -f mcp/Dockerfile .
+#   docker build -t routemind-mcp .
 #   docker run -i --rm routemind-mcp                       # introspection only
 #   docker run -i --rm -e KNOWLEDGE_API=http://host.docker.internal:8080/api/knowledge routemind-mcp
 #

@@ -36,12 +36,13 @@ not have to be where RouteMind is.
 
 ### In a container
 
-Normally there is no need: the server is one stdlib-only file and the client launches it. `mcp/Dockerfile`
+Normally there is no need: the server is one stdlib-only file and the client launches it. The `Dockerfile` at the repository root
 is for directories and harnesses that want to start a server and introspect it without standing up a
-backbone first.
+backbone first — it is at the root because that is where they look, and `./install.sh` remains how
+you actually run RouteMind.
 
 ```sh
-docker build -t routemind-mcp -f mcp/Dockerfile .
+docker build -t routemind-mcp .
 docker run -i --rm routemind-mcp                       # introspection only
 docker run -i --rm -e KNOWLEDGE_API=http://host.docker.internal:8080/api/knowledge routemind-mcp
 ```
