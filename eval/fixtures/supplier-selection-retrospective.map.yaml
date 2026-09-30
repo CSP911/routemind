@@ -1,0 +1,89 @@
+# The routing text for `supplier-selection-retrospective`, frozen before the fixture is scored.
+#
+# This is the map: what an agent is handed *before* it opens anything. In RouteMind a walk reads
+# one sentence per area at hop 0, descends, and reads one line per node on the way down. Those lines
+# are where "which record governs" is written — by whoever knows — and the walk follows the sentence
+# rather than the documents' prose or their dates.
+#
+# GovKM asked for this to be frozen and reviewed rather than treated as ground truth (PR #1,
+# 2026-09-29):
+#
+#   "I'll treat the hop-0 advertisement as part of the system under test, not as ground truth
+#    outside the test. For this fixture, we'll freeze its September/current and retrospective/history
+#    declarations before scoring and see whether the walk actually preserves those distinctions."
+#
+# So: this file is the system under test, not the answer sheet. `truth:` in the fixture is the answer
+# sheet and the scorer alone reads it. The two are written to agree here; if the walk lands somewhere
+# else, that is a finding about the walk, and if this file is what turns out to be wrong, that is a
+# finding about who has to write these lines and how easily they get them wrong.
+#
+# ## What is deliberately asymmetric
+#
+# The September line says it is in force. The February line says it was replaced. The review says it
+# is history. **None of that is in the documents** — the documents are the silent fixture's documents,
+# carrying no state and no supersession pointer, and the review does not announce its own
+# non-authority. Every claim about currency lives here and nowhere else. That is the whole
+# arrangement being tested: move the continuity statement out of the corpus and into the map, and
+# see whether a walk that reads the map beats retrieval that reads the documents.
+#
+# ## Falsifiers
+#
+# The walk landing on `z-supplier-e-performance-review` for questions 1-3 is recency winning.
+# The walk landing on `z-supplier-e-approved` for questions 1-3 is relevance winning.
+# The walk refusing `z-supplier-e-performance-review` on question 4 is the map over-correcting —
+# history advertised as history should still be reachable when history is what was asked for.
+fixture: supplier-selection-retrospective
+area: procurement
+
+# Hop 0. Unchanged from the corpus: this fixture adds no area and edits no area's sentence, so the
+# line an agent reads before descending is the one PROCUREMENT already advertises. Recorded here so
+# the review can see that nothing was tuned at hop 0 to make the fixture pass.
+area_use_when: >-
+  how far up this amount has to be approved · how to register a new vendor · how many quotes are
+  needed · where the signed contract is kept
+
+# The node the fixture's documents hang under, and the line an agent reads for each. One parent, so
+# the five documents are siblings competing on their lines alone.
+node:
+  id: sec-z-component-sourcing
+  name: Sourcing the Z component
+  kind: topic
+  parent: sec-vendor-registration-cases
+  one_liner: >-
+    Who the registered source for the Z component is now, which registration it replaced, and the
+    records of how the earlier one ran
+
+  children:
+    # Advertised as the one in force. This is the only line that says a registration is current.
+    - id: z-supplier-f-approved
+      advertise: current
+      one_liner: >-
+        The registration in force for Z: Supplier F since 1 September 2025 — the terms any order
+        placed now is under
+
+    # Kept, findable, and explicitly not advertised as current. GovKM's requirement was that the
+    # earlier record stay intact and truthful about its own time; it does, and the map carries the
+    # sentence the document does not.
+    - id: z-supplier-e-approved
+      advertise: replaced
+      one_liner: >-
+        The earlier registration for Z, Supplier E from 17 February 2025 — replaced on 1 September
+        2025 and not the source for a new order
+
+    # The trap, advertised as what it is. It stays reachable — question 4 asks for it by name.
+    - id: z-supplier-e-performance-review
+      advertise: history
+      one_liner: >-
+        History: how Supplier E performed on delivery, quality and price while it held the Z
+        registration, reviewed 8 December 2025 — a record of that period, not a registration
+
+    - id: z-annual-sourcing-note-2025
+      advertise: history
+      one_liner: >-
+        History: what Z sourcing looked like across 2025, written 10 November 2025 for the
+        procurement review
+
+    - id: z-inspection-rejects-batch
+      advertise: history
+      one_liner: >-
+        The Z batch rejected at inspection in spring 2025, what was returned and how it was settled
