@@ -738,6 +738,59 @@ def read_for(api: Api, path: str) -> str:
 
 # ── MCP ───────────────────────────────────────────────────────────────────────
 
+RESOLVE_TOOL = {
+    "name": "knowledge_resolve",
+    "description": "Start here, with the question exactly as the person typed it. RouteMind resolves "
+                   "the names in it to the nodes the map calls them — through each node's aliases and "
+                   "one hop along the map's own edges — reads what is being asked about them (most "
+                   "recent · when · who · how · whether), and restates the question in the map's words "
+                   "as one line, shown so it can be disagreed with. It returns where to fetch first and "
+                   "the list of areas every search starts from. A resolution is per question: do not "
+                   "reuse one from an earlier turn, and it is valid only while `revision` is unchanged. "
+                   "If no name in the question is one the map knows it says so — and absence may still "
+                   "only be claimed from the area list it hands back, never from a smaller table.",
+    "inputSchema": {"type": "object", "required": ["q"], "properties": {
+        "q": {"type": "string", "description": "The question as the person asked it, unedited."}}},
+}
+
+
+def resolve_for(api: Api, q: str) -> str:
+    """The resolution, printed for an agent: the restatement first, because it is the line a person
+    has to be able to disagree with; then the names and why each was reached; then hop 0, which
+    arrives with every resolution so that no resolution can be had without it."""
+    from urllib.parse import quote
+    d = api.json("/v1/resolve?q=" + quote(q))
+    a = d.get("ask") or {}
+    out = ["ROUTEMIND — the question, resolved",
+           f"  asked   : {d.get('q', '')}",
+           f"  read as : {d.get('restated', '')}",
+           f"  asking  : {a.get('kind', '')}" + (f"  (said {a['said']!r})" if a.get("said") else "")
+           + (f"  → {a['hint']}" if a.get("hint") else ""),
+           ""]
+    names = d.get("names") or []
+    if names:
+        w_said = max(4, max(len(n["said"]) for n in names)); w_is = max(2, max(len(n["is"]) for n in names))
+        w_area = max(4, max(len(str(n.get("area") or "")) for n in names)); w_via = max(3, max(len(n["via"]) for n in names))
+        out.append(f"  {'NAME':<{w_said}}  {'IS':<{w_is}}  {'AREA':<{w_area}}  {'VIA':<{w_via}}  CHANGED")
+        for n in names:
+            out.append(f"  {n['said']:<{w_said}}  {n['is']:<{w_is}}  {str(n.get('area') or ''):<{w_area}}  "
+                       f"{n['via']:<{w_via}}  {_since(n.get('changed'))}")
+        out.append("")
+        out.append("  start with: " + ", ".join(d.get("start") or []))
+    else:
+        out.append("  No name in this question is one the map knows. Choose from the areas below by their")
+        out.append("  sentences. If none fits, that — and only that — is absence.")
+    out.append("")
+    rows = [{"kind": KIND["table"], "address": r.get("fetch") or "", "why": r.get("use_when") or "",
+             "age": _age(r), "whose": None} for r in (d.get("areas") or [])]
+    out.append(_table(rows, "ROUTEMIND — the areas of this domain",
+                      "Every search starts here. The names above say which rows the question is about.",
+                      d.get("absence")))
+    out.append("")
+    out.append(f"  valid while revision {d.get('revision')} · a resolution is for this question only · an absence is never cached")
+    return "\n".join(out)
+
+
 TOOLS = [
     {"name": "knowledge_table",
      "description": "Fetch a routing table from Knowledge: a list of what is there and where to go "
@@ -898,7 +951,9 @@ class Server:
         unreachable the tools are still listed — an agent that cannot see the areas can still ask
         for them, and the error it gets back says what is wrong.
         """
-        tools = [dict(t) for t in TOOLS]
+        # The resolver is first: it is where a question enters, and the area list is written into
+        # its description so the areas are the first thing any client shows the model.
+        tools = [dict(RESOLVE_TOOL)] + [dict(t) for t in TOOLS]
         try:
             tools[0]["description"] += "\n\n" + hop0(self.api)
         except ApiError as e:
@@ -910,6 +965,7 @@ class Server:
 
     def call(self, name: str, args: dict) -> tuple[str, bool]:
         try:
+            if name == "knowledge_resolve": return resolve_for(self.api, str(args.get("q") or "")), False
             if name == "knowledge_circuit": return circuit_call(args), False
             # An address into an open circuit is answered by the circuit, not this backbone. The
             # agent never composes one: it follows what a circuit's own tables printed, the same
