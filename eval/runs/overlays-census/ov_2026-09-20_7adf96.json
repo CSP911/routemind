@@ -1,0 +1,65 @@
+{
+ "id": "ov_2026-09-20_7adf96",
+ "question": "In January 2024, nightly lodging cap for a trip to a band B destination under the overseas per-diem in force on that date",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:02:29Z",
+ "touched_at": "2026-09-20T16:02:55Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / lodging cap likely lives here",
+   "at": "2026-09-20T16:02:29Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explains which per-diem version is in force for a given date; Jan 2024 predates 2024-07-01 cutover",
+   "at": "2026-09-20T16:02:39Z"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "oldest per-diem version, in force until 2024-07-01 - covers Jan 2024",
+   "at": "2026-09-20T16:02:50Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / lodging cap likely lives here",
+   "at": "2026-09-20T16:02:29Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explains which per-diem version is in force for a given date; Jan 2024 predates 2024-07-01 cutover",
+   "at": "2026-09-20T16:02:39Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "oldest per-diem version, in force until 2024-07-01 - covers Jan 2024",
+   "at": "2026-09-20T16:02:50Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:02:55Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:02:55Z"
+}

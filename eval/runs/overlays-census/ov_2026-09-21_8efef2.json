@@ -1,0 +1,39 @@
+{
+ "id": "ov_2026-09-21_8efef2",
+ "question": "For grade G2, band B1, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:16:43Z",
+ "touched_at": "2026-09-21T13:16:53Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, in force since 2026-01-01, matches the question's exact terms",
+   "at": "2026-09-21T13:16:43Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, in force since 2026-01-01, matches the question's exact terms",
+   "at": "2026-09-21T13:16:43Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:16:53Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b1-stay-s2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:16:53Z"
+}

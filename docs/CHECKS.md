@@ -58,6 +58,10 @@ number to trust is the one the check itself prints.
 | `check/mcp-check.py` | 19 | The MCP protocol over stdio, and an agent's whole walk from the area list to a document |
 | `check/write-paths.sh` | 66 | Every write path, against a throwaway ontology |
 | `check/llm-paths.sh` | 12 | Both LLM modes, so a change to one does not quietly break the other |
+| `check/transfer-check.py` | 17 | What an export actually carries, and what it refuses. Half of it is about what must **not** be in the file |
+| `check/session-check.py` | 12 | The six-hour session tokens. Mostly about what must **not** work: an enrolment key that still reads, or a session that can mint another |
+| `check/age-check.py` | 13 | The two times on a routing row, built from a repository it commits into itself. Mostly about *not known* staying not known |
+| `check/tidy-check.py` | 13 | What `rm -rf regions/<area>` leaves, and that tidy removes exactly that. Half of it is that a healthy repository is left alone |
 | `check/llm-probe.py` | — | Not a check: asks a real provider what a real key can use. Needs both, so nothing runs it for you |
 
 ### The data model
@@ -119,7 +123,10 @@ docker compose exec ontology python3 /tmp/check/scenarios.py
 an existing directory, and you end up running a stale file and disbelieving the result.
 
 **In the web container**, for `auth-check.py`, which needs fastapi and uvicorn. Same shape, `web`
-instead of `ontology`.
+instead of `ontology`. `transfer-check.py` runs on the host but does its work there too, because the
+sealing needs `cryptography` and that is where it is installed; it needs a peer token, from
+`ROUTEMIND_TOKEN` or `EXCHANGE_TOKEN_HOME` in `.env`, and fails rather than skipping without one —
+a check whose subject is that an export stays narrow is the last one that should quietly not run.
 
 Anything on the host that imports the service needs pyyaml on that python. If `pip` is not available,
 the pure-python copy can be lifted out of the image:

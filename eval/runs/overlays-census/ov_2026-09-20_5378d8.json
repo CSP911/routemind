@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_5378d8",
+ "question": "For type E3, tenure T2, site L3, monthly accrual and January max holding of time off",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:24:58Z",
+ "touched_at": "2026-09-20T16:25:12Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and cap questions live here",
+   "at": "2026-09-20T16:24:58Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and cap questions live here",
+   "at": "2026-09-20T16:24:58Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:25:12Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e3-tenure-t2-site-l3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:25:12Z"
+}

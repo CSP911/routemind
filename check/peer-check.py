@@ -9,13 +9,13 @@ risk. Needs pyyaml on this python; see check/write-paths.sh for the same require
 
 The property under test is not "the token works". It is that **the export surface cannot serve an
 area nobody decided to share** — no path through it, and no mistake in a token check, reaches one.
-An area crosses a link by having `use_when_export` written on its representative, and by nothing
+An area crosses a link by having `export: yes` on its representative, and by nothing
 else. So the checks below are mostly negative: they name things that exist, are readable locally,
 and must still come back 404 across the link.
 
 docs/PEERING.md is the contract.
 """
-import json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
+import re, json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8171
@@ -59,6 +59,8 @@ shutil.copytree(seed, repo)
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session, forget as _forget_sessions  # noqa: E402
 
 # One area is shared, by writing the line that shares it. Nothing else about the repository changes,
 # which is the point: sharing is one field, and its absence is the default.
@@ -88,8 +90,14 @@ for f in sorted(os.listdir(os.path.join(repo, "regions", SHARED))):
     p = os.path.join(repo, "regions", SHARED, f)
     text = open(p, encoding="utf-8").read()
     if "\nrole: representative\n" in text and "\nparent:" not in text:
+        # One sentence since 2026-09-29: the line a peer reads is the area's own `use_when`, and
+        # `export` decides whether they get it. Both are set here so the fixture states what crosses
+        # rather than relying on whatever the seed happened to say.
+        text = re.sub(r"^use_when:.*$", f"use_when: {EXPORT_LINE}", text, count=1, flags=re.M)
+        if "\nuse_when:" not in text:
+            text = text.replace("\nrole: representative\n", f"\nrole: representative\nuse_when: {EXPORT_LINE}\n", 1)
         open(p, "w", encoding="utf-8").write(
-            text.replace("\nrole: representative\n", f"\nrole: representative\nuse_when_export: {EXPORT_LINE}\n", 1))
+            text.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1))
         rep_file = p; break
 if not rep_file: raise SystemExit(f"no top representative in {SHARED} to share")
 regenerate(Store(repo))
@@ -109,7 +117,7 @@ else: raise SystemExit(f"the backbone on {PORT} did not start")
 
 def get(path, token=None):
     r = urllib.request.Request(f"http://127.0.0.1:{PORT}/v1{path}")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{PORT}", token))
     try:
         with urllib.request.urlopen(r, timeout=20) as x: return x.status, json.loads(x.read() or b"{}")
     except urllib.error.HTTPError as e:
@@ -128,12 +136,14 @@ check("the right token is let in", st == 200, str(st))
 rows = adv.get("regions") or []
 check("only the shared area is advertised", [r["source"].replace("_", "-") for r in rows] == [SHARED],
       json.dumps([r["source"] for r in rows]))
-# The whole reason use_when_export exists. An advertisement written for one backbone's hop 0 has no
-# reason to be true in another's, so a peer must never be shown the local one by accident.
-check("  and with the line written for a peer, not the local one",
+# One sentence, both readers (operator, 2026-09-29). What used to be checked here is that a peer got
+# a *different* line from the local one; what is checked now is that it gets the *same* one, which is
+# the same property looked at from the other side — a peer must be shown the line this area is
+# actually chosen by, never a second copy that can drift from it.
+check("  and with the area's own line, the one its hop 0 shows",
       rows and rows[0]["use_when"] == EXPORT_LINE, rows[0]["use_when"] if rows else "")
 local = next(r for r in get("/regions")[1]["regions"] if r["source"].replace("_", "-") == SHARED)
-check("  which is not the line its own hop 0 shows", local["use_when"] != EXPORT_LINE)
+check("  which is that same line and not a copy of it", local["use_when"] == EXPORT_LINE)
 # Staleness across a link needs no clock: git already numbers every state this repository has been in.
 check("the advertisement says which revision it came from",
       len(str(adv.get("revision") or "")) == 40, str(adv.get("revision"))[:12])
@@ -192,8 +202,11 @@ for f in sorted(os.listdir(os.path.join(repo_b, "regions", SHARED_B))):
     q = os.path.join(repo_b, "regions", SHARED_B, f)
     text = open(q, encoding="utf-8").read()
     if "\nrole: representative\n" in text and "\nparent:" not in text:
+        text = re.sub(r"^use_when:.*$", f"use_when: {EXPORT_B}", text, count=1, flags=re.M)
+        if "\nuse_when:" not in text:
+            text = text.replace("\nrole: representative\n", f"\nrole: representative\nuse_when: {EXPORT_B}\n", 1)
         open(q, "w", encoding="utf-8").write(
-            text.replace("\nrole: representative\n", f"\nrole: representative\nuse_when_export: {EXPORT_B}\n", 1))
+            text.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1))
         break
 
 # Each declares the other. `peers.yaml` lives in the repository because who a backbone is linked to
@@ -211,7 +224,7 @@ for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=peer", "-c", "user.em
 subprocess.run(["git", "-C", repo, "add", "-A"], check=True)
 subprocess.run(["git", "-C", repo, "-c", "user.name=peer", "-c", "user.email=p@l", "commit", "-qm", "link"], check=True)
 
-tokens = {"PEERTOK_A": TOKEN, "PEERTOK_B": TOKEN_B}
+tokens = {"PEERTOK_A": TOKEN, "PEERTOK_B": TOKEN_B, "PEERTOK_WRONG": "not-the-key"}
 env_b = {**os.environ, **tokens, "ONTOLOGY_DATA": repo_b, "PORT": str(PORT_B),
          "ONTOLOGY_PUBLISH": os.path.join(T, "publish-b"), "ONTOLOGY_PEER_TOKEN": TOKEN_B,
          "ONTOLOGY_PEER_TTL": "0"}
@@ -301,16 +314,20 @@ check("with the link up, absence is claimed over both backbones",
 # documents behind it. A withdraw that only hides the row would leave every address still readable —
 # which is not a withdraw, it is a missing menu item.
 def set_export(where, area, line):
-    """Give an area an export line, or take it away. Written the way a person's edit lands: the
-    frontmatter, then the derived file, then a commit — the same three steps the API does."""
+    """Start or stop advertising an area. `line` is the sentence it crosses with — the area's own
+    `use_when`, since there is one sentence — and None stops it crossing.
+
+    Written the way a person's edit lands: the frontmatter, then the derived file, then a commit —
+    the same three steps the API does."""
     for f in sorted(os.listdir(os.path.join(where, "regions", area))):
         q = os.path.join(where, "regions", area, f)
         text = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" not in text or "\nparent:" in text: continue
-        out = [l for l in text.splitlines(True) if not l.startswith("use_when_export:")]
+        out = [l for l in text.splitlines(True) if not l.startswith("export:")]
         if line:
+            out = [(f"use_when: {line}\n" if l.startswith("use_when:") else l) for l in out]
             at = next(i for i, l in enumerate(out) if l.strip() == "role: representative")
-            out.insert(at + 1, f"use_when_export: {line}\n")
+            out.insert(at + 1, "export: yes\n")
         open(q, "w", encoding="utf-8").write("".join(out))
         break
     regenerate(Store(where))
@@ -369,8 +386,9 @@ for a in areas_b:
     for f in sorted(os.listdir(os.path.join(repo_b, "regions", a))):
         t = open(os.path.join(repo_b, "regions", a, f), encoding="utf-8").read()
         if "\nrole: representative\n" not in t or "\nparent:" in t: continue
+        if not any(l.startswith("export:") for l in t.splitlines()): break
         line = next((l.split(":", 1)[1].strip() for l in t.splitlines()
-                     if l.startswith("use_when_export:")), None)
+                     if l.startswith("use_when:")), None)
         if line: _had[a] = line
         break
 for a in _had: set_export(repo_b, a, None)
@@ -386,6 +404,72 @@ for a, line in _had.items(): set_export(repo_b, a, line)
 time.sleep(0.4)
 check("  and it comes back when something is advertised again",
       "reaches through" in (at(PORT, "/regions")[1].get("absence") or ""))
+
+# ── up, answering, and refusing the key ──────────────────────────────────────
+# A different failure from the one below, and it did not exist until sessions did. The peer is
+# running, the socket opens, HTTP works — and it says no. Before, a wrong secret meant reads 401'd;
+# now the *mint* 401s, which is a path of its own.
+#
+# What has to hold is what the terminated-process case below asserts, because from an agent's side
+# the two are one situation: this backbone cannot see what is over there, so it must drop the rows
+# and stop letting anybody claim absence. Keeping either would be a confident "that does not exist"
+# about an ontology nobody could read.
+#
+# Swung by pointing peers.yaml at a variable holding the wrong value — `declared()` reads the file
+# per request, so this needs no restart and is what an operator fat-fingering `.env` looks like.
+link(repo, "bee", PORT_B, "PEERTOK_WRONG")
+_forget_sessions()
+time.sleep(0.4)
+st, refused = at(PORT, "/regions")
+check("a peer that answers and refuses the key still lets A answer", st == 200, str(st))
+check("  and A keeps its own areas",
+      len([r for r in (refused.get("regions") or []) if not r.get("peer")]) == len(areas))
+check("  and drops the rows it cannot stand behind",
+      len([r for r in (refused.get("regions") or []) if r.get("peer")]) == 0,
+      json.dumps([r.get("source") for r in (refused.get("regions") or []) if r.get("peer")]))
+check("  and says the list is incomplete", "incomplete" in (refused.get("absence") or "").lower(),
+      (refused.get("absence") or "")[:80])
+check("  and forbids claiming absence",
+      "do not say anything is absent" in (refused.get("absence") or ""))
+# The message has to name the credential, or the first person to meet this goes looking at the network.
+check("  naming the credential rather than the network",
+      any("enrolment key" in str(l.get("error") or "") for l in (refused.get("links") or [])),
+      json.dumps([l.get("error") for l in (refused.get("links") or [])])[:140])
+
+link(repo, "bee", PORT_B, "PEERTOK_B")
+_forget_sessions()
+time.sleep(0.4)
+check("  and it comes back when the key is right again",
+      len([r for r in (at(PORT, "/regions")[1].get("regions") or []) if r.get("peer")]) == 1)
+
+# The failure cache, in this process rather than over the wire: it is off in the servers above
+# (ONTOLOGY_PEER_TTL=0), and this is about what it remembers rather than about a link.
+#
+# It used to keep only the message and re-raise `504, reachable=False`. So a refusal *this* end makes
+# — a token it will not send in clear text to a public address, which must NOT suspend the absence
+# rule — became a suspension five seconds later, and the same failure meant two different things
+# depending on how recently it had happened.
+import service.peers as _p                                                # noqa: E402
+_p.forget()
+# A literal public address over plain http, so the refusal is **ours** and carries `reachable=True`
+# — the one shape the cache used to destroy. A probe that simply cannot connect is no probe at all
+# here: its failure is already `504, reachable=False`, which is exactly what the flattening produced,
+# so the check passed whether the bug was there or not. It did, for one revision.
+# No DNS: an IP literal keeps this working on a machine with no resolver.
+_probe = {"name": "cache-probe", "url": "http://8.8.8.8", "token": "x", "accept": [],
+          "self_kind": None, "kind": "backbone"}
+_p.ADVERT_TTL = 30.0
+try:
+    _p.advertisement(_probe)
+except _p.PeerError as e:
+    _first = (e.status, e.reachable)
+try:
+    _p.advertisement(_probe)
+except _p.PeerError as e:
+    _second = (e.status, e.reachable)
+check("a remembered failure keeps what it was", _first == _second, f"{_first} then {_second}")
+_p.forget()
+_p.ADVERT_TTL = 0.0
 
 # ── and with it down ──────────────────────────────────────────────────────────
 # The whole design rests on "only hop 0 may say something is not here", and that is true because hop
@@ -439,7 +523,7 @@ check("  and a read across it works again",
       if any(r.get("peer") for r in back.get("regions") or []) else False)
 
 # ── an audience, on a link with no exchange in it ─────────────────────────────
-# `use_when_export` opens the door and `export_to` says who is on the list. On a direct link the
+# `export` opens the door and `export_to` says who is on the list. On a direct link the
 # backbone that owns the area does the filtering itself, which it can only do if it can put a name to
 # whoever is calling — and a name comes from **one secret per link, used in both directions**. That
 # rule is written down in docs/PEERING.md and until now nothing checked what it buys. It buys this.
@@ -450,7 +534,7 @@ def set_audience(where, area, names):
         if "\nrole: representative\n" not in text or "\nparent:" in text: continue
         out = [l for l in text.splitlines(True) if not l.startswith("export_to:")]
         if names:
-            i = next(j for j, l in enumerate(out) if l.startswith("use_when_export:"))
+            i = next(j for j, l in enumerate(out) if l.startswith("export:"))
             out.insert(i + 1, "export_to: [" + ", ".join(names) + "]\n")
         open(q, "w", encoding="utf-8").write("".join(out))
         break
@@ -478,12 +562,23 @@ def rep_of(where, area):
     raise AssertionError(area)
 
 
-def errors_with(lines, area=None, path=None):
-    """Validate a copy of B with those frontmatter lines added to an area's representative."""
+def errors_with(lines, area=None, path=None, strip_use_when=False):
+    """Validate a copy of B with those frontmatter lines added to an area's representative.
+
+    `strip_use_when` removes the line first, for the one case that needs an area with none.
+    """
     tmp = os.path.join(T, "vcheck"); shutil.rmtree(tmp, ignore_errors=True)
     shutil.copytree(repo_b, tmp)
     q, t = rep_of(tmp, area or SHARED_B) if path is None else (os.path.join(tmp, path), None)
     if t is None: t = open(q, encoding="utf-8").read()
+    if strip_use_when:
+        t = "".join(l for l in t.splitlines(True) if not l.startswith("use_when:"))
+    # Any key these lines set is removed first. YAML takes the *last* of two duplicate keys, so an
+    # inserted `export: maybe` sitting above the fixture's `export: yes` is simply not read — the
+    # check then passes on the wrong file and says nothing.
+    keys = {l.split(":", 1)[0] + ":" for l in lines if ":" in l}
+    if keys:
+        t = "".join(l for l in t.splitlines(True) if not l.startswith(tuple(keys)))
     at_i = t.index("\nrole: representative\n") + len("\nrole: representative\n") if "\nrole: representative\n" in t \
         else t.index("\n---\n", 4) + 1
     open(q, "w", encoding="utf-8").write(t[:at_i] + "".join(l + "\n" for l in lines) + t[at_i:])
@@ -501,38 +596,28 @@ def errors_with(lines, area=None, path=None):
 UNSHARED_B = next(d for d in sorted(os.listdir(os.path.join(repo_b, "regions")))
                   if os.path.isdir(os.path.join(repo_b, "regions", d)) and d != SHARED_B)
 e = errors_with(["export_to: [ay]"], area=UNSHARED_B)
-check("an audience with no export line is refused",
-      any("export_to without use_when_export" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [Not A Name]"])
+check("an audience on an area that does not cross is refused",
+      any("export_to without export" in x for x in e), json.dumps(e[:2]))
+e = errors_with(["export: yes", "export_to: [Not A Name]"])
 check("  and so is a name that could never be a peer's",
       any("not a peer name" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [ay, warehouse]"])
+e = errors_with(["export: yes", "export_to: [ay, warehouse]"])
 check("while two names are ordinary", not any("export_to" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: ay"])
+e = errors_with(["export: yes", "export_to: ay"])
 check("  and one name written bare is a list of one", not any("export_to" in x for x in e),
       json.dumps(e[:2]))
 
-# A line written for one named reader. Each of these is dead text that reads like a decision, which
-# is why none of them is a warning: the file looks exactly the way somebody meant it to look.
-OV = 'use_when_export_for: {ay: "a line only ay is shown"}'
-e = errors_with([OV], area=UNSHARED_B)
-check("a line for one peer with no line for the rest is refused",
-      any("use_when_export_for without use_when_export" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", f'use_when_export_for: {{ay: "{EXPORT_B}"}}'])
-check("  and one that repeats the default is refused",
-      any("overrides nothing" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [somebody-else]", OV])
-check("  and one written for a peer the audience leaves out",
-      any("would never be read" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", 'use_when_export_for: {Not A Name: "x"}'])
-check("  and one addressed to something that is not a peer name",
-      any("not a peer name" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", 'use_when_export_for: {ay: "a | b"}'])
-check("  and one carrying a pipe, which is a table cell ending early",
-      any("one table cell" in x for x in e), json.dumps(e[:2]))
-e = errors_with([f"use_when_export: {EXPORT_B}", "export_to: [ay]", OV])
-check("while a line for a peer that is on the list is ordinary",
-      not any("use_when_export_for" in x for x in e), json.dumps(e[:2]))
+# The decision itself. `export` is yes or no and nothing else: a value that is neither would be read
+# as one of them, and which one is not obvious — the same rule `vocab.yaml`'s own `export` follows,
+# for the same reason.
+e = errors_with(["export: maybe"])
+check("an export that is neither yes nor no is refused",
+      any("export must be yes or no" in x for x in e), json.dumps(e[:2]))
+# Exporting an area with no line would put a blank cell in the reader's table: an area nobody can
+# choose, advertised. It reads like a working share and is not one.
+e = errors_with(["export: yes"], strip_use_when=True)
+check("  and exporting an area with no line at all is refused",
+      any("export with no use_when" in x for x in e), json.dumps(e[:2]))
 
 # ── the export policy on a kind ───────────────────────────────────────────────
 # `vocab.yaml` says what a kind is; it also says whether that sort of thing leaves. A value that is
@@ -585,6 +670,11 @@ check("  and absence may still be claimed", "may say something is absent" in (cl
 open(os.path.join(repo_b, "peers.yaml"), "w", encoding="utf-8").write(
     f"peers:\n  - name: ay\n    label: AY\n"
     f"    url: http://127.0.0.1:{PORT}\n    token_env: PEERTOK_B\n")
+# A session records who the far end decided the caller was when it was minted, so B starting to
+# recognise A by name has to re-open that question — `sessions_follow` drops every session when the
+# declared set changes, which is why this takes effect now and not in six hours. Dropped on this side
+# too, because the check holds one of its own.
+_forget_sessions()
 time.sleep(0.4)
 st, named = at(PORT, "/regions")
 check("with one secret between them the caller has a name, and is on the list",

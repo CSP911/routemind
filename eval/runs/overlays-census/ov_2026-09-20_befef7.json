@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_befef7",
+ "question": "In September 2023, what screening was required for a new supplier? Under the version of supplier due diligence in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:55:50Z",
+ "touched_at": "2026-09-20T15:56:12Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence is likely a procurement policy topic",
+   "at": "2026-09-20T15:55:50Z"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "this is the version in force until 2024-07-01, which covers Sept 2023, per the legend revision page",
+   "at": "2026-09-20T15:56:02Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence is likely a procurement policy topic",
+   "at": "2026-09-20T15:55:50Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "this is the version in force until 2024-07-01, which covers Sept 2023, per the legend revision page",
+   "at": "2026-09-20T15:56:02Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:56:12Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T15:56:12Z"
+}

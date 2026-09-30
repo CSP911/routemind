@@ -31,9 +31,7 @@ BASE = """You are answering one question from a company knowledge base called Ro
 
 **The only command you may run is `./bench/rmcli.py`, from {root}.** Do not read, list, grep or open any file in the repository. Do not search the filesystem. Do not use any background, monitor, or waiting tool — every call is synchronous and returns immediately. Everything comes back from the tool. If you cannot find the answer through the tool, say "not found" — that is a valid outcome and more useful to me than an answer obtained another way.
 
-Prefix every call so its dependencies resolve:
-
-    {prefix}python3 ./bench/rmcli.py <args>
+The command:
 
     ./bench/rmcli.py table              the list of areas — every search starts here
     ./bench/rmcli.py table <address>    open a table at an address a previous table printed
@@ -45,7 +43,7 @@ Use addresses exactly as printed. Never construct one. Today's date is 2026-09-2
 
 > {question}
 
-**Write your report to `/tmp/walk-{qid}{suffix}.md`** with the Write tool. That file is the deliverable — it is what gets scored and it is kept verbatim. Then reply with the single word `done` and nothing else: the file is the report, and repeating it in the reply only costs context in the process that collects it.
+**Write your report to `{out}`** with the Write tool. That file is the deliverable — it is what gets scored and it is kept verbatim. Then reply with the single word `done` and nothing else: the file is the report, and repeating it in the reply only costs context in the process that collects it.
 
 The report is exactly this and nothing else:
 
@@ -65,6 +63,9 @@ OVERLAY = """    ./bench/rmcli.py overlay create --question "..." --member <addr
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("qid"); ap.add_argument("--overlay", action="store_true")
+    # Where the report goes. Default keeps the hand-run form; the census passes a path under
+    # eval/runs so the reports persist as the arm's raw data rather than as temp files.
+    ap.add_argument("--out")
     a = ap.parse_args()
     for f in GOLD:
         p = ROOT / f
@@ -75,9 +76,9 @@ def main():
                 # They did: `routing` ran first and left /tmp/walk-<id>.md behind, so an overlay
                 # agent that never wrote its report would have been scored on the routing arm's
                 # report without a single sign that anything was wrong.
-                print(BASE.format(root=ROOT, prefix=f"PYTHONPATH={PYLIB} " if PYLIB else "",
-                                  question=q["q"], qid=a.qid,
-                                  suffix="-overlay" if a.overlay else "",
+                suffix = "-overlay" if a.overlay else ""
+                out = a.out or f"/tmp/walk-{a.qid}{suffix}.md"
+                print(BASE.format(root=ROOT, question=q["q"], qid=a.qid, out=out,
                                   overlay_help=("\n" + OVERLAY) if a.overlay else ""))
                 return
     sys.exit(f"  no question with id {a.qid} in {', '.join(GOLD)}")

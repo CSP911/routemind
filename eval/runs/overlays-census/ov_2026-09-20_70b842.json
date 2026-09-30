@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_70b842",
+ "question": "Daejeon company, 60M won, licence: on-site visit required? review frequency for file?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:54:54Z",
+ "touched_at": "2026-09-20T22:55:29Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount thresholds, due diligence, site visits likely covered under procurement vendor rules",
+   "at": "2026-09-20T22:54:54Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount thresholds, due diligence, site visits likely covered under procurement vendor rules",
+   "at": "2026-09-20T22:54:54Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:55:29Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w2-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:55:29Z"
+}

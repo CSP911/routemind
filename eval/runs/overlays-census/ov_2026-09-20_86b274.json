@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_86b274",
+ "question": "For type E2, tenure T3, site L3: monthly leave accrual rate and January carryover cap",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:20:13Z",
+ "touched_at": "2026-09-20T16:20:30Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rate and carryover/cap rules likely live in attendance",
+   "at": "2026-09-20T16:20:13Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rate and carryover/cap rules likely live in attendance",
+   "at": "2026-09-20T16:20:13Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:20:30Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t3-site-l3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:20:30Z"
+}

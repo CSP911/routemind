@@ -1,0 +1,73 @@
+{
+ "id": "ov_2026-09-20_8afaf9",
+ "question": "Vendor in Austin, KRW 300,000,000, category people's time: site visit required? re-review interval?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:22:12Z",
+ "touched_at": "2026-09-20T09:22:12Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table (in force since 2026-01-01), indexes rows by origin/value/goods code",
+   "at": "2026-09-20T09:21:47Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "maps 'a vendor in Austin' to origin O3",
+   "at": "2026-09-20T09:21:49Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "maps 'three hundred million won' to value W3",
+   "at": "2026-09-20T09:21:51Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "maps 'people's time' to goods K3",
+   "at": "2026-09-20T09:21:54Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w3-goods-k3/body",
+   "why": "the actual O3/W3/K3 row: site visit yes, re-review every 12 months",
+   "at": "2026-09-20T09:21:56Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table (in force since 2026-01-01), indexes rows by origin/value/goods code",
+   "at": "2026-09-20T09:21:47Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "maps 'a vendor in Austin' to origin O3",
+   "at": "2026-09-20T09:21:49Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "maps 'three hundred million won' to value W3",
+   "at": "2026-09-20T09:21:51Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "maps 'people's time' to goods K3",
+   "at": "2026-09-20T09:21:54Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w3-goods-k3/body",
+   "why": "the actual O3/W3/K3 row: site visit yes, re-review every 12 months",
+   "at": "2026-09-20T09:21:56Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

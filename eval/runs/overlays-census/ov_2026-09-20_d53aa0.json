@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_d53aa0",
+ "question": "Regular payroll, nine years tenure, fully remote: monthly leave accrual and max carryover into January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:16:37Z",
+ "touched_at": "2026-09-20T16:17:02Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "attendance table covers leave accrual and carryover rules",
+   "at": "2026-09-20T16:16:36Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "attendance table covers leave accrual and carryover rules",
+   "at": "2026-09-20T16:16:36Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:17:02Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e1-tenure-t4-site-l4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:17:02Z"
+}

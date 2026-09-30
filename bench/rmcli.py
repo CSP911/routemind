@@ -26,6 +26,13 @@ import argparse, os, sys, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "mcp"))
+# The host python has no pyyaml and the one in the image cannot be reached from outside it, so it is
+# vendored into a scratch directory named by BENCH_PYLIB. Putting that on the path **here** rather
+# than in the caller's environment is what lets a walking agent run `./bench/rmcli.py table` with no
+# prefix — which matters because a prefix is the difference between a permission rule that matches
+# and one that does not, and a headless run that cannot match its own allow-rule just stops.
+if os.environ.get("BENCH_PYLIB"):
+    sys.path.insert(0, os.environ["BENCH_PYLIB"])
 import knowledge_mcp as K
 
 API = os.environ.get("KNOWLEDGE_API", "http://127.0.0.1:8101/v1")
@@ -46,14 +53,19 @@ def guard():
 
     So the assumption becomes a check, and it costs two file reads.
     """
-    want = ROOT / "bench" / "corpus-hard" / ".fingerprint"
+    # Which corpus is under measurement, not which one usually is. An experiment serving a variant
+    # (`BENCH_EXTRA_CORPUS=bench/corpus-cycle ./bench/serve.py`) was refused ten walks in a row by a
+    # guard still comparing against bench/corpus-hard — correctly, since the two really did differ,
+    # but for the wrong reason. The guard was right and its idea of the subject was hard-coded.
+    ext = os.environ.get("BENCH_EXTRA_CORPUS", "bench/corpus-hard")
+    want = ROOT / ext / ".fingerprint"
     served = ROOT / "data" / "bench-repo" / "FINGERPRINT"
     if not want.exists() or not served.exists():
         sys.exit("error: no fingerprint to compare — run ./bench/serve.py")
     a, b = want.read_text().strip(), served.read_text().strip()
     if a != b:
         sys.exit(f"error: the served corpus is not the one under measurement\n"
-                 f"  bench/corpus-hard  {a}\n  data/bench-repo    {b}\n"
+                 f"  {ext:<18} {a}\n  data/bench-repo    {b}\n"
                  f"  run ./bench/serve.py to rebuild and restart")
 
 

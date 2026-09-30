@@ -19,7 +19,7 @@ keeps this from being a second thing to keep in step with the first.
 
 Three things it deliberately does not do:
 
-  * **It does not decide what is shared.** An area crosses because somebody wrote `use_when_export` on
+  * **It does not decide what is shared.** An area crosses because somebody set `export` on
     it, in its own repository, through its own review queue. This reads what each member chose to
     publish and can no more widen that than any other peer can. If the export decision could be made
     here, the point of making it in the ontology would be gone.
@@ -283,15 +283,22 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"ok": True, "name": NAME, "members": [m["name"] for m in ms],
                                     "open": any(m["token"] for m in ms)})
         ms = members()
+        # Same as the backbone: a session carries who this exchange decided the caller was when it
+        # was minted, so a change to members.yaml has to re-open that question rather than wait six
+        # hours for it.
+        peering.sessions_follow(ms, "members")
         if not any(m["token"] for m in ms):
             return self._err(501, "this exchange has no member it can speak to — see members.yaml "
                                   "and the token each entry names")
-        who = caller(self.headers.get("X-Peer-Token") or "")
+        # A session token, not the enrolment key — which opens `/v1/peers/token` and nothing else.
+        # Only members read an exchange. There is no observer role: everything here belongs to
+        # somebody, and handing it to an unnamed caller would be this exchange sharing what it was
+        # only ever asked to carry.
+        session = peering.session_peer(self.headers.get("X-Peer-Token") or "")
+        who = next((m for m in ms if m["name"] == (session or {}).get("peer")), None) if session else None
         if not who:
-            # Only members read an exchange. There is no observer role: everything here belongs to
-            # somebody, and handing it to an unnamed caller would be this exchange sharing what it
-            # was only ever asked to carry.
-            return self._err(401, "peer token missing or wrong")
+            return self._err(401, "session token missing, wrong or expired — POST /v1/peers/token "
+                                  "with the enrolment key to get one (they last six hours)")
         if parts[:2] != ["v1", "export"]: return self._err(404, "unknown path")
         rest = parts[2:]
 
@@ -335,7 +342,7 @@ class Handler(BaseHTTPRequestHandler):
         An operator can see that BRANCH is attached, answering, and advertising two areas. What those
         areas are, and what is in them, is between the members — and an admin screen that could read
         it would be a way around the one rule this whole design turns on: an area crosses because
-        somebody wrote `use_when_export` on it, in its own repository, through its own review queue.
+        somebody set `export` on it, in its own repository, through its own review queue.
         Nothing here can make an area cross, and nothing here can read one.
         """
         if not ADMIN_TOKEN:
@@ -394,7 +401,25 @@ class Handler(BaseHTTPRequestHandler):
         parts = [unquote(p) for p in urlparse(self.path).path.strip("/").split("/") if p]
         if parts[:1] == ["admin"]: return self._admin("POST", parts[1:])
         if parts == ["v1", "export", "refresh"]: return self._refresh()
+        # The one POST a member may make. It asks for a credential to read with and changes nothing
+        # anybody can read — only for how long the caller may keep reading. Same six hours, and the
+        # same reason, as the backbone's: the secret in the environment used to ride on every
+        # request and never expired.
+        if parts == ["v1", "peers", "token"]: return self._peer_token()
         self._err(405, "an exchange is read-only — write to the backbone that owns it")
+
+    def _peer_token(self):
+        """Trade a member's enrolment key for a six-hour session."""
+        ms = members()
+        if not any(m["token"] for m in ms):
+            return self._err(501, "this exchange has no member it can speak to — see members.yaml "
+                                  "and the token each entry names")
+        who = caller(self.headers.get("X-Peer-Token") or "")
+        # The enrolment key only. A session cannot mint another, or a leaked one would renew itself
+        # for ever and the six hours would bound nothing.
+        if not who: return self._err(401, "peer token missing or wrong")
+        token, ttl = peering.mint_session(who["name"])
+        return self._send(200, {"token": token, "expires_in": ttl, "token_type": "session"})
 
     def _refresh(self):
         """A member says what it advertises has changed. Forget it, and tell the others.
@@ -407,8 +432,9 @@ class Handler(BaseHTTPRequestHandler):
         The hint has no path attribute to check itself against, so it carries a budget instead. It is
         decremented here and the flood stops at nothing left, whatever the rooms are wired into.
         """
-        who = caller(self.headers.get("X-Peer-Token") or "")
-        if not who: return self._err(401, "peer token missing or wrong")
+        session = peering.session_peer(self.headers.get("X-Peer-Token") or "")
+        who = next((m for m in members() if m["name"] == (session or {}).get("peer")), None) if session else None
+        if not who: return self._err(401, "session token missing, wrong or expired")
         peering.forget(who["name"])
         try: hops = int(self.headers.get("X-Refresh-Hops") or peering.REFRESH_HOPS)
         except ValueError: hops = 0

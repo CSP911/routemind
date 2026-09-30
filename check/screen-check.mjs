@@ -25,7 +25,10 @@ class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.at
         on?this.add(c):this.remove(c); return on; },
     }; } }
 globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
-const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount"]) byId[id]=new N(id);
+const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel"]) byId[id]=new N(id);
+byId.knExportDialog.open=false; byId.knExportDialog.showModal=function(){this.open=true;};
+byId.knExportDialog.close=function(){this.open=false; for(const f of this.listeners.close||[]) f({});};
+byId.knExportForm.submit=function(){for(const f of this.listeners.submit||[]) f({preventDefault(){}});};
 let opens=0; byId.knRawDialog.open=false; byId.knRawDialog.showModal=function(){this.open=true;opens++;}; byId.knRawDialog.close=function(){this.open=false;};
 globalThis.document={readyState:"complete",visibilityState:"visible",getElementById:(i)=>byId[i],createElement:(t)=>new N(t),createElementNS:(_,t)=>new N(t),addEventListener(){}};
 globalThis.__nav=[]; globalThis.window={addEventListener(){},IRISI18N:{t:(k,v)=>String(dict[k] ?? k).replace(/\{(\w+)\}/g,(_,n)=>(v&&v[n]!=null?v[n]:`{${n}}`))},location:{search:"",set href(v){globalThis.__nav.push(v);},get href(){return "";}}}; globalThis.navigator={}; globalThis.location={origin:BASE}; globalThis.confirm=()=>false; globalThis.setInterval=()=>1;
@@ -351,6 +354,44 @@ else {
     const own = globalThis.window.IRISI18N.t("knowledge.err.id_taken", body.values || {});
     check("  and the screen has its own sentence for it", own.includes(taken) && own !== body.detail);
   }
+}
+
+// The export dialog refuses before it sends, or it does not refuse at all.
+//
+// Both checks below are about a request that must NOT happen. A passphrase typed differently twice,
+// or one too short, produces a file that is either unopenable or barely protected — and the person
+// finds out at the far end, days later, with nothing to go back to. So the dialog is the place that
+// has to catch it, and "it showed a message" is not the same claim as "it sent nothing".
+{
+  const sent = [];
+  const realGlobalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes("export/bundle")) { sent.push(String(url)); throw new Error("blocked by the check"); }
+    return realGlobalFetch(url, opts);
+  };
+  const dialog = byId.knExportDialog, msg = byId.knExportMsg;
+  const submit = async () => { byId.knExportForm.submit(); await settle(); };
+
+  byId.knExport.click();
+  check("the export dialog opens", dialog.open === true);
+
+  byId.knExportPass.value = "correct horse battery";
+  byId.knExportPass2.value = "correct house battery";
+  await submit();
+  check("two different passphrases are refused", sent.length === 0 && !msg.hidden && msg.className.includes("is-bad"));
+  check("  and the dialog stays open to say so", dialog.open === true);
+
+  byId.knExportPass.value = byId.knExportPass2.value = "short";
+  await submit();
+  check("a short passphrase is refused before anything is sent", sent.length === 0);
+
+  byId.knExportPass.value = byId.knExportPass2.value = "correct horse battery";
+  await submit();
+  check("a matching passphrase does reach the server", sent.length === 1);
+
+  dialog.close();
+  check("closing clears what was typed", byId.knExportPass.value === "" && byId.knExportPass2.value === "");
+  globalThis.fetch = realGlobalFetch;
 }
 
 console.log(results.join("\n"));

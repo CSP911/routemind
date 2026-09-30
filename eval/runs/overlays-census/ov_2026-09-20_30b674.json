@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_30b674",
+ "question": "Flights and hotels, about 700,000 won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T20:24:33Z",
+ "touched_at": "2026-09-20T20:24:33Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "trip cost, flights+hotel combined amount",
+   "at": "2026-09-20T20:24:33Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "whose signature/approval chain is needed",
+   "at": "2026-09-20T20:24:33Z"
+  },
+  {
+   "address": "/v1/regions/procurement",
+   "why": "whether comparative quotes are required at this amount",
+   "at": "2026-09-20T20:24:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "trip cost, flights+hotel combined amount",
+   "at": "2026-09-20T20:24:33Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "whose signature/approval chain is needed",
+   "at": "2026-09-20T20:24:33Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "whether comparative quotes are required at this amount",
+   "at": "2026-09-20T20:24:33Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

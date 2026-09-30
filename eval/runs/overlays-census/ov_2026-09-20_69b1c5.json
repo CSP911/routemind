@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_69b1c5",
+ "question": "Regular payroll employee, 9 years tenure, Busan branch: monthly leave accrual rate and max carryover/holding into January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:15:50Z",
+ "touched_at": "2026-09-20T16:16:14Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and carryover rules live here",
+   "at": "2026-09-20T16:15:50Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and carryover rules live here",
+   "at": "2026-09-20T16:15:50Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:16:14Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e1-tenure-t4-site-l2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:16:14Z"
+}

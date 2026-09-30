@@ -1,0 +1,78 @@
+{
+ "id": "ov_2026-09-20_3d5e09",
+ "question": "Claim dated 2025 - which version of the overtime rate applies? Where is that written down?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:27:23Z",
+ "touched_at": "2026-09-20T09:31:52Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "Explains overtime rate has THREE versions by date; 2025 claim maps to the middle version, not the payroll page or the current table",
+   "at": "2026-09-20T09:29:52Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "The version in force 2024-07-01 to 2025-12-31 - the one that actually applies to a 2025-dated claim, with the day/hours multiplier table",
+   "at": "2026-09-20T09:30:21Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "Payroll's overtime page - flagged as moved to attendance on 2026-01-01, so this may be the old rule applicable to a 2025 claim",
+   "at": "2026-09-20T09:27:19Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/regions/attendance",
+   "why": "Overtime rates moved here 2026-01-01; check if it has version/effective-date info covering 2025 claims",
+   "at": "2026-09-20T09:27:48Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "Explains overtime rate has THREE versions by date; 2025 claim maps to the middle version, not the payroll page or the current table",
+   "at": "2026-09-20T09:29:52Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "The version in force 2024-07-01 to 2025-12-31 - the one that actually applies to a 2025-dated claim, with the day/hours multiplier table",
+   "at": "2026-09-20T09:30:21Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/regions/attendance",
+   "why": "Too broad; narrowed to the specific legend-revision and v2 docs",
+   "at": "2026-09-20T09:30:47Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "Payroll's page only distinguishes before/after 2026-01-01 and pointed to the oldest (payslip-overtime) rule, which is wrong for a 2025 claim once the mid-2025 v2 revision is accounted for - misleading, not the source of the actual answer",
+   "at": "2026-09-20T09:31:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:31:52Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:31:52Z"
+}

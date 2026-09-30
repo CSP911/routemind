@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-21_758733",
+ "question": "For category C2, amount V2, term M2, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:09:20Z",
+ "touched_at": "2026-09-21T14:09:32Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, covers category/amount/term -> signer",
+   "at": "2026-09-21T14:09:20Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, covers category/amount/term -> signer",
+   "at": "2026-09-21T14:09:20Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:09:32Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v2-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:09:32Z"
+}

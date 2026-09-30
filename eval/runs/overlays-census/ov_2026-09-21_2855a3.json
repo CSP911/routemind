@@ -1,0 +1,78 @@
+{
+ "id": "ov_2026-09-21_2855a3",
+ "question": "I'm a managing director — Jakarta, eight nights — what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:49:17Z",
+ "touched_at": "2026-09-21T13:49:37Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade, destination band, and length of stay — should give the hotel cap for MD/Jakarta/8 nights",
+   "at": "2026-09-21T13:49:17Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns there are three versions of the per-diem table with different dates — need to confirm which is current",
+   "at": "2026-09-21T13:49:17Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade, destination band, and length of stay — should give the hotel cap for MD/Jakarta/8 nights",
+   "at": "2026-09-21T13:49:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns there are three versions of the per-diem table with different dates — need to confirm which is current",
+   "at": "2026-09-21T13:49:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "what has to be attached as evidence for a spend — likely has the receipt threshold",
+   "at": "2026-09-21T13:49:17Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/evidence",
+   "why": "the per-diem row itself states its own receipt threshold (54 USD); no need for the general evidence table",
+   "at": "2026-09-21T13:49:33Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:49:37Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b3-stay-s3/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T13:49:37Z"
+}

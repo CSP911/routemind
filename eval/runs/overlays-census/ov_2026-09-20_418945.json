@@ -1,0 +1,63 @@
+{
+ "id": "ov_2026-09-20_418945",
+ "question": "Flights and hotels, about 700,000 won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T20:40:45Z",
+ "touched_at": "2026-09-20T22:20:11Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount + term-based approval threshold for a category — procurement table covers this directly",
+   "at": "2026-09-20T20:40:45Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount + term-based approval threshold for a category — procurement table covers this directly",
+   "at": "2026-09-20T20:40:45Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:20:11Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/procurement",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v1-term-m2",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:20:11Z"
+}

@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_021c1b",
+ "question": "Which version of the overseas per-diem applies to a claim dated in 2025?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:03:29Z",
+ "touched_at": "2026-09-20T16:03:36Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / overseas per-diem rates are covered under expense",
+   "at": "2026-09-20T16:03:29Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / overseas per-diem rates are covered under expense",
+   "at": "2026-09-20T16:03:29Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:03:36Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:03:36Z"
+}

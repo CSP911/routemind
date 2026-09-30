@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_618779",
+ "question": "For category C1, amount V4, term M2, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:03:22Z",
+ "touched_at": "2026-09-21T14:03:49Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01",
+   "at": "2026-09-21T14:03:22Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirm which threshold table version applies for today 2026-09-21",
+   "at": "2026-09-21T14:03:37Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01",
+   "at": "2026-09-21T14:03:22Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision",
+   "why": "warns threshold table has three versions - need to confirm which applies for today's date",
+   "at": "2026-09-21T14:03:22Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-threshold-legend-revision",
+   "why": "wrong address, missing /body suffix",
+   "at": "2026-09-21T14:03:34Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "confirm which threshold table version applies for today 2026-09-21",
+   "at": "2026-09-21T14:03:37Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:03:49Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v4-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:03:49Z"
+}

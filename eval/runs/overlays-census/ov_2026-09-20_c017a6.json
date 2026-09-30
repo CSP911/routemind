@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_c017a6",
+ "question": "Austin vendor, 60M KRW, licence: onsite premises visit required? how often is vendor file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:21:23Z",
+ "touched_at": "2026-09-20T23:21:46Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor diligence, site visits, and periodic re-review frequency would be under procurement",
+   "at": "2026-09-20T23:21:23Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor diligence, site visits, and periodic re-review frequency would be under procurement",
+   "at": "2026-09-20T23:21:23Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:21:46Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w2-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:21:46Z"
+}

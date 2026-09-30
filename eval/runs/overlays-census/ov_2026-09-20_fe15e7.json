@@ -1,0 +1,59 @@
+{
+ "id": "ov_2026-09-20_fe15e7",
+ "question": "Partner firm employee, 2 years tenure, Singapore entity: monthly leave accrual rate and January carry-forward cap",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:31:25Z",
+ "touched_at": "2026-09-20T16:31:54Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carry-forward and cap rules are covered here",
+   "at": "2026-09-20T16:31:25Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carry-forward and cap rules are covered here",
+   "at": "2026-09-20T16:31:25Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:31:54Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t2-site-l3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:31:54Z"
+}

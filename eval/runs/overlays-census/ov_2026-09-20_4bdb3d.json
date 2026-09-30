@@ -1,0 +1,47 @@
+{
+ "id": "ov_2026-09-20_4bdb3d",
+ "question": "For origin O3, value W2, goods K3: is a premises visit required, and how often is the file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:19:47Z",
+ "touched_at": "2026-09-20T23:20:05Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor/goods classification with origin, value, goods codes and site-visit/review-frequency rules sound like procurement due diligence",
+   "at": "2026-09-20T23:19:47Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor/goods classification with origin, value, goods codes and site-visit/review-frequency rules sound like procurement due diligence",
+   "at": "2026-09-20T23:19:47Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:20:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w2-goods-k3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:20:05Z"
+}

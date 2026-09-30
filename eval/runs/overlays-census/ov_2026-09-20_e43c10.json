@@ -1,0 +1,95 @@
+{
+ "id": "ov_2026-09-20_e43c10",
+ "question": "A vendor in austin, sixty million won, people's time: do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:20:22Z",
+ "touched_at": "2026-09-20T23:20:58Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor site visit requirement and periodic re-review cadence are procurement/vendor-management topics",
+   "at": "2026-09-20T23:20:21Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "need to map austin (US city) to an origin code O1-O4",
+   "at": "2026-09-20T23:20:36Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "need to map sixty million won to a value band W1-W4",
+   "at": "2026-09-20T23:20:37Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "need to map people's time (labor/services) to a goods code K1-K4",
+   "at": "2026-09-20T23:20:38Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w2-goods-k3/body",
+   "why": "exact match: origin O3 (Austin), value W2 (60M won), goods K3 (people's time)",
+   "at": "2026-09-20T23:20:52Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor site visit requirement and periodic re-review cadence are procurement/vendor-management topics",
+   "at": "2026-09-20T23:20:21Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "need to map austin (US city) to an origin code O1-O4",
+   "at": "2026-09-20T23:20:36Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "need to map sixty million won to a value band W1-W4",
+   "at": "2026-09-20T23:20:37Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "need to map people's time (labor/services) to a goods code K1-K4",
+   "at": "2026-09-20T23:20:38Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w2-goods-k3/body",
+   "why": "exact match: origin O3 (Austin), value W2 (60M won), goods K3 (people's time)",
+   "at": "2026-09-20T23:20:52Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:20:58Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w2-goods-k3/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T23:20:58Z"
+}

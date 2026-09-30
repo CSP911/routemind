@@ -14,7 +14,7 @@ the one who did it.
 
 **It cannot read the knowledge and cannot make an area cross.** The exchange's operator door returns
 membership and health and never a reflected row — an area crosses because somebody wrote
-`use_when_export` on it, in its own repository, through its own review queue, and a screen that could
+`export` on it, in its own repository, through its own review queue, and a screen that could
 do that from here would be a way around the only rule that keeps sharing deliberate. Writes to an
 ontology go to that backbone's own screen, which is the same rule a link follows.
 

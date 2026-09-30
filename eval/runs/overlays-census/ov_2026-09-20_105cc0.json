@@ -1,0 +1,59 @@
+{
+ "id": "ov_2026-09-20_105cc0",
+ "question": "On a two-year contract, been here two years, at the Busan branch: how much time off am I building up each month, and how much can I still be holding in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:18:47Z",
+ "touched_at": "2026-09-20T16:19:08Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rates and carry-over/holding caps are attendance topics",
+   "at": "2026-09-20T16:18:47Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rates and carry-over/holding caps are attendance topics",
+   "at": "2026-09-20T16:18:47Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:19:08Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/attendance",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t2-site-l2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:19:08Z"
+}

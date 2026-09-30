@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_fa238b",
+ "question": "Da Nang supplier, KRW 60,000,000, office consumables: site visit required? review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:32:07Z",
+ "touched_at": "2026-09-20T23:32:28Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor onboarding / due diligence and review cadence likely lives under procurement",
+   "at": "2026-09-20T23:32:07Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor onboarding / due diligence and review cadence likely lives under procurement",
+   "at": "2026-09-20T23:32:07Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:32:28Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w2-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:32:28Z"
+}

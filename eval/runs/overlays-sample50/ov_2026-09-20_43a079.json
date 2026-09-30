@@ -1,0 +1,122 @@
+{
+ "id": "ov_2026-09-20_43a079",
+ "question": "Junior analyst, Jakarta, 3 weeks: hotel per-night cap and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:15:25Z",
+ "touched_at": "2026-09-20T09:19:06Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table since 2026-01-01, by grade/band/stay - likely has hotel cap",
+   "at": "2026-09-20T09:15:24Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns of three versions, need to confirm which applies",
+   "at": "2026-09-20T09:15:24Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "confirms junior analyst = grade G1",
+   "at": "2026-09-20T09:16:12Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "confirms Jakarta = band B3",
+   "at": "2026-09-20T09:16:35Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "confirms three weeks = stay S4",
+   "at": "2026-09-20T09:16:52Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g1-band-b3-stay-s4/body",
+   "why": "the matching row: lodging per night 139 USD, receipt threshold 45 USD",
+   "at": "2026-09-20T09:17:13Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table since 2026-01-01, by grade/band/stay - likely has hotel cap",
+   "at": "2026-09-20T09:15:24Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns of three versions, need to confirm which applies",
+   "at": "2026-09-20T09:15:24Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "receipt/evidence threshold for spends",
+   "at": "2026-09-20T09:15:24Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "confirms junior analyst = grade G1",
+   "at": "2026-09-20T09:16:12Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "confirms Jakarta = band B3",
+   "at": "2026-09-20T09:16:35Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "confirms three weeks = stay S4",
+   "at": "2026-09-20T09:16:52Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-row-grade-g1-band-b3-stay-s4/body",
+   "why": "the matching row: lodging per night 139 USD, receipt threshold 45 USD",
+   "at": "2026-09-20T09:17:13Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/evidence",
+   "why": "domestic KRW evidence ceiling (30,000 KRW) is a separate, unrelated threshold from the overseas per-diem row's own USD receipt threshold; not used",
+   "at": "2026-09-20T09:18:21Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:19:06Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g1-band-b3-stay-s4/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:19:06Z"
+}

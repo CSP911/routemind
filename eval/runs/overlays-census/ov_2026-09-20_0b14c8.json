@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_0b14c8",
+ "question": "Ordinary Tuesday, six hours, at client's office: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:47:42Z",
+ "touched_at": "2026-09-20T23:47:57Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime rules and rounding likely live under attendance",
+   "at": "2026-09-20T23:47:42Z"
+  },
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier/pay rate might be defined in payroll",
+   "at": "2026-09-20T23:47:42Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime rules and rounding likely live under attendance",
+   "at": "2026-09-20T23:47:42Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier/pay rate might be defined in payroll",
+   "at": "2026-09-20T23:47:42Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:47:57Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h3-place-p2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:47:57Z"
+}

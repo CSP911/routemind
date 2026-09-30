@@ -1,0 +1,59 @@
+{
+ "id": "ov_2026-09-21_2e8f5a",
+ "question": "For day D4, hours H3, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T11:56:45Z",
+ "touched_at": "2026-09-21T11:57:06Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "day/hour/place overtime rules might be defined alongside attendance",
+   "at": "2026-09-21T11:56:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier is a pay concept",
+   "at": "2026-09-21T11:56:44Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "day/hour/place overtime rules might be defined alongside attendance",
+   "at": "2026-09-21T11:56:44Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/regions/payroll",
+   "why": "warning file confirms overtime premiums moved to attendance on 2026-01-01, payroll no longer authoritative",
+   "at": "2026-09-21T11:56:52Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T11:57:06Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h3-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T11:57:06Z"
+}

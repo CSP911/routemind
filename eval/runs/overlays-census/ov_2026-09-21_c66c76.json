@@ -1,0 +1,88 @@
+{
+ "id": "ov_2026-09-21_c66c76",
+ "question": "Team manager, Dhaka, three weeks: hotel per-night cap and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:27:52Z",
+ "touched_at": "2026-09-21T13:28:19Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip hotel spend and receipt rules likely live here",
+   "at": "2026-09-21T13:27:52Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "need grade code for a team manager",
+   "at": "2026-09-21T13:28:04Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "need band code for Dhaka",
+   "at": "2026-09-21T13:28:05Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "need stay code for three weeks",
+   "at": "2026-09-21T13:28:06Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip hotel spend and receipt rules likely live here",
+   "at": "2026-09-21T13:27:52Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "why": "need grade code for a team manager",
+   "at": "2026-09-21T13:28:04Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "why": "need band code for Dhaka",
+   "at": "2026-09-21T13:28:05Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "why": "need stay code for three weeks",
+   "at": "2026-09-21T13:28:06Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:28:19Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b4-stay-s4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:28:19Z"
+}

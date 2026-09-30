@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_96c64e",
+ "question": "Consultant service ~3M KRW, open-ended until cancelled: whose signature, and quotes required?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:10:48Z",
+ "touched_at": "2026-09-21T14:11:05Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - need signature authority",
+   "at": "2026-09-21T14:10:48Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed before purchase",
+   "at": "2026-09-21T14:10:48Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns of 3 versions of threshold table, need to confirm which is current for today 2026-09-21",
+   "at": "2026-09-21T14:10:48Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - need signature authority",
+   "at": "2026-09-21T14:10:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed before purchase",
+   "at": "2026-09-21T14:10:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns of 3 versions of threshold table, need to confirm which is current for today 2026-09-21",
+   "at": "2026-09-21T14:10:48Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:11:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v2-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:11:05Z"
+}

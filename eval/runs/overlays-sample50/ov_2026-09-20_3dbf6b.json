@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_3dbf6b",
+ "question": "For something dated 29 June 2024, two days before the first change, what screening was required for a new supplier? Use the version in force on that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:29:10Z",
+ "touched_at": "2026-09-20T09:30:33Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "explains which diligence version covers which dates: until 2024-07-01, 2024-07-01 to 2025-12-31, and 2026-01-01 onwards",
+   "at": "2026-09-20T09:29:04Z"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "the oldest version, in force until 2024-07-01, covers 29 June 2024",
+   "at": "2026-09-20T09:29:34Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "explains which diligence version covers which dates: until 2024-07-01, 2024-07-01 to 2025-12-31, and 2026-01-01 onwards",
+   "at": "2026-09-20T09:29:04Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "the oldest version, in force until 2024-07-01, covers 29 June 2024",
+   "at": "2026-09-20T09:29:34Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:30:33Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:30:33Z"
+}

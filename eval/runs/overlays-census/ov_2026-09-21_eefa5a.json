@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_eefa5a",
+ "question": "Saturday, six hours, at a client's office: what overtime multiplier applies, and to what rounding are minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T00:00:26Z",
+ "touched_at": "2026-09-21T00:00:48Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime rules, weekend work often covered under attendance",
+   "at": "2026-09-21T00:00:25Z"
+  },
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay multiplier and rounding likely defined in payroll",
+   "at": "2026-09-21T00:00:25Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime rules, weekend work often covered under attendance",
+   "at": "2026-09-21T00:00:25Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay multiplier and rounding likely defined in payroll",
+   "at": "2026-09-21T00:00:25Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T00:00:48Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h3-place-p2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T00:00:48Z"
+}

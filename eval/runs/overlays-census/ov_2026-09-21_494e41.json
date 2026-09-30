@@ -1,0 +1,47 @@
+{
+ "id": "ov_2026-09-21_494e41",
+ "question": "G2/B3/S2: hotel per night amount, receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:22:55Z",
+ "touched_at": "2026-09-21T13:23:10Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "expense region covers business trip pay and receipts",
+   "at": "2026-09-21T13:22:55Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "expense region covers business trip pay and receipts",
+   "at": "2026-09-21T13:22:55Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:23:10Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/expense",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b3-stay-s2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:23:10Z"
+}

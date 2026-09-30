@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_193715",
+ "question": "For something dated 3 July 2024 (two days after the first change), how much leave was accrued or granted for type E2 staff in service band T2? Use the version in force on that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:55:18Z",
+ "touched_at": "2026-09-20T15:55:29Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual/grant by staff type and service band is an attendance topic",
+   "at": "2026-09-20T15:55:18Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual/grant by staff type and service band is an attendance topic",
+   "at": "2026-09-20T15:55:18Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:55:29Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:55:29Z"
+}

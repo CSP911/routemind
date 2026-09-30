@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_0534c6",
+ "question": "In August 2025, what screening was required for an origin O2 supplier at contract value W2? Answer under the version of supplier due diligence that was in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:56:50Z",
+ "touched_at": "2026-09-20T15:57:02Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence / screening thresholds by origin and contract value live under procurement",
+   "at": "2026-09-20T15:56:49Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence / screening thresholds by origin and contract value live under procurement",
+   "at": "2026-09-20T15:56:49Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:57:02Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:57:02Z"
+}

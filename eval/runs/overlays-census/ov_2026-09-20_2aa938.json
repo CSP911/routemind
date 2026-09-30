@@ -1,0 +1,95 @@
+{
+ "id": "ov_2026-09-20_2aa938",
+ "question": "Supplier in Da Nang, 300 million won, licence required - site visit needed? review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:37:28Z",
+ "touched_at": "2026-09-20T23:38:05Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence, site visits and review cadence would be under procurement",
+   "at": "2026-09-20T23:37:27Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "need origin code for Da Nang, Vietnam",
+   "at": "2026-09-20T23:37:44Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "need value band for 300 million won",
+   "at": "2026-09-20T23:37:45Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "need goods code for a licence",
+   "at": "2026-09-20T23:37:46Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w3-goods-k4/body",
+   "why": "the exact row: O4=Da Nang, W3=300M won, K4=a licence",
+   "at": "2026-09-20T23:38:00Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "supplier due diligence, site visits and review cadence would be under procurement",
+   "at": "2026-09-20T23:37:27Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "need origin code for Da Nang, Vietnam",
+   "at": "2026-09-20T23:37:44Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "why": "need value band for 300 million won",
+   "at": "2026-09-20T23:37:45Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "why": "need goods code for a licence",
+   "at": "2026-09-20T23:37:46Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w3-goods-k4/body",
+   "why": "the exact row: O4=Da Nang, W3=300M won, K4=a licence",
+   "at": "2026-09-20T23:38:00Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:38:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w3-goods-k4/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T23:38:05Z"
+}

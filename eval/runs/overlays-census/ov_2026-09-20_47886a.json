@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_47886a",
+ "question": "Company in Daejeon, 8 million won, custom-made to spec: must we visit their premises, and how often is their file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:50:22Z",
+ "touched_at": "2026-09-20T22:50:40Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "custom/spec order, amount threshold, and vendor site visit + review cadence sound like procurement/vendor management topics",
+   "at": "2026-09-20T22:50:22Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "custom/spec order, amount threshold, and vendor site visit + review cadence sound like procurement/vendor management topics",
+   "at": "2026-09-20T22:50:22Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:50:40Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:50:40Z"
+}

@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_55ff60",
+ "question": "Partner-firm employee, 9 years tenure, fully remote: monthly leave accrual rate and max carryover held in January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:34:34Z",
+ "touched_at": "2026-09-20T16:34:52Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carryover, and eligibility by tenure/work arrangement/employment type live here",
+   "at": "2026-09-20T16:34:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carryover, and eligibility by tenure/work arrangement/employment type live here",
+   "at": "2026-09-20T16:34:33Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:34:52Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t4-site-l4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:34:52Z"
+}

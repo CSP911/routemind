@@ -51,7 +51,7 @@ from urllib.request import Request as _IrisPlaybookURLRequest, urlopen as _iris_
 import uvicorn
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi import HTTPException as _IrisPlaybookHTTPException
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 STATIC_DIR = Path(_iris_playbook_os.environ.get("KNOWLEDGE_STATIC", Path(__file__).resolve().parent.parent / "static"))
@@ -458,9 +458,12 @@ def api_knowledge_one_liner_draft(node_id: str, request: Request) -> dict[str, A
 # worse one, and is what happened to `peer` and `audience`: the ontology API is not published outside
 # the compose network, so a scope missing here is a scope nobody can reach, and the docs describing
 # the road stayed true of a queue with no door. check/room-check.py holds the two lists together.
-QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "peer", "audience", "peer-line")
+QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "export", "audience", "peer", "peer-line")
 # Scopes whose proposal names a peer as well as an area, because the field is a mapping and the
 # proposal has to say whose line it is.
+# Nothing writes a per-reader line since 2026-09-29. `peer-line` stays accepted because one can
+# still be sitting in a queue, and the ontology aliases it; a proposal the screen can file and the
+# queue would refuse is the failure this pairing exists to prevent, and so is its opposite.
 QUEUE_PEER_SCOPES = ("peer-line",)
 
 
@@ -484,11 +487,12 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     # through the review queue" was true of a queue nobody could reach.
     if scope not in QUEUE_SCOPES:
         raise HTTPException(status_code=422,
-                            detail="scope must be as, bb, core, entity, peer or audience.")
+                            detail="scope must be as, bb, core, entity, export or audience.")
     where = "entity" if scope == "entity" else "region"
-    # `peer` may be empty only when it is withdrawing something, which `before` is what says. The
-    # ontology settles it either way; refusing here first is only so the message names the field.
-    empty_ok = scope in ("audience", "peer-line") or (scope == "peer" and str(data.get("before") or "").strip())
+    # `export` is yes or no and both are decisions, so it is never empty. An audience may be, and it
+    # means "everybody this area already crosses to". The ontology settles it either way; refusing
+    # here first is only so the message names the field.
+    empty_ok = scope in ("audience", "peer-line")
     required = [where] if empty_ok else [where, "after"]
     # An empty `after` is a decision for `audience` alone — everybody the area already crosses to —
     # and a missing sentence for every other scope.
@@ -496,8 +500,8 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
         if not str(data.get(field) or "").strip():
             # The ontology says how a withdrawal is filed and this layer refused first with four
             # words, so the guidance never reached anybody going through the screen.
-            hint = (" To withdraw the line, send the one it is withdrawing as `before`."
-                    if field == "after" and scope == "peer" else "")
+            hint = (" To stop this area crossing, send `no` as `after` and `yes` as `before`."
+                    if field == "after" and scope == "export" else "")
             raise HTTPException(status_code=422, detail=f"{field} is required.{hint}")
     if where == "entity" and not _KNOWLEDGE_ID.match(str(data["entity"]).strip()):
         raise HTTPException(status_code=422, detail="entity must be an entity id.")
@@ -690,12 +694,15 @@ def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, An
         "core_description": str(data["core_description"]).strip(),
         # `id` and `kind` are Knowledge's to derive, as they are for a node. Anything a person did
         # supply is passed through; nothing is invented here.
-        # `use_when_export` is optional and its absence is meaningful: an area with none does not
-        # cross a link at all. Passed through like the rest — the decision is the ontology's.
+        # `export` is optional and its absence is meaningful: an area with it unset does not cross a
+        # link at all. Passed through like the rest — the decision is the ontology's. It is a
+        # boolean, so it goes through untouched rather than via the string coercion above: `str(False)`
+        # is "False", which is truthy everywhere it would then be read.
         "representative": {
             **{k: str(rep[k]).strip()
-               for k in ("name", "one_liner", "use_when", "use_when_export", "kind", "id")
+               for k in ("name", "one_liner", "use_when", "kind", "id")
                if str(rep.get(k) or "").strip()},
+            **({"export": bool(rep["export"])} if "export" in rep else {}),
             # A list, and passed as one. Who an area crosses to is the ontology's decision like the
             # rest of this; nothing here narrows or widens it.
             **({"export_to": rep["export_to"]} if rep.get("export_to") else {}),
@@ -745,6 +752,17 @@ def api_knowledge_create_node(payload: dict, request: Request) -> dict[str, Any]
         "holds": holds, "injected_by": str(data.get("injected_by") or "operator"),
         "files": files, "edges": edges,
     }
+    # The node's own document, when the caller has one to write. Knowledge's `create_node` has always
+    # accepted `content` and writes it straight into the file; Web simply never forwarded it, so a
+    # node created through this endpoint came out with frontmatter and an empty body — which the
+    # tables then advertise as `empty`: "nobody has written it yet. Do not fetch it." The caller got
+    # a 200 and a row nothing can read.
+    #
+    # The other route to a body — a `holds: pointers` node plus PUT .../files/<name> — is not a
+    # substitute: `put_file` composes `<entity>/note.md` while `entity_path` is `<entity>.md`, so it
+    # raises NotADirectoryError. No node in this repository uses it.
+    if str(data.get("content") or "").strip():
+        body["content"] = str(data["content"])
     # Sent only when supplied; absent means Knowledge derives it. `kind` decides which relations the
     # validator will allow, and relations are the curator's business — so this is not a value Web
     # invents a default for (operator, 2026-09-10).
@@ -1007,6 +1025,96 @@ def app_config(request: Request) -> dict[str, Any]:
             # name it will be signed with before they press anything.
             "actor": _knowledge_actor(request),
             "actor_default": DEFAULT_ACTOR}
+
+
+# The token the export surface asks for. Not an escalation: this process already proxies the whole
+# ordinary `/v1` API on the compose network, and the export surface is a strict subset of what that
+# reaches. What the token buys is the *right surface* — the one built from the areas somebody wrote
+# `export` on, rather than the one that shows everything.
+PEER_TOKEN = (_iris_playbook_os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
+
+_BUNDLE = None
+
+
+def _bundle():
+    """`transfer/bundle.py`, the one definition of the export file.
+
+    Imported rather than reimplemented, for the reason `_renderer()` imports the MCP's formatter: a
+    format written out in the tool that makes it and read back by hand somewhere else is two formats
+    that agree until they do not. The file this route hands to a browser and the file
+    `./transfer/export.py` writes are byte-for-byte the same kind of thing because they are the same
+    code.
+    """
+    global _BUNDLE
+    if _BUNDLE is None:
+        here = Path(__file__).resolve().parent
+        for cand in (here / "transfer", here.parent / "transfer"):   # in the image, and in a checkout
+            if (cand / "bundle.py").exists():
+                sys.path.insert(0, str(cand)); break
+        import bundle
+        _BUNDLE = bundle
+    return _BUNDLE
+
+
+@_iris_route("POST", "/api/knowledge/export/bundle")
+def api_knowledge_export_bundle(payload: dict, request: Request):
+    """The same encrypted file `transfer/export.py` writes, handed to the browser as a download.
+
+    POST, and the passphrase is in the body. A GET would put it in a URL, and a URL is the one part
+    of a request that gets written down everywhere — history, proxy logs, the Referer of whatever the
+    page loads next. It is never logged here and never comes back in a response.
+
+    What goes in the file is read from `/v1/export/…` and nowhere else, so this route cannot widen
+    what leaves: an area crosses only by having `export` set on it, and that decision
+    was made in the repository by a person, not here by a button.
+    """
+    b = _bundle()
+    if not PEER_TOKEN:
+        raise KnowledgeError(503, (
+            "This backbone has no peer token set, so its export surface is closed — set "
+            "ONTOLOGY_PEER_TOKEN (EXCHANGE_TOKEN_HOME in .env) and restart. The export is the set of "
+            "areas that may cross a link, so it is the same door."), reason="export_closed")
+    pw = str((payload or {}).get("passphrase") or "")
+    if len(pw) < 12:
+        # Checked before anything is read, so a short passphrase costs a message rather than a walk
+        # of the whole exported tree.
+        raise KnowledgeError(422, (
+            "The passphrase needs at least 12 characters. It is the only thing between this file and "
+            "whoever ends up holding it."), reason="export_passphrase_short")
+    try:
+        data = b.collect(ONTOLOGY_URL, PEER_TOKEN)
+    except b.BundleError as exc:
+        raise HTTPException(status_code=502, detail=f"Could not read the export surface — {exc}")
+    if not data["regions"]:
+        # A valid, encrypted, empty file is the worst possible answer here: whoever receives it has no
+        # way to tell it from a mistake at this end. Refuse, and say what would make it non-empty.
+        # The one a fresh install meets: nothing is shared by default and nothing ever will be, so
+        # this is the first thing anybody pressing Export sees. Named, so it is not the one English
+        # sentence on an otherwise translated screen.
+        raise KnowledgeError(409, (
+            "This backbone exports no areas, so there is nothing to download. Set `export` "
+            "on the areas that should be allowed to cross, then export again."), reason="export_empty")
+    try:
+        blob = b.seal(data, pw)
+    except b.BundleError as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+    import time as _time
+    host = (ONTOLOGY_URL.split("//")[-1].split("/")[0].split(":")[0] or "routemind")
+    name = f"{_iris_re.sub(r'[^A-Za-z0-9._-]', '-', host)}-{_time.strftime('%Y-%m-%d')}.rmx"
+    return Response(
+        blob, media_type="application/octet-stream",
+        headers={
+            "Content-Disposition": f'attachment; filename="{name}"',
+            # The browser must not keep this, and neither must anything between here and it.
+            "Cache-Control": "no-store",
+            # So the page can say what it just handed over without opening the file. These are the
+            # header's own counts, which is what the recipient will also see before they decide to
+            # type a passphrase at it.
+            "X-Export-Regions": str(len(data["regions"])),
+            "X-Export-Nodes": str(len(data["nodes"])),
+            "Access-Control-Expose-Headers": "Content-Disposition, X-Export-Regions, X-Export-Nodes",
+        })
 
 
 @app.middleware("http")

@@ -1,0 +1,59 @@
+{
+ "id": "ov_2026-09-21_763f12",
+ "question": "Consultant's time, about 700,000 won, locked in for three years: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:07:24Z",
+ "touched_at": "2026-09-21T14:07:40Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category, amount and term — matches services contract with multi-year term",
+   "at": "2026-09-21T14:07:24Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category, amount and term — matches services contract with multi-year term",
+   "at": "2026-09-21T14:07:24Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:07:40Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v1-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:07:40Z"
+}

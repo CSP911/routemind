@@ -29,6 +29,28 @@ docker compose exec ontology python3 -c \
 then commit what it changed. Or make any write through the screen — that regenerates, validates,
 commits and publishes in one transaction, which is what the API is for.
 
+### Deleting an area by hand
+
+`rm -rf regions/payroll` leaves two things behind, and only one of them is loud:
+
+- **edges whose ends are gone.** The validator names them, so every write is refused until they go.
+- **the CORE.md row for that area.** CORE.md is carried *whole* into every prompt and its table is
+  where each area's description at hop 0 comes from — so the row goes on advertising something that
+  is not there. It was silent until 2026-09-30; it is an error now.
+
+```sh
+./ontology/tidy.py data/repo          # what is left over. Changes nothing
+./ontology/tidy.py data/repo --fix    # removes exactly that, and regenerates
+```
+
+`--fix` touches only those two, and goes through the same transaction as any other write — a dirty
+tree is refused, the result is validated, anything that fails rolls the repository back, and what
+succeeds is committed under its own message. An edge between two documents that both exist is
+somebody's statement and is never removed, nor is a CORE row whose area is there. Deleting an area *through the
+API* has always done all of this in one transaction — this is for the times you did it in an editor,
+which is the workflow this file is about.
+
+
 ---
 
 ## What validates it

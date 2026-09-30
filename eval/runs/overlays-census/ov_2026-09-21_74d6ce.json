@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_74d6ce",
+ "question": "Dinner with a client, about 40 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:41:17Z",
+ "touched_at": "2026-09-21T14:41:33Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - likely gives signer and quote requirement",
+   "at": "2026-09-21T14:41:17Z"
+  },
+  {
+   "address": "/v1/regions/expense",
+   "why": "client dinner could be an entertainment/business expense, not procurement",
+   "at": "2026-09-21T14:41:17Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process, may state how many quotes are needed",
+   "at": "2026-09-21T14:41:17Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - likely gives signer and quote requirement",
+   "at": "2026-09-21T14:41:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "client dinner could be an entertainment/business expense, not procurement",
+   "at": "2026-09-21T14:41:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process, may state how many quotes are needed",
+   "at": "2026-09-21T14:41:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:41:33Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v4-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:41:33Z"
+}

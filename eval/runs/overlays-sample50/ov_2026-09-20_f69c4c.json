@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_f69c4c",
+ "question": "Laptops (a couple), ~12M won, until we cancel it (open-ended term): whose signature, and are competitive quotes required first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:20:14Z",
+ "touched_at": "2026-09-20T09:20:14Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term since 2026-01-01 - likely answers signature level",
+   "at": "2026-09-20T09:20:07Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold table has three versions - need to confirm which applies to today 2026-09-20",
+   "at": "2026-09-20T09:20:07Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request flow - how many quotes needed before approval",
+   "at": "2026-09-20T09:20:08Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term since 2026-01-01 - likely answers signature level",
+   "at": "2026-09-20T09:20:07Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold table has three versions - need to confirm which applies to today 2026-09-20",
+   "at": "2026-09-20T09:20:07Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request flow - how many quotes needed before approval",
+   "at": "2026-09-20T09:20:08Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

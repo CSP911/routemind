@@ -21,6 +21,7 @@ one of these has a way of looking fine while being wrong:
 
 docs/PEERING.md is the contract.
 """
+import re
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,6 +64,23 @@ if not os.path.isdir(seed): seed = os.path.join(ROOT, "seed")
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session                              # noqa: E402
+
+
+def _share(text, line):
+    """Turn export on for a representative, with `line` as the sentence it crosses with.
+
+    One sentence since 2026-09-29: a peer reads the area's own `use_when`, and `export` decides
+    whether it gets it. These fixtures used to write a second sentence; they set both now, so the
+    file states what crosses rather than leaning on whatever the seed happened to say.
+    """
+    text = re.sub(r"^use_when:.*$", f"use_when: {line}", text, count=1, flags=re.M)
+    if "\nuse_when:" not in text:
+        text = text.replace("\nrole: representative\n",
+                            f"\nrole: representative\nuse_when: {line}\n", 1)
+    return text.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1)
+
 
 # Three backbones, each sharing one area, each a different one — so a row arriving anywhere can only
 # have come across the link that carries it.
@@ -98,8 +116,7 @@ for n in NAMES:
         text = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" in text and "\nparent:" not in text:
             open(q, "w", encoding="utf-8").write(
-                text.replace("\nrole: representative\n",
-                             f"\nrole: representative\nuse_when_export: {LINE[n]}\n", 1))
+                _share(text, LINE[n]))
             break
     # One entry, not two. That is the arithmetic: everybody names the exchange and nobody names
     # anybody else. Six links become three, and adding a fourth backbone costs one more, not three.
@@ -140,7 +157,7 @@ for port in [*PORTS.values(), IX_PORT]:
 
 def get(port, path, token=None, raw=False):
     r = urllib.request.Request(f"http://127.0.0.1:{port}{path}")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{port}", token))
     try:
         with urllib.request.urlopen(r, timeout=20) as x:
             body = x.read()
@@ -193,7 +210,7 @@ check("  and keeps the origin's own revision, not the exchange's digest",
       row and len(str(row.get("origin_revision") or "")) == 40 and row["origin_revision"] != adv["revision"])
 
 # ── an area that crosses to one of them and not the other ────────────────────
-# `use_when_export` opens a door; `export_to` says who is on the list. It can only ever narrow, and
+# `export` opens a door; `export_to` says who is on the list. It can only ever narrow, and
 # the interesting failure is not that the wrong backbone sees the row — it is that the wrong backbone
 # sees the row's *address* and follows it, which nothing in the listing would show.
 def set_audience(where, area, names):
@@ -203,7 +220,7 @@ def set_audience(where, area, names):
         if "\nrole: representative\n" not in text or "\nparent:" in text: continue
         out = [l for l in text.splitlines(True) if not l.startswith("export_to:")]
         if names:
-            at_i = next(i for i, l in enumerate(out) if l.startswith("use_when_export:"))
+            at_i = next(i for i, l in enumerate(out) if l.startswith("export:"))
             out.insert(at_i + 1, "export_to: [" + ", ".join(names) + "]\n")
         open(q, "w", encoding="utf-8").write("".join(out))
         break
@@ -313,10 +330,10 @@ def set_export(where, area, line):
         q = os.path.join(where, "regions", area, f)
         text = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" not in text or "\nparent:" in text: continue
-        out = [l for l in text.splitlines(True) if not l.startswith("use_when_export:")]
+        out = [l for l in text.splitlines(True) if not l.startswith("export:")]
         if line:
             at_i = next(i for i, l in enumerate(out) if l.strip() == "role: representative")
-            out.insert(at_i + 1, f"use_when_export: {line}\n")
+            out.insert(at_i + 1, "export: yes\n")
         open(q, "w", encoding="utf-8").write("".join(out))
         break
     regenerate(Store(where))

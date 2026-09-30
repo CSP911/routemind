@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-21_2dc00d",
+ "question": "Department head, Dhaka, 3-week trip: nightly hotel cap and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:40:20Z",
+ "touched_at": "2026-09-21T13:40:39Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / hotel per diem and receipt rules likely live here",
+   "at": "2026-09-21T13:40:19Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / hotel per diem and receipt rules likely live here",
+   "at": "2026-09-21T13:40:19Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:40:39Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g3-band-b4-stay-s4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:40:39Z"
+}

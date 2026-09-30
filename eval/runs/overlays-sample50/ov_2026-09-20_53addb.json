@@ -1,0 +1,40 @@
+{
+ "id": "ov_2026-09-20_53addb",
+ "question": "For origin O1, value W1, goods K1, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:20:36Z",
+ "touched_at": "2026-09-20T09:20:36Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table by origin/value/goods, in force since 2026-01-01",
+   "at": "2026-09-20T09:20:32Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions, need to confirm which applies today",
+   "at": "2026-09-20T09:20:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table by origin/value/goods, in force since 2026-01-01",
+   "at": "2026-09-20T09:20:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions, need to confirm which applies today",
+   "at": "2026-09-20T09:20:33Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

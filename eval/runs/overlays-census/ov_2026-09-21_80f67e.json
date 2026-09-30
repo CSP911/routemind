@@ -1,0 +1,67 @@
+{
+ "id": "ov_2026-09-21_80f67e",
+ "question": "A saturday, eleven hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T00:02:51Z",
+ "touched_at": "2026-09-21T00:03:16Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "attendance may define how overtime hours are logged/rounded",
+   "at": "2026-09-21T00:02:50Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier likely defined in payroll rules",
+   "at": "2026-09-21T00:02:50Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "attendance may define how overtime hours are logged/rounded",
+   "at": "2026-09-21T00:02:50Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/regions/payroll",
+   "why": "overtime premiums moved to attendance on 2026-01-01, per hard-moved-overtime warning; payroll no longer authoritative",
+   "at": "2026-09-21T00:03:14Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T00:03:16Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h4-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T00:03:16Z"
+}

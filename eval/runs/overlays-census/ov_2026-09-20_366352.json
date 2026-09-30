@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_366352",
+ "question": "Daejeon company, 300M won, licence: site visit required? review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:58:12Z",
+ "touched_at": "2026-09-20T22:58:33Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor diligence, thresholds, site visits, and review cadence likely live under procurement",
+   "at": "2026-09-20T22:58:12Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor diligence, thresholds, site visits, and review cadence likely live under procurement",
+   "at": "2026-09-20T22:58:12Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:58:33Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:58:33Z"
+}

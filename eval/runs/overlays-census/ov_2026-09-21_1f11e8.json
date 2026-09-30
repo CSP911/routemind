@@ -1,0 +1,74 @@
+{
+ "id": "ov_2026-09-21_1f11e8",
+ "question": "Dinner with a client, about 40 million won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:39:32Z",
+ "touched_at": "2026-09-21T14:39:51Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "amount + term based approval threshold table, likely governs signature needed",
+   "at": "2026-09-21T14:39:32Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes needed before purchase",
+   "at": "2026-09-21T14:39:32Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "amount + term based approval threshold table, likely governs signature needed",
+   "at": "2026-09-21T14:39:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes needed before purchase",
+   "at": "2026-09-21T14:39:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-team-spending-ceilings",
+   "why": "entertainment/client dinner might be expense related, checking relevance",
+   "at": "2026-09-21T14:39:32Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/sec-team-spending-ceilings",
+   "why": "entertainment ceiling section not relevant; question is about approval threshold, not annual team spend ceiling",
+   "at": "2026-09-21T14:39:48Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:39:51Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v4-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:39:51Z"
+}

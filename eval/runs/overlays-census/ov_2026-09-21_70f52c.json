@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_70f52c",
+ "question": "Dinner with a client, around 12 million won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:36:21Z",
+ "touched_at": "2026-09-21T14:36:49Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "client dinner is a business entertainment expense - need signer and approval rules",
+   "at": "2026-09-21T14:36:21Z"
+  },
+  {
+   "address": "/v1/regions/procurement",
+   "why": "recurring annual spend may be treated as a procurement contract needing threshold approval and competitive quotes",
+   "at": "2026-09-21T14:36:21Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "approval chain / signer authority for this amount",
+   "at": "2026-09-21T14:36:21Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "client dinner is a business entertainment expense - need signer and approval rules",
+   "at": "2026-09-21T14:36:21Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "recurring annual spend may be treated as a procurement contract needing threshold approval and competitive quotes",
+   "at": "2026-09-21T14:36:21Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "approval chain / signer authority for this amount",
+   "at": "2026-09-21T14:36:21Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:36:49Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v3-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:36:49Z"
+}

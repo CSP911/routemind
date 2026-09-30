@@ -28,29 +28,39 @@ Two teams who *should* share a vocabulary should share a repository. A link is f
    /v1/peers/<name>/…   ─── relayed ──▶  /v1/export/…   (token, read-only, shared areas only)
 ```
 
-An area crosses by carrying **`use_when_export`** on its representative, and by nothing else.
+An area crosses by carrying **`export: yes`** on its representative, and by nothing else.
 
 ## Sharing is opt-in, per area, in writing
 
-`use_when_export` is the line this area shows in *another* backbone's hop 0. Absent means the area
-crosses no link at all — there is no default that shares, and "we forgot to exclude it" is not a state
-this can be in. The coarse half of export policy falls out of that: what is shared is what somebody
-wrote a sentence for.
+`export` says whether this area crosses a link. Absent means it crosses none — there is no default
+that shares, and "we forgot to exclude it" is not a state this can be in.
 
-It is a **second** sentence rather than a reuse of `use_when` because an advertisement is written for
-one backbone's hop 0 and has no reason to be true in another's. A subsidiary's *"needs head-office
-approval"* means nothing read at head office.
+The line a peer reads is **`use_when`**: the same sentence this backbone routes on. There is one
+sentence.
 
-It goes through the review queue, scope `peer`, for the reason every other advertisement does: what an
-area says about itself is the one thing the whole system routes on. Across a link that stops being a
-nicety, because the reader is another organisation.
+That is a change, made 2026-09-29, and the argument it replaced is worth keeping because it was a
+good one. There used to be a second sentence, `use_when_export`, on the grounds that an advertisement
+written for one backbone's hop 0 has no reason to be true in another's — a subsidiary's *"needs
+head-office approval"* means nothing read at head office. What decided it was the shipped
+repositories: in all five the two sentences had drifted into saying genuinely different things, and
+nobody had noticed, because only one of them was ever read at home. Two sentences meaning the same
+thing is one sentence and one copy of it, and the copy is the one that goes stale.
+
+So whoever writes `use_when` now writes it knowing both readers have it. The cost is real and is
+stated here rather than hidden: an internal sentence may say internal things, and it goes out as
+written.
+
+The decision goes through the review queue, scope `export`, for the reason every advertisement does:
+what an area says about itself is the one thing the whole system routes on. Across a link that stops
+being a nicety, because the reader is another organisation. Editing the sentence itself is scope
+`bb`, as it always was — that review now covers the exported line too.
 
 ## And who, when it is not everybody
 
 `export_to` on the same representative names the peers an area crosses to. Absent — the common case —
-means everybody `use_when_export` opened it to. It can only ever **narrow**: an area with no export
-line crosses to nobody, and naming an audience for it restricts nothing, so that is an error rather
-than a warning. It is the one of these mistakes that reads exactly like a restriction that is working.
+means everybody `export` opened it to. It can only ever **narrow**: an area that is not exported
+crosses to nobody, and naming an audience for it restricts nothing, so that is an error rather than a
+warning. It is the one of these mistakes that reads exactly like a restriction that is working.
 
 The names are peer names as the enforcing side knows them: this backbone's own `peers.yaml` on a
 direct link, the exchange's `members.yaml` behind one. In practice both are the organisation's short
@@ -94,34 +104,18 @@ area already crosses to* — and a mistake everywhere else. And there is no draf
 scopes revise a sentence about what an area holds, which is in the ontology and can be read; who may
 see it is a decision about other organisations, which is not in here and is nobody's to guess.
 
-Neither this nor `use_when_export` has a field on the map screen yet. Both are API and queue.
-
-### A different sentence for one reader
-
-`use_when_export_for` on the same representative maps a peer name to the line **that** peer is shown
-instead of the default. Everybody else keeps the default and nobody is told there are other versions.
-
-It is applied where the audience is applied and for the same reason: the backbone that owns the area
-sees the room, not the reader, so it hands the room the map and the room picks. The lines meant for
-other members are dropped on the way out — who else is told what is between them and the origin.
-
-The rules are the default line's rules, one per entry, because each becomes exactly the same cell in
-exactly the same kind of table: one table cell, no `|`, not the `one_liner`. Two more are its own. An
-override **identical to the default** is an error rather than a warning — it reads as a decision to
-say something different and says the same thing, so the day the default changes one reader silently
-keeps the old sentence and nobody is looking there. And an override for a peer the audience leaves out
-is an error, because it would never be read.
+Neither this nor `export` has a field on the map screen yet. Both are API and queue.
 
 ### The screen
 
-All three are on the area's rack, under **Across a link**: the line, who it crosses to, and a
-different line for one reader. Three sections and three proposals, not one form with three fields —
-"stop advertising this area" and "reword it" must never arrive as one thing to say yes or no to.
+Both are on the area's rack, under **Across a link**: whether it crosses, and who to. Two sections
+and two proposals, not one form with two fields — "stop advertising this area" and "narrow who sees
+it" must never arrive as one thing to say yes or no to. The sentence itself is shown there and is not
+editable there; it is edited where every other routing line is edited, so nobody writes a second one
+by reflex into a box that looks like it wants one.
 
-Each goes through the review queue with its own scope (`peer`, `audience`, `peer-line`), and the
-review card names the peer a `peer-line` proposal is for: without it a reviewer sees
-`use_when_export_for` and two sentences with no way to tell whose line they are, which is the whole of
-what they are being asked to judge.
+Each goes through the review queue with its own scope (`export`, `audience`). Proposals filed under
+the older `peer` and `peer-line` spellings still render, since one can be sitting in a queue.
 
 **Withdrawing takes the whole decision with it.** Clearing the line clears the audience and the
 per-peer overrides alongside it, and the answer says so. They narrow and replace a line; with no line
@@ -180,7 +174,7 @@ kinds:
 ```
 
 **One decision per kind, not one per entity.** Twelve, not seventy-nine. And a **deny** list rather
-than an allow list: the area-level `use_when_export` is already the opt-in, and making an export a
+than an allow list: the area-level `export` is already the opt-in, and making an export a
 twelve-part act would mean the part everybody skips is the one that matters. A value that is neither
 yes nor no is refused rather than read as one — `export: maybe` reads as caution and would be
 permission.
@@ -312,7 +306,7 @@ Four things, and the operator's screen prints all four for you:
 1. `EXCHANGE_TOKEN_BRANCH` in `.env` — one secret, used in both directions.
 2. `data-b/repo/peers.yaml`, naming the exchange. Its half of the declaration.
 3. A member entry at the exchange, naming it. The other half — neither side alone enrols anybody.
-4. A `use_when_export` on whatever it should share, through **Advertise upstream** (scope `peer`).
+4. `export: yes` on whatever it should share, through **Advertise upstream** (scope `export`).
 
 Only the fourth is about knowledge, and only the fourth goes through a review queue. The first three
 are wiring.
@@ -429,7 +423,7 @@ To a backbone it is indistinguishable from any other peer — same `/v1/export`,
 read-only rule. **No backbone has any code that knows what an exchange is.**
 
 It does not decide what is shared. It reads what each member published and can no more widen that
-than any other peer can; `use_when_export` stays in each ontology, through each review queue.
+than any other peer can; `export` stays in each ontology, through each review queue.
 
 **One secret per member, used both ways.** The exchange presents it when reading that member, and the
 member presents it when reading the exchange. There is no shared password and no observer role, so
@@ -480,6 +474,58 @@ at the same moment — which is why nobody does, and a room makes it worse, beca
 stops at once.
 
 `./check/peer-check.py` — the last 21 of its 87 assertions.
+
+## Starting one by hand
+
+A circuit is the one thing here a person starts rather than an agent reaching for it, so it is offered
+two ways beside the tool:
+
+- **`/circuit <url> <token> [name]`** — `.claude/commands/circuit.md`, a project command, typed exactly
+  like that.
+- **the `circuit` MCP prompt** — listed by `prompts/list` with `url`, `token` and `name` as arguments,
+  so a client can show fields instead of asking somebody to compose a tool call. It opens the circuit
+  itself rather than asking the model to; a prompt that politely requests a tool call is one more
+  place the two can disagree.
+
+Neither is a link. `peers.yaml` is a standing arrangement somebody commits and everyone sees in hop 0;
+a circuit lasts for the connection, writes nothing on either side, and is the caller's alone.
+
+## Six hours, not for ever
+
+The secret above is an **enrolment key**. It opens one thing:
+
+```
+POST /v1/peers/token      X-Peer-Token: <enrolment key>
+  → { "token": "...", "expires_in": 21600 }
+```
+
+and the read path carries that session token instead. Operator, 2026-09-29.
+
+The reason is what a permanent bearer token does when it gets out. It used to ride on every read
+across every link, so it was in every request, every proxy log and every transcript, and nothing
+expired it — two leaked into a working session while this was being built, and both stayed valid
+until somebody rotated them by hand. Now the long-lived secret is used about four times a day per
+link instead of thousands of times, and anything that escapes off the read path stops being worth
+something by the end of the shift.
+
+**A session cannot mint another.** The enrolment key is the only thing `/v1/peers/token` accepts —
+otherwise a leaked session renews itself for ever and the six hours bound nothing.
+
+**Sessions live in memory, so a restart revokes every one of them.** Clients re-mint on a 401, which
+makes that the cheapest revocation there is and costs one extra round trip per link. `drop_sessions()`
+is the same thing without the restart.
+
+**A session records who the far end decided the caller was.** So changing `peers.yaml` or
+`members.yaml` re-opens that question rather than waiting six hours for it: `sessions_follow` drops
+every session when the declared set changes. All of them, not the changed row — an audience is a list,
+and removing one name changes what every other name means.
+
+**What this does not do** is prove who is at the far end. A short-lived token handed to an endpoint
+that is not who it claims to be is still handed over; `public_address` above refuses to send one in
+clear text to a public address, and that is the whole of the endpoint protection today. This change
+shortens how long a leak is worth something. It is not authentication of the other side.
+
+`./check/session-check.py`, and every link check goes through the mint because every client does.
 
 ## Two exchanges
 
@@ -549,7 +595,7 @@ docker compose -f docker-compose.yml -f docker-compose.peer.yml \
 
 Six backbones and two rooms — HOME and BRANCH on IX, VENDOR, AUDIT and DEPOT on PARTNER-IX, and
 LEGACY, a direct link that is declared and never started. Six areas out of nineteen carry a
-`use_when_export` line, and the other thirteen stay home, which is the part that is hard to believe
+`export: yes`, and the other thirteen stay home, which is the part that is hard to believe
 until it is on a screen. The wall at http://localhost:8080/knowledge draws one card per domain and
 LEGACY wears its own chip; the operator's screen at :8090 shows PARTNER-IX carrying five rows that
 none of its own backbones wrote.
@@ -578,7 +624,7 @@ back the command. **It thinks; docker runs; the operator stays the one who did i
 **It cannot read what the members share, and cannot make an area cross.** The exchange has a second
 door for the operator, and it answers membership and health and never a reflected row: you learn that
 BRANCH is attached and advertising two areas, not what they are. An area crosses because somebody
-wrote `use_when_export` on it in its own repository, through its own review queue — a screen out here
+set `export` on it in its own repository, through its own review queue — a screen out here
 that could do either would be the way around the only rule that keeps sharing deliberate.
 
 Two doors, two keys, and neither is a spare: a member's token does not open `/admin`, and the admin

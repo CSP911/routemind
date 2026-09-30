@@ -1,0 +1,76 @@
+{
+ "id": "ov_2026-09-20_08b16b",
+ "question": "For grade G1, band B1, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:15:39Z",
+ "touched_at": "2026-09-20T09:16:06Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table since 2026-01-01, by grade/band/stay, likely has hotel nightly cap",
+   "at": "2026-09-20T09:15:39Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns which per-diem version covers which dates - need to confirm 2026-09-20 uses current table",
+   "at": "2026-09-20T09:15:39Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "why": "superseded 2024-07-01 to 2025-12-31 version, excluded but keep as guard against wrong version",
+   "at": "2026-09-20T09:15:39Z"
+  },
+  {
+   "address": "/v1/nodes/evidence",
+   "why": "evidence/receipt threshold rules likely live here",
+   "at": "2026-09-20T09:15:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table since 2026-01-01, by grade/band/stay, likely has hotel nightly cap",
+   "at": "2026-09-20T09:15:39Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns which per-diem version covers which dates - need to confirm 2026-09-20 uses current table",
+   "at": "2026-09-20T09:15:39Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "why": "superseded 2024-07-01 to 2025-12-31 version, excluded but keep as guard against wrong version",
+   "at": "2026-09-20T09:15:39Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "evidence/receipt threshold rules likely live here",
+   "at": "2026-09-20T09:15:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:16:06Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g1-band-b1-stay-s1/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:16:06Z"
+}

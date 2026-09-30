@@ -1,7 +1,7 @@
 """Links to other backbones: reading what they advertise, and relaying what they hold.
 
 A peer is another RouteMind, declared in `peers.yaml` in this repository. What crosses is its
-**export advertisement** — the areas it wrote a `use_when_export` for — and, on request, the
+**export advertisement** — the areas it set `export` on — and, on request, the
 documents behind them. Nothing crosses the other way: writes go to the backbone that owns the area.
 
 Three decisions live here, and each of them is the interesting kind.
@@ -31,11 +31,15 @@ mislabelling one of these suspends the absence rule for a reason that is not tru
 """
 from __future__ import annotations
 
+import contextlib
+import hashlib
 import hmac
 import ipaddress
 import json
 import os
+import secrets
 import socket
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -59,6 +63,152 @@ TIMEOUT = float(os.environ.get("ONTOLOGY_PEER_TIMEOUT") or 4.0)
 # it is a safety bound, and the only reason to turn it up is a topology this does not have.
 REFRESH_HOPS = 2
 NAME_OK = __import__("re").compile(r"^[a-z][a-z0-9-]{0,30}$")
+
+# ── session tokens ────────────────────────────────────────────────────────────
+# The secret in `.env` used to be presented on every read, so it was in every request, every proxy
+# log and every transcript — and it never expired. Two of them leaked into a working session while
+# this was being built, and both stayed valid.
+#
+# Operator, 2026-09-29: six hours. The secret becomes an **enrolment key**, good for one thing —
+# asking for a session token — and the session token is what the read path carries. The long-lived
+# secret is then used about four times a day per link instead of on every request, and anything that
+# does leak off the read path dies by the end of the shift.
+#
+# What this does **not** fix, said here so nobody reads it as more than it is: a short-lived bearer
+# token handed to an endpoint that is not who it claims to be is still handed over. This shortens
+# how long a leak is worth something; it does not prove who is at the far end.
+SESSION_TTL = float(os.environ.get("ONTOLOGY_PEER_SESSION_TTL") or 6 * 3600)
+# In memory, so a restart revokes every session. That is a feature and the cheapest revocation there
+# is: the clients below re-mint on a 401, so the cost of it is one extra round trip per link.
+_SESSIONS: dict[str, dict] = {}
+_SESSION_LOCK = threading.Lock()
+# A ceiling, so a caller that mints in a loop cannot grow this without bound. Well above one per
+# link per six hours; reaching it means something is wrong, and dropping the oldest is the failure
+# that costs a round trip rather than memory.
+MAX_SESSIONS = 512
+
+
+def mint_session(peer: str | None) -> tuple[str, int]:
+    """A session token for `peer`, and how many seconds it is good for."""
+    now = time.time()
+    token = secrets.token_urlsafe(32)
+    with _SESSION_LOCK:
+        for k in [k for k, v in _SESSIONS.items() if v["expires"] <= now]: _SESSIONS.pop(k, None)
+        while len(_SESSIONS) >= MAX_SESSIONS:
+            _SESSIONS.pop(min(_SESSIONS, key=lambda k: _SESSIONS[k]["expires"]), None)
+        _SESSIONS[token] = {"peer": peer, "expires": now + SESSION_TTL}
+    return token, int(SESSION_TTL)
+
+
+def session_peer(token: str | None) -> dict | None:
+    """Whose session this is, or None. Expiry is checked here and nowhere else.
+
+    Compared with `compare_digest` against each candidate rather than by dict lookup: a dict lookup
+    on a secret is a hash-table probe whose timing depends on the key, and this runs on every read
+    across every link.
+    """
+    if not token: return None
+    now = time.time()
+    with _SESSIONS_snapshot() as rows:
+        for stored, row in rows:
+            if row["expires"] > now and hmac.compare_digest(stored, token):
+                return {"peer": row["peer"], "expires": row["expires"]}
+    return None
+
+
+@contextlib.contextmanager
+def _SESSIONS_snapshot():
+    with _SESSION_LOCK:
+        rows = list(_SESSIONS.items())
+    yield rows
+
+
+# ── the other side of it: holding one ────────────────────────────────────────
+# What this backbone presents when it reads somebody else. One session per (url, key), renewed a
+# minute before it expires so a read never lands on the boundary, and dropped on a 401 so a restart
+# at the far end costs one extra round trip rather than an outage.
+_HELD: dict[str, dict] = {}
+_HELD_LOCK = threading.Lock()
+RENEW_MARGIN = 60.0
+
+
+def session_for(url: str, key: str, timeout: float | None = None) -> str:
+    """A session token to read `url` with, minted from `key` if there is not a live one.
+
+    Raises PeerError on failure, so a caller sees the same shape as any other link failure — a peer
+    that will not issue a token is a peer that cannot be read, and the two must not be distinguished
+    by how the error arrives.
+    """
+    ident = url.rstrip("/")
+    now = time.time()
+    with _HELD_LOCK:
+        held = _HELD.get(ident)
+        if held and held["expires"] - RENEW_MARGIN > now and hmac.compare_digest(held["key"], key):
+            return held["token"]
+    req = urllib.request.Request(ident + "/v1/peers/token", data=b"", method="POST",
+                                 headers={"X-Peer-Token": key, "Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout or TIMEOUT) as r:
+            doc = json.loads(r.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        # 401 here is the enrolment key being wrong, which is a different thing from a session having
+        # expired and needs saying differently — one is a configuration error and the other is time
+        # passing.
+        # `reachable=False`, and the distinction is the whole of why this flag exists. Declining to
+        # send a token in clear text is **our** refusal, so the absence rule stands — we chose not to
+        # look. A key the far end rejects is the opposite: we asked, we were told no, and we cannot
+        # see what is over there. An agent must not claim absence over a link in that state.
+        raise PeerError(f"{ident} refused the enrolment key (HTTP {e.code}) — check the token in the "
+                        f"environment against what that backbone accepts", status=e.code, reachable=False)
+    except Exception as e:
+        raise PeerError(f"{ident} could not be asked for a session token ({e})", status=504, reachable=False)
+    token = str(doc.get("token") or "")
+    if not token:
+        raise PeerError(f"{ident} answered the token request without a token", status=502, reachable=True)
+    with _HELD_LOCK:
+        _HELD[ident] = {"token": token, "key": key,
+                        "expires": now + float(doc.get("expires_in") or SESSION_TTL)}
+    return token
+
+
+def forget_session(url: str) -> None:
+    """Drop the held token for a backbone. Called on a 401, so the next read mints a fresh one."""
+    with _HELD_LOCK:
+        _HELD.pop(url.rstrip("/"), None)
+
+
+_DECLARED_SEEN: dict[str, str] = {}
+
+
+def sessions_follow(rows: list[dict], where: str = "self") -> bool:
+    """Drop every session when the set of declared peers changes. True when it did.
+
+    A session records who the far end decided the caller was, at the moment it was minted. So a
+    backbone that starts recognising somebody by name — or stops — would otherwise keep answering
+    them as they were for up to six hours, and "I added them to peers.yaml and nothing happened" is
+    the shape of that.
+
+    Cheap enough to do on the read path: `declared()` already reads the file per request, so this is
+    a hash of what it returned. Dropping *all* sessions rather than the affected ones is deliberate —
+    who a caller is can change without their own row changing, because an audience is a list and
+    removing one name changes what every other name means.
+    """
+    mark = hashlib.sha256(json.dumps(
+        sorted((r.get("name"), tuple(sorted(r.get("accept") or []))) for r in rows)).encode()
+    ).hexdigest()
+    if _DECLARED_SEEN.get(where) == mark: return False
+    first = where not in _DECLARED_SEEN
+    _DECLARED_SEEN[where] = mark
+    if not first: drop_sessions()
+    return not first
+
+
+def drop_sessions(peer: str | None = None) -> int:
+    """Revoke. All of them, or one peer's — what "stop renewing" looks like when it has to be now."""
+    with _SESSION_LOCK:
+        doomed = [k for k, v in _SESSIONS.items() if peer is None or v["peer"] == peer]
+        for k in doomed: _SESSIONS.pop(k, None)
+    return len(doomed)
 
 
 def same_secret(given: str | None, expected: str | None) -> bool:
@@ -178,21 +328,40 @@ def _fetch(peer: dict, path: str, *, on_behalf_of: str | None = None) -> tuple[b
         raise PeerError(f"peer {peer['name']} is at a public address over plain http — its token "
                         f"would go out in clear text. Use https, or put the link on a network you "
                         f"control", status=502, reachable=True)
-    req = urllib.request.Request(url, headers={"Accept": "application/json, text/markdown, */*"})
-    if peer["token"]: req.add_header("X-Peer-Token", peer["token"])
-    # What the *caller* is, said by the caller. An exchange announces itself so the far end can
-    # withhold what it does not carry for third parties, and this is safe to believe for the reason
-    # that makes self-declaration usually unsafe reversed: the claim can only ever get the claimant
-    # **less**. Nobody lies their way into more. It is a second lock on the same door as `kind` in
-    # members.yaml, and it is the one that still holds when the hand-written label is wrong.
-    if peer.get("self_kind"): req.add_header("X-Peer-Kind", str(peer["self_kind"]))
-    # Who this is being fetched *for*, when it is not for us. Only an exchange sets it, and only the
-    # far end's own `kind: exchange` makes it worth anything — see `declared`.
-    if on_behalf_of: req.add_header("X-Peer-For", on_behalf_of)
+    def build(tok):
+        r = urllib.request.Request(url, headers={"Accept": "application/json, text/markdown, */*"})
+        # A six-hour session rather than the enrolment key, which now opens nothing but the mint.
+        # Held per backbone and renewed a minute early, so this costs one extra round trip about
+        # four times a day per link instead of carrying a permanent secret on every read.
+        if tok: r.add_header("X-Peer-Token", tok)
+        if peer.get("self_kind"): r.add_header("X-Peer-Kind", str(peer["self_kind"]))
+        if on_behalf_of: r.add_header("X-Peer-For", on_behalf_of)
+        return r
+
+    req = build(session_for(peer["url"], peer["token"]) if peer["token"] else "")
+    # What the *caller* is, said by the caller (`X-Peer-Kind`, set in `build`): an exchange announces
+    # itself so the far end can withhold what it does not carry for third parties, and this is safe
+    # to believe for the reason that makes self-declaration usually unsafe reversed — the claim can
+    # only ever get the claimant **less**. Nobody lies their way into more. `X-Peer-For` says who it
+    # is being fetched for, when that is not us; only an exchange sets it.
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
             return r.read(), (r.headers.get("Content-Type") or "application/json")
     except urllib.error.HTTPError as e:
+        # A 401 is the far end having restarted, or six hours having passed at an awkward moment.
+        # Held tokens are dropped and it is tried once more — a peer that restarts must cost a round
+        # trip, not an outage, and without this every link would fail for one read after any restart.
+        if e.code == 401 and peer["token"]:
+            forget_session(peer["url"])
+            try:
+                with urllib.request.urlopen(build(session_for(peer["url"], peer["token"])),
+                                            timeout=TIMEOUT) as r:
+                    return r.read(), (r.headers.get("Content-Type") or "application/json")
+            except urllib.error.HTTPError as e2:
+                raise PeerError(f"peer {peer['name']} answered {e2.code}", status=e2.code, reachable=True) from e2
+            except Exception as e2:
+                raise PeerError(f"peer {peer['name']} is unreachable: {type(e2).__name__}", status=504,
+                                reachable=False) from e2
         # The peer answered. Whatever it said is its own answer and is carried through as one —
         # a 404 from over there means *that* backbone does not have it, which is a fact worth having.
         raise PeerError(f"peer {peer['name']} answered {e.code}", status=e.code, reachable=True) from e
@@ -223,13 +392,18 @@ def advertisement(peer: dict) -> dict:
     hit = _cache.get(peer["name"])
     if hit and (time.monotonic() - hit[0]) < ADVERT_TTL:
         if hit[1] is not None: return hit[1]
-        raise PeerError(hit[2], status=504, reachable=False)
+        # The remembered failure, with the two fields that say what it *was*. They used to be thrown
+        # away and replaced with `504, reachable=False`, so the same failure meant one thing when it
+        # happened and another for the next five seconds — and `reachable` is what decides whether
+        # hop 0 still lets an agent claim absence. A refusal this end made (a token it would not send
+        # in clear text) must never suspend that rule, and it did, five seconds later.
+        raise PeerError(hit[2], status=hit[3], reachable=hit[4])
     try:
         d = _fetch_json(peer, "/v1/export/regions")
     except PeerError as e:
-        _cache[peer["name"]] = (time.monotonic(), None, str(e))
+        _cache[peer["name"]] = (time.monotonic(), None, str(e), e.status, e.reachable)
         raise
-    _cache[peer["name"]] = (time.monotonic(), d, "")
+    _cache[peer["name"]] = (time.monotonic(), d, "", 200, True)
     return d
 
 
@@ -268,7 +442,13 @@ def poke(targets: list[dict], *, hops: int = REFRESH_HOPS, self_kind: str | None
     for peer in targets:
         if not peer["token"]: continue
         req = urllib.request.Request(peer["url"] + "/v1/export/refresh", data=b"", method="POST")
-        req.add_header("X-Peer-Token", peer["token"])
+        # `refresh` is on the export surface and takes a session like every other call there. A
+        # failure here is already swallowed below — a peer that will not answer a hint is a peer that
+        # re-reads a few seconds later — so a token this cannot mint is the same non-event.
+        try:
+            req.add_header("X-Peer-Token", session_for(peer["url"], peer["token"]))
+        except PeerError:
+            continue
         req.add_header("X-Refresh-Hops", str(max(0, int(hops))))
         if self_kind or peer.get("self_kind"):
             req.add_header("X-Peer-Kind", str(self_kind or peer["self_kind"]))
@@ -300,7 +480,14 @@ def rows(root: Path) -> tuple[list[dict], list[dict]]:
         try:
             adv = advertisement(peer)
         except PeerError as e:
-            state.update(reachable=False, error=str(e)); links.append(state); continue
+            # `e.reachable`, not False. The flag is set with care at every raise and documented at
+            # each one — "the absence rule must not be suspended over a link this end declined to
+            # use" — and it was honoured on the relay path and thrown away here, which is the path
+            # that decides whether hop 0 lets an agent claim absence. So the one case the flag exists
+            # for was the one case it did not reach: a token this backbone refuses to send in clear
+            # text to a public address is our decision, the rows go either way, and every agent
+            # stopped being allowed to say anything was absent because of it.
+            state.update(reachable=e.reachable, error=str(e)); links.append(state); continue
         state["revision"] = adv.get("revision")
         # What it answered, against what it was called. `kind: exchange` is one word typed by hand
         # into a file, and getting it wrong here fails **silently**: a room is handed the filtered

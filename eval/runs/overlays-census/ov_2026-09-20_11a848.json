@@ -1,0 +1,47 @@
+{
+ "id": "ov_2026-09-20_11a848",
+ "question": "For something dated 29 June 2024 - two days before the first change - what screening was required for a new supplier? Use the version in force on that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:57:46Z",
+ "touched_at": "2026-09-20T15:57:59Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "supplier screening likely under procurement policy",
+   "at": "2026-09-20T15:57:46Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "supplier screening likely under procurement policy",
+   "at": "2026-09-20T15:57:46Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:57:59Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:57:59Z"
+}

@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_647748",
+ "question": "On a two-year contract, been here nine years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:22:07Z",
+ "touched_at": "2026-09-20T16:22:27Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, monthly accrual rate, carryover/holding cap questions",
+   "at": "2026-09-20T16:22:07Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, monthly accrual rate, carryover/holding cap questions",
+   "at": "2026-09-20T16:22:07Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:22:27Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t4-site-l4/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:22:27Z"
+}

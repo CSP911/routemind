@@ -1,0 +1,65 @@
+{
+ "id": "ov_2026-09-20_df7240",
+ "question": "For origin O1, value W2, goods K3, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:53:50Z",
+ "touched_at": "2026-09-20T22:54:06Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin, value, goods - likely has the site visit and file review columns",
+   "at": "2026-09-20T22:53:50Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table with different date ranges - need to confirm which is in force today 2026-09-20",
+   "at": "2026-09-20T22:53:50Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, may clarify terms like premises visit / file review",
+   "at": "2026-09-20T22:53:50Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table by origin, value, goods - likely has the site visit and file review columns",
+   "at": "2026-09-20T22:53:50Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table with different date ranges - need to confirm which is in force today 2026-09-20",
+   "at": "2026-09-20T22:53:50Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, may clarify terms like premises visit / file review",
+   "at": "2026-09-20T22:53:50Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:54:06Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w2-goods-k3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:54:06Z"
+}

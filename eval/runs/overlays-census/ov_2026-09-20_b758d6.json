@@ -1,0 +1,76 @@
+{
+ "id": "ov_2026-09-20_b758d6",
+ "question": "In March 2023, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:58:37Z",
+ "touched_at": "2026-09-20T15:59:24Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay rate/multiplier would be documented under payroll rules",
+   "at": "2026-09-20T15:58:37Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which of three overtime rate versions applies to which date range",
+   "at": "2026-09-20T15:59:05Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31 - need to check if this or an earlier v1 covers March 2023",
+   "at": "2026-09-20T15:59:06Z"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "legend-revision says the version in force until 2024-07-01 (covers March 2023) is indexed as overtime-rate-table - this is the actual answer source",
+   "at": "2026-09-20T15:59:16Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay rate/multiplier would be documented under payroll rules",
+   "at": "2026-09-20T15:58:37Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which of three overtime rate versions applies to which date range",
+   "at": "2026-09-20T15:59:05Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31 - need to check if this or an earlier v1 covers March 2023",
+   "at": "2026-09-20T15:59:06Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "legend-revision says the version in force until 2024-07-01 (covers March 2023) is indexed as overtime-rate-table - this is the actual answer source",
+   "at": "2026-09-20T15:59:16Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:59:24Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T15:59:24Z"
+}

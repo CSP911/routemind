@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_7250d9",
+ "question": "In August 2025, what was the delegation limit or who signed for category C2 spend in amount band V2? Under the version of approval threshold in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:06:37Z",
+ "touched_at": "2026-09-20T16:06:51Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category, amount and term - matches C2/V2 delegation question",
+   "at": "2026-09-20T16:06:37Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by category, amount and term - matches C2/V2 delegation question",
+   "at": "2026-09-20T16:06:37Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:06:51Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:06:51Z"
+}

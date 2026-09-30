@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_692e33",
+ "question": "October 2024 nightly lodging cap for grade 2 traveller, band B2 destination, overseas per-diem in force on that date",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:02:57Z",
+ "touched_at": "2026-09-20T16:03:12Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / per-diem is under expense area",
+   "at": "2026-09-20T16:02:57Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip pay / per-diem is under expense area",
+   "at": "2026-09-20T16:02:57Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:03:12Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:03:12Z"
+}

@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-21_986a12",
+ "question": "Department head, Jakarta, 8 nights - hotel per-night cap and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:36:42Z",
+ "touched_at": "2026-09-21T13:37:03Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "trip/hotel allowances and receipt rules live here",
+   "at": "2026-09-21T13:36:42Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "trip/hotel allowances and receipt rules live here",
+   "at": "2026-09-21T13:36:42Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:37:03Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g3-band-b3-stay-s3/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:37:03Z"
+}

@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_bf95eb",
+ "question": "Reconciling claims from 2023 and 2025 against overseas per-diem: which two versions, and nightly lodging cap under each?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:27:15Z",
+ "touched_at": "2026-09-20T09:27:15Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explains which per-diem version covers which date range",
+   "at": "2026-09-20T09:26:43Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, would cover a 2025 claim",
+   "at": "2026-09-20T09:26:48Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current table from 2026-01-01, may not apply to 2023/2025 claims but check",
+   "at": "2026-09-20T09:26:53Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "explains which per-diem version covers which date range",
+   "at": "2026-09-20T09:26:43Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, would cover a 2025 claim",
+   "at": "2026-09-20T09:26:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current table from 2026-01-01, may not apply to 2023/2025 claims but check",
+   "at": "2026-09-20T09:26:53Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

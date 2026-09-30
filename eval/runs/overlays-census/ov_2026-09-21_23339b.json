@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_23339b",
+ "question": "For category C2, amount V3, term M3, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:13:01Z",
+ "touched_at": "2026-09-21T14:13:23Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, likely holds signature requirement by category/amount/term",
+   "at": "2026-09-21T14:13:01Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns of three threshold versions with different dates - need to confirm which applies",
+   "at": "2026-09-21T14:13:01Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, likely holds signature requirement by category/amount/term",
+   "at": "2026-09-21T14:13:01Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "may hold quote requirement rules",
+   "at": "2026-09-21T14:13:01Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns of three threshold versions with different dates - need to confirm which applies",
+   "at": "2026-09-21T14:13:01Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/purchase-request",
+   "why": "exact matching row found directly in sec-hard-threshold, no need for the superseded/general purchase-request quote guidance",
+   "at": "2026-09-21T14:13:20Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:13:23Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v3-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:13:23Z"
+}

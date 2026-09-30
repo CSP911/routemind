@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_73af1e",
+ "question": "Partner firm employee, 5 years tenure, Seoul office: monthly leave accrual rate and max carryover/holding cap in January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:32:05Z",
+ "touched_at": "2026-09-20T16:32:28Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and carryover rules live here",
+   "at": "2026-09-20T16:32:05Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l1/body",
+   "why": "resolved row: partner firm=E4, five years=T3, Seoul office=L1",
+   "at": "2026-09-20T16:32:23Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and carryover rules live here",
+   "at": "2026-09-20T16:32:05Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l1/body",
+   "why": "resolved row: partner firm=E4, five years=T3, Seoul office=L1",
+   "at": "2026-09-20T16:32:23Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:32:28Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e4-tenure-t3-site-l1/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:32:28Z"
+}

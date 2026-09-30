@@ -1,0 +1,65 @@
+{
+ "id": "ov_2026-09-20_08b276",
+ "question": "For origin O1, value W3, goods K1, do we have to visit their premises, and how often is their file reviewed again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:55:24Z",
+ "touched_at": "2026-09-20T22:55:38Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table by origin/value/goods, in force since 2026-01-01",
+   "at": "2026-09-20T22:55:23Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions with overlapping dates - need to confirm which applies today",
+   "at": "2026-09-20T22:55:23Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together",
+   "at": "2026-09-20T22:55:23Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table by origin/value/goods, in force since 2026-01-01",
+   "at": "2026-09-20T22:55:23Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions with overlapping dates - need to confirm which applies today",
+   "at": "2026-09-20T22:55:23Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together",
+   "at": "2026-09-20T22:55:23Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:55:38Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:55:38Z"
+}

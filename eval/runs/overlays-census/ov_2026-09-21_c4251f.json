@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_c4251f",
+ "question": "Flights and hotels, about 40 million won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:25:21Z",
+ "touched_at": "2026-09-21T14:25:41Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "trip covers flights/hotels, may define approval and quote requirements for travel expenses",
+   "at": "2026-09-21T14:25:21Z"
+  },
+  {
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by amount and category may require competitive quotes for large one-time purchases",
+   "at": "2026-09-21T14:25:21Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "whose signature/approval chain for this amount",
+   "at": "2026-09-21T14:25:21Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "trip covers flights/hotels, may define approval and quote requirements for travel expenses",
+   "at": "2026-09-21T14:25:21Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by amount and category may require competitive quotes for large one-time purchases",
+   "at": "2026-09-21T14:25:21Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "whose signature/approval chain for this amount",
+   "at": "2026-09-21T14:25:21Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:25:41Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-threshold/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v4-term-m1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:25:41Z"
+}

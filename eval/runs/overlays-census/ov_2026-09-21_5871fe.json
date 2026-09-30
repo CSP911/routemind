@@ -1,0 +1,69 @@
+{
+ "id": "ov_2026-09-21_5871fe",
+ "question": "For category C3, amount V4, term M4, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:26:59Z",
+ "touched_at": "2026-09-21T14:27:13Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table since 2026-01-01, likely holds category/amount/term to signer mapping",
+   "at": "2026-09-21T14:26:59Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold table has three versions - need to confirm which one is current for today's date 2026-09-21",
+   "at": "2026-09-21T14:26:59Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request table may explain quote requirements (other prices first)",
+   "at": "2026-09-21T14:26:59Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table since 2026-01-01, likely holds category/amount/term to signer mapping",
+   "at": "2026-09-21T14:26:59Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold table has three versions - need to confirm which one is current for today's date 2026-09-21",
+   "at": "2026-09-21T14:26:59Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request table may explain quote requirements (other prices first)",
+   "at": "2026-09-21T14:26:59Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:27:13Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/procurement",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v4-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:27:13Z"
+}

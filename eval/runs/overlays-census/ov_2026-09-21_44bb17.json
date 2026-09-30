@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_44bb17",
+ "question": "Flights and hotels, about 700,000 won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:18:39Z",
+ "touched_at": "2026-09-21T14:18:57Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount+term based approval threshold by category, this sounds like a recurring/open-ended travel purchase",
+   "at": "2026-09-21T14:18:39Z"
+  },
+  {
+   "address": "/v1/regions/expense",
+   "why": "flights/hotels could be travel expense booking rules",
+   "at": "2026-09-21T14:18:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount+term based approval threshold by category, this sounds like a recurring/open-ended travel purchase",
+   "at": "2026-09-21T14:18:39Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "flights/hotels could be travel expense booking rules",
+   "at": "2026-09-21T14:18:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:18:57Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v1-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:18:57Z"
+}

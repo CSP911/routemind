@@ -5,7 +5,7 @@ Every write through the API must pass this before it is committed.
 """
 from __future__ import annotations
 from collections import Counter
-import json, re
+import json, pathlib, re
 from .store import Store, alias_names, file_scope, region_key, FM_RE
 from . import derive
 
@@ -88,7 +88,7 @@ def export_kinds(vocab: dict) -> set[str]:
     entity. Twelve, not seventy-nine.
 
     A deny list rather than an allow list. The area-level decision is already the opt-in: an area
-    crosses because somebody wrote `use_when_export` for it. Requiring every kind to be named again
+    crosses because somebody set `export` on it. Requiring every kind to be named again
     would make exporting one area a twelve-part act, and the part everybody would skip is the one
     that matters.
     """
@@ -187,7 +187,20 @@ def validate(store: Store) -> dict:
     for n in nodes:
         if n["holds"] != "pointers": continue
         for f in n["present_files"]:
-            for ln in (store.root / n["path"] / f).read_text(encoding="utf-8", errors="replace").splitlines():
+            # The child's own path, not the parent's joined with a name. A node used to be a
+            # directory holding files; it is now one file, and a "file" is a sibling entity that
+            # declares this node as its `parent` — see Store, where `files` is derived from the
+            # children as `<child-id>.md`. This line was left composing `<parent>.md/<name>`, so
+            # validating any pointer node that had a file raised NotADirectoryError — inside
+            # `transact`, which meant the write that added the file was refused and rolled back.
+            # Writing a file to a pointer node has therefore been impossible since the conversion,
+            # and no node in the shipped example uses one, which is why nothing caught it.
+            kid = by_id.get(f[:-3])
+            if not kid: continue          # listed but absent is already an error above
+            # The child's **body**, not its file. A pointer file used to be plain text; the child is
+            # now an entity, so the file opens with frontmatter — and reading the whole thing made
+            # the validator try to resolve `id: note` as a reference.
+            for ln in (kid.get("body") or "").splitlines():
                 ref = ln.strip().lstrip("-").strip()
                 if not ref or ref.startswith("#") or ref in by_id or _ref_exists(store, ref): continue
                 errors.append(f"pointer node {n['id']}: {f} line {ref[:60]!r} is not a reference that resolves (node id or REGION/path.md)")
@@ -249,33 +262,40 @@ def validate(store: Store) -> dict:
                 warnings.append(f"node {n['id']}: a representative with no use_when — the advertisement's 'should I come here' goes out blank")
             elif (n.get("use_when") or "").strip() == (n.get("one_liner") or "").strip():
                 errors.append(f"node {n['id']}: use_when is identical to one_liner — a description is not a 'when to come here'")
-            # `use_when_export` is the same sentence written for a *different* backbone's hop 0 — see
-            # docs/PEERING.md. It is checked, not required: an area with none is simply not advertised
-            # across a link, which is how export stays opt-in and in writing rather than a default.
+            # `export` says whether this area crosses a link. One sentence, and a decision about
+            # whether to advertise it — operator, 2026-09-29. There used to be a second sentence,
+            # `use_when_export`, written for a different backbone's hop 0; the argument for it was
+            # that a subsidiary's "needs head-office approval" means nothing read at head office.
+            # The argument against it won: two sentences meaning the same thing is one sentence and
+            # one copy of it, and the copy is the one nobody reads. In the shipped repositories all
+            # five had drifted into saying genuinely different things, which is the same failure seen
+            # from the other side.
             #
-            # Identical to `use_when` is fine and will be the common case between backbones of one
-            # organisation. Identical to `one_liner` is the same mistake as above, arriving by the same
-            # route — someone filled the field by copying the description.
-            exp = (n.get("use_when_export") or "").strip()
+            # So the line a peer reads is `use_when`, the line this backbone routes on. Whoever
+            # writes it now writes it knowing both readers have it, which is the point.
+            exp = n.get("export")
+            if exp is not None and not isinstance(exp, bool):
+                errors.append(f"node {n['id']}: export must be yes or no, got {exp!r} — anything else "
+                              f"would be read as one of them and it is not obvious which")
             if exp:
                 if n.get("parent"):
-                    errors.append(f"node {n['id']}: only an area's top representative can carry use_when_export — "
+                    errors.append(f"node {n['id']}: only an area's top representative can carry export — "
                                   f"an inner node is not what a peer chooses")
-                if exp == (n.get("one_liner") or "").strip():
-                    errors.append(f"node {n['id']}: use_when_export is identical to one_liner — a description is not a 'when to come here'")
-                # It becomes one cell of another backbone's routing table, exactly like use_when.
-                if "|" in exp or "\n" in exp:
-                    errors.append(f"node {n['id']}: use_when_export is one table cell — `|` and newlines are not allowed")
-            # `export_to` narrows who that line reaches. It can only ever narrow: an area with no
-            # `use_when_export` crosses to nobody, and naming an audience for it changes nothing at
-            # all — which is precisely the shape of mistake that looks like it worked. So it is an
-            # error and not a warning.
+                if not (n.get("use_when") or "").strip():
+                    # It would cross with a blank cell in the reader's table, which is an area
+                    # nobody can choose and an advertisement that advertises nothing.
+                    errors.append(f"node {n['id']}: export with no use_when — the one line a peer "
+                                  f"reads is the one this area routes on, and there is none")
+            # `export_to` narrows who that line reaches. It can only ever narrow: an area that is not
+            # exported crosses to nobody, and naming an audience for it changes nothing at all —
+            # which is precisely the shape of mistake that looks like it worked. So it is an error
+            # and not a warning.
             aud = n.get("export_to") or []
             if aud:
                 if not exp:
-                    errors.append(f"node {n['id']}: export_to without use_when_export — an audience "
-                                  f"for an area that crosses to nobody. Write the line, or take the "
-                                  f"audience away too if you are withdrawing it")
+                    errors.append(f"node {n['id']}: export_to without export — an audience for an area "
+                                  f"that crosses to nobody. Set export, or take the audience away too "
+                                  f"if you are withdrawing it")
                 if n.get("parent"):
                     errors.append(f"node {n['id']}: only an area's top representative can carry export_to")
                 for a in aud:
@@ -286,49 +306,16 @@ def validate(store: Store) -> dict:
                     if not PEER_NAME.match(a):
                         errors.append(f"node {n['id']}: export_to names {a!r}, which is not a peer name "
                                       f"— ASCII kebab-case, starting with a letter")
-            # A line written for one named reader instead of the one everybody else gets. Every rule
-            # the default line has applies to each of these, because each becomes exactly the same
-            # cell in exactly the same kind of table — just somebody else's.
-            per = n.get("use_when_export_for") or {}
-            if per:
-                if not exp:
-                    errors.append(f"node {n['id']}: use_when_export_for without use_when_export — a "
-                                  f"line for one peer and nothing for the rest. Write the line, or "
-                                  f"take the override away too if you are withdrawing it")
-                if n.get("parent"):
-                    errors.append(f"node {n['id']}: only an area's top representative can carry use_when_export_for")
-                for who, line in sorted(per.items()):
-                    if not PEER_NAME.match(who):
-                        errors.append(f"node {n['id']}: use_when_export_for names {who!r}, which is not a "
-                                      f"peer name — ASCII kebab-case, starting with a letter")
-                    if "|" in line or "\n" in line:
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is one table cell — "
-                                      f"`|` and newlines are not allowed")
-                    if line.strip() == (n.get("one_liner") or "").strip():
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is identical to one_liner "
-                                      f"— a description is not a 'when to come here'")
-                    if line.strip() == exp:
-                        # Not a warning. It reads as a decision to say something different to that
-                        # peer, and says the same thing — so the day the default changes, one reader
-                        # silently keeps the old sentence and nobody is looking there.
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] is identical to "
-                                      f"use_when_export — an override that overrides nothing")
-                    if aud and who not in aud:
-                        errors.append(f"node {n['id']}: use_when_export_for[{who}] writes a line for a peer "
-                                      f"that export_to leaves out — it would never be read")
             if not n.get("parent"):
                 if n["region"] in tops:
                     errors.append(f"region {n['region']}: two top representatives ({tops[n['region']]}, {n['id']}) — an area has one face. Give one of them a parent")
                 tops[n["region"]] = n["id"]
-        elif (n.get("use_when_export") or "").strip():
-            errors.append(f"node {n['id']}: use_when_export on a node that does not represent an area — "
+        elif n.get("export"):
+            errors.append(f"node {n['id']}: export on a node that does not represent an area — "
                           f"a peer chooses areas, not nodes")
         elif n.get("export_to"):
             errors.append(f"node {n['id']}: export_to on a node that does not represent an area — "
                           f"an audience is something an area has")
-        elif n.get("use_when_export_for"):
-            errors.append(f"node {n['id']}: use_when_export_for on a node that does not represent an "
-                          f"area — a peer chooses areas, not nodes")
     # A representative that carries nothing and has no expands_in cannot be told apart, from the
     # listing alone, as **empty** or as a **boundary**. If that distinction lives only in a document
     # body, neither the screen nor an agent can use it — and both will state something they cannot know.
@@ -502,6 +489,64 @@ def validate(store: Store) -> dict:
             errors.append(f"regions.json {src}: {', '.join(drift)} no longer matches the files it is "
                           f"derived from. It is generated, not written — any write through the API "
                           f"regenerates it; see README, \u201cA hand-edited repository\u201d.")
+    # ---- a CORE row with no area behind it ----
+    # CORE.md is carried **whole** into every prompt, and its table is where each area's description
+    # at hop 0 comes from. A row whose area has been deleted therefore advertises something that does
+    # not exist, in the one text every run reads — and nothing said so. Deleting an area by hand left
+    # six dangling edges, which are loud, and this, which was silent.
+    #
+    # An error rather than a warning, for the reason the rest of hop 0 is: an advertisement for
+    # something absent is the failure this design exists to prevent, and a reader cannot tell it from
+    # a real row.
+    try:
+        core_text = store.core()
+    except Exception:
+        core_text = ""
+    if core_text:
+        on_disk = {derive.region_label(d.name)
+                   for d in pathlib.Path(store.root, "regions").iterdir() if d.is_dir()}
+        for m in re.finditer(r"^\| `([A-Z_]+)` \| .+ \|$", core_text, re.M):
+            if m.group(1) not in on_disk:
+                errors.append(f"CORE.md advertises `{m.group(1)}`, which is not an area here — "
+                              f"that table is carried whole into every prompt, so this is hop 0 "
+                              f"offering something that does not exist. Remove the row, or restore "
+                              f"the area. `./ontology/tidy.py <repo> --fix` does the first.")
+
+    # ---- cross-reference cycles ----
+    # Every other check here asks whether one node is right. This one asks whether they are right
+    # *together*, and it is the only finding in the file that no single document can be blamed for:
+    # payroll saying "for the rate, see attendance" and attendance saying "for how it is paid, see
+    # payroll" are both accurate, neither is stale, and there is nothing to correct but the shape.
+    #
+    # **A warning, not an error**, and that is a measured choice rather than caution. A deliberate
+    # two-node cycle was built and walked on a 700-question corpus: 10/10 hits and 5.5 calls per
+    # question, identical to the same questions without it. The agent went one way, got what it came
+    # for, and never followed the edge home, because each edge said what it was *for*. A cycle traps
+    # a walk only when nothing tells it which end answers — so refusing the write would forbid a
+    # shape that has been shown harmless, while saying nothing would hide the shape that is not.
+    #
+    # It matters more as agents start writing. A person adding a "see also" can see both ends; an
+    # agent recording today's work adds one edge at a time, months apart, and closes a loop nobody
+    # drew.
+    refs, known = {}, {n["id"] for n in nodes}
+    for n in nodes:
+        refs[n["id"]] = {m for m in re.findall(r"`([a-z0-9][a-z0-9-]{3,})`", n.get("body") or "")
+                         if m in known and m != n["id"]}
+    colour, seen = {}, []
+    def _visit(node, stack):
+        if colour.get(node) == 1:
+            if node in stack: seen.append(stack[stack.index(node):] + [node])
+            return
+        if colour.get(node) == 2: return
+        colour[node] = 1; stack.append(node)
+        for m in sorted(refs.get(node, ())): _visit(m, stack)
+        stack.pop(); colour[node] = 2
+    for n in sorted(refs): _visit(n, [])
+    for cyc in seen[:5]:
+        warnings.append("cross-references form a cycle: " + " -> ".join(cyc)
+                        + " — each line may be true on its own; together they can send a walk "
+                          "back and forth until it runs out of turns")
+
     return {"ok": not errors, "errors": errors, "warnings": warnings,
             "stats": {"nodes": len(nodes), "edges": len(edges), "kinds": len(kinds), "relations": len(rels), "regions": len(regions),
                       "revision": store.revision()}}

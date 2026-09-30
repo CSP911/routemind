@@ -78,3 +78,17 @@ Walk campaigns: `walks` is one row per question per arm — `hit`, `sources` (wh
 `d_true`, `commands`, and `report`, **the agent's own words kept verbatim**. The reports are the
 point. Two defects this week were found in the notes of walks that scored a clean hit, and neither
 would have survived being summarised into a boolean.
+
+## Working sets — what the overlay arm actually held
+
+`overlays-census/` is one file per `routing+overlay` walk: the rows the agent put in its working set,
+the reason it gave for each, what it removed and why, and what it said it used when it closed.
+`overlays-sample50/` is the same for the earlier sample.
+
+They are here because the arm's headline result is a negative — same hit rate as plain routing, 16%
+more calls — and "it bought nothing" is a claim someone should be able to check rather than take.
+These files are what it was holding while buying nothing. They are also the only place the *reasons*
+survive: the walk report lists commands, the working set lists why each row was kept.
+
+The store the service writes to (`data/bench-overlays/`) is not tracked — `/data/` is a repository in
+its own right. These are copies taken at the end of the run.

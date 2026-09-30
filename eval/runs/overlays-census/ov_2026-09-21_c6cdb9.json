@@ -1,0 +1,58 @@
+{
+ "id": "ov_2026-09-21_c6cdb9",
+ "question": "For day D3, hours H2, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T04:04:11Z",
+ "touched_at": "2026-09-21T04:13:41Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime hours/multipliers are typically an attendance topic",
+   "at": "2026-09-21T04:04:11Z"
+  },
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay multiplier could be a payroll topic",
+   "at": "2026-09-21T04:04:11Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime hours/multipliers are typically an attendance topic",
+   "at": "2026-09-21T04:04:11Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime pay multiplier could be a payroll topic",
+   "at": "2026-09-21T04:04:11Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T04:13:41Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h2-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T04:13:41Z"
+}

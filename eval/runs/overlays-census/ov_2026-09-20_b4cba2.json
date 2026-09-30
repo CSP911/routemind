@@ -1,0 +1,92 @@
+{
+ "id": "ov_2026-09-20_b4cba2",
+ "question": "Reconciling claims from 2023 and 2025 against the overtime rate: which two versions are needed, and what multiplier was paid under each?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:01:26Z",
+ "touched_at": "2026-09-20T16:01:52Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "payroll page says overtime moved to attendance on 2026-01-01; may point to where historical rates live",
+   "at": "2026-09-20T16:01:26Z"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "oldest version, in force until 2024-07-01, covers 2023 claim",
+   "at": "2026-09-20T16:01:37Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "middle version, in force 2024-07-01 to 2025-12-31, covers 2025 claim",
+   "at": "2026-09-20T16:01:43Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which version covers which date range; already read, confirms 2023->oldest, 2025->v2",
+   "at": "2026-09-20T16:01:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "payroll page says overtime moved to attendance on 2026-01-01; may point to where historical rates live",
+   "at": "2026-09-20T16:01:26Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime rate now lives here per payroll's note",
+   "at": "2026-09-20T16:01:26Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "oldest version, in force until 2024-07-01, covers 2023 claim",
+   "at": "2026-09-20T16:01:37Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/regions/attendance",
+   "why": "was a placeholder table address, not a real member; narrowed to specific nodes instead",
+   "at": "2026-09-20T16:01:39Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "why": "middle version, in force 2024-07-01 to 2025-12-31, covers 2025 claim",
+   "at": "2026-09-20T16:01:43Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains which version covers which date range; already read, confirms 2023->oldest, 2025->v2",
+   "at": "2026-09-20T16:01:44Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:01:52Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:01:52Z"
+}

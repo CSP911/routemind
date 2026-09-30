@@ -1,0 +1,71 @@
+{
+ "id": "ov_2026-09-21_59d542",
+ "question": "Saturday, six hours, standby at home: what multiplier applies, and what rounding for minutes?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T00:01:10Z",
+ "touched_at": "2026-09-21T00:01:52Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "hard-moved-overtime redirect: overtime/standby premiums live in attendance's sec-hard-overtime since 2026-01-01, question date 2026-09-20 is after that",
+   "at": "2026-09-21T00:01:21Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "standby/overtime pay multiplier and minute rounding is a payroll topic",
+   "at": "2026-09-21T00:01:10Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/regions/attendance",
+   "why": "hard-moved-overtime redirect: overtime/standby premiums live in attendance's sec-hard-overtime since 2026-01-01, question date 2026-09-20 is after that",
+   "at": "2026-09-21T00:01:21Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/regions/payroll",
+   "why": "redirect confirms overtime/standby now lives in attendance sec-hard-overtime, not payroll, for dates on/after 2026-01-01",
+   "at": "2026-09-21T00:01:28Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T00:01:52Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h3-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T00:01:52Z"
+}

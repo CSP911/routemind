@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-20_f14186",
+ "question": "Austin vendor, custom-spec order (700M KRW): site visit required? file review cadence?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:26:33Z",
+ "touched_at": "2026-09-20T23:26:59Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement region covers vendor approval thresholds, site visits, and review cadence for custom-spec/bespoke orders",
+   "at": "2026-09-20T23:26:33Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "need origin code for Austin (US)",
+   "at": "2026-09-20T23:26:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement region covers vendor approval thresholds, site visits, and review cadence for custom-spec/bespoke orders",
+   "at": "2026-09-20T23:26:33Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "why": "need origin code for Austin (US)",
+   "at": "2026-09-20T23:26:44Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:26:59Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o3-value-w4-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:26:59Z"
+}

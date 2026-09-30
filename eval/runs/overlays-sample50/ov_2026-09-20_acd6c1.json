@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-20_acd6c1",
+ "question": "Vendor in Austin, KRW 300,000,000, services category people's time: on-site visit required? review/re-diligence frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:19:47Z",
+ "touched_at": "2026-09-20T09:19:47Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table, in force since 2026-01-01, likely has threshold/origin/goods rows",
+   "at": "2026-09-20T09:19:42Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, may explain on-site visit & review cadence",
+   "at": "2026-09-20T09:19:42Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table, need to confirm which is current for today's date",
+   "at": "2026-09-20T09:19:42Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due diligence table, in force since 2026-01-01, likely has threshold/origin/goods rows",
+   "at": "2026-09-20T09:19:42Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, may explain on-site visit & review cadence",
+   "at": "2026-09-20T09:19:42Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence table, need to confirm which is current for today's date",
+   "at": "2026-09-20T09:19:42Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

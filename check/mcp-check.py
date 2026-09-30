@@ -15,8 +15,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 results = []
 
 
-def check(name, cond):
+def check(name, cond, detail=""):
     results.append(("ok  " if cond else "FAIL") + " " + name)
+    # Only on a failure, and only when the caller has something to show. "FAIL 3 tools" sent somebody
+    # looking at the server for a count that was never the point; "served [...] expected [...]" would
+    # have said in one line which tool was new.
+    if not cond and detail: results.append("     " + detail)
     return cond
 
 
@@ -96,15 +100,38 @@ check("a notification is not answered", pong is not None and pong.get("id") == c
 
 tools = c.call("tools/list")["result"]["tools"]
 names = [t["name"] for t in tools]
-# Two tools for the two things an agent does, and a third — the working set — only where this install
-# keeps overlays. Asserted in whichever direction the install is, so neither case passes vacuously.
+# Two tools for the two things an agent does, and then one per feature this install actually has.
+# Asserted in whichever direction the install is, so neither case passes vacuously.
+#
+# This list went stale once already: `knowledge_write` and `knowledge_circuit` were added to the
+# server and not here, so the check failed for two sessions saying "3 tools" while the server was
+# right to offer five. A check that has to be edited by hand every time the thing it checks grows
+# will be wrong exactly when the thing it checks is changing — so each entry below names the
+# condition the server itself uses, and the failure prints both lists rather than a count.
 import urllib.request, urllib.error
+def serves(path):
+    try:
+        urllib.request.urlopen(API.rstrip("/") + path, timeout=10); return True
+    except urllib.error.HTTPError:
+        return False
+has_overlays = serves("/overlays?state=open")
+# The server offers the write tool only where a `workspace` area exists — a person creating that area
+# is how the feature is turned on. Asked the same way here.
 try:
-    urllib.request.urlopen(API.rstrip("/") + "/overlays?state=open", timeout=10); has_overlays = True
-except urllib.error.HTTPError:
-    has_overlays = False
-want = ["knowledge_table", "knowledge_read"] + (["knowledge_overlay"] if has_overlays else [])
-check(f"{len(want)} tools — the two an agent walks with{', and the overlay' if has_overlays else ''}", names == want)
+    with urllib.request.urlopen(API.rstrip("/") + "/regions", timeout=10) as r:
+        regions = (json.loads(r.read().decode("utf-8")) or {}).get("regions") or []
+except Exception:
+    regions = []
+has_workspace = any((r.get("source") or r.get("id")) == "workspace" for r in regions)
+
+want = ["knowledge_table", "knowledge_read"]
+if has_overlays: want.append("knowledge_overlay")
+if has_workspace: want.append("knowledge_write")
+# Unconditional: a circuit is opened by the agent at the time it is wanted, so there is nothing about
+# this install for the server to consult before offering it.
+want.append("knowledge_circuit")
+check(f"{len(want)} tools, matching what this install has", names == want,
+      f"served {names}, expected {want}")
 
 # The areas have to reach the model before it decides anything, and a tool description is the only
 # text every MCP client shows it.
@@ -184,6 +211,32 @@ if "empty" in kinds:
     check("and reading it says nobody wrote it", err)
 else:
     results.append("--   no empty entity here; that row of the table is unchecked")
+
+
+# ── prompts ──────────────────────────────────────────────────────────────────
+# A client shows these as something a person picks, which is why `circuit` is one: it is the single
+# thing here that a person starts rather than an agent reaching for it.
+pr = c.call("prompts/list")["result"]["prompts"]
+names = {x["name"] for x in pr}
+check("the prompts a client can offer", {"knowledge_start", "circuit"} <= names, json.dumps(sorted(names)))
+circuit = next((x for x in pr if x["name"] == "circuit"), {})
+check("  circuit asks for an address and a token",
+      {(a["name"], bool(a.get("required"))) for a in (circuit.get("arguments") or [])}
+      >= {("url", True), ("token", True)},
+      json.dumps(circuit.get("arguments")))
+
+# Each prompt answers as itself. `prompts/get` ignored the name it was given and returned hop 0 for
+# anything, which was right while there was one prompt and would have made the second silently
+# return the first — the failure that looks like a working feature.
+start = c.call("prompts/get", {"name": "knowledge_start"})["result"]["messages"][0]["content"]["text"]
+none = c.call("prompts/get", {"name": "circuit", "arguments": {}})["result"]["messages"][0]["content"]["text"]
+check("each prompt answers as itself, not as the first one", none != start and "circuit" in none.lower(),
+      none[:90])
+check("  and a circuit with no address says so rather than guessing",
+      "address" in none.lower() and "token" in none.lower(), none[:90])
+bad = c.call("prompts/get", {"name": "no-such-prompt"})
+check("  and a prompt that does not exist is an error, not hop 0",
+      "error" in bad, json.dumps(bad)[:110])
 
 # Refusals have to say what to do instead, not just fail.
 bad, err = c.text("knowledge_read", {"path": "/v1/regions"})

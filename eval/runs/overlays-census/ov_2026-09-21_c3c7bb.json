@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-21_c3c7bb",
+ "question": "Team manager, Singapore, one night — hotel per-night cap and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:19:36Z",
+ "touched_at": "2026-09-21T13:20:00Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "how much a business trip pays, per-diem/hotel caps and receipt rules",
+   "at": "2026-09-21T13:19:36Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "how much a business trip pays, per-diem/hotel caps and receipt rules",
+   "at": "2026-09-21T13:19:36Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:20:00Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b2-stay-s1/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:20:00Z"
+}

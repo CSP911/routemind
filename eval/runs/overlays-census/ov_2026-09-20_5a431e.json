@@ -1,0 +1,88 @@
+{
+ "id": "ov_2026-09-20_5a431e",
+ "question": "Daejeon company, 8,000,000 KRW, licence (goods type?): site visit required? review/reassessment frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:51:52Z",
+ "touched_at": "2026-09-20T22:52:09Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due-diligence table by origin/value/goods; likely has site visit requirement",
+   "at": "2026-09-20T22:51:52Z"
+  },
+  {
+   "address": "/v1/nodes/sec-vendor-performance-and-renewal",
+   "why": "renewal/reassessment cadence for vendor files",
+   "at": "2026-09-20T22:51:52Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the due-diligence pages fit together, in case site-visit and review live on different pages",
+   "at": "2026-09-20T22:51:52Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision",
+   "why": "warns there are 3 versions of due diligence table; need to confirm which is current for today's date",
+   "at": "2026-09-20T22:51:52Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current due-diligence table by origin/value/goods; likely has site visit requirement",
+   "at": "2026-09-20T22:51:52Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-vendor-performance-and-renewal",
+   "why": "renewal/reassessment cadence for vendor files",
+   "at": "2026-09-20T22:51:52Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the due-diligence pages fit together, in case site-visit and review live on different pages",
+   "at": "2026-09-20T22:51:52Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision",
+   "why": "warns there are 3 versions of due diligence table; need to confirm which is current for today's date",
+   "at": "2026-09-20T22:51:52Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:52:09Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k4/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:52:09Z"
+}

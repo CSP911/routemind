@@ -1,0 +1,65 @@
+{
+ "id": "ov_2026-09-20_73a740",
+ "question": "For category C3, amount V1, term M1, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:20:08Z",
+ "touched_at": "2026-09-20T22:20:22Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, likely holds category/amount/term -> signer mapping",
+   "at": "2026-09-20T22:20:08Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions with different date ranges - need to confirm current table is the right one to use",
+   "at": "2026-09-20T22:20:08Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request table may cover 'how many quotes are needed' i.e. getting other prices first",
+   "at": "2026-09-20T22:20:08Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, likely holds category/amount/term -> signer mapping",
+   "at": "2026-09-20T22:20:08Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions with different date ranges - need to confirm current table is the right one to use",
+   "at": "2026-09-20T22:20:08Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request table may cover 'how many quotes are needed' i.e. getting other prices first",
+   "at": "2026-09-20T22:20:08Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:20:22Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v1-term-m1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:20:22Z"
+}

@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_a5c748",
+ "question": "Liberation day, about ninety minutes, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T01:28:33Z",
+ "touched_at": "2026-09-21T02:11:36Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "holiday standby / overtime rules likely live under attendance",
+   "at": "2026-09-21T01:28:33Z"
+  },
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and rounding of minutes could be a payroll rule",
+   "at": "2026-09-21T01:28:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "holiday standby / overtime rules likely live under attendance",
+   "at": "2026-09-21T01:28:33Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and rounding of minutes could be a payroll rule",
+   "at": "2026-09-21T01:28:33Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T02:11:36Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h1-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T02:11:36Z"
+}

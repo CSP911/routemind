@@ -1,0 +1,47 @@
+{
+ "id": "ov_2026-09-21_86cb22",
+ "question": "For category C1, amount V2, term M2, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:57:25Z",
+ "touched_at": "2026-09-21T13:57:39Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "starting point for procurement approval threshold questions",
+   "at": "2026-09-21T13:57:25Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "starting point for procurement approval threshold questions",
+   "at": "2026-09-21T13:57:25Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:57:39Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/procurement",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v2-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:57:39Z"
+}

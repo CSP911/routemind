@@ -1,0 +1,70 @@
+{
+ "id": "ov_2026-09-20_a31acf",
+ "question": "Saturday, three hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:58:34Z",
+ "touched_at": "2026-09-20T23:58:49Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime/hours rules likely live here",
+   "at": "2026-09-20T23:58:34Z"
+  },
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and pay rounding could be defined in payroll rules",
+   "at": "2026-09-20T23:58:34Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime/hours rules likely live here",
+   "at": "2026-09-20T23:58:34Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and pay rounding could be defined in payroll rules",
+   "at": "2026-09-20T23:58:34Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:58:49Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/attendance",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h2-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:58:49Z"
+}

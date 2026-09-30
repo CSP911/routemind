@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_e0fe97",
+ "question": "3 days/week, 8 months tenure, Singapore entity: monthly leave accrual and max carry-forward into January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:23:16Z",
+ "touched_at": "2026-09-20T16:23:39Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and carry-forward rules live here",
+   "at": "2026-09-20T16:23:15Z"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e3-tenure-t1-site-l3/body",
+   "why": "resolved row: E3=3 days/week, T1=8 months tenure, L3=Singapore entity",
+   "at": "2026-09-20T16:23:33Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual and carry-forward rules live here",
+   "at": "2026-09-20T16:23:15Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-accrual-row-type-e3-tenure-t1-site-l3/body",
+   "why": "resolved row: E3=3 days/week, T1=8 months tenure, L3=Singapore entity",
+   "at": "2026-09-20T16:23:33Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:23:39Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e3-tenure-t1-site-l3/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:23:39Z"
+}

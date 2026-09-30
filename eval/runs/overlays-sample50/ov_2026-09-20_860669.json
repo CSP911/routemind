@@ -1,0 +1,40 @@
+{
+ "id": "ov_2026-09-20_860669",
+ "question": "For origin O1, value W3, goods K4, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:20:20Z",
+ "touched_at": "2026-09-20T09:20:20Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current (2026-01-01 onward) supplier due diligence table indexed by origin/value/goods, matches today's date 2026-09-20",
+   "at": "2026-09-20T09:20:15Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k4/body",
+   "why": "the exact row for O1/W3/K4 in the current table",
+   "at": "2026-09-20T09:20:16Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current (2026-01-01 onward) supplier due diligence table indexed by origin/value/goods, matches today's date 2026-09-20",
+   "at": "2026-09-20T09:20:15Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k4/body",
+   "why": "the exact row for O1/W3/K4 in the current table",
+   "at": "2026-09-20T09:20:16Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

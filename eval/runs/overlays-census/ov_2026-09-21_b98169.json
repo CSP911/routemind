@@ -1,0 +1,51 @@
+{
+ "id": "ov_2026-09-21_b98169",
+ "question": "A couple of laptops, about 700,000 won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:54:30Z",
+ "touched_at": "2026-09-21T13:54:53Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold and quote requirement by amount/category for a one-time purchase",
+   "at": "2026-09-21T13:54:30Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold and quote requirement by amount/category for a one-time purchase",
+   "at": "2026-09-21T13:54:30Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:54:53Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:54:53Z"
+}

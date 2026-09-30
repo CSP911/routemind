@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_1de4d2",
+ "question": "Flights and hotels, around 12 million won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:23:19Z",
+ "touched_at": "2026-09-21T14:23:33Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - likely holds signature/approval level for this amount and recurring term",
+   "at": "2026-09-21T14:23:19Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process - may cover quotes requirement",
+   "at": "2026-09-21T14:23:19Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns of three threshold versions - need to confirm which is current for today's date",
+   "at": "2026-09-21T14:23:19Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category, amount, term - likely holds signature/approval level for this amount and recurring term",
+   "at": "2026-09-21T14:23:19Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process - may cover quotes requirement",
+   "at": "2026-09-21T14:23:19Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns of three threshold versions - need to confirm which is current for today's date",
+   "at": "2026-09-21T14:23:19Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:23:33Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v3-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:23:33Z"
+}

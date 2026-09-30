@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-21_91d870",
+ "question": "For day D4, hours H1, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T09:18:34Z",
+ "touched_at": "2026-09-21T09:18:49Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multipliers are typically pay-related",
+   "at": "2026-09-21T09:18:34Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "time/hours tracking and rounding rules likely live here",
+   "at": "2026-09-21T09:18:34Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multipliers are typically pay-related",
+   "at": "2026-09-21T09:18:34Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "time/hours tracking and rounding rules likely live here",
+   "at": "2026-09-21T09:18:34Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T09:18:49Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h1-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T09:18:49Z"
+}

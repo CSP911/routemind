@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-21_cb31cf",
+ "question": "Flights and hotels, roughly 3 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:21:05Z",
+ "touched_at": "2026-09-21T14:21:28Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount + term + category threshold and quote requirement questions",
+   "at": "2026-09-21T14:21:05Z"
+  },
+  {
+   "address": "/v1/regions/expense",
+   "why": "travel spend could also be governed by expense policy",
+   "at": "2026-09-21T14:21:05Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount + term + category threshold and quote requirement questions",
+   "at": "2026-09-21T14:21:05Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "travel spend could also be governed by expense policy",
+   "at": "2026-09-21T14:21:05Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:21:28Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v2-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:21:28Z"
+}

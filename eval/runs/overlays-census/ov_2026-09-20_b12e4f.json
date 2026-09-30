@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_b12e4f",
+ "question": "Which version of leave accrual applies to a claim dated in 2025?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:54:45Z",
+ "touched_at": "2026-09-20T15:54:57Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual policy versions likely documented in attendance region",
+   "at": "2026-09-20T15:54:45Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual policy versions likely documented in attendance region",
+   "at": "2026-09-20T15:54:45Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:54:57Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:54:57Z"
+}

@@ -1,0 +1,66 @@
+{
+ "id": "ov_2026-09-20_4c9140",
+ "question": "For origin O4, value W2, goods K1: is a premises visit required, and what is the re-review (file look-at-again) frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:31:32Z",
+ "touched_at": "2026-09-20T23:31:51Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely has the by-origin/value/goods matrix with site visit and review frequency columns",
+   "at": "2026-09-20T23:31:32Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision",
+   "why": "warns of three versions of diligence rules; need to confirm which is in force for 2026-09-21",
+   "at": "2026-09-20T23:31:32Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely has the by-origin/value/goods matrix with site visit and review frequency columns",
+   "at": "2026-09-20T23:31:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision",
+   "why": "warns of three versions of diligence rules; need to confirm which is in force for 2026-09-21",
+   "at": "2026-09-20T23:31:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, may clarify terms like premises visit and re-review",
+   "at": "2026-09-20T23:31:32Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "not needed once the exact three-qualifier row was found directly",
+   "at": "2026-09-20T23:31:48Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:31:51Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o4-value-w2-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:31:51Z"
+}

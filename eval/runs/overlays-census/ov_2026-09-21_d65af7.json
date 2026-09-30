@@ -1,0 +1,110 @@
+{
+ "id": "ov_2026-09-21_d65af7",
+ "question": "Dinner with a client, about 700,000 won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:28:11Z",
+ "touched_at": "2026-09-21T14:29:34Z",
+ "members": [
+  {
+   "address": "/v1/nodes/corp-card",
+   "why": "entertainment cap / client dinner spend likely covered here",
+   "at": "2026-09-21T14:28:11Z"
+  },
+  {
+   "address": "/v1/nodes/sec-spending-that-needs-a-draft-first",
+   "why": "over-cap spend / quotes-before-spend rules may live here",
+   "at": "2026-09-21T14:28:11Z"
+  },
+  {
+   "address": "/v1/nodes/entertainment",
+   "why": "exact match: entertaining a client, cap per head, evidence rules",
+   "at": "2026-09-21T14:28:23Z"
+  },
+  {
+   "address": "/v1/nodes/hard-moved-threshold/body",
+   "why": "confirms current spend approval thresholds live in procurement (sec-hard-threshold), not approval, as of 2026-01-01",
+   "at": "2026-09-21T14:28:48Z"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term since 2026-01-01",
+   "at": "2026-09-21T14:28:54Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "opens quotes requirement — how many quotes needed",
+   "at": "2026-09-21T14:28:58Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/corp-card",
+   "why": "entertainment cap / client dinner spend likely covered here",
+   "at": "2026-09-21T14:28:11Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-spending-that-needs-a-draft-first",
+   "why": "over-cap spend / quotes-before-spend rules may live here",
+   "at": "2026-09-21T14:28:11Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/entertainment",
+   "why": "exact match: entertaining a client, cap per head, evidence rules",
+   "at": "2026-09-21T14:28:23Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-moved-threshold/body",
+   "why": "confirms current spend approval thresholds live in procurement (sec-hard-threshold), not approval, as of 2026-01-01",
+   "at": "2026-09-21T14:28:48Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term since 2026-01-01",
+   "at": "2026-09-21T14:28:54Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/purchase-request",
+   "why": "opens quotes requirement — how many quotes needed",
+   "at": "2026-09-21T14:28:58Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:29:34Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-threshold/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v1-term-m1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:29:34Z"
+}

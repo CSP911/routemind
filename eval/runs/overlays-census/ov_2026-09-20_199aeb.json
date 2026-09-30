@@ -1,0 +1,63 @@
+{
+ "id": "ov_2026-09-20_199aeb",
+ "question": "An ordinary tuesday, about ninety minutes, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:42:49Z",
+ "touched_at": "2026-09-20T23:43:06Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "standby time and overtime multipliers are likely tracked under attendance/working hours rules",
+   "at": "2026-09-20T23:42:48Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "standby time and overtime multipliers are likely tracked under attendance/working hours rules",
+   "at": "2026-09-20T23:42:48Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:43:06Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/attendance",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h1-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:43:06Z"
+}

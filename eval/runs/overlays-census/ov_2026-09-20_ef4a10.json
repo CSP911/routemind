@@ -1,0 +1,73 @@
+{
+ "id": "ov_2026-09-20_ef4a10",
+ "question": "For something dated 29 June 2024 - two days before the first change - what was the delegation limit or who signed for a purchase of two million won net of VAT? Use version in force on that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:07:13Z",
+ "touched_at": "2026-09-20T16:07:44Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by amount for purchases, dated document",
+   "at": "2026-09-20T16:07:13Z"
+  },
+  {
+   "address": "/v1/nodes/threshold-table/body",
+   "why": "oldest approval threshold version, in force until 2024-07-01, covers 2024-06-29",
+   "at": "2026-09-20T16:07:36Z"
+  },
+  {
+   "address": "/v1/nodes/approval-threshold",
+   "why": "table hosting threshold-table body, node reached from purchase-request",
+   "at": "2026-09-20T16:07:37Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "approval threshold by amount for purchases, dated document",
+   "at": "2026-09-20T16:07:13Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/threshold-table/body",
+   "why": "oldest approval threshold version, in force until 2024-07-01, covers 2024-06-29",
+   "at": "2026-09-20T16:07:36Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/approval-threshold",
+   "why": "table hosting threshold-table body, node reached from purchase-request",
+   "at": "2026-09-20T16:07:37Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:07:44Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-v2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/approval-threshold",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/threshold-table/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:07:44Z"
+}

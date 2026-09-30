@@ -1,0 +1,63 @@
+{
+ "id": "ov_2026-09-21_ab432b",
+ "question": "For grade G4, band B2, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:46:39Z",
+ "touched_at": "2026-09-21T13:47:04Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, in force from 2026-01-01, likely has hotel nightly cap",
+   "at": "2026-09-21T13:46:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, in force from 2026-01-01, likely has hotel nightly cap",
+   "at": "2026-09-21T13:46:39Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns of three versions of the per-diem table with different dates, need to confirm which applies now",
+   "at": "2026-09-21T13:46:39Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "evidence/receipt rules - may state the amount above which a receipt must be kept",
+   "at": "2026-09-21T13:46:39Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "row itself states its own in-force dates (2026-01-01 onward), which cover today 2026-09-21; no need for the separate version legend",
+   "at": "2026-09-21T13:46:55Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/evidence",
+   "why": "the per-diem row already gives its own receipt threshold (48 USD) inline; general evidence table not needed",
+   "at": "2026-09-21T13:46:58Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:47:04Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b2-stay-s4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:47:04Z"
+}

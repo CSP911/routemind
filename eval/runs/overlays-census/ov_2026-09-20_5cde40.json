@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_5cde40",
+ "question": "Daejeon vendor, 8M KRW, office consumables: site visit required? review frequency for vendor file?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:28:25Z",
+ "touched_at": "2026-09-20T22:28:43Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "vendor due diligence, site visit and review frequency by category/amount likely live under procurement",
+   "at": "2026-09-20T22:28:25Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "vendor due diligence, site visit and review frequency by category/amount likely live under procurement",
+   "at": "2026-09-20T22:28:25Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:28:43Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:28:43Z"
+}

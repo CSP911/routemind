@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_d3f622",
+ "question": "Regular payroll, 8 months tenure, Seoul office: monthly leave accrual rate, and max leave balance holdable in January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:11:17Z",
+ "touched_at": "2026-09-20T16:11:35Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - directly answers monthly accrual",
+   "at": "2026-09-20T16:11:17Z"
+  },
+  {
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and booking procedure, may cover carryover/cap rules for holding leave into January",
+   "at": "2026-09-20T16:11:17Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site - directly answers monthly accrual",
+   "at": "2026-09-20T16:11:17Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and booking procedure, may cover carryover/cap rules for holding leave into January",
+   "at": "2026-09-20T16:11:17Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:11:35Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e1-tenure-t1-site-l1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:11:35Z"
+}

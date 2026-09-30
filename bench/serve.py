@@ -40,7 +40,25 @@ def sh(*cmd, **kw):
 
 
 def main():
-    want = (ROOT / "bench" / "corpus-hard" / ".fingerprint")
+    # Which extension is served. Defaults to the one the study runs on; an experiment that needs a
+    # deliberately broken variant (see eval/fixtures/cycle/) points this at its own copy rather than
+    # editing bench/corpus-hard, so the real corpus is never the thing being mutated.
+    EXT = ROOT / os.environ.get("BENCH_EXTRA_CORPUS", "bench/corpus-hard")
+    want = EXT / ".fingerprint"
+
+    # `.fingerprint` is *written* by `crowd.py write`; it is not derived from the files on disk. So a
+    # corpus edited by hand after generation keeps a stale fingerprint, the guard compares stale to
+    # stale, and everything downstream is confident about the wrong corpus. Found by copying the
+    # corpus, editing two documents, and watching the check pass. Recompute and compare.
+    fp_now = subprocess.run([sys.executable, str(ROOT / "bench" / "crowd.py"), "fingerprint"],
+                            capture_output=True, text=True,
+                            env={**os.environ, "BENCH_EXTRA_CORPUS": str(EXT)})
+    real = fp_now.stdout.strip().split()[-1] if fp_now.returncode == 0 else None
+    claimed = want.read_text().strip() if want.exists() else None
+    if real and claimed and real != claimed:
+        print(f"  {want} says {claimed} but the documents hash to {real}")
+        print(f"  the corpus was edited after it was generated. Rewriting the fingerprint.")
+        want.write_text(real + "\n", encoding="utf-8")
     if not want.exists():
         sys.exit("  no bench/corpus-hard/.fingerprint — run ./bench/crowd.py write first")
     fp = want.read_text().strip()
@@ -50,7 +68,7 @@ def main():
     shutil.copytree(ROOT / "bench" / "corpus", REPO, dirs_exist_ok=True)
     n = 0
     for a in AREAS:
-        src = ROOT / "bench" / "corpus-hard" / "regions" / a
+        src = EXT / "regions" / a
         if not src.is_dir(): continue
         (REPO / "regions" / a).mkdir(parents=True, exist_ok=True)
         for f in src.glob("*.md"):

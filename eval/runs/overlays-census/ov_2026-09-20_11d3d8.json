@@ -1,0 +1,76 @@
+{
+ "id": "ov_2026-09-20_11d3d8",
+ "question": "In September 2023, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate in force then.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:58:56Z",
+ "touched_at": "2026-09-20T15:59:31Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "warns overtime premiums moved to attendance on 2026-01-01; need historical rate that applied in Sept 2023",
+   "at": "2026-09-20T15:58:56Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime rates now live here per payroll's redirect note; may hold historical versions",
+   "at": "2026-09-20T15:58:56Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains three versions of overtime rate and which dates each covers",
+   "at": "2026-09-20T15:59:22Z"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "oldest version, in force until 2024-07-01, covers Sept 2023",
+   "at": "2026-09-20T15:59:23Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "warns overtime premiums moved to attendance on 2026-01-01; need historical rate that applied in Sept 2023",
+   "at": "2026-09-20T15:58:56Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime rates now live here per payroll's redirect note; may hold historical versions",
+   "at": "2026-09-20T15:58:56Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "explains three versions of overtime rate and which dates each covers",
+   "at": "2026-09-20T15:59:22Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "why": "oldest version, in force until 2024-07-01, covers Sept 2023",
+   "at": "2026-09-20T15:59:23Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:59:31Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/overtime-rate-table/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T15:59:31Z"
+}

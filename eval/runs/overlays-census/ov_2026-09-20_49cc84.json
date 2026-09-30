@@ -1,0 +1,29 @@
+{
+ "id": "ov_2026-09-20_49cc84",
+ "question": "Company in Daejeon, 8,000,000 won, office consumables: site visit required? review/re-diligence frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T16:34:58Z",
+ "touched_at": "2026-09-20T16:34:58Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount threshold + vendor diligence rules likely live under procurement",
+   "at": "2026-09-20T16:34:58Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount threshold + vendor diligence rules likely live under procurement",
+   "at": "2026-09-20T16:34:58Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

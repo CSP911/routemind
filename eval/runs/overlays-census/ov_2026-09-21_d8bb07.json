@@ -1,0 +1,39 @@
+{
+ "id": "ov_2026-09-21_d8bb07",
+ "question": "For category C4, amount V1, term M3, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:30:04Z",
+ "touched_at": "2026-09-21T14:30:17Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, likely has category/amount/term matrix with signer and quote requirement",
+   "at": "2026-09-21T14:30:04Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01, likely has category/amount/term matrix with signer and quote requirement",
+   "at": "2026-09-21T14:30:04Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:30:17Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v1-term-m3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:30:17Z"
+}

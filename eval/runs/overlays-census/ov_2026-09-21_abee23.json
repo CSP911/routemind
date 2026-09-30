@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-21_abee23",
+ "question": "For day D4, hours H3, place P2, what multiplier applies, and to what rounding are minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T12:21:48Z",
+ "touched_at": "2026-09-21T12:31:26Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place, in force since 2026-01-01",
+   "at": "2026-09-21T12:21:48Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different date ranges - need to confirm which version and what D4/H3/P2 codes mean",
+   "at": "2026-09-21T12:21:48Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place, in force since 2026-01-01",
+   "at": "2026-09-21T12:21:48Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions with different date ranges - need to confirm which version and what D4/H3/P2 codes mean",
+   "at": "2026-09-21T12:21:48Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T12:31:26Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h3-place-p2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-21T12:31:26Z"
+}

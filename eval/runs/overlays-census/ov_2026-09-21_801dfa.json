@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-21_801dfa",
+ "question": "For grade G2, band B1, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:16:03Z",
+ "touched_at": "2026-09-21T13:16:15Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "per diem / hotel nightly cap and receipt threshold likely live under expense region",
+   "at": "2026-09-21T13:16:03Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "per diem / hotel nightly cap and receipt threshold likely live under expense region",
+   "at": "2026-09-21T13:16:03Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:16:15Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b1-stay-s1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:16:15Z"
+}

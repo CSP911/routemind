@@ -1,0 +1,50 @@
+{
+ "id": "ov_2026-09-21_b72f97",
+ "question": "For day D3, hours H3, place P3, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T05:48:42Z",
+ "touched_at": "2026-09-21T06:15:27Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding rules are payroll concepts",
+   "at": "2026-09-21T05:48:42Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "hours worked and time tracking could define rounding rules",
+   "at": "2026-09-21T05:48:42Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime multiplier and minute rounding rules are payroll concepts",
+   "at": "2026-09-21T05:48:42Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "hours worked and time tracking could define rounding rules",
+   "at": "2026-09-21T05:48:42Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T06:15:27Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d3-hours-h3-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T06:15:27Z"
+}

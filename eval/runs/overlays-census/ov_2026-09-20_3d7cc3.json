@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_3d7cc3",
+ "question": "3 days/week, 5 years tenure, fully remote: monthly leave accrual rate and max carryover balance allowed in January",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:27:00Z",
+ "touched_at": "2026-09-20T16:27:12Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site",
+   "at": "2026-09-20T16:27:00Z"
+  },
+  {
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and carryover/booking rules",
+   "at": "2026-09-20T16:27:00Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site",
+   "at": "2026-09-20T16:27:00Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/annual-leave",
+   "why": "entitlement and carryover/booking rules",
+   "at": "2026-09-20T16:27:00Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:27:12Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e3-tenure-t3-site-l4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:27:12Z"
+}

@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_6c71f1",
+ "question": "Dinner with a client, about 40 million won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:38:50Z",
+ "touched_at": "2026-09-21T14:39:17Z",
+ "members": [
+  {
+   "address": "/v1/nodes/corp-card",
+   "why": "corporate card caps section, may cover entertainment cap",
+   "at": "2026-09-21T14:38:50Z"
+  },
+  {
+   "address": "/v1/nodes/sec-spending-that-needs-a-draft-first",
+   "why": "over-cap spend likely needs a draft/approval before it happens",
+   "at": "2026-09-21T14:38:50Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "need to find whose signature is required for this amount",
+   "at": "2026-09-21T14:38:50Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/corp-card",
+   "why": "corporate card caps section, may cover entertainment cap",
+   "at": "2026-09-21T14:38:50Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-spending-that-needs-a-draft-first",
+   "why": "over-cap spend likely needs a draft/approval before it happens",
+   "at": "2026-09-21T14:38:50Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "need to find whose signature is required for this amount",
+   "at": "2026-09-21T14:38:50Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:39:17Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-threshold/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v4-term-m1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:39:17Z"
+}

@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_8965fc",
+ "question": "For type E3, tenure T3, site L4, how much time off am I building up each month, and how much can I still be holding in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:26:53Z",
+ "touched_at": "2026-09-20T16:27:12Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rate and max carryover/holding limits are attendance topics",
+   "at": "2026-09-20T16:26:53Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual rate and max carryover/holding limits are attendance topics",
+   "at": "2026-09-20T16:26:53Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:27:12Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e3-tenure-t3-site-l4/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:27:12Z"
+}

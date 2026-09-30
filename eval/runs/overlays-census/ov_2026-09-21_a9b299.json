@@ -1,0 +1,63 @@
+{
+ "id": "ov_2026-09-21_a9b299",
+ "question": "Jakarta, junior analyst, one night: hotel per diem cap and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:10:21Z",
+ "touched_at": "2026-09-21T13:10:38Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "how much a business trip pays, and receipt rules",
+   "at": "2026-09-21T13:10:21Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "how much a business trip pays, and receipt rules",
+   "at": "2026-09-21T13:10:21Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:10:38Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/regions/expense",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g1-band-b3-stay-s1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:10:38Z"
+}

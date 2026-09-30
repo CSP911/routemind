@@ -1,0 +1,39 @@
+{
+ "id": "ov_2026-09-20_125727",
+ "question": "For origin O1, value W3, goods K4, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T09:21:40Z",
+ "touched_at": "2026-09-20T09:21:54Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k4/body",
+   "why": "the exact O1/W3/K4 row in the current (2026-01-01 onward) table",
+   "at": "2026-09-20T09:21:38Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k4/body",
+   "why": "the exact O1/W3/K4 row in the current (2026-01-01 onward) table",
+   "at": "2026-09-20T09:21:38Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T09:21:54Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k4/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T09:21:54Z"
+}

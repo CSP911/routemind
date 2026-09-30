@@ -34,17 +34,57 @@ to `mcp`. Both also read the environment — `KNOWLEDGE_API` and `KNOWLEDGE_ACTO
 give you no way to pass arguments. Point `--api` at another host and it works the same: the agent does
 not have to be where RouteMind is.
 
-### Claude Code
+### In a container
+
+Normally there is no need: the server is one stdlib-only file and the client launches it. The `Dockerfile` at the repository root
+is for directories and harnesses that want to start a server and introspect it without standing up a
+backbone first — it is at the root because that is where they look, and `./install.sh` remains how
+you actually run RouteMind.
 
 ```sh
-claude mcp add knowledge -- python3 /abs/path/to/knowledge/mcp/knowledge_mcp.py \
+docker build -t routemind-mcp .
+docker run -i --rm routemind-mcp                       # introspection only
+docker run -i --rm -e KNOWLEDGE_API=http://host.docker.internal:8080/api/knowledge routemind-mcp
+```
+
+`-i` and no `-t`: the protocol is JSON-RPC on stdin and stdout, and a tty in the middle of that is a
+tty in the middle of the protocol. With nothing at `--api`, `initialize` and `tools/list` still
+answer — the area list a tool description would have carried is replaced by the reason it could not
+be fetched, so an agent is told why rather than handed an empty table.
+
+### Claude Code
+
+Nothing to configure. `./install.sh` has already written `.mcp.json` at the repository root, so:
+
+```sh
+cd routemind
+claude
+```
+
+Claude Code sees the file, offers the server, and one approval is the whole setup. `/mcp` inside the
+session lists the tools; `claude mcp list` shows whether it registered at all.
+
+**The port follows your install.** `install.sh --port 9000` rewrites `.mcp.json` to match. It used to
+ship with 8080 hard-coded, which on any other port gave Claude Code a server that registers, lists
+its tools and fails on every call — worse than no server, because the tools are visibly there.
+
+Ask it something your ontology covers, without naming RouteMind. The area list reaches the model
+through the server's `instructions`, so what decides whether it comes here is the `use_when` line on
+each area, not the word "RouteMind" in your question. If it answers from its own knowledge instead,
+that is the finding: some area's `use_when` does not say when to come to it.
+
+`/circuit <url> <token>` is also registered, as a project command — it reads another backbone for the
+length of the session. **[../docs/PEERING.md](PEERING.md)**.
+
+#### Somewhere else, or another project
+
+```sh
+claude mcp add knowledge -- python3 /abs/path/to/routemind/mcp/knowledge_mcp.py \
   --api http://localhost:8080/api/knowledge
 ```
 
-**This repository ships one.** `.mcp.json` at the root registers the server with a path relative to
-the repository, so opening the repo in Claude Code offers it and one approval is the whole setup.
-Point `--api` elsewhere if RouteMind is not on this machine. `claude mcp list` shows whether it
-registered; `/mcp` inside a session shows the tools it exposes.
+Point `--api` at another host and it works the same — the agent does not have to be where RouteMind
+is.
 
 For a different project, put the same block in its own `.mcp.json` with an absolute path:
 
@@ -95,13 +135,38 @@ you set a working directory.
 
 ### The tools
 
+Two do the reading, and the rest appear only where the install has the thing they need — a tool for
+a feature that is not configured would be a tool that fails when used, which is worse than absent.
+
 ```
 knowledge_table(path?)   a routing table — what is here, and where to go next.
                          No argument = the list of areas. That is where every search starts.
 knowledge_read(path)     one document, as written.
+
 knowledge_overlay(op)    the working set for one question (a VRF) — only where the install keeps
                          overlays (ONTOLOGY_OVERLAYS). create · get · add · remove · close.
+knowledge_write(...)     record what was done, into the `workspace` area, under today's date —
+                         only where that area exists. Creating it is how the feature is turned on.
+knowledge_circuit(op)    read another backbone for the length of this connection. open · list ·
+                         close. Always offered: it needs nothing of this install to work.
 ```
+
+So an install offers between three and five. `check/mcp-check.py` asserts the set against the same
+conditions the server uses rather than a fixed count, because it once expected three while the server
+offered five and was right to.
+
+### Prompts
+
+Clients that show MCP prompts get two, and a prompt is where a *person* starts something rather than
+an agent reaching for it:
+
+```
+knowledge_start          the list of areas — the same text as `instructions`.
+circuit                  open a circuit. Arguments: url, token, name — so a client can show
+                         fields instead of asking somebody to compose a tool call.
+```
+
+In Claude Code this repository also carries `/circuit <url> <token> [name]` as a project command.
 
 Where overlays exist, the `instructions` describe the flow in docs/OVERLAY.md: pick every row the
 question belongs to, create the overlay with a reason for each, work from its one table, come back to

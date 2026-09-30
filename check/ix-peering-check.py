@@ -24,6 +24,7 @@ The failure this is really watching for is the quiet one: transit that works. A 
 two exchanges away looks exactly like a row that arrived from one, and nothing at the reader can tell
 the difference — so if the filter is wrong, everything keeps working and the boundary is simply gone.
 """
+import re
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -64,6 +65,22 @@ if not os.path.isdir(seed): seed = os.path.join(ROOT, "seed")
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session                              # noqa: E402
+
+def _share(text, line):
+    """Turn export on for a representative, with `line` as the sentence it crosses with.
+
+    One sentence since 2026-09-29: a peer reads the area's own `use_when`, and `export` decides
+    whether it gets it. These fixtures used to write a second sentence; they set both now, so the
+    file states what crosses rather than leaning on whatever the seed happened to say.
+    """
+    text = re.sub(r"^use_when:.*$", f"use_when: {line}", text, count=1, flags=re.M)
+    if "\nuse_when:" not in text:
+        text = text.replace("\nrole: representative\n",
+                            f"\nrole: representative\nuse_when: {line}\n", 1)
+    return text.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1)
+
 
 # One backbone per room, each sharing a different area, so a row anywhere names the room it came from.
 BB = ["home", "remote", "far"]
@@ -105,8 +122,7 @@ for n in BB:
         text = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" in text and "\nparent:" not in text:
             open(q, "w", encoding="utf-8").write(
-                text.replace("\nrole: representative\n",
-                             f"\nrole: representative\nuse_when_export: {LINE[n]}\n", 1))
+                _share(text, LINE[n]))
             break
     open(os.path.join(repo, "peers.yaml"), "w", encoding="utf-8").write(
         f"peers:\n  - name: {AT[n]}\n    label: {AT[n].upper()}\n"
@@ -155,7 +171,7 @@ for port in [*BB_PORT.values(), *IX_PORT.values()]:
 
 def get(port, path, token=None, raw=False, kind=None):
     r = urllib.request.Request(f"http://127.0.0.1:{port}{path}")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{port}", token))
     if kind: r.add_header("X-Peer-Kind", kind)
     try:
         with urllib.request.urlopen(r, timeout=20) as x:

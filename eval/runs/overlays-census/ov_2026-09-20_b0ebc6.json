@@ -1,0 +1,61 @@
+{
+ "id": "ov_2026-09-20_b0ebc6",
+ "question": "For origin O1, value W1, goods K4, do we have to go and see their premises, and how often does their file get looked at again?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:51:32Z",
+ "touched_at": "2026-09-20T22:51:42Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force from 2026-01-01 — likely holds the O1/W1/K4 row",
+   "at": "2026-09-20T22:51:32Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns due diligence has three versions with different date ranges — need to confirm which version applies to today 2026-09-21",
+   "at": "2026-09-20T22:51:32Z"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, in case terms like site visit/review cycle are defined elsewhere",
+   "at": "2026-09-20T22:51:32Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, in force from 2026-01-01 — likely holds the O1/W1/K4 row",
+   "at": "2026-09-20T22:51:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns due diligence has three versions with different date ranges — need to confirm which version applies to today 2026-09-21",
+   "at": "2026-09-20T22:51:32Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-supplier-due-diligence",
+   "why": "overview of how the four due-diligence pages fit together, in case terms like site visit/review cycle are defined elsewhere",
+   "at": "2026-09-20T22:51:32Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:51:42Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w1-goods-k4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:51:42Z"
+}

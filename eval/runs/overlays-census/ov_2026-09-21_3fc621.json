@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_3fc621",
+ "question": "Dinner with a client, about 40 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:40:25Z",
+ "touched_at": "2026-09-21T14:40:55Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount+term threshold likely determines signer and whether competitive quotes are required",
+   "at": "2026-09-21T14:40:25Z"
+  },
+  {
+   "address": "/v1/regions/approval",
+   "why": "approval chain / who can sign off may be detailed here",
+   "at": "2026-09-21T14:40:25Z"
+  },
+  {
+   "address": "/v1/regions/expense",
+   "why": "client entertainment dinner could be governed by expense rules",
+   "at": "2026-09-21T14:40:25Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount+term threshold likely determines signer and whether competitive quotes are required",
+   "at": "2026-09-21T14:40:25Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/approval",
+   "why": "approval chain / who can sign off may be detailed here",
+   "at": "2026-09-21T14:40:25Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "client entertainment dinner could be governed by expense rules",
+   "at": "2026-09-21T14:40:25Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:40:55Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c4-amount-v4-term-m3/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-moved-threshold/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:40:55Z"
+}

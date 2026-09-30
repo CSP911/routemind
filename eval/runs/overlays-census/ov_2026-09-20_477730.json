@@ -1,0 +1,58 @@
+{
+ "id": "ov_2026-09-20_477730",
+ "question": "In October 2024, what multiplier was paid for day D2 work in hour band H2? Answer under the version of the overtime rate that was in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:59:35Z",
+ "touched_at": "2026-09-20T16:00:24Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "overtime rate multipliers by day type/hour band are likely payroll policy",
+   "at": "2026-09-20T15:59:35Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "check if attendance's sec-hard-overtime table uses D2/H2 terminology and has version history predating 2026",
+   "at": "2026-09-20T16:00:01Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "overtime rate multipliers by day type/hour band are likely payroll policy",
+   "at": "2026-09-20T15:59:35Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/regions/attendance",
+   "why": "check if attendance's sec-hard-overtime table uses D2/H2 terminology and has version history predating 2026",
+   "at": "2026-09-20T16:00:01Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:00:24Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:00:24Z"
+}

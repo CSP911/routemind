@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-21_b92f6f",
+ "question": "MD, Singapore, 4 nights - hotel per night limit and receipt threshold",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:44:57Z",
+ "touched_at": "2026-09-21T13:45:16Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "hotel spend limits and receipt requirements for business trips are covered under expense",
+   "at": "2026-09-21T13:44:57Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "hotel spend limits and receipt requirements for business trips are covered under expense",
+   "at": "2026-09-21T13:44:57Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:45:16Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b2-stay-s2/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:45:16Z"
+}

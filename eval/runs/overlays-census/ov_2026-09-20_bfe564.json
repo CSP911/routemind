@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_bfe564",
+ "question": "In September 2023, what was the nightly lodging cap for a trip to a band B destination? Answer under the version of the overseas per-diem that was in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:02:18Z",
+ "touched_at": "2026-09-20T16:02:41Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "expense area covers business trip pay including per-diem rates",
+   "at": "2026-09-20T16:02:18Z"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "oldest version, indexed by one qualifier, in force until 2024-07-01, covers Sept 2023",
+   "at": "2026-09-20T16:02:34Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "expense area covers business trip pay including per-diem rates",
+   "at": "2026-09-20T16:02:18Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/overseas-rates/body",
+   "why": "oldest version, indexed by one qualifier, in force until 2024-07-01, covers Sept 2023",
+   "at": "2026-09-20T16:02:34Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:02:41Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/overseas-rates/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T16:02:41Z"
+}

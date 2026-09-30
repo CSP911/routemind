@@ -26,7 +26,10 @@ gets. There is one advertisement, and every engine reads it.
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
+import ipaddress
 import json
+import socket
 import re
 import os
 import sys
@@ -111,6 +114,50 @@ def _clip(text: str, limit: int) -> str:
     return s if len(s) <= limit else s[: limit - 1] + "…"
 
 
+def _since(iso: str | None) -> str:
+    """An ISO stamp as an age: `3y`, `4mo`, `12d`, `today`. Empty when it is not known.
+
+    Relative, because the question a reader is answering is "is this old", and no model reasons about
+    that from a date without also knowing today's. Coarse on purpose — a row is being chosen, not
+    audited, and `2y` says everything `2y 3mo 11d` would.
+    """
+    if not iso: return ""
+    try:
+        t = _dt.datetime.fromisoformat(str(iso).replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    days = (_dt.datetime.now(_dt.timezone.utc) - t).days
+    if days < 1: return "today"
+    if days < 60: return f"{days}d"
+    if days < 730: return f"{days // 30}mo"
+    return f"{days // 365}y"
+
+
+def _age(row: dict) -> str:
+    """`route / document` — how long this path has been here, and when what it points at last moved.
+
+    Two numbers because one cannot say both, and the pair is the whole signal: `3y / 2d` is a settled
+    path over material somebody rewrote last week, and `3y / 3y` is the row worth asking about. A
+    single "age" would have collapsed those two into the same warning.
+
+    Blank when the history cannot be read. Blank means *not known* and never *new* — a document whose
+    age is unavailable must not be the one that looks freshest on the page.
+    """
+    a, b = _since(row.get("route_since")), _since(row.get("changed"))
+    # `—`, not blank. A blank cell beside columns of `18d / 18d` reads as *no age* — as if this row
+    # were somehow outside time — when what it means is that the age is not ours to know. The row
+    # most often in that state is one that came across a link, where the history belongs to the
+    # backbone that owns it and has not crossed.
+    if not a and not b: return "—"
+    return f"{a or '?'} / {b or '?'}"
+
+
+# What a reader is choosing on when two rows cover one subject, in the order they should be preferred.
+# The words are plain rather than `own`/`grafted`/`peer`: a person reading a table is deciding whose
+# answer to quote, and "ours" says that where "own" reads like a flag.
+WHOSE = {"ours": "ours", "copied": "copied", "theirs": "theirs"}
+
+
 def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) -> str:
     if not rows:
         # An empty table still has to say what its emptiness means. Without the footer, "(nothing
@@ -120,11 +167,45 @@ def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) ->
         return f"{title}\n{lead}\n\n  (nothing here){tail}"
     addr_w = max(len(r["address"]) for r in rows)
     kind_w = max(len(r["kind"]) for r in rows)
+    ages = {id(r): (r.get("age") or "") for r in rows}
+    age_w = max((len(v) for v in ages.values()), default=0)
+    whose = {id(r): WHOSE.get(r.get("whose") or "", "") for r in rows}
+    # Only where it says something. A table whose rows are all `ours` is every table on a backbone
+    # that has grafted nothing and linked to nobody, and a column of one repeated word there is ink
+    # that teaches a reader to skip the place the answer will eventually appear.
+    show_whose = len({v for v in whose.values() if v}) > 1
+    whose_w = max((len(v) for v in whose.values()), default=0) if show_whose else 0
     out = [title, lead, ""]
-    out.append(f"  {'KIND'.ljust(kind_w)}  {'ADDRESS'.ljust(addr_w)}  WHY YOU WOULD PICK THIS ROW")
+    head = f"  {'KIND'.ljust(kind_w)}  {'ADDRESS'.ljust(addr_w)}  "
+    if age_w: head += f"{'AGE'.ljust(age_w)}  "
+    if whose_w: head += f"{'FROM'.ljust(whose_w)}  "
+    out.append(head + "WHY YOU WOULD PICK THIS ROW")
     for r in rows:
-        out.append(f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  {_clip(r['why'], 110)}")
+        line = f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  "
+        if age_w: line += f"{ages[id(r)].ljust(age_w)}  "
+        if whose_w: line += f"{whose[id(r)].ljust(whose_w)}  "
+        out.append(line + _clip(r["why"], 100))
     out.append("")
+    if whose_w:
+        out.append("  FROM says whose answer a row is, and they are not interchangeable:")
+        out.append("    ours    — written here, and maintained here.")
+        out.append("    copied  — grafted from another backbone. A snapshot of what they had, which")
+        out.append("              nobody here has been keeping up to date since.")
+        out.append("    theirs  — read across a link, right now. Theirs to change, and about their")
+        out.append("              organisation rather than yours.")
+        out.append("  When two rows cover the same subject, prefer `ours`. Quoting one of the others")
+        out.append("  as this organisation's answer is the mistake this column exists to prevent —")
+        out.append("  say whose it is.")
+    if age_w:
+        # Said once, under the table, because a column of `3y / 2d` with nothing explaining it is
+        # read as one number twice. The second half is the one that answers "should I look for
+        # something newer"; the first says whether this path has been settled or was just laid down.
+        out.append("  AGE is how long this route has been here / when its document last changed.")
+        out.append("  An old route over a recently changed document is current. An old route over a")
+        out.append("  document that has not moved is the one to ask about before quoting it.")
+        if any((r.get("age") or "") in ("—", "") or "?" in (r.get("age") or "") for r in rows):
+            out.append("  `—` is not known here — usually a row from across a link, whose history stays")
+            out.append("  with the backbone that owns it. Not known is not the same as new.")
     out.append("  table → knowledge_table({ path })    ·    file → knowledge_read({ path })")
     if any(r["kind"] == KIND["empty"] for r in rows):
         out.append("  empty → nobody has written it yet. Do not fetch it; say so if it is what was asked for.")
@@ -145,7 +226,8 @@ def hop0(api: Api) -> str:
     """
     d = api.json("/v1/regions")
     rows = [{"kind": KIND["table"], "address": r.get("fetch") or f"/v1/regions/{r.get('source')}",
-             "why": r.get("use_when") or r.get("description") or r.get("title") or ""}
+             "why": r.get("use_when") or r.get("description") or r.get("title") or "",
+             "age": _age(r), "whose": r.get("whose")}
             for r in (d.get("regions") or [])]
     # The API supplies this sentence when it is not the plain one — when this backbone is linked to
     # others, and above all when a link is down. Whether the list is still the whole world is not
@@ -170,7 +252,7 @@ def area(api: Api, path: str) -> str:
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
     head = f"{d.get('key') or path} — {d.get('advertises') or ''}".strip(" —")
     lead = (f"When to be here: {d['use_when']}" if d.get("use_when") else "") or "What this area holds:"
     return _table(rows, head, lead,
@@ -185,13 +267,17 @@ def node(api: Api, path: str) -> str:
     # table and being told "(nothing here)" while a document sits on it is the table disagreeing with
     # the row that sent you: the row said `data`, this said empty. Its body is the first row.
     if str(d.get("body") or "").strip():
+        # The node's own times, not an entry's — this row *is* the node. Written `_age(e)` at first,
+        # against a loop variable that does not exist yet, which is a 500 on every node that has both
+        # a body and children. Nothing in the dev repository has both; the shipped example does, and
+        # a clean install caught it on the first boot.
         rows.append({"kind": KIND["file"], "address": path.rstrip("/") + "/body",
-                     "why": "its own document"})
+                     "why": "its own document", "age": _age(d), "whose": d.get("whose")})
     for e in (d.get("entries") or []):
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or e.get('description') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
     head = f"{d.get('name') or path}"
     return _table(rows, head, str(d.get("one_liner") or ""),
                   "This lists what this node holds. If what you need is not here, go back to /v1/regions.")
@@ -201,7 +287,8 @@ def _row(e: dict) -> dict:
     kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
     why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
     if kind == KIND["empty"]: why += "  (nothing written here yet)"
-    return {"kind": kind, "address": e.get("fetch") or "", "why": why}
+    return {"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e),
+            "whose": e.get("whose")}
 
 
 def overlay_text(d: dict) -> str:
@@ -273,6 +360,301 @@ def overlay_call(api: Api, args: dict) -> str:
         return closed_text(api.send("POST", f"/v1/overlays/{urllib.parse.quote(need_id(), safe='')}/close",
                                     {"outcome": args.get("outcome") or "", "used": args.get("used") or []}))
     raise ApiError("op must be create | get | add | remove | close")
+
+
+# ---- circuits: this session reading another RouteMind ---------------------------------------
+#
+# A *peer* links two backbones: declared in `peers.yaml`, reviewed, committed, tokens in the
+# environment, and both sides configured. That weight is the point — it is a standing relationship
+# between two ontologies, and it belongs in git.
+#
+# A *circuit* is the light version and a different thing: **this session** reading a remote
+# backbone, for as long as this connection lasts. Nothing is written, nothing is committed, the
+# remote is not told, and closing the client ends it. It exists because "let me look at theirs for a
+# minute" should not require an operator, a restart, and a commit to two repositories.
+#
+# It needs no server change on either side. The remote already serves `/v1/export/…` to anyone with
+# a valid `X-Peer-Token`, and that surface is built from the exported set rather than filtered on
+# the way out — so a circuit can reach exactly what its token's owner decided to share and nothing
+# else. The line it sees is `use_when` — one sentence, the same one they route on (2026-09-29).
+#
+# Read-only, and that is not a limitation to lift later. `server.py`: "a link is read-only — write
+# to the backbone that owns it... Two ontologies that write to each other have been merged."
+CIRCUITS: dict[str, dict] = {}
+
+
+def _public_address(url: str) -> bool:
+    """Would a token sent here cross a network nobody in this deployment controls?
+
+    The same question `peers.public_address` asks, asked again here because a circuit sends the same
+    kind of secret to the same kind of place, and a check that exists on one path and not the other
+    protects nothing. Unresolvable is not public — a remote that is simply down should not produce a
+    lecture about secrecy, which sends the reader looking in entirely the wrong place.
+    """
+    try:
+        parts = urllib.parse.urlsplit(url)
+        if parts.scheme != "http": return False
+        host = parts.hostname or ""
+        if not host: return False
+        try: infos = socket.getaddrinfo(host, None)
+        except OSError: return False
+        for info in infos:
+            ip = ipaddress.ip_address(info[4][0])
+            if not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved):
+                return True
+        return False
+    except Exception:
+        return False
+
+
+def circuit_session(name: str) -> str:
+    """The circuit's six-hour session, minted from the token the person gave, and held on it."""
+    c = CIRCUITS[name]
+    if c.get("session"): return c["session"]
+    req = urllib.request.Request(c["url"] + "/v1/peers/token", data=b"", method="POST",
+                                 headers={"X-Peer-Token": c["token"], "Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            tok = str(json.loads(r.read().decode("utf-8")).get("token") or "")
+    except urllib.error.HTTPError as e:
+        raise ApiError(f"circuit {name}: {c['url']} refused the token (HTTP {e.code})", e.code)
+    except urllib.error.URLError as e:
+        raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e.reason})")
+    if not tok: raise ApiError(f"circuit {name}: no token came back from {c['url']}", 502)
+    c["session"] = tok
+    return tok
+
+
+def circuit_fetch(name: str, path: str, accept: str) -> str:
+    """One read across a circuit. `path` is written the way tables print it, beginning `/v1/`."""
+    c = CIRCUITS.get(name)
+    if not c: raise ApiError(f"no circuit named {name} — open one first", 404)
+    tail = path[len("/v1/"):] if path.startswith("/v1/") else path.lstrip("/")
+    url = c["url"] + "/v1/export/" + tail
+    # A six-hour session rather than the token the person typed. The typed one opens the mint and
+    # nothing else, so it appears once per circuit instead of on every hop of a walk — which matters
+    # here more than anywhere, because a walk's reads are the ones that end up in a transcript.
+    def go(tok):
+        req = urllib.request.Request(url, headers={"Accept": accept, "X-Peer-Token": tok})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.read().decode("utf-8")
+    try:
+        return go(circuit_session(name))
+    except urllib.error.HTTPError as e:
+        # The far end restarted, or six hours passed mid-walk. Re-mint once: a restart over there
+        # must cost a round trip, not the rest of the walk.
+        if e.code == 401:
+            c.pop("session", None)
+            try:
+                return go(circuit_session(name))
+            except urllib.error.HTTPError as e2:
+                detail = (e2.read().decode("utf-8", "replace") or "").strip()[:200]
+                raise ApiError(f"circuit {name}: HTTP {e2.code} from /v1/export/{tail}"
+                               + (f" — {detail}" if detail else ""), e2.code)
+            except urllib.error.URLError as e2:
+                raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e2.reason})")
+        detail = (e.read().decode("utf-8", "replace") or "").strip()[:200]
+        raise ApiError(f"circuit {name}: HTTP {e.code} from /v1/export/{tail}"
+                       + (f" — {detail}" if detail else ""), e.code)
+    except urllib.error.URLError as e:
+        raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e.reason})")
+
+
+def circuit_table(name: str, payload: str) -> str:
+    """What a circuit returned, rendered as a table whose addresses go back through the circuit.
+
+    Rewriting the addresses is the whole of it. The remote prints its own — `/v1/regions/expense` —
+    and an agent that followed one verbatim would read this backbone's `expense` instead, silently
+    and with an answer that looks entirely reasonable. Every row leaves here as
+    `/v1/circuits/<name>/…`, so "use the address exactly as printed" stays true across a circuit.
+    """
+    try: d = json.loads(payload)
+    except json.JSONDecodeError: return payload
+    pre = f"/v1/circuits/{name}"
+    rows = []
+    for r in (d.get("regions") or []):
+        src = r.get("source") or r.get("id") or ""
+        rows.append({"kind": KIND["table"], "address": f"{pre}/regions/{src}",
+                     "why": r.get("use_when")
+                            or r.get("description") or r.get("title") or ""})
+    # A node's children come back under `entries`, each already carrying the address the remote
+    # would print and whether anything is written there — the same shape the local tables are built
+    # from. Guessed at `children`/`nodes` first, and the area table came out empty while the remote
+    # had five rows: an empty table is the one wrong answer that looks like a fact.
+    for e in (d.get("entries") or d.get("children") or d.get("nodes") or []):
+        eid = e.get("id") or ""
+        has = bool(e.get("has_body", True))
+        kids = e.get("children")
+        kind = KIND["table"] if kids else (KIND["file"] if has else KIND["empty"])
+        tail = f"nodes/{eid}/body" if (kind == KIND["file"]) else f"nodes/{eid}"
+        rows.append({"kind": kind, "address": f"{pre}/{tail}",
+                     "why": e.get("one_liner") or e.get("name") or ""})
+    # An area's own row points at the representative that holds it: `/v1/export/regions/<a>` answers
+    # with the area's description, not its contents.
+    if not rows and d.get("representative"):
+        rows.append({"kind": KIND["table"], "address": f"{pre}/nodes/{d['representative']}",
+                     "why": d.get("use_when") or d.get("advertises") or ""})
+    title = f"CIRCUIT {name} — {d.get('name') or d.get('title') or 'a remote RouteMind'}"
+    lead = ("Read-only, and only what its owner chose to let cross. The line on each row is the one "
+            "they route on themselves — there is one sentence per area, not a separate one for "
+            "outsiders.")
+    return _table(rows, title, lead,
+                  "Not finding something here does not mean they do not have it — it means they "
+                  "did not export it. Ask them, do not conclude.")
+
+
+def circuit_call(args: dict) -> str:
+    op = str(args.get("op") or "").strip()
+    if op == "list":
+        if not CIRCUITS: return "No circuits are open."
+        out = ["OPEN CIRCUITS", ""]
+        for n, c in sorted(CIRCUITS.items()):
+            out.append(f"  {n:<16} {c['url']}   → /v1/circuits/{n}/regions")
+        return "\n".join(out) + ("\n\nThese last for this connection only. "
+                                 "Nothing is written anywhere.")
+    if op == "close":
+        n = str(args.get("name") or "").strip()
+        return f"Circuit {n} closed." if CIRCUITS.pop(n, None) else f"No circuit named {n}."
+    if op != "open":
+        return "op must be open, list or close."
+
+    url = str(args.get("url") or "").strip().rstrip("/")
+    token = str(args.get("token") or "").strip()
+    name = str(args.get("name") or "").strip() or (urllib.parse.urlsplit(url).hostname or "remote")
+    if not url or not token:
+        return "url and token are both required — a circuit is a read into somebody else's ontology."
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
+        return f"name must be ascii kebab-case, got {name!r}"
+    if _public_address(url):
+        return (f"refusing to send a token to {url} — that is a public address over plain http, so "
+                "the token would cross the wire in clear text. Use https, or a private address.")
+
+    CIRCUITS[name] = {"url": url, "token": token}
+    try:
+        circuit_fetch(name, "/v1/regions", "application/json")
+    except ApiError as e:
+        CIRCUITS.pop(name, None)
+        # Opened and immediately closed. A circuit that is listed but does not answer is worse than
+        # none: the agent spends its hops discovering that, and the table said it was there.
+        return f"Could not open circuit {name} — {e}\n\nNothing was kept."
+    return (f"CIRCUIT {name} open  \u2192  {url}\n\n"
+            f"  Read it at /v1/circuits/{name}/regions, then follow the addresses it prints.\n"
+            "  It is read-only and holds only what its owner chose to let cross; the line on each\n"
+            "  row is the one they route on themselves.\n"
+            "  This lasts for this connection. Nothing was written on either side.")
+
+
+WORKSPACE = "workspace"
+
+
+def workspace_available(api: Api) -> bool:
+    """Whether this install keeps a workspace area, asked rather than assumed.
+
+    Same rule as overlays: no area, no tool, and nothing in the instructions about one. It also makes
+    turning the feature on a single act a person takes deliberately — creating the area — rather than
+    a flag somebody sets and forgets. An install that has not decided it wants machine-written notes
+    does not get a tool that writes them.
+    """
+    try:
+        rs = (api.json("/v1/regions") or {}).get("regions") or []
+        return any((r.get("source") or r.get("id")) == WORKSPACE for r in rs)
+    except ApiError:
+        return False
+
+
+def _slug(text: str, limit: int = 48) -> str:
+    out = re.sub(r"[^a-z0-9]+", "-", (text or "").lower()).strip("-")
+    return out[:limit].rstrip("-") or "entry"
+
+
+def write_call(api: Api, args: dict) -> str:
+    """Record what an agent just did, in the workspace area, under today's date.
+
+    **The area is not a parameter.** Deciding where a subject lives changes the map, and the map is
+    the text every walk reads before it chooses anything — one wrong row in it reached 39.7% of walks
+    in the 700-question census, and the single miss in that census was one such row. So a machine
+    writes a dated note and a person decides, later and by hand, which area it belongs to. Writing a
+    note is cheap and reversible; changing the map is neither.
+    """
+    title = (args.get("title") or "").strip()
+    body = (args.get("what_happened") or "").strip()
+    if not title: return "title is required — one line naming what this is about."
+    if not body: return "what_happened is required — this is the note itself."
+
+    day = args.get("date") or _dt.date.today().isoformat()
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+        return f"date must be YYYY-MM-DD, got {day!r}"
+    day_id = f"{WORKSPACE}-{day}"
+
+    # One topic node per day, holding that day's entries. `topic` is the vocabulary's own word for a
+    # node that groups and has nothing to read in itself, so the day needs no invented kind.
+    try:
+        api.json(f"/v1/nodes/{day_id}")
+    except ApiError as e:
+        if e.status != 404: raise
+        api.send("POST", "/v1/nodes", {
+            "region": WORKSPACE, "id": day_id, "kind": "topic", "name": day,
+            "one_liner": f"What was recorded on {day}",
+            "edges": [{"from": WORKSPACE, "rel": "CONSISTS_OF", "to": day_id}]})
+
+    eid = f"{day_id}-{_slug(title)}"
+    note = body
+    sup = (args.get("supersedes") or "").strip()
+    if sup:
+        # In prose, not a field. The vocabulary has no SUPERSEDES relation, and the corpus convention
+        # is that a document says so in its own words — which is also what the person who later files
+        # this needs, since they will be reading it rather than querying it.
+        note += f"\n\n## Supersedes\n\n{sup}"
+    note += (f"\n\n---\n\nRecorded by an agent on {day}. Unfiled: nobody has decided which area this "
+             f"belongs to, and nothing here has been checked for currency.")
+
+    # Create, then write the body, then read it back.
+    #
+    # Three steps for what looks like one, and each is here because the shorter version failed. The
+    # create accepts a `content` field and — through the web proxy at least — silently drops it,
+    # leaving a node the tables mark `empty`: "nobody has written it yet. Do not fetch it." The tool
+    # reported success. A note that cannot be read is worse than no note, because the agent that
+    # wrote it believes the work is kept.
+    made = api.send("POST", "/v1/nodes", {
+        "region": WORKSPACE, "id": eid, "kind": args.get("kind") or "case", "name": title,
+        "one_liner": (args.get("one_liner") or title)[:200],
+        # `parent`, not only an edge. An edge relates two nodes; `parent` is what puts this one
+        # *under* the day in the tree a walk descends. With the edge alone the day node listed
+        # "(nothing here)" while the entry sat flat in the area.
+        "parent": day_id,
+        "content": note,
+        "edges": [{"from": day_id, "rel": "CONSISTS_OF", "to": eid}]})
+    got = (made or {}).get("id") or eid
+    try:
+        api.text(f"/v1/nodes/{got}/body")
+    except ApiError as e:
+        return (f"WROTE THE ROW BUT NOT THE NOTE  /v1/nodes/{got}\n  {e}\n\n"
+                "  The entry exists and is empty, which tables advertise as `empty` — a row with\n"
+                "  nothing behind it. Say so rather than treating the work as recorded.")
+
+    # The service's own warnings about *this* write. It said, the first time, that a node with no
+    # document "advertises as `empty`, which is a row with nothing behind it" — and the wrapper threw
+    # that away and printed success.
+    #
+    # Only the ones naming what was just written. The service returns its whole repository health
+    # report on every write: forty-eight lines here, about nodes nobody touched and fields nobody
+    # fills. Printing all of it buries the one line that is about the caller, every time, in the
+    # context of an agent that has work to do.
+    mine = [w for w in ((made or {}).get("warnings") or []) if got in w or day_id in w]
+    warn = "".join(f"\n  ! {w}" for w in mine)
+
+    # The one-liner is echoed back on purpose. It is the only line a reader sees before opening this,
+    # and an agent that has just spent a run inside one subject writes it in that run's vocabulary —
+    # which is the exact failure this study measured at 0.028: a question in a person's words against
+    # rows indexed by the words the writer happened to use.
+    return ("RECORDED  /v1/nodes/" + got + f"\n  in {WORKSPACE}, under {day}" + warn + "\n\n"
+            f"  one-liner:  {(args.get('one_liner') or title)[:200]}\n\n"
+            "  That line is all a later reader sees before opening this. Would somebody who was not\n"
+            "  in this run — searching in their own words, months from now — recognise it? If not,\n"
+            "  write it again with a better one_liner; this note is unfiled and cheap\n"
+            "  to replace.\n\n"
+            "  It is not an answer to anything yet. Filing it into the area that owns its subject is\n"
+            "  a person's edit, and that is when it gets a home and a statement of what it replaces.")
 
 
 def overlays_available(api: Api) -> bool:
@@ -397,10 +779,71 @@ OVERLAY_TOOL = {
                  "description": "close: every address you actually took the answer from, member or not"}}}}
 
 
+WRITE_TOOL = {
+    "name": "knowledge_write",
+    "description": "Record what you just did, so it is not lost when this session ends. Use it at the "
+                   "end of a piece of work — a decision you reached, a case the rules did not settle "
+                   "and how you settled it, a procedure you worked out. It writes a dated note into "
+                   "the workspace area.\n\n"
+                   "You do not choose where it goes. Everything lands in `workspace` under today's "
+                   "date, and a person files it into the area that owns its subject later. That is "
+                   "deliberate: which area a subject belongs to is part of the routing table every "
+                   "search reads first, and moving it is a decision with consequences a note does "
+                   "not have.\n\n"
+                   "What you write here is NOT an answer to anything yet. It is unreviewed, it is not "
+                   "checked against what it might replace, and nothing will route a later question to "
+                   "it. If you learned that a rule is now different, say so in `supersedes` — the "
+                   "person filing this will need it and will not be able to reconstruct it.",
+    "inputSchema": {"type": "object", "required": ["title", "what_happened"], "properties": {
+        "title": {"type": "string",
+                  "description": "One line naming what this is about, in the words somebody looking "
+                                 "for it later would use — not the words this run happened to use"},
+        "what_happened": {"type": "string",
+                          "description": "The note itself, in markdown. What the situation was, what "
+                                         "you did, and what you concluded"},
+        "one_liner": {"type": "string",
+                      "description": "The single line a reader sees before opening this. Defaults to "
+                                     "the title"},
+        "supersedes": {"type": "string",
+                       "description": "If this changes or replaces something already written down, "
+                                      "what — in your own words, naming the document if you know it"},
+        "kind": {"type": "string",
+                 "enum": ["case", "rule", "procedure", "form", "table", "system", "role", "deadline"],
+                 "description": "Defaults to `case` — a situation the rules did not settle and what "
+                                "was actually done. That is usually what a run produces"},
+        "date": {"type": "string", "description": "YYYY-MM-DD. Defaults to today"}}}}
+
+
+CIRCUIT_TOOL = {
+    "name": "knowledge_circuit",
+    "description": "Read another RouteMind for the length of this connection. Give it the address "
+                   "and token somebody handed you, and their shared areas appear alongside this "
+                   "backbone's — you walk them the same way, with the addresses their tables "
+                   "print.\n\n"
+                   "It is read-only, and it holds only what its owner chose to let cross. The line "
+                   "on each row is the one that backbone routes on itself — one sentence per area, "
+                   "written by its owner about their own map rather than about yours.\n\n"
+                   "Nothing is written on either side and nothing outlives this connection. This is "
+                   "not the same as linking two backbones, which is a standing arrangement somebody "
+                   "configures and commits; this is you borrowing a reader's view of theirs.",
+    "inputSchema": {"type": "object", "required": ["op"], "properties": {
+        "op": {"type": "string", "enum": ["open", "list", "close"]},
+        "url": {"type": "string", "description": "open: the remote RouteMind's address, e.g. https://kb.example.com"},
+        "token": {"type": "string", "description": "open: the read token its owner gave you"},
+        "name": {"type": "string",
+                 "description": "open: a short name to address it by (ascii kebab-case; defaults to "
+                                "the host). close: which one to close"}}}}
+
+
 class Server:
     def __init__(self, api: Api):
         self.api = api
         self._overlays = None
+        self._workspace = None
+
+    def workspace(self) -> bool:
+        if self._workspace is None: self._workspace = workspace_available(self.api)
+        return self._workspace
 
     def overlays(self) -> bool:
         if self._overlays is None: self._overlays = overlays_available(self.api)
@@ -461,13 +904,28 @@ class Server:
         except ApiError as e:
             tools[0]["description"] += f"\n\n(The area list could not be fetched: {e})"
         if self.overlays(): tools.append(dict(OVERLAY_TOOL))
+        if self.workspace(): tools.append(dict(WRITE_TOOL))
+        tools.append(dict(CIRCUIT_TOOL))
         return tools
 
     def call(self, name: str, args: dict) -> tuple[str, bool]:
         try:
-            if name == "knowledge_table": return table_for(self.api, str(args.get("path") or "")), False
-            if name == "knowledge_read":  return read_for(self.api, str(args.get("path") or "")), False
+            if name == "knowledge_circuit": return circuit_call(args), False
+            # An address into an open circuit is answered by the circuit, not this backbone. The
+            # agent never composes one: it follows what a circuit's own tables printed, the same
+            # discipline as every other address here.
+            path = str(args.get("path") or "")
+            if name in ("knowledge_table", "knowledge_read") and path.startswith("/v1/circuits/"):
+                rest = path[len("/v1/circuits/"):]
+                cname, _, tail = rest.partition("/")
+                doc = name == "knowledge_read"
+                body = circuit_fetch(cname, "/v1/" + tail,
+                                     "text/markdown" if doc else "application/json")
+                return (body if doc else circuit_table(cname, body)), False
+            if name == "knowledge_table": return table_for(self.api, path), False
+            if name == "knowledge_read":  return read_for(self.api, path), False
             if name == "knowledge_overlay" and self.overlays(): return overlay_call(self.api, args), False
+            if name == "knowledge_write" and self.workspace(): return write_call(self.api, args), False
             return f"No such tool: {name}", True
         except ApiError as e:
             return str(e), True
@@ -492,9 +950,44 @@ class Server:
             text, is_error = self.call(str(params.get("name") or ""), params.get("arguments") or {})
             return ok({"content": [{"type": "text", "text": text}], "isError": is_error})
         if method == "prompts/list":
-            return ok({"prompts": [{"name": "knowledge_start",
-                                    "description": "The areas of this domain, and how to search them."}]})
+            return ok({"prompts": [
+                {"name": "knowledge_start",
+                 "description": "The areas of this domain, and how to search them."},
+                # Arguments, so a client can offer them as fields rather than making somebody
+                # compose a tool call. A circuit is the one thing here a person starts deliberately:
+                # everything else an agent reaches for on its own, and this is somebody saying
+                # "read theirs too, now".
+                {"name": "circuit",
+                 "description": "Open a circuit to another RouteMind and read what it shares — for "
+                                "this connection only, writing nothing on either side.",
+                 "arguments": [
+                     {"name": "url", "description": "the remote RouteMind's address, "
+                                                    "e.g. https://kb.example.com", "required": True},
+                     {"name": "token", "description": "the token its owner gave you", "required": True},
+                     {"name": "name", "description": "what to call it here — ascii kebab-case; "
+                                                     "defaults to the host", "required": False}]}]})
         if method == "prompts/get":
+            # By name. This used to answer hop 0 whatever was asked for, which was correct while
+            # there was one prompt and would have made a second one silently return the first.
+            which = str(params.get("name") or "knowledge_start")
+            args = params.get("arguments") or {}
+            if which == "circuit":
+                url, token = str(args.get("url") or "").strip(), str(args.get("token") or "").strip()
+                if not url or not token:
+                    body = ("A circuit needs the remote's address and a token its owner gave you.\n\n"
+                            "  url:    https://kb.example.com   ·   token: the one you were handed\n"
+                            "  name:   optional — what to call it here")
+                else:
+                    # Opened here rather than handed to the model as an instruction to open: the
+                    # person typed the address and the token, and a prompt that asks an agent to
+                    # please make a tool call is one more place the two can disagree.
+                    body = circuit_call({"op": "open", "url": url, "token": token,
+                                         "name": str(args.get("name") or "").strip()})
+                return ok({"description": "A circuit to another RouteMind",
+                           "messages": [{"role": "user", "content": {"type": "text", "text": body}}]})
+            if which != "knowledge_start":
+                return {"jsonrpc": "2.0", "id": mid,
+                        "error": {"code": -32602, "message": f"Unknown prompt: {which}"}}
             try: body = hop0(self.api)
             except ApiError as e: body = str(e)
             return ok({"description": "Where to start in Knowledge",

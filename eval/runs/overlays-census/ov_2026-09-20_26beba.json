@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_26beba",
+ "question": "Daejeon supplier, 300M KRW, custom spec item: site visit required? review frequency for their file?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T22:56:29Z",
+ "touched_at": "2026-09-20T22:56:55Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "custom-spec supplier order, amount threshold, site visit and periodic review requirements likely live under procurement",
+   "at": "2026-09-20T22:56:29Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "custom-spec supplier order, amount threshold, site visit and periodic review requirements likely live under procurement",
+   "at": "2026-09-20T22:56:29Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T22:56:55Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-origin/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-value/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-goods/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o1-value-w3-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T22:56:55Z"
+}

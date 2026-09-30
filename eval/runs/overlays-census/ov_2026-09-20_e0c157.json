@@ -1,0 +1,39 @@
+{
+ "id": "ov_2026-09-20_e0c157",
+ "question": "For type E1, tenure T4, site L4, how much time off am I building up each month, and how much can I still be holding in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:16:29Z",
+ "touched_at": "2026-09-20T16:16:37Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site since 2026-01-01",
+   "at": "2026-09-20T16:16:29Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-accrual",
+   "why": "current leave accrual table by type, tenure, site since 2026-01-01",
+   "at": "2026-09-20T16:16:29Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:16:37Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e1-tenure-t4-site-l4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:16:37Z"
+}

@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-21_023df8",
+ "question": "For grade G2, band B2, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:19:40Z",
+ "touched_at": "2026-09-21T13:19:55Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, likely has hotel cap and receipt threshold",
+   "at": "2026-09-21T13:19:40Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision",
+   "why": "warns about three versions of per-diem, need to confirm which is current for 2026-09-20",
+   "at": "2026-09-21T13:19:40Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, likely has hotel cap and receipt threshold",
+   "at": "2026-09-21T13:19:40Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision",
+   "why": "warns about three versions of per-diem, need to confirm which is current for 2026-09-20",
+   "at": "2026-09-21T13:19:40Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:19:55Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g2-band-b2-stay-s1/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:19:55Z"
+}

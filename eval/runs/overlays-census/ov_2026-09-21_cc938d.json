@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_cc938d",
+ "question": "Flights and hotels, about 700,000 won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:16:20Z",
+ "touched_at": "2026-09-21T14:16:36Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount-based approval threshold and whether quotes/comparison required",
+   "at": "2026-09-21T14:16:20Z"
+  },
+  {
+   "address": "/v1/regions/expense",
+   "why": "business trip expense rules, whether corporate card/receipts apply to flights and hotels",
+   "at": "2026-09-21T14:16:20Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount-based approval threshold and whether quotes/comparison required",
+   "at": "2026-09-21T14:16:20Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "business trip expense rules, whether corporate card/receipts apply to flights and hotels",
+   "at": "2026-09-21T14:16:20Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:16:36Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v1-term-m1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:16:36Z"
+}

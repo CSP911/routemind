@@ -63,6 +63,8 @@ if not os.path.isdir(seed): seed = os.path.join(ROOT, "seed")
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session                              # noqa: E402
 
 TOK = {"TOK_AY": "t-ay", "TOK_BEE": "t-bee"}
 def _need_areas(names, n, what):
@@ -95,7 +97,7 @@ for n in ("ay", "bee"):
         t = open(q, encoding="utf-8").read()
         if "\nrole: representative\n" in t and "\nparent:" not in t:
             open(q, "w", encoding="utf-8").write(t.replace(
-                "\nrole: representative\n", f"\nrole: representative\nuse_when_export: what {n} answers\n", 1))
+                "\nrole: representative\n", f"\nrole: representative\nexport: yes\nuse_when: what {n} answers\n", 1))
             break
     if n == "bee":
         # The seed declares no area that takes drafts, so this copy declares one. `area_rules` is
@@ -157,7 +159,7 @@ def call(port, path, method="GET", body=None, token=None, raw=False):
     data = json.dumps(body).encode() if body is not None else None
     r = urllib.request.Request(f"http://127.0.0.1:{port}{path}", data=data, method=method)
     if data is not None: r.add_header("Content-Type", "application/json")
-    if token: r.add_header("X-Peer-Token", token)
+    if token: r.add_header("X-Peer-Token", _session(f"http://127.0.0.1:{port}", token))
     r.add_header("X-Actor", "cross-check")
     try:
         with urllib.request.urlopen(r, timeout=30) as x:
@@ -250,7 +252,7 @@ def set_audience(who, names):
         if "\nrole: representative\n" not in t or "\nparent:" in t: continue
         out = [l for l in t.splitlines(True) if not l.startswith("export_to:")]
         if names:
-            i = next(j for j, l in enumerate(out) if l.startswith("use_when_export:"))
+            i = next(j for j, l in enumerate(out) if l.startswith("export:"))
             out.insert(i + 1, "export_to: [" + ", ".join(names) + "]\n")
         open(q, "w", encoding="utf-8").write("".join(out))
         break
@@ -288,7 +290,7 @@ st, r = call(B_PORT, "/v1/regions", "POST",
              {"source": "long-one", "core_description": "an area with the longest name there is",
               "representative": {"name": "L" * 40, "one_liner": "the longest id there is",
                                  "use_when": "when the id is as long as it can be",
-                                 "use_when_export": "the longest id there is, across a link",
+                                 "export": True,
                                  "id": LONG}})
 if check("P5 an area whose representative has a 252-character id is created", st in (200, 201), json.dumps(r)[:140]):
     time.sleep(0.5)

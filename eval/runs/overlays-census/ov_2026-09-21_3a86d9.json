@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-21_3a86d9",
+ "question": "For category C2, amount V3, term M4, whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:13:58Z",
+ "touched_at": "2026-09-21T14:14:10Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01, today is 2026-09-21",
+   "at": "2026-09-21T14:13:57Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns approval threshold has three versions with different effective dates - need to confirm which applies today",
+   "at": "2026-09-21T14:13:57Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term, in force since 2026-01-01, today is 2026-09-21",
+   "at": "2026-09-21T14:13:57Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns approval threshold has three versions with different effective dates - need to confirm which applies today",
+   "at": "2026-09-21T14:13:57Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:14:10Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v3-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:14:10Z"
+}

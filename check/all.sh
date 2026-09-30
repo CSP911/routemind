@@ -85,6 +85,12 @@ fi
 run env-check  $HOSTPY check/env-check.py
 run eol-check  $HOSTPY check/eol-check.py
 run romanize   $HOSTPY check/romanize-check.py
+# The two times on a routing row. It builds its own repository and commits into it, so it needs git
+# and nothing else — no service, no containers.
+run age        $HOSTPY check/age-check.py
+# What an edit by hand leaves behind. Needs the service's own modules, so it runs wherever those
+# import — the same condition as the other static ones.
+run tidy       $HOSTPY check/tidy-check.py
 
 printf '\n== in the containers ==\n'
 if [ -n "$ONT" ]; then
@@ -109,6 +115,21 @@ fi
 printf '\n== against the install at %s ==\n' "$BASE"
 run smoke     sh check/smoke.sh "$BASE"
 run mcp-check $HOSTPY check/mcp-check.py "$BASE/api/knowledge"
+# What an export contains and what it refuses. It reads the export surface and needs the peer token
+# for it — from the environment, or from the same .env compose reads, so running the suite needs no
+# extra step. Not skipped when the token is missing: this file's own rule at the top is that a suite
+# which cannot run says so and fails, and the check whose whole point is that an export stays narrow
+# is the last one that should quietly not happen.
+TRANSFER_TOKEN="${EXCHANGE_TOKEN_HOME:-}"
+[ -n "$TRANSFER_TOKEN" ] || TRANSFER_TOKEN=$(sed -n 's/^EXCHANGE_TOKEN_HOME=//p' .env 2>/dev/null | head -1)
+ROUTEMIND_TOKEN="$TRANSFER_TOKEN" run transfer $HOSTPY check/transfer-check.py
+# The session tokens, run inside the ontology against itself: that service publishes no port, which
+# is the design — the web proxy is the only way in from outside — so this is where it is reachable.
+if [ -n "$ONT" ]; then
+  docker cp check/session-check.py "$ONT:/tmp/session-check.py" >/dev/null 2>&1
+  run session docker exec -i -e ROUTEMIND_TOKEN="$TRANSFER_TOKEN" \
+      -e ROUTEMIND_API=http://127.0.0.1:8100 "$ONT" python3 /tmp/session-check.py
+fi
 
 printf '\n== the slow ones, which start services of their own ==\n'
 if [ "$QUICK" = 1 ]; then

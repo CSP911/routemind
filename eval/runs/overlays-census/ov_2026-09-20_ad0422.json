@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_ad0422",
+ "question": "3 days/week, 5 years tenure, Seoul office: monthly leave accrual rate and max carryover/balance holdable in January?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:25:55Z",
+ "touched_at": "2026-09-20T16:26:31Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "attendance covers leave accrual, balances, carryover, part-time/pro-rated leave",
+   "at": "2026-09-20T16:25:55Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "attendance covers leave accrual, balances, carryover, part-time/pro-rated leave",
+   "at": "2026-09-20T16:25:55Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:26:31Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e3-tenure-t3-site-l1/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:26:31Z"
+}

@@ -1,0 +1,82 @@
+{
+ "id": "ov_2026-09-20_f4f658",
+ "question": "In January 2024, what screening was required for a new supplier? Answer under the version of supplier due diligence in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:56:15Z",
+ "touched_at": "2026-09-20T15:56:45Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "explains which version of supplier due diligence covers which date range",
+   "at": "2026-09-20T15:56:15Z"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "this is the oldest version (in force until 2024-07-01), the one that governs Jan 2024, indexed by one qualifier",
+   "at": "2026-09-20T15:56:39Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "explains which version of supplier due diligence covers which date range",
+   "at": "2026-09-20T15:56:15Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "version in force 2024-07-01 to 2025-12-31, need to check if Jan 2024 falls in an earlier version",
+   "at": "2026-09-20T15:56:15Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current table, in force from 2026-01-01, not applicable to Jan 2024 but useful for structure",
+   "at": "2026-09-20T15:56:15Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "fanned out into 64 unrelated combination rows for the current 2026 table; not needed for a Jan 2024 question",
+   "at": "2026-09-20T15:56:27Z"
+  },
+  {
+   "op": "remove",
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "why": "covers 2024-07-01 to 2025-12-31; Jan 2024 predates this, so the oldest version applies instead",
+   "at": "2026-09-20T15:56:35Z"
+  },
+  {
+   "op": "add",
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "why": "this is the oldest version (in force until 2024-07-01), the one that governs Jan 2024, indexed by one qualifier",
+   "at": "2026-09-20T15:56:39Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:56:45Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/sec-supplier-due-diligence/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/supplier-due-diligence/body",
+   "how": "member"
+  }
+ ],
+ "closed_at": "2026-09-20T15:56:45Z"
+}

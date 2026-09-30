@@ -1,0 +1,40 @@
+{
+ "id": "ov_2026-09-20_651417",
+ "question": "For something dated 29 June 2024 (two days before the first change), how much leave accrued/granted for 2 years continuous service? Version in force that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:29:36Z",
+ "touched_at": "2026-09-20T09:29:36Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "confirms version boundaries: until 2024-07-01 = leave-accrual; 2024-07-01 to 2025-12-31 = hard-accrual-v2",
+   "at": "2026-09-20T09:29:22Z"
+  },
+  {
+   "address": "/v1/nodes/accrual-rule/body",
+   "why": "the pre-2024-07-01 table itself: 1 year and over = 15 days",
+   "at": "2026-09-20T09:29:27Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "why": "confirms version boundaries: until 2024-07-01 = leave-accrual; 2024-07-01 to 2025-12-31 = hard-accrual-v2",
+   "at": "2026-09-20T09:29:22Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/accrual-rule/body",
+   "why": "the pre-2024-07-01 table itself: 1 year and over = 15 days",
+   "at": "2026-09-20T09:29:27Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

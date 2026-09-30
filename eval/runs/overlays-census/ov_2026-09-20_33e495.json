@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-20_33e495",
+ "question": "Consultant time, about 40 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T20:07:36Z",
+ "touched_at": "2026-09-20T20:24:13Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01 — need signer for ~40M won consulting/services spend",
+   "at": "2026-09-20T20:07:35Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions; need to confirm which applies and how to read the table",
+   "at": "2026-09-20T20:07:35Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request flow includes quotes requirement",
+   "at": "2026-09-20T20:07:35Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, in force since 2026-01-01 — need signer for ~40M won consulting/services spend",
+   "at": "2026-09-20T20:07:35Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions; need to confirm which applies and how to read the table",
+   "at": "2026-09-20T20:07:35Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request flow includes quotes requirement",
+   "at": "2026-09-20T20:07:35Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T20:24:13Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c2-amount-v4-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T20:24:13Z"
+}

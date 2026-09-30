@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_8e577a",
+ "question": "Two in the morning, eleven hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T12:36:41Z",
+ "touched_at": "2026-09-21T12:37:01Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - since 2026-01-01",
+   "at": "2026-09-21T12:36:41Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions, need to confirm which applies",
+   "at": "2026-09-21T12:36:41Z"
+  },
+  {
+   "address": "/v1/nodes/sec-overtime-and-hours",
+   "why": "map of overtime/hours area, may explain rounding rules",
+   "at": "2026-09-21T12:36:41Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day, hours, place - since 2026-01-01",
+   "at": "2026-09-21T12:36:41Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns overtime rate has three versions, need to confirm which applies",
+   "at": "2026-09-21T12:36:41Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-overtime-and-hours",
+   "why": "map of overtime/hours area, may explain rounding rules",
+   "at": "2026-09-21T12:36:41Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T12:37:01Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h4-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T12:37:01Z"
+}

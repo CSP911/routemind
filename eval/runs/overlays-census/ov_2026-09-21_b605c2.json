@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_b605c2",
+ "question": "MD, Jakarta, 3 weeks: nightly hotel cap and receipt threshold?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:50:08Z",
+ "touched_at": "2026-09-21T13:50:36Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, since 2026-01-01",
+   "at": "2026-09-21T13:50:07Z"
+  },
+  {
+   "address": "/v1/nodes/evidence",
+   "why": "receipt requirement threshold",
+   "at": "2026-09-21T13:50:07Z"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns of 3 versions with different dates - need to confirm which applies today",
+   "at": "2026-09-21T13:50:07Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-perdiem",
+   "why": "current overseas per-diem table by grade/band/stay, since 2026-01-01",
+   "at": "2026-09-21T13:50:07Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/evidence",
+   "why": "receipt requirement threshold",
+   "at": "2026-09-21T13:50:07Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "why": "warns of 3 versions with different dates - need to confirm which applies today",
+   "at": "2026-09-21T13:50:07Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:50:36Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-grade/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-band/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-legend-stay/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b3-stay-s4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:50:36Z"
+}

@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-21_ebb289",
+ "question": "For grade G3, band B2, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:31:56Z",
+ "touched_at": "2026-09-21T13:32:10Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "expense region covers business trip pay and receipts",
+   "at": "2026-09-21T13:31:56Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "expense region covers business trip pay and receipts",
+   "at": "2026-09-21T13:31:56Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:32:10Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/sec-hard-perdiem/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g3-band-b2-stay-s2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:32:10Z"
+}

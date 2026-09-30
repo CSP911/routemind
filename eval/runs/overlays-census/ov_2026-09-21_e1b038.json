@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_e1b038",
+ "question": "Flights and hotels, roughly 3 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T14:21:45Z",
+ "touched_at": "2026-09-21T14:22:03Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "amount + open-ended term suggests procurement approval threshold table",
+   "at": "2026-09-21T14:21:44Z"
+  },
+  {
+   "address": "/v1/regions/expense",
+   "why": "flights and hotels are travel expense items",
+   "at": "2026-09-21T14:21:44Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "amount + open-ended term suggests procurement approval threshold table",
+   "at": "2026-09-21T14:21:44Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "flights and hotels are travel expense items",
+   "at": "2026-09-21T14:21:44Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T14:22:03Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c3-amount-v2-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T14:22:03Z"
+}

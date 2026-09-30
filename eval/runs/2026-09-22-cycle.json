@@ -1,0 +1,212 @@
+{
+ "walks": [
+  {
+   "id": "t-perdiem-07",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "perdiem",
+   "needs": "any",
+   "d_true": [
+    "hard-perdiem-legend-revision"
+   ],
+   "sources": [
+    "hard-perdiem-legend-revision",
+    "hard-perdiem-v2",
+    "sec-hard-perdiem",
+    "travel-expense",
+    "travel-overseas",
+    "overseas-rates"
+   ],
+   "hit": true,
+   "commands": 8,
+   "source_section": false,
+   "at": "2026-09-22T00:48:29",
+   "report": "1. Commands\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/expense\n./bench/rmcli.py read /v1/nodes/hard-perdiem-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-perdiem-v2/body\n./bench/rmcli.py table /v1/nodes/sec-hard-perdiem\n./bench/rmcli.py table /v1/nodes/travel-expense\n./bench/rmcli.py table /v1/nodes/travel-overseas\n./bench/rmcli.py read /v1/nodes/overseas-rates/body\n\n2. Answer\nThe overseas per-diem has been written three times (i.e. rewritten twice), with three versions:\n- Version 1, \"Overseas allowance and exchange rate\" (region-band only, no grade/stay): in force until 2024-07-01. No start date is given anywhere found, and this document itself makes no mention of being superseded.\n- Version 2, \"Overseas per-diem, second version\" (grade + band): in force 2024-07-01 to 2025-12-31.\n- Version 3, \"Overseas per-diem, current\" (grade + band + stay): in force from 2026-01-01 onwards — this is the current table as of today (2026-09-22).\n\n3. Source\n/v1/nodes/hard-perdiem-legend-revision/body (revision table giving all three date ranges and the count \"written three times\")\n/v1/nodes/hard-perdiem-v2/body (confirms version 2's own date range and cross-references the other two)\n/v1/nodes/overseas-rates/body (the oldest version's own document, reached via /v1/nodes/travel-expense → /v1/nodes/travel-overseas)\n/v1/nodes/sec-hard-perdiem (table description confirms version 3's 2026-01-01 start date)\n\n4. Notes\n- The expense area table advertises the legend page (/v1/nodes/hard-perdiem-legend-revision/body) right next to the current table (sec-hard-perdiem), which is exactly what saves this walk: it states up front that there are three versions and warns explicitly that grabbing the newest table is wrong for anything before 2026-01-01. Without that warning, the natural instinct given \"the current table\" language in the expense table's own row description would be to read only sec-hard-perdiem and miss two whole earlier versions.\n- The legend page names the oldest version's location only as the bare word `overseas-rates`, not a full address — same in hard-perdiem-v2's prose (\"the rule was the one in `overseas-rates`\"). Neither is a proper printed address, so per the rules I could not just prepend /v1/nodes/ and read it. Had to reach it legitimately via /v1/regions/expense → /v1/nodes/travel-expense → /v1/nodes/travel-overseas, where it's listed as a genuine `file` row with address /v1/nodes/overseas-rates/body.\n- The oldest version's own document (overseas-rates/body) never states when it took effect, and — as the legend page itself warns — never mentions being superseded at all. Its start date is genuinely not found anywhere in the documents I could reach; only its end date (until 2024-07-01) is known, and only from the legend page.\n- Worth flagging: \"how many times rewritten\" is ambiguous between \"3 versions exist\" and \"rewritten 2 times\" (since the first version isn't itself a rewrite). I reported both framings to avoid the ambiguity silently picking one.\n"
+  },
+  {
+   "id": "t-perdiem-08",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "perdiem",
+   "needs": "any",
+   "d_true": [
+    "hard-perdiem-legend-revision"
+   ],
+   "sources": [
+    "hard-perdiem-legend-revision",
+    "hard-perdiem-v2"
+   ],
+   "hit": true,
+   "commands": 4,
+   "source_section": true,
+   "at": "2026-09-22T00:48:29",
+   "report": "1. **Commands**\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/expense\n./bench/rmcli.py read /v1/nodes/hard-perdiem-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-perdiem-v2/body\n\n2. **Answer**\nFor a claim dated anywhere in 2025, the applicable overseas per-diem version is the *second* version, \"Overseas per-diem, second version,\" in force 2024-07-01 to 2025-12-31 (not the oldest pre-2024-07-01 rule, and not the current table that starts 2026-01-01).\n\nIts nightly lodging cap, by grade and destination band:\n\n| grade \\ band | B1 | B2 | B3 | B4 |\n|---|---|---|---|---|\n| G1 | 95 USD | 99 USD | 103 USD | 107 USD |\n| G2 | 111 USD | 115 USD | 119 USD | 123 USD |\n| G3 | 127 USD | 131 USD | 135 USD | 139 USD |\n| G4 | 143 USD | 147 USD | 151 USD | 155 USD |\n\nThe daily meal allowance and the receipt threshold were not changed in this version — they still follow the older \"overseas allowance and exchange rate\" rule (address `/v1/nodes/overseas-rates`) unchanged until 2026-01-01. This version added stay was not yet a qualifier (that comes in the 2026-01-01 table, which adds a third qualifier).\n\n3. **Source**\n- /v1/nodes/hard-perdiem-legend-revision/body (which version covers which date range)\n- /v1/nodes/hard-perdiem-v2/body (the actual 2024-07-01–2025-12-31 figures)\n\n4. **Notes**\nThe expense area table lists three per-diem-looking entries side by side: `hard-perdiem-legend-revision`, `hard-perdiem-v2`, and `sec-hard-perdiem` (the current one, flagged \"CURRENT\" in the row description). It would be easy to grab `sec-hard-perdiem` on reflex since it's marked current and sits lower in the list looking authoritative — that would have been wrong for a 2025-dated claim. The legend/revision document exists specifically to catch this and says so explicitly: \"reaching for the newest is wrong for anything before 2026-01-01.\" It also warns the oldest version (`overseas-rates`) never mentions being superseded, so without the legend doc there'd be no way to know three versions even exist. I did not fetch `/v1/nodes/overseas-rates` itself since the meal-allowance/receipt-threshold figures weren't asked for and hard-perdiem-v2 already states plainly that those followed the old rule unchanged — that address is named here only as a pointer, not verified by reading it.\n"
+  },
+  {
+   "id": "t-overtime-07",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "overtime",
+   "needs": "any",
+   "d_true": [
+    "hard-overtime-legend-revision"
+   ],
+   "sources": [
+    "hard-moved-overtime",
+    "hard-overtime-legend-revision"
+   ],
+   "hit": true,
+   "commands": 5,
+   "source_section": true,
+   "at": "2026-09-22T00:48:30",
+   "report": "1. **Commands**:\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/payroll\n./bench/rmcli.py read /v1/nodes/hard-moved-overtime/body\n./bench/rmcli.py table /v1/regions/attendance\n./bench/rmcli.py read /v1/nodes/hard-overtime-legend-revision/body\n\n2. **Answer**:\nThe overtime rate has been written three times (two rewrites after the original):\n- Until 2024-07-01: original version (`overtime-rate-table`, in payroll)\n- 2024-07-01 to 2025-12-31: second version (`hard-overtime-v2`, in attendance)\n- From 2026-01-01 onwards: current version (`sec-hard-overtime`, in attendance)\n\n3. **Source**:\n- /v1/nodes/hard-moved-overtime/body\n- /v1/nodes/hard-overtime-legend-revision/body\n\n4. **Notes**:\nThe payroll area is where overtime \"lives\" by instinct, but a large warning notice there\n(`hard-moved-overtime`) explains the topic moved to attendance on 2026-01-01, and that the page\nstill in payroll is only the oldest (pre-2024-07-01) version — it says nothing about being\nreplaced, which is called out explicitly as a trap. That notice pointed to\n`hard-overtime-legend-revision` in attendance as the authoritative version table, which is what\nanswered the question directly — no need to open the three individual rate tables\n(`overtime-rate-table`, `hard-overtime-v2`, `sec-hard-overtime`) since the legend page already\nstates the version count and date ranges. The near-miss here would have been answering from the\npayroll page alone and reporting only one version, or assuming the oldest was still current since\nnothing on that page itself says otherwise.\n"
+  },
+  {
+   "id": "t-overtime-08",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "overtime",
+   "needs": "any",
+   "d_true": [
+    "hard-overtime-legend-revision"
+   ],
+   "sources": [
+    "hard-overtime-legend-revision",
+    "hard-overtime-v2",
+    "hard-moved-overtime"
+   ],
+   "hit": true,
+   "commands": 6,
+   "source_section": true,
+   "at": "2026-09-22T00:48:30",
+   "report": "1. **Commands**\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/payroll\n./bench/rmcli.py read /v1/nodes/hard-moved-overtime/body\n./bench/rmcli.py table /v1/regions/attendance\n./bench/rmcli.py read /v1/nodes/hard-overtime-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-overtime-v2/body\n\n2. **Answer**\nThe overtime rate has three versions, and which one applies is decided by the date on the claim, not by where you happen to land first. A 2025-dated claim falls in the 2024-07-01 to 2025-12-31 window, so the applicable version is `hard-overtime-v2` (indexed by day and hours):\n\n| day \\ hours | H1 | H2 | H3 | H4 |\n|---|---|---|---|---|\n| D1 | 1.20x | 1.23x | 1.26x | 1.29x |\n| D2 | 1.32x | 1.35x | 1.38x | 1.41x |\n| D3 | 1.44x | 1.47x | 1.50x | 1.53x |\n| D4 | 1.56x | 1.59x | 1.62x | 1.65x |\n\nThe version-selection rule itself (\"which version applies to which date\") is written down in `hard-overtime-legend-revision` in attendance.\n\n3. **Source**\n- /v1/nodes/hard-overtime-legend-revision/body (which version applies to a 2025 date — the answer to \"where is that written down\")\n- /v1/nodes/hard-overtime-v2/body (the actual rate table for that version)\n- /v1/nodes/hard-moved-overtime/body (pointer, found via payroll, that redirected the search to attendance)\n\n4. **Notes**\n- The natural first stop is payroll (overtime is a pay topic), but payroll's own page (`hard-moved-overtime`) warns that it holds only the *oldest* rule (correct before 2024-07-01) and explicitly says a 2025-dated question is not answered there — it redirects to attendance. Trusting the payroll table at face value would have given the wrong (oldest) version.\n- The easy mistake once in attendance: `sec-hard-overtime` is labeled \"THE CURRENT OVERTIME RATE TABLE\" and sits right next to the version-legend node in the table listing — reaching for \"current\" is the wrong instinct here since \"current\" means 2026-01-01 onward, and the claim is dated 2025. The legend node (`hard-overtime-legend-revision`) is explicit that this is exactly the trap: \"taking either extreme is wrong\" for a 2025 date — neither the oldest (`overtime-rate-table`) nor the current (`sec-hard-overtime`) table applies; only the middle version (`hard-overtime-v2`) does.\n- Both payroll's `hard-moved-overtime` and attendance's `hard-overtime-legend-revision` independently state which node is authoritative for date-to-version mapping, so the two sources agree and cross-confirm.\n"
+  },
+  {
+   "id": "t-accrual-07",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "accrual",
+   "needs": "any",
+   "d_true": [
+    "hard-accrual-legend-revision"
+   ],
+   "sources": [
+    "hard-accrual-legend-revision",
+    "sec-hard-accrual",
+    "hard-accrual-v2"
+   ],
+   "hit": true,
+   "commands": 5,
+   "source_section": false,
+   "at": "2026-09-22T00:48:31",
+   "report": "1. Commands\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/attendance\n./bench/rmcli.py read /v1/nodes/hard-accrual-legend-revision/body\n./bench/rmcli.py table /v1/nodes/sec-hard-accrual\n./bench/rmcli.py read /v1/nodes/hard-accrual-v2/body\n\n2. Answer\nLeave accrual has been written three times (two rewrites of an original). The three versions and their effective dates:\n- Version 1 (\"leave entitlement\"): in force until 2024-07-01\n- Version 2 (\"leave accrual, second version\"): in force 2024-07-01 to 2025-12-31\n- Version 3 (\"leave accrual, current\"): in force from 2026-01-01 onwards (current as of today, 2026-09-22)\n\n3. Source\n/v1/nodes/hard-accrual-legend-revision/body (primary — states the three versions and their date ranges)\n/v1/nodes/hard-accrual-v2/body (corroborates the 2024-07-01 to 2025-12-31 range and the boundaries with the other two versions)\n\n4. Notes\nThe attendance table listed the current version (/v1/nodes/sec-hard-accrual) and the middle version (/v1/nodes/hard-accrual-v2/body) directly, but never printed an address for the oldest version — it's only referred to by name (\"leave-accrual\") inside body text, both in the legend-revision doc and in hard-accrual-v2's own body. Per the rules, I did not construct that address myself, so the oldest version's own document is not part of my source list even though its existence and date range are independently confirmed by two other documents. If a caller needs the oldest version's actual content (not just its date range), that would need to surface through some other table walk. Also worth flagging: the legend document explicitly warns that the oldest version's text does not mention being superseded, so naive keyword search on the corpus could easily surface it as if it were still current — the legend page is the load-bearing document here, not the tables themselves.\n"
+  },
+  {
+   "id": "t-accrual-08",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "accrual",
+   "needs": "any",
+   "d_true": [
+    "hard-accrual-legend-revision"
+   ],
+   "sources": [
+    "hard-accrual-legend-revision",
+    "hard-accrual-v2"
+   ],
+   "hit": true,
+   "commands": 4,
+   "source_section": true,
+   "at": "2026-09-22T00:48:31",
+   "report": "1. **Commands**\n```\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/attendance\n./bench/rmcli.py read /v1/nodes/hard-accrual-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-accrual-v2/body\n```\n\n2. **Answer**\nA claim dated in 2025 falls under the second (middle) version of leave accrual, in force from 2024-07-01 to 2025-12-31. This version's monthly accrual rate is indexed by type and tenure (two qualifiers):\n\n| type \\ tenure | T1 | T2 | T3 | T4 |\n|---|---|---|---|---|\n| E1 | 0.40 | 0.42 | 0.44 | 0.46 |\n| E2 | 0.48 | 0.50 | 0.52 | 0.54 |\n| E3 | 0.56 | 0.58 | 0.60 | 0.62 |\n| E4 | 0.64 | 0.66 | 0.68 | 0.70 |\n\nCarry-over limit and notice-required figures were not changed in this version and follow the original (pre-2024-07-01) \"leave entitlement\" rule.\n\nThis version is superseded (as of 2026-01-01 by the current table, indexed by three qualifiers, at `sec-hard-accrual`) but is the correct one for any 2025-dated claim.\n\n3. **Source**\n- /v1/nodes/hard-accrual-legend-revision/body (explains which of the three versions applies by date)\n- /v1/nodes/hard-accrual-v2/body (the applicable version's figures)\n\n4. **Notes**\nThe attendance table lists three separate leave-accrual documents (`leave-accrual`, `hard-accrual-v2`, `sec-hard-accrual`) with no obvious date markers in their one-line descriptions except \"current\" on the newest and \"superseded\" on the middle one — it would be easy to grab the current table (`sec-hard-accrual`) since it's flagged as authoritative, or the oldest since it's unmarked as superseded and doesn't even mention being replaced. The dedicated legend/revision page is what actually resolves this and explicitly calls out 2025 as the case where \"taking either extreme is wrong\" — i.e. neither the oldest nor the current table applies. Without reading that legend first, the natural instinct would have been to jump straight to the file explicitly marked \"THE CURRENT LEAVE ACCRUAL TABLE,\" which would have been wrong for a 2025 claim.\n"
+  },
+  {
+   "id": "t-threshold-07",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "threshold",
+   "needs": "any",
+   "d_true": [
+    "hard-threshold-legend-revision"
+   ],
+   "sources": [
+    "hard-threshold-legend-revision",
+    "hard-threshold-v2",
+    "sec-hard-threshold",
+    "procurement-overview",
+    "threshold-table"
+   ],
+   "hit": true,
+   "commands": 6,
+   "source_section": false,
+   "at": "2026-09-22T00:48:32",
+   "report": "1. Commands\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/procurement\n./bench/rmcli.py read /v1/nodes/hard-threshold-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-threshold-v2/body\n./bench/rmcli.py table /v1/nodes/sec-hard-threshold\n./bench/rmcli.py read /v1/nodes/procurement-overview/body\n\n2. Answer\nThe approval threshold has been rewritten twice (three versions total, two rewrites):\n- Version 1 (oldest): in force until 2024-07-01. Indexed by one qualifier (amount only, no category or term). Start date not stated anywhere I could read.\n- Version 2: in force from 2024-07-01 to 2025-12-31. Indexed by two qualifiers (category and amount).\n- Version 3 (current): in force from 2026-01-01 onwards. Indexed by three qualifiers (category, amount, and term).\n\n3. Source\n/v1/nodes/hard-threshold-legend-revision/body (names all three versions and the date boundaries)\n/v1/nodes/hard-threshold-v2/body (confirms version 2's dates and that version 1 was called `threshold-table`)\n/v1/nodes/sec-hard-threshold (confirms current version 3 is in force from 2026-01-01, replacing `threshold-table` and \"the older rules around it\")\n\n4. Notes\nThe oldest version is referred to by name only, as `threshold-table`, inside the body text of hard-threshold-legend-revision and hard-threshold-v2 — it never appeared as a full address in any `table` command output I ran (the /v1/regions/procurement table listed only the legend-revision file, the v2 file, and the current sec-hard-threshold table, not a third file for the oldest version). Per the rule against constructing addresses, I did not guess a path like /v1/nodes/threshold-table to read it directly, so I cannot report its start date or confirm details of its content beyond what the legend and v2 pages already summarize (single-qualifier, amount-only). If a start date for version 1 exists, it lives in a document I could not reach through a printed table address.\n\nThe near-miss to flag: the legend-revision page itself warns that \"reaching for the newest is wrong for anything before 2026-01-01\" and that a 2025-dated question needs the middle (v2) version, not the current or oldest one — easy to get wrong if you stop at the current sec-hard-threshold table without checking the legend page first.\n"
+  },
+  {
+   "id": "t-threshold-08",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "threshold",
+   "needs": "any",
+   "d_true": [
+    "hard-threshold-legend-revision"
+   ],
+   "sources": [
+    "sec-business-travel-insurance-and-risk",
+    "hard-threshold-legend-revision",
+    "hard-threshold-v2",
+    "sec-hard-threshold",
+    "threshold-table"
+   ],
+   "hit": true,
+   "commands": 6,
+   "source_section": false,
+   "at": "2026-09-22T00:48:33",
+   "report": "1. Commands\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/procurement\n./bench/rmcli.py table /v1/regions/expense\n./bench/rmcli.py table /v1/nodes/sec-business-travel-insurance-and-risk\n./bench/rmcli.py read /v1/nodes/hard-threshold-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-threshold-v2/body\n\n2. Answer\nApproval threshold has three versions written down; a claim dated in 2025 falls in the middle version, in force 2024-07-01 to 2025-12-31 (indexed by two qualifiers: category and amount). Its sign-off table by category and amount:\n\n| category \\ amount | V1 | V2 | V3 | V4 |\n|---|---|---|---|---|\n| C1 | 1000 thousand KRW | 5001 thousand KRW | 20002 thousand KRW | 100003 thousand KRW |\n| C2 | 1004 thousand KRW | 5005 thousand KRW | 20006 thousand KRW | 100007 thousand KRW |\n| C3 | 1008 thousand KRW | 5009 thousand KRW | 20010 thousand KRW | 100011 thousand KRW |\n| C4 | 1012 thousand KRW | 5013 thousand KRW | 20014 thousand KRW | 100015 thousand KRW |\n\nEverything else (who signs, quote count, turnaround time) beyond this table followed the unchanged approval-thresholds rule until 2026-01-01. This is NOT the current table (that started 2026-01-01, three qualifiers, at /v1/nodes/sec-hard-threshold) and NOT the oldest one either (which had neither category nor term, at /v1/nodes/threshold-table).\n\n3. Source\n/v1/nodes/hard-threshold-legend-revision/body (identifies which of the three versions covers 2025 and why the date has to be checked)\n/v1/nodes/hard-threshold-v2/body (the actual 2024-07-01–2025-12-31 threshold table with figures)\n\n4. Notes\nThe word \"claim\" in the question is a red herring for the tool: RouteMind's expense region has a whole \"business travel insurance and risk\" sub-area built around literal insurance claims (travel-insurance-claim-deadline, travel-insurance-claim-form, etc.), and I detoured into /v1/regions/expense and /v1/nodes/sec-business-travel-insurance-and-risk to check it before ruling it out — none of those pages mention \"approval threshold\" or versioned effective dates, so they don't answer this question. The actual match is on \"approval threshold,\" a phrase used verbatim only in /v1/regions/procurement's row description. Once there, the danger was reaching straight for /v1/nodes/sec-hard-threshold because it's labeled \"THE CURRENT APPROVAL THRESHOLD TABLE\" — but current means in force from 2026-01-01, and the claim is dated in 2025, so the current table is the wrong one. The legend-revision page explicitly calls out that mistake (\"reaching for the newest is wrong for anything before 2026-01-01\") and names the 2025 case as the one where either extreme (oldest or newest) is wrong — the middle version, hard-threshold-v2, is the one that applies.\n"
+  },
+  {
+   "id": "t-diligence-07",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "diligence",
+   "needs": "any",
+   "d_true": [
+    "hard-diligence-legend-revision"
+   ],
+   "sources": [
+    "hard-diligence-legend-revision",
+    "hard-diligence-v2",
+    "supplier-due-diligence",
+    "sec-hard-diligence"
+   ],
+   "hit": true,
+   "commands": 7,
+   "source_section": false,
+   "at": "2026-09-22T00:48:33",
+   "report": "1. Commands\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/procurement\n./bench/rmcli.py read /v1/nodes/hard-diligence-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-diligence-v2/body\n./bench/rmcli.py table /v1/nodes/supplier-due-diligence\n./bench/rmcli.py read /v1/nodes/supplier-due-diligence/body\n./bench/rmcli.py table /v1/nodes/sec-hard-diligence\n\n2. Answer\nSupplier due diligence has been written three times (rewritten twice):\n- Version 1 (original): in force until 2024-07-01. No start date is stated for it — it is the oldest version and says nothing about being replaced.\n- Version 2: in force from 2024-07-01 to 2025-12-31.\n- Version 3 (current): in force from 2026-01-01 onwards.\n\n3. Source\n/v1/nodes/hard-diligence-legend-revision/body\n/v1/nodes/hard-diligence-v2/body\n/v1/nodes/supplier-due-diligence/body\n/v1/nodes/sec-hard-diligence (table header)\n\n4. Notes\nThe procurement area table's own description says the current tables have been in force \"since 2026-01-01\" and calls older pages \"superseded,\" which reads as if there's just one prior version — easy to stop there and undercount. The legend-revision page at /v1/nodes/hard-diligence-legend-revision/body is the one place that states outright there are three versions and warns that the oldest \"says nothing at all about having been replaced\" (confirmed when reading its body — no revision notice anywhere in it) and that a 2025-dated question needs the middle version, not the newest or oldest. Easy to go wrong two ways here: reading only the current table (sec-hard-diligence) and missing the two older versions entirely, or finding hard-diligence-v2 and assuming that's the *first* rewrite when it's actually the second version, with an even older unlabeled one underneath it. The original version's body has no explicit start date — it's presumably in force from whenever the policy began until 2024-07-01, but the source never gives an actual starting date, only an end date.\n"
+  },
+  {
+   "id": "t-diligence-08",
+   "arm": "routing",
+   "lever": "changed",
+   "family": "diligence",
+   "needs": "any",
+   "d_true": [
+    "hard-diligence-legend-revision"
+   ],
+   "sources": [
+    "hard-diligence-legend-revision",
+    "hard-diligence-v2"
+   ],
+   "hit": true,
+   "commands": 4,
+   "source_section": true,
+   "at": "2026-09-22T00:48:34",
+   "report": "1. **Commands**\n```\n./bench/rmcli.py table\n./bench/rmcli.py table /v1/regions/procurement\n./bench/rmcli.py read /v1/nodes/hard-diligence-legend-revision/body\n./bench/rmcli.py read /v1/nodes/hard-diligence-v2/body\n```\n\n2. **Answer**\nSupplier due diligence has three versions over time, and a claim dated in 2025 falls under the **second version** (in force 2024-07-01 to 2025-12-31), not the oldest version and not the current table (which only applies from 2026-01-01 onward). This middle version indexes checks by origin and value (two qualifiers), with the required-checks matrix:\n\n| origin \\ value | W1 | W2 | W3 | W4 |\n|---|---|---|---|---|\n| O1 | 30 | 31 | 32 | 33 |\n| O2 | 34 | 35 | 36 | 37 |\n| O3 | 38 | 39 | 40 | 41 |\n| O4 | 42 | 43 | 44 | 45 |\n\nAll other elements (documents to collect, re-review interval) follow the original (oldest) supplier due diligence rule unchanged.\n\n3. **Source**\n- /v1/nodes/hard-diligence-legend-revision/body (explains which of the three versions applies by date)\n- /v1/nodes/hard-diligence-v2/body (the applicable version's content, in force 2024-07-01 to 2025-12-31)\n\n4. **Notes**\nThe procurement region table lists both `sec-hard-diligence` (labeled \"THE CURRENT SUPPLIER DUE DILIGENCE TABLE\") and `hard-diligence-v2` (labeled \"SUPERSEDED\") side by side, with no obvious cue to check dates first — reaching straight for the \"current\" table would have been wrong here, since the claim is dated 2025 and the current table only applies from 2026-01-01. The `hard-diligence-legend-revision` file was the key: it explicitly warns that the oldest version says nothing about being superseded (so naive skimming of the oldest doc alone would look authoritative and complete), and that for 2025 specifically neither extreme (oldest nor current) is right — only the middle version. Without that legend page I'd likely have picked the current table by default. Did not need to consult `sec-supplier-due-diligence` (the \"where to start\" overview) or the oldest `supplier-due-diligence` page, since the legend page and the middle version's own body were sufficient and self-confirming (the v2 body cross-references both neighbors and their date boundaries).\n"
+  }
+ ],
+ "meta": {
+  "fingerprint": "2e0e821a7d9f667b",
+  "use_when": "maintained"
+ }
+}

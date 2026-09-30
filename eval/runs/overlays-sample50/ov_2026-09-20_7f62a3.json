@@ -1,0 +1,40 @@
+{
+ "id": "ov_2026-09-20_7f62a3",
+ "question": "In September 2023, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "open",
+ "at": "2026-09-20T09:20:58Z",
+ "touched_at": "2026-09-20T09:20:58Z",
+ "members": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "warning page about overtime move, may have history or pointer",
+   "at": "2026-09-20T09:20:49Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "overtime rates moved here 2026-01-01, but question is about 2023 so may not apply",
+   "at": "2026-09-20T09:20:51Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "why": "warning page about overtime move, may have history or pointer",
+   "at": "2026-09-20T09:20:49Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "overtime rates moved here 2026-01-01, but question is about 2023 so may not apply",
+   "at": "2026-09-20T09:20:51Z"
+  }
+ ],
+ "outcome": null,
+ "used": [],
+ "closed_at": null
+}

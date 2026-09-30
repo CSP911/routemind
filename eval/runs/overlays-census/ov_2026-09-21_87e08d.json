@@ -1,0 +1,70 @@
+{
+ "id": "ov_2026-09-21_87e08d",
+ "question": "Two in the morning, three hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T11:38:38Z",
+ "touched_at": "2026-09-21T11:39:15Z",
+ "members": [
+  {
+   "address": "/v1/regions/payroll",
+   "why": "night-time standby overtime multiplier likely a payroll/overtime pay rule",
+   "at": "2026-09-21T11:38:38Z"
+  },
+  {
+   "address": "/v1/regions/attendance",
+   "why": "on-call/standby at home may be tracked as an attendance category with its own rounding rule",
+   "at": "2026-09-21T11:38:38Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/payroll",
+   "why": "night-time standby overtime multiplier likely a payroll/overtime pay rule",
+   "at": "2026-09-21T11:38:38Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "on-call/standby at home may be tracked as an attendance category with its own rounding rule",
+   "at": "2026-09-21T11:38:38Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T11:39:15Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-moved-overtime/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d4-hours-h2-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T11:39:15Z"
+}

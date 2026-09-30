@@ -23,6 +23,10 @@
              default install is how a bar stops being read. Quiet, always there, and never a guess —
              the running service is what answers. -->
         <span class="kn-door" id="knDoor" hidden></span>
+        <!-- For where a link cannot reach. What it writes is the same file ./transfer/export.py
+             writes, and it contains exactly what a peer would have been able to read — the areas
+             somebody wrote `use_when_export` on, nothing else. -->
+        <button type="button" id="knExport" class="kn-btn" data-i18n="knowledge.bundle.button">Export</button>
         <!-- Filled from the dictionaries that actually loaded, so it can never offer one that is not
              there. It changes only what this browser shows: nothing is sent, nothing is written, and
              the person at the next desk keeps theirs. -->
@@ -126,6 +130,46 @@
       </button>
     </div>
     <div id="knEdit" class="kn-edit" hidden></div>
+  </dialog>
+
+  <dialog id="knExportDialog" class="kn-export-dialog" aria-labelledby="knExportTitle">
+    <!-- A plain form, not `method="dialog"`. That method closes the dialog on submit, which is the
+         one thing this form must not do: a refusal has nowhere left to appear and a download that
+         failed looks exactly like one that worked. -->
+    <form id="knExportForm">
+      <div class="kn-raw-head">
+        <div class="kn-raw-ident">
+          <span class="eyebrow" data-i18n="knowledge.bundle.eyebrow">EXPORT</span>
+          <h2 id="knExportTitle" data-i18n="knowledge.bundle.title">Download an encrypted export</h2>
+          <p class="kn-export-lead" data-i18n="knowledge.bundle.lead">One file, for a partner a link cannot reach. It holds the areas marked to cross a link — and nothing else.</p>
+        </div>
+        <button type="button" id="knExportClose" class="kn-btn kn-icon kn-quiet" aria-label="Close" title="Close">×</button>
+      </div>
+
+      <label class="kn-export-field">
+        <span data-i18n="knowledge.bundle.pass">Passphrase</span>
+        <input type="password" id="knExportPass" autocomplete="new-password">
+      </label>
+      <!-- Typed twice on purpose. A mistyped passphrase produces a perfectly valid file that nobody
+           can open, and the mistake surfaces at the far end, days later, with no way back to it. -->
+      <label class="kn-export-field">
+        <span data-i18n="knowledge.bundle.again">Type it again</span>
+        <input type="password" id="knExportPass2" autocomplete="new-password">
+      </label>
+      <p class="kn-export-note" id="knExportNote" data-i18n="knowledge.bundle.note">At least 12 characters. It is the only thing between this file and whoever ends up holding it — and it is never stored, so a lost passphrase is a lost file.</p>
+      <!-- A div, not a <p>. theme.css carries `html[data-theme="light"] p { color: … !important }`,
+           which beats any class this page can write — so the one line that has to read as a refusal
+           rendered in the same grey as the advice above it, in light mode only. The page's own
+           comment on `.kn-btn` says the same thing about the shared sheets and `.button`: a tag
+           those sheets have an opinion about is a tag this page cannot style.
+           `role="status"` because that is what it is — the answer to what was just pressed. -->
+      <div class="kn-export-msg" id="knExportMsg" role="status" aria-live="polite" hidden></div>
+
+      <div class="kn-export-actions">
+        <button type="button" id="knExportCancel" class="kn-btn kn-quiet" data-i18n="common.cancel">Cancel</button>
+        <button type="submit" id="knExportGo" class="kn-btn kn-primary" data-i18n="knowledge.bundle.go">Download</button>
+      </div>
+    </form>
   </dialog>
 
   <div id="toast" class="toast"></div>

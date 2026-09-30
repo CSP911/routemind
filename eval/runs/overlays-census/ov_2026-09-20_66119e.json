@@ -1,0 +1,55 @@
+{
+ "id": "ov_2026-09-20_66119e",
+ "question": "Two-year contract, nine years tenure, Singapore entity: monthly leave accrual rate and January carry-forward cap",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T16:22:05Z",
+ "touched_at": "2026-09-20T16:22:34Z",
+ "members": [
+  {
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carry-forward, and contract/tenure rules live here",
+   "at": "2026-09-20T16:22:05Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/attendance",
+   "why": "leave accrual, carry-forward, and contract/tenure rules live here",
+   "at": "2026-09-20T16:22:05Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T16:22:34Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-accrual-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-type/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-tenure/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-legend-site/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-accrual-row-type-e2-tenure-t4-site-l3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T16:22:34Z"
+}

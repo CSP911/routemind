@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-21_bfcf2c",
+ "question": "Saturday, 11 hours, on standby at home: what multiplier applies, and what rounding for minutes?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T00:04:35Z",
+ "touched_at": "2026-09-21T00:40:22Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table since 2026-01-01, by day/hours/place",
+   "at": "2026-09-21T00:04:35Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns which version covers which dates",
+   "at": "2026-09-21T00:04:35Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table since 2026-01-01, by day/hours/place",
+   "at": "2026-09-21T00:04:35Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision/body",
+   "why": "warns which version covers which dates",
+   "at": "2026-09-21T00:04:35Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T00:40:22Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h4-place-p3/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T00:40:22Z"
+}

@@ -12,12 +12,13 @@ reasonable. So most of what is asserted here is what it **cannot** do.
   * It answers membership and health, and **never a reflected row**. What each backbone shares is
     between the members; an operator learns that BRANCH is attached and advertising two areas, not
     what they are.
-  * It cannot make an area cross. Nothing here writes `use_when_export`, which is the only thing that
+  * It cannot make an area cross. Nothing here writes `export`, which is the only thing that
     shares an area and which lives in that backbone's own repository, behind its own review queue.
   * Its door is not the members' door. A member token does not open `/admin`, and the admin token
     does not read the reflection — two doors, two keys, and neither is a spare for the other.
   * With no token configured it is not a door at all.
 """
+import re
 import json, os, pathlib, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -61,6 +62,23 @@ repo = os.path.join(T, "repo"); shutil.copytree(seed, repo)
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                          # noqa: E402
 from service.derive import regenerate                                    # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from peer_session import session as _session, forget as _forget_sessions  # noqa: E402
+
+
+def _share(text, line):
+    """Turn export on for a representative, with `line` as the sentence it crosses with.
+
+    One sentence since 2026-09-29: a peer reads the area's own `use_when`, and `export` decides
+    whether it gets it. These fixtures used to write a second sentence; they set both now, so the
+    file states what crosses rather than leaning on whatever the seed happened to say.
+    """
+    text = re.sub(r"^use_when:.*$", f"use_when: {line}", text, count=1, flags=re.M)
+    if "\nuse_when:" not in text:
+        text = text.replace("\nrole: representative\n",
+                            f"\nrole: representative\nuse_when: {line}\n", 1)
+    return text.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1)
+
 
 AREA = sorted(d for d in os.listdir(os.path.join(repo, "regions"))
               if os.path.isdir(os.path.join(repo, "regions", d)))[0]
@@ -70,8 +88,7 @@ for f in sorted(os.listdir(os.path.join(repo, "regions", AREA))):
     text = open(q, encoding="utf-8").read()
     if "\nrole: representative\n" in text and "\nparent:" not in text:
         open(q, "w", encoding="utf-8").write(
-            text.replace("\nrole: representative\n",
-                         f"\nrole: representative\nuse_when_export: {SECRET_LINE}\n", 1))
+            _share(text, SECRET_LINE))
         break
 regenerate(Store(repo))
 for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=x", "-c", "user.email=x@l", "commit", "-qm", "seed"]):
@@ -108,7 +125,11 @@ def call(path, token=None, header="X-Admin-Token", method="GET", body=None):
     data = json.dumps(body).encode() if body is not None else None
     r = urllib.request.Request(f"http://127.0.0.1:{IX_PORT}{path}", data=data, method=method,
                                headers={"Content-Type": "application/json"})
-    if token: r.add_header(header, token)
+    # The members' door takes a six-hour session, minted from the enrolment key. The operator's door
+    # takes its own key directly — it is not a peer and has no session to hold.
+    if token:
+        r.add_header(header, _session(f"http://127.0.0.1:{IX_PORT}", token)
+                             if header == "X-Peer-Token" else token)
     try:
         with urllib.request.urlopen(r, timeout=15) as x: return x.status, json.loads(x.read() or b"{}")
     except urllib.error.HTTPError as e:
@@ -123,14 +144,14 @@ for _ in range(80):
     except Exception: time.sleep(0.25)
 
 # ── with no token configured, there is no door ────────────────────────────────
-ix = start_exchange(None)
+_forget_sessions(); ix = start_exchange(None)
 check("with no admin token there is no operator door", call("/admin/state")[0] == 501)
 check("  and the members' door is unaffected",
       call("/v1/export/regions", MEMBER_TOKEN, "X-Peer-Token")[0] == 200)
 ix.terminate(); time.sleep(0.6)
 
 # ── with one, it is a door and only for the right key ─────────────────────────
-ix = start_exchange(ADMIN_TOKEN)
+_forget_sessions(); ix = start_exchange(ADMIN_TOKEN)
 check("no token is refused", call("/admin/state")[0] == 401)
 check("a wrong token is refused", call("/admin/state", "nope")[0] == 401)
 # Two doors, two keys. A member holding its own secret must not be able to read the operator's view,

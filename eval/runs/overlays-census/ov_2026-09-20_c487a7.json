@@ -1,0 +1,62 @@
+{
+ "id": "ov_2026-09-20_c487a7",
+ "question": "An ordinary tuesday, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:47:06Z",
+ "touched_at": "2026-09-20T23:47:19Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table (2026-01-01 onward), likely has multiplier by day type/hours/place",
+   "at": "2026-09-20T23:47:06Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision",
+   "why": "warning page listing which overtime version covers which dates, useful for confirming current version",
+   "at": "2026-09-20T23:47:06Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table (2026-01-01 onward), likely has multiplier by day type/hours/place",
+   "at": "2026-09-20T23:47:06Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision",
+   "why": "warning page listing which overtime version covers which dates, useful for confirming current version",
+   "at": "2026-09-20T23:47:06Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:47:19Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d1-hours-h3-place-p1/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:47:19Z"
+}

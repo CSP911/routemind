@@ -110,6 +110,10 @@ services:
       KNOWLEDGE_AUTH_HEADER: "${KNOWLEDGE_AUTH_HEADER:-X-Forwarded-Email}"
       KNOWLEDGE_AUTH_TRUSTED_PROXY: "${KNOWLEDGE_AUTH_TRUSTED_PROXY:-}"
       KNOWLEDGE_AUTH_READS: "${KNOWLEDGE_AUTH_READS:-}"
+      # Only so the Export button can read /v1/export. Not an escalation — this process already
+      # proxies the whole ordinary API on this network; the token buys the *narrower* surface, the
+      # one built from the areas somebody wrote `use_when_export` on. Unset and the button says so.
+      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_HOME:-}"
     ports:
       - "${WEB_PORT:-8080}:8080"
     restart: unless-stopped

@@ -1,8 +1,9 @@
 #!/bin/sh
 # Bring this up on a machine that has never run it.
 #
-#   ./install.sh                        ask about the LLM if there is a terminal to ask in
-#   ./install.sh --no-llm               do not ask; run without one
+#   ./install.sh                        ask what to call this domain, and about the LLM
+#   ./install.sh --name acme --port 9000
+#   ./install.sh --no-llm               do not ask about the LLM; run without one
 #   ./install.sh --llm-provider openai|anthropic|litellm --llm-url URL --llm-key KEY --llm-model MODEL
 #   KNOWLEDGE_LLM_PROVIDER=... KNOWLEDGE_LLM_URL=... KNOWLEDGE_LLM_KEY=... KNOWLEDGE_LLM_MODEL=... ./install.sh
 #
@@ -20,14 +21,21 @@ LLM_PROVIDER="${KNOWLEDGE_LLM_PROVIDER:-}"
 DEFAULT_BASE_openai=https://api.openai.com
 DEFAULT_BASE_anthropic=https://api.anthropic.com
 ASK=1
+# The two things an install is asked for. A domain is one exchange and the backbones on it, and its
+# name is what every screen and every relayed address carries — `/v1/peers/acme/…` rather than
+# `/v1/peers/ix/…`. Asked once, at install, because renaming it afterwards rewrites addresses that
+# somebody may already have followed.
+NAME="${ROUTEMIND_NAME:-}"; PORT="${WEB_PORT:-}"
 while [ $# -gt 0 ]; do
   case "$1" in
+    --name)       NAME="$2"; shift ;;
+    --port)       PORT="$2"; shift ;;
     --no-llm)     ASK=0 ;;
     --llm-url)    LLM_URL="$2"; ASK=0; shift ;;
     --llm-key)    LLM_KEY="$2"; ASK=0; shift ;;
     --llm-model)    LLM_MODEL="$2"; ASK=0; shift ;;
     --llm-provider) LLM_PROVIDER="$2"; ASK=0; shift ;;
-    -h|--help)    sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help)    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) printf 'unknown option: %s (try --help)\n' "$1" >&2; exit 2 ;;
   esac
   shift
@@ -36,6 +44,61 @@ done
 
 [ -f .env ] || cp .env.example .env
 grep -q '^KNOWLEDGE_UID=' .env || printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
+
+# Replace a key in .env rather than appending a second copy of it — compose reads the last one, so an
+# appended override works by accident and a corrected value silently does not.
+setenv() {
+  k="$1"; v="$2"
+  if grep -q "^$k=" .env; then
+    tmp="$(mktemp)"; grep -v "^$k=" .env > "$tmp"; printf '%s=%s\n' "$k" "$v" >> "$tmp"; mv "$tmp" .env
+  else printf '%s=%s\n' "$k" "$v" >> .env; fi
+}
+
+# ── what to call this domain, and where to answer ────────────────────────────
+# Asked only where there is a terminal and the answer is not already in .env, the same rule the LLM
+# question follows: a re-run or a scripted install must not stop and wait for somebody who is not
+# there. Both have working defaults, so pressing Enter twice is a complete answer.
+if [ -z "$NAME" ] && [ -t 0 ] && ! grep -q '^EXCHANGE_NAME=.\+' .env; then
+  printf '\nWhat is this domain called? One word, lowercase — a company, a team, a site.\n'
+  printf 'It names the room these backbones meet in, and shows on every screen.\n'
+  printf '  [ix] > '
+  read -r NAME || NAME=""
+fi
+if [ -z "$PORT" ] && [ -t 0 ] && ! grep -q '^WEB_PORT=.\+' .env; then
+  printf '\nWhich port should the map answer on?\n  [8080] > '
+  read -r PORT || PORT=""
+fi
+NAME=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cd 'a-z0-9-')
+# Refused rather than corrected into something else. The name becomes a path segment in every address
+# this backbone prints for the room, and silently turning `Acme Corp` into `acme-corp` would mean the
+# addresses somebody reads are not the name they typed.
+if [ -n "$NAME" ]; then
+  case "$NAME" in
+    [a-z]*) setenv EXCHANGE_NAME "$NAME" ;;
+    *) printf '  ! a domain name starts with a letter and holds only a-z, 0-9 and -\n' >&2; exit 2 ;;
+  esac
+fi
+if [ -n "$PORT" ]; then
+  case "$PORT" in
+    ''|*[!0-9]*) printf '  ! --port takes a number\n' >&2; exit 2 ;;
+    *) setenv WEB_PORT "$PORT" ;;
+  esac
+fi
+
+# `.mcp.json` is what makes opening this repository in Claude Code the whole setup, and it names the
+# port. It shipped with 8080 in it, so before this an install on any other port handed Claude Code a
+# server that registers, lists its tools, and fails on every call — which is worse than no server at
+# all, because the tools are visibly there.
+#
+# Rewritten rather than templated: Claude Code reads this file directly and nothing expands `.env`
+# for it. The common case writes the same bytes back, so the tree stays clean unless the port moved.
+MCP_PORT="$(grep '^WEB_PORT=' .env 2>/dev/null | cut -d= -f2-)"; MCP_PORT="${MCP_PORT:-8080}"
+if [ -f .mcp.json ] && ! grep -q "localhost:$MCP_PORT/api/knowledge" .mcp.json; then
+  tmp="$(mktemp)"
+  sed "s#localhost:[0-9][0-9]*/api/knowledge#localhost:$MCP_PORT/api/knowledge#" .mcp.json > "$tmp"
+  mv "$tmp" .mcp.json
+  printf '  .mcp.json now points at :%s — Claude Code picks it up on the next session.\n' "$MCP_PORT"
+fi
 
 # Only when there is a terminal AND the .env has no answer yet. A re-run, or a scripted one, must not
 # stop and wait for somebody who is not there.
@@ -77,14 +140,6 @@ TXT
 fi
 [ -n "$LLM_URL" ] && [ -z "$LLM_PROVIDER" ] && LLM_PROVIDER=litellm
 
-# Replace a key in .env rather than appending a second copy of it — compose reads the last one, so an
-# appended override works by accident and a corrected value silently does not.
-setenv() {
-  k="$1"; v="$2"
-  if grep -q "^$k=" .env; then
-    tmp="$(mktemp)"; grep -v "^$k=" .env > "$tmp"; printf '%s=%s\n' "$k" "$v" >> "$tmp"; mv "$tmp" .env
-  else printf '%s=%s\n' "$k" "$v" >> .env; fi
-}
 if [ -n "$LLM_URL" ]; then
   setenv ONTOLOGY_LLM_PROVIDER "$LLM_PROVIDER"
   setenv ONTOLOGY_LLM_BASE_URL "$LLM_URL"
@@ -120,12 +175,17 @@ if [ -f data/repo/peers.yaml ] && grep -q 'url: *http://exchange:8110' data/repo
   printf "    nothing — and nothing anywhere looks broken. The map's bar says the same.\n"
 fi
 if [ ! -f data/repo/peers.yaml ]; then
-  cat > data/repo/peers.yaml <<'YAML'
+  # The name typed at install, so the addresses this backbone prints for the room carry it:
+  # `/v1/peers/acme/…`. Only when the file is absent — on a re-run this is somebody's repository and
+  # a write here makes the tree dirty, after which every ordinary write is refused until they commit
+  # something they did not make.
+  ROOM="$(grep '^EXCHANGE_NAME=' .env 2>/dev/null | cut -d= -f2-)"; ROOM="${ROOM:-ix}"
+  cat > data/repo/peers.yaml <<YAML
 # Who this backbone is linked to. The token for each is in the environment, not here — this file is
 # versioned and reviewed like the rest of what this backbone is, and a secret is neither.
 peers:
-  - name: ix
-    label: EXCHANGE
+  - name: $ROOM
+    label: $(printf '%s' "$ROOM" | tr 'a-z-' 'A-Z ')
     url: http://exchange:8110
     # A room, not a backbone. It changes one thing: this backbone believes it when it says which of
     # its members a document is being fetched for, which is what makes an area's audience mean

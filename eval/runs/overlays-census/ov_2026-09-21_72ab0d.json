@@ -1,0 +1,73 @@
+{
+ "id": "ov_2026-09-21_72ab0d",
+ "question": "A saturday, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T00:02:03Z",
+ "touched_at": "2026-09-21T00:02:22Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day/hours/place, in force since 2026-01-01",
+   "at": "2026-09-21T00:02:03Z"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-revision",
+   "why": "warns overtime rate has three versions - need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T00:02:03Z"
+  },
+  {
+   "address": "/v1/nodes/sec-overtime-and-hours",
+   "why": "map of how overtime hours are requested/logged/capped, may hold rounding rule",
+   "at": "2026-09-21T00:02:03Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-overtime",
+   "why": "current overtime rate table by day/hours/place, in force since 2026-01-01",
+   "at": "2026-09-21T00:02:03Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-overtime-legend-revision",
+   "why": "warns overtime rate has three versions - need to confirm which applies to today 2026-09-21",
+   "at": "2026-09-21T00:02:03Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-overtime-and-hours",
+   "why": "map of how overtime hours are requested/logged/capped, may hold rounding rule",
+   "at": "2026-09-21T00:02:03Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T00:02:22Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-overtime-legend-day/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-hours/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-legend-place/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-overtime-row-day-d2-hours-h3-place-p4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T00:02:22Z"
+}

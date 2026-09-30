@@ -138,6 +138,21 @@ def alias_names(aliases) -> list[str]:
     return [a["name"] if isinstance(a, dict) else str(a) for a in (aliases or [])]
 
 
+def _yesno(value):
+    """yes / no from frontmatter, or the value itself when it is neither.
+
+    YAML already reads `yes` and `true` as booleans. A string that got here is something else, and it
+    is handed to the validator untouched rather than coerced: the same rule `vocab.yaml`'s `export`
+    follows, where "anything but a plain no is refused rather than read as one, because a policy that
+    silently means the opposite of what somebody typed is the worst shape this file can take".
+    """
+    if value is None: return False
+    if isinstance(value, bool): return value
+    if isinstance(value, str) and value.strip().lower() in ("yes", "true"): return True
+    if isinstance(value, str) and value.strip().lower() in ("no", "false"): return False
+    return value
+
+
 def _lines(value) -> dict:
     """A peer name to the line that peer is shown, from frontmatter. Anything that is not a mapping of
     text to text is nothing: the field is read on every export and a half-formed one would put a
@@ -352,11 +367,14 @@ class Store:
                 "kind": fm.get("kind"), "region": region, "aliases": fm.get("aliases") or [],
                 "holds": fm.get("holds") or "content", "injected_by": fm.get("injected_by"),
                 "status": fm.get("status") or "published", "use_when": fm.get("use_when"),
-                # What this area says about itself to *another backbone*. Absent means it is not
-                # advertised across a link at all — export is opt-in, per area, in writing.
-                "use_when_export": fm.get("use_when_export"),
+                # Whether this area crosses a link at all. Absent means no — export is opt-in, per
+                # area, in writing. There is one sentence and it is `use_when`; this decides whether
+                # a peer gets to read it (operator, 2026-09-29).
+                "export": _yesno(fm.get("export")),
+                # Set by `transfer/import.py` on a grafted area's representative: the backbone this
+                # came from. Its absence is the ordinary case and means this area was written here.
+                "grafted_from": fm.get("grafted_from"),
                 "export_to": _names(fm.get("export_to")),
-                "use_when_export_for": _lines(fm.get("use_when_export_for")),
                 "role": fm.get("role"), "parent": fm.get("parent"),
                 "expands_in": fm.get("expands_in"), "one_liner": fm.get("one_liner") or "",
                 "order": order, "path": str(f.relative_to(self.root)), "body": m.group(2),
@@ -412,9 +430,9 @@ class Store:
                         "representative": top["id"] if top else None,
                         "advertises": top["one_liner"] if top else None,
                         "use_when": (top.get("use_when") if top else None),
-                        "use_when_export": (top.get("use_when_export") if top else None),
+                        "export": (top.get("export") if top else False),
+                        "grafted_from": (top.get("grafted_from") if top else None),
                         "export_to": (top.get("export_to") if top else []),
-                        "use_when_export_for": (top.get("use_when_export_for") if top else {}),
                         "nodes": [n["id"] for n in mine]})
         return out
 

@@ -1,0 +1,43 @@
+{
+ "id": "ov_2026-09-20_4c399b",
+ "question": "For something dated 3 July 2024 (two days after the first change) — what screening was required for an origin O2 supplier at contract value W2? Use the version in force on that day.",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T15:57:50Z",
+ "touched_at": "2026-09-20T15:58:15Z",
+ "members": [
+  {
+   "address": "/v1/regions/procurement",
+   "why": "procurement table covers approval thresholds/screening by supplier origin and contract value",
+   "at": "2026-09-20T15:57:50Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/procurement",
+   "why": "procurement table covers approval thresholds/screening by supplier origin and contract value",
+   "at": "2026-09-20T15:57:50Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T15:58:15Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-v2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T15:58:15Z"
+}

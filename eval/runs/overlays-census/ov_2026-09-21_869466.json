@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_869466",
+ "question": "A couple of laptops, about 700,000 won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:56:45Z",
+ "touched_at": "2026-09-21T13:57:00Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, likely has the answer by category/amount/term",
+   "at": "2026-09-21T13:56:45Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions - need to confirm which is current for today's date",
+   "at": "2026-09-21T13:56:45Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process may cover quote requirements",
+   "at": "2026-09-21T13:56:45Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table, likely has the answer by category/amount/term",
+   "at": "2026-09-21T13:56:45Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "why": "warns threshold has three versions - need to confirm which is current for today's date",
+   "at": "2026-09-21T13:56:45Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "purchase request process may cover quote requirements",
+   "at": "2026-09-21T13:56:45Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:57:00Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m4/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:57:00Z"
+}

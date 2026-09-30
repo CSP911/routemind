@@ -1,0 +1,77 @@
+{
+ "id": "ov_2026-09-21_690b77",
+ "question": "A couple of laptops, about 700,000 won, renewing every year: whose signature do I need, and do I have to get other prices first?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:55:24Z",
+ "touched_at": "2026-09-21T13:55:41Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term - need signature level",
+   "at": "2026-09-21T13:55:23Z"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision",
+   "why": "warns of three versions of threshold table, need to confirm which applies as of 2026-09-21",
+   "at": "2026-09-21T13:55:23Z"
+  },
+  {
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed for a purchase",
+   "at": "2026-09-21T13:55:23Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-threshold",
+   "why": "current approval threshold table by category/amount/term - need signature level",
+   "at": "2026-09-21T13:55:23Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-threshold-legend-revision",
+   "why": "warns of three versions of threshold table, need to confirm which applies as of 2026-09-21",
+   "at": "2026-09-21T13:55:23Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/purchase-request",
+   "why": "how many quotes are needed for a purchase",
+   "at": "2026-09-21T13:55:23Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:55:41Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-threshold-legend-revision/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-category/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-amount/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-legend-term/body",
+   "how": "reached"
+  },
+  {
+   "address": "/v1/nodes/hard-threshold-row-category-c1-amount-v1-term-m2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:55:41Z"
+}

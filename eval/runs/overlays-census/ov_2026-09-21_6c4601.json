@@ -1,0 +1,39 @@
+{
+ "id": "ov_2026-09-21_6c4601",
+ "question": "For grade G4, band B4, stay S2, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-21T13:51:08Z",
+ "touched_at": "2026-09-21T13:51:22Z",
+ "members": [
+  {
+   "address": "/v1/regions/expense",
+   "why": "hotel per diem and receipt threshold are expense policy topics",
+   "at": "2026-09-21T13:51:08Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/regions/expense",
+   "why": "hotel per diem and receipt threshold are expense policy topics",
+   "at": "2026-09-21T13:51:08Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-21T13:51:22Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-perdiem-row-grade-g4-band-b4-stay-s2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-21T13:51:22Z"
+}

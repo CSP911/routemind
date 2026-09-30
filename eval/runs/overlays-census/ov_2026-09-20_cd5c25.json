@@ -1,0 +1,54 @@
+{
+ "id": "ov_2026-09-20_cd5c25",
+ "question": "For origin O2, value W4, goods K2: site visit required and file review frequency?",
+ "by": {
+  "kind": "agent",
+  "name": "bench-walker"
+ },
+ "state": "answered",
+ "at": "2026-09-20T23:12:42Z",
+ "touched_at": "2026-09-20T23:13:05Z",
+ "members": [
+  {
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds the origin/value/goods matrix",
+   "at": "2026-09-20T23:12:41Z"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence rules - need to confirm which version applies today (2026-09-21)",
+   "at": "2026-09-20T23:12:41Z"
+  }
+ ],
+ "trail": [
+  {
+   "op": "create",
+   "address": "/v1/nodes/sec-hard-diligence",
+   "why": "current supplier due diligence table, likely holds the origin/value/goods matrix",
+   "at": "2026-09-20T23:12:41Z"
+  },
+  {
+   "op": "create",
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "why": "warns of three versions of due diligence rules - need to confirm which version applies today (2026-09-21)",
+   "at": "2026-09-20T23:12:41Z"
+  },
+  {
+   "op": "close",
+   "why": "answered",
+   "at": "2026-09-20T23:13:05Z"
+  }
+ ],
+ "outcome": "answered",
+ "used": [
+  {
+   "address": "/v1/nodes/hard-diligence-legend-revision/body",
+   "how": "member"
+  },
+  {
+   "address": "/v1/nodes/hard-diligence-row-origin-o2-value-w4-goods-k2/body",
+   "how": "reached"
+  }
+ ],
+ "closed_at": "2026-09-20T23:13:05Z"
+}
