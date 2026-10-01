@@ -46,6 +46,7 @@ import yaml
 import run as runner
 from retrieve import Hybrid
 from rerank import LLMReranker
+from agent import Agent
 
 
 def pool(fixtures):
@@ -61,6 +62,57 @@ def pool(fixtures):
             texts[d["id"]] = f"{d.get('name','')}. {d.get('one_liner','')}\n\n{d['body'].strip()}"
             added[d["id"]] = fx["id"]
     return texts, added
+
+
+def load_map(fx, path):
+    """The frozen routing text beside a fixture — `<name>.map.yaml` — or the one named with --map.
+
+    The map is the system under test (GovKM, PR #1, 2026-09-29): its current/replaced/history
+    declarations are what the routing arm walks on, and they are read here exactly as frozen. The
+    same agreement `check.py` enforces is re-checked, because a map that drifted from its fixture
+    would have the walk reach documents the contributor did not mean.
+    """
+    mp = yaml.safe_load(pathlib.Path(path).read_text(encoding="utf-8")) or {}
+    if mp.get("fixture") != fx["id"]:
+        sys.exit(f"  {path}: `fixture: {mp.get('fixture')!r}` does not name {fx['id']}")
+    ids = {d["id"] for d in fx["documents"]}
+    kids = (mp.get("node") or {}).get("children") or []
+    named = [c["id"] for c in kids]
+    if set(named) != ids or len(named) != len(ids):
+        sys.exit(f"  {path}: map advertises {sorted(named)}, fixture holds {sorted(ids)}")
+    return mp
+
+
+def tree(fixtures, maps):
+    """The tree the walk reads, with each fixture grafted in **by its map**, not by its documents.
+
+    Two views, and they are kept apart on purpose. The retrieval arms index each document's own
+    name, one_liner and body (`pool()`), and nothing here touches that. The walk reads *lines*: the
+    map's node under the parent the map names, and under it one row per document carrying the
+    map's line for it — the current/replaced/history sentence — not the document's own one_liner.
+    That is the whole arrangement being tested: the continuity statement lives in the routing text
+    and nowhere in the corpus, and the question is whether a walk that reads it beats retrieval
+    that reads the documents.
+    """
+    _, _, one_liner, children, has_body = runner.corpus()
+    one_liner, children, has_body = dict(one_liner), {k: list(v) for k, v in children.items()}, dict(has_body)
+    for fx, mp in zip(fixtures, maps):
+        node = mp["node"]
+        if node["parent"] not in one_liner:
+            sys.exit(f"  {fx['id']}: the map's parent {node['parent']!r} is not in the tree the walk reads")
+        if node["id"] in one_liner:
+            sys.exit(f"  {fx['id']}: the map's node {node['id']!r} already exists in the tree")
+        one_liner[node["id"]] = " ".join(str(node.get("one_liner") or "").split())
+        has_body[node["id"]] = False
+        children.setdefault(node["parent"], []).append(node["id"])
+        children[node["parent"]].sort()
+        # Map order, not sorted: the map is a table somebody wrote, and the order its rows are in is
+        # part of what was written.
+        children[node["id"]] = [c["id"] for c in node["children"]]
+        for c in node["children"]:
+            one_liner[c["id"]] = " ".join(str(c.get("one_liner") or "").split())
+            has_body[c["id"]] = True
+    return one_liner, children, has_body
 
 
 BASE_TAG = "baseline-pre-continuity"
@@ -107,10 +159,21 @@ def main():
     ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--n", type=int, default=20, help="candidates fused before any reranking")
     ap.add_argument("--no-rerank", action="store_true")
+    # Opt-in, so every invocation that existed before this flag still does exactly what it did.
+    ap.add_argument("--routing", action="store_true",
+                    help="also walk: the pilot's walker (bench/agent.py) over the tree with each fixture's map grafted in")
+    ap.add_argument("--map", action="append", default=[],
+                    help="routing: the map for the fixture in the same position; default <fixture>.map.yaml beside it")
+    ap.add_argument("--steps", type=int, default=30, help="routing: the walk's turn ceiling, as in the pilot")
     ap.add_argument("--out")
     a = ap.parse_args()
 
     fixtures = [yaml.safe_load(pathlib.Path(f).read_text(encoding="utf-8")) for f in a.fixtures]
+    maps = None
+    if a.routing:
+        paths = [a.map[i] if i < len(a.map) else str(pathlib.Path(f).with_suffix("")) + ".map.yaml"
+                 for i, f in enumerate(a.fixtures)]
+        maps = [load_map(fx, p) for fx, p in zip(fixtures, paths)]
     texts, added = pool(fixtures)
     print(f"  {len(texts)} documents ({len(added)} from {len(fixtures)} fixture(s)) · k={a.k}",
           file=sys.stderr)
@@ -131,8 +194,37 @@ def main():
                 rows.append(("rag+rerank", fx["id"],
                              score_question(q, rr.rank(q["q"], ids, texts), a.k)))
 
+    # The routing arm. The pilot's walker — bench/agent.py, OPEN/READ/BACK/DONE over tables — on the
+    # tree with each fixture grafted in by its map. Not the `claude -p` census walker: this one runs
+    # in-process and writes down every turn, which is what a run that may happen once has to do.
+    #
+    # What is ranked is what the walk READ, in the order it read it. `found` is whether the
+    # operative document was read at all; `operative` is whether it was read before any distractor
+    # — the same two numbers, through the same `score_question`, so the three arms are compared on
+    # one definition. A walk that reads the review first and the September decision second has found
+    # the answer and preferred the wrong document, exactly as a retrieval list would have.
+    walker = None
+    if a.routing:
+        one_liner, children, has_body = tree(fixtures, maps)
+        walker = Agent(runner.rows(), children, one_liner, has_body, steps=a.steps, body=texts)
+        print(f"  routing: {walker.provider} {walker.model} · steps={a.steps} · use_when="
+              f"{os.environ.get('BENCH_USE_WHEN', 'frozen')}", file=sys.stderr)
+        for fx, mp in zip(fixtures, maps):
+            for q in fx["questions"]:
+                before = dict(walker.usage)
+                w = walker.walk(q["q"])
+                got = [i for i in w["collected"] if i in texts]
+                r = score_question(q, got, a.k)
+                r.update(read=got, visited=w["visited"], hops=w["hops"], opens=w["opens"],
+                         returns=w["returns"], turns=w["turns"], exhausted=w["exhausted"],
+                         read_chars=w["read_chars"], log=w["log"],
+                         usage={k: walker.usage[k] - before[k] for k in walker.usage})
+                rows.append(("routing", fx["id"], r))
+                print(f"    routing  {q['q'][:50]:<50} read {got}  hops {w['hops']}"
+                      f"{'  EXHAUSTED' if w['exhausted'] else ''}", file=sys.stderr)
+
     print()
-    for arm in ["rag", "rag+rerank"]:
+    for arm in ["rag", "rag+rerank", "routing"]:
         rs = [r for a_, _, r in rows if a_ == arm]
         if not rs: continue
         f = sum(r["found"] for r in rs) / len(rs)
@@ -147,6 +239,14 @@ def main():
                 print(f"         outranked by {d} at {r['distractor_ranks'][d]}")
 
     out = {"tag": tag, "k": a.k, "n": a.n,
+           "baseline": {"is": is_base, "why": why},
+           **({"routing": {"walker": "bench/agent.py Agent — the pilot's in-process walker (OPEN/READ/BACK/DONE), "
+                                      "not the claude -p census walker",
+                           "provider": walker.provider, "model": walker.model, "steps": a.steps,
+                           "use_when": os.environ.get("BENCH_USE_WHEN", "frozen"),
+                           # The map as walked, verbatim: the lines are the system under test.
+                           "maps": [{"fixture": fx["id"], "node": mp["node"]} for fx, mp in zip(fixtures, maps)]}}
+              if walker else {}),
            "fixtures": [f["id"] for f in fixtures],
            "contributed_by": [f.get("contributed_by") for f in fixtures],
            "documents_in_pool": len(texts), "from_fixtures": added,

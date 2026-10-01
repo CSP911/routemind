@@ -26,6 +26,55 @@ def corpus_ids(corpus: pathlib.Path):
     return out, areas
 
 
+ADVERTISE = {"current", "replaced", "history"}
+
+
+def check_map(fx, ids, mp, say):
+    """The map beside a fixture: does the routing text still describe the fixture it sits next to?
+
+    The map is the system under test — the lines an agent reads before it opens anything — and it is
+    written by hand in a second file. Two hand-written files about the same five documents drift, and
+    when they drift the run measures a map for a fixture that is no longer there. So: every document
+    advertised exactly once, nothing advertised that is not in the fixture, and the one row claiming
+    to be current is the one `truth:` calls operative.
+
+    That last rule is the only place the map and the answer sheet are allowed to touch, and it is
+    checked here rather than assumed. A map that advertises a superseded registration as current is a
+    fixture whose routing arm is being asked to reach a document the contributor did not mean.
+    """
+    if mp.get("fixture") != fx["id"]:
+        say(f"map: `fixture: {mp.get('fixture')!r}` does not name this fixture ({fx['id']})")
+    if mp.get("area") != fx["area"]:
+        say(f"map: area {mp.get('area')!r} is not the fixture's area ({fx['area']})")
+
+    node = mp.get("node") or {}
+    if not node.get("one_liner"): say("map: the parent node has no `one_liner` — that is the line a walk reads")
+    kids = node.get("children") or []
+    if not kids: return say("map: the node has no children, so no document is advertised")
+
+    seen, current = [], []
+    for c in kids:
+        i = c.get("id")
+        if i not in ids: say(f"map advertises {i!r}, which is not a document in this fixture")
+        elif i in seen: say(f"map advertises {i!r} twice")
+        seen.append(i)
+        if not c.get("one_liner"): say(f"map: {i} has no `one_liner`")
+        a = c.get("advertise")
+        if a not in ADVERTISE: say(f"map: {i} has advertise {a!r}; one of {', '.join(sorted(ADVERTISE))}")
+        if a == "current": current.append(i)
+
+    for i in ids:
+        if i not in seen: say(f"map does not advertise {i!r}, so a walk cannot reach it")
+
+    states = fx["truth"].get("states") or {}
+    if len(current) != 1:
+        say(f"map advertises {len(current)} documents as current; exactly one registration is in force")
+    elif current[0] != fx["truth"]["operative"]:
+        say(f"map advertises {current[0]} as current, but truth.operative is {fx['truth']['operative']}")
+    for i in current:
+        if states.get(i) == "superseded": say(f"map advertises {i} as current, but truth.states calls it superseded")
+
+
 def main(path, corpus):
     fx = yaml.safe_load(pathlib.Path(path).read_text(encoding="utf-8"))
     bad = []
@@ -81,6 +130,12 @@ def main(path, corpus):
         for dd in q.get("distractors") or []:
             if dd not in ids: say(f"question {n}: distractor {dd!r} is not a document here")
             if dd == q.get("operative"): say(f"question {n}: {dd} is both operative and a distractor")
+
+    # Optional: a fixture may freeze its routing text beside it. Fixtures written before the map
+    # existed have none, and that is not an error — but a map that is there has to agree.
+    mpath = pathlib.Path(path).with_suffix("").with_suffix(".map.yaml")
+    if mpath.exists():
+        check_map(fx, ids, yaml.safe_load(mpath.read_text(encoding="utf-8")) or {}, say)
     return bad
 
 

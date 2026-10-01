@@ -1,0 +1,109 @@
+{
+ "tag": "corpus-2026-09-20-7-gd55656a",
+ "k": 10,
+ "n": 20,
+ "fixtures": [
+  "supplier-selection-silent"
+ ],
+ "contributed_by": [
+  "proposed by the maintainer for GovKM to correct or replace"
+ ],
+ "documents_in_pool": 783,
+ "from_fixtures": {
+  "y-supplier-c-approved": "supplier-selection-silent",
+  "y-inspection-rejects-batch": "supplier-selection-silent",
+  "y-supplier-d-approved": "supplier-selection-silent",
+  "y-annual-sourcing-note-2025": "supplier-selection-silent"
+ },
+ "at": "2026-09-21T00:33:56",
+ "results": [
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-silent",
+   "q": "Which supplier is currently approved for the Y component?",
+   "operative": "y-supplier-d-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "y-supplier-c-approved": 1
+   },
+   "outranked_by": [
+    "y-supplier-c-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-silent",
+   "q": "Which supplier is currently approved for the Y component?",
+   "operative": "y-supplier-d-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "y-supplier-c-approved": 1
+   },
+   "outranked_by": [
+    "y-supplier-c-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-silent",
+   "q": "Can I place a new order for Y with Supplier C?",
+   "operative": "y-supplier-d-approved",
+   "rank": 6,
+   "found": true,
+   "distractor_ranks": {
+    "y-supplier-c-approved": 2
+   },
+   "outranked_by": [
+    "y-supplier-c-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-silent",
+   "q": "Can I place a new order for Y with Supplier C?",
+   "operative": "y-supplier-d-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "y-supplier-c-approved": 1
+   },
+   "outranked_by": [
+    "y-supplier-c-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-silent",
+   "q": "What delivery window applies to a Y order placed today?",
+   "operative": "y-supplier-d-approved",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {
+    "y-supplier-c-approved": 2,
+    "y-annual-sourcing-note-2025": 7
+   },
+   "outranked_by": [],
+   "beats_distractors": true
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-silent",
+   "q": "What delivery window applies to a Y order placed today?",
+   "operative": "y-supplier-d-approved",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {
+    "y-supplier-c-approved": 2,
+    "y-annual-sourcing-note-2025": 3
+   },
+   "outranked_by": [],
+   "beats_distractors": true
+  }
+ ]
+}

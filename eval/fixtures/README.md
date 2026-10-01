@@ -70,10 +70,43 @@ Two things, kept apart — the distinction the fixture exists for:
 
 A system can score perfectly on the first and fail the second. That is the finding.
 
+## The map, and why it is a separate file
+
+A fixture may freeze its routing text beside it, as `<name>.map.yaml`. It is optional — the first two
+fixtures have none — and it exists because of what GovKM asked for on PR #1:
+
+> I'll treat the hop-0 advertisement as part of the system under test, not as ground truth outside the
+> test. For this fixture, we'll freeze its September/current and retrospective/history declarations
+> before scoring.
+
+That is the right way round. The map is the lines an agent reads *before* it opens anything, and it is
+where "which record governs" is written. So it is a thing being measured, not a thing being assumed —
+and keeping it out of the fixture file keeps it out of `truth:`, which the scorer reads and nothing
+else may.
+
+```yaml
+fixture: supplier-selection-retrospective   # must name the fixture it sits beside
+area: procurement                           # must be the fixture's area
+area_use_when: ...                          # hop 0, recorded so a reviewer can see it was not tuned
+node:
+  id: sec-z-component-sourcing
+  one_liner: the line a walk reads on the way down
+  children:
+    - id: z-supplier-f-approved
+      advertise: current                    # current · replaced · history
+      one_liner: The registration in force for Z: Supplier F since 1 September 2025 — ...
+```
+
+`check.py` enforces the agreement between the two files when a map is present: every document
+advertised exactly once, nothing advertised that the fixture does not contain, and **exactly one row
+marked `current`, which must be the one `truth:` calls operative**. Two hand-written files about the
+same documents drift, and a drifted map means the run measured routing text for a fixture that is no
+longer there.
+
 ## Running one
 
 ```sh
-./eval/fixtures/check.py eval/fixtures/<name>.yaml     # shape, ids, kinds, area — before you send it
+./eval/fixtures/check.py eval/fixtures/<name>.yaml     # shape, ids, kinds, area, map — before you send it
 ```
 
 ```sh
