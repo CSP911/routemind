@@ -1,0 +1,481 @@
+{
+ "tag": "corpus-2026-09-20-55-g249dec7",
+ "k": 10,
+ "n": 20,
+ "baseline": {
+  "is": false,
+  "why": "ontology/service/ has changed since baseline-pre-continuity:\nontology/service/ages.py     |  92 ++++++++++++++++++\n ontology/service/curator.py  |  38 ++++----\n ontology/service/derive.py   |  34 ++++---\n ontology/service/peers.py    | 221 +++++++++++++++++++++++++++++++++++++++----\n ontology/service/server.py   | 203 ++++++++++++++++++++++++++++++---------\n ontology/service/store.py    |  30 ++++--\n ontology/service/validate.py | 161 +++++++++++++++++++------------\n ontology/service/write.py    |  54 +++++++----\n 8 files changed, 653 insertions(+), 180 deletions(-)"
+ },
+ "routing": {
+  "walker": "bench/agent.py Agent — the pilot's in-process walker (OPEN/READ/BACK/DONE), not the claude -p census walker",
+  "provider": "anthropic",
+  "model": "claude-opus-5",
+  "steps": 30,
+  "use_when": "frozen",
+  "maps": [
+   {
+    "fixture": "supplier-selection-retrospective",
+    "node": {
+     "id": "sec-z-component-sourcing",
+     "name": "Sourcing the Z component",
+     "kind": "topic",
+     "parent": "sec-vendor-registration-cases",
+     "one_liner": "Who the registered source for the Z component is now, which registration it replaced, and the records of how the earlier one ran",
+     "children": [
+      {
+       "id": "z-supplier-f-approved",
+       "advertise": "current",
+       "one_liner": "The registration in force for Z: Supplier F since 1 September 2025 — the terms any order placed now is under"
+      },
+      {
+       "id": "z-supplier-e-approved",
+       "advertise": "replaced",
+       "one_liner": "The earlier registration for Z, Supplier E from 17 February 2025 — replaced on 1 September 2025 and not the source for a new order"
+      },
+      {
+       "id": "z-supplier-e-performance-review",
+       "advertise": "history",
+       "one_liner": "History: how Supplier E performed on delivery, quality and price while it held the Z registration, reviewed 8 December 2025 — a record of that period, not a registration"
+      },
+      {
+       "id": "z-annual-sourcing-note-2025",
+       "advertise": "history",
+       "one_liner": "History: what Z sourcing looked like across 2025, written 10 November 2025 for the procurement review"
+      },
+      {
+       "id": "z-inspection-rejects-batch",
+       "advertise": "history",
+       "one_liner": "The Z batch rejected at inspection in spring 2025, what was returned and how it was settled"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "fixtures": [
+  "supplier-selection-retrospective"
+ ],
+ "contributed_by": [
+  "maintainer, to GovKM's specification on PR"
+ ],
+ "documents_in_pool": 784,
+ "from_fixtures": {
+  "z-supplier-e-approved": "supplier-selection-retrospective",
+  "z-inspection-rejects-batch": "supplier-selection-retrospective",
+  "z-supplier-f-approved": "supplier-selection-retrospective",
+  "z-annual-sourcing-note-2025": "supplier-selection-retrospective",
+  "z-supplier-e-performance-review": "supplier-selection-retrospective"
+ },
+ "at": "2026-10-01T23:15:38",
+ "results": [
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-retrospective",
+   "q": "Which supplier is currently approved for the Z component?",
+   "operative": "z-supplier-f-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": 1,
+    "z-supplier-e-performance-review": 3
+   },
+   "outranked_by": [
+    "z-supplier-e-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-retrospective",
+   "q": "Which supplier is currently approved for the Z component?",
+   "operative": "z-supplier-f-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": 1,
+    "z-supplier-e-performance-review": 3
+   },
+   "outranked_by": [
+    "z-supplier-e-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-retrospective",
+   "q": "Can I place a new order for Z with Supplier E?",
+   "operative": "z-supplier-f-approved",
+   "rank": 8,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": 2,
+    "z-supplier-e-performance-review": 15
+   },
+   "outranked_by": [
+    "z-supplier-e-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-retrospective",
+   "q": "Can I place a new order for Z with Supplier E?",
+   "operative": "z-supplier-f-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": 1,
+    "z-supplier-e-performance-review": 3
+   },
+   "outranked_by": [
+    "z-supplier-e-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-retrospective",
+   "q": "What delivery window applies to a Z order placed today?",
+   "operative": "z-supplier-f-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": 1,
+    "z-annual-sourcing-note-2025": 8,
+    "z-supplier-e-performance-review": 5
+   },
+   "outranked_by": [
+    "z-supplier-e-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-retrospective",
+   "q": "What delivery window applies to a Z order placed today?",
+   "operative": "z-supplier-f-approved",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": 1,
+    "z-annual-sourcing-note-2025": 4,
+    "z-supplier-e-performance-review": 3
+   },
+   "outranked_by": [
+    "z-supplier-e-approved"
+   ],
+   "beats_distractors": false
+  },
+  {
+   "arm": "rag",
+   "fixture": "supplier-selection-retrospective",
+   "q": "How did Supplier E perform on delivery while it was the source for Z?",
+   "operative": "z-supplier-e-performance-review",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-f-approved": 3,
+    "z-annual-sourcing-note-2025": 8
+   },
+   "outranked_by": [],
+   "beats_distractors": true
+  },
+  {
+   "arm": "rag+rerank",
+   "fixture": "supplier-selection-retrospective",
+   "q": "How did Supplier E perform on delivery while it was the source for Z?",
+   "operative": "z-supplier-e-performance-review",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-f-approved": 5,
+    "z-annual-sourcing-note-2025": 3
+   },
+   "outranked_by": [],
+   "beats_distractors": true
+  },
+  {
+   "arm": "routing",
+   "fixture": "supplier-selection-retrospective",
+   "q": "Which supplier is currently approved for the Z component?",
+   "operative": "z-supplier-f-approved",
+   "rank": 1,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": null,
+    "z-supplier-e-performance-review": null
+   },
+   "outranked_by": [],
+   "beats_distractors": true,
+   "read": [
+    "z-supplier-f-approved"
+   ],
+   "visited": [
+    "procurement",
+    "vendor",
+    "sec-vendor-registration-cases",
+    "sec-z-component-sourcing",
+    "z-supplier-f-approved"
+   ],
+   "hops": 4,
+   "opens": 4,
+   "returns": 0,
+   "turns": 10,
+   "exhausted": false,
+   "read_chars": 747,
+   "log": [
+    "OPEN procurement",
+    "OPEN vendor",
+    "OPEN sec-vendor-registration-cases",
+    "OPEN sec-z-component-sourcing",
+    "READ z-supplier-f-approved",
+    "",
+    "",
+    "",
+    "",
+    "DONE"
+   ],
+   "usage": {
+    "in": 20,
+    "out": 242,
+    "cache_write": 6236,
+    "cache_read": 12598
+   }
+  },
+  {
+   "arm": "routing",
+   "fixture": "supplier-selection-retrospective",
+   "q": "Can I place a new order for Z with Supplier E?",
+   "operative": "z-supplier-f-approved",
+   "rank": 8,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-e-approved": 7,
+    "z-supplier-e-performance-review": null
+   },
+   "outranked_by": [
+    "z-supplier-e-approved"
+   ],
+   "beats_distractors": false,
+   "read": [
+    "renewal-decision",
+    "ending-a-vendor-relationship",
+    "disqualification-triggers",
+    "supplier-code-of-conduct",
+    "purchase-steps",
+    "vendor-steps",
+    "z-supplier-e-approved",
+    "z-supplier-f-approved",
+    "z-annual-sourcing-note-2025"
+   ],
+   "visited": [
+    "procurement",
+    "sec-vendor-performance-and-renewal",
+    "renewal-decision",
+    "ending-a-vendor-relationship",
+    "procurement",
+    "sec-supplier-due-diligence",
+    "disqualification-triggers",
+    "supplier-code-of-conduct",
+    "purchase-request",
+    "purchase-steps",
+    "vendor",
+    "vendor-steps",
+    "sec-vendor-registration-cases",
+    "sec-z-component-sourcing",
+    "z-supplier-e-approved",
+    "z-supplier-f-approved",
+    "z-annual-sourcing-note-2025"
+   ],
+   "hops": 9,
+   "opens": 8,
+   "returns": 1,
+   "turns": 19,
+   "exhausted": false,
+   "read_chars": 9033,
+   "log": [
+    "OPEN procurement",
+    "OPEN sec-vendor-performance-and-renewal",
+    "READ renewal-decision",
+    "READ ending-a-vendor-relationship",
+    "BACK",
+    "OPEN procurement",
+    "OPEN sec-supplier-due-diligence",
+    "READ disqualification-triggers",
+    "READ supplier-code-of-conduct",
+    "OPEN purchase-request",
+    "READ purchase-steps",
+    "OPEN vendor",
+    "READ vendor-steps",
+    "OPEN sec-vendor-registration-cases",
+    "OPEN sec-z-component-sourcing",
+    "READ z-supplier-e-approved\nREAD z-supplier-f-approved",
+    "READ z-annual-sourcing-note-2025",
+    "",
+    "DONE"
+   ],
+   "usage": {
+    "in": 38,
+    "out": 1963,
+    "cache_write": 6589,
+    "cache_read": 60283
+   }
+  },
+  {
+   "arm": "routing",
+   "fixture": "supplier-selection-retrospective",
+   "q": "What delivery window applies to a Z order placed today?",
+   "operative": "z-supplier-f-approved",
+   "rank": null,
+   "found": false,
+   "distractor_ranks": {
+    "z-supplier-e-approved": null,
+    "z-annual-sourcing-note-2025": null,
+    "z-supplier-e-performance-review": null
+   },
+   "outranked_by": [],
+   "beats_distractors": false,
+   "read": [
+    "purchase-steps",
+    "receiving-overview",
+    "ga-contact",
+    "procurement-overview",
+    "standard-payment-terms",
+    "threshold-table",
+    "vendor-form-fields"
+   ],
+   "visited": [
+    "procurement",
+    "purchase-request",
+    "purchase-steps",
+    "procurement",
+    "sec-receiving-and-inspection",
+    "receiving-overview",
+    "procurement",
+    "ga-desk",
+    "ga-contact",
+    "procurement",
+    "procurement-overview",
+    "sec-contract-terms-the-company-insists-on",
+    "standard-payment-terms",
+    "procurement",
+    "purchase-request",
+    "approval-threshold",
+    "threshold-table",
+    "sec-bands-and-quotes-in-practice",
+    "procurement",
+    "vendor",
+    "vendor-form",
+    "vendor-form-fields",
+    "procurement",
+    "sec-vendor-performance-and-renewal"
+   ],
+   "hops": 23,
+   "opens": 17,
+   "returns": 6,
+   "turns": 30,
+   "exhausted": true,
+   "read_chars": 7191,
+   "log": [
+    "OPEN procurement",
+    "OPEN purchase-request",
+    "READ purchase-steps",
+    "BACK",
+    "OPEN procurement",
+    "OPEN sec-receiving-and-inspection",
+    "READ receiving-overview",
+    "BACK",
+    "OPEN procurement",
+    "OPEN ga-desk",
+    "READ ga-contact",
+    "BACK",
+    "OPEN procurement",
+    "READ procurement-overview",
+    "OPEN sec-contract-terms-the-company-insists-on",
+    "READ standard-payment-terms",
+    "BACK",
+    "OPEN procurement",
+    "OPEN purchase-request",
+    "OPEN approval-threshold",
+    "READ threshold-table",
+    "OPEN sec-bands-and-quotes-in-practice",
+    "BACK",
+    "OPEN procurement",
+    "OPEN vendor",
+    "OPEN vendor-form",
+    "READ vendor-form-fields",
+    "BACK",
+    "OPEN procurement",
+    "OPEN sec-vendor-performance-and-renewal"
+   ],
+   "usage": {
+    "in": 60,
+    "out": 3195,
+    "cache_write": 8577,
+    "cache_read": 131292
+   }
+  },
+  {
+   "arm": "routing",
+   "fixture": "supplier-selection-retrospective",
+   "q": "How did Supplier E perform on delivery while it was the source for Z?",
+   "operative": "z-supplier-e-performance-review",
+   "rank": 2,
+   "found": true,
+   "distractor_ranks": {
+    "z-supplier-f-approved": null,
+    "z-annual-sourcing-note-2025": null
+   },
+   "outranked_by": [],
+   "beats_distractors": true,
+   "read": [
+    "missed-delivery-dates",
+    "z-supplier-e-performance-review"
+   ],
+   "visited": [
+    "procurement",
+    "sec-vendor-performance-and-renewal",
+    "missed-delivery-dates",
+    "procurement",
+    "sec-receiving-and-inspection",
+    "sec-supplier-due-diligence",
+    "procurement",
+    "vendor",
+    "sec-vendor-registration-cases",
+    "sec-z-component-sourcing",
+    "z-supplier-e-performance-review"
+   ],
+   "hops": 11,
+   "opens": 9,
+   "returns": 2,
+   "turns": 17,
+   "exhausted": false,
+   "read_chars": 2426,
+   "log": [
+    "OPEN procurement",
+    "OPEN sec-vendor-performance-and-renewal",
+    "READ missed-delivery-dates",
+    "BACK",
+    "OPEN procurement",
+    "OPEN sec-receiving-and-inspection",
+    "OPEN sec-supplier-due-diligence",
+    "BACK",
+    "OPEN procurement",
+    "OPEN vendor",
+    "OPEN sec-vendor-registration-cases",
+    "OPEN sec-z-component-sourcing",
+    "READ z-supplier-e-performance-review",
+    "",
+    "",
+    "",
+    "DONE"
+   ],
+   "usage": {
+    "in": 34,
+    "out": 1826,
+    "cache_write": 7632,
+    "cache_read": 43591
+   }
+  }
+ ]
+}
