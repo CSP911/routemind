@@ -136,10 +136,13 @@ fi
 
 printf '\n== the slow ones, which start services of their own ==\n'
 if [ "$QUICK" = 1 ]; then
-  printf '  (skipped by --quick: write-paths, llm-paths, install-check)\n'
+  printf '  (skipped by --quick: write-paths, llm-paths, place, install-check)\n'
 else
   run write-paths sh check/write-paths.sh
   run llm-paths   sh check/llm-paths.sh
+  # Placing a document by walking the table, through the MCP, with the write and the queued
+  # proposal read back. Starts an ontology on a copy of the shipped corpus, so it sits here.
+  run place       $HOSTPY check/place-check.py
   if [ -z "$ONLY" ]; then
     printf '  install-check          not run here — it builds a clean clone and takes minutes.\n'
     printf '                         ./check/install-check.sh before a release.\n'
