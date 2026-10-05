@@ -157,6 +157,9 @@ else
   # Invariants 5 and 7: every write path — API, proposal accept, tidy, graft, ungraft — a success
   # and a failure each, with commits and tree state read back. Starts its own ontologies.
   run transact    $HOSTPY check/transact-check.py
+  # Invariant 3, the derived state that is not a file: a peer's advertisement, a session and the
+  # MCP's area list each follow their source without waiting out a timer. Two backbones, an MCP.
+  run follow      $HOSTPY check/follow-check.py
   if [ -z "$ONLY" ]; then
     printf '  install-check          not run here — it builds a clean clone and takes minutes.\n'
     printf '                         ./check/install-check.sh before a release.\n'

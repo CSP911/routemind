@@ -31,7 +31,7 @@ mislabelling one of these suspends the absence rule for a reason that is not tru
 """
 from __future__ import annotations
 
-import contextlib
+import contextlib, sys
 import hashlib
 import hmac
 import ipaddress
@@ -454,6 +454,15 @@ def poke(targets: list[dict], *, hops: int = REFRESH_HOPS, self_kind: str | None
             req.add_header("X-Peer-Kind", str(self_kind or peer["self_kind"]))
         try:
             with urllib.request.urlopen(req, timeout=TIMEOUT) as r: r.read()
+        except urllib.error.HTTPError as e:
+            # Swallowed as a failure, said as a fact. A peer that is down is a non-event; a peer that
+            # *refuses* the hint is a link on which no withdrawal will ever arrive early, and that was
+            # invisible for a month — every refresh on every two-secret link answered 401 and nothing
+            # printed. One line per refused hint, so the first withdrawal that matters is not the
+            # first time anybody hears of it.
+            sys.stderr.write(f"peers: {peer['name']} refused the refresh hint (HTTP {e.code}) — its export cache "
+                             f"will follow this backbone by timer only; check the key this backbone presents is "
+                             f"one that backbone accepts\n")
         except Exception:
             pass
 

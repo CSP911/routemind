@@ -904,9 +904,19 @@ class Handler(BaseHTTPRequestHandler):
         # no name says which peer to forget no better than a stranger does — so an unnamed session is
         # refused here even though it reads fine.
         session = peering.session_peer(self.headers.get("X-Peer-Token") or "")
-        who = _peer_by_name((session or {}).get("peer")) if session else None
+        if not session:
+            return self._err(401, "session token missing, wrong or expired")
+        who = _peer_by_name(session.get("peer")) if session.get("peer") else None
         if not who:
-            return self._err(401, "session token missing, wrong or expired, or it names no peer")
+            # A valid session that names nobody: the caller presented this backbone's own enrolment
+            # key, which is what the other end of a two-secret link does. Until 2026-10-06 this was
+            # refused — "it names no peer" — and so the hint every export change sends was refused
+            # on every link whose two directions do not share one secret: the withdrawal that
+            # announce exists to hurry arrived by the cache timer alone, and nothing said so.
+            # Forgetting everything is the safe reading of an unnamed hint: a caller that can read
+            # this surface can make it re-read its peers, and that is all a refresh is.
+            peering.forget(None)
+            return self._send(200, {"ok": True, "forgot": "*"})
         peering.forget(who["name"])
         return self._send(200, {"ok": True, "forgot": who["name"]})
 

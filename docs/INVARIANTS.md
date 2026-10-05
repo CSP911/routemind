@@ -29,9 +29,26 @@ system does not let it be reported as more. Enforced by the same walk id as 1.
 
 **3. One fact, one home.** Every fact has one source file. Anything derived from it — `regions.json`,
 the hop-0 listing, a session, a cache — is regenerated in the same transaction that changes the
-source, or recomputed on read; it is never a second copy somebody can edit. Checked by editing each
-source by hand and asserting every reader reflects it (`check/drift-check.py` for the derived table;
-the rest to be enumerated).
+source, or recomputed on read, or follows the source when it changes; it is never a second copy
+somebody can edit. The inventory, each with the check that proves it follows:
+
+| derived state | its source | how it follows | checked by |
+|---|---|---|---|
+| `regions.json`, committed | the areas' files, CORE.md | regenerated in every write; served from the files when stale; healed at startup | `check/drift-check.py` |
+| the node cache in the store | every entity file | keyed on every file's mtime | `check/same-answer-check.py` (the hand-edited run) |
+| ages | git history | keyed on the commit | `check/age-check.py` |
+| `/healthz` `valid` | validation | keyed on the commit | `check/drift-check.py` |
+| a peer's advertisement (cached 5 s) | the peer's export surface | the peer pokes `/v1/export/refresh` when its export state changes | `check/follow-check.py` |
+| a reader's session (6 h) | `peers.yaml` | every session dropped when the declared peers change; restart revokes all | `check/follow-check.py`, `check/session-check.py` |
+| the MCP's area list in its first tool | hop 0 | refreshed on every `tools/list` | `check/follow-check.py` |
+| a walk (10 min) | the question | ended by a new hop 0, an overlay close, or time | `check/walk-check.py` |
+
+Found while writing `follow-check`, 2026-10-06: the poke had never worked on a link whose two
+directions use different secrets. The far end minted a session with this backbone's own key, which
+names no declared peer, and `/v1/export/refresh` refused an unnamed session — silently, since a hint
+swallows its failures — so every withdrawal arrived by the five-second timer alone, and the one
+check that watched for it waited ten seconds and passed. An unnamed but valid hint now forgets every
+peer, and a refused hint is one line in the log.
 
 **4. Every reader of one fact gets the same answer.** Two paths to one fact return the same bytes:
 the area listing and the area detail, the owner's view and the export surface, `store.regions()`
