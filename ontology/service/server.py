@@ -21,9 +21,11 @@ from pathlib import Path
 from urllib.parse import urlparse, unquote
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from service.store import Store                     # noqa: E402
+from service.store import Store, alias_names        # noqa: E402
 from service.validate import validate, export_kinds  # noqa: E402
 from service import ages  # noqa: E402
+from service import resolve as resolver  # noqa: E402
+from service import place as placing  # noqa: E402
 from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E402
 from service.service_store import ServiceStore              # noqa: E402
 from service.validate_service import validate_services      # noqa: E402
@@ -1074,6 +1076,22 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["vocab"]: return self._send(200, store.vocab())
         if parts == ["graph"]: g = store.graph(); g["revision"] = head(DATA); return self._send(200, g)
         if parts == ["edges"]: return self._send(200, {"revision": head(DATA), "edges": store.edges()})
+        if parts == ["resolve"]:
+            # The DNS in front of hop 0. A question as a person typed it comes in; the names in it
+            # come back as the nodes the map calls them, with what is being asked and the area list
+            # every search starts from. See service/resolve.py for what it is and is not.
+            q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
+            question = unquote(q.get("q", "").replace("+", " "))
+            # The same link state hop 0 reads, so the absence sentence here is the one hop 0 would
+            # give: with a link down there is no honest version of it, and a resolver that printed
+            # the confident one over an incomplete list would be the failure it exists to prevent.
+            theirs, links = peering.rows(DATA)
+            r = resolver.resolve(question, nodes=store.nodes(), edges=store.edges(), regions=store.regions(),
+                                 ages=ages.of(DATA, head(DATA)), revision=head(DATA),
+                                 absence=(_absence(links) if links else None))
+            r["areas"] += [{"id": t.get("id"), "area": t.get("source"), "use_when": t.get("use_when") or "",
+                            "fetch": t.get("fetch"), "changed": None, "peer": t.get("peer")} for t in theirs]
+            return self._send(200, r)
         if parts == ["regions"]:
             q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
             expand = q.get("expand") == "entries"
@@ -1233,6 +1251,54 @@ class Handler(BaseHTTPRequestHandler):
     # ---- writes ----
     def _write(self, method, parts):
         actor = self._actor(); body = self._body()
+        if parts == ["place"] and method == "POST":
+            # One hop of the placement walk, stateless: the table at `at` with the evidence for each
+            # row, where the document would land if the walk stopped here, and — from the `path`
+            # the caller has walked so far — how far up it would have to be advertised. A POST that
+            # writes nothing; the walk's state is the caller's, like a question's is.
+            doc = body.get("doc") or {}
+            at = str(body.get("at") or "/v1/regions").rstrip("/") or "/v1/regions"
+            path = [str(p).rstrip("/") for p in (body.get("path") or [])]
+            rows, here = [], None
+            if at == "/v1/regions":
+                for r in store.regions():
+                    rows.append({"address": f"/v1/regions/{r['dir']}", "kind": "area", "id": r["dir"],
+                                 "name": r.get("key") or r["dir"], "line": r.get("use_when") or "",
+                                 "names": [r["dir"], r.get("key") or ""]})
+            elif at.startswith("/v1/regions/"):
+                d = at[len("/v1/regions/"):]
+                r = next((x for x in store.regions() if x["dir"] == d or x["key"] == d.upper()), None)
+                if not r: return self._err(404, f"region {d} not found")
+                here = {"parent": r["representative"], "region": r["dir"]}
+                for c in advertised(r["representative"]):
+                    rows.append({"address": f"/v1/nodes/{c['id']}", "kind": "node", "id": c["id"], "name": c["name"],
+                                 "line": c.get("one_liner") or "", "names": [c["id"], c["name"], *alias_names(c.get("aliases"))]})
+            elif at.startswith("/v1/nodes/"):
+                n = store.node(at[len("/v1/nodes/"):])
+                if not n: return self._err(404, f"node {at[len('/v1/nodes/'):]} not found")
+                here = {"parent": n["id"], "region": n["region"]}
+                for c in store.children_of(n["id"]):
+                    rows.append({"address": f"/v1/nodes/{c['id']}", "kind": "node", "id": c["id"], "name": c["name"],
+                                 "line": c.get("one_liner") or "", "names": [c["id"], c["name"], *alias_names(c.get("aliases"))]})
+            else:
+                return self._err(400, f"{at} is not a table a document can be placed from")
+            # The ancestors, innermost first, as the path says they were walked. A region on the
+            # path contributes its hop-0 sentence; a node contributes its line.
+            ancestors = []
+            for p in reversed(path):
+                if p.startswith("/v1/nodes/"):
+                    n = store.node(p[len("/v1/nodes/"):])
+                    if n: ancestors.append({"scope": "entity", "id": n["id"], "label": n["name"], "line": n.get("one_liner") or ""})
+                elif p.startswith("/v1/regions/"):
+                    d = p[len("/v1/regions/"):]
+                    r = next((x for x in store.regions() if x["dir"] == d), None)
+                    if r: ancestors.append({"scope": "bb", "id": r["dir"], "label": r.get("key") or r["dir"], "line": r.get("use_when") or ""})
+            region = next((x for x in store.regions() if here and x["dir"] == here["region"]), None)
+            return self._send(200, {
+                "at": at, "rows": placing.table(doc, rows), "here": here,
+                "propagation": placing.propagation(doc, ancestors),
+                "export": ({"region": region["dir"], "export": bool(region.get("export"))} if region else None),
+                "terms": placing.terms(doc), "revision": head(DATA)})
         if parts == ["suggest", "use-when"] and method == "POST":
             name, one = str(body.get("name") or "").strip(), str(body.get("one_liner") or "").strip()
             if not name or not one: return self._err(400, "name and one_liner are required")

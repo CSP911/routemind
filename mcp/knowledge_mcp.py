@@ -738,6 +738,195 @@ def read_for(api: Api, path: str) -> str:
 
 # ── MCP ───────────────────────────────────────────────────────────────────────
 
+RESOLVE_TOOL = {
+    "name": "knowledge_resolve",
+    "description": "Start here, with the question exactly as the person typed it. RouteMind resolves "
+                   "the names in it to the nodes the map calls them — through each node's aliases and "
+                   "one hop along the map's own edges — reads what is being asked about them (most "
+                   "recent · when · who · how · whether), and restates the question in the map's words "
+                   "as one line, shown so it can be disagreed with. It returns where to fetch first and "
+                   "the list of areas every search starts from. A resolution is per question: do not "
+                   "reuse one from an earlier turn, and it is valid only while `revision` is unchanged. "
+                   "If no name in the question is one the map knows it says so — and absence may still "
+                   "only be claimed from the area list it hands back, never from a smaller table.",
+    "inputSchema": {"type": "object", "required": ["q"], "properties": {
+        "q": {"type": "string", "description": "The question as the person asked it, unedited."}}},
+}
+
+
+def resolve_for(api: Api, q: str) -> str:
+    """The resolution, printed for an agent: the restatement first, because it is the line a person
+    has to be able to disagree with; then the names and why each was reached; then hop 0, which
+    arrives with every resolution so that no resolution can be had without it."""
+    from urllib.parse import quote
+    d = api.json("/v1/resolve?q=" + quote(q))
+    a = d.get("ask") or {}
+    out = ["ROUTEMIND — the question, resolved",
+           f"  asked   : {d.get('q', '')}",
+           f"  read as : {d.get('restated', '')}",
+           f"  asking  : {a.get('kind', '')}" + (f"  (said {a['said']!r})" if a.get("said") else "")
+           + (f"  → {a['hint']}" if a.get("hint") else ""),
+           ""]
+    names = d.get("names") or []
+    if names:
+        w_said = max(4, max(len(n["said"]) for n in names)); w_is = max(2, max(len(n["is"]) for n in names))
+        w_area = max(4, max(len(str(n.get("area") or "")) for n in names)); w_via = max(3, max(len(n["via"]) for n in names))
+        out.append(f"  {'NAME':<{w_said}}  {'IS':<{w_is}}  {'AREA':<{w_area}}  {'VIA':<{w_via}}  CHANGED")
+        for n in names:
+            out.append(f"  {n['said']:<{w_said}}  {n['is']:<{w_is}}  {str(n.get('area') or ''):<{w_area}}  "
+                       f"{n['via']:<{w_via}}  {_since(n.get('changed'))}")
+        out.append("")
+        out.append("  start with: " + ", ".join(d.get("start") or []))
+    else:
+        out.append("  No name in this question is one the map knows. Choose from the areas below by their")
+        out.append("  sentences. If none fits, that — and only that — is absence.")
+    out.append("")
+    rows = [{"kind": KIND["table"], "address": r.get("fetch") or "", "why": r.get("use_when") or "",
+             "age": _age(r), "whose": None} for r in (d.get("areas") or [])]
+    out.append(_table(rows, "ROUTEMIND — the areas of this domain",
+                      "Every search starts here. The names above say which rows the question is about.",
+                      d.get("absence")))
+    out.append("")
+    out.append(f"  valid while revision {d.get('revision')} · a resolution is for this question only · an absence is never cached")
+    return "\n".join(out)
+
+
+PLACE_TOOL = {
+    "name": "knowledge_place",
+    "description": "Put a new document into RouteMind by walking the routing table to its place — "
+                   "the same walk a question takes, not a scan of the corpus for a likely spot. "
+                   "`open` with the document (name, one_liner, optional aliases and content) prints "
+                   "hop 0 with, on every row, which of the document's words its sentence shares. "
+                   "`step` with an address from that table descends one hop and prints the next "
+                   "table the same way; at every hop below the top you may `here` instead, and the "
+                   "document becomes a child of the node whose table you are reading. `none` at hop "
+                   "0 means no area advertises such things, and the answer is a new area, not a "
+                   "hiding place. `here` writes the document under the parent reached and then walks "
+                   "back up: every ancestor whose line does not say this gets a proposal to widen it "
+                   "by the document's own one_liner, stopping at the first ancestor that already "
+                   "covers it — route aggregation. If nothing covers it to hop 0, the area's sentence "
+                   "is proposed; whether the area is exported is reported and never changed here.",
+    "inputSchema": {"type": "object", "required": ["op"], "properties": {
+        "op": {"type": "string", "enum": ["open", "step", "here", "list", "close"]},
+        "name": {"type": "string", "description": "open: the document's name"},
+        "one_liner": {"type": "string", "description": "open: one sentence, the line a table will print for it"},
+        "aliases": {"type": "array", "items": {"type": "string"}, "description": "open: the names people use for it"},
+        "content": {"type": "string", "description": "open: the body, Markdown"},
+        "id": {"type": "string", "description": "step/here/close: the placement id `open` returned"},
+        "pick": {"type": "string", "description": "step: an address the last table printed, or `none`"}}},
+}
+
+PLACEMENTS: dict[str, dict] = {}
+
+
+def place_call(api: Api, args: dict) -> str:
+    """The placement walk, one op at a time. State is the walk's path and the addresses the last
+    table printed — a pick that was not printed is refused, the same discipline every table asks."""
+    op = str(args.get("op") or "").strip()
+    if op == "list":
+        if not PLACEMENTS: return "No placement is open."
+        return "\n".join(f"  {k}  {p['doc']['name']}  at {p['at']}  path {' → '.join(p['path']) or '(hop 0)'}"
+                         for k, p in PLACEMENTS.items())
+    if op == "open":
+        doc = {"name": str(args.get("name") or "").strip(), "one_liner": str(args.get("one_liner") or "").strip(),
+               "aliases": [str(a) for a in (args.get("aliases") or [])], "content": str(args.get("content") or "")}
+        if not doc["name"] or not doc["one_liner"]:
+            raise ApiError("open needs `name` and `one_liner` — the line is what every table will print for it")
+        pid = f"p{len(PLACEMENTS) + 1}"
+        PLACEMENTS[pid] = {"doc": doc, "path": [], "at": "/v1/regions", "printed": []}
+        return _place_hop(api, pid)
+    pid = str(args.get("id") or "").strip()
+    p = PLACEMENTS.get(pid)
+    if not p: raise ApiError(f"no placement {pid!r} is open — `open` one, or `list`")
+    if op == "close":
+        del PLACEMENTS[pid]; return f"placement {pid} closed; nothing was written."
+    if op == "step":
+        pick = str(args.get("pick") or "").strip().rstrip("/")
+        if pick == "none":
+            if p["at"] == "/v1/regions":
+                del PLACEMENTS[pid]
+                return ("No area at hop 0 advertises such things, so there is nowhere to place this without hiding it.\n"
+                        "What is needed is a new area: a representative and one sentence saying when to come.\n"
+                        f"A candidate for that sentence is the document's own line:\n  {p['doc']['one_liner']}\n"
+                        "Nothing was written.")
+            return _place_here(api, pid)
+        if pick not in p["printed"]:
+            raise ApiError(f"{pick} is not an address the last table printed. Pick one of: {', '.join(p['printed'])} — or `none`.")
+        p["path"].append(pick); p["at"] = pick
+        return _place_hop(api, pid)
+    if op == "here":
+        if p["at"] == "/v1/regions": raise ApiError("a document cannot be placed at hop 0 — step into an area first, or say `none`")
+        return _place_here(api, pid)
+    raise ApiError(f"op must be open · step · here · list · close (got {op!r})")
+
+
+def _place_hop(api: Api, pid: str) -> str:
+    p = PLACEMENTS[pid]
+    d = api.send("POST", "/v1/place", {"at": p["at"], "doc": p["doc"], "path": p["path"]})
+    p["printed"] = [r["address"] for r in d.get("rows") or []]
+    out = [f"ROUTEMIND — placing {p['doc']['name']!r}  [{pid}]",
+           f"  terms   : {', '.join(d.get('terms') or []) or '(none)'}",
+           f"  walked  : {' → '.join(p['path']) or '(hop 0)'}", ""]
+    rows = d.get("rows") or []
+    if rows:
+        w = max(len(r["address"]) for r in rows)
+        out.append(f"  {'ADDRESS':<{w}}  SHARES              LINE")
+        for r in rows:
+            ev = r.get("evidence") or {}
+            shares = ", ".join(dict.fromkeys(ev.get("terms", []) + ev.get("names", []))) or "—"
+            out.append(f"  {r['address']:<{w}}  {shares[:18]:<18}  {(r.get('line') or '')[:90]}")
+    else:
+        out.append("  (no rows — this node has no children yet)")
+    out.append("")
+    here = d.get("here")
+    if here:
+        out.append(f"  `here` places it as a child of {here['parent']} in {here['region']}.")
+        prop = d.get("propagation") or {}
+        if prop.get("proposals"):
+            out.append("  Advertising it would widen: " + "; ".join(f"{q['label']} ({q['scope']})" for q in prop["proposals"])
+                       + (f" — then stops at {prop['stop_at']['label']}, whose line already covers it ({', '.join(prop['stop_at']['hits'])})" if prop.get("stop_at") else
+                          " — nothing above covers it, so this reaches hop 0" + (f"; the area is export: {'yes' if (d.get('export') or {}).get('export') else 'no'}" if d.get("export") else "")))
+        elif prop.get("stop_at"):
+            out.append(f"  Nothing to advertise: {prop['stop_at']['label']} already covers it ({', '.join(prop['stop_at']['hits'])}).")
+        out.append("  `step` with an address above goes one hop deeper; `none` here means place it here.")
+    else:
+        out.append("  Pick the area whose sentence covers this document (`step` with its address), or `none` if no area does.")
+    return "\n".join(out)
+
+
+def _place_here(api: Api, pid: str) -> str:
+    p = PLACEMENTS[pid]
+    d = api.send("POST", "/v1/place", {"at": p["at"], "doc": p["doc"], "path": p["path"]})
+    here = d.get("here") or {}
+    body = {"name": p["doc"]["name"], "one_liner": p["doc"]["one_liner"], "region": here.get("region"),
+            "parent": here.get("parent"), "aliases": p["doc"].get("aliases") or [], "content": p["doc"].get("content") or ""}
+    made = api.send("POST", "/v1/nodes", body)
+    nid = made.get("id") or made.get("node", {}).get("id") or "?"
+    out = [f"PLACED {p['doc']['name']!r} as {nid}, child of {here.get('parent')} in {here.get('region')}",
+           f"  walked  : {' → '.join(p['path'])}", ""]
+    prop = d.get("propagation") or {}
+    queued = []
+    for q in prop.get("proposals") or []:
+        pb = {"scope": q["scope"], "before": q["before"], "after": q["after"], "why": q["why"],
+              **({"entity": q["entity"]} if q["scope"] == "entity" else {"region": q["region"]})}
+        try:
+            r = api.send("POST", "/v1/curator/proposals", pb)
+            queued.append(f"  queued   {q['label']} ({q['scope']}): {r.get('id', '?')}\n           → {q['after'][:110]}")
+        except ApiError as e:
+            queued.append(f"  refused  {q['label']} ({q['scope']}): {e}")
+    if queued:
+        out.append("Advertising, as proposals for review — not applied here:")
+        out += queued
+        if prop.get("stop_at"): out.append(f"  stops at {prop['stop_at']['label']}, whose line already covers it.")
+        elif prop.get("reaches_hop0"):
+            ex = d.get("export") or {}
+            out.append(f"  reaches hop 0. The area is export: {'yes' if ex.get('export') else 'no'} — exporting is a separate decision, not taken here.")
+    elif prop.get("stop_at"):
+        out.append(f"Nothing to advertise: {prop['stop_at']['label']} already covers it ({', '.join(prop['stop_at']['hits'])}).")
+    del PLACEMENTS[pid]
+    return "\n".join(out)
+
+
 TOOLS = [
     {"name": "knowledge_table",
      "description": "Fetch a routing table from Knowledge: a list of what is there and where to go "
@@ -898,7 +1087,9 @@ class Server:
         unreachable the tools are still listed — an agent that cannot see the areas can still ask
         for them, and the error it gets back says what is wrong.
         """
-        tools = [dict(t) for t in TOOLS]
+        # The resolver is first: it is where a question enters, and the area list is written into
+        # its description so the areas are the first thing any client shows the model.
+        tools = [dict(RESOLVE_TOOL)] + [dict(t) for t in TOOLS]
         try:
             tools[0]["description"] += "\n\n" + hop0(self.api)
         except ApiError as e:
@@ -906,10 +1097,13 @@ class Server:
         if self.overlays(): tools.append(dict(OVERLAY_TOOL))
         if self.workspace(): tools.append(dict(WRITE_TOOL))
         tools.append(dict(CIRCUIT_TOOL))
+        tools.append(dict(PLACE_TOOL))
         return tools
 
     def call(self, name: str, args: dict) -> tuple[str, bool]:
         try:
+            if name == "knowledge_resolve": return resolve_for(self.api, str(args.get("q") or "")), False
+            if name == "knowledge_place": return place_call(self.api, args), False
             if name == "knowledge_circuit": return circuit_call(args), False
             # An address into an open circuit is answered by the circuit, not this backbone. The
             # agent never composes one: it follows what a circuit's own tables printed, the same
