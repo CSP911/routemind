@@ -1,0 +1,32 @@
+# The names the continuity-discovery mechanism is allowed to know — for GovKM's review, unscored.
+#
+# The discovery arm (PR #1, proposed 2026-10-02) may add one capability over the control: a generic
+# mechanism that finds *where* a continuity relationship is recorded before any document is chosen.
+# The mechanism is `ontology/service/resolve.py`: it matches names said in a question against the
+# names the map knows — node ids, node names, and aliases — and reports the node and its place in
+# the tree. It is deterministic, every match is a literal string, and it never reads the lines that
+# say current / replaced / history.
+#
+# On this fixture nothing resolves without aliases: the documents are named "Supplier F approved for
+# the Z component" and a question says "Supplier F" or "the Z component", and the resolver matches
+# whole names, not fragments. So this file registers the **subjects** — the component and the two
+# suppliers — as names of the nodes that are about them. That is the whole of what it adds.
+#
+# What makes an entry structural rather than answer-bearing, and the test GovKM should apply to
+# each line: it maps a name to the node *about* that name. It does not say which registration is
+# current, which was replaced, or what any question's answer is. "Supplier E" names two nodes
+# because two documents are about Supplier E; the mechanism will report both and say nothing about
+# which governs — that is the walker's job, from the map's lines, exactly as in the control.
+#
+# Deliberately absent, so the review can see what was left out:
+#   - no alias for the map's node from any question's wording ("currently approved", "delivery
+#     window", "new order") — those would be question-specific keywords, which the boundary forbids
+#   - no alias on the February registration beyond its supplier's name
+#   - no alias on the November note or the inspection record
+fixture: supplier-selection-retrospective
+
+names:
+  sec-z-component-sourcing: ["Z component", "component Z"]
+  z-supplier-e-approved: ["Supplier E"]
+  z-supplier-f-approved: ["Supplier F"]
+  z-supplier-e-performance-review: ["Supplier E"]

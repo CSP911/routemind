@@ -177,8 +177,15 @@ class Agent:
             lines.append(f"  {kind:<9} {c}  —  {self.one_liner.get(c,'')}")
         return f"Inside `{node}`:\n\n" + "\n".join(lines)
 
-    def walk(self, question):
-        convo = [{"role": "user", "content": f"Question: {question}\n\n{self._hop0()}"}]
+    def first_turn(self, question, preface=""):
+        """The first thing the walker is shown. `preface` is the one place an experiment may put
+        something between the question and hop 0 — the continuity-discovery arm puts its block
+        here — and with it empty this is byte-for-byte the control's first turn, which the
+        discovery check asserts rather than assumes."""
+        return f"Question: {question}\n\n" + (f"{preface}\n\n" if preface else "") + self._hop0()
+
+    def walk(self, question, preface=""):
+        convo = [{"role": "user", "content": self.first_turn(question, preface)}]
         collected, visited, log = [], [], []
         working, ops = {}, []           # the working set and every change to it, with reasons
         returns, opens, turns, read_chars = 0, 0, 0, 0
