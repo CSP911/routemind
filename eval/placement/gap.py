@@ -31,16 +31,22 @@ def post(port, body):
     with urllib.request.urlopen(req, timeout=60) as r: return json.loads(r.read())
 
 
-def walk(port, doc):
-    """The evidence-greedy walk. Returns where it stopped and what it would advertise."""
+def walk(port, doc, min_hits=2):
+    """The evidence-greedy walk. Returns where it stopped and what it would advertise.
+
+    `min_hits` is the floor's one rule: a row is opened only if it shares at least that many words.
+    The first run used 1 and 36 of its 74 descents rode on a single word — "apply", "new", "why".
+    One shared word is a coincidence; two is a reason. A row that shares a *name* (an alias or the
+    node's own name) outranks one that shares only line words, on ties.
+    """
     at, path, hops = "/v1/regions", [], []
     while len(path) < MAX_HOPS:
         d = post(port, {"at": at, "doc": doc, "path": path})
         rows = d.get("rows") or []
-        best = max(rows, key=lambda r: (r["evidence"]["hits"], -rows.index(r)), default=None)
+        best = max(rows, key=lambda r: (r["evidence"]["hits"], len(r["evidence"]["names"]), -rows.index(r)), default=None)
         hops.append({"at": at, "rows": len(rows),
                      "best": (best["address"], best["evidence"]["hits"]) if best else None})
-        if not best or best["evidence"]["hits"] == 0:
+        if not best or best["evidence"]["hits"] < min_hits:
             if at == "/v1/regions":
                 return {"nxdomain": True, "parent": None, "area": None, "path": path, "hops": hops, "advertise": [], "stop_at": None}
             prop = d.get("propagation") or {}
@@ -59,6 +65,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--docs", default=str(ROOT / "eval" / "placement" / "documents.yaml"))
     ap.add_argument("--port", type=int, default=18130)
+    ap.add_argument("--min-hits", type=int, default=2, help="shared words a row needs before the walk opens it (run 1 used 1)")
     ap.add_argument("--out")
     a = ap.parse_args()
 
@@ -100,7 +107,7 @@ def main():
         results = []
         for d in docs:
             doc = {"name": d["name"], "one_liner": d["one_liner"], "aliases": d.get("aliases") or [], "content": d.get("body") or ""}
-            t = walk(a.port, doc)
+            t = walk(a.port, doc, min_hits=a.min_hits)
             h = d["human"]
             r = {"id": d["id"], "class": d["class"], "gold": h.get("gold"), "human": {k: h.get(k) for k in ("area", "parent", "advertise")}, "tool": t}
             if h.get("parent") is None:
@@ -147,7 +154,8 @@ def main():
     if a.out:
         p = ROOT / a.out
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps({"host": str(host.relative_to(ROOT)), "documents": len(docs), "driver": "evidence-greedy, no model",
+        p.write_text(json.dumps({"host": str(host.relative_to(ROOT)), "documents": len(docs),
+                                 "driver": f"evidence-greedy, no model, min_hits={a.min_hits}", "min_hits": a.min_hits,
                                  "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "table": table, "results": results},
                                 indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"  -> {a.out}")

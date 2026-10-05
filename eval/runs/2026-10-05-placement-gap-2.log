@@ -1,0 +1,50 @@
+  NX vocab-miss    pg-umbrella-stand                    tool None                                   judged purchase-request                       adv DIFF
+  NX vocab-miss    pg-client-parking                    tool None                                   judged travel-domestic                        adv DIFF
+  ~  vocab-miss    pg-condolence-money                  tool travel-expense                         judged qualified-evidence                     adv DIFF
+  NX vocab-miss    pg-toner-reorder                     tool None                                   judged purchase-request                       adv DIFF
+  NX vocab-miss    pg-visitor-badge                     tool None                                   judged ga-desk                                adv DIFF
+  != false-friend  pg-leave-approval-chain              tool line-rule                              judged leave-use                              adv ok
+  ~  false-friend  pg-lost-card-fee-payslip             tool card-lost-steps                        judged card-loss                              adv ok
+  NX false-friend  pg-freelancer-vendor-registration    tool None                                   judged sec-paying-people-who-are-not-employees adv DIFF
+  ~  false-friend  pg-trip-draft-template               tool biz-trip-attendance                    judged sec-trip-approval-before-the-trip      adv ok
+  != false-friend  pg-offsite-venue-quotes              tool procurement                            judged sec-spending-that-needs-a-draft-first  adv ok
+  ~  cross-cutting pg-trip-cancelled-after-booking      tool attendance-overview                    judged trip-settlement-handoff                adv ok
+  != cross-cutting pg-stipend-during-parental-leave     tool childcare-apply                        judged sec-allowances-that-ride-on-pay        adv DIFF
+  == cross-cutting pg-overtime-meal-on-card             tool corp-card                              judged corp-card                              adv ok
+  NX cross-cutting pg-severance-unused-leave            tool None                                   judged sec-days-into-money                    adv DIFF
+  NX supersession  pg-domestic-rates-2027               tool None                                   judged travel-domestic                        adv DIFF
+  NX supersession  pg-card-limit-2027                   tool None                                   judged card-limit                             adv DIFF
+  NX supersession  pg-freelancer-withholding-2027       tool None                                   judged sec-paying-people-who-are-not-employees adv DIFF
+  NX supersession  pg-approval-bands-revised            tool None                                   judged approval-threshold                     adv DIFF
+  ~  supersession  pg-year-end-deadline-2027            tool year-end-deadline                      judged year-end-tax                           adv DIFF
+  NX depth         pg-exchange-rate-split-charge        tool None                                   judged sec-overseas-trip-cases-1              adv DIFF
+  ~  depth         pg-midyear-joiner-december           tool proration-table                        judged sec-booking-cases-1                    adv ok
+  ~  depth         pg-meal-allowance-over-cap           tool payroll                                judged sec-tax-free-allowances-case-by-case   adv ok
+  NX depth         pg-sole-trader-vendor-abroad         tool None                                   judged sec-vendor-registration-cases          adv DIFF
+  NX depth         pg-disputed-charge-after-window      tool None                                   judged sec-lost-card-and-disputed-charges     adv DIFF
+  NX generic       pg-month-end-checklist               tool None                                   judged sec-month-end-close-and-expense-audit  adv DIFF
+  NX generic       pg-who-to-call                       tool None                                   judged ga-desk                                adv DIFF
+  NX generic       pg-overview                          tool None                                   judged evidence                               adv DIFF
+  NX generic       pg-faq                               tool None                                   judged corp-card                              adv DIFF
+  NX korean        pg-ko-trip-settlement                tool None                                   judged trip-settlement-handoff                adv DIFF
+  NX korean        pg-ko-lost-card                      tool None                                   judged card-loss                              adv DIFF
+  NX korean        pg-ko-leave-carryover                tool None                                   judged annual-leave                           adv DIFF
+  NX korean        pg-ko-vendor-papers                  tool None                                   judged vendor                                 adv DIFF
+  == none          pg-fire-drill                        tool None                                   judged None                                   adv ok
+  == none          pg-bicycle-parking                   tool None                                   judged None                                   adv ok
+  == none          pg-plant-watering                    tool None                                   judged None                                   adv ok
+
+  class           n   area  parent   adv   dist  depth   nx
+  vocab-miss      5   0.20    0.00  0.00    3.0   -1.0    4
+  false-friend    5   0.40    0.00  0.80    3.0   +0.0    1
+  cross-cutting   4   0.50    0.25  0.50    2.7   +0.0    1
+  supersession    5   0.20    0.00  0.00    1.0   +1.0    4
+  depth           5   0.40    0.00  0.40    4.5   -1.5    3
+  generic         4   0.00    0.00  0.00      —      —    4
+  korean          4   0.00    0.00  0.00      —      —    4
+  none            3   1.00    1.00  1.00      —      —    3
+  all            35   0.31    0.11  0.31    3.0   -0.3   24
+
+  area/parent/adv: share of documents where the walk agrees with the judgement · dist: hops between the two parents
+  depth: walk depth minus judged depth (negative = shallower) · nx: documents the walk sent to 'new area'
+  -> eval/runs/2026-10-05-placement-gap-2.json

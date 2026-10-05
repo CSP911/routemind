@@ -41,6 +41,18 @@ STOP = {
     "the", "a", "an", "of", "to", "and", "or", "for", "in", "on", "at", "by", "is", "are", "be",
     "it", "its", "this", "that", "with", "from", "as", "was", "were", "what", "how", "when", "who",
     "which", "where", "whether", "not", "no", "yes", "do", "does", "did", "can", "may", "has", "have",
+    # Added 2026-10-05 from the placement-gap floor run (eval/placement): 36 of 74 descents were
+    # carried by a single shared word, and the words were these — "Card limit table, revised for
+    # 2027" reached childcare-apply on "apply", "Toner reorder" reached line-rule on "new". A word
+    # that appears in half the sentences of a map is not evidence that a document belongs under one.
+    "many", "much", "more", "most", "some", "any", "all", "both", "each", "every", "other", "same",
+    "whom", "why", "get", "gets", "got", "new", "one", "next", "across", "before", "after", "until",
+    "into", "over", "under", "up", "down", "out", "off", "per", "than", "then", "there", "their",
+    "they", "them", "you", "your", "we", "our", "us", "me", "my", "he", "she", "his", "her", "about",
+    "between", "only", "also", "still", "just", "very", "well", "like", "way", "kind", "thing", "things",
+    "happens", "happen", "needs", "need", "counts", "count", "apply", "applies", "applied", "change",
+    "changed", "changes", "moved", "move", "revised", "written", "decided", "time", "times", "being",
+    "written", "page", "pages", "written",
     "및", "또는", "그리고", "에서", "에게", "의", "를", "을", "는", "은", "이", "가", "와", "과", "에", "로",
     "으로", "하는", "한", "것", "수", "등", "때", "뭐", "무엇", "어떻게", "언제", "누가", "누구",
 }
