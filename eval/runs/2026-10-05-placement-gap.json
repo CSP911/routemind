@@ -1,0 +1,1904 @@
+{
+ "host": "bench/corpus",
+ "documents": 35,
+ "driver": "evidence-greedy, no model",
+ "at": "2026-10-05T23:07:02",
+ "table": {
+  "vocab-miss": {
+   "n": 5,
+   "same_area": 0.4,
+   "same_parent": 0.2,
+   "advertise_match": 0.6,
+   "mean_distance": 3.75,
+   "mean_depth_delta": 0.25,
+   "nxdomain": 1
+  },
+  "false-friend": {
+   "n": 5,
+   "same_area": 0.4,
+   "same_parent": 0.0,
+   "advertise_match": 1.0,
+   "mean_distance": 5.2,
+   "mean_depth_delta": 1.2,
+   "nxdomain": 0
+  },
+  "cross-cutting": {
+   "n": 4,
+   "same_area": 0.5,
+   "same_parent": 0.0,
+   "advertise_match": 0.5,
+   "mean_distance": 3.5,
+   "mean_depth_delta": 1.0,
+   "nxdomain": 0
+  },
+  "supersession": {
+   "n": 5,
+   "same_area": 0.4,
+   "same_parent": 0.0,
+   "advertise_match": 0.0,
+   "mean_distance": 4.8,
+   "mean_depth_delta": 0.8,
+   "nxdomain": 0
+  },
+  "depth": {
+   "n": 5,
+   "same_area": 0.4,
+   "same_parent": 0.0,
+   "advertise_match": 0.6,
+   "mean_distance": 6.333333333333333,
+   "mean_depth_delta": -1.0,
+   "nxdomain": 2
+  },
+  "generic": {
+   "n": 4,
+   "same_area": 0.25,
+   "same_parent": 0.0,
+   "advertise_match": 0.25,
+   "mean_distance": 2.5,
+   "mean_depth_delta": -0.5,
+   "nxdomain": 2
+  },
+  "korean": {
+   "n": 4,
+   "same_area": 0.0,
+   "same_parent": 0.0,
+   "advertise_match": 0.0,
+   "mean_distance": null,
+   "mean_depth_delta": null,
+   "nxdomain": 4
+  },
+  "none": {
+   "n": 3,
+   "same_area": 0.6666666666666666,
+   "same_parent": 0.6666666666666666,
+   "advertise_match": 1.0,
+   "mean_distance": null,
+   "mean_depth_delta": null,
+   "nxdomain": 2
+  },
+  "all": {
+   "n": 35,
+   "same_area": 0.37142857142857144,
+   "same_parent": 0.08571428571428572,
+   "advertise_match": 0.4857142857142857,
+   "mean_distance": 4.478260869565218,
+   "mean_depth_delta": 0.4782608695652174,
+   "nxdomain": 11
+  }
+ },
+ "results": [
+  {
+   "id": "pg-umbrella-stand",
+   "class": "vocab-miss",
+   "gold": "model",
+   "human": {
+    "area": "procurement",
+    "parent": "purchase-request",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "purchase-request",
+    "area": "procurement",
+    "path": [
+     "/v1/regions/procurement",
+     "/v1/nodes/purchase-request"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/procurement",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/procurement",
+      "rows": 9,
+      "best": [
+       "/v1/nodes/purchase-request",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/purchase-request",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/approval-threshold",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Purchase request"
+   },
+   "same_area": true,
+   "same_parent": true,
+   "distance": 0,
+   "depth_delta": 0,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-client-parking",
+   "class": "vocab-miss",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "travel-domestic",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "overseas-trip-dateline-case",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/biz-trip-attendance",
+     "/v1/nodes/sec-trip-attendance-cases",
+     "/v1/nodes/overseas-trip-dateline-case"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/biz-trip-attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/biz-trip-attendance",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/sec-trip-attendance-cases",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/sec-trip-attendance-cases",
+      "rows": 9,
+      "best": [
+       "/v1/nodes/overseas-trip-dateline-case",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/overseas-trip-dateline-case",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "An overseas trip that crosses dates"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 7,
+   "depth_delta": 1,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-condolence-money",
+   "class": "vocab-miss",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "qualified-evidence",
+    "advertise": [
+     "qualified-evidence"
+    ]
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "travel-expense",
+    "area": "expense",
+    "path": [
+     "/v1/regions/expense",
+     "/v1/nodes/travel-expense"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/expense",
+       2
+      ]
+     },
+     {
+      "at": "/v1/regions/expense",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/travel-expense",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/travel-expense",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/travel-domestic",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Travel expenses"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 3,
+   "depth_delta": -1,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-toner-reorder",
+   "class": "vocab-miss",
+   "gold": "model",
+   "human": {
+    "area": "procurement",
+    "parent": "purchase-request",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "line-rule",
+    "area": "approval",
+    "path": [
+     "/v1/regions/approval",
+     "/v1/nodes/approval-line",
+     "/v1/nodes/line-rule"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/approval",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/approval-line",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/approval-line",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/line-rule",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/line-rule",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Building an approval chain"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 5,
+   "depth_delta": 1,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-visitor-badge",
+   "class": "vocab-miss",
+   "gold": "model",
+   "human": {
+    "area": "procurement",
+    "parent": "ga-desk",
+    "advertise": [
+     "ga-desk"
+    ]
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-leave-approval-chain",
+   "class": "false-friend",
+   "gold": "model",
+   "human": {
+    "area": "attendance",
+    "parent": "leave-use",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "line-rule",
+    "area": "approval",
+    "path": [
+     "/v1/regions/approval",
+     "/v1/nodes/approval-line",
+     "/v1/nodes/line-rule"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       2
+      ]
+     },
+     {
+      "at": "/v1/regions/approval",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/approval-line",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/approval-line",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/line-rule",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/line-rule",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Building an approval chain"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 6,
+   "depth_delta": 0,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-lost-card-fee-payslip",
+   "class": "false-friend",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "card-loss",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "payslip-items",
+    "area": "payroll",
+    "path": [
+     "/v1/regions/payroll",
+     "/v1/nodes/payslip",
+     "/v1/nodes/payslip-items"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/payroll",
+       4
+      ]
+     },
+     {
+      "at": "/v1/regions/payroll",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/payslip",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/payslip",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/payslip-items",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/payslip-items",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Payslip payment and deduction lines"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 6,
+   "depth_delta": 0,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-freelancer-vendor-registration",
+   "class": "false-friend",
+   "gold": "model",
+   "human": {
+    "area": "payroll",
+    "parent": "sec-paying-people-who-are-not-employees",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "payroll-contact",
+    "area": "payroll",
+    "path": [
+     "/v1/regions/payroll",
+     "/v1/nodes/payroll-desk",
+     "/v1/nodes/payroll-contact"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/payroll",
+       2
+      ]
+     },
+     {
+      "at": "/v1/regions/payroll",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/payroll-desk",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/payroll-desk",
+      "rows": 1,
+      "best": [
+       "/v1/nodes/payroll-contact",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/payroll-contact",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Payroll desk — scope and cut-offs"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 3,
+   "depth_delta": 1,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-trip-draft-template",
+   "class": "false-friend",
+   "gold": "model",
+   "human": {
+    "area": "attendance",
+    "parent": "sec-trip-approval-before-the-trip",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "trip-request-form",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/biz-trip-attendance",
+     "/v1/nodes/sec-trip-attendance-cases",
+     "/v1/nodes/trip-request-form"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       2
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/biz-trip-attendance",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/biz-trip-attendance",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/sec-trip-attendance-cases",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/sec-trip-attendance-cases",
+      "rows": 9,
+      "best": [
+       "/v1/nodes/trip-request-form",
+       4
+      ]
+     },
+     {
+      "at": "/v1/nodes/trip-request-form",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Trip request form"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 4,
+   "depth_delta": 2,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-offsite-venue-quotes",
+   "class": "false-friend",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "sec-spending-that-needs-a-draft-first",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "band-reference-table",
+    "area": "procurement",
+    "path": [
+     "/v1/regions/procurement",
+     "/v1/nodes/purchase-request",
+     "/v1/nodes/approval-threshold",
+     "/v1/nodes/sec-bands-and-quotes-in-practice",
+     "/v1/nodes/band-reference-table"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/procurement",
+       3
+      ]
+     },
+     {
+      "at": "/v1/regions/procurement",
+      "rows": 9,
+      "best": [
+       "/v1/nodes/purchase-request",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/purchase-request",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/approval-threshold",
+       4
+      ]
+     },
+     {
+      "at": "/v1/nodes/approval-threshold",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/sec-bands-and-quotes-in-practice",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/sec-bands-and-quotes-in-practice",
+      "rows": 8,
+      "best": [
+       "/v1/nodes/band-reference-table",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/band-reference-table",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Approval bands at a glance"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 7,
+   "depth_delta": 3,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-trip-cancelled-after-booking",
+   "class": "cross-cutting",
+   "gold": "model",
+   "human": {
+    "area": "attendance",
+    "parent": "trip-settlement-handoff",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "trip-cancellation-after-approval-case",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/biz-trip-attendance",
+     "/v1/nodes/sec-trip-attendance-cases",
+     "/v1/nodes/trip-cancellation-after-approval-case"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       3
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/biz-trip-attendance",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/biz-trip-attendance",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/sec-trip-attendance-cases",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/sec-trip-attendance-cases",
+      "rows": 9,
+      "best": [
+       "/v1/nodes/trip-cancellation-after-approval-case",
+       6
+      ]
+     },
+     {
+      "at": "/v1/nodes/trip-cancellation-after-approval-case",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "A trip cancelled after approval"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 3,
+   "depth_delta": 1,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-stipend-during-parental-leave",
+   "class": "cross-cutting",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "sec-allowances-that-ride-on-pay",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "childcare-apply",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/childcare-leave",
+     "/v1/nodes/childcare-apply"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       2
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/childcare-leave",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/childcare-leave",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/childcare-apply",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/childcare-apply",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [
+     "childcare-apply",
+     "childcare-leave"
+    ],
+    "stop_at": "ATTENDANCE"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 5,
+   "depth_delta": 1,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-overtime-meal-on-card",
+   "class": "cross-cutting",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "corp-card",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "card-limit-table",
+    "area": "expense",
+    "path": [
+     "/v1/regions/expense",
+     "/v1/nodes/corp-card",
+     "/v1/nodes/card-limit",
+     "/v1/nodes/card-limit-table"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/expense",
+       2
+      ]
+     },
+     {
+      "at": "/v1/regions/expense",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/corp-card",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/corp-card",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/card-limit",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/card-limit",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/card-limit-table",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/card-limit-table",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [
+     "card-limit-table",
+     "card-limit"
+    ],
+    "stop_at": "Corporate card"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 2,
+   "depth_delta": 2,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-severance-unused-leave",
+   "class": "cross-cutting",
+   "gold": "model",
+   "human": {
+    "area": "payroll",
+    "parent": "sec-days-into-money",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "hr-desk",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/hr-desk"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/hr-desk",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/hr-desk",
+      "rows": 1,
+      "best": [
+       "/v1/nodes/hr-contact",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": "HR desk"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 4,
+   "depth_delta": 0,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-domestic-rates-2027",
+   "class": "supersession",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "travel-domestic",
+    "advertise": [
+     "travel-domestic"
+    ]
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "overseas-trip-dateline-case",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/biz-trip-attendance",
+     "/v1/nodes/sec-trip-attendance-cases",
+     "/v1/nodes/overseas-trip-dateline-case"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/biz-trip-attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/biz-trip-attendance",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/sec-trip-attendance-cases",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/sec-trip-attendance-cases",
+      "rows": 9,
+      "best": [
+       "/v1/nodes/overseas-trip-dateline-case",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/overseas-trip-dateline-case",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "An overseas trip that crosses dates"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 7,
+   "depth_delta": 1,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-card-limit-2027",
+   "class": "supersession",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "card-limit",
+    "advertise": [
+     "card-limit"
+    ]
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "childcare-apply",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/childcare-leave",
+     "/v1/nodes/childcare-apply"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/childcare-leave",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/childcare-leave",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/childcare-apply",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/childcare-apply",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Parental leave — applying and returning"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 6,
+   "depth_delta": 0,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-freelancer-withholding-2027",
+   "class": "supersession",
+   "gold": "model",
+   "human": {
+    "area": "payroll",
+    "parent": "sec-paying-people-who-are-not-employees",
+    "advertise": [
+     "sec-paying-people-who-are-not-employees"
+    ]
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "payroll-contact",
+    "area": "payroll",
+    "path": [
+     "/v1/regions/payroll",
+     "/v1/nodes/payroll-desk",
+     "/v1/nodes/payroll-contact"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/payroll",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/payroll",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/payroll-desk",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/payroll-desk",
+      "rows": 1,
+      "best": [
+       "/v1/nodes/payroll-contact",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/payroll-contact",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Payroll desk — scope and cut-offs"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 3,
+   "depth_delta": 1,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-approval-bands-revised",
+   "class": "supersession",
+   "gold": "model",
+   "human": {
+    "area": "procurement",
+    "parent": "approval-threshold",
+    "advertise": [
+     "approval-threshold"
+    ]
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "line-rule",
+    "area": "approval",
+    "path": [
+     "/v1/regions/approval",
+     "/v1/nodes/approval-line",
+     "/v1/nodes/line-rule"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/approval",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/approval-line",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/approval-line",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/line-rule",
+       2
+      ]
+     },
+     {
+      "at": "/v1/nodes/line-rule",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Building an approval chain"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 6,
+   "depth_delta": 0,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-year-end-deadline-2027",
+   "class": "supersession",
+   "gold": "model",
+   "human": {
+    "area": "payroll",
+    "parent": "year-end-tax",
+    "advertise": [
+     "year-end-tax"
+    ]
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "year-end-dates",
+    "area": "payroll",
+    "path": [
+     "/v1/regions/payroll",
+     "/v1/nodes/year-end-tax",
+     "/v1/nodes/year-end-deadline",
+     "/v1/nodes/year-end-dates"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/payroll",
+       5
+      ]
+     },
+     {
+      "at": "/v1/regions/payroll",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/year-end-tax",
+       4
+      ]
+     },
+     {
+      "at": "/v1/nodes/year-end-tax",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/year-end-deadline",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/year-end-deadline",
+      "rows": 1,
+      "best": [
+       "/v1/nodes/year-end-dates",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/year-end-dates",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [
+     "year-end-dates",
+     "year-end-deadline"
+    ],
+    "stop_at": "Year-end tax settlement"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 2,
+   "depth_delta": 2,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-exchange-rate-split-charge",
+   "class": "depth",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "sec-overseas-trip-cases-1",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "trip-attendance-rule",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/biz-trip-attendance",
+     "/v1/nodes/trip-attendance-rule"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/biz-trip-attendance",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/biz-trip-attendance",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/trip-attendance-rule",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/trip-attendance-rule",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "What a trip day counts as"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 8,
+   "depth_delta": -2,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-midyear-joiner-december",
+   "class": "depth",
+   "gold": "model",
+   "human": {
+    "area": "attendance",
+    "parent": "sec-booking-cases-1",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "proration-table",
+    "area": "attendance",
+    "path": [
+     "/v1/regions/attendance",
+     "/v1/nodes/annual-leave",
+     "/v1/nodes/leave-accrual",
+     "/v1/nodes/leave-accrual-midyear",
+     "/v1/nodes/proration-table"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/attendance",
+       6
+      ]
+     },
+     {
+      "at": "/v1/regions/attendance",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/annual-leave",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/annual-leave",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/leave-accrual",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/leave-accrual",
+      "rows": 3,
+      "best": [
+       "/v1/nodes/leave-accrual-midyear",
+       4
+      ]
+     },
+     {
+      "at": "/v1/nodes/leave-accrual-midyear",
+      "rows": 2,
+      "best": [
+       "/v1/nodes/proration-table",
+       3
+      ]
+     },
+     {
+      "at": "/v1/nodes/proration-table",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "First-year days by joining month"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 6,
+   "depth_delta": 0,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-meal-allowance-over-cap",
+   "class": "depth",
+   "gold": "model",
+   "human": {
+    "area": "payroll",
+    "parent": "sec-tax-free-allowances-case-by-case",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "payroll-contact",
+    "area": "payroll",
+    "path": [
+     "/v1/regions/payroll",
+     "/v1/nodes/payroll-desk",
+     "/v1/nodes/payroll-contact"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/payroll",
+       3
+      ]
+     },
+     {
+      "at": "/v1/regions/payroll",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/payroll-desk",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/payroll-desk",
+      "rows": 1,
+      "best": [
+       "/v1/nodes/payroll-contact",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/payroll-contact",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [],
+    "stop_at": "Payroll desk — scope and cut-offs"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 5,
+   "depth_delta": -1,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-sole-trader-vendor-abroad",
+   "class": "depth",
+   "gold": "model",
+   "human": {
+    "area": "procurement",
+    "parent": "sec-vendor-registration-cases",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-disputed-charge-after-window",
+   "class": "depth",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "sec-lost-card-and-disputed-charges",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-month-end-checklist",
+   "class": "generic",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "sec-month-end-close-and-expense-audit",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "approval",
+    "area": "approval",
+    "path": [
+     "/v1/regions/approval"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/approval",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/approval-line",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": "APPROVAL"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": 3,
+   "depth_delta": -1,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-who-to-call",
+   "class": "generic",
+   "gold": "model",
+   "human": {
+    "area": "procurement",
+    "parent": "ga-desk",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-overview",
+   "class": "generic",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "evidence",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "expense-overview",
+    "area": "expense",
+    "path": [
+     "/v1/regions/expense",
+     "/v1/nodes/expense-overview"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/expense",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/expense",
+      "rows": 17,
+      "best": [
+       "/v1/nodes/expense-overview",
+       1
+      ]
+     },
+     {
+      "at": "/v1/nodes/expense-overview",
+      "rows": 0,
+      "best": null
+     }
+    ],
+    "advertise": [
+     "expense-overview"
+    ],
+    "stop_at": "EXPENSE"
+   },
+   "same_area": true,
+   "same_parent": false,
+   "distance": 2,
+   "depth_delta": 0,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-faq",
+   "class": "generic",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "corp-card",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-ko-trip-settlement",
+   "class": "korean",
+   "gold": "model",
+   "human": {
+    "area": "attendance",
+    "parent": "trip-settlement-handoff",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-ko-lost-card",
+   "class": "korean",
+   "gold": "model",
+   "human": {
+    "area": "expense",
+    "parent": "card-loss",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-ko-leave-carryover",
+   "class": "korean",
+   "gold": "model",
+   "human": {
+    "area": "attendance",
+    "parent": "annual-leave",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-ko-vendor-papers",
+   "class": "korean",
+   "gold": "model",
+   "human": {
+    "area": "procurement",
+    "parent": "vendor",
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": false
+  },
+  {
+   "id": "pg-fire-drill",
+   "class": "none",
+   "gold": "model",
+   "human": {
+    "area": null,
+    "parent": null,
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": true,
+   "same_parent": true,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-bicycle-parking",
+   "class": "none",
+   "gold": "model",
+   "human": {
+    "area": null,
+    "parent": null,
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": false,
+    "parent": "approval",
+    "area": "approval",
+    "path": [
+     "/v1/regions/approval"
+    ],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       1
+      ]
+     },
+     {
+      "at": "/v1/regions/approval",
+      "rows": 14,
+      "best": [
+       "/v1/nodes/approval-line",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": "APPROVAL"
+   },
+   "same_area": false,
+   "same_parent": false,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": true
+  },
+  {
+   "id": "pg-plant-watering",
+   "class": "none",
+   "gold": "model",
+   "human": {
+    "area": null,
+    "parent": null,
+    "advertise": []
+   },
+   "tool": {
+    "nxdomain": true,
+    "parent": null,
+    "area": null,
+    "path": [],
+    "hops": [
+     {
+      "at": "/v1/regions",
+      "rows": 5,
+      "best": [
+       "/v1/regions/approval",
+       0
+      ]
+     }
+    ],
+    "advertise": [],
+    "stop_at": null
+   },
+   "same_area": true,
+   "same_parent": true,
+   "distance": null,
+   "depth_delta": null,
+   "advertise_match": true
+  }
+ ]
+}

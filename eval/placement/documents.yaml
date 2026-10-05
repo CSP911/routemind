@@ -1,0 +1,417 @@
+# Documents written to make a judged placement and knowledge_place's placement disagree — by class.
+#
+# See README.md for what each class is for. Every `human:` block was written by the model that also
+# wrote knowledge_place — `gold: model` — on purpose: authorship is the same on both sides, so any gap
+# is the walk and the judgement parting ways, not two people disagreeing. A person who corrects one
+# sets `gold: confirmed` and says why in `note`; the harness reports the two separately.
+#
+# Each document is placed against a pristine copy of bench/corpus; nothing here is ever written in.
+# Dates are in the body, as a person would have written them.
+host: bench/corpus
+
+documents:
+
+# ── vocab-miss: nothing on the way down says this ─────────────────────────────
+- id: pg-umbrella-stand
+  class: vocab-miss
+  name: Replacing the umbrella stand at reception
+  one_liner: Getting a new umbrella stand bought when the old one breaks
+  body: |
+    # Replacing the umbrella stand at reception
+
+    Written 2 October 2026. The stand at reception lost a leg. It is a small purchase: raise it the
+    ordinary way, one quote is enough under the first band, and it comes out of the facilities line.
+  human: {area: procurement, parent: purchase-request, advertise: [], gold: model,
+          note: "a small purchase; the walk sees no word of it at hop 0"}
+
+- id: pg-client-parking
+  class: vocab-miss
+  name: Parking at a client site
+  one_liner: Whether parking paid at a client's building is claimable on a domestic trip, and how
+  body: |
+    # Parking at a client site
+
+    Written 2 October 2026. Parking paid at a client's building during a domestic trip is claimed
+    as a fare, under the domestic caps, with the parking receipt attached. Parking at our own
+    building is never claimable.
+  human: {area: expense, parent: travel-domestic, advertise: [], gold: model,
+          note: "a trip cost; 'parking' appears in no line anywhere"}
+
+- id: pg-condolence-money
+  class: vocab-miss
+  name: Condolence money for a colleague's family
+  one_liner: What the company pays on a bereavement, who approves it, and what paper stands in for a receipt
+  body: |
+    # Condolence money for a colleague's family
+
+    Written 2 October 2026. On a bereavement in a colleague's immediate family the company pays a
+    fixed sum. There is no receipt; the notice or the invitation is the evidence, attached to the
+    claim.
+  human: {area: expense, parent: qualified-evidence, advertise: [qualified-evidence], gold: model,
+          note: "the evidence rule is the thing a reader needs; the line should say a notice can stand in"}
+
+- id: pg-toner-reorder
+  class: vocab-miss
+  name: Toner reorder for the third-floor printer
+  one_liner: How toner is reordered, from whom, and why it is not a new purchase request each time
+  body: |
+    # Toner reorder for the third-floor printer
+
+    Written 2 October 2026. Toner comes from the registered consumables supplier against the annual
+    agreement. It is a call-off, not a new request; the desk places it when the cupboard reaches two.
+  human: {area: procurement, parent: purchase-request, advertise: [], gold: model}
+
+- id: pg-visitor-badge
+  class: vocab-miss
+  name: Visitor badges at the front desk
+  one_liner: Who issues a visitor badge, what the visitor signs, and when the badge comes back
+  body: |
+    # Visitor badges at the front desk
+
+    Written 2 October 2026. The desk issues a numbered badge against the visitor's name and host.
+    The visitor signs the register. The badge is returned at the desk on the way out, and a badge
+    not back by close is reported to the host.
+  human: {area: procurement, parent: ga-desk, advertise: [ga-desk], gold: model,
+          note: "the desk's job; nobody would look elsewhere, and nothing says 'badge'"}
+
+# ── false-friend: strong words, wrong area ────────────────────────────────────
+- id: pg-leave-approval-chain
+  class: false-friend
+  name: Approval chain for a leave request
+  one_liner: Who has to approve a leave request, in what order, and when the request counts as late
+  body: |
+    # Approval chain for a leave request
+
+    Written 2 October 2026. A leave request goes to the team lead and then to HR. It is not a draft
+    document and does not go through the approval system; it is a booking in the attendance menu.
+  human: {area: attendance, parent: leave-use, advertise: [], gold: model,
+          note: "'approval chain' is APPROVAL's hop-0 sentence word for word; the subject is leave"}
+
+- id: pg-lost-card-fee-payslip
+  class: false-friend
+  name: Payslip line for a lost corporate card fee
+  one_liner: Why a reissue fee for a lost corporate card appears as a deduction, and when it is waived
+  body: |
+    # Payslip line for a lost corporate card fee
+
+    Written 2 October 2026. When a corporate card is lost a second time in a year the reissue fee is
+    deducted from pay. The first loss is free. The line reads "card reissue".
+  human: {area: expense, parent: card-loss, advertise: [], gold: model,
+          note: "'payslip line' is PAYROLL's sentence; the rule lives with the card"}
+
+- id: pg-freelancer-vendor-registration
+  class: false-friend
+  name: Vendor registration for a freelancer paid through payroll
+  one_liner: Why a freelancer is not registered as a vendor, and which desk pays them
+  body: |
+    # Vendor registration for a freelancer paid through payroll
+
+    Written 2 October 2026. A freelancer is paid by the payroll desk with withholding, not through a
+    vendor registration and an invoice. Registering one as a vendor is the mistake this page exists
+    to stop.
+  human: {area: payroll, parent: sec-paying-people-who-are-not-employees, advertise: [], gold: model,
+          note: "'vendor' and 'register' are PROCUREMENT's words; the page says do not go there"}
+
+- id: pg-trip-draft-template
+  class: false-friend
+  name: Draft template for a business trip request
+  one_liner: Which template a trip request is written on and what the approver checks before signing
+  body: |
+    # Draft template for a business trip request
+
+    Written 2 October 2026. A trip request is written on the trip template, not the general draft
+    form, and goes to the team lead before any booking is made.
+  human: {area: attendance, parent: sec-trip-approval-before-the-trip, advertise: [], gold: model,
+          note: "'draft' and 'template' are APPROVAL's; the subject is trip approval"}
+
+- id: pg-offsite-venue-quotes
+  class: false-friend
+  name: Quotes for a team offsite venue
+  one_liner: How many quotes an offsite venue needs, and why the spend has to be approved before booking
+  body: |
+    # Quotes for a team offsite venue
+
+    Written 2 October 2026. A venue over the team's cap needs a draft approved before it is booked,
+    with two quotes attached to the draft. It is spend, not a purchase order.
+  human: {area: expense, parent: sec-spending-that-needs-a-draft-first, advertise: [], gold: model,
+          note: "'quotes' is PROCUREMENT's sentence; this is over-cap team spend"}
+
+# ── cross-cutting: belongs at a join ──────────────────────────────────────────
+- id: pg-trip-cancelled-after-booking
+  class: cross-cutting
+  name: Trip cancelled after booking — leave, fare and allowance
+  one_liner: What happens to the attendance record, the booked fare and the allowance when a trip is called off
+  body: |
+    # Trip cancelled after booking
+
+    Written 2 October 2026. The attendance entry is reversed, the fare is refunded or the fee claimed,
+    and no allowance is paid. The three live in three areas and this page is where they meet.
+  human: {area: attendance, parent: trip-settlement-handoff, advertise: [], gold: model,
+          note: "the handover node exists for this; the walk will count words and pick one side"}
+
+- id: pg-stipend-during-parental-leave
+  class: cross-cutting
+  name: Remote-work stipend during parental leave
+  one_liner: Whether the remote-work stipend keeps being paid while someone is on parental leave
+  body: |
+    # Remote-work stipend during parental leave
+
+    Written 2 October 2026. The stipend stops from the first full month of parental leave and restarts
+    on return. It is an allowance decision, made by the desk that owns the allowance.
+  human: {area: expense, parent: sec-allowances-that-ride-on-pay, advertise: [], gold: model,
+          note: "'parental leave' pulls to ATTENDANCE; the owner of the stipend is the expense desk"}
+
+- id: pg-overtime-meal-on-card
+  class: cross-cutting
+  name: Overtime meal paid with the corporate card
+  one_liner: When a meal after overtime may go on the corporate card and what has to be logged first
+  body: |
+    # Overtime meal paid with the corporate card
+
+    Written 2 October 2026. A meal after approved overtime may go on the card up to the meal cap, if
+    the overtime was logged before the meal. Without the log it is a personal expense.
+  human: {area: expense, parent: corp-card, advertise: [], gold: model,
+          note: "'overtime' pulls to ATTENDANCE; the rule is a card rule"}
+
+- id: pg-severance-unused-leave
+  class: cross-cutting
+  name: Severance for someone leaving with unused leave
+  one_liner: How unused leave is paid out alongside severance, and which figure each uses
+  body: |
+    # Severance for someone leaving with unused leave
+
+    Written 2 October 2026. Unused leave is paid at the daily rate on the final payslip, beside
+    severance, which uses a different figure. Both are run by the payroll desk.
+  human: {area: payroll, parent: sec-days-into-money, advertise: [], gold: model}
+
+# ── supersession: a new version of a page that exists ─────────────────────────
+- id: pg-domestic-rates-2027
+  class: supersession
+  name: Domestic trip rates from 1 January 2027
+  one_liner: The fare, lodging and daily allowance caps for a domestic trip from 2027
+  body: |
+    # Domestic trip rates from 1 January 2027
+
+    Decided 2 October 2026, in force from 1 January 2027. Lodging cap and daily allowance both rise;
+    fares unchanged. The table on this page replaces the one in use through 31 December 2026.
+  human: {area: expense, parent: travel-domestic, advertise: [travel-domestic], gold: model,
+          note: "beside domestic-rates; the parent's line must say which table is current — the tool stops because 'allowance' is already covered"}
+
+- id: pg-card-limit-2027
+  class: supersession
+  name: Card limit table, revised for 2027
+  one_liner: The per-transaction and monthly caps that apply from 2027
+  body: |
+    # Card limit table, revised for 2027
+
+    Decided 2 October 2026, in force from 1 January 2027. The monthly cap rises; the blocked
+    categories are unchanged.
+  human: {area: expense, parent: card-limit, advertise: [card-limit], gold: model}
+
+- id: pg-freelancer-withholding-2027
+  class: supersession
+  name: Freelancer withholding rate from 2027
+  one_liner: The withholding rate payroll deducts from a freelancer's invoice from 2027
+  body: |
+    # Freelancer withholding rate from 2027
+
+    Decided 2 October 2026, in force from 1 January 2027. The rate changes; the procedure does not.
+  human: {area: payroll, parent: sec-paying-people-who-are-not-employees, advertise: [sec-paying-people-who-are-not-employees], gold: model}
+
+- id: pg-approval-bands-revised
+  class: supersession
+  name: Approval bands, revised
+  one_liner: The amount bands and the approver each one needs, as revised
+  body: |
+    # Approval bands, revised
+
+    Decided 2 October 2026, in force from 1 November 2026. The second band widens; quote counts are
+    unchanged. This replaces the band table in use since 2024.
+  human: {area: procurement, parent: approval-threshold, advertise: [approval-threshold], gold: model}
+
+- id: pg-year-end-deadline-2027
+  class: supersession
+  name: Year-end settlement deadline for 2027
+  one_liner: The date the year-end settlement papers are due in 2027, and what changed
+  body: |
+    # Year-end settlement deadline for 2027
+
+    Decided 2 October 2026. The cut-off moves a week earlier for 2027. Late papers are handled as
+    before.
+  human: {area: payroll, parent: year-end-tax, advertise: [year-end-tax], gold: model}
+
+# ── depth: belongs under a case section, levels down ──────────────────────────
+- id: pg-exchange-rate-split-charge
+  class: depth
+  name: A card charge that spans the day the exchange rate moved
+  one_liner: Which rate converts a charge that was authorised one day and settled the next, across a rate change
+  body: |
+    # A card charge that spans the day the exchange rate moved
+
+    Written 2 October 2026. The settlement day's rate governs, not the authorisation day's. Tag the
+    charge with the settlement date before filing.
+  human: {area: expense, parent: sec-overseas-trip-cases-1, advertise: [], gold: model,
+          note: "five levels down beside the other exchange-rate cases; the walk will stop at travel-overseas"}
+
+- id: pg-midyear-joiner-december
+  class: depth
+  name: December leave for a mid-year joiner
+  one_liner: How many days a mid-year joiner can book in December, and by when
+  body: |
+    # December leave for a mid-year joiner
+
+    Written 2 October 2026. The prorated days for the joining year apply, and the December booking
+    cut-off applies to them like anyone else's.
+  human: {area: attendance, parent: sec-booking-cases-1, advertise: [], gold: model}
+
+- id: pg-meal-allowance-over-cap
+  class: depth
+  name: Meal allowance line over the monthly cap
+  one_liner: What payroll does when the meal allowance line goes past the tax-free cap in one month
+  body: |
+    # Meal allowance line over the monthly cap
+
+    Written 2 October 2026. The excess over the cap is taxed in that month; the allowance itself is
+    not stopped.
+  human: {area: payroll, parent: sec-tax-free-allowances-case-by-case, advertise: [], gold: model}
+
+- id: pg-sole-trader-vendor-abroad
+  class: depth
+  name: Registering a sole trader based abroad
+  one_liner: What a sole trader outside Korea gives instead of a registration certificate
+  body: |
+    # Registering a sole trader based abroad
+
+    Written 2 October 2026. A tax identification from their own country and a bank letter stand in for
+    the certificate; screening still runs.
+  human: {area: procurement, parent: sec-vendor-registration-cases, advertise: [], gold: model}
+
+- id: pg-disputed-charge-after-window
+  class: depth
+  name: A disputed charge flagged after the window
+  one_liner: What happens when a charge is disputed after the dispute window has closed
+  body: |
+    # A disputed charge flagged after the window
+
+    Written 2 October 2026. After the window the charge is the cardholder's; the dispute can still be
+    raised with the issuer, but the company does not absorb it.
+  human: {area: expense, parent: sec-lost-card-and-disputed-charges, advertise: [], gold: model}
+
+# ── generic: named like a signpost ────────────────────────────────────────────
+- id: pg-month-end-checklist
+  class: generic
+  name: Checklist
+  one_liner: The steps to get through before the month closes
+  body: |
+    # Checklist
+
+    Written 2 October 2026. Claims filed, card statements matched, advances settled, findings answered.
+  human: {area: expense, parent: sec-month-end-close-and-expense-audit, advertise: [], gold: model}
+
+- id: pg-who-to-call
+  class: generic
+  name: Who to call
+  one_liner: The desk to call for each kind of question the written rules do not settle
+  body: |
+    # Who to call
+
+    Written 2 October 2026. Attendance exceptions: the HR desk. Amounts and suppliers: the office &
+    purchasing desk. Pay and insurance: the payroll desk.
+  human: {area: procurement, parent: ga-desk, advertise: [], gold: model,
+          note: "no single right place; a person might also put it at hop 0. Recorded as a draft of one defensible choice"}
+
+- id: pg-overview
+  class: generic
+  name: Overview
+  one_liner: A one-page overview of how a claim moves from a receipt to a payment
+  body: |
+    # Overview
+
+    Written 2 October 2026. Receipt, claim, approval, desk check, payment — and where each one can stop.
+  human: {area: expense, parent: evidence, advertise: [], gold: model}
+
+- id: pg-faq
+  class: generic
+  name: Frequently asked questions
+  one_liner: The questions the desk answers most, with one-line answers
+  body: |
+    # Frequently asked questions
+
+    Written 2 October 2026. Can I use the card for this? Where is my receipt threshold? When is the
+    settlement due?
+  human: {area: expense, parent: corp-card, advertise: [], gold: model}
+
+# ── korean: the real install's situation ──────────────────────────────────────
+- id: pg-ko-trip-settlement
+  class: korean
+  name: 출장 일당 정산 순서
+  one_liner: 출장이 끝난 뒤 근태 확인에서 경비 청구까지 어떤 순서로 처리되는지
+  body: |
+    # 출장 일당 정산 순서
+
+    2026년 10월 2일 작성. 근태 확인 → 일당·경비 청구 → 과세 여부 판단 순서로 처리한다. 순서가 바뀌면
+    반려된다.
+  human: {area: attendance, parent: trip-settlement-handoff, advertise: [], gold: model}
+
+- id: pg-ko-lost-card
+  class: korean
+  name: 법인카드 분실 신고
+  one_liner: 법인카드를 잃어버렸을 때 누구에게 어떤 순서로 알리는지
+  body: |
+    # 법인카드 분실 신고
+
+    2026년 10월 2일 작성. 카드사에 먼저 정지 요청, 그 다음 총무 데스크에 신고, 재발급은 데스크가 한다.
+  human: {area: expense, parent: card-loss, advertise: [], gold: model}
+
+- id: pg-ko-leave-carryover
+  class: korean
+  name: 연차 이월 규정
+  one_liner: 쓰지 않은 연차가 다음 해로 넘어가는지, 몇 일까지인지
+  body: |
+    # 연차 이월 규정
+
+    2026년 10월 2일 작성. 이월은 없다. 쓰지 않은 날은 수당으로 정산된다.
+  human: {area: attendance, parent: annual-leave, advertise: [], gold: model}
+
+- id: pg-ko-vendor-papers
+  class: korean
+  name: 거래처 등록 서류
+  one_liner: 새 거래처를 등록할 때 받아야 하는 서류 목록
+  body: |
+    # 거래처 등록 서류
+
+    2026년 10월 2일 작성. 사업자등록증, 통장 사본, 거래처 등록 양식. 해외 거래처는 별도.
+  human: {area: procurement, parent: vendor, advertise: [], gold: model}
+
+# ── none: genuinely new — the control ─────────────────────────────────────────
+- id: pg-fire-drill
+  class: none
+  name: Building fire drill schedule
+  one_liner: When the building runs its fire drills and what each floor's warden does
+  body: |
+    # Building fire drill schedule
+
+    Written 2 October 2026. Twice a year, announced a week ahead. Each floor has a warden who counts
+    heads at the assembly point.
+  human: {area: null, parent: null, advertise: [], gold: model, note: "no area; a person would open one"}
+
+- id: pg-bicycle-parking
+  class: none
+  name: Bicycle parking registration
+  one_liner: How to get a space in the basement bicycle rack
+  body: |
+    # Bicycle parking registration
+
+    Written 2 October 2026. Ask the building office for a tag. Spaces are first come; a tag unused
+    for a month is reassigned.
+  human: {area: null, parent: null, advertise: [], gold: model}
+
+- id: pg-plant-watering
+  class: none
+  name: Office plant watering rota
+  one_liner: Who waters the office plants each week
+  body: |
+    # Office plant watering rota
+
+    Written 2 October 2026. One person per floor per week, on the rota by the kitchen.
+  human: {area: null, parent: null, advertise: [], gold: model}
