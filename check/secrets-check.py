@@ -24,7 +24,9 @@ SHAPES = [
     ("a Slack token",             re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}")),
     ("a private key block",       re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
     ("a token written in YAML",   re.compile(r"^\s*(?:token|secret|password|api_key|apikey)\s*:\s*['\"]?[A-Za-z0-9_./+=-]{16,}", re.M | re.I)),
-    ("a path from somebody's machine", re.compile(r"/Users/[a-z][a-z0-9_-]+/|/home/[a-z][a-z0-9_-]+/|/private/tmp/claude")),
+    # Built from pieces so this file's own source does not carry the shape it looks for — the
+    # first tracked run of this check found exactly one secret-shaped thing: this line.
+    ("a path from somebody's machine", re.compile(r"/Users/[a-z][a-z0-9_-]+/|/home/[a-z][a-z0-9_-]+/|/private/tmp/" + "cla" + "ude")),
 ]
 # Shapes that are documentation of the shape, not an instance of it.
 ALLOW = re.compile(r"sk-proj-\.\.\.|sk-\.\.\.|xxx|your[-_ ]|example|placeholder|<[a-z_ -]+>|\$\{|\$[A-Z_]+", re.I)
