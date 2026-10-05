@@ -9,6 +9,7 @@ import json, pathlib, re
 from .store import Store, alias_names, file_scope, region_key, FM_RE
 from . import derive
 
+FORBIDDEN_STATE_FIELDS = {"state", "supersedes", "superseded_by", "operative", "current", "replaced_by", "replaces"}
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 # An id is not only an address: it is the file name `<id>.md`, and an area name is a directory name.
@@ -150,6 +151,14 @@ def validate(store: Store) -> dict:
         if nid != n["dir"]: errors.append(f"node {n['path']}: id {nid!r} ≠ directory name {n['dir']!r}")
         if nid in by_id: errors.append(f"node id declared twice: {nid}")
         by_id[nid] = n
+        # Invariant 9: documents carry no state. Which record governs is written in the map's lines and
+        # nowhere else; a field saying so in a document is a second home for that fact, and the one
+        # the baseline could never have read. The fixture contract (eval/fixtures) has refused these
+        # since 2026-09-18; the live repository did not, until now.
+        state_fields = sorted(set(n.get("fm_keys") or []) & FORBIDDEN_STATE_FIELDS)
+        if state_fields:
+            errors.append(f"node {nid}: {', '.join(state_fields)} — a document carries no state; which record "
+                          f"governs is said in its parent's line, not in the document (docs/INVARIANTS.md, 9)")
         if not n["name"]: errors.append(f"node {nid}: no name")
         if n["kind"] not in kinds: errors.append(f"node {nid}: kind {n['kind']!r} not in vocab")
         if n["region"] is None: errors.append(f"node {nid}: every Data area lives in a Region — core-nodes/ was retired 2026-09-08")

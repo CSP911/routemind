@@ -85,6 +85,8 @@ fi
 run env-check  $HOSTPY check/env-check.py
 run eol-check  $HOSTPY check/eol-check.py
 run romanize   $HOSTPY check/romanize-check.py
+# Invariant 10: nothing secret-shaped in any tracked file — the pre-push grep, as a check.
+run secrets    $HOSTPY check/secrets-check.py
 # The two times on a routing row. It builds its own repository and commits into it, so it needs git
 # and nothing else — no service, no containers.
 run age        $HOSTPY check/age-check.py

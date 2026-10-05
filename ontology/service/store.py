@@ -379,6 +379,9 @@ class Store:
                 "expands_in": fm.get("expands_in"), "one_liner": fm.get("one_liner") or "",
                 "order": order, "path": str(f.relative_to(self.root)), "body": m.group(2),
                 "scope": fm.get("scope", "common"), "described_by": fm.get("described_by"),
+                # Every key the file actually carries, so the validator can refuse the ones a document
+                # must not have (invariant 9) without reading the file a second time.
+                "fm_keys": sorted(str(k) for k in fm),
             })
         # `files` and `present_files` are derived from the children, not stored. A flat entity's
         # children are the entities that name it as `parent`, and a child's file is `<id>.md` —

@@ -699,6 +699,19 @@ if (pathlib.Path("data/repo") / "regions").is_dir():
     eq("  regenerating reconciles them", _regen(_st), ["regions.json"])
     eq("  and validates", _validate(_st)["ok"], True)
 
+    # Invariant 9: a document carries no state. Written into a file by hand — the way it would arrive,
+    # from somebody who knows the newer rule replaced this one and wants to say so where they are
+    # standing. The map's line is where that is said; the validator now refuses it in the document.
+    _n = next(p for p in (_repo / "regions" / _area).rglob("*.md") if p.stem != _area)
+    _orig = _n.read_text(encoding="utf-8")
+    _n.write_text(_orig.replace("\n---\n", "\nstate: superseded\nsupersedes: [something-older]\n---\n", 1), encoding="utf-8")
+    _v = _validate(_st)
+    eq("a state field written into a document is refused", _v["ok"], False)
+    eq("  naming the node and both fields", any(_n.stem in e and "state" in e and "supersedes" in e for e in _v["errors"]), True)
+    eq("  and pointing at where it belongs", any("parent's line" in e for e in _v["errors"]), True)
+    _n.write_text(_orig, encoding="utf-8")
+    eq("  without it the tree validates again", _validate(_st)["ok"], True)
+
     # The other direction, which is the one that would make this check worthless: an untouched tree
     # must not fail. A drift check that fires on a clean repository would be turned off within a day.
     _md.write_text(_before, encoding="utf-8"); _regen(_st)

@@ -71,12 +71,18 @@ no area, an edge to nothing, a node with neither body nor children: errors, not 
 reader cannot tell such a row from a real one. Enforced by the validator and `tidy`.
 
 **9. Documents carry no state.** Which record governs is written in the map's lines and nowhere
-else; a document's frontmatter has no `state`, `supersedes`, `current`. The fixture contract says
-this for fixtures; the live validator is to say it for the repository.
+else; a document's frontmatter has no `state`, `supersedes`, `superseded_by`, `operative`,
+`current`, `replaces`, `replaced_by`. The fixture contract has refused these since 2026-09-18; the
+live validator refuses them since 2026-10-06 (`FORBIDDEN_STATE_FIELDS`, with the store keeping
+every key a file carries so the rule reads the file, not a projection of it). Checked in
+`ontology/check.py`: a state field written into a document by hand is refused, naming the node and
+the fields and where the fact belongs, and the shipped repositories still validate.
 
 **10. Secrets are never in tracked files.** A token lives in the environment; a tracked file names
-the variable (`token_env`) and nothing else. Checked by a scan of every tracked file, in `check/`,
-not by hand before a push.
+the variable (`token_env`) and nothing else. Checked by `check/secrets-check.py` over every tracked
+file: provider keys, private-key blocks, a tracked `.env`, a token written in YAML, and a path from
+somebody's machine. Runs with the static checks; verified to fire on each shape planted in a
+temporary repository.
 
 ## What is not on this list
 
