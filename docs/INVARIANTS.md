@@ -35,7 +35,12 @@ the rest to be enumerated).
 
 **4. Every reader of one fact gets the same answer.** Two paths to one fact return the same bytes:
 the area listing and the area detail, the owner's view and the export surface, `store.regions()`
-and `store.regions_json()`. Checked by enumerating fact → paths pairs and comparing.
+and `store.regions_json()`. Checked by `check/same-answer-check.py`: every area's routing sentence,
+export flag, representative and title; a spread of nodes' name, line, kind, parent, aliases and
+body; the edges; the core — each read from the file and from every API path, the export surface,
+the resolver, the placement walk and what the MCP prints, 420 cells, on a clean tree and again with
+an uncommitted hand edit. Verified to fire: with the pre-2026-10-05 stale-table behaviour put back,
+the listing and hop 0 disagree with the file and the check says which cells.
 
 **5. A routing change is a commit.** Every write that changes what hop 0 or a node line says — API,
 screen, graft, tidy, the startup heal — goes through one transaction: refuse a dirty tree, mutate,
