@@ -678,6 +678,27 @@ if (pathlib.Path("data/repo") / "regions").is_dir():
     eq("  regenerating is what fixes it", _regen(_st), ["regions.json"])
     eq("  and then it validates again", _validate(_st)["ok"], True)
 
+    # `export` by hand — the field a person is most likely to write into a file, because it is one
+    # word and a decision. Measured 2026-10-05: validated as drift, logged at startup, and the export
+    # surface went on serving the committed table, so the area never crossed. The derived document
+    # is what readers are served now (`server._regions_live`), so it has to carry the hand-written
+    # truth before any regeneration happens.
+    from service.derive import regions_doc as _rdoc
+    _cur = _md.read_text(encoding="utf-8")
+    _flag = "export: yes" if "\nexport:" not in _cur else None
+    _md.write_text(_cur.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1)
+                   if _flag else _cur.replace("\nexport: no\n", "\nexport: yes\n", 1), encoding="utf-8")
+    _v = _validate(_st)
+    eq("a hand-written export flag is caught", _v["ok"], False)
+    eq("  and the error names export", any(f"regions.json {_area}" in e and "export" in e for e in _v["errors"]), True)
+    eq("  and says how to regenerate", any("tidy.py" in e for e in _v["errors"]), True)
+    _live = next(r for r in _json.loads(_rdoc(_st))["regions"] if r["source"] == _area.replace("-", "_"))
+    _file = next(r for r in _st.regions_json()["regions"] if r["source"] == _area.replace("-", "_"))
+    eq("  the derived table already carries the flag", _live["export"], True)
+    eq("  while the committed one still does not", _file["export"], False)
+    eq("  regenerating reconciles them", _regen(_st), ["regions.json"])
+    eq("  and validates", _validate(_st)["ok"], True)
+
     # The other direction, which is the one that would make this check worthless: an untouched tree
     # must not fail. A drift check that fires on a clean repository would be turned off within a day.
     _md.write_text(_before, encoding="utf-8"); _regen(_st)

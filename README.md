@@ -252,6 +252,20 @@ data/*        publish, overlays, harness, exchange, access — all derived or lo
               docs/DATA-REPO.md
 ```
 
+## A hand-edited repository
+
+The data repository is yours to edit in an editor. One file in it is generated: `regions.json`,
+hop 0's table, derived from the areas' `.md` files and the CORE.md table and committed beside them.
+Edit an area's file by hand — its `use_when`, its `export` — and that table is stale until it is
+regenerated.
+
+Three things make that safe. The validator says so, naming the area and the field. Readers are
+served what the files say meanwhile, not the stale table — hop 0 and the export surface read the
+files' truth. And the server regenerates and commits the table at startup when the tree is clean;
+any write through the API does the same, and so does `./ontology/tidy.py data/repo --fix`. With
+uncommitted changes in the tree nothing is committed on your behalf: commit or discard, then
+restart. `/healthz` carries `valid` and the first reasons it is not.
+
 ## Everything else
 
 | | |

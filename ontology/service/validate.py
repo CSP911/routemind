@@ -488,7 +488,9 @@ def validate(store: Store) -> dict:
         if drift:
             errors.append(f"regions.json {src}: {', '.join(drift)} no longer matches the files it is "
                           f"derived from. It is generated, not written — any write through the API "
-                          f"regenerates it; see README, \u201cA hand-edited repository\u201d.")
+                          f"regenerates it, as does `./ontology/tidy.py <repo> --fix`, and the server regenerates it at "
+                          f"startup when the tree is clean; readers are served what the files say meanwhile. "
+                          f"See README, \u201cA hand-edited repository\u201d.")
     # ---- a CORE row with no area behind it ----
     # CORE.md is carried **whole** into every prompt, and its table is where each area's description
     # at hop 0 comes from. A row whose area has been deleted therefore advertises something that does

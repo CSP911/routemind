@@ -143,6 +143,9 @@ else
   # Placing a document by walking the table, through the MCP, with the write and the queued
   # proposal read back. Starts an ontology on a copy of the shipped corpus, so it sits here.
   run place       $HOSTPY check/place-check.py
+  # A hand-edited repository, served: a stale regions.json regenerated at startup when the tree is
+  # clean, the files' truth served when it is not. Starts its own ontology twice.
+  run drift       $HOSTPY check/drift-check.py
   if [ -z "$ONLY" ]; then
     printf '  install-check          not run here — it builds a clean clone and takes minutes.\n'
     printf '                         ./check/install-check.sh before a release.\n'

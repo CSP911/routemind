@@ -25,6 +25,7 @@ from service.store import Store, alias_names        # noqa: E402
 from service.validate import validate, export_kinds  # noqa: E402
 from service import ages  # noqa: E402
 from service import resolve as resolver  # noqa: E402
+from service import derive as deriving  # noqa: E402
 from service import place as placing  # noqa: E402
 from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E402
 from service.service_store import ServiceStore              # noqa: E402
@@ -205,7 +206,7 @@ def route_draft(region: str, scope: str, changed: list | None) -> dict:
         raise WriteError(400, f"scope {scope} is not drafted — the model can read what an area holds, "
                               f"not who is reading and what they should be told. Write it yourself")
     if field == "core_row":
-        before = next((x.get("description", "") for x in store.regions_json().get("regions", []) if x["id"] == r["key"]), "")
+        before = next((x.get("description", "") for x in _regions_live().get("regions", []) if x["id"] == r["key"]), "")
     else:
         before = rep.get(field) or ""
 
@@ -481,7 +482,7 @@ def apply_proposal(p: dict, actor: str):
         if scope == "core":
             key = next((r["key"] for r in store.regions() if r["dir"] == region or r["key"] == region.upper()), None)
             if not key: return {"ok": False, "error": f"region {region} not found"}
-            cur = next((r.get("description", "") for r in store.regions_json().get("regions", []) if r["id"] == key), "")
+            cur = next((r.get("description", "") for r in _regions_live().get("regions", []) if r["id"] == key), "")
             if p.get("before") and cur != p["before"]:
                 return {"ok": False, "error": "conflict", "code": 409, "field": "core_row",
                         "current": cur, "submitted_before": p["before"]}
@@ -825,6 +826,11 @@ class Handler(BaseHTTPRequestHandler):
                                         "llm_providers": list(curator.PROVIDERS),
                                         "llm_max_tokens": LLM_MAX_TOKENS, "llm_temperature": LLM_TEMPERATURE,
                                         "writable": not dirty, "uncommitted": dirty,
+                                        # Whether the repository validates, and the first reasons it
+                                        # does not. Before this the only place that fact existed was
+                                        # one line in the startup log, and a server that had just
+                                        # said `valid=False` answered every health check "ok".
+                                        **_health_valid(),
                                         "published": (PUBLISH / "REVISION").read_text().strip() if PUBLISH and (PUBLISH / "REVISION").exists() else None})
             if parts[:1] != ["v1"]: return self._err(404, "unknown path")
             parts = parts[1:]
@@ -976,7 +982,7 @@ class Handler(BaseHTTPRequestHandler):
         # inside it — which is not a gap in the record, it is what no-transit means.
         self._access.update(peer=(who or {}).get("name"), reader=reader)
 
-        rj = store.regions_json()
+        rj = _regions_live()
         shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", [])
                   if r.get("export")}
         # An audience narrows what the line opened. Fail closed twice over: an unnamed caller is
@@ -1099,7 +1105,7 @@ class Handler(BaseHTTPRequestHandler):
             # **not emitted**: publish a path and someone builds an address out of it (someone did),
             # and `nodes` is internal bookkeeping the validator uses to catch drift against the
             # directory, not something a caller should act on. There is one way to go: `fetch`.
-            rj = store.regions_json()
+            rj = _regions_live()
             def entries_of(rep_id):
                 rep = next((n for n in store.nodes() if n["id"] == rep_id), None)
                 if not rep: return []
@@ -1433,6 +1439,53 @@ def _to_export(payload):
     return payload
 
 
+_LIVE_SAID: set = set()
+_HEALTH_VALID: dict = {}
+
+
+def _health_valid() -> dict:
+    """`valid` and the first reasons it is not, for /healthz — computed once per commit, because the
+    health check is polled and validation reads every entity."""
+    rev = head(DATA) or ""
+    if rev not in _HEALTH_VALID:
+        try:
+            res = validate(store)
+            _HEALTH_VALID.clear()
+            _HEALTH_VALID[rev] = {"valid": bool(res["ok"]), "errors": [str(e) for e in res["errors"][:3]]}
+        except Exception as e:
+            return {"valid": False, "errors": [f"validation could not run: {type(e).__name__}: {e}"]}
+    return _HEALTH_VALID[rev]
+
+
+def _regions_live() -> dict:
+    """`regions.json` as the files say it should be — the committed copy when it agrees, the derived
+    document when it does not.
+
+    The file is derived from the areas' `.md` files and committed beside them, and the two drift the
+    moment somebody edits an area by hand and pushes without regenerating. Measured 2026-10-05: an
+    operator wrote `export: yes` into a representative, committed, restarted — the validator said so
+    at startup, in the log, and the server then served the stale table to every reader anyway: hop 0
+    did not show the flag and the export surface did not cross with the area. Being told in a log
+    line is not the same as a reader being served the truth. `store.regions()` already reads the
+    files; this is the other read path brought to the same answer, so the two cannot disagree.
+
+    The committed file stays what the validator checks, so the drift error persists until the disk
+    is regenerated — by any write through the API, by `tidy --fix`, or by the startup heal in `main`.
+    """
+    committed = store.regions_json()
+    try:
+        derived = json.loads(deriving.regions_doc(store))
+    except Exception:
+        return committed            # a derive that cannot run is the validator's error to report
+    if derived == committed: return committed
+    rev = head(DATA)
+    if rev not in _LIVE_SAID:
+        _LIVE_SAID.add(rev)
+        sys.stderr.write("iris-ontology: regions.json is stale against the files — serving what the files say; "
+                         "regenerate with any API write or ./ontology/tidy.py <repo> --fix\n")
+    return derived
+
+
 def _export_state():
     """What this backbone advertises across a link, as one comparable value: which areas, the line
     each shows, who each is for, and what any named reader is shown instead.
@@ -1450,7 +1503,7 @@ def _export_state():
         return sorted((r.get("source"), bool(r.get("export")),
                        (r.get("use_when") or "").strip(),
                        tuple(r.get("export_to") or []))
-                      for r in (store.regions_json().get("regions") or []))
+                      for r in (_regions_live().get("regions") or []))
     except Exception:
         return None
 
@@ -1626,6 +1679,23 @@ def store_published():
 def main():
     if not DATA.is_dir(): sys.exit(f"ONTOLOGY_DATA {DATA} is not a directory")
     res = validate(store)
+    # A derived file committed stale is the one invalid state the server can mend on its own, and
+    # through the same transaction every write uses: nothing to mutate, regenerate, validate, commit.
+    # Only when every error is that one — anything else is somebody's decision — and only on a
+    # clean tree, since the transaction refuses a dirty one rather than commit somebody's half-done
+    # hand edit along with the fix. Left stale, readers are served the files' truth regardless
+    # (`_regions_live`); this is the disk catching up with them.
+    drift = [e for e in res["errors"] if "no longer matches the files it is derived from" in e]
+    if drift and len(drift) == len(res["errors"]) and head(DATA):
+        try:
+            out = writer.transact("regions.json: regenerated — it was committed stale", "ontology", lambda: None)
+            sys.stderr.write(f"iris-ontology: regions.json was committed stale ({len(drift)} area(s)); regenerated and "
+                             f"committed as {str(out.get('revision', ''))[:12]}\n")
+            res = validate(store)
+        except WriteError as e:
+            sys.stderr.write(f"iris-ontology: regions.json is committed stale and could not be regenerated — {e}. "
+                             f"Readers are served what the files say; commit or discard your changes, then any API "
+                             f"write or ./ontology/tidy.py <repo> --fix regenerates it.\n")
     sys.stderr.write(f"iris-ontology data={DATA} head={head(DATA)} publish={PUBLISH} fragments={FRAGMENTS} nodes={res['stats']['nodes']} edges={res['stats']['edges']} valid={res['ok']}\n")
     # A setting this build does not understand would otherwise be dead quietly: the person set a
     # provider, nothing uses it, and nothing says so. `/healthz` carries the same fact for install.sh.
