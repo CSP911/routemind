@@ -61,11 +61,89 @@ def walk(port, doc, min_hits=2):
             "stop_at": (prop.get("stop_at") or {}).get("label"), "hit_ceiling": True}
 
 
+PICK_SYSTEM = (
+    "You are filing a new document into a knowledge base by walking its routing table, one table at a time.\n\n"
+    "You will be shown the document (its name and its one-line description) and the table you are standing at: "
+    "one row per child, each with its address, whether it is a table (can be opened) or a document, the line that "
+    "describes it, and which of the document's words that line shares — the sharing is a hint, not a verdict.\n\n"
+    "Reply with exactly one line and nothing else:\n"
+    "  OPEN <address>   go one level deeper into that row, because the document belongs somewhere inside it\n"
+    "  HERE             place the document as a child of the node whose table this is — this is its place\n"
+    "  NONE             (only at the top-level list of areas) no area is about this; it would need a new area\n\n"
+    "Place it where a person looking for it would look, at the level where its siblings are things like it. Do not "
+    "open a row only because it shares a word, and do not stop early only because nothing shares one."
+)
+
+
+def llm_pick(doc, at, rows, here, log):
+    """One decision by a model, the way knowledge_place asks an agent to make it. Same API and key as
+    bench/agent.py; the model is pinned the same way."""
+    base = os.environ.get("BENCH_LLM_BASE_URL", "https://api.anthropic.com")
+    key = os.environ["ONTOLOGY_LLM_API_KEY"]
+    model = os.environ.get("ROUTER_MODEL", "claude-opus-5")
+    lines = [f"Document: {doc['name']}", f"  {doc['one_liner']}", "",
+             f"You are at: {at}" + (f"  (HERE would make it a child of {here['parent']} in {here['region']})" if here else "  (the areas; HERE is not allowed here)"), ""]
+    if rows:
+        for r in rows:
+            ev = r.get("evidence") or {}
+            shares = ", ".join(dict.fromkeys(ev.get("terms", []) + ev.get("names", []))) or "—"
+            lines.append(f"  {r['address']}  [{r['kind']}]  {(r.get('line') or '')[:160]}   (shares: {shares})")
+    else:
+        lines.append("  (this node has no children yet)")
+    body = {"model": model, "max_tokens": 50, "system": PICK_SYSTEM,
+            "messages": [{"role": "user", "content": "\n".join(lines)}]}
+    req = urllib.request.Request(base + "/v1/messages", data=json.dumps(body).encode(), method="POST",
+                                 headers={"content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01"})
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                out = json.loads(r.read().decode("utf-8"))
+            text = "".join(c.get("text", "") for c in out.get("content", [])).strip()
+            log.append({"at": at, "said": text})
+            return text
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 500, 502, 503, 529) and attempt < 3: time.sleep(2 ** attempt); continue
+            raise
+    return ""
+
+
+def walk_llm(port, doc):
+    """The walk with a model choosing at every table — the realistic driver."""
+    at, path, hops, log = "/v1/regions", [], [], []
+    while len(path) < MAX_HOPS:
+        d = post(port, {"at": at, "doc": doc, "path": path})
+        rows = d.get("rows") or []
+        said = llm_pick(doc, at, rows, d.get("here"), log)
+        verb, _, arg = said.partition(" ")
+        verb, arg = verb.strip().upper(), arg.strip().strip("`")
+        hops.append({"at": at, "rows": len(rows), "said": said})
+        if verb == "NONE" and at == "/v1/regions":
+            return {"nxdomain": True, "parent": None, "area": None, "path": path, "hops": hops, "advertise": [], "stop_at": None, "log": log}
+        if verb == "OPEN" and any(r["address"] == arg for r in rows):
+            path.append(arg); at = arg; continue
+        if at == "/v1/regions":
+            # HERE or an unprintable address at hop 0: the model is asked once more, then it is NONE.
+            if not any(h.get("retry") for h in hops):
+                hops[-1]["retry"] = True; continue
+            return {"nxdomain": True, "parent": None, "area": None, "path": path, "hops": hops, "advertise": [], "stop_at": None, "log": log, "forced": said}
+        prop = d.get("propagation") or {}
+        return {"nxdomain": False, "parent": d["here"]["parent"], "area": d["here"]["region"], "path": path, "hops": hops,
+                "advertise": [q.get("entity") or q.get("region") for q in prop.get("proposals") or []],
+                "stop_at": (prop.get("stop_at") or {}).get("label"), "log": log, "unparsed": None if verb == "HERE" else said}
+    d = post(port, {"at": at, "doc": doc, "path": path})
+    prop = d.get("propagation") or {}
+    return {"nxdomain": False, "parent": d["here"]["parent"], "area": d["here"]["region"], "path": path, "hops": hops,
+            "advertise": [q.get("entity") or q.get("region") for q in prop.get("proposals") or []],
+            "stop_at": (prop.get("stop_at") or {}).get("label"), "log": log, "hit_ceiling": True}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--docs", default=str(ROOT / "eval" / "placement" / "documents.yaml"))
     ap.add_argument("--port", type=int, default=18130)
     ap.add_argument("--min-hits", type=int, default=2, help="shared words a row needs before the walk opens it (run 1 used 1)")
+    ap.add_argument("--llm", action="store_true", help="a model chooses at every table — the realistic driver (needs ONTOLOGY_LLM_API_KEY)")
+    ap.add_argument("--limit", type=int, default=0, help="only the first N documents (a smoke before a paid run)")
     ap.add_argument("--out")
     a = ap.parse_args()
 
@@ -105,9 +183,9 @@ def main():
             sys.exit("  the ontology never answered — its log:\n" + open(os.path.join(tmp, "svc.log")).read()[-2000:])
 
         results = []
-        for d in docs:
+        for d in (docs[:a.limit] if a.limit else docs):
             doc = {"name": d["name"], "one_liner": d["one_liner"], "aliases": d.get("aliases") or [], "content": d.get("body") or ""}
-            t = walk(a.port, doc, min_hits=a.min_hits)
+            t = walk_llm(a.port, doc) if a.llm else walk(a.port, doc, min_hits=a.min_hits)
             h = d["human"]
             r = {"id": d["id"], "class": d["class"], "gold": h.get("gold"), "human": {k: h.get(k) for k in ("area", "parent", "advertise")}, "tool": t}
             if h.get("parent") is None:
@@ -129,7 +207,9 @@ def main():
         except Exception: svc.kill()
         shutil.rmtree(tmp, ignore_errors=True)
 
-    classes = list(dict.fromkeys(d["class"] for d in docs))
+    classes = list(dict.fromkeys(r["class"] for r in results))
+    driver = (f"llm:{os.environ.get('ROUTER_MODEL', 'claude-opus-5')}" if a.llm
+              else f"evidence-greedy, no model, min_hits={a.min_hits}")
     print()
     print(f"  {'class':<13} {'n':>3}  {'area':>5} {'parent':>7} {'adv':>5}  {'dist':>5} {'depth':>6}  {'nx':>3}")
     table = {}
@@ -154,8 +234,8 @@ def main():
     if a.out:
         p = ROOT / a.out
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps({"host": str(host.relative_to(ROOT)), "documents": len(docs),
-                                 "driver": f"evidence-greedy, no model, min_hits={a.min_hits}", "min_hits": a.min_hits,
+        p.write_text(json.dumps({"host": str(host.relative_to(ROOT)), "documents": len(results),
+                                 "driver": driver, "min_hits": None if a.llm else a.min_hits,
                                  "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "table": table, "results": results},
                                 indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"  -> {a.out}")

@@ -83,6 +83,45 @@ same table with the same evidence is the realistic driver and is the obvious sec
 not yet built); it will do better than the floor on some classes and the difference is itself a
 number worth having.
 
+## Results — three runs, 2026-10-05
+
+| class | n | floor (1 word) area / parent / adv | floor (2 words) area / parent / adv | **agent** area / parent / adv | agent depth |
+|---|---|---|---|---|---|
+| vocab-miss | 5 | 0.40 / 0.20 / 0.60 | 0.20 / 0.00 / 0.00 | 0.60 / 0.00 / 0.20 | −1.0 |
+| false-friend | 5 | 0.40 / 0.00 / 1.00 | 0.40 / 0.00 / 0.80 | 0.00 / 0.00 / 0.20 | — (4 of 5 NXDOMAIN) |
+| cross-cutting | 4 | 0.50 / 0.00 / 0.50 | 0.50 / 0.25 / 0.50 | 0.25 / 0.00 / 0.25 | −1.0 |
+| supersession | 5 | 0.40 / 0.00 / **0.00** | 0.20 / 0.00 / **0.00** | 0.80 / 0.40 / **0.00** | −0.8 |
+| depth | 5 | 0.40 / 0.00 / 0.60 | 0.40 / 0.00 / 0.40 | **1.00** / 0.00 / 0.60 | **−3.0** |
+| generic | 4 | 0.25 / 0.00 / 0.25 | 0.00 / 0.00 / 0.00 | 0.25 / 0.00 / 0.25 | −1.0 |
+| korean | 4 | 0.00 / 0.00 / 0.00 | 0.00 / 0.00 / 0.00 | 0.75 / 0.50 / 0.00 | −0.3 |
+| none | 3 | 0.67 / 0.67 / 1.00 | 1.00 / 1.00 / 1.00 | 1.00 / 1.00 / 1.00 | — |
+| **all** | 35 | 0.37 / **0.09** / 0.49 | 0.31 / **0.11** / 0.31 | 0.57 / **0.20** / 0.29 | −1.3 |
+
+Run records: `eval/runs/2026-10-05-placement-gap.json` (floor, one shared word opens a row),
+`-2.json` (wider stopwords, two words), `-3-llm.json` (claude-opus-5 choosing at every table, the
+way `knowledge_place` asks an agent to). The agent run sent 17 of 35 to "new area".
+
+**What held.** `supersession` advertises nothing in all three runs — the walk stops at a parent
+that already "covers" rates or limits, and the line that should say *which table is current* is
+widened by nobody. `none` agrees. `korean` is a wall for word-matching and not for the agent.
+
+**What was wrong in the prediction.** The floor did not stop shallow; it went *deeper*, into leaf
+documents, on single junk words — "apply", "new", "why" — which was a stopword defect in the tool,
+fixed in run 2 with the evidence beside the list. The agent run then did stop shallow, and more than
+predicted: on `depth` it reaches the right area every time and the right parent never, three levels
+short. One table at a time, an agent does not open a section index to see whether the thing belongs
+inside; the judgement, with the whole tree in view, does.
+
+**The finding.** The same model wrote every judged placement and made every choice in run 3, and
+agreed with itself on the parent one time in five. The gap is not two minds disagreeing about a back
+office; it is the procedure — one table at a time, forward only, nothing to advertise unless a word
+is missing — against a placement made with the tree in view. Two things follow for the tool. The
+propagation rule "stop at the first ancestor whose line covers it" is wrong for supersession by
+construction: the parent covers the *subject* and says nothing about *which version*, and that is
+exactly the case the sealed fixture on PR #1 measured. And a walk needs a way to look *into* a
+section before choosing whether to enter it — the resolver's "where is this name recorded" is one;
+the agent run shows what happens without it.
+
 ## Running
 
 ```sh
