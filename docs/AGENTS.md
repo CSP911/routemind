@@ -139,9 +139,12 @@ Two do the reading, and the rest appear only where the install has the thing the
 a feature that is not configured would be a tool that fails when used, which is worse than absent.
 
 ```
+knowledge_resolve(q)     start here, with the question as asked: hop 0 with the names in it resolved,
+                         and the walk id every call below hop 0 must carry (invariant 1).
 knowledge_table(path?)   a routing table — what is here, and where to go next.
                          No argument = the list of areas. That is where every search starts.
 knowledge_read(path)     one document, as written.
+                         Below hop 0 both take `walk`; without it they refuse and say how to start.
 
 knowledge_overlay(op)    the working set for one question (a VRF) — only where the install keeps
                          overlays (ONTOLOGY_OVERLAYS). create · get · add · remove · close.

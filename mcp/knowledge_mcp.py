@@ -25,7 +25,7 @@ gets. There is one advertisement, and every engine reads it.
 """
 from __future__ import annotations
 
-import argparse
+import argparse, time
 import datetime as _dt
 import ipaddress
 import json
@@ -761,7 +761,9 @@ def resolve_for(api: Api, q: str) -> str:
     from urllib.parse import quote
     d = api.json("/v1/resolve?q=" + quote(q))
     a = d.get("ask") or {}
+    wid = open_walk(q, "knowledge_resolve")
     out = ["ROUTEMIND — the question, resolved",
+           walk_line(wid),
            f"  asked   : {d.get('q', '')}",
            f"  read as : {d.get('restated', '')}",
            f"  asking  : {a.get('kind', '')}" + (f"  (said {a['said']!r})" if a.get("said") else "")
@@ -817,6 +819,64 @@ PLACE_TOOL = {
 }
 
 PLACEMENTS: dict[str, dict] = {}
+
+# ── the walk: invariant 1 and 2, in code ──────────────────────────────────────
+# Every walk starts at hop 0, and "not here" may be said only by someone who has seen the whole
+# list. Until 2026-10-06 both were sentences in a tool description, and an agent quoted them while
+# breaking them: one area read, absence claimed, the record four levels down in another area.
+#
+# So hop 0 issues a walk. `knowledge_resolve` serves hop 0 with the question's names resolved, and
+# `knowledge_table` with no address serves hop 0 bare; either opens a walk and prints its id. Every
+# call below hop 0 — an area's table, a node's table, a document, a circuit's table, an overlay
+# closed `not_found` — must carry that id or is refused with the way back. A walk ends when an
+# overlay is closed, when a new hop 0 is served, or after `KNOWLEDGE_WALK_TTL` seconds (600).
+#
+# Enforced here and not in the service: this is the agent's only door, and the rule is about agents
+# — a screen or a curl reads tables freely. Limit, stated in docs/INVARIANTS.md: an agent can carry
+# a walk into its next question; the walk records the question it was opened for, so that reuse is
+# visible rather than prevented.
+WALKS: dict[str, dict] = {}
+WALK_TTL = float(os.environ.get("KNOWLEDGE_WALK_TTL") or 600)
+_walk_n = [0]
+
+
+def open_walk(question: str, how: str) -> str:
+    """A new walk from hop 0. Any walk already open is over — one question, one walk."""
+    for w in WALKS.values(): w["ended"] = f"a new hop 0 was served ({how})"
+    _walk_n[0] += 1
+    wid = f"w{_walk_n[0]}"
+    WALKS[wid] = {"id": wid, "q": question, "how": how, "opened": time.time(), "ended": None, "calls": 0}
+    return wid
+
+
+def require_walk(args: dict, what: str) -> dict:
+    """The walk a call below hop 0 belongs to, or the refusal that says how to start one."""
+    wid = str(args.get("walk") or "").strip()
+    w = WALKS.get(wid)
+    back = ("Every walk starts at hop 0. Call knowledge_resolve with the question as the person asked "
+            "it (or knowledge_table with no address) — it returns the area list and a walk id — and pass "
+            f"that id as `walk` on every call below hop 0.")
+    if not wid:
+        raise ApiError(f"{what} needs a walk id. {back}")
+    if not w:
+        raise ApiError(f"walk {wid!r} is not one this session opened. {back}")
+    if w["ended"]:
+        raise ApiError(f"walk {wid} is over — {w['ended']}. {back}")
+    if time.time() - w["opened"] > WALK_TTL:
+        w["ended"] = f"it is older than {int(WALK_TTL)}s"
+        raise ApiError(f"walk {wid} has expired ({w['ended']}). {back}")
+    w["calls"] += 1
+    return w
+
+
+def end_walk(args: dict, why: str) -> None:
+    w = WALKS.get(str(args.get("walk") or "").strip())
+    if w and not w["ended"]: w["ended"] = why
+
+
+def walk_line(wid: str) -> str:
+    return (f"  walk    : {wid} — pass `walk: \"{wid}\"` on every call below hop 0 for this question; "
+            f"a new question starts with a new resolve")
 
 
 def place_call(api: Api, args: dict) -> str:
@@ -937,13 +997,18 @@ TOOLS = [
          "path": {"type": "string",
                   "description": "An address a table printed: /v1/regions (the areas), "
                                  "/v1/regions/<area>, /v1/nodes/<id> or /v1/services/<id>. "
-                                 "Omit for the list of areas."}}}},
+                                 "Omit for the list of areas."},
+         "walk": {"type": "string",
+                  "description": "The walk id hop 0 printed for this question (from knowledge_resolve, or "
+                                 "from this tool called with no address). Required for any address below "
+                                 "hop 0 — every walk starts at hop 0."}}}},
     {"name": "knowledge_read",
      "description": "Read one document from Knowledge, by the address a table printed for it. "
                     "Returns the document as written.",
      "inputSchema": {"type": "object", "properties": {
-         "path": {"type": "string", "description": "The address a table printed for this document."}},
-         "required": ["path"]}},
+         "path": {"type": "string", "description": "The address a table printed for this document."},
+         "walk": {"type": "string", "description": "The walk id hop 0 printed for this question. Required."}},
+         "required": ["path", "walk"]}},
 ]
 
 OVERLAY_TOOL = {
@@ -964,6 +1029,9 @@ OVERLAY_TOOL = {
         "address": {"type": "string", "description": "add / remove: an address a table printed"},
         "why": {"type": "string", "description": "add / remove: the reason"},
         "outcome": {"type": "string", "enum": ["answered", "not_found"], "description": "close"},
+        "walk": {"type": "string", "description": "close: the walk id hop 0 printed for this question. "
+                                                  "Required to close as not_found — only someone who has "
+                                                  "seen the whole list may say something is not here."},
         "used": {"type": "array", "items": {"type": "string"},
                  "description": "close: every address you actually took the answer from, member or not"}}}}
 
@@ -1105,10 +1173,17 @@ class Server:
             if name == "knowledge_resolve": return resolve_for(self.api, str(args.get("q") or "")), False
             if name == "knowledge_place": return place_call(self.api, args), False
             if name == "knowledge_circuit": return circuit_call(args), False
+            path = str(args.get("path") or "").strip()
+            # Hop 0 itself: the one table that needs no walk, because it is where one begins.
+            if name == "knowledge_table" and path.rstrip("/") in ("", "/", "/v1/regions"):
+                wid = open_walk("(hop 0, no question given)", "knowledge_table")
+                return walk_line(wid) + "\n\n" + hop0(self.api), False
+            # Everything below hop 0 belongs to a walk — invariant 1 — and is refused without one.
+            if name in ("knowledge_table", "knowledge_read"):
+                require_walk(args, f"{name} {path}")
             # An address into an open circuit is answered by the circuit, not this backbone. The
             # agent never composes one: it follows what a circuit's own tables printed, the same
             # discipline as every other address here.
-            path = str(args.get("path") or "")
             if name in ("knowledge_table", "knowledge_read") and path.startswith("/v1/circuits/"):
                 rest = path[len("/v1/circuits/"):]
                 cname, _, tail = rest.partition("/")
@@ -1118,7 +1193,16 @@ class Server:
                 return (body if doc else circuit_table(cname, body)), False
             if name == "knowledge_table": return table_for(self.api, path), False
             if name == "knowledge_read":  return read_for(self.api, path), False
-            if name == "knowledge_overlay" and self.overlays(): return overlay_call(self.api, args), False
+            if name == "knowledge_overlay" and self.overlays():
+                # "Not here" may be said only by someone who has seen the whole list — invariant 2.
+                # Closing as answered ends the walk too: the question is over.
+                if str(args.get("op") or "") == "close":
+                    if str(args.get("outcome") or "") == "not_found":
+                        require_walk(args, "closing an overlay as not_found")
+                    out = overlay_call(self.api, args)
+                    end_walk(args, "its overlay was closed")
+                    return out, False
+                return overlay_call(self.api, args), False
             if name == "knowledge_write" and self.workspace(): return write_call(self.api, args), False
             return f"No such tool: {name}", True
         except ApiError as e:

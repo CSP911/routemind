@@ -137,7 +137,10 @@ One file, stdlib only: no install, nothing to build. For **Claude Code** there i
 all — `install.sh` writes `.mcp.json` at the root, pointed at the port you chose, so `cd routemind &&
 claude` is the whole setup and `/mcp` shows the tools.
 
-`knowledge_table(path?)` and `knowledge_read(path)` do the reading. The rest appear only where the
+`knowledge_table(path?)` and `knowledge_read(path)` do the reading. Every walk starts at hop 0:
+`knowledge_resolve(q)` — or `knowledge_table` with no address — serves the area list and a **walk
+id**, and every call below hop 0 must carry it or is refused with the way back. Only someone who has
+seen the whole list may say something is not here (`docs/INVARIANTS.md`). The rest appear only where the
 install has what they need: `knowledge_overlay` where overlays are kept, `knowledge_write` where
 there is a `workspace` area, `knowledge_circuit` always. `/circuit <url> <token>` is the same thing
 from a person's side.

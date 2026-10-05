@@ -161,6 +161,10 @@ rule("the tool description", desc)
 # Walk it as an agent would: nothing but addresses the tables printed.
 top, err = c.text("knowledge_table")
 check("no arguments answers", not err and bool(top.strip()))
+# Hop 0 issues the walk every call below it must carry — invariant 1, enforced in the MCP since
+# 2026-10-06. Read off the printed line, the way an agent has to.
+WALK = next((l.split(":", 1)[1].strip().split()[0] for l in top.splitlines() if l.strip().startswith("walk")), "")
+check("hop 0 printed a walk id", WALK.startswith("w"), top[:120])
 # The one thing hop 0 must say whether or not it holds anything: that it, and nothing smaller, is
 # where absence is decided. An empty install answers that too, and that is worth checking on the
 # install most people will actually have first.
@@ -172,7 +176,7 @@ if HAS_AREAS:
 else:
     results.append("--   no areas yet; there is no address for hop 0 to print")
 if addrs:
-    area, err = c.text("knowledge_table", {"path": addrs[0]})
+    area, err = c.text("knowledge_table", {"path": addrs[0], "walk": WALK})
     check(f"the area table fetches ({addrs[0]})", not err)
     check("an area does not claim absence for the world", "go back to /v1/regions" in area)
     # A document address taken out of the rendered table, because the text is all an agent has. It
@@ -184,7 +188,7 @@ if addrs:
     # `knowledge_read` takes — rather than to the spelling of a path.
     files = [p[1] for line in area.splitlines() if (p := line.split())[:1] == ["file"] and len(p) > 1]
     if files:
-        doc, err = c.text("knowledge_read", {"path": files[0]})
+        doc, err = c.text("knowledge_read", {"path": files[0], "walk": WALK})
         check(f"the document reads ({files[0]})", not err and len(doc) > 0)
     else:
         results.append("--   that area holds no document yet; the read step needs one")
@@ -199,7 +203,7 @@ if addrs:
 kinds = {e.get("type") for e in entries}
 if "data" in kinds:
     row = next(e for e in entries if e.get("type") == "data")
-    doc, err = c.text("knowledge_read", {"path": row["fetch"]})
+    doc, err = c.text("knowledge_read", {"path": row["fetch"], "walk": WALK})
     check("a data row's own address reads as a document", not err and len(doc) > 0)
 else:
     results.append("--   no written document here; that row of the table is unchecked")
@@ -207,7 +211,7 @@ if "empty" in kinds:
     row = next(e for e in entries if e.get("type") == "empty")
     line = next((l for l in area.splitlines() if row["fetch"] in l), "")
     check("an empty row is labelled empty, not table", line.strip().startswith("empty"))
-    _, err = c.text("knowledge_read", {"path": row["fetch"] + "/body"})
+    _, err = c.text("knowledge_read", {"path": row["fetch"] + "/body", "walk": WALK})
     check("and reading it says nobody wrote it", err)
 else:
     results.append("--   no empty entity here; that row of the table is unchecked")
@@ -239,9 +243,9 @@ check("  and a prompt that does not exist is an error, not hop 0",
       "error" in bad, json.dumps(bad)[:110])
 
 # Refusals have to say what to do instead, not just fail.
-bad, err = c.text("knowledge_read", {"path": "/v1/regions"})
+bad, err = c.text("knowledge_read", {"path": "/v1/regions", "walk": WALK})
 check("reading a table says to call the other tool", err and "knowledge_table" in bad)
-bad, err = c.text("knowledge_table", {"path": "regions/made-up"})
+bad, err = c.text("knowledge_table", {"path": "regions/made-up", "walk": WALK})
 check("an invented address is refused with the shapes that work", err and "/v1/regions/<area>" in bad)
 
 c.close()
