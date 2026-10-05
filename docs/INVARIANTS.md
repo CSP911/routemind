@@ -46,8 +46,13 @@ the listing and hop 0 disagree with the file and the check says which cells.
 screen, graft, tidy, the startup heal — goes through one transaction: refuse a dirty tree, mutate,
 regenerate, validate, roll back on failure, commit. A hand edit is the one write outside it, and it
 is handled by 3: the validator refuses further writes until the table is regenerated, and readers
-are served the files' truth meanwhile. Checked by listing every writer and asserting each is
-`Writer.transact`.
+are served the files' truth meanwhile. Checked by `check/transact-check.py`: statically, every
+`Writer` method that touches the tree is read as a syntax tree and must reach `transact`, directly
+or by delegation, so a method added without it fails here first; dynamically, every write path —
+each API write, the proposal queue's accept, `tidy --fix`, a graft and its ungraft — is driven once
+to succeed and once to fail, and after each the commits gained, the tree's cleanliness and the
+response are read back. Verified to fire: with the rollback removed for one run, the first failure
+that reached the validator leaves the tree dirty and the check names it.
 
 **6. What crosses a link is a subset of what `export` allows.** A peer sees an area only if its
 representative's *file* says `export: yes`; an audience sees only its own. Checked by
@@ -55,8 +60,11 @@ representative's *file* says `export: yes`; an audience sees only its own. Check
 table — the 2026-10-05 defect was exactly the committed table disagreeing with the file.
 
 **7. Nothing is reported done that did not happen.** A write's response is the transaction's
-result; a refused step is reported as refused and no summary is printed after it. Checked by
-injecting a failure on each write path and reading the response.
+result; a refused step is reported as refused and no summary is printed after it. Checked by the
+same `check/transact-check.py`: on every write path a 2xx must coincide with exactly one new commit
+whose id the response names, and a non-2xx with none — the response and the repository read back
+together, so a success printed over a refusal, or a refusal printed over a commit, is a failing
+cell.
 
 **8. An advertised row has something behind it.** An area with no representative, a CORE row with
 no area, an edge to nothing, a node with neither body nor children: errors, not warnings, because a
