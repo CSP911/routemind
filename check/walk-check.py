@@ -86,7 +86,7 @@ try:
     check("  and the refusal says how to start: at hop 0, with resolve", "hop 0" in t and "knowledge_resolve" in t, t[:200])
     t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body"})
     check("a document without a walk is refused", err and "walk" in t, t[:140])
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": "w9"})
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": "w9", "why": "the check walks here"})
     check("a walk id this session never opened is refused", err and "not one this session opened" in t, t[:160])
 
     # ── hop 0 opens a walk ───────────────────────────────────────────────────
@@ -94,9 +94,9 @@ try:
     w1 = walk_id(t)
     check("hop 0 with no address needs no walk and opens one", not err and w1.startswith("w"), t[:200])
     check("  and still prints the area list", "/v1/regions/expense" in t)
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w1})
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w1, "why": "the check walks here"})
     check("the area's table opens with it", not err and "/v1/nodes/" in t, t[:160])
-    t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body", "walk": w1})
+    t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body", "walk": w1, "why": "the check walks here"})
     check("a document opens with it", not err and "Qualifying evidence" in t, t[:160])
 
     # ── a new hop 0 ends the old walk ────────────────────────────────────────
@@ -104,9 +104,9 @@ try:
     w2 = walk_id(t)
     check("resolve opens a new walk", not err and w2.startswith("w") and w2 != w1, t[:200])
     check("  and prints hop 0 with it", "/v1/regions/expense" in t)
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w1})
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w1, "why": "the check walks here"})
     check("the old walk is over once a new hop 0 was served", err and "is over" in t and "new hop 0" in t, t[:160])
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w2})
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w2, "why": "the check walks here"})
     check("  and the new one works", not err)
 
     # ── "not here" needs the whole list ──────────────────────────────────────
@@ -119,9 +119,9 @@ try:
         if check("an overlay can be opened (to test closing it)", not err and bool(oid), t[:200]):
             t, err = m.call("knowledge_overlay", {"op": "close", "id": oid, "outcome": "not_found", "used": []})
             check("closing as not_found without a walk is refused", err and "whole list" in t or "walk" in t, t[:160])
-            t, err = m.call("knowledge_overlay", {"op": "close", "id": oid, "outcome": "not_found", "used": [], "walk": w2})
+            t, err = m.call("knowledge_overlay", {"op": "close", "id": oid, "outcome": "not_found", "used": [], "walk": w2, "why": "the check walks here"})
             check("  and allowed inside the walk", not err, t[:160])
-            t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w2})
+            t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w2, "why": "the check walks here"})
             check("  after which the walk is over — the question was answered", err and "closed" in t, t[:160])
     else:
         results.append("skip overlay: this backend lists no knowledge_overlay")
@@ -136,7 +136,7 @@ try:
     m2 = Mcp(env={"KNOWLEDGE_WALK_TTL": "1"})
     t, _ = m2.call("knowledge_table", {})
     w = walk_id(t); time.sleep(1.5)
-    t, err = m2.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w})
+    t, err = m2.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w, "why": "the check walks here"})
     check("a walk expires", err and "expired" in t, t[:160])
     m2.close()
 finally:

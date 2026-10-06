@@ -124,7 +124,7 @@ class Mcp:
         """Hop 0 with no path; below it, with the walk hop 0 issued (invariant 1, enforced in the MCP
         since 2026-10-06). A call below hop 0 before any hop 0 fetches hop 0 first, as an agent would."""
         if path and not getattr(self, "walk", ""): self.table()
-        args = {"path": path, "walk": self.walk} if path else {}
+        args = {"path": path, "walk": self.walk, "why": "the check walks here"} if path else {}
         r = self.rpc("tools/call", {"name": "knowledge_table", "arguments": args})
         text = ((r.get("result") or {}).get("content") or [{}])[0].get("text", "")
         if not path:

@@ -176,7 +176,7 @@ if HAS_AREAS:
 else:
     results.append("--   no areas yet; there is no address for hop 0 to print")
 if addrs:
-    area, err = c.text("knowledge_table", {"path": addrs[0], "walk": WALK})
+    area, err = c.text("knowledge_table", {"path": addrs[0], "walk": WALK, "why": "the check walks here"})
     check(f"the area table fetches ({addrs[0]})", not err)
     check("an area does not claim absence for the world", "go back to /v1/regions" in area)
     # A document address taken out of the rendered table, because the text is all an agent has. It
@@ -188,7 +188,7 @@ if addrs:
     # `knowledge_read` takes — rather than to the spelling of a path.
     files = [p[1] for line in area.splitlines() if (p := line.split())[:1] == ["file"] and len(p) > 1]
     if files:
-        doc, err = c.text("knowledge_read", {"path": files[0], "walk": WALK})
+        doc, err = c.text("knowledge_read", {"path": files[0], "walk": WALK, "why": "the check walks here"})
         check(f"the document reads ({files[0]})", not err and len(doc) > 0)
     else:
         results.append("--   that area holds no document yet; the read step needs one")
@@ -203,7 +203,7 @@ if addrs:
 kinds = {e.get("type") for e in entries}
 if "data" in kinds:
     row = next(e for e in entries if e.get("type") == "data")
-    doc, err = c.text("knowledge_read", {"path": row["fetch"], "walk": WALK})
+    doc, err = c.text("knowledge_read", {"path": row["fetch"], "walk": WALK, "why": "the check walks here"})
     check("a data row's own address reads as a document", not err and len(doc) > 0)
 else:
     results.append("--   no written document here; that row of the table is unchecked")
@@ -211,7 +211,7 @@ if "empty" in kinds:
     row = next(e for e in entries if e.get("type") == "empty")
     line = next((l for l in area.splitlines() if row["fetch"] in l), "")
     check("an empty row is labelled empty, not table", line.strip().startswith("empty"))
-    _, err = c.text("knowledge_read", {"path": row["fetch"] + "/body", "walk": WALK})
+    _, err = c.text("knowledge_read", {"path": row["fetch"] + "/body", "walk": WALK, "why": "the check walks here"})
     check("and reading it says nobody wrote it", err)
 else:
     results.append("--   no empty entity here; that row of the table is unchecked")
@@ -243,9 +243,9 @@ check("  and a prompt that does not exist is an error, not hop 0",
       "error" in bad, json.dumps(bad)[:110])
 
 # Refusals have to say what to do instead, not just fail.
-bad, err = c.text("knowledge_read", {"path": "/v1/regions", "walk": WALK})
+bad, err = c.text("knowledge_read", {"path": "/v1/regions", "walk": WALK, "why": "the check walks here"})
 check("reading a table says to call the other tool", err and "knowledge_table" in bad)
-bad, err = c.text("knowledge_table", {"path": "regions/made-up", "walk": WALK})
+bad, err = c.text("knowledge_table", {"path": "regions/made-up", "walk": WALK, "why": "the check walks here"})
 check("an invented address is refused with the shapes that work", err and "/v1/regions/<area>" in bad)
 
 c.close()

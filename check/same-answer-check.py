@@ -179,7 +179,7 @@ def compare(repo, label):
             prow = next((r for r in placed.get("rows", []) if r["id"] == i), None)
             if prow is not None:
                 n_cells += 1; same(f"node {i} one_liner", "file", f.get("one_liner"), "place rows", prow.get("line"))
-            t, err = m.call("knowledge_table", {"path": f"/v1/nodes/{par}", "walk": walk})
+            t, err = m.call("knowledge_table", {"path": f"/v1/nodes/{par}", "walk": walk, "why": "the check walks here"})
             pr = table_rows(t)
             addr = next((k for k in pr if k.rstrip("/body").endswith(f"/v1/nodes/{i}") or k == f"/v1/nodes/{i}/body" or k == f"/v1/nodes/{i}"), None)
             if addr:
@@ -188,7 +188,7 @@ def compare(repo, label):
         if body:
             st, api_body = get(f"/v1/nodes/{i}/body", raw=True)
             n_cells += 1; same(f"node {i} body", "file", body, "api body", (api_body or "").strip())
-            t, err = m.call("knowledge_read", {"path": f"/v1/nodes/{i}/body", "walk": walk})
+            t, err = m.call("knowledge_read", {"path": f"/v1/nodes/{i}/body", "walk": walk, "why": "the check walks here"})
             n_cells += 1; same(f"node {i} body", "file", body, "mcp read", (t or "").strip()[:len(body)], prefix=True)
     m.close()
 

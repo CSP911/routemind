@@ -101,6 +101,14 @@ file: provider keys, private-key blocks, a tracked `.env`, a token written in YA
 somebody's machine. Runs with the static checks; verified to fire on each shape planted in a
 temporary repository.
 
+**11. Every walk is recorded, and the screen and the agent read the same record.** The MCP server
+opens a walk when hop 0 is served, reports every step below hop 0 with the reason the agent gave,
+and closes it with the overlay; the record lives in `ONTOLOGY_WALKS` (`docs/FOOTPRINT.md`). The
+screen's live footprint and its replay, the HEAT column on every table and the `history` hint on a
+resolution all read that record and nothing else. Steps are numbered from one counter so a reader
+polling by cursor loses nothing; a step without a reason is refused. Checked by
+`check/footprint-check.py`; the screen's polling and replay by `check/screen-check.mjs`.
+
 ## What is not on this list
 
 Things that are true but are design, not invariants: one sentence per area; `use_when` is what an

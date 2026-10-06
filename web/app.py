@@ -332,6 +332,21 @@ def api_knowledge_create_overlay(payload: dict, request: Request) -> dict[str, A
     return _ontology_proxy("POST", "/v1/overlays", actor, data)
 
 
+@_iris_route("GET", "/api/knowledge/walks")
+def api_knowledge_walks(request: Request, since: str = Query(default=""), state: str = Query(default="")) -> dict[str, Any]:
+    # The footprint, for the map: every step after a cursor (the live view), or the list of walks.
+    if since and not since.isdigit(): raise HTTPException(status_code=422, detail="since must be a step number.")
+    if state and state not in ("open", "closed"): raise HTTPException(status_code=422, detail="state must be open or closed.")
+    q = "?since=" + since if since else ("?state=" + state if state else "")
+    return _ontology_proxy("GET", "/v1/walks" + q, _knowledge_actor(request))
+
+
+@_iris_route("GET", "/api/knowledge/walks/{walk_id}")
+def api_knowledge_walk(walk_id: str, request: Request) -> dict[str, Any]:
+    # One walk whole — what the replay plays.
+    return _ontology_proxy("GET", "/v1/walks/" + _overlay_id(walk_id), _knowledge_actor(request))
+
+
 @_iris_route("GET", "/api/knowledge/overlays/{overlay_id}")
 def api_knowledge_overlay(overlay_id: str, request: Request) -> dict[str, Any]:
     return _ontology_proxy("GET", "/v1/overlays/" + _overlay_id(overlay_id), _knowledge_actor(request))

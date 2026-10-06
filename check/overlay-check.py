@@ -129,9 +129,9 @@ check("remove drops the area's section", not err and "── /v1/regions/alpha" 
 # An overlay's address is below hop 0, so reading it needs the walk hop 0 issues (invariant 1).
 top, _ = m.tool("knowledge_table", {})
 WALK = next((l.split(":", 1)[1].strip().split()[0] for l in top.splitlines() if l.strip().startswith("walk")), "")
-text, err = m.tool("knowledge_table", {"path": f"/v1/overlays/{oid}", "walk": WALK})
+text, err = m.tool("knowledge_table", {"path": f"/v1/overlays/{oid}", "walk": WALK, "why": "the check walks here"})
 check("knowledge_table reads an overlay too", not err and f"OVERLAY {oid}" in text)
-text, err = m.tool("knowledge_read", {"path": f"/v1/overlays/{oid}", "walk": WALK})
+text, err = m.tool("knowledge_read", {"path": f"/v1/overlays/{oid}", "walk": WALK, "why": "the check walks here"})
 check("  and knowledge_read refuses it as a table", err and "is a table" in text)
 
 text, err = m.tool("knowledge_overlay", {"op": "add", "id": oid, "address": "/v1/nodes/not-a-thing", "why": "guess"})

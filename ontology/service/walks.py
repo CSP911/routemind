@@ -1,0 +1,211 @@
+"""The footprint: every walk an agent takes, as it takes it — one record, read by the screen and by
+the next agent alike.
+
+A walk is a question's path through the routing table: hop 0, the areas it opened, the nodes, the
+documents it read, and at every step the reason the agent gave. The MCP server issues the walk and
+reports each step here; the screen follows the record and expands the map in the same order; the
+history is what the next walk is shown as a hint — which rows were walked, which answered. One
+record, three readers. Invariant 11 in docs/INVARIANTS.md: *every walk is recorded, and the screen
+and the agent read the same record.*
+
+**Numbered, not timed.** Every step gets the next integer from one counter across all walks, and a
+reader asks for "everything after N". A clock would lose steps — two in the same millisecond, a
+reader that polls between them — and the screen's one requirement was *no loss*. The counter is
+kept in a file so a restart continues it rather than starting over, which would hand a reader its
+own old cursor as new.
+
+**Six hours.** A closed walk is kept for six hours (the operator's number, 2026-10-07) — long enough
+to replay what happened this shift and to count what was hot, short enough that the directory does
+not become a log. An open walk nobody touches for an hour is closed as `abandoned`, which is a
+different fact from answered and from not-found.
+
+**Reasons are required.** A step without a `why` is refused: the record exists so a person can see
+not just where the agent went but what it was thinking when it went there, and a trail of
+addresses with no reasons is the access log, which already exists.
+
+Same shape as the overlay store, on purpose: one JSON file per record, written through a temp file
+so a reader never sees half of one, expiry decided on the way past.
+"""
+import json, re, threading, time, uuid
+from pathlib import Path
+
+OPEN, CLOSED = "open", "closed"
+OUTCOMES = ("answered", "not_found", "abandoned")
+ID_RE = re.compile(r"^wk_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9a-f]{6}$")
+OPS = ("open", "resolve", "table", "read", "close")
+
+
+class WalkError(Exception):
+    def __init__(self, status: int, message: str):
+        super().__init__(message); self.status = status
+
+
+def _now() -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
+def _age_hours(stamp: str) -> float:
+    try:
+        import calendar
+        t = calendar.timegm(time.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ"))
+    except Exception:
+        return 0.0
+    return max(0.0, (time.time() - t) / 3600.0)
+
+
+def key_of(address: str) -> str | None:
+    """The thing an address is about, for counting: an area's dir, or a node's id."""
+    a = str(address or "").rstrip("/")
+    m = re.match(r"^/v1/regions/([a-z0-9_-]+)$", a)
+    if m: return m.group(1).replace("_", "-")
+    m = re.match(r"^/v1/nodes/([a-z0-9-]+)(?:/body)?$", a)
+    if m: return m.group(1)
+    return None
+
+
+class WalkStore:
+    def __init__(self, root: Path, *, keep_hours: float = 6.0, open_hours: float = 1.0, steps_max: int = 400):
+        self.root = Path(root)
+        self.keep_hours, self.open_hours, self.steps_max = keep_hours, open_hours, steps_max
+        self.root.mkdir(parents=True, exist_ok=True)
+        self._lock = threading.Lock()
+
+    # ---- files ----
+    def path(self, wid: str) -> Path:
+        if not ID_RE.match(wid or ""): raise WalkError(404, f"no walk {wid!r}")
+        return self.root / f"{wid}.json"
+
+    def _read(self, p: Path) -> dict | None:
+        try: return json.loads(p.read_text(encoding="utf-8"))
+        except Exception: return None
+
+    def _write(self, w: dict) -> None:
+        p = self.path(w["id"]); tmp = p.with_suffix(".tmp")
+        tmp.write_text(json.dumps(w, ensure_ascii=False, indent=1), encoding="utf-8")
+        tmp.replace(p)
+
+    def _next_seq(self) -> int:
+        """One counter for every step of every walk. In a file, so a restart continues it."""
+        p = self.root / "_seq"
+        try: n = int(p.read_text().strip() or 0)
+        except Exception: n = 0
+        n += 1
+        tmp = p.with_suffix(".tmp"); tmp.write_text(str(n)); tmp.replace(p)
+        return n
+
+    def seq(self) -> int:
+        try: return int((self.root / "_seq").read_text().strip() or 0)
+        except Exception: return 0
+
+    # ---- expiry, on the way past ----
+    def _settle(self, w: dict) -> dict | None:
+        if w.get("state") == OPEN and _age_hours(w.get("touched_at") or w.get("at", "")) >= self.open_hours:
+            self._close(w, "abandoned", f"untouched for {self.open_hours:g}h")
+        if w.get("state") != OPEN and _age_hours(w.get("closed_at") or w.get("at", "")) >= self.keep_hours:
+            self.path(w["id"]).unlink(missing_ok=True)
+            return None
+        return w
+
+    def all(self, state: str | None = None) -> list[dict]:
+        out = []
+        for p in sorted(self.root.glob("wk_*.json")):
+            w = self._read(p)
+            if not w: continue
+            w = self._settle(w)
+            if w and (not state or w["state"] == state): out.append(w)
+        return out
+
+    def get(self, wid: str) -> dict:
+        w = self._read(self.path(wid))
+        if not w: raise WalkError(404, f"no walk {wid}")
+        w = self._settle(w)
+        if not w: raise WalkError(404, f"walk {wid} has expired")
+        return w
+
+    # ---- writes ----
+    def _step(self, w: dict, op: str, address: str, why: str) -> dict:
+        s = {"n": self._next_seq(), "op": op, "address": address, "why": why, "at": _now()}
+        w["steps"].append(s); w["touched_at"] = s["at"]
+        return s
+
+    def open(self, question: str, how: str, by: dict | None) -> dict:
+        """A new walk, from hop 0. The first step is the opening itself, so a reader polling by
+        cursor learns of the walk the same way it learns of everything else."""
+        q = str(question or "").strip()
+        with self._lock:
+            w = {"id": f"wk_{time.strftime('%Y-%m-%d', time.gmtime())}_{uuid.uuid4().hex[:6]}",
+                 "question": q, "how": str(how or ""), "by": {k: str(v) for k, v in (by or {}).items() if v},
+                 "at": _now(), "touched_at": _now(), "state": OPEN, "outcome": None, "closed_at": None, "steps": []}
+            self._step(w, "open", "/v1/regions", q or "(no question given)")
+            self._write(w)
+        return w
+
+    def step(self, wid: str, op: str, address: str, why: str) -> dict:
+        if op not in ("resolve", "table", "read"): raise WalkError(400, f"op must be resolve, table or read (got {op!r})")
+        why = str(why or "").strip()
+        if not why: raise WalkError(400, "why is required — a step with no reason is the access log, which already exists")
+        with self._lock:
+            w = self.get(wid)
+            if w["state"] != OPEN: raise WalkError(409, f"walk {wid} is {w['state']} — a step cannot be added to it")
+            if len(w["steps"]) >= self.steps_max: raise WalkError(409, f"walk {wid} has {self.steps_max} steps already — it is looping")
+            s = self._step(w, op, str(address or ""), why[:200])
+            self._write(w)
+        return s
+
+    def _close(self, w: dict, outcome: str, why: str) -> None:
+        w["state"], w["outcome"], w["closed_at"] = CLOSED, outcome, _now()
+        self._step(w, "close", "", why)
+        self._write(w)
+
+    def close(self, wid: str, outcome: str, why: str = "") -> dict:
+        if outcome not in OUTCOMES: raise WalkError(400, f"outcome must be one of {', '.join(OUTCOMES)}")
+        with self._lock:
+            w = self.get(wid)
+            if w["state"] != OPEN: raise WalkError(409, f"walk {wid} is already {w['state']}")
+            self._close(w, outcome, str(why or outcome)[:200])
+        return w
+
+    # ---- reads for the screen and the next agent ----
+    def since(self, n: int) -> dict:
+        """Every step after cursor `n`, oldest first, with the walk each belongs to. The reader keeps
+        the last `n` it saw and asks again; nothing between two asks can be missed."""
+        rows = []
+        for w in self.all():
+            for s in w["steps"]:
+                if s["n"] > n:
+                    rows.append({"walk": w["id"], "question": w["question"], "state": w["state"], "outcome": w["outcome"],
+                                 "by": w.get("by") or {}, **s})
+        rows.sort(key=lambda r: r["n"])
+        return {"seq": self.seq(), "steps": rows}
+
+    def heat(self) -> dict:
+        """For every area and node touched in the kept window: how many walks went there, and how
+        many of those ended answered. Counted per walk, not per step — a walk that read a table
+        twice was there once."""
+        out: dict[str, dict] = {}
+        for w in self.all():
+            seen = set()
+            for s in w["steps"]:
+                k = key_of(s.get("address")) if s["op"] in ("table", "read") else None
+                if not k or k in seen: continue
+                seen.add(k)
+                h = out.setdefault(k, {"walked": 0, "answered": 0})
+                h["walked"] += 1
+                if w["outcome"] == "answered": h["answered"] += 1
+        return out
+
+    def hot(self, keys: list[str], limit: int = 3) -> dict:
+        """For the things named: the walks that touched them, and the paths those walks took —
+        the sequence of tables opened — most common first. A hint about where previous walks went,
+        structural and never an answer: it names addresses, not which record governs."""
+        paths: dict[tuple, int] = {}
+        n = 0
+        want = set(keys)
+        for w in self.all():
+            touched = {key_of(s.get("address")) for s in w["steps"] if s["op"] in ("table", "read")}
+            if not (touched & want): continue
+            n += 1
+            path = tuple(s["address"] for s in w["steps"] if s["op"] == "table")
+            if path: paths[path] = paths.get(path, 0) + 1
+        top = sorted(paths.items(), key=lambda kv: -kv[1])[:limit]
+        return {"walks": n, "paths": [{"path": list(p), "walks": c} for p, c in top]}

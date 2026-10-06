@@ -33,6 +33,7 @@ from service.validate_service import validate_services      # noqa: E402
 from service.write_service import ServiceWriter             # noqa: E402
 from service import peers as peering                        # noqa: E402
 from service import overlays                                # noqa: E402
+from service import walks                                   # noqa: E402
 from service import curator                                 # noqa: E402
 from service import access                                  # noqa: E402
 
@@ -52,6 +53,8 @@ SERVICE_PUBLISH = Path(os.environ["ONTOLOGY_SERVICE_PUBLISH"]) if os.environ.get
 # swapped atomically, so a sibling that is neither would be published by accident. Unset → 501, the
 # same way a missing ONTOLOGY_SERVICES answers.
 OVERLAYS = Path(os.environ["ONTOLOGY_OVERLAYS"]) if os.environ.get("ONTOLOGY_OVERLAYS") else None
+# The footprint — every walk, as it is walked (docs/FOOTPRINT.md). Unset → 501, like overlays.
+WALKS = Path(os.environ["ONTOLOGY_WALKS"]) if os.environ.get("ONTOLOGY_WALKS") else None
 PORT = int(os.environ.get("PORT", "8100"))
 store = Store(DATA); writer = Writer(DATA, PUBLISH, FRAGMENTS)
 # Fragments carry decisions, Core carries structure (SPEC-service-fragment §1). Separate repo, separate
@@ -561,6 +564,44 @@ def _advert_service_file(sid: str, f: dict) -> dict:
 _overlay_store = None
 
 
+_walk_store = None
+
+
+def wstore():
+    """The walk record, when `ONTOLOGY_WALKS` is set. Settings mirror the overlay store's."""
+    global _walk_store
+    if not WALKS: raise WriteError(501, "ONTOLOGY_WALKS is not configured — the footprint is off")
+    if _walk_store is None:
+        _walk_store = walks.WalkStore(WALKS,
+                                      keep_hours=float(os.environ.get("ONTOLOGY_WALK_KEEP_HOURS", "6")),
+                                      open_hours=float(os.environ.get("ONTOLOGY_WALK_OPEN_HOURS", "1")))
+    return _walk_store
+
+
+def _heat() -> dict:
+    """HEAT for every row on a table — walked / answered in the kept window — or nothing at all when
+    the footprint is off. Nothing: a column of zeros would say "never walked", which is a different
+    fact from "not recorded"."""
+    if not WALKS: return {}
+    # Remembered until the next step: a table asks once per row, and the answer is a count over every
+    # walk on disk. Keyed on the step counter, not the clock — it was a one-second memo at first, and
+    # a table read within a second of a step showed HEAT from before it, which is derived state not
+    # following its source (invariant 3). The counter moves on every step, so this is exact.
+    # Expiry can change the count without a step — a walk crossing its six hours — so the minute is
+    # part of the key: a step is exact, an expiry is at most a minute late.
+    global _HEAT_MEMO
+    try: key = (wstore().seq(), int(time.time() // 60))
+    except Exception: return {}
+    if _HEAT_MEMO and _HEAT_MEMO[0] == key: return _HEAT_MEMO[1]
+    try: h = wstore().heat()
+    except Exception: h = {}
+    _HEAT_MEMO = (key, h)
+    return h
+
+
+_HEAT_MEMO = None
+
+
 def ostore():
     global _overlay_store
     if _overlay_store is None:
@@ -717,6 +758,9 @@ def _advert_child(c: dict) -> dict:
     row = {"id": c["id"], "name": c["name"], "kind": c["kind"], "one_liner": c["one_liner"],
            "type": kind, "has_body": has_body, "children": len(kids),
            "whose": _whose(c, {"grafted_from": _from}),
+           # HEAT: walks that came here in the kept window, and how many of them ended answered.
+           # Absent when the footprint is off — absent is "not recorded", a zero would be "never".
+           **({"heat": _heat()[c["id"]]} if c["id"] in _heat() else {}),
            **({"route_since": age["route_since"]} if age.get("route_since") else {}),
            **({"changed": age["changed"]} if age.get("changed") else {}),
            # The row carries the call that answers it. A document is not read at the address that
@@ -1107,6 +1151,11 @@ class Handler(BaseHTTPRequestHandler):
                                  absence=(_absence(links) if links else None))
             r["areas"] += [{"id": t.get("id"), "area": t.get("source"), "use_when": t.get("use_when") or "",
                             "fetch": t.get("fetch"), "changed": None, "peer": t.get("peer")} for t in theirs]
+            # The hot path: where previous walks for these names went, as addresses and counts. A
+            # hint about *where*, never about which record governs — the walk still starts at hop 0.
+            if WALKS and r.get("names"):
+                try: r["history"] = wstore().hot([n["is"] for n in r["names"]])
+                except Exception: pass
             return self._send(200, r)
         if parts == ["regions"]:
             q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
@@ -1129,6 +1178,7 @@ class Handler(BaseHTTPRequestHandler):
                 {"id": r["id"], "source": r["source"], "title": r["title"], "description": r.get("description", ""),
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
                  "whose": _whose({}, r),
+                 **({"heat": _heat()[r["source"].replace("_", "-")]} if r["source"].replace("_", "-") in _heat() else {}),
                  **_area_age(r.get("representative")),
                  "fetch": f"/v1/regions/{r['source'].replace('_', '-')}",
                  **({"entries": entries_of(r.get("representative"))} if expand else {})}
@@ -1227,6 +1277,25 @@ class Handler(BaseHTTPRequestHandler):
                 try: return self._send(200, overlay_out(ostore().get(parts[1])))
                 except overlays.OverlayError as e: return self._err(e.status, str(e))
             return self._err(404, "unknown path")
+        if parts[:1] == ["walks"]:
+            # The footprint, read: everything after a cursor for the screen's live view, or one walk
+            # whole for a replay. Reading is also when expiry is decided.
+            if not WALKS: return self._err(501, "ONTOLOGY_WALKS is not configured — the footprint is off")
+            try:
+                if len(parts) == 1:
+                    q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
+                    if "since" in q:
+                        try: n = int(q.get("since") or 0)
+                        except ValueError: return self._err(400, "since must be a step number")
+                        return self._send(200, wstore().since(n))
+                    want = q.get("state") or None
+                    return self._send(200, {"seq": wstore().seq(), "walks": [
+                        {k: w[k] for k in ("id", "question", "how", "by", "at", "touched_at", "state", "outcome", "closed_at")}
+                        | {"steps": len(w["steps"])} for w in wstore().all(want)]})
+                if len(parts) == 2 and parts[1] == "heat": return self._send(200, {"heat": wstore().heat()})
+                if len(parts) == 2: return self._send(200, wstore().get(parts[1]))
+            except walks.WalkError as e: return self._err(e.status, str(e))
+            return self._err(404, "unknown path")
         if parts == ["validate"]: return self._send(200, validate(store))
         if len(parts) == 2 and parts[0] == "curator":
             q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
@@ -1315,6 +1384,24 @@ class Handler(BaseHTTPRequestHandler):
                 "propagation": placing.propagation(doc, ancestors),
                 "export": ({"region": region["dir"], "export": bool(region.get("export"))} if region else None),
                 "terms": placing.terms(doc), "revision": head(DATA)})
+        if parts[:1] == ["walks"] and method == "POST":
+            # The footprint, written: by the MCP server, which is the only thing that sees a walk.
+            # Not a write to the repository — nothing here is committed — but it goes through
+            # `_write` so the one actor header every write carries names who walked.
+            if not WALKS: return self._err(501, "ONTOLOGY_WALKS is not configured — the footprint is off")
+            try:
+                if len(parts) == 1:
+                    w = wstore().open(str(body.get("question") or ""), str(body.get("how") or ""),
+                                      {"kind": "agent", "name": actor})
+                    return self._send(201, {"id": w["id"], "seq": w["steps"][-1]["n"], "at": w["at"]})
+                if len(parts) == 3 and parts[2] == "steps":
+                    s = wstore().step(parts[1], str(body.get("op") or ""), str(body.get("address") or ""), str(body.get("why") or ""))
+                    return self._send(201, {"ok": True, **s})
+                if len(parts) == 3 and parts[2] == "close":
+                    w = wstore().close(parts[1], str(body.get("outcome") or ""), str(body.get("why") or ""))
+                    return self._send(200, {"ok": True, "id": w["id"], "state": w["state"], "outcome": w["outcome"]})
+            except walks.WalkError as e: return self._err(e.status, str(e))
+            return self._err(404, "unknown path")
         if parts == ["suggest", "use-when"] and method == "POST":
             name, one = str(body.get("name") or "").strip(), str(body.get("one_liner") or "").strip()
             if not name or not one: return self._err(400, "name and one_liner are required")

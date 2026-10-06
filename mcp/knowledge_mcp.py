@@ -175,17 +175,27 @@ def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) ->
     # that teaches a reader to skip the place the answer will eventually appear.
     show_whose = len({v for v in whose.values() if v}) > 1
     whose_w = max((len(v) for v in whose.values()), default=0) if show_whose else 0
+    # HEAT: walks that came to this row in the last six hours / how many of them ended answered.
+    # Printed only when the footprint is on and some row was walked — a column of blanks says
+    # "never", and what it would mean is "not recorded".
+    heat = {id(r): (f"{r['heat']['walked']}/{r['heat']['answered']}" if r.get("heat") else "") for r in rows}
+    heat_w = max((len(v) for v in heat.values()), default=0) if any(heat.values()) else 0
     out = [title, lead, ""]
     head = f"  {'KIND'.ljust(kind_w)}  {'ADDRESS'.ljust(addr_w)}  "
     if age_w: head += f"{'AGE'.ljust(age_w)}  "
     if whose_w: head += f"{'FROM'.ljust(whose_w)}  "
+    if heat_w: head += f"{'HEAT'.ljust(heat_w)}  "
     out.append(head + "WHY YOU WOULD PICK THIS ROW")
     for r in rows:
         line = f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  "
         if age_w: line += f"{ages[id(r)].ljust(age_w)}  "
         if whose_w: line += f"{whose[id(r)].ljust(whose_w)}  "
+        if heat_w: line += f"{heat[id(r)].ljust(heat_w)}  "
         out.append(line + _clip(r["why"], 100))
     out.append("")
+    if heat_w:
+        out.append("  HEAT is walks that opened this row in the last six hours / how many of those were")
+        out.append("  answered. Where others went, not where the answer is: a row nobody walked may be it.")
     if whose_w:
         out.append("  FROM says whose answer a row is, and they are not interchangeable:")
         out.append("    ours    — written here, and maintained here.")
@@ -227,7 +237,7 @@ def hop0(api: Api) -> str:
     d = api.json("/v1/regions")
     rows = [{"kind": KIND["table"], "address": r.get("fetch") or f"/v1/regions/{r.get('source')}",
              "why": r.get("use_when") or r.get("description") or r.get("title") or "",
-             "age": _age(r), "whose": r.get("whose")}
+             "age": _age(r), "whose": r.get("whose"), "heat": r.get("heat")}
             for r in (d.get("regions") or [])]
     # The API supplies this sentence when it is not the plain one — when this backbone is linked to
     # others, and above all when a link is down. Whether the list is still the whole world is not
@@ -252,7 +262,7 @@ def area(api: Api, path: str) -> str:
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose"), "heat": e.get("heat")})
     head = f"{d.get('key') or path} — {d.get('advertises') or ''}".strip(" —")
     lead = (f"When to be here: {d['use_when']}" if d.get("use_when") else "") or "What this area holds:"
     return _table(rows, head, lead,
@@ -277,7 +287,7 @@ def node(api: Api, path: str) -> str:
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or e.get('description') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose"), "heat": e.get("heat")})
     head = f"{d.get('name') or path}"
     return _table(rows, head, str(d.get("one_liner") or ""),
                   "This lists what this node holds. If what you need is not here, go back to /v1/regions.")
@@ -288,7 +298,7 @@ def _row(e: dict) -> dict:
     why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
     if kind == KIND["empty"]: why += "  (nothing written here yet)"
     return {"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e),
-            "whose": e.get("whose")}
+            "whose": e.get("whose"), "heat": e.get("heat")}
 
 
 def overlay_text(d: dict) -> str:
@@ -761,7 +771,7 @@ def resolve_for(api: Api, q: str) -> str:
     from urllib.parse import quote
     d = api.json("/v1/resolve?q=" + quote(q))
     a = d.get("ask") or {}
-    wid = open_walk(q, "knowledge_resolve")
+    wid = open_walk(api, q, "knowledge_resolve")
     out = ["ROUTEMIND — the question, resolved",
            walk_line(wid),
            f"  asked   : {d.get('q', '')}",
@@ -779,6 +789,15 @@ def resolve_for(api: Api, q: str) -> str:
                        f"{n['via']:<{w_via}}  {_since(n.get('changed'))}")
         out.append("")
         out.append("  start with: " + ", ".join(d.get("start") or []))
+        # The hot path: where earlier walks that touched these names went. Where, not what — it
+        # names tables opened, never which record governs, and it does not replace reading the lines.
+        h = d.get("history") or {}
+        if h.get("walks"):
+            out.append("")
+            out.append(f"  earlier walks touching these names (last six hours): {h['walks']}")
+            for p in (h.get("paths") or [])[:3]:
+                out.append(f"    {p['walks']}× hop 0 › " + " › ".join(x.rsplit('/', 1)[-1] for x in p["path"]))
+            out.append("  where others went, not where the answer is — read the lines.")
     else:
         out.append("  No name in this question is one the map knows. Choose from the areas below by their")
         out.append("  sentences. If none fits, that — and only that — is absence.")
@@ -840,13 +859,54 @@ WALK_TTL = float(os.environ.get("KNOWLEDGE_WALK_TTL") or 600)
 _walk_n = [0]
 
 
-def open_walk(question: str, how: str) -> str:
-    """A new walk from hop 0. Any walk already open is over — one question, one walk."""
-    for w in WALKS.values(): w["ended"] = f"a new hop 0 was served ({how})"
-    _walk_n[0] += 1
-    wid = f"w{_walk_n[0]}"
-    WALKS[wid] = {"id": wid, "q": question, "how": how, "opened": time.time(), "ended": None, "calls": 0}
+def open_walk(api: Api, question: str, how: str) -> str:
+    """A new walk from hop 0. Any walk already open is over — one question, one walk.
+
+    The id is the backbone's, so the record the screen replays and the next agent is shown is the
+    same walk this session enforces (invariant 11). When the backbone keeps no footprint (501) the
+    walk is local: enforced here, recorded nowhere, and said so once.
+    """
+    for w in WALKS.values():
+        if not w["ended"]: w["ended"] = f"a new hop 0 was served ({how})"
+    wid, remote = "", False
+    try:
+        d = api.send("POST", "/v1/walks", {"question": question, "how": how})
+        wid, remote = str(d.get("id") or ""), bool(d.get("id"))
+    except ApiError as e:
+        if "501" not in str(e) and "not configured" not in str(e):
+            sys.stderr.write(f"knowledge-mcp: footprint not recorded — {e}\n")
+    if not wid:
+        _walk_n[0] += 1; wid = f"w{_walk_n[0]}"
+    WALKS[wid] = {"id": wid, "q": question, "how": how, "opened": time.time(), "ended": None, "calls": 0, "remote": remote}
     return wid
+
+
+def report(api: Api, wid: str, op: str, address: str, why: str) -> None:
+    """One step onto the record. A step that cannot be recorded does not fail the read — but it is
+    said, because a footprint with a hole in it is worse than none when somebody replays it."""
+    w = WALKS.get(wid)
+    if not w or not w.get("remote"): return
+    try: api.send("POST", f"/v1/walks/{wid}/steps", {"op": op, "address": address, "why": why})
+    except ApiError as e:
+        sys.stderr.write(f"knowledge-mcp: step not recorded on {wid} — {e}\n")
+
+
+def close_walk(api: Api, wid: str, outcome: str, why: str) -> None:
+    w = WALKS.get(wid)
+    if not w or not w.get("remote"): return
+    try: api.send("POST", f"/v1/walks/{wid}/close", {"outcome": outcome, "why": why})
+    except ApiError as e:
+        sys.stderr.write(f"knowledge-mcp: walk {wid} not closed on the record — {e}\n")
+
+
+def need_why(args: dict, what: str) -> str:
+    """The reason for a step, required. The footprint exists so a person can see what the agent was
+    thinking, not only where it went."""
+    why = str(args.get("why") or "").strip()
+    if not why:
+        raise ApiError(f"{what} needs `why` — one line on why this row, for the record of this walk "
+                       f"(docs/FOOTPRINT.md). Say what in the row's line made you open it.")
+    return why[:200]
 
 
 def require_walk(args: dict, what: str) -> dict:
@@ -1001,14 +1061,18 @@ TOOLS = [
          "walk": {"type": "string",
                   "description": "The walk id hop 0 printed for this question (from knowledge_resolve, or "
                                  "from this tool called with no address). Required for any address below "
-                                 "hop 0 — every walk starts at hop 0."}}}},
+                                 "hop 0 — every walk starts at hop 0."},
+         "why": {"type": "string",
+                 "description": "Below hop 0, required: one line on why you are opening this row — what in "
+                                "its line made you choose it. Recorded on the walk (docs/FOOTPRINT.md)."}}}},
     {"name": "knowledge_read",
      "description": "Read one document from Knowledge, by the address a table printed for it. "
                     "Returns the document as written.",
      "inputSchema": {"type": "object", "properties": {
          "path": {"type": "string", "description": "The address a table printed for this document."},
-         "walk": {"type": "string", "description": "The walk id hop 0 printed for this question. Required."}},
-         "required": ["path", "walk"]}},
+         "walk": {"type": "string", "description": "The walk id hop 0 printed for this question. Required."},
+         "why": {"type": "string", "description": "Required: one line on why this document. Recorded on the walk."}},
+         "required": ["path", "walk", "why"]}},
 ]
 
 OVERLAY_TOOL = {
@@ -1176,11 +1240,14 @@ class Server:
             path = str(args.get("path") or "").strip()
             # Hop 0 itself: the one table that needs no walk, because it is where one begins.
             if name == "knowledge_table" and path.rstrip("/") in ("", "/", "/v1/regions"):
-                wid = open_walk("(hop 0, no question given)", "knowledge_table")
+                wid = open_walk(self.api, "(hop 0, no question given)", "knowledge_table")
                 return walk_line(wid) + "\n\n" + hop0(self.api), False
             # Everything below hop 0 belongs to a walk — invariant 1 — and is refused without one.
+            # And every step is recorded with the reason the agent gave — invariant 11.
             if name in ("knowledge_table", "knowledge_read"):
-                require_walk(args, f"{name} {path}")
+                w = require_walk(args, f"{name} {path}")
+                why = need_why(args, f"{name} {path}")
+                report(self.api, w["id"], "table" if name == "knowledge_table" else "read", path, why)
             # An address into an open circuit is answered by the circuit, not this backbone. The
             # agent never composes one: it follows what a circuit's own tables printed, the same
             # discipline as every other address here.
@@ -1197,9 +1264,14 @@ class Server:
                 # "Not here" may be said only by someone who has seen the whole list — invariant 2.
                 # Closing as answered ends the walk too: the question is over.
                 if str(args.get("op") or "") == "close":
-                    if str(args.get("outcome") or "") == "not_found":
+                    outcome = str(args.get("outcome") or "")
+                    if outcome == "not_found":
                         require_walk(args, "closing an overlay as not_found")
                     out = overlay_call(self.api, args)
+                    wid = str(args.get("walk") or "").strip()
+                    if wid in WALKS and not WALKS[wid]["ended"]:
+                        close_walk(self.api, wid, outcome if outcome in ("answered", "not_found") else "answered",
+                                   f"overlay closed {outcome or 'answered'}")
                     end_walk(args, "its overlay was closed")
                     return out, False
                 return overlay_call(self.api, args), False
