@@ -162,6 +162,8 @@ else
   # Invariant 3, the derived state that is not a file: a peer's advertisement, a session and the
   # MCP's area list each follow their source without waiting out a timer. Two backbones, an MCP.
   run follow      $HOSTPY check/follow-check.py
+  # An area with a hyphen in its directory, on every path that once spelled it two ways (user report 2026-10-07).
+  run hyphen      $HOSTPY check/hyphen-check.py
   # Invariant 11: every walk recorded, the screen and the agent reading the same record — the
   # store, the service and an agent through the MCP; then the real page polling and replaying it.
   run footprint   $HOSTPY check/footprint-check.py

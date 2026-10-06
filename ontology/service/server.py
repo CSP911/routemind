@@ -1088,7 +1088,7 @@ class Handler(BaseHTTPRequestHandler):
             n = store.node(parts[1])
             # 404 and not 403: whether this backbone holds a thing it has not shared is itself
             # something the peer has no business learning. The two answers must be indistinguishable.
-            if not n or (n.get("region") or "") not in {r["source"] for r in visible.values()}:
+            if not n or (n.get("region") or "") not in {dir_of(r["source"]) for r in visible.values()}:
                 return self._err(404, f"no exported node {parts[1]}")
             # A draft is not in the area's advertised list, and across a link that list is the only
             # access control there is. Locally the same node answers by address on purpose — the
@@ -1120,7 +1120,7 @@ class Handler(BaseHTTPRequestHandler):
             """
             ok = set()
             for n in store.nodes():
-                if (n.get("region") or "") not in {r["source"] for r in visible.values()}: continue
+                if (n.get("region") or "") not in {dir_of(r["source"]) for r in visible.values()}: continue
                 if _draft_anywhere(n) or _kind_denied_anywhere(n, _denied_kinds()): continue
                 ok.add(n["id"])
             self._as_peer = True
@@ -1536,6 +1536,13 @@ def _to_export(payload):
     return payload
 
 
+def dir_of(source: str) -> str:
+    """An area's directory from a `source`, in either spelling. Before 2026-10-07 derive wrote the
+    directory with hyphens turned into underscores; committed tables and older backbones still say so.
+    Directory names are kebab-case (create_region refuses an underscore), so this is exact."""
+    return str(source or "").replace("_", "-")
+
+
 _LIVE_SAID: set = set()
 _HEALTH_VALID: dict = {}
 
@@ -1782,7 +1789,10 @@ def main():
     # clean tree, since the transaction refuses a dirty one rather than commit somebody's half-done
     # hand edit along with the fix. Left stale, readers are served the files' truth regardless
     # (`_regions_live`); this is the disk catching up with them.
-    drift = [e for e in res["errors"] if "no longer matches the files it is derived from" in e]
+    # Both are "the derived table is not what the files say" — the second is a table written before
+    # 2026-10-07, when `source` spelled a hyphenated directory with underscores. Regenerating fixes both.
+    drift = [e for e in res["errors"] if "no longer matches the files it is derived from" in e
+             or "source must be the directory name" in e]
     if drift and len(drift) == len(res["errors"]) and head(DATA):
         try:
             out = writer.transact("regions.json: regenerated — it was committed stale", "ontology", lambda: None)

@@ -483,7 +483,8 @@ def circuit_table(name: str, payload: str) -> str:
     pre = f"/v1/circuits/{name}"
     rows = []
     for r in (d.get("regions") or []):
-        src = r.get("source") or r.get("id") or ""
+        # Its own `fetch` first; the source only as a fallback, in either spelling.
+        src = (str(r.get("fetch") or "").rsplit("/", 1)[-1] if r.get("fetch") else "") or str(r.get("source") or r.get("id") or "").replace("_", "-")
         rows.append({"kind": KIND["table"], "address": f"{pre}/regions/{src}",
                      "why": r.get("use_when")
                             or r.get("description") or r.get("title") or ""})
@@ -866,8 +867,13 @@ def open_walk(api: Api, question: str, how: str) -> str:
     same walk this session enforces (invariant 11). When the backbone keeps no footprint (501) the
     walk is local: enforced here, recorded nowhere, and said so once.
     """
+    # One question, one walk: the walk before this one is over — here, and on the record. An agent that
+    # never closes its overlay used to leave every walk "walking" on the map for an hour. It is closed
+    # `abandoned`, which is true: nothing said it was answered, and the next question started.
     for w in WALKS.values():
-        if not w["ended"]: w["ended"] = f"a new hop 0 was served ({how})"
+        if not w["ended"]:
+            w["ended"] = f"a new hop 0 was served ({how})"
+            close_walk(api, w["id"], "abandoned", "a new question started before this one was closed")
     wid, remote = "", False
     try:
         d = api.send("POST", "/v1/walks", {"question": question, "how": how})

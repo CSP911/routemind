@@ -78,7 +78,7 @@ def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], li
     Returns (what was written, what could not be rewritten).
     """
     rename = {n["id"]: f"{prefix}-{n['id']}" for n in payload.get("nodes") or [] if n.get("id")}
-    areas = {r.get("source") for r in (payload.get("regions") or []) if r.get("source")}
+    areas = {str(r.get("source")).replace("_", "-") for r in (payload.get("regions") or []) if r.get("source")}
     written, unresolved = [], []
 
     # A body line that addresses another area's document. None exist in the shipped corpus, so this
@@ -96,7 +96,8 @@ def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], li
         return ref.sub(one, body or "")
 
     for r in payload.get("regions") or []:
-        src = r.get("source")
+        # The directory, in either spelling: bundles made before 2026-10-07 carry underscores.
+        src = str(r.get("source") or "").replace("_", "-")
         if not src: continue
         newsrc = f"{prefix}-{src}"
         d = repo / "regions" / newsrc

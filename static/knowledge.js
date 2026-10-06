@@ -3113,7 +3113,7 @@
   async function agentContext() {
     const d = await request("regions");
     const rows = (d.regions || []).map((r) => ({
-      address: r.fetch || `/v1/regions/${r.source}`,
+      address: r.fetch || `/v1/regions/${norm(r.source)}`,
       why: r.use_when || r.description || r.title || "",
     }));
     const w = Math.max(7, ...rows.map((r) => r.address.length));

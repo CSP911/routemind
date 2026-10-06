@@ -38,7 +38,13 @@ def regions_doc(store: Store) -> str:
     for r in sorted(d.name for d in (root / "regions").iterdir() if d.is_dir()):
         # SPEC-v2 §1.1 — an area is a namespace. What it is, **its top representative advertises**.
         top = next((n for n in nodes if n["region"] == r and n.get("role") == "representative" and not n.get("parent")), None)
-        regs.append({"id": region_label(r), "source": r.replace("-", "_"),
+        # `source` is the directory name, as it is. It used to have its hyphens turned into underscores,
+        # which gave every hyphenated area two spellings — and the export surface compared a node's
+        # area (`back-office`) against the source (`back_office`), so every node of an exported area
+        # with a hyphen in its name was a 404 to every peer while the area's own table read fine.
+        # Reported by a user 2026-10-07. Readers still accept the old spelling (`dir_of`), because
+        # committed tables and other backbones' answers carry it until they are regenerated.
+        regs.append({"id": region_label(r), "source": r,
                      "title": (top["name"] if top else r), "description": core_rows.get(region_label(r), ""),
                      "use_when": ((top.get("use_when") or "") if top else ""),
                      # Whether this area crosses a link. The line it crosses with is `use_when`

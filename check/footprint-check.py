@@ -168,12 +168,18 @@ try:
         code, one = call("GET", f"/v1/walks/{w1}")
         check("  closing the overlay closes the walk on the record", one.get("state") == "closed" and one.get("outcome") == "answered", json.dumps({k: one.get(k) for k in ("state", "outcome")}))
         t, err = m.call("knowledge_resolve", {"q": "the threshold-table for a purchase"})
+        w2 = walk_of(t)
         check("  a second walk touching the same name is shown the first as history", "earlier walks touching these names" in t and "procurement" in t, t[:600])
         # HEAT is on the row that was walked, in the table that lists it: approval-threshold is a
         # row of purchase-request, threshold-table a row of approval-threshold.
         t, err = m.call("knowledge_table", {"path": "/v1/nodes/approval-threshold", "walk": walk_of(t), "why": "again"})
         heat_line = next((l for l in t.splitlines() if "threshold-table" in l), "")
         check("  and the table that lists a walked row shows its HEAT", "HEAT" in t and "1/1" in heat_line, (heat_line or t[:300]))
+        # A walk the agent never closes is closed by the next question, on the record too.
+        m.call("knowledge_resolve", {"q": "who approves a purchase"})
+        code, two = call("GET", f"/v1/walks/{w2}")
+        check("  an unclosed walk is closed abandoned when the next question starts",
+              two.get("state") == "closed" and two.get("outcome") == "abandoned", json.dumps({k: two.get(k) for k in ("state", "outcome")}))
         m.close()
     finally:
         svc.terminate()

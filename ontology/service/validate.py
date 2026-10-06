@@ -469,7 +469,7 @@ def validate(store: Store) -> dict:
         else:
             declared = set(rj[d].get("nodes", [])); actual = {n["id"] for n in nodes if n["region"] == d and n["status"] != "draft"}
             if declared != actual: errors.append(f"regions.json {d}: nodes {sorted(declared ^ actual)} differ from directory")
-            if rj[d].get("source") != d.replace("-", "_"): errors.append(f"regions.json {d}: source must be {d.replace('-', '_')!r}")
+            if rj[d].get("source") != d: errors.append(f"regions.json {d}: source must be the directory name {d!r}")
     for d in rj:
         if d not in regions: errors.append(f"regions.json: entry {d} has no directory")
 
