@@ -1,0 +1,209 @@
+# The silent fixture, plus one document: a later record that is newest, true, and has no authority.
+#
+# Asked for by GovKM on PR #1, 2026-09-21:
+#
+#   "Give it a later document that is newer but non-authoritative — for example, a year-end
+#    retrospective referring to Supplier A after Supplier B became operative — and then ask the
+#    current-state question again."
+#
+# `supplier-selection-silent` stays beside this one, untouched, as the control. The shape is the
+# same and the letters are arbitrary: Z is the component, E the earlier source, F the operative one.
+# The single variable is `z-supplier-e-performance-review` — newest of all five, entirely truthful,
+# and about the supplier that no longer holds the registration.
+#
+# ## The three ways to get this wrong, which is the point
+#
+#   recency    the review is the newest document and says "Supplier E" throughout
+#   relevance  both registrations are about "the registered source for Z" in nearly the same words
+#   authority  only one of the five registers anything, and it is not the newest
+#
+# A system that answers "which supplier is approved now" from dates lands on the review. One that
+# answers from semantic relevance lands on either registration. Only one that asks *which record
+# governs* reaches the September decision — and it has to do that while keeping the review as good
+# evidence of its own period, which question 4 tests directly.
+#
+# ## What this fixture deliberately does NOT do
+#
+# The review never says it is not authoritative. It carries no sentence like "this changes no
+# registration", and that omission is the whole design. GovKM's first fixture was solved by the
+# reranker because the July decision announced "this replaces the approval of Supplier A" — prose
+# carrying the relationship, which semantic machinery can read. Letting the review announce its own
+# non-authority would repeat that mistake with the sign flipped: the trap would be readable rather
+# than reconstructed. The only cues are tense and date, which is what a real review offers.
+#
+# Rule 1 still holds: no document here carries a state field, a supersession pointer, or anything
+# saying which is current. `truth:` is for the scorer and the map is the system under test.
+#
+# **Unscored on purpose.** GovKM asked to review the authority assumptions, the expected operative
+# state, the distractor classification and the expected behaviour of each arm *before* any number
+# exists, so that the expectation cannot be adjusted after seeing the output. There is no
+# `.results.md` and no run record beside this file, and there should not be one until that review
+# has happened. `supplier-selection-retrospective.review.md` is what is up for review; the routing
+# text is frozen in `supplier-selection-retrospective.map.yaml`.
+id: supplier-selection-retrospective
+area: procurement
+subject: which supplier is approved for the Z component, with a newer record about the older one
+contributed_by: maintainer, to GovKM's specification on PR #1 — unscored pending their review
+
+documents:
+  - id: z-supplier-e-approved
+    date: 2025-02-17
+    kind: rule
+    name: Supplier E approved for the Z component
+    one_liner: The decision that made Supplier E the registered source for Z, and the terms it was placed on
+    body: |
+      # Supplier E approved for the Z component
+
+      Decided 17 February 2025 on the purchase request from the hardware team, against three quotes.
+
+      ## What was decided
+      Supplier E is the registered source for the Z component. Orders go through the office &
+      purchasing desk against the annual agreement, banded on the annual total.
+
+      ## Terms
+      - Unit price held for the procurement year.
+      - Delivery within fifteen working days of order.
+      - Quality inspection on receipt, by the requesting team.
+
+      The registration, the quotes and the comparison are filed with the draft.
+
+  - id: z-inspection-rejects-batch
+    date: 2025-05-29
+    kind: case
+    name: Z component — batch rejected at inspection
+    one_liner: What happened when a delivered batch of Z failed inspection, and how it was settled
+    body: |
+      # Z component — batch rejected at inspection
+
+      Recorded 29 May 2025 by the hardware team.
+
+      ## What happened
+      The April batch failed inspection on dimensional tolerance. Forty of sixty units were outside
+      the stated range. The batch was returned and credited in full.
+
+      ## What was done
+      The desk raised the rejection with the supplier and asked for a corrective response. The
+      response committed to a revised inspection step at their end.
+
+      This is a record of an event. It does not by itself change who the registered source is.
+
+  - id: z-supplier-f-approved
+    date: 2025-09-01
+    kind: rule
+    name: Supplier F approved for the Z component
+    one_liner: The decision registering Supplier F as the source for Z, and the terms it was placed on
+    body: |
+      # Supplier F approved for the Z component
+
+      Decided 1 September 2025 on the purchase request from the hardware team, against three quotes.
+
+      ## What was decided
+      Supplier F is the registered source for the Z component. Orders go through the office &
+      purchasing desk against the annual agreement, banded on the annual total.
+
+      ## Terms
+      - Unit price held for twelve months from the decision date.
+      - Delivery within twelve working days of order.
+      - Quality inspection on receipt, by the requesting team, with a sampling plan agreed at
+        registration.
+
+      The registration, the quotes and the comparison are filed with the draft.
+
+  - id: z-annual-sourcing-note-2025
+    date: 2025-11-10
+    kind: case
+    name: Note — sourcing the Z component during 2025
+    one_liner: What the year's Z sourcing looked like, written up for the next procurement review
+    body: |
+      # Note — sourcing the Z component during 2025
+
+      Written 10 November 2025 for the procurement review.
+
+      ## The year
+      Z was sourced under an annual agreement throughout. One batch was rejected at inspection in the
+      spring and credited in full. A registration decision was taken in February and another in
+      September; both went through the desk against three quotes in the ordinary way.
+
+      ## What to take from it
+      - Dimensional tolerance should be stated in the registration, not left to the inspection step.
+      - Delivery windows tightened over the year and the desk should hold to the shorter one.
+
+      This is a record for the next review.
+
+  # The variable. Newest of the five, true in every line, and it registers nothing.
+  #
+  # Written in the past tense about a period that has ended, which is the only signal available to a
+  # reader who does not know which record governs. It names no successor: a review of how one
+  # agreement ran would not ordinarily announce the next registration, and if it did, the fixture
+  # would be handing over the answer in prose — the exact flaw this variant was built to avoid.
+  - id: z-supplier-e-performance-review
+    date: 2025-12-08
+    kind: case
+    name: Supplier E — performance over the Z component agreement
+    one_liner: How Supplier E performed on delivery, quality and price while it held the Z registration
+    body: |
+      # Supplier E — performance over the Z component agreement
+
+      Written 8 December 2025 by the office & purchasing desk for the procurement review file.
+
+      ## The period this covers
+      Supplier E was the registered source for the Z component from 17 February 2025. This note
+      reviews how that agreement ran while it was in force.
+
+      ## Delivery
+      Fifteen working days was the stated window. Across the period the median was fourteen days and
+      the longest was twenty-two, in the week following the spring batch rejection.
+
+      ## Quality
+      One batch was rejected on dimensional tolerance in May and credited in full. The corrective
+      response committed to a revised inspection step at the supplier's end, and no further
+      rejection followed within the period.
+
+      ## Price
+      The unit price held for the procurement year, as registered.
+
+      ## What to carry into the next review
+      - State dimensional tolerance in the registration rather than leaving it to the inspection step.
+      - A fifteen-day window was not held in the week after a rejection. A shorter window needs a
+        stated remedy, not only a shorter number.
+
+# Read by the scorer only. Never enters the corpus.
+#
+# `states` uses the three values the contract defines — active · superseded · withdrawn. GovKM
+# proposed a four-way split (withdrawn / superseded / expired / stale) and we agreed on PR #1 not to
+# expand the vocabulary until this fixture has run cleanly. The review is `active`: it is a valid
+# record that nothing has replaced. Being active is not being authoritative, and that gap is exactly
+# what the fixture measures.
+truth:
+  operative: z-supplier-f-approved
+  states:
+    z-supplier-e-approved: superseded
+    z-inspection-rejects-batch: active
+    z-supplier-f-approved: active
+    z-annual-sourcing-note-2025: active
+    z-supplier-e-performance-review: active
+  supersedes:
+    z-supplier-f-approved: [z-supplier-e-approved]
+
+questions:
+  # 1-3 are the silent fixture's questions, with the review added as a distractor. The comparison
+  # against `supplier-selection-silent` is only meaningful if the questions are the same ones.
+  - q: Which supplier is currently approved for the Z component?
+    answer: Supplier F, registered 1 September 2025
+    operative: z-supplier-f-approved
+    distractors: [z-supplier-e-approved, z-supplier-e-performance-review]
+  - q: Can I place a new order for Z with Supplier E?
+    answer: No. Supplier F has been the registered source since 1 September 2025
+    operative: z-supplier-f-approved
+    distractors: [z-supplier-e-approved, z-supplier-e-performance-review]
+  - q: What delivery window applies to a Z order placed today?
+    answer: Twelve working days, under the September registration
+    operative: z-supplier-f-approved
+    distractors: [z-supplier-e-approved, z-annual-sourcing-note-2025, z-supplier-e-performance-review]
+  # 4 is new, and it is the other half of GovKM's requirement: the review must be *retained as valid
+  # historical evidence*, not suppressed for being superseded-adjacent. A system that learns to
+  # demote the review to pass 1-3 fails here, and that failure is worth catching in the same run.
+  - q: How did Supplier E perform on delivery while it was the source for Z?
+    answer: Median fourteen working days against a fifteen-day window, with the longest at twenty-two after the spring rejection
+    operative: z-supplier-e-performance-review
+    distractors: [z-supplier-f-approved, z-annual-sourcing-note-2025]

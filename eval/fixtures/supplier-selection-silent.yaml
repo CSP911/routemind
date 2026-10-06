@@ -1,0 +1,130 @@
+# The same shape as supplier-selection-x, with one thing removed: nothing says it replaced anything.
+#
+# In GovKM's original, the July decision states outright "This replaces the approval of Supplier A
+# dated 3 March 2025". That sentence is what let the reranker score 1.000 on Q5a — it read it and
+# acted on it. Rule 1 of the contract permits such a sentence because people do write them. They
+# also, often, do not: a later decision states its own terms and says nothing about the one it
+# quietly ended, and the earlier document never learns it was superseded.
+#
+# This fixture is that case. Currency can only be inferred from the dates.
+#
+# **Declared in advance, because it matters:** this was written to make a prediction fail. Q5a in
+# eval/PREREGISTRATION.md says "a reranker blind to dates has no reason to put July above March",
+# the first fixture disproved it, and this removes the thing that disproved it. A test built to
+# produce a wanted result is worth suspecting, so: the guard is that it is declared here, the
+# untouched original stays beside it as the control, and the difference between the two is one
+# sentence rather than a redesign.
+id: supplier-selection-silent
+area: procurement
+subject: which supplier is approved for the Y component
+contributed_by: proposed by the maintainer for GovKM to correct or replace
+
+documents:
+  - id: y-supplier-c-approved
+    date: 2025-02-17
+    kind: rule
+    name: Supplier C approved for the Y component
+    one_liner: The decision that made Supplier C the registered source for Y, and the terms it was placed on
+    body: |
+      # Supplier C approved for the Y component
+
+      Decided 17 February 2025 on the purchase request from the hardware team, against three quotes.
+
+      ## What was decided
+      Supplier C is the registered source for the Y component. Orders go through the office &
+      purchasing desk against the annual agreement, banded on the annual total.
+
+      ## Terms
+      - Unit price held for the procurement year.
+      - Delivery within fifteen working days of order.
+      - Quality inspection on receipt, by the requesting team.
+
+      The registration, the quotes and the comparison are filed with the draft.
+
+  - id: y-inspection-rejects-batch
+    date: 2025-05-29
+    kind: case
+    name: Y component — batch rejected at inspection
+    one_liner: What happened when a delivered batch of Y failed inspection, and how it was settled
+    body: |
+      # Y component — batch rejected at inspection
+
+      Recorded 29 May 2025 by the hardware team.
+
+      ## What happened
+      The April batch failed inspection on dimensional tolerance. Forty of sixty units were outside
+      the stated range. The batch was returned and credited in full.
+
+      ## What was done
+      The desk raised the rejection with the supplier and asked for a corrective response. The
+      response committed to a revised inspection step at their end.
+
+      This is a record of an event. It does not by itself change who the registered source is.
+
+  - id: y-supplier-d-approved
+    date: 2025-09-01
+    kind: rule
+    name: Supplier D approved for the Y component
+    one_liner: The decision registering Supplier D as the source for Y, and the terms it was placed on
+    body: |
+      # Supplier D approved for the Y component
+
+      Decided 1 September 2025 on the purchase request from the hardware team, against three quotes.
+
+      ## What was decided
+      Supplier D is the registered source for the Y component. Orders go through the office &
+      purchasing desk against the annual agreement, banded on the annual total.
+
+      ## Terms
+      - Unit price held for twelve months from the decision date.
+      - Delivery within twelve working days of order.
+      - Quality inspection on receipt, by the requesting team, with a sampling plan agreed at
+        registration.
+
+      The registration, the quotes and the comparison are filed with the draft.
+
+  - id: y-annual-sourcing-note-2025
+    date: 2025-11-10
+    kind: case
+    name: Note — sourcing the Y component during 2025
+    one_liner: What the year's Y sourcing looked like, written up for the next procurement review
+    body: |
+      # Note — sourcing the Y component during 2025
+
+      Written 10 November 2025 for the procurement review.
+
+      ## The year
+      Y was sourced under an annual agreement throughout. One batch was rejected at inspection in the
+      spring and credited in full. A registration decision was taken in February and another in
+      September; both went through the desk against three quotes in the ordinary way.
+
+      ## What to take from it
+      - Dimensional tolerance should be stated in the registration, not left to the inspection step.
+      - Delivery windows tightened over the year and the desk should hold to the shorter one.
+
+      This is a record for the next review.
+
+# Read by the scorer only. Never enters the corpus.
+truth:
+  operative: y-supplier-d-approved
+  states:
+    y-supplier-c-approved: superseded
+    y-inspection-rejects-batch: active
+    y-supplier-d-approved: active
+    y-annual-sourcing-note-2025: active
+  supersedes:
+    y-supplier-d-approved: [y-supplier-c-approved]
+
+questions:
+  - q: Which supplier is currently approved for the Y component?
+    answer: Supplier D, registered 1 September 2025
+    operative: y-supplier-d-approved
+    distractors: [y-supplier-c-approved]
+  - q: Can I place a new order for Y with Supplier C?
+    answer: No. Supplier D has been the registered source since 1 September 2025
+    operative: y-supplier-d-approved
+    distractors: [y-supplier-c-approved]
+  - q: What delivery window applies to a Y order placed today?
+    answer: Twelve working days, under the September registration
+    operative: y-supplier-d-approved
+    distractors: [y-supplier-c-approved, y-annual-sourcing-note-2025]
