@@ -124,12 +124,15 @@ except Exception:
     regions = []
 has_workspace = any((r.get("source") or r.get("id")) == "workspace" for r in regions)
 
-want = ["knowledge_table", "knowledge_read"]
+# The resolver is first: it is where a question enters, and hop 0 rides in its description.
+want = ["knowledge_resolve", "knowledge_table", "knowledge_read"]
 if has_overlays: want.append("knowledge_overlay")
 if has_workspace: want.append("knowledge_write")
 # Unconditional: a circuit is opened by the agent at the time it is wanted, so there is nothing about
 # this install for the server to consult before offering it.
 want.append("knowledge_circuit")
+# Unconditional too: placing a document walks the same table every install has.
+want.append("knowledge_place")
 check(f"{len(want)} tools, matching what this install has", names == want,
       f"served {names}, expected {want}")
 

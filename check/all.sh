@@ -87,6 +87,8 @@ run eol-check  $HOSTPY check/eol-check.py
 run romanize   $HOSTPY check/romanize-check.py
 # Invariant 10: nothing secret-shaped in any tracked file — the pre-push grep, as a check.
 run secrets    $HOSTPY check/secrets-check.py
+# Every path the MCP server calls has a route on the web app .mcp.json points it at.
+run mcp-routes $HOSTPY check/mcp-routes-check.py
 # The two times on a routing row. It builds its own repository and commits into it, so it needs git
 # and nothing else — no service, no containers.
 run age        $HOSTPY check/age-check.py

@@ -332,6 +332,41 @@ def api_knowledge_create_overlay(payload: dict, request: Request) -> dict[str, A
     return _ontology_proxy("POST", "/v1/overlays", actor, data)
 
 
+# ── what the MCP server calls, through this door ─────────────────────────────
+# `.mcp.json` points the agent at this web app, not at the ontology, so every path the MCP server
+# calls has to exist here too. Five did not until 2026-10-07: the resolver, the placement walk, and
+# the three writes that record a walk — so on an install the footprint recorded nothing and
+# knowledge_resolve answered 404, while every check, which talks to the ontology directly, passed.
+# check/mcp-routes-check.py now holds the two lists together.
+@_iris_route("GET", "/api/knowledge/resolve")
+def api_knowledge_resolve(request: Request, q: str = Query(default="")) -> dict[str, Any]:
+    return _ontology_proxy("GET", "/v1/resolve?q=" + quote(q, safe=""), _knowledge_actor(request))
+
+
+@_iris_route("POST", "/api/knowledge/place")
+def api_knowledge_place(payload: dict, request: Request) -> dict[str, Any]:
+    # One stateless hop of the placement walk. Writes nothing; the write is POST /nodes.
+    return _ontology_proxy("POST", "/v1/place", _knowledge_actor(request), dict(payload or {}))
+
+
+@_iris_route("POST", "/api/knowledge/walks")
+def api_knowledge_open_walk(payload: dict, request: Request) -> dict[str, Any]:
+    return _ontology_proxy("POST", "/v1/walks", _knowledge_actor(request), dict(payload or {}))
+
+
+@_iris_route("POST", "/api/knowledge/walks/{walk_id}/{what}")
+def api_knowledge_walk_write(walk_id: str, what: str, payload: dict, request: Request) -> dict[str, Any]:
+    if what not in ("steps", "close"): raise HTTPException(status_code=404, detail="unknown walk path.")
+    return _ontology_proxy("POST", "/v1/walks/" + _overlay_id(walk_id) + "/" + what, _knowledge_actor(request), dict(payload or {}))
+
+
+@_iris_route("POST", "/api/knowledge/curator/proposals")
+def api_knowledge_create_proposal_from_agent(payload: dict, request: Request) -> dict[str, Any]:
+    # The MCP server files routing proposals at the ontology's own address; through this door that is
+    # the same submission a person makes, with the same checks — not a second path around them.
+    return api_knowledge_create_proposal(payload, request)
+
+
 @_iris_route("GET", "/api/knowledge/walks")
 def api_knowledge_walks(request: Request, since: str = Query(default=""), state: str = Query(default="")) -> dict[str, Any]:
     # The footprint, for the map: every step after a cursor (the live view), or the list of walks.

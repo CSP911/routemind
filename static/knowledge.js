@@ -1055,7 +1055,12 @@
   /** One poll. Everything after the cursor, applied in order; the cursor moves only past what was
    *  applied, so an error in the middle leaves the rest for the next poll. */
   async function fpPoll() {
-    if (!fp.on || document.visibilityState === "hidden") return;
+    if (!fp.on) return;
+    // A hidden tab waits — but only once it knows where "now" is. The first poll learns the cursor
+    // whatever the tab's state: a page loaded in the background used to skip it, then learn every
+    // step taken while it was hidden as old history the moment it became visible, so a walk that
+    // happened behind another tab was never shown at all. Found on a real install, 2026-10-07.
+    if (fp.cursor !== null && document.visibilityState === "hidden") return;
     let d;
     try { d = await request("walks?since=" + encodeURIComponent(String(fp.cursor || 0))); }
     catch (e) { if (e.status === 501) fpOff(); return; }
@@ -1383,11 +1388,17 @@
   // localStorage with one request, and a revisit at a new one refetches. Nothing is invented for the
   // key and nothing can be served stale past a revision change.
   const CACHE_KEY = "iris.knowledge.map";
+  // The shape of what is cached, beside the revision it is of. The revision says the data has not
+  // changed; it cannot say the screen now needs a field the cached copy was saved without. When the
+  // graph gained `parent` (2026-10-07, for the footprint), every browser with a cached map at an
+  // unchanged revision kept drawing from nodes without it, and a walk could not open a node's path.
+  // Bump this whenever the screen starts reading a field it did not read before.
+  const CACHE_SHAPE = 2;
 
   function readCache(published) {
     try {
       const raw = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-      if (!raw || raw.published !== published) return null;
+      if (!raw || raw.published !== published || raw.shape !== CACHE_SHAPE) return null;
       return raw;
     } catch { return null; }
   }
@@ -1395,7 +1406,7 @@
     if (!drawnRevision) return;
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({
-        published: drawnRevision, savedAt: Date.now(),
+        published: drawnRevision, shape: CACHE_SHAPE, savedAt: Date.now(),
         // Local areas only. A peer's rows are not this backbone's to remember: the API drops them the
         // moment a link cannot be read, and a cache that keeps them puts them straight back — so a
         // dead link draws exactly like a live one, which is the failure the whole absence rule turns

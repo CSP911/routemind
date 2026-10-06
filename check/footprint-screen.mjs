@@ -24,13 +24,23 @@ class N { static __all = []; constructor(t) { N.__all.push(this); this.tag = t; 
   get classList() { const s = this; const list = () => String(s.className || "").split(/\s+/).filter(Boolean); const set = (a) => { s.className = [...new Set(a)].join(" "); };
     return { add(...c) { set([...list(), ...c]); }, remove(...c) { set(list().filter((x) => !c.includes(x))); }, contains(c) { return list().includes(c); },
       toggle(c, f) { const on = f === undefined ? !list().includes(c) : !!f; on ? this.add(c) : this.remove(c); return on; } }; } }
-globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} };
+// A real store, pre-seeded with what a browser that visited before 2026-10-07 holds: the map cached
+// at the current revision, saved before the graph carried `parent`. The page must not draw from it.
+const ls = new Map();
+globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setItem: (k, v) => ls.set(k, String(v)), removeItem: (k) => ls.delete(k) };
+{
+  const rev = await (await realFetch(`${process.argv[2]}/api/knowledge/revision`)).json();
+  const graph = await (await realFetch(`${process.argv[2]}/api/knowledge/graph`)).json();
+  const regions = await (await realFetch(`${process.argv[2]}/api/knowledge/regions`)).json();
+  ls.set("iris.knowledge.map", JSON.stringify({ published: rev.published, savedAt: Date.now(),
+    regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, service: "", entries: [] }));
+}
 const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpPlay","knFpTrail","knFpNow"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
 byId.knFp.hidden = true; byId.knWallPanel.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };
 byId.knExportDialog.showModal = function () {}; byId.knExportDialog.close = function () {};
-globalThis.document = { readyState: "complete", visibilityState: "visible", getElementById: (i) => byId[i],
+globalThis.document = { readyState: "complete", visibilityState: "hidden", getElementById: (i) => byId[i],
   createElement: (t) => new N(t), createElementNS: (_, t) => new N(t), addEventListener() {}, querySelectorAll: () => [] };
 globalThis.window = { addEventListener() {}, IRISI18N: { t: (k, v) => String(dict[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => (v && v[n] != null ? v[n] : `{${n}}`)), apply() {}, lang: () => "en" },
   location: { search: "" } };
@@ -55,7 +65,9 @@ const post = async (path, body) => (await realFetch(`${BASE}/api/knowledge/${pat
 await settle(); await settle();
 check("the map drew", find(byId.knTopo, (n) => cls(n).includes("kn-dev")).length > 0);
 check("the footprint bar is shown when the backbone keeps walks", byId.knFp.hidden === false);
-check("the first poll learned the cursor and opened nothing", fp.cursor !== null && state.open.length === 0, `cursor ${fp.cursor}, open ${state.open}`);
+check("booted in a hidden tab, the first poll still learned the cursor and opened nothing", fp.cursor !== null && state.open.length === 0, `cursor ${fp.cursor}, open ${state.open}`);
+// The page stays hidden while the agent walks — then becomes visible. Before 2026-10-07 the cursor
+// was never learned in a hidden tab, so these steps were swallowed as history and never shown.
 
 // ── live: an agent walks while the page is up ─────────────────────────────────
 const w = await post("walks", { question: "how far up does a purchase have to be approved", how: "screen-check" });
@@ -64,6 +76,9 @@ const steps = [["table", "/v1/regions/procurement", "approval bands are in its s
                ["table", "/v1/nodes/approval-threshold", "the band table"],
                ["read", "/v1/nodes/threshold-table/body", "the numbers themselves"]];
 await post(`walks/${w.id}/steps`, { op: steps[0][0], address: steps[0][1], why: steps[0][2] });
+await kn.fpPoll(); await settle();
+check("while hidden, nothing is drawn", state.open.length === 0, String(state.open));
+document.visibilityState = "visible";
 await kn.fpPoll(); await settle();
 check("live: the first step opens its area", state.open.includes("procurement"), String(state.open));
 check("  and the line under the map says the step and its reason", byId.knFpNow.textContent.includes("approval bands are in its sentence"), byId.knFpNow.textContent);
@@ -83,6 +98,11 @@ const fpTiles = tiles.filter((n) => cls(n).includes("is-fp"));
 const nowTiles = tiles.filter((n) => cls(n).includes("is-fp-now"));
 check("  the walked tiles carry the footprint mark", fpTiles.length >= 3, `${fpTiles.length} marked`);
 check("  exactly one tile is marked as now", nowTiles.length === 1, `${nowTiles.length}`);
+// Drawn, not only remembered: each node on the path is a sub-rack on the map, titled with its id.
+const topoText = find(byId.knTopo, (n) => n.textContent).map((n) => n.textContent);
+check("  and the sub-racks down to the document are drawn on the map", ["purchase-request", "approval-threshold"].every((id) => topoText.includes(`[${id}]`)),
+      JSON.stringify(topoText.filter((x) => /threshold|purchase/.test(x))));
+check("  even though the browser held a map cached before nodes carried their parent", state.nodes.some((n) => "parent" in n));
 
 // ── replay ────────────────────────────────────────────────────────────────────
 state.open = []; state.openNode.clear(); kn.draw();
