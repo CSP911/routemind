@@ -107,7 +107,7 @@ and closes it with the overlay; the record lives in `ONTOLOGY_WALKS` (`docs/FOOT
 screen's live footprint and its replay, the HEAT column on every table and the `history` hint on a
 resolution all read that record and nothing else. Steps are numbered from one counter so a reader
 polling by cursor loses nothing; a step without a reason is refused. Checked by
-`check/footprint-check.py`; the screen's polling and replay by `check/screen-check.mjs`.
+`check/footprint-check.py`; the screen's polling and replay by `check/footprint-screen-check.py`.
 
 ## What is not on this list
 

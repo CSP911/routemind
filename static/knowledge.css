@@ -399,6 +399,21 @@ body.kn-dragging { user-select: none; }
 .kn-chip-kind.is-vrf { color: var(--purple); border-color: var(--purple); }
 .kn-dot.is-vrf { border-color: var(--purple); }
 
+/* The footprint (docs/FOOTPRINT.md): where an agent's walk has been, and where it is now. Orange,
+   which the map uses for nothing else on a tile, so a walked tile never reads as a VRF member or as
+   a selected one. The current step pulses once; with reduced motion it is only thicker. */
+.kn-fp { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
+.kn-fp-live { font: 600 11px var(--kn-mono); color: var(--orange); letter-spacing: .06em; text-transform: uppercase; }
+.kn-fp-live::before { content: "●"; margin-right: 4px; }
+.kn-fp-select { max-width: 340px; min-width: 0; }
+.kn-fp-now { flex: 1 1 260px; min-width: 0; font: 12px/1.5 var(--kn-mono); color: var(--kn-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kn-dev.is-fp > rect { stroke: var(--orange); stroke-width: 2.2; }
+.kn-dev.is-fp-now > rect { stroke-width: 3.4; animation: kn-fp-pulse 900ms ease-out 1; }
+@keyframes kn-fp-pulse { from { stroke-opacity: .25; } to { stroke-opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .kn-dev.is-fp-now > rect { animation: none; } }
+.kn-dot.is-fp { border-color: var(--orange); }
+
 /* How to write a routing line: folded under its field, quiet until opened. */
 .kn-guide { margin-top: -8px; font-size: 12.5px; color: var(--kn-muted); }
 .kn-guide summary { cursor: pointer; width: fit-content; font-size: 12px; color: var(--kn-accent); }

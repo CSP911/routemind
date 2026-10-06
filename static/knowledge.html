@@ -90,6 +90,7 @@
           <span><i class="kn-dot is-data"></i><span data-i18n="knowledge.legend.data">DATA</span></span>
           <span><i class="kn-dot is-flag"></i><span data-i18n="knowledge.legend.flag">ROUTING REQUEST</span></span>
           <span><i class="kn-dot is-vrf"></i><span data-i18n="knowledge.legend.vrf">VRF</span></span>
+          <span><i class="kn-dot is-fp"></i><span data-i18n="knowledge.legend.fp">WALK</span></span>
         </div>
         <!-- Beside the legend rather than over the map: a control floating on the drawing would sit
              on top of a tile at some zoom, and this map is already something you drag things across. -->
@@ -98,6 +99,15 @@
           <button type="button" id="knZoomReset" class="kn-zpct" data-i18n-label="knowledge.zoomReset">100%</button>
           <button type="button" id="knZoomIn" class="kn-zbtn" data-i18n-label="knowledge.zoomIn">+</button>
         </div>
+      </div>
+      <!-- The footprint (docs/FOOTPRINT.md): an agent's walk, opening the map as it walks, and a
+           replay of any walk kept in the last six hours. Hidden when the backbone keeps none. -->
+      <div class="kn-fp" id="knFp" hidden>
+        <span class="kn-fp-live" id="knFpLive" data-i18n="knowledge.fp.live">Live</span>
+        <select id="knFpWalk" class="kn-fp-select" data-i18n-label="knowledge.fp.pick"></select>
+        <button type="button" id="knFpPlay" class="kn-btn" data-i18n="knowledge.fp.replay">Replay</button>
+        <button type="button" id="knFpTrail" class="kn-btn kn-quiet" data-i18n="knowledge.fp.trail">Reasons</button>
+        <span class="kn-fp-now" id="knFpNow" aria-live="polite"></span>
       </div>
       <div class="kn-topo-wrap"><svg id="knTopo" class="kn-topo" role="img" aria-label="RouteMind topology"></svg></div>
       <p class="kn-hint" data-i18n="knowledge.mapHint2">Click a Region or node to open what hangs off it. The routing table the agent is handed is the ▤ button on that rack; a DATA tile opens the file it would read.</p>

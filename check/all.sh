@@ -160,6 +160,10 @@ else
   # Invariant 3, the derived state that is not a file: a peer's advertisement, a session and the
   # MCP's area list each follow their source without waiting out a timer. Two backbones, an MCP.
   run follow      $HOSTPY check/follow-check.py
+  # Invariant 11: every walk recorded, the screen and the agent reading the same record — the
+  # store, the service and an agent through the MCP; then the real page polling and replaying it.
+  run footprint   $HOSTPY check/footprint-check.py
+  if command -v node >/dev/null 2>&1; then run footprint-screen $HOSTPY check/footprint-screen-check.py; fi
   if [ -z "$ONLY" ]; then
     printf '  install-check          not run here — it builds a clean clone and takes minutes.\n'
     printf '                         ./check/install-check.sh before a release.\n'

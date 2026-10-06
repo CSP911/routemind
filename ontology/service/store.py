@@ -455,7 +455,7 @@ class Store:
         N = [{"id": n["id"], "name": n["name"], "kind": n["kind"], "region": (region_key(n["region"]) if n["region"] else None),
               "region_dir": n["region"], "core": False, "holds": n["holds"], "file": (n["path"] + "/INDEX.md"), "desc": n["one_liner"],
               "order": n["order"], "aliases": alias_names(n["aliases"]), "alias_scopes": [a for a in n["aliases"] if isinstance(a, dict)],
-              "file_scopes": n["file_scopes"], "status": n["status"], "injected_by": n.get("injected_by"), "role": n.get("role")} for n in self.nodes()]
+              "file_scopes": n["file_scopes"], "status": n["status"], "injected_by": n.get("injected_by"), "parent": n.get("parent"), "role": n.get("role")} for n in self.nodes()]
         E = [{"s": e["from"], "t": e["to"], "rel": e["rel"], "group": group_of.get(e["rel"], ""), "note": e.get("note", "") or "",
               "file": e.get("source", "")} for e in self.edges()]
         return {"revision": self.revision(), "nodes": N, "edges": E}

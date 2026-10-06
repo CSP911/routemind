@@ -830,7 +830,7 @@
     const { w, h } = DEV[shape];
     const pending = row.flagKey ? flagsFor(row.flagKey).length : 0;
     const picked = Boolean(row.address && state.picked.has(row.address));
-    const g = svgEl("g", { class: `kn-dev is-${shape} is-${row.kind}${selected ? " is-sel" : ""}${row.node && pathIn(row.ownerRegion).includes(row.node) ? " is-open" : ""}${place && row.id && !row.peer ? " is-movable" : ""}${pending ? " is-flagged" : ""}${picked ? " is-picked" : ""}${vrfClass(row, shape)}`, tabindex: "0", role: "button" });
+    const g = svgEl("g", { class: `kn-dev is-${shape} is-${row.kind}${selected ? " is-sel" : ""}${row.node && pathIn(row.ownerRegion).includes(row.node) ? " is-open" : ""}${place && row.id && !row.peer ? " is-movable" : ""}${pending ? " is-flagged" : ""}${picked ? " is-picked" : ""}${vrfClass(row, shape)}${fpClass(row)}`, tabindex: "0", role: "button" });
     g.append(svgEl("rect", { x: x - w / 2, y: y - h / 2, width: w, height: h, rx: shape === "core" ? 10 : 5 }));
     if (shape === "as" || shape === "sw" || shape === "leaf") {
       // Port strip along the bottom edge. A leaf has few ports on purpose: one file is in it, room for more.
@@ -961,6 +961,176 @@
     m = /^\/v1\/nodes\/([a-z0-9][a-z0-9-]*)(?:\/body)?$/.exec(a);
     const n = m ? state.nodes.find((x) => x.id === m[1]) : null;
     return n ? norm(regionOf(n)) : "";
+  }
+
+  // ── the footprint (docs/FOOTPRINT.md) ─────────────────────────────────────
+  //
+  // An agent's walk, opening the map in the order the agent walks, and a replay of any walk kept on
+  // the backbone. One record — GET walks?since=N — read by cursor: the largest step number seen is
+  // kept and the next poll asks for everything after it, so a step can arrive late but never be
+  // missed. A failed poll keeps the cursor where it was. Steps open what they name on top of what
+  // the person has open; nothing the person opened is closed.
+  const FP_MS = 1000, FP_REPLAY_MS = 900;
+  const fp = { on: false, cursor: null, walks: new Map(), focus: null, now: null, replaying: false, timer: null };
+
+  /** The area a step's address is in, and the node path inside it that shows the address. */
+  function fpTarget(address) {
+    const a = String(address || "");
+    let m = /^\/v1\/regions\/([a-z0-9_-]+)$/.exec(a);
+    if (m) return { area: norm(m[1]), path: [] };
+    m = /^\/v1\/nodes\/([a-z0-9][a-z0-9-]*)(\/body)?$/.exec(a);
+    if (!m) return null;
+    const byId = new Map(state.nodes.map((n) => [n.id, n]));
+    const n = byId.get(m[1]);
+    if (!n) return null;
+    const area = norm(regionOf(n));
+    // Up the parents to the area's representative; the rack shows the representative's children,
+    // so the path is everything below it. A document is shown in its parent's rack, so it stops
+    // one short; a table opens itself.
+    const chain = [];
+    let cur = m[2] ? n.parent : n.id, guard = 0;
+    while (cur && guard++ < 32) {
+      const c = byId.get(cur);
+      if (!c || (c.role === "representative" && !c.parent)) break;
+      chain.unshift(cur);
+      cur = c.parent;
+    }
+    return { area, path: chain };
+  }
+
+  /** Make one step visible: open its area and the node path to it, then draw. */
+  async function fpShow(step) {
+    fp.now = step;
+    const w = fp.walks.get(step.walk);
+    if (w && step.address) w.seen.add(step.address);
+    const tgt = fpTarget(step.address);
+    if (tgt && tgt.area) {
+      openArea(tgt.area);
+      await loadEntries(tgt.area);
+      if (tgt.path.length) {
+        const have = pathIn(tgt.area);
+        // Only ever extended, never shortened: the person's own deeper path is left alone when it
+        // already passes through this one.
+        const keep = tgt.path.every((id, i) => have[i] === id);
+        if (!keep || have.length < tgt.path.length) setPath(tgt.area, tgt.path);
+        for (const id of tgt.path) await loadFiles(id);
+      }
+    }
+    const label = step.op === "open" ? t("knowledge.fp.opened") : step.op;
+    $("knFpNow").textContent = `${when(step.at)}  ${label}  ${step.address || ""}${step.why ? "  — " + step.why : ""}`;
+    draw();
+  }
+
+  /** Footprint marks: every address the focused walk has touched, and the one it is on now. */
+  function fpClass(row) {
+    if (!fp.on || !fp.focus || !row.address) return "";
+    const w = fp.walks.get(fp.focus);
+    if (!w) return "";
+    // One tile, two addresses: an entity with a body and children is a table at /v1/nodes/x and a
+    // document at /v1/nodes/x/body, and either step lit it.
+    const base = (a) => String(a || "").replace(/\/body$/, "");
+    const mine = base(row.address);
+    if (fp.now && fp.now.walk === fp.focus && base(fp.now.address) === mine) return " is-fp is-fp-now";
+    return [...w.seen].some((a) => base(a) === mine) ? " is-fp" : "";
+  }
+
+  function fpRemember(step) {
+    if (!fp.walks.has(step.walk)) fp.walks.set(step.walk, { id: step.walk, question: step.question, seen: new Set(), steps: [] });
+    const w = fp.walks.get(step.walk);
+    w.state = step.state; w.outcome = step.outcome;
+    w.steps.push(step);
+  }
+
+  function fpOptions() {
+    const sel = $("knFpWalk");
+    const rows = [...fp.walks.values()].sort((a, b) => (b.steps.at(-1)?.n || 0) - (a.steps.at(-1)?.n || 0));
+    sel.replaceChildren(...rows.map((w) => {
+      const o = el("option", null, `${w.question || w.id}  ·  ${w.state === "open" ? t("knowledge.fp.open") : (w.outcome || "")}`);
+      o.value = w.id;
+      if (w.id === fp.focus) o.selected = true;
+      return o;
+    }));
+  }
+
+  /** One poll. Everything after the cursor, applied in order; the cursor moves only past what was
+   *  applied, so an error in the middle leaves the rest for the next poll. */
+  async function fpPoll() {
+    if (!fp.on || document.visibilityState === "hidden") return;
+    let d;
+    try { d = await request("walks?since=" + encodeURIComponent(String(fp.cursor || 0))); }
+    catch (e) { if (e.status === 501) fpOff(); return; }
+    const steps = d.steps || [];
+    if (fp.cursor === null) {
+      // First read: learn every walk kept, and draw nothing — the live view is what happens next.
+      for (const s of steps) { fpRemember(s); if (s.address) fp.walks.get(s.walk).seen.add(s.address); }
+      fp.cursor = Number(d.seq || 0);
+      const last = steps.at(-1);
+      if (last) fp.focus = last.walk;
+      fpOptions();
+      return;
+    }
+    for (const s of steps) {
+      fpRemember(s);
+      fp.cursor = Math.max(fp.cursor, Number(s.n));
+      if (fp.replaying) continue;          // recorded; the replay finishes first, then live resumes
+      fp.focus = s.walk;
+      await fpShow(s);
+    }
+    if (steps.length) fpOptions();
+  }
+
+  async function fpReplay() {
+    const id = $("knFpWalk").value || fp.focus;
+    if (!id || fp.replaying) return;
+    let w;
+    try { w = await request("walks/" + encodeURIComponent(id)); } catch { toast(t("knowledge.fp.gone")); return; }
+    fp.replaying = true; fp.focus = id;
+    const mine = fp.walks.get(id) || { id, question: w.question, seen: new Set(), steps: [] };
+    mine.seen = new Set(); fp.walks.set(id, mine);
+    $("knFpPlay").disabled = true;
+    try {
+      for (const s of w.steps || []) {
+        await fpShow({ ...s, walk: id, question: w.question });
+        await new Promise((r) => setTimeout(r, FP_REPLAY_MS));
+      }
+    } finally {
+      fp.replaying = false; $("knFpPlay").disabled = false;
+    }
+  }
+
+  /** Every step of the focused walk with its reason — the part that need not be live. */
+  async function fpTrail() {
+    const id = $("knFpWalk").value || fp.focus;
+    if (!id) return;
+    let w;
+    try { w = await request("walks/" + encodeURIComponent(id)); } catch { toast(t("knowledge.fp.gone")); return; }
+    dialogFor({ chip: "WALK", title: w.question || w.id, address: `/v1/walks/${w.id}`,
+                meta: [(w.by || {}).name, w.state, w.outcome].filter(Boolean).join(" · ") });
+    const card = el("div", "kn-card-form");
+    card.append(el("h3", "kn-cf-title", t("knowledge.fp.trailTitle")));
+    const pre = el("pre", "kn-upload-preview");
+    pre.textContent = (w.steps || []).map((x) => `${String(x.n).padStart(5)}  ${when(x.at)}  ${String(x.op || "").padEnd(7)}  ${x.address || ""}  — ${x.why || ""}`).join("\n");
+    card.append(pre);
+    card.append(actions(button("common.close", "primary", () => $("knRawDialog").close())));
+    $("knEdit").replaceChildren(card);
+    showEditor(true);
+    const dialog = $("knRawDialog");
+    if (!dialog.open) dialog.showModal();
+  }
+
+  function fpOff() {
+    fp.on = false; $("knFp").hidden = true;
+    if (fp.timer) { clearInterval(fp.timer); fp.timer = null; }
+  }
+
+  /** On when the backbone keeps a footprint; the first poll says whether it does. */
+  function fpStart() {
+    fp.on = true; $("knFp").hidden = false;
+    $("knFpPlay").addEventListener("click", () => { fpReplay().catch(() => {}); });
+    $("knFpTrail").addEventListener("click", () => { fpTrail().catch(() => {}); });
+    $("knFpWalk").addEventListener("change", () => { fp.focus = $("knFpWalk").value; draw(); });
+    fpPoll().catch(() => {});
+    fp.timer = setInterval(() => { fpPoll().catch(() => {}); }, FP_MS);
   }
 
   /** Members of the chosen overlay (or of every open one, when none is chosen) are outlined; an area
@@ -2909,6 +3079,7 @@
     // and the transcript is what a click produces.
       loadMap().catch((e) => toast(`${t("knowledge.loadFailed")} — ${e.message}`));
       watchRevision();
+      fpStart();
     });
   }
 

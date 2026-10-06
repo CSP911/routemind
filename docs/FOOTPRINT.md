@@ -66,4 +66,6 @@ not replaced.
 back by cursor in order with none lost; an open walk is closed `abandoned` after the hour and a
 closed one gone after six; HEAT and `history` count what was walked; the MCP reports every call it
 makes and closes the walk when the overlay closes. The screen's polling and replay are exercised
-in `check/screen-check.mjs`.
+by `check/footprint-screen-check.py`: the real `static/knowledge.js` against a live record — a step
+opens its area and node path, a failed poll loses nothing, exactly one tile is marked as now, and a
+replay shows every step in order. Verified to fire on a poll that jumps to the newest step.
