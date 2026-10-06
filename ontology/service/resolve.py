@@ -2,10 +2,10 @@
 
 This is the DNS in front of the routing table. A person types a name the way their team says it;
 the map holds a different, canonical name for the same thing; and routing on the wrong one goes to
-the wrong place. On 2026-09-30 a person asked for "the most recent work on BNS", an agent read the
+the wrong place. On 2026-09-30 a person asked for "the most recent work on ATL", an agent read the
 word "work", opened one area (ops), found nothing, and said so. The record was four levels down in
-a different area, under a node called `neo` that shares a VPC with `bns` — a fact the map already
-held as an edge. Nothing translated "BNS" into the two nodes it meant, and nothing turned "most
+a different area, under a node called `relay` that shares a network with `atlas` — a fact the map already
+held as an edge. Nothing translated "ATL" into the two nodes it meant, and nothing turned "most
 recent" into the one column built to answer it.
 
 So this does three things a resolver does, and nothing a search engine does:
@@ -19,7 +19,7 @@ So this does three things a resolver does, and nothing a search engine does:
           area list, because that list is the only place absence may be claimed from.
 
 **The one thing this is not:** a ranking. Every match is a literal string found in the question,
-and every result names the string it matched on. A person can read why "BNS" became `neo` and say
+and every result names the string it matched on. A person can read why "ATL" became `relay` and say
 that it is wrong. That is the difference from an embedding, and the reason the front of this
 pipeline is allowed to be this simple.
 
@@ -42,7 +42,7 @@ import re
 # the row it belongs to and nowhere else.
 #
 # Latin words match on their own boundaries so `how` does not fire inside `show`; Hangul and CJK
-# match as substrings because those scripts put no space between a word and its particle — "BNS에서"
+# match as substrings because those scripts put no space between a word and its particle — "ATL에서"
 # is one token to a regex and two to a person.
 ASKS = [
     ("latest",  ["가장 최근", "최근", "최신", "마지막", "가장 나중", "요즘",
@@ -91,7 +91,7 @@ def _find(term: str, q: str):
 def names_of(nodes: list[dict], regions: list[dict]) -> list[tuple[str, dict]]:
     """The CNAME table: every string the map answers to, and what it stands for.
 
-    Longest first, so "neo-us-east-1" is tried before "neo" and a question about the host is not
+    Longest first, so "relay-us-east-1" is tried before "relay" and a question about the host is not
     read as a question about the service. Names under two characters are left out: a one-letter
     alias matches everything and resolves nothing.
     """
@@ -146,8 +146,8 @@ def resolve(q: str, *, nodes: list[dict], edges: list[dict], regions: list[dict]
         found[what["id"]] = {"said": hit, "is": what["id"], "name": what["name"], "area": what["area"],
                              "via": "name" if hit.lower() == what["id"].lower() or hit.lower() == what["name"].lower() else "alias",
                              "one_liner": what["one_liner"]}
-    # One hop along the map's own edges. The 2026-09-30 miss was exactly one hop: `bns` was named,
-    # `neo` held the record, and an edge between them said so. Two hops is a graph walk, not a
+    # One hop along the map's own edges. The 2026-09-30 miss was exactly one hop: `atlas` was named,
+    # `relay` held the record, and an edge between them said so. Two hops is a graph walk, not a
     # resolution, and it would pull in half the map for any well-connected node.
     direct = list(found)
     for e in edges:

@@ -124,6 +124,9 @@ Start from [`examples/back-office`](examples/) rather than an empty map: five ar
 five levels deep. **[docs/INSTALL.md](docs/INSTALL.md)** — that, the manual route, what to do when it
 does not come up, and the first two things to write.
 
+**Already running one?** [docs/UPGRADE.md](docs/UPGRADE.md) — applying an update to an install that
+holds your own data: four steps, what the restart changes on its own, and how to check it worked.
+
 ## Connecting an agent
 
 Optional — the map works on its own. An agent reads this ontology the same way every time: **fetch

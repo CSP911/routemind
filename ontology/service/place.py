@@ -57,7 +57,7 @@ STOP = {
     "으로", "하는", "한", "것", "수", "등", "때", "뭐", "무엇", "어떻게", "언제", "누가", "누구",
 }
 _SPLIT = re.compile(r"[\s,.;:·()\[\]\"'/|—–!?]+")
-# "BNS에서" is one token to a split and two things to a reader: a Latin name and a Hangul particle.
+# "ATL에서" is one token to a split and two things to a reader: a Latin name and a Hangul particle.
 # The name is what matches a line; the particle never does.
 _LATIN_THEN_HANGUL = re.compile(r"^([A-Za-z0-9][A-Za-z0-9_-]*)[가-힣]+$")
 
