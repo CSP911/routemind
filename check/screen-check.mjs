@@ -25,7 +25,7 @@ class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.at
         on?this.add(c):this.remove(c); return on; },
     }; } }
 globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
-const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel"]) byId[id]=new N(id);
+const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpPlay","knFpTrail","knFpNow"]) byId[id]=new N(id);
 byId.knExportDialog.open=false; byId.knExportDialog.showModal=function(){this.open=true;};
 byId.knExportDialog.close=function(){this.open=false; for(const f of this.listeners.close||[]) f({});};
 byId.knExportForm.submit=function(){for(const f of this.listeners.submit||[]) f({preventDefault(){}});};

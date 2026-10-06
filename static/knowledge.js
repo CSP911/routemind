@@ -1125,6 +1125,8 @@
 
   /** On when the backbone keeps a footprint; the first poll says whether it does. */
   function fpStart() {
+    // A page served from before the footprint existed has no bar; the map works as it did.
+    if (!$("knFp") || !$("knFpWalk") || !$("knFpNow")) return;
     fp.on = true; $("knFp").hidden = false;
     $("knFpPlay").addEventListener("click", () => { fpReplay().catch(() => {}); });
     $("knFpTrail").addEventListener("click", () => { fpTrail().catch(() => {}); });
