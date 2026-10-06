@@ -58,7 +58,7 @@ try:
         sys.exit("  the ontology never answered — " + open(os.path.join(T, "svc.log")).read()[-1200:])
     web = Threaded(("127.0.0.1", WEB), Pass)
     threading.Thread(target=web.serve_forever, daemon=True).start()
-    r = subprocess.run(["node", os.path.join(ROOT, "check", "footprint-screen.mjs"), f"http://127.0.0.1:{WEB}"], cwd=ROOT)
+    r = subprocess.run([os.path.join(ROOT, "check", "footprint-screen.mjs"), f"http://127.0.0.1:{WEB}"], cwd=ROOT)
     web.shutdown()
     code = r.returncode
 finally:

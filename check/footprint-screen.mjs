@@ -1,6 +1,7 @@
+#!/usr/bin/env node
 // The footprint on the screen: the real static/knowledge.js, a stub DOM, a live record.
 //
-//   node check/footprint-screen.mjs <base>      (run by check/footprint-screen-check.py)
+//   ./check/footprint-screen.mjs <base>      (run by ./check/footprint-screen-check.py)
 //
 // The page polls `walks?since=N` and opens the map as an agent walks; it replays a kept walk in the
 // same order. This drives both the way they happen — steps posted to the record while the page is
