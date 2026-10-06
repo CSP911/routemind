@@ -32,8 +32,8 @@ t = terms(doc)
 check("terms come from name, line and aliases", {"Overseas", "vendor", "registration", "register", "abroad"} <= set(t), str(t))
 check("  stopwords are dropped", not ({"How", "to", "a", "with", "no"} & set(t)), str(t))
 check("  an alias is kept whole, scoped or not", "해외 거래처" in t and "foreign supplier" in t, str(t))
-check("  a Latin name wearing a Hangul particle is the name", "BNS" in terms({"name": "BNS에서 회수", "one_liner": ""}),
-      str(terms({"name": "BNS에서 회수", "one_liner": ""})))
+check("  a Latin name wearing a Hangul particle is the name", "ATL" in terms({"name": "ATL에서 반납", "one_liner": ""}),
+      str(terms({"name": "ATL에서 반납", "one_liner": ""})))
 check("  one word once, whatever its case", [x.lower() for x in t].count("vendor") == 1, str(t))
 
 # ── 2. evidence on a row ──────────────────────────────────────────────────────
