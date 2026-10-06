@@ -4,9 +4,9 @@
     ./check/resolve-check.py
 
 No server. `resolve` is a pure function over a map, so the map here is written by hand — and the
-first one is the 2026-09-30 incident, reconstructed: two areas, a node with an alias, an edge to the
-node that actually held the record, and ages that make the answer the newest thing on the map. The
-question is the question that was asked, as it was asked.
+first is the case the resolver was built for: two areas, a node with an alias, an edge to the node
+that holds the record, and ages that make the answer the newest thing on the map — asked in a
+person's words, in Korean.
 
 The rest are the failures a resolver has that a search engine does not — because every match is a
 literal string, every way a string can match wrongly is a way this can route wrongly. Latin inside
@@ -26,9 +26,9 @@ def check(name, cond, extra=""):
     return bool(cond)
 
 
-# ── the 2026-09-30 map, as it was ──────────────────────────────────────────────
-# The record of the reclaim lived on `relay`, under services, four levels down. "ATL" was said. `atlas`
-# carries the alias, `relay` shares its network — an edge — and `relay` is the newest thing on the map.
+# ── a small map, invented ─────────────────────────────────────────────────────
+# The record is on `relay`, in another area from the one the question's wording points at. "ATL" is
+# said; `atlas` carries the alias, `relay` shares its network — an edge — and is the newest thing here.
 REGIONS = [
     {"dir": "ops",   "key": "OPS",   "representative": "ops",
      "use_when": "점검 · 긴급배포 · 장애 대응 · 점검 도구"},
@@ -37,7 +37,7 @@ REGIONS = [
 ]
 NODES = [
     {"id": "ops",   "name": "Ops",   "region": "ops",   "aliases": [], "one_liner": "운영"},
-    {"id": "services", "name": "Services", "region": "services", "aliases": [], "one_liner": "게임"},
+    {"id": "services", "name": "Services", "region": "services", "aliases": [], "one_liner": "서비스"},
     {"id": "incidents-atlas", "name": "ATL 장애 기록", "region": "ops", "aliases": [],
      "one_liner": "ATL 서비스 장애와 대응"},
     {"id": "atlas", "name": "Atlas Shop", "region": "services", "aliases": ["ATL", "아틀라스", {"name": "AtL", "scope": "kr"}],
@@ -45,7 +45,6 @@ NODES = [
     {"id": "relay", "name": "Relay", "region": "services", "aliases": ["릴레이"],
      "one_liner": "예비 서버 2대는 2026-09-30 반납"},
     {"id": "relay-us-east-1", "name": "relay-us-east-1", "region": "services", "aliases": [], "one_liner": "US East host"},
-    {"id": "nca", "name": "NCA", "region": "services", "aliases": [], "one_liner": "region group"},
 ]
 EDGES = [
     {"from": "atlas", "rel": "SHARES_NETWORK", "to": "relay"},
@@ -66,10 +65,10 @@ def R(q, **kw):
     return resolve(q, nodes=NODES, edges=EDGES, regions=REGIONS, ages=AGES, revision="r1", **kw)
 
 
-# ── 1. the question that was asked ────────────────────────────────────────────
+# ── 1. the question the resolver is for ─────────────────────────────────────────
 r = R("ATL에서 가장 최근에 한 작업은 뭐야?")
 ids = [n["is"] for n in r["names"]]
-check("the incident: 'ATL' resolves through its alias", "atlas" in ids, str(ids))
+check("the example: 'ATL' resolves through its alias", "atlas" in ids, str(ids))
 check("  and one hop along the map's edge reaches relay", "relay" in ids, str(ids))
 check("  the edge is named as the reason", any(n["is"] == "relay" and n["via"].startswith("edge SHARES_NETWORK") for n in r["names"]),
       str([(n["is"], n["via"]) for n in r["names"]]))

@@ -2,11 +2,10 @@
 
 This is the DNS in front of the routing table. A person types a name the way their team says it;
 the map holds a different, canonical name for the same thing; and routing on the wrong one goes to
-the wrong place. On 2026-09-30 a person asked for "the most recent work on ATL", an agent read the
-word "work", opened one area (ops), found nothing, and said so. The record was four levels down in
-a different area, under a node called `relay` that shares a network with `atlas` — a fact the map already
-held as an edge. Nothing translated "ATL" into the two nodes it meant, and nothing turned "most
-recent" into the one column built to answer it.
+the wrong place. Say a person asks for "the most recent work on ATL": an agent that reads the word
+"work" may open one area, find nothing, and say so — while the record sits in another area, under a
+node that the map already links to the one called ATL by an edge. Nothing translates "ATL" into the
+nodes it means, and nothing turns "most recent" into the one column built to answer it.
 
 So this does three things a resolver does, and nothing a search engine does:
 
@@ -146,8 +145,8 @@ def resolve(q: str, *, nodes: list[dict], edges: list[dict], regions: list[dict]
         found[what["id"]] = {"said": hit, "is": what["id"], "name": what["name"], "area": what["area"],
                              "via": "name" if hit.lower() == what["id"].lower() or hit.lower() == what["name"].lower() else "alias",
                              "one_liner": what["one_liner"]}
-    # One hop along the map's own edges. The 2026-09-30 miss was exactly one hop: `atlas` was named,
-    # `relay` held the record, and an edge between them said so. Two hops is a graph walk, not a
+    # One hop along the map's own edges: the thing named is usually next to the thing meant, and the
+    # map says so with an edge. Two hops is a graph walk, not a
     # resolution, and it would pull in half the map for any well-connected node.
     direct = list(found)
     for e in edges:

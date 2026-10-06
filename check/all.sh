@@ -92,7 +92,7 @@ run age        $HOSTPY check/age-check.py
 # import — the same condition as the other static ones.
 run tidy       $HOSTPY check/tidy-check.py
 # The resolver is a pure function over a map it is handed, so the map is written by hand in the
-# check — the 2026-09-30 incident, reconstructed — and no service is needed.
+# check — a small invented map — and no service is needed.
 run resolve    $HOSTPY check/resolve-check.py
 
 printf '\n== in the containers ==\n'
