@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-"""Invariants 1 and 2, as the MCP server enforces them: every walk starts at hop 0, and "not here"
-may be said only by someone who has seen the whole list.
+"""Invariant 1 at the agent's door: every walk starts at hop 0 — and the agent carries nothing to prove it.
 
     ./check/walk-check.py [port]
 
 Starts an ontology on a copy of the shipped repository and drives the MCP server over stdio the way
-an agent does. Before 2026-10-06 both rules were sentences in a tool description, and an agent quoted
-them while breaking them. Now hop 0 issues a walk id and everything below hop 0 is refused without
-it — so the thing to check is the refusal: that it fires on every path below hop 0, that it says how
-to start, that a walk opened by one hop 0 is over when the next is served, that it expires, and that
-hop 0 itself, resolve, and placement are not caught by it.
+an agent does. The server remembers, for the session it serves, whether hop 0 has been opened: below
+hop 0 a table or a document is refused until it has, and every step needs a one-line reason. No id is
+handed to the agent (operator, 2026-10-07) — so the thing to check is that the refusal still fires on
+every path below hop 0 without one, that it says how to start, that it expires, and that the agent is
+shown four tools and no more.
 """
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.request
 
@@ -39,7 +38,7 @@ class Mcp:
     def _recv(self): return json.loads(self.p.stdout.readline())
     def tools(self):
         self._send({"jsonrpc": "2.0", "id": self._id(), "method": "tools/list", "params": {}})
-        return [t["name"] for t in self._recv()["result"]["tools"]]
+        return self._recv()["result"]["tools"]
     def call(self, name, args):
         self._send({"jsonrpc": "2.0", "id": self._id(), "method": "tools/call", "params": {"name": name, "arguments": args}})
         r = self._recv().get("result") or {}
@@ -49,22 +48,13 @@ class Mcp:
         except Exception: self.p.kill()
 
 
-def walk_id(text):
-    for l in text.splitlines():
-        if l.strip().startswith("walk"):
-            return l.split(":", 1)[1].strip().split()[0]
-    return ""
-
-
 T = tempfile.mkdtemp(prefix="walk-check-")
 repo = os.path.join(T, "repo")
 shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, symlinks=True)
 subprocess.run(["git", "-C", repo, "config", "user.email", "walk@routemind"], check=True)
 subprocess.run(["git", "-C", repo, "config", "user.name", "walk-check"], check=True)
-os.makedirs(os.path.join(T, "harness"), exist_ok=True); os.makedirs(os.path.join(T, "overlays"), exist_ok=True)
-# Overlays on, so closing one as not_found — invariant 2's door — is exercised, not skipped.
-env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(PORT), "ONTOLOGY_HARNESS": os.path.join(T, "harness"),
-       "ONTOLOGY_OVERLAYS": os.path.join(T, "overlays"),
+os.makedirs(os.path.join(T, "overlays"), exist_ok=True)
+env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(PORT), "ONTOLOGY_OVERLAYS": os.path.join(T, "overlays"),
        "PYTHONPATH": os.pathsep.join(x for x in [os.environ.get("PYTHONPATH", ""), os.path.join(ROOT, "ontology")] if x)}
 svc = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")], env=env,
                        stdout=open(os.path.join(T, "svc.log"), "w"), stderr=subprocess.STDOUT)
@@ -77,68 +67,50 @@ else:
 try:
     m = Mcp()
     tools = m.tools()
-    check("the walk id is asked for on the tools that need it",
-          all(n in tools for n in ("knowledge_table", "knowledge_read", "knowledge_resolve")), str(tools))
+    names = [t["name"] for t in tools]
+    check("the agent is shown four tools: table, read, place, circuit", names == ["knowledge_table", "knowledge_read", "knowledge_place", "knowledge_circuit"], str(names))
+    check("  overlay stays off although this backbone keeps overlays", "knowledge_overlay" not in names)
+    props = {t["name"]: set((t.get("inputSchema") or {}).get("properties", {})) for t in tools}
+    check("  and no tool asks the agent for a walk id", not any("walk" in p for p in props.values()), json.dumps({k: sorted(v) for k, v in props.items()}))
+    check("  the first tool's description carries hop 0", "/v1/regions/expense" in tools[0]["description"])
 
-    # ── below hop 0, without a walk ──────────────────────────────────────────
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense"})
-    check("an area's table without a walk is refused", err and "walk" in t, t[:140])
-    check("  and the refusal says how to start: at hop 0, with resolve", "hop 0" in t and "knowledge_resolve" in t, t[:200])
-    t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body"})
-    check("a document without a walk is refused", err and "walk" in t, t[:140])
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": "w9", "why": "the check walks here"})
-    check("a walk id this session never opened is refused", err and "not one this session opened" in t, t[:160])
+    # ── below hop 0, before hop 0 ────────────────────────────────────────────
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "why": "receipts"})
+    check("an area's table before hop 0 is refused", err and "hop 0" in t, t[:140])
+    check("  and the refusal says how to start: knowledge_table with no address", "knowledge_table with no address" in t, t[:200])
+    t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body", "why": "the list"})
+    check("a document before hop 0 is refused", err and "hop 0" in t, t[:140])
 
-    # ── hop 0 opens a walk ───────────────────────────────────────────────────
+    # ── hop 0, then below it ─────────────────────────────────────────────────
     t, err = m.call("knowledge_table", {})
-    w1 = walk_id(t)
-    check("hop 0 with no address needs no walk and opens one", not err and w1.startswith("w"), t[:200])
-    check("  and still prints the area list", "/v1/regions/expense" in t)
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w1, "why": "the check walks here"})
-    check("the area's table opens with it", not err and "/v1/nodes/" in t, t[:160])
-    t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body", "walk": w1, "why": "the check walks here"})
-    check("a document opens with it", not err and "Qualifying evidence" in t, t[:160])
+    check("hop 0 with no address answers", not err and "/v1/regions/expense" in t, t[:120])
+    check("  and prints no id for the agent to carry", "wk_" not in t and "walk  " not in t, t[:160])
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense"})
+    check("below hop 0 a step without a reason is refused", err and "why" in t, t[:140])
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "why": "receipts are in its sentence"})
+    check("  with a reason the area's table opens", not err and "/v1/nodes/" in t, t[:140])
+    t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body", "why": "the evidence list"})
+    check("  and a document opens", not err and "Qualifying evidence" in t, t[:140])
+    m.call("knowledge_table", {})
+    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "why": "again"})
+    check("a new hop 0 starts the next walk and the agent goes on without any argument", not err, t[:140])
 
-    # ── a new hop 0 ends the old walk ────────────────────────────────────────
-    t, err = m.call("knowledge_resolve", {"q": "what counts as a receipt over 30,000 KRW"})
-    w2 = walk_id(t)
-    check("resolve opens a new walk", not err and w2.startswith("w") and w2 != w1, t[:200])
-    check("  and prints hop 0 with it", "/v1/regions/expense" in t)
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w1, "why": "the check walks here"})
-    check("the old walk is over once a new hop 0 was served", err and "is over" in t and "new hop 0" in t, t[:160])
-    t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w2, "why": "the check walks here"})
-    check("  and the new one works", not err)
-
-    # ── "not here" needs the whole list ──────────────────────────────────────
-    if "knowledge_overlay" in tools:
-        t, err = m.call("knowledge_overlay", {"op": "create", "question": "is there a rule on pigeons",
-                                              "members": [{"address": "/v1/regions/expense", "why": "w"}]})
-        import re as _re
-        mm = _re.search(r"OVERLAY (ov_[A-Za-z0-9_-]+)", t)      # the heading create prints
-        oid = mm.group(1) if mm else ""
-        if check("an overlay can be opened (to test closing it)", not err and bool(oid), t[:200]):
-            t, err = m.call("knowledge_overlay", {"op": "close", "id": oid, "outcome": "not_found", "used": []})
-            check("closing as not_found without a walk is refused", err and "whole list" in t or "walk" in t, t[:160])
-            t, err = m.call("knowledge_overlay", {"op": "close", "id": oid, "outcome": "not_found", "used": [], "walk": w2, "why": "the check walks here"})
-            check("  and allowed inside the walk", not err, t[:160])
-            t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w2, "why": "the check walks here"})
-            check("  after which the walk is over — the question was answered", err and "closed" in t, t[:160])
-    else:
-        results.append("skip overlay: this backend lists no knowledge_overlay")
-
-    # ── what the walk does not touch ─────────────────────────────────────────
     t, err = m.call("knowledge_place", {"op": "open", "name": "Pigeon loft rota", "one_liner": "Who feeds the pigeons"})
-    check("placement is its own walk and needs no id", not err and "/v1/regions/expense" in t, t[:160])
+    check("placement is its own walk and needs no hop 0 of this kind", not err and "/v1/regions/expense" in t, t[:160])
     m.call("knowledge_place", {"op": "close", "id": "p1"})
     m.close()
 
     # ── it expires ───────────────────────────────────────────────────────────
     m2 = Mcp(env={"KNOWLEDGE_WALK_TTL": "1"})
-    t, _ = m2.call("knowledge_table", {})
-    w = walk_id(t); time.sleep(1.5)
-    t, err = m2.call("knowledge_table", {"path": "/v1/regions/expense", "walk": w, "why": "the check walks here"})
-    check("a walk expires", err and "expired" in t, t[:160])
+    m2.call("knowledge_table", {}); time.sleep(1.5)
+    t, err = m2.call("knowledge_table", {"path": "/v1/regions/expense", "why": "late"})
+    check("a walk expires, and the refusal says how to start again", err and "expired" in t and "knowledge_table with no address" in t, t[:200])
     m2.close()
+
+    # ── the switch ───────────────────────────────────────────────────────────
+    m3 = Mcp(env={"KNOWLEDGE_TOOLS_EXTRA": "overlay"})
+    check("KNOWLEDGE_TOOLS_EXTRA=overlay turns the overlay tool back on", "knowledge_overlay" in [t["name"] for t in m3.tools()])
+    m3.close()
 finally:
     svc.terminate()
     try: svc.wait(5)

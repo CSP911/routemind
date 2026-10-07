@@ -95,9 +95,6 @@ run age        $HOSTPY check/age-check.py
 # What an edit by hand leaves behind. Needs the service's own modules, so it runs wherever those
 # import — the same condition as the other static ones.
 run tidy       $HOSTPY check/tidy-check.py
-# The resolver is a pure function over a map it is handed, so the map is written by hand in the
-# check — a small invented map — and no service is needed.
-run resolve    $HOSTPY check/resolve-check.py
 
 printf '\n== in the containers ==\n'
 if [ -n "$ONT" ]; then

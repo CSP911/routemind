@@ -8,14 +8,12 @@ Three parts, smallest first.
   the store     `walks.WalkStore` on its own: a step without a reason is refused; two walks
                 interleaved come back by cursor in order with none lost and none twice; the counter
                 survives a new store on the same directory (a restart); an open walk untouched past
-                its hour is closed `abandoned`, a closed one is gone after its six hours; HEAT counts
-                walks, not steps; the hot path names the tables walks opened.
-  the service   the same through HTTP — POST to open, step and close, GET since=N — and HEAT on the
-                tables an agent reads.
+                its hour is closed `abandoned`, a closed one is gone after its six hours.
+  the service   the same through HTTP — POST to open, step and close, GET since=N.
   the MCP       an agent's walk through the real MCP server: hop 0 opens a walk on the record, a
                 table without `why` is refused, every table and read it makes appears on the record
-                in order with its reason, the overlay's close closes the walk, and a second walk
-                touching the same name is shown the first one as history.
+                in order with its reason, the agent shown no id and no hint, and the next hop 0
+                closing the walk before it.
 """
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 from pathlib import Path
@@ -38,8 +36,8 @@ try:
     # ── the store ─────────────────────────────────────────────────────────────
     d = Path(T) / "walks"
     st = walks.WalkStore(d)
-    a = st.open("how many quotes for 6 million", "knowledge_resolve", {"kind": "agent", "name": "a"})
-    b = st.open("who signs a trip request", "knowledge_resolve", {"kind": "agent", "name": "b"})
+    a = st.open("how many quotes for 6 million", "knowledge_table", {"kind": "agent", "name": "a"})
+    b = st.open("who signs a trip request", "knowledge_table", {"kind": "agent", "name": "b"})
     try: st.step(a["id"], "table", "/v1/regions/procurement", ""); refused = False
     except walks.WalkError as e: refused = e.status == 400 and "why" in str(e)
     check("a step without a reason is refused", refused)
@@ -63,13 +61,6 @@ try:
     try: st2.step(a["id"], "table", "/v1/regions/expense", "late"); late = False
     except walks.WalkError as e: late = e.status == 409
     check("a closed walk takes no more steps", late)
-    h = st2.heat()
-    check("HEAT counts walks per row", h.get("procurement") == {"walked": 1, "answered": 1} and h.get("attendance") == {"walked": 1, "answered": 0}, json.dumps(h)[:200])
-    st2.step(b["id"], "table", "/v1/regions/attendance", "back again")
-    check("  a walk that opened a row twice was there once", st2.heat().get("attendance", {}).get("walked") == 1)
-    hot = st2.hot(["threshold-table"])
-    check("the hot path names the tables earlier walks opened", hot["walks"] == 1 and hot["paths"][0]["path"] == ["/v1/regions/procurement", "/v1/nodes/approval-threshold"],
-          json.dumps(hot))
     # expiry: an open walk an hour stale, a closed one six hours stale
     w = st2.get(b["id"]); w["touched_at"] = "2020-01-01T00:00:00Z"; st2._write(w)
     check("an open walk untouched past its hour is closed abandoned", st2.get(b["id"])["outcome"] == "abandoned")
@@ -119,11 +110,6 @@ try:
         code, one = call("GET", f"/v1/walks/{wid}")
         check("  GET one walk returns it whole, for a replay", code == 200 and len(one.get("steps", [])) == 3 and one["steps"][1]["why"] == "receipts are in its sentence")
         call("POST", f"/v1/walks/{wid}/close", {"outcome": "answered"})
-        code, area = call("GET", "/v1/regions/expense")
-        row = next((x for x in area.get("entries", []) if x["id"] == "qualified-evidence"), None) or {}
-        code, top = call("GET", "/v1/regions")
-        exp = next((x for x in top.get("regions", []) if x["source"] == "expense"), {})
-        check("  HEAT rides on hop 0", exp.get("heat") == {"walked": 1, "answered": 1}, json.dumps(exp.get("heat")))
 
         # ── the MCP ───────────────────────────────────────────────────────────
         class Mcp:
@@ -144,42 +130,32 @@ try:
                 try: self.p.stdin.close(); self.p.wait(5)
                 except Exception: self.p.kill()
 
-        def walk_of(text):
-            return next((l.split(":", 1)[1].strip().split()[0] for l in text.splitlines() if l.strip().startswith("walk")), "")
-
         m = Mcp()
         code, before = call("GET", "/v1/walks?since=0"); cursor = before.get("seq", 0)
-        t, err = m.call("knowledge_resolve", {"q": "how far up does a purchase have to be approved"})
-        w1 = walk_of(t)
-        check("mcp: hop 0 opens a walk on the record", w1.startswith("wk_"), w1)
-        t, err = m.call("knowledge_table", {"path": "/v1/regions/procurement", "walk": w1})
+        def newest_walk():
+            # The walk the MCP opened is the last `open` on the record after the cursor — not the
+            # newest by time, which ties with the service's walk inside the same second.
+            code, d = call("GET", f"/v1/walks?since={cursor}")
+            opens = [x["walk"] for x in d.get("steps", []) if x["op"] == "open"]
+            return opens[-1] if opens else ""
+        t, err = m.call("knowledge_table", {})
+        w1 = newest_walk()
+        check("mcp: hop 0 opens a walk on the record, under an id the agent never sees", w1.startswith("wk_") and w1 not in t, w1)
+        t, err = m.call("knowledge_table", {"path": "/v1/regions/procurement"})
         check("  a table without why is refused, and says why it wants one", err and "why" in t, t[:140])
-        m.call("knowledge_table", {"path": "/v1/regions/procurement", "walk": w1, "why": "approval bands are in its sentence"})
-        m.call("knowledge_table", {"path": "/v1/nodes/approval-threshold", "walk": w1, "why": "the band table"})
-        m.call("knowledge_read", {"path": "/v1/nodes/threshold-table/body", "walk": w1, "why": "the numbers themselves"})
+        m.call("knowledge_table", {"path": "/v1/regions/procurement", "why": "approval bands are in its sentence"})
+        m.call("knowledge_table", {"path": "/v1/nodes/approval-threshold", "why": "the band table"})
+        m.call("knowledge_read", {"path": "/v1/nodes/threshold-table/body", "why": "the numbers themselves"})
         code, after = call("GET", f"/v1/walks?since={cursor}")
         mine = [(x["op"], x["address"], x["why"]) for x in after.get("steps", []) if x["walk"] == w1]
         check("  every step it made is on the record, in order, with its reason",
               [x[0] for x in mine] == ["open", "table", "table", "read"] and mine[1][2] == "approval bands are in its sentence", json.dumps(mine)[:300])
-        t, err = m.call("knowledge_overlay", {"op": "create", "question": "approval bands", "members": [{"address": "/v1/regions/procurement", "why": "w"}]})
-        import re as _re
-        oid = (_re.search(r"OVERLAY (ov_[A-Za-z0-9_-]+)", t) or [None, ""])[1]
-        m.call("knowledge_overlay", {"op": "close", "id": oid, "outcome": "answered", "used": ["/v1/nodes/threshold-table/body"], "walk": w1})
+        check("  and what it is shown carries no HEAT and no hint of where others went", "HEAT" not in t and "earlier walks" not in t)
+        # The next question starts at hop 0 again, and the walk before it is closed on the record.
+        m.call("knowledge_table", {})
         code, one = call("GET", f"/v1/walks/{w1}")
-        check("  closing the overlay closes the walk on the record", one.get("state") == "closed" and one.get("outcome") == "answered", json.dumps({k: one.get(k) for k in ("state", "outcome")}))
-        t, err = m.call("knowledge_resolve", {"q": "the threshold-table for a purchase"})
-        w2 = walk_of(t)
-        check("  a second walk touching the same name is shown the first as history", "earlier walks touching these names" in t and "procurement" in t, t[:600])
-        # HEAT is on the row that was walked, in the table that lists it: approval-threshold is a
-        # row of purchase-request, threshold-table a row of approval-threshold.
-        t, err = m.call("knowledge_table", {"path": "/v1/nodes/approval-threshold", "walk": walk_of(t), "why": "again"})
-        heat_line = next((l for l in t.splitlines() if "threshold-table" in l), "")
-        check("  and the table that lists a walked row shows its HEAT", "HEAT" in t and "1/1" in heat_line, (heat_line or t[:300]))
-        # A walk the agent never closes is closed by the next question, on the record too.
-        m.call("knowledge_resolve", {"q": "who approves a purchase"})
-        code, two = call("GET", f"/v1/walks/{w2}")
-        check("  an unclosed walk is closed abandoned when the next question starts",
-              two.get("state") == "closed" and two.get("outcome") == "abandoned", json.dumps({k: two.get(k) for k in ("state", "outcome")}))
+        check("  a new hop 0 closes the walk before it, abandoned",
+              one.get("state") == "closed" and one.get("outcome") == "abandoned", json.dumps({k: one.get(k) for k in ("state", "outcome")}))
         m.close()
     finally:
         svc.terminate()

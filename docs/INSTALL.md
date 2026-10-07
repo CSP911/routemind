@@ -24,7 +24,7 @@ mkdir -p data/repo && cp -r examples/back-office/. data/repo/
 ```sh
 cp .env.example .env
 printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
-mkdir -p data/repo data/publish data/overlays data/harness data/exchange data/access
+mkdir -p data/repo data/publish data/overlays data/walks data/harness data/exchange data/access
 docker compose up -d --build
 ./check/smoke.sh
 ```

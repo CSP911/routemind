@@ -14,18 +14,21 @@ two homes, or a rule that lived in a prompt rather than in code.
 
 **1. Every walk starts at hop 0.** Nothing below the area list — an area's table, a node's table,
 a document, a circuit's table — is served to an agent that has not been served hop 0 *for this
-question*. Enforced in the MCP server, the agent's only door: hop 0 (from `knowledge_resolve` or
-`knowledge_table` with no address) issues a **walk** id, and every call below hop 0 must carry it
-or is refused with "start at hop 0". A walk expires when an overlay is closed, when a new hop 0 is
-served, or after ten minutes. The screen and `curl` read the API directly and are not bound: this
-is a rule about agents, who are the ones that answer questions. *Limit, stated:* an agent can
-carry a walk into its next question; the walk records the question it was opened for, so the
-reuse is visible, and a question log (not yet built) is what would catch it.
+question*. Enforced in the MCP server, the agent's only door: hop 0 is `knowledge_table` with no
+address, and the server remembers, for the session it serves, that it was opened; every call below
+hop 0 before that is refused with "start at hop 0". The agent carries no id (2026-10-07: an argument
+nobody could explain was dropped). A walk ends when a new hop 0 is served, when an overlay is closed,
+or after ten minutes. The screen and `curl` read the API directly and are not bound: this is a rule
+about agents, who are the ones that answer questions. *Limit, stated:* an agent can go on below
+hop 0 into its next question without asking for hop 0 again; nothing in the server can tell where
+one question ends, and a question log (not yet built) is what would catch it.
 
 **2. "Not here" may be said only by someone who has seen the whole list.** An absence conclusion
-(an overlay closed `not_found`, a resolver NXDOMAIN acted on) is accepted only inside a walk, i.e.
-with hop 0 read for this question. Inside one area, "not here" means "not in this drawer" and the
-system does not let it be reported as more. Enforced by the same walk id as 1.
+is accepted only from someone who has read hop 0. Inside one area, "not here" means "not in this
+drawer". The agent's instructions say so, and 1 guarantees that every agent below hop 0 has read
+it. With the overlay tool off — the default since 2026-10-07 — no tool records an absence, so the
+system enforces nothing more than that; where `KNOWLEDGE_TOOLS_EXTRA=overlay` turns it on, an
+overlay is closed `not_found` only inside a walk.
 
 **3. One fact, one home.** Every fact has one source file. Anything derived from it — `regions.json`,
 the hop-0 listing, a session, a cache — is regenerated in the same transaction that changes the
@@ -55,7 +58,7 @@ the area listing and the area detail, the owner's view and the export surface, `
 and `store.regions_json()`. Checked by `check/same-answer-check.py`: every area's routing sentence,
 export flag, representative and title; a spread of nodes' name, line, kind, parent, aliases and
 body; the edges; the core — each read from the file and from every API path, the export surface,
-the resolver, the placement walk and what the MCP prints, 420 cells, on a clean tree and again with
+the placement walk and what the MCP prints, 414 cells, on a clean tree and again with
 an uncommitted hand edit. Verified to fire: with the pre-2026-10-05 stale-table behaviour put back,
 the listing and hop 0 disagree with the file and the check says which cells.
 
@@ -101,11 +104,11 @@ file: provider keys, private-key blocks, a tracked `.env`, a token written in YA
 somebody's machine. Runs with the static checks; verified to fire on each shape planted in a
 temporary repository.
 
-**11. Every walk is recorded, and the screen and the agent read the same record.** The MCP server
+**11. Every walk is recorded, and the screen reads that record.** The MCP server
 opens a walk when hop 0 is served, reports every step below hop 0 with the reason the agent gave,
-and closes it with the overlay; the record lives in `ONTOLOGY_WALKS` (`docs/FOOTPRINT.md`). The
-screen's live footprint and its replay, the HEAT column on every table and the `history` hint on a
-resolution all read that record and nothing else. Steps are numbered from one counter so a reader
+and closes it when the next hop 0 is served; the record lives in `ONTOLOGY_WALKS`
+(`docs/FOOTPRINT.md`). The screen's live footprint and its replay read that record and nothing else;
+the agent is shown nothing from it (2026-10-07: a hint of where others went is not routing). Steps are numbered from one counter so a reader
 polling by cursor loses nothing; a step without a reason is refused. Checked by
 `check/footprint-check.py`; the screen's polling and replay by `check/footprint-screen-check.py`.
 

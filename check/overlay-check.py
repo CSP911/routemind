@@ -74,7 +74,10 @@ class Mcp:
     def __init__(self, port):
         self.p = subprocess.Popen([sys.executable, os.path.join(ROOT, "mcp", "knowledge_mcp.py"),
                                    "--api", f"http://127.0.0.1:{port}/v1", "--actor", "overlay-check"],
-                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, bufsize=1)
+                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, bufsize=1,
+                                  # The overlay tool is off by default since 2026-10-07; this check is the one
+                                  # place that exercises it, so it switches it on.
+                                  env={**os.environ, "KNOWLEDGE_TOOLS_EXTRA": "overlay"})
         procs.append(self.p); self.n = 0
 
     def call(self, method, params=None):
@@ -126,12 +129,11 @@ check("add narrows: the node's rows join", not err and "/v1/nodes/rules/body" in
 text, err = m.tool("knowledge_overlay", {"op": "remove", "id": oid, "address": "/v1/regions/alpha", "why": "the shelf is enough"})
 check("remove drops the area's section", not err and "── /v1/regions/alpha" not in text and "── /v1/nodes/shelf" in text)
 
-# An overlay's address is below hop 0, so reading it needs the walk hop 0 issues (invariant 1).
-top, _ = m.tool("knowledge_table", {})
-WALK = next((l.split(":", 1)[1].strip().split()[0] for l in top.splitlines() if l.strip().startswith("walk")), "")
-text, err = m.tool("knowledge_table", {"path": f"/v1/overlays/{oid}", "walk": WALK, "why": "the check walks here"})
+# An overlay's address is below hop 0, so hop 0 is opened first (invariant 1).
+m.tool("knowledge_table", {})
+text, err = m.tool("knowledge_table", {"path": f"/v1/overlays/{oid}", "why": "the check walks here"})
 check("knowledge_table reads an overlay too", not err and f"OVERLAY {oid}" in text)
-text, err = m.tool("knowledge_read", {"path": f"/v1/overlays/{oid}", "walk": WALK, "why": "the check walks here"})
+text, err = m.tool("knowledge_read", {"path": f"/v1/overlays/{oid}", "why": "the check walks here"})
 check("  and knowledge_read refuses it as a table", err and "is a table" in text)
 
 text, err = m.tool("knowledge_overlay", {"op": "add", "id": oid, "address": "/v1/nodes/not-a-thing", "why": "guess"})

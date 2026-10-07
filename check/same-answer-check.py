@@ -6,7 +6,7 @@
 Not a feature check. A table: each **fact** the repository holds — an area's routing sentence, whether
 it is exported, who speaks for it; a node's name, line, kind, parent, aliases, body; the edges; the
 core — against every **path** that reads it: the file (the one home, invariant 3), the API's listing
-and detail, the parent's table, the export surface a peer reads, the resolver, the placement walk,
+and detail, the parent's table, the export surface a peer reads, the placement walk,
 and what the MCP prints to an agent. Every pair must agree. A disagreement is a bug by definition,
 whichever side is "right", because a reader cannot tell which side it is on.
 
@@ -133,16 +133,14 @@ def compare(repo, label):
     # ── area facts ────────────────────────────────────────────────────────────
     st, listing = get("/v1/regions"); rows = {r["source"].replace("_", "-"): r for r in listing.get("regions", []) if not r.get("peer")}
     st, exported = get("/v1/export/regions", session()); ex = {r["source"].replace("_", "-"): r for r in exported.get("regions", [])}
-    st, resolved = get("/v1/resolve?q=x"); rs = {a["area"]: a for a in resolved.get("areas", [])}
     placed = post("/v1/place", {"at": "/v1/regions", "doc": {"name": "x", "one_liner": "x"}, "path": []}); pl = {r["id"]: r for r in placed.get("rows", [])}
     m = Mcp(); hop0, _ = m.call("knowledge_table", {}); printed = table_rows(hop0)
-    walk = next((l.split(":", 1)[1].strip().split()[0] for l in hop0.splitlines() if l.strip().startswith("walk")), "")
     for a in areas:
         rep = rep_of[a]; f = F.get(rep, {})
         st, detail = get(f"/v1/regions/{a}")
         use_when = (f.get("use_when") or "").strip()
         for name, val, pre in [("listing", rows.get(a, {}).get("use_when"), False), ("detail", detail.get("use_when"), False),
-                               ("resolve", rs.get(a, {}).get("use_when"), False), ("place", pl.get(a, {}).get("line"), False),
+                               ("place", pl.get(a, {}).get("line"), False),
                                ("mcp hop0", printed.get(f"/v1/regions/{a}"), True)]:
             n_cells += 1; same(f"area {a} use_when", "file", use_when, name, (val or "").strip() if val is not None else val, prefix=pre)
         if yesno(f.get("export")):
@@ -179,7 +177,7 @@ def compare(repo, label):
             prow = next((r for r in placed.get("rows", []) if r["id"] == i), None)
             if prow is not None:
                 n_cells += 1; same(f"node {i} one_liner", "file", f.get("one_liner"), "place rows", prow.get("line"))
-            t, err = m.call("knowledge_table", {"path": f"/v1/nodes/{par}", "walk": walk, "why": "the check walks here"})
+            t, err = m.call("knowledge_table", {"path": f"/v1/nodes/{par}", "why": "the check walks here"})
             pr = table_rows(t)
             addr = next((k for k in pr if k.rstrip("/body").endswith(f"/v1/nodes/{i}") or k == f"/v1/nodes/{i}/body" or k == f"/v1/nodes/{i}"), None)
             if addr:
@@ -188,7 +186,7 @@ def compare(repo, label):
         if body:
             st, api_body = get(f"/v1/nodes/{i}/body", raw=True)
             n_cells += 1; same(f"node {i} body", "file", body, "api body", (api_body or "").strip())
-            t, err = m.call("knowledge_read", {"path": f"/v1/nodes/{i}/body", "walk": walk, "why": "the check walks here"})
+            t, err = m.call("knowledge_read", {"path": f"/v1/nodes/{i}/body", "why": "the check walks here"})
             n_cells += 1; same(f"node {i} body", "file", body, "mcp read", (t or "").strip()[:len(body)], prefix=True)
     m.close()
 

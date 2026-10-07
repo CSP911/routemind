@@ -897,7 +897,7 @@
     // The title's own font: 12.5 px on the core, weight 500 on a host (knowledge.css). A host's title
     // is centred 6 px right of the tile's centre, past the dot, and the pick box sits in its top-right
     // corner — so the room is the tile less both, on both sides of that centre, or the ellipsis runs
-    // under the box (seen on a real install, 2026-10-08).
+    // under the box (seen on a real install, 2026-10-07).
     label.textContent = fitted(row.label, w - (shape === "host" ? 34 : 0), shape === "core" ? 12.5 : 11.5, shape === "host" ? 500 : 600);
     g.append(label);
     if (shape === "core") {

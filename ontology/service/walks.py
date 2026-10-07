@@ -2,11 +2,11 @@
 the next agent alike.
 
 A walk is a question's path through the routing table: hop 0, the areas it opened, the nodes, the
-documents it read, and at every step the reason the agent gave. The MCP server issues the walk and
-reports each step here; the screen follows the record and expands the map in the same order; the
-history is what the next walk is shown as a hint — which rows were walked, which answered. One
-record, three readers. Invariant 11 in docs/INVARIANTS.md: *every walk is recorded, and the screen
-and the agent read the same record.*
+documents it read, and at every step the reason the agent gave. The MCP server opens the walk and
+reports each step here; the screen follows the record and expands the map in the same order, live or
+replayed. Invariant 11 in docs/INVARIANTS.md: *every walk is recorded, and the screen reads that
+record.* Nothing is computed from it for the agent — a "where others went" hint was tried and taken
+out (operator, 2026-10-07): it is not part of routing.
 
 **Numbered, not timed.** Every step gets the next integer from one counter across all walks, and a
 reader asks for "everything after N". A clock would lose steps — two in the same millisecond, a
@@ -15,7 +15,7 @@ kept in a file so a restart continues it rather than starting over, which would 
 own old cursor as new.
 
 **Six hours.** A closed walk is kept for six hours (the operator's number, 2026-10-07) — long enough
-to replay what happened this shift and to count what was hot, short enough that the directory does
+to replay what happened this shift, short enough that the directory does
 not become a log. An open walk nobody touches for an hour is closed as `abandoned`, which is a
 different fact from answered and from not-found.
 
@@ -51,16 +51,6 @@ def _age_hours(stamp: str) -> float:
     except Exception:
         return 0.0
     return max(0.0, (time.time() - t) / 3600.0)
-
-
-def key_of(address: str) -> str | None:
-    """The thing an address is about, for counting: an area's dir, or a node's id."""
-    a = str(address or "").rstrip("/")
-    m = re.match(r"^/v1/regions/([a-z0-9_-]+)$", a)
-    if m: return m.group(1).replace("_", "-")
-    m = re.match(r"^/v1/nodes/([a-z0-9-]+)(?:/body)?$", a)
-    if m: return m.group(1)
-    return None
 
 
 class WalkStore:
@@ -177,35 +167,3 @@ class WalkStore:
                                  "by": w.get("by") or {}, **s})
         rows.sort(key=lambda r: r["n"])
         return {"seq": self.seq(), "steps": rows}
-
-    def heat(self) -> dict:
-        """For every area and node touched in the kept window: how many walks went there, and how
-        many of those ended answered. Counted per walk, not per step — a walk that read a table
-        twice was there once."""
-        out: dict[str, dict] = {}
-        for w in self.all():
-            seen = set()
-            for s in w["steps"]:
-                k = key_of(s.get("address")) if s["op"] in ("table", "read") else None
-                if not k or k in seen: continue
-                seen.add(k)
-                h = out.setdefault(k, {"walked": 0, "answered": 0})
-                h["walked"] += 1
-                if w["outcome"] == "answered": h["answered"] += 1
-        return out
-
-    def hot(self, keys: list[str], limit: int = 3) -> dict:
-        """For the things named: the walks that touched them, and the paths those walks took —
-        the sequence of tables opened — most common first. A hint about where previous walks went,
-        structural and never an answer: it names addresses, not which record governs."""
-        paths: dict[tuple, int] = {}
-        n = 0
-        want = set(keys)
-        for w in self.all():
-            touched = {key_of(s.get("address")) for s in w["steps"] if s["op"] in ("table", "read")}
-            if not (touched & want): continue
-            n += 1
-            path = tuple(s["address"] for s in w["steps"] if s["op"] == "table")
-            if path: paths[path] = paths.get(path, 0) + 1
-        top = sorted(paths.items(), key=lambda kv: -kv[1])[:limit]
-        return {"walks": n, "paths": [{"path": list(p), "walks": c} for p, c in top]}

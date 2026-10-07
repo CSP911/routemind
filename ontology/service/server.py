@@ -24,7 +24,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from service.store import Store, alias_names        # noqa: E402
 from service.validate import validate, export_kinds  # noqa: E402
 from service import ages  # noqa: E402
-from service import resolve as resolver  # noqa: E402
 from service import derive as deriving  # noqa: E402
 from service import place as placing  # noqa: E402
 from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E402
@@ -578,30 +577,6 @@ def wstore():
     return _walk_store
 
 
-def _heat() -> dict:
-    """HEAT for every row on a table — walked / answered in the kept window — or nothing at all when
-    the footprint is off. Nothing: a column of zeros would say "never walked", which is a different
-    fact from "not recorded"."""
-    if not WALKS: return {}
-    # Remembered until the next step: a table asks once per row, and the answer is a count over every
-    # walk on disk. Keyed on the step counter, not the clock — it was a one-second memo at first, and
-    # a table read within a second of a step showed HEAT from before it, which is derived state not
-    # following its source (invariant 3). The counter moves on every step, so this is exact.
-    # Expiry can change the count without a step — a walk crossing its six hours — so the minute is
-    # part of the key: a step is exact, an expiry is at most a minute late.
-    global _HEAT_MEMO
-    try: key = (wstore().seq(), int(time.time() // 60))
-    except Exception: return {}
-    if _HEAT_MEMO and _HEAT_MEMO[0] == key: return _HEAT_MEMO[1]
-    try: h = wstore().heat()
-    except Exception: h = {}
-    _HEAT_MEMO = (key, h)
-    return h
-
-
-_HEAT_MEMO = None
-
-
 def ostore():
     global _overlay_store
     if _overlay_store is None:
@@ -758,9 +733,6 @@ def _advert_child(c: dict) -> dict:
     row = {"id": c["id"], "name": c["name"], "kind": c["kind"], "one_liner": c["one_liner"],
            "type": kind, "has_body": has_body, "children": len(kids),
            "whose": _whose(c, {"grafted_from": _from}),
-           # HEAT: walks that came here in the kept window, and how many of them ended answered.
-           # Absent when the footprint is off — absent is "not recorded", a zero would be "never".
-           **({"heat": _heat()[c["id"]]} if c["id"] in _heat() else {}),
            **({"route_since": age["route_since"]} if age.get("route_since") else {}),
            **({"changed": age["changed"]} if age.get("changed") else {}),
            # The row carries the call that answers it. A document is not read at the address that
@@ -1136,27 +1108,6 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["vocab"]: return self._send(200, store.vocab())
         if parts == ["graph"]: g = store.graph(); g["revision"] = head(DATA); return self._send(200, g)
         if parts == ["edges"]: return self._send(200, {"revision": head(DATA), "edges": store.edges()})
-        if parts == ["resolve"]:
-            # The DNS in front of hop 0. A question as a person typed it comes in; the names in it
-            # come back as the nodes the map calls them, with what is being asked and the area list
-            # every search starts from. See service/resolve.py for what it is and is not.
-            q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
-            question = unquote(q.get("q", "").replace("+", " "))
-            # The same link state hop 0 reads, so the absence sentence here is the one hop 0 would
-            # give: with a link down there is no honest version of it, and a resolver that printed
-            # the confident one over an incomplete list would be the failure it exists to prevent.
-            theirs, links = peering.rows(DATA)
-            r = resolver.resolve(question, nodes=store.nodes(), edges=store.edges(), regions=store.regions(),
-                                 ages=ages.of(DATA, head(DATA)), revision=head(DATA),
-                                 absence=(_absence(links) if links else None))
-            r["areas"] += [{"id": t.get("id"), "area": t.get("source"), "use_when": t.get("use_when") or "",
-                            "fetch": t.get("fetch"), "changed": None, "peer": t.get("peer")} for t in theirs]
-            # The hot path: where previous walks for these names went, as addresses and counts. A
-            # hint about *where*, never about which record governs — the walk still starts at hop 0.
-            if WALKS and r.get("names"):
-                try: r["history"] = wstore().hot([n["is"] for n in r["names"]])
-                except Exception: pass
-            return self._send(200, r)
         if parts == ["regions"]:
             q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
             expand = q.get("expand") == "entries"
@@ -1178,7 +1129,6 @@ class Handler(BaseHTTPRequestHandler):
                 {"id": r["id"], "source": r["source"], "title": r["title"], "description": r.get("description", ""),
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
                  "whose": _whose({}, r),
-                 **({"heat": _heat()[r["source"].replace("_", "-")]} if r["source"].replace("_", "-") in _heat() else {}),
                  **_area_age(r.get("representative")),
                  "fetch": f"/v1/regions/{r['source'].replace('_', '-')}",
                  **({"entries": entries_of(r.get("representative"))} if expand else {})}
@@ -1292,7 +1242,6 @@ class Handler(BaseHTTPRequestHandler):
                     return self._send(200, {"seq": wstore().seq(), "walks": [
                         {k: w[k] for k in ("id", "question", "how", "by", "at", "touched_at", "state", "outcome", "closed_at")}
                         | {"steps": len(w["steps"])} for w in wstore().all(want)]})
-                if len(parts) == 2 and parts[1] == "heat": return self._send(200, {"heat": wstore().heat()})
                 if len(parts) == 2: return self._send(200, wstore().get(parts[1]))
             except walks.WalkError as e: return self._err(e.status, str(e))
             return self._err(404, "unknown path")

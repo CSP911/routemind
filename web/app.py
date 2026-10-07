@@ -338,11 +338,6 @@ def api_knowledge_create_overlay(payload: dict, request: Request) -> dict[str, A
 # the three writes that record a walk — so on an install the footprint recorded nothing and
 # knowledge_resolve answered 404, while every check, which talks to the ontology directly, passed.
 # check/mcp-routes-check.py now holds the two lists together.
-@_iris_route("GET", "/api/knowledge/resolve")
-def api_knowledge_resolve(request: Request, q: str = Query(default="")) -> dict[str, Any]:
-    return _ontology_proxy("GET", "/v1/resolve?q=" + quote(q, safe=""), _knowledge_actor(request))
-
-
 @_iris_route("POST", "/api/knowledge/place")
 def api_knowledge_place(payload: dict, request: Request) -> dict[str, Any]:
     # One stateless hop of the placement walk. Writes nothing; the write is POST /nodes.

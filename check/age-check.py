@@ -16,7 +16,7 @@ It builds its own repository and commits into it, so the ages are facts this che
 whatever the shipped data happens to have — on a repo whose history was created in one go, every row
 reads the same and nothing here would be distinguishable from a stub.
 """
-import os, shutil, subprocess, sys, tempfile
+import datetime, os, shutil, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
@@ -125,10 +125,15 @@ check("  and the settled row reads differently from the revised one",
 # Checked here, with a stub, because the repository the suite runs against has none: `data/repo` has
 # 0 nodes of this shape and the shipped example has 42, so twenty-five suites passed over a path they
 # could not reach. A clean install caught it on its first boot.
+# Its own change is yesterday, counted from now: written as a fixed date, the row read "1d" for one
+# day and failed every day after.
+_YESTERDAY = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 class _StubApi:
     def json(self, path):
         return {"id": "both", "name": "Both", "body": "it has a document too",
-                "route_since": "2023-01-05T00:00:00Z", "changed": "2026-09-28T00:00:00Z",
+                "route_since": "2023-01-05T00:00:00Z", "changed": _YESTERDAY,
                 "entries": [{"id": "kid", "name": "Kid", "type": "data",
                              "fetch": "/v1/nodes/kid/body", "one_liner": "a child",
                              "route_since": "2023-01-05T00:00:00Z",

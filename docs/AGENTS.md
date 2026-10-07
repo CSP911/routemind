@@ -135,28 +135,28 @@ you set a working directory.
 
 ### The tools
 
-Two do the reading, and the rest appear only where the install has the thing they need — a tool for
-a feature that is not configured would be a tool that fails when used, which is worse than absent.
+Four, whatever the install keeps (2026-10-07: "Simple is best"). Two do the reading, one places a
+new page, one reads another backbone:
 
 ```
-knowledge_resolve(q)     start here, with the question as asked: hop 0 with the names in it resolved,
-                         and the walk id every call below hop 0 must carry (invariant 1).
 knowledge_table(path?)   a routing table — what is here, and where to go next.
-                         No argument = the list of areas. That is where every search starts.
+                         No argument = the list of areas: hop 0. Every question starts there.
 knowledge_read(path)     one document, as written.
-                         Below hop 0 both take `walk`; without it they refuse and say how to start.
-
-knowledge_overlay(op)    the working set for one question (a VRF) — only where the install keeps
-                         overlays (ONTOLOGY_OVERLAYS). create · get · add · remove · close.
-knowledge_write(...)     record what was done, into the `workspace` area, under today's date —
-                         only where that area exists. Creating it is how the feature is turned on.
+                         Below hop 0 both need `why`, one line — and hop 0 opened first in this
+                         session; otherwise they refuse and say how to start (invariant 1).
+knowledge_place(op)      where a new page belongs: a walk from hop 0 down, one level at a time.
 knowledge_circuit(op)    read another backbone for the length of this connection. open · list ·
-                         close. Always offered: it needs nothing of this install to work.
+                         close. It needs nothing of this install to work.
 ```
 
-So an install offers between three and five. `check/mcp-check.py` asserts the set against the same
-conditions the server uses rather than a fixed count, because it once expected three while the server
-offered five and was right to.
+The agent carries no id. The MCP server remembers, for the session it serves, whether hop 0 has been
+opened and which walk on the record the steps belong to; a new hop 0 closes the walk before it, and a
+walk left alone for ten minutes expires (`KNOWLEDGE_WALK_TTL`). There is no alias resolver and no hint
+of where earlier walks went — the agent reads the lines and follows the addresses.
+
+`knowledge_overlay` and `knowledge_write` are still in the server, off by default:
+`KNOWLEDGE_TOOLS_EXTRA=overlay,write` in the MCP server's environment turns them back on (each still
+needs what it needs — an overlay store, a `workspace` area). `check/mcp-check.py` asserts the four.
 
 ### Prompts
 

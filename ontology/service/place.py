@@ -32,7 +32,16 @@ Pure. The service hands it rows and lines; it touches nothing.
 """
 import re
 
-from service.resolve import _find
+# How a word of the document is found in a line: Latin on its own edges, so `how` is not found inside
+# `show`; Hangul and CJK anywhere, because those scripts put no space between a word and its particle.
+_CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7a3]")
+
+
+def _find(term: str, line: str):
+    t = re.escape(term.strip())
+    rx = re.compile(t, re.I) if _CJK.search(term) else re.compile(rf"(?<![A-Za-z0-9]){t}(?![A-Za-z0-9])", re.I)
+    m = rx.search(line)
+    return m.group(0) if m else None
 
 # Words that are in every sentence and say nothing about which one. Short on purpose: a term that
 # should have been dropped shows up in the evidence where somebody can see it, which is better than a

@@ -86,9 +86,12 @@ The MCP server is the file `mcp/knowledge_mcp.py`, run by your client from this 
 `git pull` already updated it. Restart the client (or reconnect the server) so it picks the new
 file up. Two things an agent now does differently:
 
-- **It starts every question with `knowledge_resolve`** — or `knowledge_table` with no address — and
-  passes the `walk` id that returns on every call below hop 0. A call without one is refused with
-  the way back ([INVARIANTS.md](INVARIANTS.md), 1 and 2).
+- **It starts every question at hop 0** — `knowledge_table` with no address. Below hop 0 a call
+  before that is refused with the way back ([INVARIANTS.md](INVARIANTS.md), 1). There is no id to
+  pass: the server remembers hop 0 for its session.
+- **It sees four tools** — `knowledge_table`, `knowledge_read`, `knowledge_place`,
+  `knowledge_circuit`. `knowledge_resolve` is gone; `knowledge_overlay` and `knowledge_write` are off
+  unless `KNOWLEDGE_TOOLS_EXTRA=overlay,write` is set in the MCP server's environment.
 - **It gives a reason** — `why`, one line — on every table and document it opens. That is what the
   footprint records and the map shows.
 
