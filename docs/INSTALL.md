@@ -62,12 +62,11 @@ another domain — one decision per kind rather than per document.
 
 ## Second — one area
 
-On the map, at the backbone: **`+ New AS`**. Two sentences are written together:
+On the map, at the backbone: **`+ New AS`**. One sentence decides everything:
 
 | Field | What it is | Without it |
 |---|---|---|
 | **When to choose this area** (`use_when`) | why an agent picks this row out of the list | a row with a title and no reason — **nobody picks it** |
-| **Core one-liner** | this area's row in `CORE.md` | hop 0 goes out with an empty description |
 
 Then, from that area's rack: `+ New node` → `+ New data` to attach documents.
 

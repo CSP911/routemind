@@ -5,8 +5,8 @@ Every write through the API must pass this before it is committed.
 """
 from __future__ import annotations
 from collections import Counter
-import json, pathlib, re
-from .store import Store, alias_names, region_key
+import json, re
+from .store import Store, region_key
 from . import derive
 
 FORBIDDEN_STATE_FIELDS = {"state", "supersedes", "superseded_by", "operative", "current", "replaced_by", "replaces"}
@@ -34,28 +34,6 @@ def name_too_long(value: str, *, suffix: str = "") -> str | None:
     if n <= NAME_MAX: return None
     return (f"that is {n} bytes as the file name and a path component holds at most {NAME_MAX} — "
             f"{'an id becomes ' + repr(str(value)[:24] + '….md') if suffix else 'shorten it'}")
-
-
-def edge_rules(vocab: dict) -> list[dict]:
-    """Domain rules about which edges are wrong, declared in `vocab.yaml` rather than written here.
-
-    These used to be four constants — kind names from one particular domain — compared against one
-    particular area name. In any other domain neither side ever matched, so the rules could not fire
-    and validation quietly ran three checks short while looking complete. A rule that cannot fire is
-    worse than no rule: it reads as coverage.
-
-    If the vocabulary is the domain, the judgments attached to the vocabulary are the domain too.
-    Shape, all keys optional except `error`:
-
-        edge_rules:
-        - from_kind: task          # the source node's kind
-          to_region: config-store  # the target node's area directory
-          error: "a task pointing at the store is a step, not structure"
-    """
-    out = []
-    for r in (vocab.get("edge_rules") or []):
-        if isinstance(r, dict) and str(r.get("error") or "").strip(): out.append(r)
-    return out
 
 
 EXPANDS_IN = {"service_fragment", "inventory"}   # where the concrete detail lives
@@ -103,23 +81,6 @@ def export_kinds(vocab: dict) -> set[str]:
     return {k for k in out if k}
 
 
-def area_rules(vocab: dict) -> dict:
-    """Per-area rules, declared in `vocab.yaml`. Absent means the area has no special role.
-
-    These were written against one area named `learned`. Naming an area in code makes the rule apply
-    to anyone who happens to use that word and to nobody else — it is a role, not a name.
-
-        area_rules:
-          learned:
-            drafts: true       # this area may hold status: draft
-            pointers: true     # every node but the representative must hold pointers
-    """
-    out = {}
-    for k, v in (vocab.get("area_rules") or {}).items():
-        if isinstance(v, dict): out[str(k)] = v
-    return out
-
-
 def _norm(name: str) -> str:
     return re.sub(r"[\s·/()\-]", "", name or "").lower()
 
@@ -138,10 +99,11 @@ def validate(store: Store) -> dict:
                                             in ("no", "false", "never", "yes", "true"))):
             errors.append(f"vocab kinds[{k.get('id')}]: export must be yes or no, got {v!r} — "
                           f"anything else would be read as one of them and it is not obvious which")
-    groups = {g["group"]: [(r["id"] if isinstance(r, dict) else r) for r in g["rels"]] for g in vocab.get("relations", [])}
-    rels = {r for rs in groups.values() for r in rs}
-    domain_rules = edge_rules(vocab); areas = area_rules(vocab)
-    nodes = store.nodes(); edges = store.edges(); regions = {r["dir"] for r in store.regions()}
+    # Retired 2026-10-07, all without a reader: `relations` and `edge_rules` in vocab.yaml and the
+    # edges.yaml they governed (no agent was shown an edge and the map drew none), and `area_rules`,
+    # which let the curator's retired sleep write drafts into one area. Still in a vocabulary, they
+    # are ignored. A draft can only be found in an older repository now, and is allowed anywhere.
+    nodes = store.nodes(); regions = {r["dir"] for r in store.regions()}
     by_id = {}
 
     # ---- nodes ----
@@ -169,16 +131,6 @@ def validate(store: Store) -> dict:
             errors.append(f"node {nid}: expands_in {n['expands_in']!r} — must be one of {sorted(EXPANDS_IN)}")
         if n["holds"] not in ("content", "pointers"): errors.append(f"node {nid}: holds must be content | pointers, got {n['holds']!r}")
         if n["status"] not in ("draft", "published"): errors.append(f"node {nid}: status must be draft | published")
-        rule = areas.get(n["region"] or "", {})
-        if n["status"] == "draft" and not rule.get("drafts"):
-            errors.append(f"node {nid}: this area does not take drafts — structure is never drafted by a machine "
-                          f"(open it with area_rules.{n['region']}.drafts in vocab.yaml)")
-        # An area whose nodes only point: what is learned points at content elsewhere, it never carries
-        # its own. **The representative is the exception** (SPEC-v2 §1.1): it has to advertise what the
-        # area is, which is a statement about the area rather than a thing learned. Without that, there
-        # is nowhere left to say what the area is.
-        if rule.get("pointers") and n["holds"] != "pointers" and n.get("role") != "representative":
-            errors.append(f"node {nid}: this area holds only pointer nodes — its content lives elsewhere and is pointed at")
         if n["region"] and n["region"] not in regions: errors.append(f"node {nid}: region {n['region']!r} has no directory")
         if not n["one_liner"]: errors.append(f"node {nid}: one-liner (first paragraph) missing")
         listed = [f["name"] for f in n["files"]]
@@ -213,13 +165,8 @@ def validate(store: Store) -> dict:
                 ref = ln.strip().lstrip("-").strip()
                 if not ref or ref.startswith("#") or ref in by_id or _ref_exists(store, ref): continue
                 errors.append(f"pointer node {n['id']}: {f} line {ref[:60]!r} is not a reference that resolves (node id or REGION/path.md)")
-    # aliases: unique, never a node id/name
-    names = {n["name"] for n in nodes}; seen_alias = {}
-    for n in nodes:
-        for a in alias_names(n["aliases"]):
-            if a in names or a in by_id: errors.append(f"node {n['id']}: alias {a!r} is also a node name/id")
-            if a in seen_alias and seen_alias[a] != n["id"]: errors.append(f"alias {a!r} on two nodes: {seen_alias[a]}, {n['id']}")
-            seen_alias[a] = n["id"]
+    # `aliases` are not checked since 2026-10-07: the resolver that read them is gone, and nothing
+    # else routes on them. One still in a file is carried and ignored.
     # spelling variants
     norm = {}
     for n in nodes: norm.setdefault(_norm(n["name"]), []).append(n["name"])
@@ -338,7 +285,7 @@ def validate(store: Store) -> dict:
         if not par: continue
         tgt = by_id.get(par)
         if not tgt: errors.append(f"node {n['id']}: parent {par!r} does not exist"); continue
-        if tgt["region"] != n["region"]: errors.append(f"node {n['id']}: parent {par} is in another area ({tgt['region']}) — a relation across areas is an edge")
+        if tgt["region"] != n["region"]: errors.append(f"node {n['id']}: parent {par} is in another area ({tgt['region']}) — an entity lives in one area")
         # "only representatives carry nodes" was the two-type containment rule: a file could not hold
         # anything, so anything holding had to be a node, and a node under a node had to be a
         # representative. One type drops that — holding others is a property, not a class. What still
@@ -357,39 +304,6 @@ def validate(store: Store) -> dict:
             if cur["id"] in seen: errors.append(f"node {n['id']}: parent chain is a cycle"); break
             seen.add(cur["id"]); cur = by_id.get(cur["parent"])
 
-    # ---- edges ----
-    seen = set(); degree = {nid: 0 for nid in by_id}
-    max_note = int(budgets.get("edge_note_max_lines", 6))
-    for e in edges:
-        s, r, t = e.get("from"), e.get("rel"), e.get("to")
-        if s not in by_id: errors.append(f"edge {s}-{r}->{t}: unknown from-node {s!r}"); continue
-        if t not in by_id: errors.append(f"edge {s}-{r}->{t}: unknown to-node {t!r}"); continue
-        if r not in rels: errors.append(f"edge {s}-{r}->{t}: relation {r!r} not in vocab")
-        if (s, r, t) in seen: errors.append(f"edge {s}-{r}->{t}: declared twice")
-        seen.add((s, r, t)); degree[s] += 1; degree[t] += 1
-        note = e.get("note") or ""
-        if len([l for l in note.splitlines() if l.strip()]) > max_note:
-            errors.append(f"edge {s}-{r}->{t}: note exceeds {max_note} lines — move it to a node file or a Region doc")
-        src = e.get("source")
-        # `source` is the entity the relation was read off. It used to be a path, because a file was
-        # not addressable; one type gives it an id, so it is named the same way `from` and `to` are.
-        # The path form is still accepted while trees in the old layout are still readable.
-        if src and src not in by_id and not (store.root / src).exists():
-            errors.append(f"edge {s}-{r}->{t}: source {src} is neither an entity id nor a path that exists")
-        sk, tk = by_id[s]["kind"], by_id[t]["kind"]
-        for rule in domain_rules:
-            if "from_kind" in rule and sk != rule["from_kind"]: continue
-            if "to_kind" in rule and tk != rule["to_kind"]: continue
-            if "rel" in rule and r != rule["rel"]: continue
-            if "from_region" in rule and by_id[s]["region"] != rule["from_region"]: continue
-            if "to_region" in rule and by_id[t]["region"] != rule["to_region"]: continue
-            errors.append(f"edge {s}-{r}->{t}: {rule['error']}")
-    for nid, n in by_id.items():
-        if degree[nid]: continue
-        warnings.append(f"node {nid}: no relations — nothing points at this node except containment (its area and representative)"
-                        + (" (it is a top representative — normal for a new area, an island if it stays that way)"
-                           if n.get("role") == "representative" and not n.get("parent") else ""))
-
     # ---- budgets ----
     def budget(label, n, cap):
         if n > cap: errors.append(f"budget exceeded: {label} {n} > {cap}")
@@ -405,9 +319,6 @@ def validate(store: Store) -> dict:
     # this at all: a representative with 16 files counted as 1.
     for par, kids in Counter(n["parent"] for n in nodes if n.get("parent")).items():
         budget(f"children of {par}", kids, int(budgets.get("children_per_entity", 25)))
-    for g, rs in groups.items(): budget(f"relations in {g!r}", len(rs), int(budgets.get("relations_per_group", 8)))
-    used_rels = {e.get("rel") for e in edges}
-    for r in rels - used_rels: warnings.append(f"relation {r} is in vocab but unused")
     used_kinds = {n["kind"] for n in nodes}
     for k in kinds - used_kinds: warnings.append(f"kind {k!r} is in vocab but unused")
 
@@ -461,8 +372,8 @@ def validate(store: Store) -> dict:
     # anyone to find out. Measured 2026-09-13 on a copy of the live repository — two fields changed
     # by hand, `ok: True`, no errors and no warnings.
     #
-    # Named per field rather than "the file is stale", because the fix differs: `title` and
-    # `use_when` come from the area's representative, `description` from the CORE.md table.
+    # Named per field rather than "the file is stale": `title` and `use_when` come from the area's
+    # representative, and a person looking for the stale sentence needs to know which.
     try:
         want = {r["source"]: r for r in json.loads(derive.regions_doc(store)).get("regions", [])}
     except Exception as e:  # a derive that cannot run is its own error, not a silent pass
@@ -471,36 +382,16 @@ def validate(store: Store) -> dict:
     have = {r["source"]: r for r in store.regions_json().get("regions", [])}
     for src in sorted(set(want) & set(have)):
         # `nodes` is left to the check above, which says which ids differ.
-        drift = sorted(k for k, v in want[src].items() if k != "nodes" and have[src].get(k) != v)
+        # Both directions: a field the files no longer produce is drift too. `description` (from the
+        # retired CORE.md) stayed in every committed table after 2026-10-07 until this looked both ways.
+        drift = sorted(k for k in set(want[src]) | set(have[src])
+                       if k != "nodes" and have[src].get(k) != want[src].get(k))
         if drift:
             errors.append(f"regions.json {src}: {', '.join(drift)} no longer matches the files it is "
                           f"derived from. It is generated, not written — any write through the API "
                           f"regenerates it, as does `./ontology/tidy.py <repo> --fix`, and the server regenerates it at "
                           f"startup when the tree is clean; readers are served what the files say meanwhile. "
                           f"See README, \u201cA hand-edited repository\u201d.")
-    # ---- a CORE row with no area behind it ----
-    # CORE.md is carried **whole** into every prompt, and its table is where each area's description
-    # at hop 0 comes from. A row whose area has been deleted therefore advertises something that does
-    # not exist, in the one text every run reads — and nothing said so. Deleting an area by hand left
-    # six dangling edges, which are loud, and this, which was silent.
-    #
-    # An error rather than a warning, for the reason the rest of hop 0 is: an advertisement for
-    # something absent is the failure this design exists to prevent, and a reader cannot tell it from
-    # a real row.
-    try:
-        core_text = store.core()
-    except Exception:
-        core_text = ""
-    if core_text:
-        on_disk = {derive.region_label(d.name)
-                   for d in pathlib.Path(store.root, "regions").iterdir() if d.is_dir()}
-        for m in re.finditer(r"^\| `([A-Z_]+)` \| .+ \|$", core_text, re.M):
-            if m.group(1) not in on_disk:
-                errors.append(f"CORE.md advertises `{m.group(1)}`, which is not an area here — "
-                              f"that table is carried whole into every prompt, so this is hop 0 "
-                              f"offering something that does not exist. Remove the row, or restore "
-                              f"the area. `./ontology/tidy.py <repo> --fix` does the first.")
-
     # ---- cross-reference cycles ----
     # Every other check here asks whether one node is right. This one asks whether they are right
     # *together*, and it is the only finding in the file that no single document can be blamed for:
@@ -537,5 +428,5 @@ def validate(store: Store) -> dict:
                           "back and forth until it runs out of turns")
 
     return {"ok": not errors, "errors": errors, "warnings": warnings,
-            "stats": {"nodes": len(nodes), "edges": len(edges), "kinds": len(kinds), "relations": len(rels), "regions": len(regions),
+            "stats": {"nodes": len(nodes), "kinds": len(kinds), "regions": len(regions),
                       "revision": store.revision()}}

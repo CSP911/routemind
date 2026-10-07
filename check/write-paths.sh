@@ -54,10 +54,10 @@ published() { curl -s "$U/revision" | python3 -c 'import json,sys; print(json.lo
 BEFORE="$(published)"
 say "the empty seed validates" "$(curl -s "$U/validate" | python3 -c 'import json,sys; print(json.load(sys.stdin)["ok"])')" True
 
-# The first area, into a CORE table that has a header and no rows.
-say "first area into an empty CORE table" "$(code -X POST "$U/regions" -d '{"source":"alpha","core_description":"the first area","representative":{"id":"alpha-core","kind":"system","name":"Alpha","one_liner":"what alpha is","use_when":"when alpha is the question"}}')" 201
+# The first area, into an empty ontology.
+say "first area into an empty ontology"   "$(code -X POST "$U/regions" -d '{"source":"alpha","representative":{"id":"alpha-core","kind":"system","name":"Alpha","one_liner":"what alpha is","use_when":"when alpha is the question"}}')" 201
 say "  it committed, and the revision moved" "$( [ "$(published)" != "$BEFORE" ] && echo moved || echo stuck )" moved
-say "  CORE has exactly one row"          "$(grep -c '^| `ALPHA` |' "$T/repo/CORE.md")" 1
+say "  and it writes no CORE.md"          "$( [ -e "$T/repo/CORE.md" ] && echo written || echo none )" none
 say "  hop 0 lists it"                    "$(curl -s "$U/regions" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)["regions"]))')" 1
 say "  a non-ASCII actor reached git"     "$(git -C "$T/repo" log -1 --pretty=%an)" "천수"
 
@@ -113,7 +113,7 @@ edit_vocab "# no default" "default_kind: system"
 git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qam "restore default_kind"
 
 # The ordinary path, end to end.
-say "node with its first edge (one txn)"  "$(code -X POST "$U/nodes" -d '{"id":"beta","name":"Beta","kind":"tool","region":"alpha","one_liner":"what beta is","edges":[{"from":"alpha-core","rel":"CONSISTS_OF","to":"beta"}]}')" 201
+say "a node"                              "$(code -X POST "$U/nodes" -d '{"id":"beta","name":"Beta","kind":"tool","region":"alpha","one_liner":"what beta is"}')" 201
 # One entity is one file. The old shape put a node in a directory with an INDEX.md and its documents
 # beside it, so these lines checked for that directory; an entity is `regions/<area>/<id>.md` now.
 # What they were really checking — that the write reached disk, and in the format the reader expects —
@@ -144,9 +144,6 @@ say "  the container stands where x stood" "$(curl -s "$U/nodes/group" | python3
 say "  x kept its own address"            "$(curl -s -o /dev/null -w '%{http_code}' "$U/nodes/x")" 200
 say "  and now hangs under the container" "$(curl -s "$U/nodes/x" | python3 -c 'import json,sys; print(json.load(sys.stdin)["parent"])')" group
 say "  its body came along"               "$(curl -s "$U/nodes/x/body" | grep -c '^# x')" 1
-# Nothing had to be repointed, which is the part two types made expensive: the old promotion minted a
-# new id for the document, so every edge naming it had to be rewritten in the same transaction.
-say "  no edge had to move"               "$(curl -s "$U/edges" | python3 -c 'import json,sys; print(sum(1 for e in json.load(sys.stdin)["edges"] if "group" in (e["from"], e["to"])))')" 0
 
 # Moving an entity: drag it onto what should hold it. Containment is one field, and both routing
 # tables are read off it — so one write has to take the entity out of the table it was in and put it
@@ -165,7 +162,7 @@ HEAD_OK="$(git -C "$T/repo" rev-parse HEAD)"
 say "beta into group, which is inside it"  "$(code -X PUT "$U/nodes/beta" -d '{"parent":"group"}')" 409
 say "  nothing was committed"              "$(git -C "$T/repo" rev-parse HEAD)" "$HEAD_OK"
 say "  the tree is clean"                  "$(git -C "$T/repo" status --porcelain | wc -l | tr -d ' ')" 0
-code -X POST "$U/regions" -d '{"source":"gamma","core_description":"a second area","representative":{"id":"gamma-core","kind":"system","name":"Gamma","one_liner":"what gamma is","use_when":"when gamma is the question"}}' >/dev/null
+code -X POST "$U/regions" -d '{"source":"gamma","representative":{"id":"gamma-core","kind":"system","name":"Gamma","one_liner":"what gamma is","use_when":"when gamma is the question"}}' >/dev/null
 say "x into another area"                  "$(code -X PUT "$U/nodes/x" -d '{"parent":"gamma-core"}')" 200
 say "  its file moved with it"             "$( [ -f "$T/repo/regions/gamma/x.md" ] && [ ! -e "$T/repo/regions/alpha/x.md" ] && echo moved || echo not)" moved
 say "  gamma's table lists it"             "$(ids_in regions/gamma | tr ' ' '\n' | grep -cx x)" 1
@@ -191,12 +188,10 @@ print(" ".join(n["id"] for n in sorted(ns, key=lambda n: -len(n.get("parent") or
   code -X DELETE "$U/nodes/$n" >/dev/null
 done
 say "emptied, the area goes"               "$(code -X DELETE "$U/regions/alpha")" 200
-say "  the CORE row went with it"          "$(grep -c '^| `ALPHA` |' "$T/repo/CORE.md")" 0
-say "  the table header survived"          "$(grep -cE '^\|[ \t]*:?-+:?[ \t]*\|' "$T/repo/CORE.md")" 1
 say "  and nothing is advertised"          "$(curl -s "$U/regions" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)["regions"]))')" 0
 # The chicken-and-egg again, from the other direction: a tree emptied by deleting must be as usable
 # as a tree that was never filled.
-say "a new area goes into the empty table" "$(code -X POST "$U/regions" -d '{"source":"mine","core_description":"my own","representative":{"id":"mine-core","kind":"system","name":"Mine","one_liner":"what it is","use_when":"when to come here"}}')" 201
+say "a new area after the last one went"  "$(code -X POST "$U/regions" -d '{"source":"mine","representative":{"id":"mine-core","kind":"system","name":"Mine","one_liner":"what it is","use_when":"when to come here"}}')" 201
 say "  hop 0 shows it and nothing else"    "$(curl -s "$U/regions" | python3 -c 'import json,sys; r=json.load(sys.stdin)["regions"]; print(len(r), r[0]["fetch"].rsplit("/",1)[-1])')" "1 mine"
 
 say "everything still validates"          "$(curl -s "$U/validate" | python3 -c 'import json,sys; print(json.load(sys.stdin)["ok"])')" True

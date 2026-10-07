@@ -2,9 +2,11 @@
 
 Nothing here writes, except `write` below, which exists so that nothing anywhere writes a file a
 reader can catch half-finished. Layout it understands:
-  CORE.md · vocab.yaml · edges.yaml · regions.json · REVISION
-  regions/<r>/INDEX.md · regions/<r>/<doc>.md · regions/<r>/edges.md (generated view)
-  regions/<r>/nodes/<id>/INDEX.md (+ files)   core-nodes/<id>/INDEX.md (+ files)
+  vocab.yaml · regions.json · REVISION
+  regions/<r>/<id>.md — one file per entity
+
+`CORE.md` and `edges.yaml` may still be in an older repository. Neither is read (retired 2026-10-07):
+no agent was ever shown either, and nothing on the map drew the edges. They can be deleted.
 """
 from __future__ import annotations
 import contextlib, json, os, re, tempfile, threading, time
@@ -100,11 +102,6 @@ def region_key(d: str) -> str:
 FM_RE = re.compile(r"\A---\n(.*?)\n---\n(.*)\Z", re.S)
 
 
-def alias_names(aliases) -> list[str]:
-    """Aliases are strings or {name, scope} — a game's own name for a common node. Names either way."""
-    return [a["name"] if isinstance(a, dict) else str(a) for a in (aliases or [])]
-
-
 def _yesno(value):
     """yes / no from frontmatter, or the value itself when it is neither.
 
@@ -170,18 +167,15 @@ class Store:
         def _late():
             raise TimeoutError(f"a write to {self.root} has held the repository for more than "
                                f"{READ_LOCK_WAIT:g}s; this read gave up rather than hang")
-        # **Bytes under the lock, parsing outside it.** Every read used to take what it needed and
-        # no more, and `/v1/core` was one small file: 0.19 ms. Loading and *parsing* the whole tree
-        # for every request made it 6.37 ms, almost all of it `yaml.safe_load` on vocab.yaml and
-        # edges.yaml — 2.5 ms each, and `safe_load` is the pure-python loader even where libyaml is
-        # installed. Neither file is touched by most requests.
+        # **Bytes under the lock, parsing outside it.** Loading and *parsing* the whole tree for every
+        # request cost 6.37 ms, almost all of it `yaml.safe_load` — the pure-python loader even where
+        # libyaml is installed. Most requests touch no parsed file at all.
         #
         # Reading them is what has to happen at one instant; turning them into objects does not. So
-        # the lock covers four small reads and a stat of each entity, and a parse happens on first
+        # the lock covers a few small reads and a stat of each entity, and a parse happens on first
         # use, once, if it happens at all.
         with file_lock(self.root, exclusive=False, wait=READ_LOCK_WAIT, on_timeout=_late):
-            data = {"raw": {n: self._read(n) for n in ("CORE.md", "vocab.yaml", "edges.yaml",
-                                                       "regions.json", "REVISION")},
+            data = {"raw": {n: self._read(n) for n in ("vocab.yaml", "regions.json", "REVISION")},
                     # The node cache is keyed on every entity's mtime, so a hit here is not a guess:
                     # it is the same content, and the stat that proved it happened under this lock.
                     "nodes": self.nodes(), "parsed": {}}
@@ -206,10 +200,6 @@ class Store:
     # ---- raw files ----
     # Each serves the open snapshot, and reads the tree directly when there is none — so a write
     # path, which is deliberately outside any snapshot, still sees the tree as it is right now.
-    def core(self) -> str:
-        v, ok = self._lazy("CORE.md", lambda t: t, "")
-        return v if ok else self._core()
-
     def revision(self) -> str | None:
         v, ok = self._lazy("REVISION", lambda t: t.strip(), None)
         return v if ok else self._revision()
@@ -218,16 +208,9 @@ class Store:
         v, ok = self._lazy("vocab.yaml", lambda t: yaml.safe_load(t) or {}, {})
         return v if ok else self._vocab()
 
-    def edges(self) -> list[dict]:
-        v, ok = self._lazy("edges.yaml", lambda t: yaml.safe_load(t) or [], [])
-        return v if ok else self._edges()
-
     def regions_json(self) -> dict:
         v, ok = self._lazy("regions.json", json.loads, {"regions": []})
         return v if ok else self._regions_json()
-
-    def _core(self) -> str:
-        return (self.root / "CORE.md").read_text(encoding="utf-8")
 
     def _revision(self) -> str | None:
         p = self.root / "REVISION"
@@ -235,9 +218,6 @@ class Store:
 
     def _vocab(self) -> dict:
         return yaml.safe_load((self.root / "vocab.yaml").read_text(encoding="utf-8")) or {}
-
-    def _edges(self) -> list[dict]:
-        return yaml.safe_load((self.root / "edges.yaml").read_text(encoding="utf-8")) or []
 
     def _regions_json(self) -> dict:
         p = self.root / "regions.json"
@@ -304,7 +284,10 @@ class Store:
             # each declares its own `parent`, so a list and the tree cannot disagree.
             out.append({
                 "id": fm.get("id") or f.stem, "dir": f.stem, "name": fm.get("name"),
-                "kind": fm.get("kind"), "region": region, "aliases": fm.get("aliases") or [],
+                "kind": fm.get("kind"), "region": region,
+                # Read only to be written back unchanged: nothing routes on them since the resolver
+                # went (2026-10-07), but a file that has them keeps them across an edit.
+                **({"aliases": fm["aliases"]} if fm.get("aliases") else {}),
                 "holds": fm.get("holds") or "content", "injected_by": fm.get("injected_by"),
                 "status": fm.get("status") or "published", "use_when": fm.get("use_when"),
                 # Whether this area crosses a link at all. Absent means no — export is opt-in, per
@@ -331,7 +314,6 @@ class Store:
             kids = [k for k in out if k.get("parent") == n["id"]]
             n["files"] = [{"name": f"{k['id']}.md", "description": k["one_liner"]} for k in kids]
             n["present_files"] = sorted(f["name"] for f in n["files"])
-            n["file_scopes"] = {f"{k['id']}.md": k.get("scope", "common") for k in kids}
         return out
 
     def node(self, node_id: str) -> dict | None:
@@ -391,11 +373,8 @@ class Store:
 
     # ---- graph for the 2D/3D pages (same shape the pages already consume) ----
     def graph(self) -> dict:
-        vocab = self.vocab(); group_of = {(r["id"] if isinstance(r, dict) else r): g["group"] for g in vocab.get("relations", []) for r in g["rels"]}
         N = [{"id": n["id"], "name": n["name"], "kind": n["kind"], "region": (region_key(n["region"]) if n["region"] else None),
               "region_dir": n["region"], "core": False, "holds": n["holds"], "file": (n["path"] + "/INDEX.md"), "desc": n["one_liner"],
-              "order": n["order"], "aliases": alias_names(n["aliases"]), "alias_scopes": [a for a in n["aliases"] if isinstance(a, dict)],
-              "file_scopes": n["file_scopes"], "status": n["status"], "injected_by": n.get("injected_by"), "parent": n.get("parent"), "role": n.get("role")} for n in self.nodes()]
-        E = [{"s": e["from"], "t": e["to"], "rel": e["rel"], "group": group_of.get(e["rel"], ""), "note": e.get("note", "") or "",
-              "file": e.get("source", "")} for e in self.edges()]
-        return {"revision": self.revision(), "nodes": N, "edges": E}
+              "order": n["order"], "status": n["status"], "injected_by": n.get("injected_by"), "parent": n.get("parent"),
+              "role": n.get("role")} for n in self.nodes()]
+        return {"revision": self.revision(), "nodes": N}

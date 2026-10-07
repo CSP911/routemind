@@ -138,70 +138,24 @@ def graft(payload: dict, repo: pathlib.Path, prefix: str) -> tuple[list[str], li
             written.append(f"regions/{newsrc}/{rename[nid]}.md")
 
 
-    # The links across the tree, with both ends renamed. Appended rather than merged: an edge this
-    # brought is the sender's statement about their own documents, and it says nothing about anyone
-    # else's. An edge naming something outside the bundle is dropped and reported — it can only mean
-    # the file is older than this rule, and inventing the far end would be inventing a connection.
-    edges = payload.get("edges") or []
-    if edges:
-        path = repo / "edges.yaml"
-        keep, lost = [], 0
-        for e in edges:
-            f, t = e.get("from"), e.get("to")
-            if f in rename and t in rename:
-                keep.append({"from": rename[f], "rel": e.get("rel"), "to": rename[t]})
-            else:
-                lost += 1
-        if lost: unresolved.append(f"{lost} edge(s) named a document not in this bundle, and were dropped")
-        if keep:
-            text = path.read_text(encoding="utf-8") if path.exists() else ""
-            if text and not text.endswith("\n"): text += "\n"
-            text += f"\n# Grafted from {prefix}.\n"
-            for e in keep:
-                text += f"- from: {e['from']}\n  rel: {e['rel']}\n  to: {e['to']}\n"
-            path.write_text(text, encoding="utf-8")
-            written.append(f"edges.yaml (+{len(keep)})")
+    # A bundle written before 2026-10-07 may carry `edges`. They are not written: nothing reads
+    # edges.yaml any more.
     return written, unresolved
 
 
-def ungraft(repo: pathlib.Path, prefix: str) -> tuple[int, int]:
-    """Take a graft back out: its documents, its area, and its links.
+def ungraft(repo: pathlib.Path, prefix: str) -> int:
+    """Take a graft back out: its documents and its area.
 
-    The counterpart to `--graft`, and it exists because the graft was not reversible. Deleting the
-    directory left every edge it had appended pointing at documents that were gone — four of them on
-    the first repository this was tried against — and the repository stopped validating, which stops
-    every write. A feature that cannot be undone is one people are right to be wary of using.
-
-    Only what carries the prefix, so a graft never takes anything of yours with it. Returns
-    (documents, links) removed.
+    The counterpart to `--graft`. Only what carries the prefix, so a graft never takes anything of
+    yours with it. Returns the number of documents removed. (A graft from before 2026-10-07 also
+    appended to edges.yaml; that file is no longer read, so what it left there is inert.)
     """
-    gone, dropped = 0, 0
+    gone = 0
     for d in sorted((repo / "regions").iterdir()):
         if not d.is_dir() or not d.name.startswith(prefix + "-"): continue
         gone += len(list(d.glob("*.md")))
         shutil.rmtree(d)
-    path = repo / "edges.yaml"
-    if path.exists():
-        keep, text = [], path.read_text(encoding="utf-8")
-        # Line-wise on the flow this writes — three lines per edge, `from:` first. Read as YAML and
-        # written back it would be reformatted whole, and edges.yaml is a file people edit.
-        block, drop = [], False
-        for line in text.splitlines(True):
-            if line.startswith("- from:"):
-                if block and not drop: keep.extend(block)
-                elif block: dropped += 1
-                block, drop = [line], f" {prefix}-" in line
-            elif block:
-                block.append(line)
-                if line.strip().startswith("to:") and f" {prefix}-" in line: drop = True
-            else:
-                keep.append(line)
-        if block and not drop: keep.extend(block)
-        elif block: dropped += 1
-        # The comment the graft left behind, once nothing under it remains.
-        out = "".join(keep).replace(f"\n# Grafted from {prefix}.\n", "\n")
-        path.write_text(out.rstrip("\n") + "\n", encoding="utf-8")
-    return gone, dropped
+    return gone
 
 
 def writer_for(repo: pathlib.Path):
@@ -256,8 +210,8 @@ def main():
                     help="write the bundle into this repository, every id under --prefix")
     ap.add_argument("--prefix", help="the prefix every grafted id takes; defaults to the source host")
     ap.add_argument("--ungraft", metavar="REPO",
-                    help="remove a graft from this repository — its documents, its area and its "
-                         "links. Needs --prefix, and touches nothing else")
+                    help="remove a graft from this repository — its documents and its area. "
+                         "Needs --prefix, and touches nothing else")
     ap.add_argument("--passphrase-env", default="ROUTEMIND_EXPORT_PASSPHRASE")
     ap.add_argument("--actor", default=os.environ.get("KNOWLEDGE_ACTOR") or "graft",
                     help="the name on the commit this makes, like any other write")
@@ -277,13 +231,12 @@ def main():
         counted = {}
         try:
             res = writer.transact(f"ungraft: remove everything under `{a.prefix}-`",
-                                  a.actor, lambda: counted.update(
-                                      zip(("gone", "dropped"), ungraft(repo, a.prefix))))
+                                  a.actor, lambda: counted.update(gone=ungraft(repo, a.prefix)))
         except Exception as e:
             sys.exit(f"  {_said(e)}")
         if not counted.get("gone"):
             sys.exit(f"  nothing under `{a.prefix}-` in {a.ungraft}. Nothing was removed.")
-        print(f"  {counted['gone']} document(s) and {counted['dropped']} link(s) removed, "
+        print(f"  {counted['gone']} document(s) removed, "
               f"validated, and committed as {str(res.get('revision') or '')[:8]}.", file=sys.stderr)
         return
 
@@ -363,9 +316,9 @@ def main():
             print(f"    unresolved reference — {u}", file=sys.stderr)
 
         print("\n  What the graft could not bring:\n"
-              "    · Names for kinds and relations. Every document has a kind, and every link has a\n"
-              "      relation name; both belong to the sender's vocabulary. If yours has never heard\n"
-              "      of one, validate says which — nothing here writes into your vocab.yaml.\n"
+              "    · Names for kinds. Every document has a kind, and it belongs to the sender's\n"
+              "      vocabulary. If yours has never heard of one, validate says which — nothing here\n"
+              "      writes into your vocab.yaml.\n"
               "\n  And the one thing to look at first: the sender's outward line is now this area's\n"
               "  routing line in your table. It was written to introduce the area to an outsider,\n"
               "  not to route your people's searches. One sentence, and it is the one that decides\n"

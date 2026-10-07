@@ -260,7 +260,7 @@ data/*        overlays, walks, harness, exchange, access — all local.
 ## A hand-edited repository
 
 The data repository is yours to edit in an editor. One file in it is generated: `regions.json`,
-hop 0's table, derived from the areas' `.md` files and the CORE.md table and committed beside them.
+hop 0's table, derived from the areas' `.md` files and committed beside them.
 Edit an area's file by hand — its `use_when`, its `export` — and that table is stale until it is
 regenerated.
 

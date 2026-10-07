@@ -37,7 +37,7 @@ somebody can edit. The inventory, each with the check that proves it follows:
 
 | derived state | its source | how it follows | checked by |
 |---|---|---|---|
-| `regions.json`, committed | the areas' files, CORE.md | regenerated in every write; served from the files when stale; healed at startup | `check/drift-check.py` |
+| `regions.json`, committed | the areas' files | regenerated in every write; served from the files when stale; healed at startup | `check/drift-check.py` |
 | the node cache in the store | every entity file | keyed on every file's mtime | `check/same-answer-check.py` (the hand-edited run) |
 | ages | git history | keyed on the commit | `check/age-check.py` |
 | `/healthz` `valid` | validation | keyed on the commit | `check/drift-check.py` |
@@ -56,9 +56,9 @@ peer, and a refused hint is one line in the log.
 **4. Every reader of one fact gets the same answer.** Two paths to one fact return the same bytes:
 the area listing and the area detail, the owner's view and the export surface, `store.regions()`
 and `store.regions_json()`. Checked by `check/same-answer-check.py`: every area's routing sentence,
-export flag, representative and title; a spread of nodes' name, line, kind, parent, aliases and
-body; the edges; the core — each read from the file and from every API path, the export surface,
-the placement walk and what the MCP prints, 414 cells, on a clean tree and again with
+export flag, representative and title; a spread of nodes' name, line, kind, parent and body — each
+read from the file and from every API path, the export surface, the placement walk and what the MCP
+prints, 380 cells, on a clean tree and again with
 an uncommitted hand edit. Verified to fire: with the pre-2026-10-05 stale-table behaviour put back,
 the listing and hop 0 disagree with the file and the check says which cells.
 

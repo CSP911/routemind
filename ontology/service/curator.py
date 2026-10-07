@@ -57,8 +57,8 @@ def decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply) 
 # evidence and must not pretend to — the evidence for a human proposal is the address it targets.
 # There is no immediate-apply path. You may approve your own, but it **always goes through the
 # queue** — the record existing is itself the safeguard.
-# `as` · `bb` · `core` are an **area's** advertisement, and all three are carried by its
-# representative or by CORE.md. `entity` is one row in a table — the line any entity shows in its
+# `as` · `bb` are an **area's** advertisement, both carried by its representative (`core`, a row in
+# CORE.md, went with that file on 2026-10-07). `entity` is one row in a table — the line any entity shows in its
 # parent's listing. One type is why it can exist at all: a row is an entity like any other, so the
 # line it shows is edited the same way an area's is, through the same queue.
 # `peer` is `bb` pointed at somebody else's backbone: the line this area shows in a *peer's* hop 0.
@@ -73,7 +73,7 @@ PEER_NAME = re.compile(r"^[a-z][a-z0-9-]{0,30}$")
 # `bb` is `use_when`, and since 2026-09-29 that is the line a peer reads too — there is one sentence
 # and `export` decides whether it crosses. So the review that was already required for the local
 # routing line now covers the exported one, and the separate `peer` scope becomes the yes/no.
-ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "core": "core_row", "entity": "one_liner",
+ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "entity": "one_liner",
                 "export": "export", "audience": "export_to"}
 # Scopes whose `after` may be empty, and where empty says something. Everywhere else an empty
 # sentence is a proposal to advertise nothing, which is a mistake rather than a decision; for an

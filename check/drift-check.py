@@ -69,12 +69,33 @@ T = tempfile.mkdtemp(prefix="drift-check-")
 repo = os.path.join(T, "repo")
 shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
 git(repo, "init", "-q"); git(repo, "config", "user.email", "drift@routemind"); git(repo, "config", "user.name", "drift-check")
+# In sync to begin with, whatever the copied install's own table says.
+sys.path.insert(0, os.path.join(ROOT, "ontology"))
+from service.store import Store                                            # noqa: E402
+from service import derive                                                 # noqa: E402
+open(os.path.join(repo, "regions.json"), "w", encoding="utf-8").write(derive.regions_doc(Store(repo)))
 git(repo, "add", "-A"); git(repo, "commit", "-qm", "the shipped repository, in sync")
 area = sorted(d for d in os.listdir(os.path.join(repo, "regions")) if os.path.isdir(os.path.join(repo, "regions", d)))[0]
 md = os.path.join(repo, "regions", area, f"{area}.md")
 src = area.replace("-", "_")
 
 try:
+    # ── a column the files no longer produce ──────────────────────────────────
+    # `description` came from CORE.md, retired 2026-10-07. Every committed table still carried it, and
+    # the drift test looked only at the fields the files produce, so it never saw it: startup said
+    # valid and healed nothing, and the stale column stayed until somebody happened to write.
+    rj = os.path.join(repo, "regions.json")
+    doc = json.load(open(rj, encoding="utf-8"))
+    for r in doc["regions"]: r["description"] = "a CORE.md row"
+    open(rj, "w", encoding="utf-8").write(json.dumps(doc, ensure_ascii=False, indent=1) + "\n")
+    git(repo, "commit", "-qam", "a table written before the column was retired")
+    before = git(repo, "rev-parse", "HEAD")
+    p = start(repo)
+    check("a table with a retired column is regenerated at startup, once",
+          git(repo, "rev-list", "--count", f"{before}..HEAD") == "1", git(repo, "log", "--oneline", "-3"))
+    check("  and the column is gone", all("description" not in r for r in json.load(open(rj, encoding="utf-8"))["regions"]))
+    stop(p)
+
     # ── committed stale ───────────────────────────────────────────────────────
     text = open(md, encoding="utf-8").read()
     assert "\nrole: representative\n" in text, md

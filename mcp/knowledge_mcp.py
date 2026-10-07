@@ -597,15 +597,13 @@ def write_call(api: Api, args: dict) -> str:
         if e.status != 404: raise
         api.send("POST", "/v1/nodes", {
             "region": WORKSPACE, "id": day_id, "kind": "topic", "name": day,
-            "one_liner": f"What was recorded on {day}",
-            "edges": [{"from": WORKSPACE, "rel": "CONSISTS_OF", "to": day_id}]})
+            "one_liner": f"What was recorded on {day}"})
 
     eid = f"{day_id}-{_slug(title)}"
     note = body
     sup = (args.get("supersedes") or "").strip()
     if sup:
-        # In prose, not a field. The vocabulary has no SUPERSEDES relation, and the corpus convention
-        # is that a document says so in its own words — which is also what the person who later files
+        # In prose, not a field. The corpus convention is that a document says so in its own words — which is also what the person who later files
         # this needs, since they will be reading it rather than querying it.
         note += f"\n\n## Supersedes\n\n{sup}"
     note += (f"\n\n---\n\nRecorded by an agent on {day}. Unfiled: nobody has decided which area this "
@@ -621,12 +619,9 @@ def write_call(api: Api, args: dict) -> str:
     made = api.send("POST", "/v1/nodes", {
         "region": WORKSPACE, "id": eid, "kind": args.get("kind") or "case", "name": title,
         "one_liner": (args.get("one_liner") or title)[:200],
-        # `parent`, not only an edge. An edge relates two nodes; `parent` is what puts this one
-        # *under* the day in the tree a walk descends. With the edge alone the day node listed
-        # "(nothing here)" while the entry sat flat in the area.
+        # `parent` is what puts this one *under* the day in the tree a walk descends.
         "parent": day_id,
-        "content": note,
-        "edges": [{"from": day_id, "rel": "CONSISTS_OF", "to": eid}]})
+        "content": note})
     got = (made or {}).get("id") or eid
     try:
         api.text(f"/v1/nodes/{got}/body")
@@ -743,22 +738,17 @@ PLACE_TOOL = {
     "name": "knowledge_place",
     "description": "Put a new document into RouteMind by walking the routing table to its place — "
                    "the same walk a question takes, not a scan of the corpus for a likely spot. "
-                   "`open` with the document (name, one_liner, optional aliases and content) prints "
-                   "hop 0 with, on every row, which of the document's words its sentence shares. "
-                   "`step` with an address from that table descends one hop and prints the next "
-                   "table the same way; at every hop below the top you may `here` instead, and the "
+                   "`open` with the document (name, one_liner, optional content) prints hop 0. Read "
+                   "the lines and choose. `step` with an address from that table descends one hop and "
+                   "prints the next table; at every hop below the top you may `here` instead, and the "
                    "document becomes a child of the node whose table you are reading. `none` at hop "
                    "0 means no area advertises such things, and the answer is a new area, not a "
-                   "hiding place. `here` writes the document under the parent reached and then walks "
-                   "back up: every ancestor whose line does not say this gets a proposal to widen it "
-                   "by the document's own one_liner, stopping at the first ancestor that already "
-                   "covers it — route aggregation. If nothing covers it to hop 0, the area's sentence "
-                   "is proposed; whether the area is exported is reported and never changed here.",
+                   "hiding place. `here` writes the document under the parent reached; the lines "
+                   "above it are not changed — if one no longer says this is there, say so.",
     "inputSchema": {"type": "object", "required": ["op"], "properties": {
         "op": {"type": "string", "enum": ["open", "step", "here", "list", "close"]},
         "name": {"type": "string", "description": "open: the document's name"},
         "one_liner": {"type": "string", "description": "open: one sentence, the line a table will print for it"},
-        "aliases": {"type": "array", "items": {"type": "string"}, "description": "open: the names people use for it"},
         "content": {"type": "string", "description": "open: the body, Markdown"},
         "id": {"type": "string", "description": "step/here/close: the placement id `open` returned"},
         "pick": {"type": "string", "description": "step: an address the last table printed, or `none`"}}},
@@ -871,7 +861,7 @@ def place_call(api: Api, args: dict) -> str:
                          for k, p in PLACEMENTS.items())
     if op == "open":
         doc = {"name": str(args.get("name") or "").strip(), "one_liner": str(args.get("one_liner") or "").strip(),
-               "aliases": [str(a) for a in (args.get("aliases") or [])], "content": str(args.get("content") or "")}
+               "content": str(args.get("content") or "")}
         if not doc["name"] or not doc["one_liner"]:
             raise ApiError("open needs `name` and `one_liner` — the line is what every table will print for it")
         pid = f"p{len(PLACEMENTS) + 1}"
@@ -904,33 +894,24 @@ def place_call(api: Api, args: dict) -> str:
 
 def _place_hop(api: Api, pid: str) -> str:
     p = PLACEMENTS[pid]
-    d = api.send("POST", "/v1/place", {"at": p["at"], "doc": p["doc"], "path": p["path"]})
+    d = api.send("POST", "/v1/place", {"at": p["at"]})
     p["printed"] = [r["address"] for r in d.get("rows") or []]
     out = [f"ROUTEMIND — placing {p['doc']['name']!r}  [{pid}]",
-           f"  terms   : {', '.join(d.get('terms') or []) or '(none)'}",
+           f"  its line: {p['doc']['one_liner']}",
            f"  walked  : {' → '.join(p['path']) or '(hop 0)'}", ""]
     rows = d.get("rows") or []
     if rows:
         w = max(len(r["address"]) for r in rows)
-        out.append(f"  {'ADDRESS':<{w}}  SHARES              LINE")
+        out.append(f"  {'ADDRESS':<{w}}  LINE")
         for r in rows:
-            ev = r.get("evidence") or {}
-            shares = ", ".join(dict.fromkeys(ev.get("terms", []) + ev.get("names", []))) or "—"
-            out.append(f"  {r['address']:<{w}}  {shares[:18]:<18}  {(r.get('line') or '')[:90]}")
+            out.append(f"  {r['address']:<{w}}  {(r.get('line') or '')[:110]}")
     else:
         out.append("  (no rows — this node has no children yet)")
     out.append("")
     here = d.get("here")
     if here:
         out.append(f"  `here` places it as a child of {here['parent']} in {here['region']}.")
-        prop = d.get("propagation") or {}
-        if prop.get("proposals"):
-            out.append("  Advertising it would widen: " + "; ".join(f"{q['label']} ({q['scope']})" for q in prop["proposals"])
-                       + (f" — then stops at {prop['stop_at']['label']}, whose line already covers it ({', '.join(prop['stop_at']['hits'])})" if prop.get("stop_at") else
-                          " — nothing above covers it, so this reaches hop 0" + (f"; the area is export: {'yes' if (d.get('export') or {}).get('export') else 'no'}" if d.get("export") else "")))
-        elif prop.get("stop_at"):
-            out.append(f"  Nothing to advertise: {prop['stop_at']['label']} already covers it ({', '.join(prop['stop_at']['hits'])}).")
-        out.append("  `step` with an address above goes one hop deeper; `none` here means place it here.")
+        out.append("  `step` with an address above goes one hop deeper.")
     else:
         out.append("  Pick the area whose sentence covers this document (`step` with its address), or `none` if no area does.")
     return "\n".join(out)
@@ -938,35 +919,17 @@ def _place_hop(api: Api, pid: str) -> str:
 
 def _place_here(api: Api, pid: str) -> str:
     p = PLACEMENTS[pid]
-    d = api.send("POST", "/v1/place", {"at": p["at"], "doc": p["doc"], "path": p["path"]})
+    d = api.send("POST", "/v1/place", {"at": p["at"]})
     here = d.get("here") or {}
     body = {"name": p["doc"]["name"], "one_liner": p["doc"]["one_liner"], "region": here.get("region"),
-            "parent": here.get("parent"), "aliases": p["doc"].get("aliases") or [], "content": p["doc"].get("content") or ""}
+            "parent": here.get("parent"), "content": p["doc"].get("content") or ""}
     made = api.send("POST", "/v1/nodes", body)
     nid = made.get("id") or made.get("node", {}).get("id") or "?"
-    out = [f"PLACED {p['doc']['name']!r} as {nid}, child of {here.get('parent')} in {here.get('region')}",
-           f"  walked  : {' → '.join(p['path'])}", ""]
-    prop = d.get("propagation") or {}
-    queued = []
-    for q in prop.get("proposals") or []:
-        pb = {"scope": q["scope"], "before": q["before"], "after": q["after"], "why": q["why"],
-              **({"entity": q["entity"]} if q["scope"] == "entity" else {"region": q["region"]})}
-        try:
-            r = api.send("POST", "/v1/curator/proposals", pb)
-            queued.append(f"  queued   {q['label']} ({q['scope']}): {r.get('id', '?')}\n           → {q['after'][:110]}")
-        except ApiError as e:
-            queued.append(f"  refused  {q['label']} ({q['scope']}): {e}")
-    if queued:
-        out.append("Advertising, as proposals for review — not applied here:")
-        out += queued
-        if prop.get("stop_at"): out.append(f"  stops at {prop['stop_at']['label']}, whose line already covers it.")
-        elif prop.get("reaches_hop0"):
-            ex = d.get("export") or {}
-            out.append(f"  reaches hop 0. The area is export: {'yes' if ex.get('export') else 'no'} — exporting is a separate decision, not taken here.")
-    elif prop.get("stop_at"):
-        out.append(f"Nothing to advertise: {prop['stop_at']['label']} already covers it ({', '.join(prop['stop_at']['hits'])}).")
     del PLACEMENTS[pid]
-    return "\n".join(out)
+    return "\n".join([f"PLACED {p['doc']['name']!r} as {nid}, child of {here.get('parent')} in {here.get('region')}",
+                      f"  walked  : {' → '.join(p['path'])}", "",
+                      "The lines on the way down were not changed. If one of them — the area's sentence above all —",
+                      "no longer says that this is there, tell the person; they change it from the map."])
 
 
 TOOLS = [

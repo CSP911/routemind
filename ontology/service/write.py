@@ -10,7 +10,7 @@ import contextlib, os, re, shutil, subprocess, threading, time
 from pathlib import Path
 import yaml
 from .store import Store, FM_RE
-from .store import write as store_write, file_lock
+from .store import file_lock
 from .validate import validate, ID_RE, NAME_MAX, name_too_long
 from .derive import regenerate, write_node_index, sync_region_node_lists, EDITABLE
 from .romanize import romanize
@@ -275,11 +275,11 @@ class Writer:
         if self.suggest_id_configured and self.suggest_id_configured():
             k = (self.suggest_kind(name=name, one_liner=one_liner, region=region, content=content) or "").strip()
             if k: return k, True
-        # `default_kind` in vocab.yaml, when there is no LLM to choose. In the default configuration
-        # nothing reads a kind — it is in no prompt and in no table an agent receives, and `edge_rules`
-        # ships empty — so requiring a person to pick one was a field with no effect but a refusal.
-        # The response still reports `kind_generated`, so a domain that later declares edge_rules can
-        # see which kinds were never actually chosen.
+        # `default_kind` in vocab.yaml, when there is no LLM to choose. A kind is in no prompt and in
+        # no table an agent receives; its one reader is `export: no` on a kind in vocab.yaml, which
+        # keeps that sort of thing from crossing a link. Requiring a person to pick one was a field
+        # with no effect but a refusal. The response still reports `kind_generated`, so a domain that
+        # relies on that rule can see which kinds were never actually chosen.
         fallback = str((self.store.vocab().get("default_kind") or "")).strip()
         if fallback: return fallback, True
         raise WriteError(503, "kind is required — no LLM is configured to decide one (ONTOLOGY_LLM_*), "
@@ -368,11 +368,6 @@ class Writer:
                                              one_liner=body["one_liner"], region=region)
         base = self.entity_path(region, nid)
         if base.exists(): raise WriteError(409, f"entity {nid} exists", code="id_taken", data={"id": nid})
-        new_edges = body.get("edges") or []          # a node must relate to something — create it with its first edge(s)
-        for e in new_edges:
-            for k in ("from", "rel", "to"):
-                if not e.get(k): raise WriteError(400, f"edges[]: {k} is required")
-            if nid not in (e["from"], e["to"]): raise WriteError(400, "edges[] must involve the new node")
         def mutate():
             # Asked twice on purpose. The check above runs before the lock — it has to, because the
             # id may still have to be made from the name, and that can call a model — so between it
@@ -382,7 +377,7 @@ class Writer:
             if base.exists(): raise WriteError(409, f"entity {nid} exists", code="id_taken", data={"id": nid})
             base.parent.mkdir(parents=True, exist_ok=True)
             write_node_index(self.store, {"id": nid, "name": body["name"], "kind": kind, "region": region, "holds": holds, "injected_by": body.get("injected_by"), "status": body.get("status"),
-                                          "parent": body.get("parent"), "aliases": body.get("aliases") or [],
+                                          "parent": body.get("parent"),
                                           "one_liner": body["one_liner"], "body": body.get("content") or "",
                                           "path": str(base.relative_to(self.root))})
             # `files` on a create are children, not contents. Each is the same kind of thing as its
@@ -394,15 +389,7 @@ class Writer:
                                               "region": region, "parent": nid, "holds": "content",
                                               "one_liner": f["description"], "body": f["content"],
                                               "path": str(cp.relative_to(self.root))})
-            if new_edges:
-                edges = self.store.edges()
-                for e in new_edges:
-                    ne = {"from": e["from"], "rel": e["rel"], "to": e["to"]}
-                    if e.get("note"): ne["note"] = e["note"]
-                    if e.get("source"): ne["source"] = e["source"]
-                    edges.append(ne)
-                self._save_edges(edges)
-        res = self.transact(f"node {nid}: create" + (f" (+{len(new_edges)} edge)" if new_edges else ""), actor, mutate)
+        res = self.transact(f"node {nid}: create", actor, mutate)
         return {**res, "id": nid, "id_generated": id_generated, "kind": kind, "kind_generated": kind_generated}
 
     def update_node(self, nid: str, body: dict, actor: str) -> dict:
@@ -418,11 +405,10 @@ class Writer:
         parent's area. Nothing about the check had to be relaxed to let the move happen — which is
         the difference between a move and an exception to a rule.
 
-        ids, bodies and edges do not change. An edge that used to sit inside one area now crosses
-        two, which is what an edge is for."""
+        ids and bodies do not change."""
         n = self.store.node(nid)
         if not n: raise WriteError(404, f"node {nid} not found")
-        if "id" in body and body["id"] != nid: raise WriteError(400, "renaming a node is not supported — create the new one, move edges, delete the old")
+        if "id" in body and body["id"] != nid: raise WriteError(400, "renaming a node is not supported — create the new one, delete the old")
         moves: list[tuple[str, Path, Path]] = []
         if "parent" in body and (body.get("parent") or None) != (n.get("parent") or None):
             moves = self._plan_move(n, body.get("parent") or None)
@@ -534,17 +520,12 @@ class Writer:
                                   f"Move or delete {'them' if len(blockers) > 1 else 'it'} first",
                              code="holds_children", data={"id": nid, "n": len(blockers), "held": ", ".join(blockers)})
         gone = {nid, *kids}
-        edges = self.store.edges(); refs = [e for e in edges if e["from"] in gone or e["to"] in gone]
         by_id = {x["id"]: x for x in self.store.nodes()}
-        # a node cannot exist without an edge and an edge cannot exist without its nodes, so the node and its
-        # edges go in one transaction — the same way create_node takes its first edges
         def mutate():
             for eid in gone:
                 t = self.root / by_id[eid]["path"]
                 shutil.rmtree(t) if t.is_dir() else t.unlink(missing_ok=True)
-            if refs: self._save_edges([e for e in edges if e not in refs])
-        res = self.transact(f"node {nid}: delete" + (f" (+{len(kids)} child)" if kids else "") + (f" (-{len(refs)} edge)" if refs else ""), actor, mutate)
-        res["removed_edges"] = [f"{e['from']} {e['rel']} {e['to']}" for e in refs]
+        res = self.transact(f"node {nid}: delete" + (f" (+{len(kids)} child)" if kids else ""), actor, mutate)
         res["removed_children"] = sorted(kids); return res
 
     # ---- node files ----
@@ -606,10 +587,10 @@ class Writer:
         directory does (SPEC-v2 §1.1), so "create an area" is really **create a representative node
         in a new namespace**.
 
-        The problem is hop 0. A new area has no row in CORE.md, so its `description` is empty, and a
-        representative with no `use_when` leaves that empty too — **a row with a title and nothing
+        The problem is hop 0. A representative with no `use_when` is **a row with a title and nothing
         else**, which an agent will never choose. An empty slot left to be filled later does not get
-        filled, so **both are required**."""
+        filled, so it is required. It is the one sentence: a CORE.md row was a second one, required
+        here until 2026-10-07 though no agent was ever shown it."""
         src = str(body.get("source") or "").strip()
         if not re.fullmatch(r"[a-z][a-z0-9-]*", src or ""): raise WriteError(400, "source must be lowercase ascii-kebab (it is the area directory name)")
         if (why := name_too_long(src)):
@@ -620,30 +601,10 @@ class Writer:
         for k in ("name", "one_liner", "use_when"):
             if not str(rep.get(k) or "").strip():
                 raise WriteError(400, f"representative.{k} is required — {'it is the condition for choosing this area at hop 0' if k == 'use_when' else 'it is how the representative describes itself'}")
-        core_desc = str(body.get("core_description") or "").strip()
-        if not core_desc: raise WriteError(400, "core_description is required — with no CORE.md row, hop 0 goes out with an empty description")
-        if "|" in core_desc or "\n" in core_desc: raise WriteError(400, "this is one table cell — `|` and newlines are not allowed")
         label = src.replace("-", "_").upper()
         kind, kind_generated = self._resolve_kind(rep.get("kind"), name=rep["name"], one_liner=rep["one_liner"], region=src)
         nid, id_generated = self._resolve_id(rep.get("id"), name=rep["name"], kind=kind, one_liner=rep["one_liner"], region=src)
-        core = self.root / "CORE.md"
-        if not core.exists(): raise WriteError(404, "CORE.md not found")
-        text = core.read_text(encoding="utf-8")
-        if re.search(r"^\| `" + re.escape(label) + r"` \| ", text, re.M): raise WriteError(409, f"CORE.md already has a `{label}` row")
-        # Append after the table's last row. When there are no rows — **which is exactly what a
-        # freshly installed ontology looks like** — the separator line is the last thing. Anchoring on
-        # rows alone makes the first area impossible forever: there is no row, so it cannot be created,
-        # so there is never a row.
-        rows = list(re.finditer(r"^\| `[A-Z_]+` \| .+ \|$", text, re.M))
-        anchor = rows[-1] if rows else re.search(r"^\|[ \t]*:?-+:?[ \t]*\|[ \t]*:?-+:?[ \t]*\|[ \t]*$", text, re.M)
-        if anchor is None:
-            raise WriteError(500, "CORE.md has no area table — it needs a header and a separator (`| --- | --- |`)")
         base = self.entity_path(src, nid)
-        new_edges = body.get("edges") or []          # known relations go in the same transaction
-        for e in new_edges:
-            for k in ("from", "rel", "to"):
-                if not e.get(k): raise WriteError(400, f"edges[]: {k} is required")
-            if nid not in (e["from"], e["to"]): raise WriteError(400, "edges[] must involve the new representative")
 
         def mutate():
             base.parent.mkdir(parents=True, exist_ok=True)
@@ -658,29 +619,19 @@ class Writer:
                                           # audience on an area that is not exported, so the two
                                           # arrive or neither does.
                                           "export_to": _name_list(rep.get("export_to")),
-                                          "aliases": [], "one_liner": rep["one_liner"], "body": "",
+                                          "one_liner": rep["one_liner"], "body": "",
                                           "path": str(base.relative_to(self.root))})
-            end = anchor.end()
-            store_write(core, text[:end] + f"\n| `{label}` | {core_desc} |" + text[end:])
-            if new_edges:
-                edges = self.store.edges()
-                for e in new_edges:
-                    ne = {"from": e["from"], "rel": e["rel"], "to": e["to"]}
-                    if e.get("note"): ne["note"] = e["note"]
-                    edges.append(ne)
-                self._save_edges(edges)
 
-        res = self.transact(f"region {src}: create (representative {nid} · CORE row)", actor, mutate)
+        res = self.transact(f"region {src}: create (representative {nid})", actor, mutate)
         return {**res, "source": src, "key": label, "representative": nid,
                 "id_generated": id_generated, "kind": kind, "kind_generated": kind_generated}
 
     def delete_region(self, src: str, actor: str) -> dict:
-        """Delete an area — **directory, nodes, edges and the CORE row in one transaction.**
+        """Delete an area — **directory and representative in one transaction.**
 
         Being able to create but not delete is half a feature. And deleting in pieces leaves
         intermediate states that do not validate: delete the representative first and it is refused
-        with "no node speaks for this area"; delete the directory first and the CORE row survives with
-        nothing behind it. So it goes at once.
+        with "no node speaks for this area". So it goes at once.
 
         **Only when empty.** Any node besides the representative and this refuses — a person has to
         know what they are about to lose."""
@@ -690,42 +641,12 @@ class Writer:
         others = [n["id"] for n in mine if n.get("parent") or n.get("role") != "representative"]
         if others: raise WriteError(409, f"region {src}: nodes remain {others} — delete them first")
         ids = {n["id"] for n in mine}
-        label = src.replace("-", "_").upper()
-        core = self.root / "CORE.md"
-        text = core.read_text(encoding="utf-8") if core.exists() else ""
-        row = re.search(r"^\| `" + re.escape(label) + r"` \| .+ \|$\n?", text, re.M)
 
         def mutate():
             shutil.rmtree(d)
-            edges = [e for e in self.store.edges() if e["from"] not in ids and e["to"] not in ids]
-            self._save_edges(edges)
-            if row: store_write(core, text[:row.start()] + text[row.end():])
 
-        res = self.transact(f"region {src}: delete ({len(ids)} nodes · CORE row)", actor, mutate)
-        return {**res, "source": src, "removed_nodes": sorted(ids), "core_row_removed": bool(row)}
-
-    def put_core_row(self, key: str, description: str, actor: str) -> dict:
-        """Change **one row's description cell** in the CORE.md area table.
-
-        That cell is the source of `regions.json.description` and it goes out at hop 0. But CORE.md is
-        a narrative carried **whole** into every prompt, so editing one row moves its context with it.
-        Hence **row replacement only — no whole-document write.** That is something a person does in
-        the repository."""
-        desc = (description or "").strip()
-        if not desc: raise WriteError(400, "description is required")
-        if "|" in desc or "\n" in desc: raise WriteError(400, "this is one table cell — `|` and newlines are not allowed")
-        core = self.root / "CORE.md"
-        if not core.exists(): raise WriteError(404, "CORE.md not found")
-        pat = re.compile(r"^(\| `" + re.escape(key) + r"` \| )(.+?)( \|)$", re.M)
-        text = core.read_text(encoding="utf-8")
-        m = pat.search(text)
-        if not m: raise WriteError(404, f"CORE.md area table has no `{key}` row")
-        before = m.group(2)
-        if before == desc: raise WriteError(200, "no change")
-        def mutate():
-            store_write(core, pat.sub(lambda mm: mm.group(1) + desc + mm.group(3), text, count=1))
-        res = self.transact(f"core: region {key} description", actor, mutate)
-        return {**res, "key": key, "before": before, "after": desc}
+        res = self.transact(f"region {src}: delete ({len(ids)} nodes)", actor, mutate)
+        return {**res, "source": src, "removed_nodes": sorted(ids)}
 
     def promote_file(self, nid: str, name: str, body: dict, actor: str) -> dict:
         """Promote — **insert a named parent above this entity, in one transaction.**
@@ -743,9 +664,8 @@ class Writer:
         screen's card has been promising the right thing while this did the other.
 
         The entity being promoted keeps its id, its name and its body. That is the part one type
-        makes cheap: the old version created a new id and had to carry the edges across, because the
-        file could not keep an identity it never had. Nothing points anywhere new here, so no edge
-        moves.
+        makes cheap: the old version created a new id, because the file could not keep an identity it
+        never had.
 
         Two writes that must not half-happen — a new parent with nothing under it is exactly the
         stranded state the old version's transaction existed to prevent."""
@@ -771,46 +691,12 @@ class Writer:
             write_node_index(self.store, {"id": new_id, "name": body["name"], "kind": kind,
                                           "region": region, "holds": "content", "injected_by": None,
                                           "status": None, "parent": child.get("parent"),
-                                          "aliases": body.get("aliases") or [],
                                           "one_liner": body["one_liner"], "body": "",
                                           "path": str(dest.relative_to(self.root))})
-            # The child moves under it. Its id does not change, so every edge pointing at it still
-            # resolves — the old promotion could not say that.
+            # The child moves under it. Its id does not change, so every address to it still resolves —
+            # the old promotion could not say that.
             write_node_index(self.store, {**child, "parent": new_id})
 
         res = self.transact(f"promote {child['id']} under new {new_id}", actor, mutate)
         return {**res, "id": new_id, "promoted": child["id"], "id_generated": id_generated,
                 "kind": kind, "kind_generated": kind_generated}
-
-    # ---- edges ----
-    def _save_edges(self, edges: list[dict]):
-        head_comment = "# Edges. `from` and `to` are node ids; `rel` must be one of the relations in vocab.yaml.\n\n"
-        store_write(self.root / "edges.yaml", head_comment + yaml.safe_dump(edges, allow_unicode=True, sort_keys=False, width=1000))
-
-    def add_edge(self, body: dict, actor: str) -> dict:
-        for k in ("from", "rel", "to"):
-            if not body.get(k): raise WriteError(400, f"{k} is required")
-        edges = self.store.edges()
-        if any(e["from"] == body["from"] and e["rel"] == body["rel"] and e["to"] == body["to"] for e in edges): raise WriteError(409, "edge exists")
-        new = {"from": body["from"], "rel": body["rel"], "to": body["to"]}
-        if body.get("note"): new["note"] = body["note"]
-        if body.get("source"): new["source"] = body["source"]
-        def mutate(): self._save_edges(edges + [new])
-        return self.transact(f"edge {body['from']} {body['rel']} {body['to']}: add", actor, mutate)
-
-    def update_edge(self, f: str, rel: str, t: str, body: dict, actor: str) -> dict:
-        edges = self.store.edges(); hit = [e for e in edges if e["from"] == f and e["rel"] == rel and e["to"] == t]
-        if not hit: raise WriteError(404, "edge not found")
-        def mutate():
-            for k in ("note", "source"):
-                if k in body:
-                    if body[k]: hit[0][k] = body[k]
-                    else: hit[0].pop(k, None)
-            self._save_edges(edges)
-        return self.transact(f"edge {f} {rel} {t}: update", actor, mutate)
-
-    def delete_edge(self, f: str, rel: str, t: str, actor: str) -> dict:
-        edges = self.store.edges(); rest = [e for e in edges if not (e["from"] == f and e["rel"] == rel and e["to"] == t)]
-        if len(rest) == len(edges): raise WriteError(404, "edge not found")
-        def mutate(): self._save_edges(rest)
-        return self.transact(f"edge {f} {rel} {t}: delete", actor, mutate)

@@ -287,8 +287,7 @@ check("   until the list is taken away", len(peer_rows("ay")) == 1)
 # that plus three prefixes, and nothing between here and there may shorten it.
 LONG = "a" + "x" * 251
 st, r = call(B_PORT, "/v1/regions", "POST",
-             {"source": "long-one", "core_description": "an area with the longest name there is",
-              "representative": {"name": "L" * 40, "one_liner": "the longest id there is",
+             {"source": "long-one", "representative": {"name": "L" * 40, "one_liner": "the longest id there is",
                                  "use_when": "when the id is as long as it can be",
                                  "export": True,
                                  "id": LONG}})

@@ -21,8 +21,8 @@ docker compose exec ontology python3 /tmp/check/scenarios.py     # see the heade
 
 Three properties are worth this much machinery, because each one fails silently:
 
-**Residue.** Deleting is where a derived tree goes wrong — a row left in `CORE.md`, an id left in
-`regions.json`, a directory left behind. None of it errors; the next agent just reads a routing table
+**Residue.** Deleting is where a derived tree goes wrong — an id left in `regions.json`, a directory
+left behind. None of it errors; the next agent just reads a routing table
 with a row that fetches nothing.
 
 **Advertisement is the whole interface.** An area that exists but says nothing to pick it by is
@@ -39,8 +39,8 @@ lists changes what the system is entitled to claim.
 | A1 | An empty ontology still prints a hop-0 table: a header, `(nothing here)`, and the absence rule. Empty is a state, not an error |
 | A2 | One area created → it is at hop 0, with the sentence it is chosen by |
 | A3 | A second → both, and the order does not depend on creation order |
-| A4 | One deleted → gone from hop 0, **and its row is gone from `CORE.md`** |
-| A5 | All deleted → byte-for-byte the state A1 described. No residue in `regions.json`, and the `CORE.md` table keeps its header so the next area can be written into it |
+| A4 | One deleted → gone from hop 0, the other untouched |
+| A5 | All deleted → byte-for-byte the state A1 described. No residue in `regions.json`, and no `CORE.md` or `edges.yaml` for anything to drift into |
 
 A5 is the one that matters. "It looks empty" and "it is empty" differ by exactly the bug this catches.
 

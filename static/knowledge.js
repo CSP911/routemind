@@ -25,7 +25,7 @@
     return 1;
   };
 
-  const state = { regions: [], nodes: [], edges: [], open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { derives: false }, flags: new Map(), picked: new Set(), overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom(), domain: null, revision: null };
+  const state = { regions: [], nodes: [], open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { derives: false }, flags: new Map(), picked: new Set(), overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom(), domain: null, revision: null };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -167,25 +167,6 @@
   }
 
   // ── the map ───────────────────────────────────────────────────────────────
-  const edgeFrom = (e) => e.s || e.from;
-  const edgeTo = (e) => e.t || e.to;
-
-  function crossLinks() {
-    const counted = new Map();
-    const byId = new Map(state.nodes.map((n) => [n.id, n]));
-    for (const e of state.edges) {
-      const a = byId.get(edgeFrom(e));
-      const b = byId.get(edgeTo(e));
-      if (!a || !b) continue;
-      const ra = norm(regionOf(a));
-      const rb = norm(regionOf(b));
-      if (!ra || !rb || ra === rb) continue;
-      const key = [ra, rb].sort().join("|");
-      counted.set(key, (counted.get(key) || 0) + 1);
-    }
-    return [...counted.entries()].map(([k, count]) => ({ pair: k.split("|"), count }));
-  }
-
   // Drawn the way a network diagram is drawn, because that is what this is: a core, a distribution
   // layer, and access layers with many hosts. The one rule that matters is borrowed whole — many hosts
   // on one switch are not many lines to the switch; they are a rack with one uplink. The previous
@@ -459,13 +440,6 @@
       g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
       marks.append(g);
     });
-    const mgmt = [{ key: "core", label: "core.md", kind: "data", address: "/v1/core", side: -1 }];
-    for (const m of mgmt) {
-      const x = cx + m.side * (DEV.core.w / 2 + 70 + DEV.mgmt.w / 2);
-      const y = Y.core + (m.order || 0) * (DEV.mgmt.h + 10);
-      seg([[cx + m.side * DEV.core.w / 2, Y.core], [x - m.side * DEV.mgmt.w / 2, Y.core], [x - m.side * DEV.mgmt.w / 2, y]], "kn-wire");
-      marks.append(device(m, x, y, "mgmt"));
-    }
 
     // One bus per backbone, and a line between the backbones themselves. A peer's areas hang off the
     // peer, not off this one: drawn on a single bus they would read as areas of this ontology, which
@@ -1270,7 +1244,7 @@
   // Containment is one field, `parent`, and the routing tables are read off it — an area's table is
   // its representative's children, a node's table is its own. So a move is one write of that field,
   // and both tables change with it: the one it left and the one it joined. The entity keeps its id,
-  // its address, its body and its edges; whatever is inside it comes along, because each of those
+  // its address and its body; whatever is inside it comes along, because each of those
   // names it as parent and it did not change.
   //
   // Where it can land: its area's rack (the representative holds it), a sub-rack (that node holds
@@ -1430,7 +1404,7 @@
         // dead link draws exactly like a live one, which is the failure the whole absence rule turns
         // on. They come back on the refresh below, from the wire, or they do not come back.
         regions: state.regions.filter((r) => !r.peer),
-        nodes: state.nodes, edges: state.edges,
+        nodes: state.nodes,
         entries: [...state.entries.entries()],
       }));
     } catch { /* quota or private mode: the cache is a convenience, the fetch path still works */ }
@@ -1446,7 +1420,6 @@
       state.regions = cached.regions || [];
       state.links = [];
       state.nodes = cached.nodes || [];
-      state.edges = cached.edges || [];
       state.entries = new Map(cached.entries || []);
       drawnRevision = headRev;
       draw();
@@ -1478,7 +1451,6 @@
     // would read as "unknown" rather than as "this one is ours".
     state.revision = regions.revision || null;
     state.nodes = graph.nodes || [];
-    state.edges = graph.edges || [];
     state.entries = new Map();
     if (headRev) drawnRevision = headRev;
     draw();                                   // first paint: two calls in
@@ -1582,18 +1554,14 @@
 
   // ── making things at the backbone ─────────────────────────────────────────
   //
-  // The backbone holds two kinds of thing: the Regions and the Core document. One of them can be
-  // created through the API and one cannot — `POST /v1/regions` answers
+  // The backbone holds the Regions. Creating one is the area form below — `POST /v1/regions` once answered
   // 405, because a Region exists only when its directory and representative node do (SPEC-v2 §1.1), so
   // creating one is not a write this screen can compose. That is said out loud below rather than left
   // as a missing button: a person who finds no way to add an AS should learn why, not guess.
 
-  /** Why "add data" does nothing at the backbone yet. The backbone level holds exactly one authored
-   *  document — CORE.md. The rest of what sits there is vocabulary or derived: `vocab.yaml`,
-   *  `edges.yaml`, `regions.json`, `REVISION`. And CORE.md is one narrative that goes into every
-   *  prompt whole, so it is edited a row at a time through the review queue rather than appended to.
-   *  Until it is decided what "data at the backbone" should mean, the button says that instead of
-   *  writing somewhere plausible. */
+  /** Why "add data" does nothing at the backbone. Every document lives in an area; the backbone level
+   *  holds only the list of areas and the vocabulary. So the button says that instead of writing
+   *  somewhere plausible. */
   function whyNoBBData() {
     const card = el("form", "kn-card-form");
     card.addEventListener("submit", (e) => e.preventDefault());
@@ -1606,8 +1574,8 @@
 
   /** Removing an area, and everything the map can see inside it.
    *
-   *  The API deletes an area in one transaction — directory, representative, the edges that named it
-   *  and its CORE row — and refuses while anything else is still inside. That refusal is a feature,
+   *  The API deletes an area in one transaction — directory and representative — and refuses while
+   *  anything else is still inside. That refusal is a feature,
    *  so this does not route around it: it shows what is in the way, and removes those one at a time
    *  only after a person has read the list and typed the name.
    *
@@ -1691,10 +1659,8 @@
     typed.focus();
   }
 
-  /** A new AS. Five things are asked for and every one of them is load-bearing, which is unusual on
-   *  this screen and worth the extra fields: two of them are the only reason an agent will ever choose
-   *  this area. `use_when` is the hop-0 condition and `core_description` becomes the CORE.md row behind
-   *  it — an AS created without them is created invisible, and an empty slot meant to be filled later
+  /** A new AS. `use_when` is the hop-0 condition and the only reason an agent will ever choose this
+   *  area — an AS created without it is created invisible, and an empty slot meant to be filled later
    *  does not get filled. The id and the kind are Knowledge's to derive, as they are for a node.
    *
    *  The form shows the hop-0 row as it will read, because that row is the whole of what a run sees
@@ -1793,14 +1759,11 @@
         if (!NAME_ID.test(src)) throw new Error(t("knowledge.bb.badAsName"));
         if (!useWhen.value.trim()) throw new Error(t("knowledge.bb.useWhen") + " " + t("knowledge.required"));
         // Derived, not asked for. `name` is the area's name in display form; the API needs a
-        // representative to have one and nothing an agent reads ever shows it. `core_description`
-        // is the area's row in CORE.md, which no agent path fetches in this build — it is seeded
-        // from the one-liner and can be edited afterwards through the proposal queue.
+        // representative to have one and nothing an agent reads ever shows it.
         const label = src.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
         const oneLine = label;
         const made = await post("regions", {
           source: src,
-          core_description: oneLine,
           representative: { id: src, name: label, one_liner: oneLine, use_when: useWhen.value.trim() },
         });
         state.picked.clear();
@@ -2096,8 +2059,9 @@
   //
   // `scope` decides which device wears the flag, and the mapping is the only one this screen holds
   // because it is about drawing, not about which field gets written: `as` — and `dr`, its former
-  // spelling — changes what a Region says about itself, so it flags that Region; `bb` and `core` change
-  // hop 0, the list every run reads before choosing a Region, so they flag the backbone.
+  // spelling — changes what a Region says about itself, so it flags that Region; `bb` changes hop 0,
+  // the list every run reads before choosing a Region, so it flags the backbone. `core` (a CORE.md
+  // row, retired 2026-10-07) is kept here only so an old one still in the queue is drawn somewhere.
   const BB_SCOPES = new Set(["bb", "core"]);
 
   /** Pending route proposals, bucketed by the device that should show them. Failure is silent on
@@ -2259,7 +2223,6 @@
     // Two acts at the backbone: add an AS, add data. Service fragments, and the run button that
     // started an agent from here, were retired on 2026-10-07 — neither had anything behind it.
     backbone: { label: "BACKBONE", actions: ["reviewBB", "newRegion", "newBBData", "copyAgent"] },
-    core:     { label: "CORE",     actions: [] },
     // One word for both (operator, 2026-09-11): an area and a node that holds things are the same
     // kind of thing on this screen — an Autonomous System — and the racks already say so.
     region:   { label: "AS",       actions: [] },
@@ -2297,7 +2260,6 @@
   const representativeOf = (dir) => (state.regions.find((r) => norm(r.source) === norm(dir)) || {}).representative || null;
   function editTarget(address) {
     if (!address) return { kind: "backbone" };
-    if (address === "/v1/core") return { kind: "core" };
     let m = BODY_ADDR.exec(address);
     if (m) return { kind: "file", entity: m[1] };
     m = FILE_ADDR.exec(address);

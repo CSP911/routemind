@@ -439,7 +439,7 @@ def api_knowledge_suggest_use_when(payload: dict, request: Request) -> dict[str,
     # person left there, which may be nothing like this.
     actor = _knowledge_actor(request)
     data = dict(payload or {})
-    body = {k: str(data.get(k) or "").strip() for k in ("name", "one_liner", "core_description")}
+    body = {k: str(data.get(k) or "").strip() for k in ("name", "one_liner")}
     if not body["name"] or not body["one_liner"]:
         raise HTTPException(status_code=422, detail="name and one_liner are required to draft a condition.")
     return _ontology_proxy("POST", "/v1/suggest/use-when", actor, body)
@@ -456,10 +456,8 @@ def api_knowledge_route_draft(payload: dict, request: Request) -> dict[str, Any]
     scope = str(data.get("scope") or "").strip()
     if not region:
         raise HTTPException(status_code=422, detail="region is required.")
-    # `as` is the word since 2026-09-10; `dr` is still taken because Knowledge accepts both during the
-    # handover and a proposal filed under the old spelling must stay reviewable.
-    if scope not in ("as", "dr", "bb", "core"):
-        raise HTTPException(status_code=422, detail="scope must be as, bb or core.")
+    if scope not in ("as", "bb"):
+        raise HTTPException(status_code=422, detail="scope must be as or bb.")
     body: dict[str, Any] = {"region": region, "scope": scope}
     changed = data.get("changed")
     if isinstance(changed, list) and changed:
@@ -484,7 +482,7 @@ def api_knowledge_one_liner_draft(node_id: str, request: Request) -> dict[str, A
 # the road stayed true of a queue with no door. check/room-check.py holds the two lists together.
 # The old spellings `dr`, `peer` and `peer-line` are no longer filed (2026-10-07); one still sitting in
 # a queue is read and applied under its new name by the ontology.
-QUEUE_SCOPES = ("as", "bb", "core", "entity", "export", "audience")
+QUEUE_SCOPES = ("as", "bb", "entity", "export", "audience")
 
 
 @_iris_route("POST", "/api/knowledge/proposals")
@@ -507,7 +505,7 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     # through the review queue" was true of a queue nobody could reach.
     if scope not in QUEUE_SCOPES:
         raise HTTPException(status_code=422,
-                            detail="scope must be as, bb, core, entity, export or audience.")
+                            detail="scope must be as, bb, entity, export or audience.")
     where = "entity" if scope == "entity" else "region"
     # `export` is yes or no and both are decisions, so it is never empty. An audience may be, and it
     # means "everybody this area already crosses to". The ontology settles it either way; refusing
@@ -685,10 +683,9 @@ def api_knowledge_validate(payload: dict, request: Request) -> dict[str, Any]:
 
 @_iris_route("POST", "/api/knowledge/regions")
 def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, Any]:
-    # An AS is born with the two lines the agent uses to choose it, or it is born invisible. `use_when`
-    # is the hop-0 condition and `core_description` becomes the CORE.md row behind it; the API requires
-    # both, and this refuses without them rather than sending a request that will fail — an empty slot
-    # meant to be filled later does not get filled.
+    # An AS is born with the line the agent uses to choose it, or it is born invisible. `use_when` is
+    # the hop-0 condition; the API requires it, and this refuses without it rather than sending a
+    # request that will fail — an empty slot meant to be filled later does not get filled.
     actor = _knowledge_actor(request)
     data = dict(payload or {})
     source = str(data.get("source") or "").strip()
@@ -698,11 +695,8 @@ def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, An
     for field, where in (("name", rep), ("one_liner", rep), ("use_when", rep)):
         if not str(where.get(field) or "").strip():
             raise HTTPException(status_code=422, detail=f"representative.{field} is required.")
-    if not str(data.get("core_description") or "").strip():
-        raise HTTPException(status_code=422, detail="core_description is required — it is the hop-0 row for this AS.")
     body: dict[str, Any] = {
         "source": source,
-        "core_description": str(data["core_description"]).strip(),
         # `id` and `kind` are Knowledge's to derive, as they are for a node. Anything a person did
         # supply is passed through; nothing is invented here.
         # `export` is optional and its absence is meaningful: an area with it unset does not cross a
@@ -719,15 +713,12 @@ def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, An
             **({"export_to": rep["export_to"]} if rep.get("export_to") else {}),
         },
     }
-    if isinstance(data.get("edges"), list) and data["edges"]:
-        body["edges"] = data["edges"]
     return _ontology_proxy("POST", "/v1/regions", actor, body)
 
 
 @_iris_route("DELETE", "/api/knowledge/regions/{region_dir}")
 def api_knowledge_delete_region(region_dir: str, request: Request) -> dict[str, Any]:
-    """Delete an area — its directory, its representative, the edges that named it and its CORE row,
-    in one transaction.
+    """Delete an area — its directory and its representative, in one transaction.
 
     The API refuses while anything but the representative is still in it, and that refusal is passed
     through rather than worked around here. Deleting an area is how a person clears the examples this
@@ -742,9 +733,8 @@ def api_knowledge_delete_region(region_dir: str, request: Request) -> dict[str, 
 
 @_iris_route("POST", "/api/knowledge/nodes")
 def api_knowledge_create_node(payload: dict, request: Request) -> dict[str, Any]:
-    # A node needs a Region, a kind and a first relation — Knowledge's validator refuses a node nothing
-    # relates to ("declare it only if something relates to it"). The form asks for all of it rather than
-    # guessing a default, because a guessed Region is a wrong fact that publishes.
+    # A node needs a Region. The form asks for it rather than guessing a default, because a guessed
+    # Region is a wrong fact.
     actor = _knowledge_actor(request)
     data = dict(payload or {})
     for field in ("name", "region", "one_liner"):
@@ -756,12 +746,11 @@ def api_knowledge_create_node(payload: dict, request: Request) -> dict[str, Any]
     if holds not in ("content", "pointers"):
         raise HTTPException(status_code=422, detail="holds must be content or pointers.")
     files = data.get("files") if isinstance(data.get("files"), list) else []
-    edges = data.get("edges") if isinstance(data.get("edges"), list) else []
     body: dict[str, Any] = {
         "name": str(data["name"]).strip(),
         "region": str(data["region"]).strip(), "one_liner": str(data["one_liner"]).strip(),
         "holds": holds, "injected_by": str(data.get("injected_by") or "operator"),
-        "files": files, "edges": edges,
+        "files": files,
     }
     # The node's own document, when the caller has one to write. Knowledge's `create_node` has always
     # accepted `content` and writes it straight into the file; Web simply never forwarded it, so a
@@ -774,9 +763,8 @@ def api_knowledge_create_node(payload: dict, request: Request) -> dict[str, Any]
     # raises NotADirectoryError. No node in this repository uses it.
     if str(data.get("content") or "").strip():
         body["content"] = str(data["content"])
-    # Sent only when supplied; absent means Knowledge derives it. `kind` decides which relations the
-    # validator will allow, and relations are the curator's business — so this is not a value Web
-    # invents a default for (operator, 2026-09-10).
+    # Sent only when supplied; absent means Knowledge derives it. Web invents no default for either
+    # (operator, 2026-09-10).
     for field in ("id", "kind"):
         if str(data.get(field) or "").strip():
             body[field] = str(data[field]).strip()
@@ -785,8 +773,6 @@ def api_knowledge_create_node(payload: dict, request: Request) -> dict[str, Any]
         if not _KNOWLEDGE_ID.match(str(data["parent"]).strip()):
             raise HTTPException(status_code=422, detail="parent must be an entity id.")
         body["parent"] = str(data["parent"]).strip()
-    if data.get("aliases"):
-        body["aliases"] = data["aliases"]
     if data.get("status"):
         body["status"] = data["status"]
     return _ontology_proxy("POST", "/v1/nodes", actor, body)
@@ -810,7 +796,7 @@ def api_knowledge_update_node(node_id: str, payload: dict, request: Request) -> 
     # promotion all set containment directly. On 2026-09-11 the operator asked for it outright — drag an
     # entity onto what should hold it. The tables are read off `parent`, so both change with the write;
     # Knowledge refuses a parent in another area and a loop, so neither is re-checked here.
-    allowed = {k: v for k, v in (payload or {}).items() if k in ("name", "kind", "one_liner", "aliases", "holds", "status", "parent")}
+    allowed = {k: v for k, v in (payload or {}).items() if k in ("name", "kind", "one_liner", "holds", "status", "parent")}
     if "parent" in allowed and not _KNOWLEDGE_ID.match(str(allowed["parent"] or "")):
         raise HTTPException(status_code=422, detail="parent must be an entity id.")
     if not allowed:
@@ -820,7 +806,6 @@ def api_knowledge_update_node(node_id: str, payload: dict, request: Request) -> 
 
 @_iris_route("DELETE", "/api/knowledge/nodes/{node_id}")
 def api_knowledge_delete_node(node_id: str, request: Request) -> dict[str, Any]:
-    # Deleting a node takes its edges with it — the API answers with which ones, and the screen shows them.
     actor = _knowledge_actor(request)
     if not _KNOWLEDGE_ID.match(node_id or ""):
         raise HTTPException(status_code=422, detail="Invalid node id.")

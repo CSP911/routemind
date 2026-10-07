@@ -20,11 +20,10 @@ from pathlib import Path
 from urllib.parse import urlparse, unquote
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from service.store import Store, alias_names        # noqa: E402
+from service.store import Store        # noqa: E402
 from service.validate import validate, export_kinds  # noqa: E402
 from service import ages  # noqa: E402
 from service import derive as deriving  # noqa: E402
-from service import place as placing  # noqa: E402
 from service.write import Writer, WriteError, head, _dirty   # noqa: E402
 from service import peers as peering                        # noqa: E402
 from service import overlays                                # noqa: E402
@@ -76,7 +75,7 @@ def describe_file(name: str, content: str) -> str | None:
 def suggest_node_id(name: str, kind: str, one_liner: str, region: str, taken: list[str]) -> str | None:
     """Make a node id from its name (operator, 2026-09-10).
 
-    **An id is a permanent address** — agents call `/v1/nodes/<id>`, edges point at each other by it,
+    **An id is a permanent address** — agents call `/v1/nodes/<id>`,
     it is embedded in file addresses, and **there is no rename path.** It is also the one value a
     screen cannot produce: slugging a non-Latin name with a regex yields "" or, worse, something
     wrong but plausible — a name whose only ASCII is an embedded acronym slugs down to that acronym
@@ -109,7 +108,7 @@ def suggest_node_id(name: str, kind: str, one_liner: str, region: str, taken: li
     return v[:48] or None
 
 
-def suggest_use_when(name: str, one_liner: str, core_description: str) -> str:
+def suggest_use_when(name: str, one_liner: str) -> str:
     """Draft the one line that decides whether an agent comes to this area at all.
 
     Of everything a person types when opening an area, this is the line that decides whether the area
@@ -133,13 +132,12 @@ def suggest_use_when(name: str, one_liner: str, core_description: str) -> str:
         "- Use only what the input says. Invent no capability the area has not claimed.\n"
         "- Output that line alone — no quotes, no preamble."
     )
-    # A brand-new area has no description and no row in the architecture document yet — the form that
-    # opens one asks for two things and derives the rest. Handing the model an empty field next to
+    # A brand-new area has nothing written yet — the form that opens one asks for two things and
+    # derives the rest. Handing the model an empty field next to
     # "invent no capability the area has not claimed" left it nothing to do but ask the caller for the
     # missing context, so say what is missing and what to do about it.
     known = [f"area name: {name}"]
     if one_liner and one_liner != name: known.append(f"what it is: {one_liner}")
-    if core_description: known.append(f"its row in the architecture document: {core_description}")
     if len(known) == 1:
         known.append("Nothing else is known yet — this area is being opened now. Write the line from the "
                      "name alone: the questions someone with that name over the door would be asked.")
@@ -182,7 +180,7 @@ def route_draft(region: str, scope: str, changed: list | None) -> dict:
     if not rep: raise WriteError(409, f"region {region}: no top representative, so there is nothing to advertise")
     scope = curator.SCOPE_ALIAS.get(scope, scope)
     field = curator.ROUTE_SCOPES.get(scope)
-    if not field: raise WriteError(400, "scope must be as | bb | core")
+    if not field: raise WriteError(400, "scope must be as | bb")
     if scope not in DRAFTABLE:
         # Guarded on the scope, not on the field, because the prompt is chosen by scope: `peer` has a
         # field this recognised and no prompt, so it reached `WHAT[scope]` and came back as
@@ -191,10 +189,7 @@ def route_draft(region: str, scope: str, changed: list | None) -> dict:
         # and what one named organisation should be told are decisions about people who are not.
         raise WriteError(400, f"scope {scope} is not drafted — the model can read what an area holds, "
                               f"not who is reading and what they should be told. Write it yourself")
-    if field == "core_row":
-        before = next((x.get("description", "") for x in _regions_live().get("regions", []) if x["id"] == r["key"]), "")
-    else:
-        before = rep.get(field) or ""
+    before = rep.get(field) or ""
 
     # What this area holds right now — the material to compare the advertisement against
     holds = [f"file {f['name']} — {f['description']}" for f in rep["files"]]
@@ -407,13 +402,9 @@ def apply_proposal(p: dict, actor: str):
                         "current": cur, "submitted_before": p["before"]}
             return writer.update_node(n["id"], {"one_liner": p["after"]}, actor)
         if scope == "core":
-            key = next((r["key"] for r in store.regions() if r["dir"] == region or r["key"] == region.upper()), None)
-            if not key: return {"ok": False, "error": f"region {region} not found"}
-            cur = next((r.get("description", "") for r in _regions_live().get("regions", []) if r["id"] == key), "")
-            if p.get("before") and cur != p["before"]:
-                return {"ok": False, "error": "conflict", "code": 409, "field": "core_row",
-                        "current": cur, "submitted_before": p["before"]}
-            return writer.put_core_row(key, p["after"], actor)
+            # CORE.md is no longer read (2026-10-07); a proposal to change one of its rows that is
+            # still queued has nothing to change.
+            return {"ok": False, "error": "a `core` proposal changes a CORE.md row, which is no longer read — reject it"}
         r = next((x for x in store.regions() if x["dir"] == region or x["key"] == region.upper()), None)
         if not r or not r.get("representative"): return {"ok": False, "error": f"region {region} has no representative"}
         rep = store.node(r["representative"])
@@ -939,7 +930,6 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["regions"]:
             return self._send(200, {"revision": rev, "schema": rj.get("schema"), "regions": [
                 {"id": r["id"], "source": r["source"], "title": r["title"],
-                 "description": r.get("description", ""),
                  # The area's own line, which is also the one this backbone routes on. One sentence
                  # for both readers is the whole of the 2026-09-29 decision.
                  "use_when": (r.get("use_when") or "").strip(), "representative": r.get("representative"),
@@ -980,36 +970,13 @@ class Handler(BaseHTTPRequestHandler):
             self._as_peer = True
             return self._get(parts)
 
-        if parts == ["edges"]:
-            """The links between exported nodes — and only those.
-
-            **Both ends must be visible, not one.** An edge naming a node in an area nobody shared
-            would tell a peer that node exists, and every 404 on this surface is written so that
-            "we do not have it" and "we have it and did not share it" are indistinguishable. One
-            edge would undo that for a whole area.
-
-            Relations are named by the sending vocabulary, and the reader's may not have them. That
-            is the reader's to resolve — this says what is true here rather than guessing what will
-            load there.
-            """
-            ok = set()
-            for n in store.nodes():
-                if (n.get("region") or "") not in {dir_of(r["source"]) for r in visible.values()}: continue
-                if _draft_anywhere(n) or _kind_denied_anywhere(n, _denied_kinds()): continue
-                ok.add(n["id"])
-            self._as_peer = True
-            return self._send(200, {"edges": [e for e in store.edges()
-                                              if e.get("from") in ok and e.get("to") in ok]})
-
         return self._err(404, "unknown export path")
 
     # ---- reads ----
     def _get(self, parts):
-        if parts == ["core"]: return self._send(200, store.core(), "text/markdown; charset=utf-8")
         if parts == ["revision"]: return self._send(200, {"head": head(DATA)})
         if parts == ["vocab"]: return self._send(200, store.vocab())
         if parts == ["graph"]: g = store.graph(); g["revision"] = head(DATA); return self._send(200, g)
-        if parts == ["edges"]: return self._send(200, {"revision": head(DATA), "edges": store.edges()})
         if parts == ["regions"]:
             # A listing is an advertisement too. `path` and `nodes` stay in regions.json but are
             # **not emitted**: publish a path and someone builds an address out of it (someone did),
@@ -1022,7 +989,7 @@ class Handler(BaseHTTPRequestHandler):
             def _area_age(rep_id):
                 return {k: v for k, v in (_ages.get(rep_id) or {}).items() if v}
             mine = [
-                {"id": r["id"], "source": r["source"], "title": r["title"], "description": r.get("description", ""),
+                {"id": r["id"], "source": r["source"], "title": r["title"],
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
                  "whose": _whose({}, r),
                  **_area_age(r.get("representative")),
@@ -1077,7 +1044,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"revision": head(DATA), "nodes": [
                 {"id": n["id"], "name": n["name"], "kind": n["kind"], "region": n["region"],
                  "one_liner": n["one_liner"], "role": n.get("role"), "parent": n.get("parent"),
-                 "expands_in": n.get("expands_in"), "aliases": n["aliases"],
+                 "expands_in": n.get("expands_in"),
                  "status": n["status"], "injected_by": n.get("injected_by"), "order": n["order"],
                  "fetch": f"/v1/nodes/{n['id']}"} for n in store.nodes()]})
         if len(parts) == 2 and parts[0] == "nodes":
@@ -1150,19 +1117,21 @@ class Handler(BaseHTTPRequestHandler):
     def _write(self, method, parts):
         actor = self._actor(); body = self._body()
         if parts == ["place"] and method == "POST":
-            # One hop of the placement walk, stateless: the table at `at` with the evidence for each
-            # row, where the document would land if the walk stopped here, and — from the `path`
-            # the caller has walked so far — how far up it would have to be advertised. A POST that
-            # writes nothing; the walk's state is the caller's, like a question's is.
-            doc = body.get("doc") or {}
+            # One hop of the placement walk, stateless: the table at `at`, and where the document would
+            # land if the walk stopped here. A POST that writes nothing; the walk's state is the
+            # caller's, like a question's is.
+            #
+            # Each row is its line and nothing else. Until 2026-10-07 every row also carried the words
+            # it shared with the document, and a mechanical rule proposed widening the lines above —
+            # string matching steering the one choice the agent is there to make. Measured on 35
+            # documents, word overlap alone found the right parent 9% of the time, and the propagation
+            # rule advertised a new version of a rule 0 times in 15 (eval/placement).
             at = str(body.get("at") or "/v1/regions").rstrip("/") or "/v1/regions"
-            path = [str(p).rstrip("/") for p in (body.get("path") or [])]
             rows, here = [], None
             if at == "/v1/regions":
                 for r in store.regions():
                     rows.append({"address": f"/v1/regions/{r['dir']}", "kind": "area", "id": r["dir"],
-                                 "name": r.get("key") or r["dir"], "line": r.get("use_when") or "",
-                                 "names": [r["dir"], r.get("key") or ""]})
+                                 "name": r.get("key") or r["dir"], "line": r.get("use_when") or ""})
             elif at.startswith("/v1/regions/"):
                 d = at[len("/v1/regions/"):]
                 r = next((x for x in store.regions() if x["dir"] == d or x["key"] == d.upper()), None)
@@ -1170,33 +1139,17 @@ class Handler(BaseHTTPRequestHandler):
                 here = {"parent": r["representative"], "region": r["dir"]}
                 for c in advertised(r["representative"]):
                     rows.append({"address": f"/v1/nodes/{c['id']}", "kind": "node", "id": c["id"], "name": c["name"],
-                                 "line": c.get("one_liner") or "", "names": [c["id"], c["name"], *alias_names(c.get("aliases"))]})
+                                 "line": c.get("one_liner") or ""})
             elif at.startswith("/v1/nodes/"):
                 n = store.node(at[len("/v1/nodes/"):])
                 if not n: return self._err(404, f"node {at[len('/v1/nodes/'):]} not found")
                 here = {"parent": n["id"], "region": n["region"]}
                 for c in store.children_of(n["id"]):
                     rows.append({"address": f"/v1/nodes/{c['id']}", "kind": "node", "id": c["id"], "name": c["name"],
-                                 "line": c.get("one_liner") or "", "names": [c["id"], c["name"], *alias_names(c.get("aliases"))]})
+                                 "line": c.get("one_liner") or ""})
             else:
                 return self._err(400, f"{at} is not a table a document can be placed from")
-            # The ancestors, innermost first, as the path says they were walked. A region on the
-            # path contributes its hop-0 sentence; a node contributes its line.
-            ancestors = []
-            for p in reversed(path):
-                if p.startswith("/v1/nodes/"):
-                    n = store.node(p[len("/v1/nodes/"):])
-                    if n: ancestors.append({"scope": "entity", "id": n["id"], "label": n["name"], "line": n.get("one_liner") or ""})
-                elif p.startswith("/v1/regions/"):
-                    d = p[len("/v1/regions/"):]
-                    r = next((x for x in store.regions() if x["dir"] == d), None)
-                    if r: ancestors.append({"scope": "bb", "id": r["dir"], "label": r.get("key") or r["dir"], "line": r.get("use_when") or ""})
-            region = next((x for x in store.regions() if here and x["dir"] == here["region"]), None)
-            return self._send(200, {
-                "at": at, "rows": placing.table(doc, rows), "here": here,
-                "propagation": placing.propagation(doc, ancestors),
-                "export": ({"region": region["dir"], "export": bool(region.get("export"))} if region else None),
-                "terms": placing.terms(doc), "revision": head(DATA)})
+            return self._send(200, {"at": at, "rows": rows, "here": here, "revision": head(DATA)})
         if parts[:1] == ["walks"] and method == "POST":
             # The footprint, written: by the MCP server, which is the only thing that sees a walk.
             # Not a write to the repository — nothing here is committed — but it goes through
@@ -1218,7 +1171,7 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["suggest", "use-when"] and method == "POST":
             name, one = str(body.get("name") or "").strip(), str(body.get("one_liner") or "").strip()
             if not name or not one: return self._err(400, "name and one_liner are required")
-            return self._send(200, {"use_when": suggest_use_when(name, one, str(body.get("core_description") or "").strip())})
+            return self._send(200, {"use_when": suggest_use_when(name, one)})
         if parts == ["suggest", "description"] and method == "POST":
             # The line `put_file` writes when no description is given, handed back instead of
             # written. Same prompt and same two refusals, so the button shows what the write would
@@ -1286,11 +1239,7 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 2 and parts[0] == "regions" and method == "DELETE":
             return self._send(200, writer.delete_region(parts[1], actor))
         if parts == ["regions"] and method == "POST":
-            # The representative node and the CORE row are one transaction — a title-only row at hop 0 never gets chosen
             return self._send(201, writer.create_region(body, actor))
-        if len(parts) == 3 and parts[0] == "core" and parts[1] == "regions" and method == "PUT":
-            # One row's description cell only. No whole-document write — CORE.md is carried whole into every prompt
-            return self._send(200, writer.put_core_row(parts[2], body.get("description"), actor))
         if parts == ["vocab"]: return self._err(405, "vocabulary and kinds change through Knowledge review, not this API (operator decision 2026-09-07)")
         if parts == ["nodes"] and method == "POST": return self._send(201, writer.create_node(body, actor))
         if len(parts) == 2 and parts[0] == "nodes":
@@ -1302,10 +1251,6 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[0] == "nodes" and parts[2] == "files":
             if method == "PUT": return self._send(200, writer.put_file(parts[1], parts[3], body, actor))
             if method == "DELETE": return self._send(200, writer.delete_file(parts[1], parts[3], actor))
-        if parts == ["edges"] and method == "POST": return self._send(201, writer.add_edge(body, actor))
-        if len(parts) == 4 and parts[0] == "edges":
-            if method == "PUT": return self._send(200, writer.update_edge(parts[1], parts[2], parts[3], body, actor))
-            if method == "DELETE": return self._send(200, writer.delete_edge(parts[1], parts[2], parts[3], actor))
         return self._err(405, "method not allowed for this path")
 
 
@@ -1407,7 +1352,6 @@ def _export_state():
 DRAFT_PROMPTS = {
     "as": "the one line in which **the representative introduces itself** when this area is opened",
     "bb": "the one line used to decide **whether to choose this area at all** (what question brings you here)",
-    "core": "the **one-line summary** carried in the area table of the architecture document",
 }
 DRAFTABLE = frozenset(DRAFT_PROMPTS)
 
@@ -1587,7 +1531,7 @@ def main():
             sys.stderr.write(f"iris-ontology: regions.json is committed stale and could not be regenerated — {e}. "
                              f"Readers are served what the files say; commit or discard your changes, then any API "
                              f"write or ./ontology/tidy.py <repo> --fix regenerates it.\n")
-    sys.stderr.write(f"iris-ontology data={DATA} head={head(DATA)} nodes={res['stats']['nodes']} edges={res['stats']['edges']} valid={res['ok']}\n")
+    sys.stderr.write(f"iris-ontology data={DATA} head={head(DATA)} nodes={res['stats']['nodes']} valid={res['ok']}\n")
     # A setting this build does not understand would otherwise be dead quietly: the person set a
     # provider, nothing uses it, and nothing says so. `/healthz` carries the same fact for install.sh.
     if LLM_PROVIDER not in curator.PROVIDERS:

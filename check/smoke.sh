@@ -106,7 +106,7 @@ area=$(curl -fsS "$BASE/api/knowledge/regions" | python3 -c 'import json,sys; r=
 targets=""
 [ -n "$area" ] && targets=$(curl -fsS "$BASE/api/knowledge/regions/$area" \
   | python3 -c 'import json,sys; print(" ".join(e["fetch"] for e in (json.load(sys.stdin).get("entries") or [])))')
-for t in "" "/v1/core" ${area:+/v1/regions/$area} $targets; do
+for t in "" ${area:+/v1/regions/$area} $targets; do
   enc=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=""))' "$t")
   st=$(curl -s "$BASE/api/knowledge/view?path=$enc&service=" \
        | python3 -c 'import json,sys; print(json.load(sys.stdin).get("status"))' 2>/dev/null || echo broken)

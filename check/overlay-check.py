@@ -93,14 +93,14 @@ class Mcp:
 
 # Something to work with: an area with a node holding a document, and a second area.
 start(PORT, overlays=True)
-post(PORT, "/regions", {"source": "alpha", "core_description": "the first area", "representative": {
+post(PORT, "/regions", {"source": "alpha", "representative": {
     "id": "alpha-core", "name": "Alpha", "one_liner": "what alpha is", "use_when": "when alpha is the question"}})
 post(PORT, "/nodes", {"id": "shelf", "name": "Shelf", "region": "alpha", "one_liner": "where things stand", "parent": "alpha-core"})
 req = urllib.request.Request(f"http://127.0.0.1:{PORT}/v1/nodes/shelf/files/rules.md", method="PUT",
                              data=json.dumps({"description": "the shelving rules", "content": "# Rules\n\nA1-A9 on shelf E."}).encode(),
                              headers={"Content-Type": "application/json"})
 urllib.request.urlopen(req, timeout=30)
-post(PORT, "/regions", {"source": "beta", "core_description": "the second area", "representative": {
+post(PORT, "/regions", {"source": "beta", "representative": {
     "id": "beta-core", "name": "Beta", "one_liner": "what beta is", "use_when": "when beta is the question"}})
 
 # Without a store: no tool, no flow.

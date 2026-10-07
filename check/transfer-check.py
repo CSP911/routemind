@@ -82,15 +82,8 @@ if on_disk:
 else:
     results.append("--   no shared area on disk to count against; completeness unchecked")
 
-# The links across the tree. Both ends inside the shared set, or it does not cross: an edge naming a
-# node in an area nobody shared would say that node exists, and every 404 on that surface is written
-# so "we do not have it" and "we did not share it" cannot be told apart. On the shipped corpus four
-# edges cross and four more are held back for exactly that reason, so neither side of this is vacuous.
-edges = data.get("edges") or []
-out_of_set = [e for e in edges if e.get("from") not in ids or e.get("to") not in ids]
-check(f"the links between exported documents are in it ({len(edges)})", bool(edges))
-check("  and no link names a document outside the export", not out_of_set,
-      f"leaked {[f'{e.get(chr(34)+chr(34)) if False else e.get("from")}->{e.get("to")}' for e in out_of_set[:3]]}")
+# No links: edges were retired on 2026-10-07 with nothing reading them, and a bundle carries none.
+check("and it carries no links", "edges" not in data, str(sorted(data)))
 
 bodies = sum(1 for n in data["nodes"] if (n.get("body") or "").strip())
 tables = sum(1 for n in data["nodes"] if n.get("entries"))
@@ -262,15 +255,6 @@ else:
                          if before_state.get(q) != after_state[q])
         check("  and nothing that was already there was edited", not touched, f"edited {touched[:5]}")
 
-        # The links must arrive renamed with the documents, or they point at the receiver's own
-        # same-named documents — which is the collision the prefix exists to prevent, reappearing
-        # through the back door.
-        ed = os.path.join(target, "edges.yaml")
-        text = open(ed, encoding="utf-8").read() if os.path.isfile(ed) else ""
-        got = text.count("from: partner-")
-        check(f"  and the links between them came too ({got})", got == len(edges))
-        check("  with both ends renamed", "to: partner-" in text and text.count("to: partner-") == got)
-
         # A graft that could not regenerate regions.json must say so, and must not also print a
         # summary claiming it did. It printed both — the failure, then "regions.json regenerated
         # from the files" — and the summary is the line a reader trusts. The area was then on disk
@@ -327,13 +311,9 @@ else:
               p2.returncode != 0 and "still collide" in (p2.stdout + p2.stderr),
               "it would have overwritten the first graft")
 
-        # Undo. The graft appended links to edges.yaml and nothing removed them, so deleting the
-        # directory left four edges pointing at documents that were gone — and an invalid repository
-        # refuses every write, not just the next graft. Found by a combination run, not by a unit.
+        # Undo.
         before_all = {q: hashlib.sha256(open(q, "rb").read()).hexdigest()
                       for q in _walk_md(target)}
-        before_edges = open(os.path.join(target, "edges.yaml"), encoding="utf-8").read() \
-            if os.path.isfile(os.path.join(target, "edges.yaml")) else ""
         u = subprocess.run([sys.executable, os.path.join(REPO, "transfer", "import.py"),
                             "--ungraft", target, "--prefix", "partner"],
                            capture_output=True, text=True, env=env, cwd=REPO)
@@ -342,10 +322,6 @@ else:
         check("  and the repository validates afterwards", "does NOT validate" not in uout, uout[-200:])
         left = [q for q in _walk_md(target) if "partner-" in q]
         check("  with none of its documents left", not left, json.dumps(left[:3]))
-        now_edges = open(os.path.join(target, "edges.yaml"), encoding="utf-8").read() \
-            if os.path.isfile(os.path.join(target, "edges.yaml")) else ""
-        check("  and none of its links left in edges.yaml", "partner-" not in now_edges,
-              now_edges[-160:])
         # The half that matters as much: it must take nothing of yours.
         after_all = {q: hashlib.sha256(open(q, "rb").read()).hexdigest() for q in _walk_md(target)}
         check("  while every document that was already there is untouched",

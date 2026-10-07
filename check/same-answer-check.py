@@ -4,8 +4,8 @@
     ./check/same-answer-check.py [port]
 
 Not a feature check. A table: each **fact** the repository holds — an area's routing sentence, whether
-it is exported, who speaks for it; a node's name, line, kind, parent, aliases, body; the edges; the
-core — against every **path** that reads it: the file (the one home, invariant 3), the API's listing
+it is exported, who speaks for it; a node's name, line, kind, parent, body — against every **path**
+that reads it: the file (the one home, invariant 3), the API's listing
 and detail, the parent's table, the export surface a peer reads, the placement walk,
 and what the MCP prints to an agent. Every pair must agree. A disagreement is a bug by definition,
 whichever side is "right", because a reader cannot tell which side it is on.
@@ -133,7 +133,7 @@ def compare(repo, label):
     # ── area facts ────────────────────────────────────────────────────────────
     st, listing = get("/v1/regions"); rows = {r["source"].replace("_", "-"): r for r in listing.get("regions", []) if not r.get("peer")}
     st, exported = get("/v1/export/regions", session()); ex = {r["source"].replace("_", "-"): r for r in exported.get("regions", [])}
-    placed = post("/v1/place", {"at": "/v1/regions", "doc": {"name": "x", "one_liner": "x"}, "path": []}); pl = {r["id"]: r for r in placed.get("rows", [])}
+    placed = post("/v1/place", {"at": "/v1/regions"}); pl = {r["id"]: r for r in placed.get("rows", [])}
     m = Mcp(); hop0, _ = m.call("knowledge_table", {}); printed = table_rows(hop0)
     for a in areas:
         rep = rep_of[a]; f = F.get(rep, {})
@@ -164,8 +164,6 @@ def compare(repo, label):
                               ("kind", f.get("kind"), "kind"), ("parent", f.get("parent"), "parent")]:
             n_cells += 1; same(f"node {i} {fact}", "file", fv, "listing", N.get(i, {}).get(key))
             if key in d: n_cells += 1; same(f"node {i} {fact}", "file", fv, "detail", d.get(key))
-        aliases = [x["name"] if isinstance(x, dict) else str(x) for x in (f.get("aliases") or [])]
-        n_cells += 1; same(f"node {i} aliases", "file", aliases, "listing", [x["name"] if isinstance(x, dict) else str(x) for x in (N.get(i, {}).get("aliases") or [])])
         # the row this node is, in its parent's table — the line an agent reads
         par = f.get("parent")
         if par:
@@ -173,7 +171,7 @@ def compare(repo, label):
             row = next((c for c in (pd.get("children") or []) if c.get("id") == i), None)
             if row is not None:
                 n_cells += 1; same(f"node {i} one_liner", "file", f.get("one_liner"), "parent's table", row.get("one_liner"))
-            placed = post("/v1/place", {"at": f"/v1/nodes/{par}", "doc": {"name": "x", "one_liner": "x"}, "path": [f"/v1/nodes/{par}"]})
+            placed = post("/v1/place", {"at": f"/v1/nodes/{par}"})
             prow = next((r for r in placed.get("rows", []) if r["id"] == i), None)
             if prow is not None:
                 n_cells += 1; same(f"node {i} one_liner", "file", f.get("one_liner"), "place rows", prow.get("line"))
@@ -190,15 +188,6 @@ def compare(repo, label):
             n_cells += 1; same(f"node {i} body", "file", body, "mcp read", (t or "").strip()[:len(body)], prefix=True)
     m.close()
 
-    # ── edges and core ────────────────────────────────────────────────────────
-    ef = yaml.safe_load(open(os.path.join(repo, "edges.yaml"), encoding="utf-8")) or []
-    st, ea = get("/v1/edges"); st, g = get("/v1/graph")
-    # The graph names its ends `s` and `t`; the fact is the triple, not the field names.
-    key = lambda e: (e.get("from", e.get("s")), e.get("rel"), e.get("to", e.get("t")))
-    n_cells += 1; same("edges", "file", sorted(map(key, ef)), "api edges", sorted(map(key, ea.get("edges", []))))
-    n_cells += 1; same("edges", "file", sorted(map(key, ef)), "graph", sorted(map(key, g.get("edges", []))))
-    st, core = get("/v1/core", raw=True)
-    n_cells += 1; same("core", "file", open(os.path.join(repo, "CORE.md"), encoding="utf-8").read(), "api core", core)
     return n_cells
 
 

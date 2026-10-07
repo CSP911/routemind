@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
-"""What `rm -rf regions/<area>` leaves behind, and that tidy removes exactly that.
+"""What `rm -rf regions/<area>` leaves behind, and that tidy mends exactly that.
 
     ./check/tidy-check.py
 
-`data/repo` is meant to be edited by hand. Deleting an area that way leaves two things, and until
-2026-09-30 only one of them was loud:
+`data/repo` is meant to be edited by hand. Deleting an area that way leaves `regions.json` listing an
+area that is not there, and the repository refuses every write until it is regenerated. (It also used
+to leave dangling edges and a CORE.md row; neither file is read since 2026-10-07.)
 
-  * edges whose ends are gone — the validator names them, so the repository refuses every write
-  * a CORE.md row for an area that is not there — **silent**, and CORE.md is carried whole into every
-    prompt, so hop 0 went on advertising something that did not exist
-
-Half of what is asserted here is that tidy leaves a healthy repository alone. A tool that removes
-things from somebody's repository has to be more careful than one that adds, and "it fixed the
-problem" says nothing about what else it did on the way.
+Half of what is asserted here is that tidy leaves a healthy repository alone. A tool that changes
+somebody's repository has to be more careful than one that adds, and "it fixed the problem" says
+nothing about what else it did on the way.
 """
-import os, re, shutil, subprocess, sys, tempfile
+import os, shutil, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "ontology"))
 from service.store import Store                                           # noqa: E402
 from service.validate import validate                                     # noqa: E402
-from service import derive                                                # noqa: E402
 
 results = []
 
@@ -72,30 +68,32 @@ check("  and --fix on it changes no byte", hashes(well) == before,
 hurt = os.path.join(T, "hurt")
 shutil.copytree(src, hurt)
 area = "payroll"
+# An older repository still has the two files retired on 2026-10-07. They must be reported as inert
+# and left exactly as they are.
+open(os.path.join(hurt, "CORE.md"), "w", encoding="utf-8").write("# Core\n\n| Area | What |\n|---|---|\n| `PAYROLL` | pay |\n")
+open(os.path.join(hurt, "edges.yaml"), "w", encoding="utf-8").write("- from: a\n  rel: OWNED_BY\n  to: b\n")
 as_repo(hurt)
 shutil.rmtree(os.path.join(hurt, "regions", area))
-open(os.path.join(hurt, "regions.json"), "w", encoding="utf-8").write(derive.regions_doc(Store(hurt)))
-# Committed, because a hand edit that has not been committed is refused by the transaction before
-# anything else — which is its own correct behaviour and not what this file is about.
+# Committed without regenerating, which is what a hand edit does. A hand edit that has not been
+# committed is refused by the transaction before anything else — its own correct behaviour, and not
+# what this file is about.
 subprocess.run(["git", "-C", hurt, "add", "-A"], check=True, capture_output=True)
 subprocess.run(["git", "-C", hurt, "-c", "user.name=t", "-c", "user.email=t@l",
                 "commit", "-qm", "delete an area by hand"], check=True, capture_output=True)
 
 errs = validate(Store(hurt)).get("errors") or []
 check("deleting an area by hand leaves the repository invalid", bool(errs), "it validated")
-# The one that used to be silent. CORE.md goes into every prompt whole.
-check("  and the CORE row it left is one of the errors",
-      any("CORE.md advertises" in str(e) for e in errs),
+check("  because regions.json still lists it", any("regions.json" in str(e) for e in errs),
       " | ".join(str(e)[:60] for e in errs[:3]))
-check("  as are the edges whose ends are gone",
-      any(str(e).startswith("edge ") for e in errs), str(errs[:1]))
 
 # Reporting must not change anything: somebody runs this to find out, not to commit to it.
 snap = hashes(hurt)
 r = subprocess.run([sys.executable, os.path.join(ROOT, "ontology", "tidy.py"), hurt],
                    capture_output=True, text=True)
 out = r.stdout + r.stderr
-check("tidy lists both kinds without --fix", "CORE" in out and "edge" in out, out[:160])
+check("tidy says regions.json is out of step without --fix", "regions.json" in out, out[:160])
+check("  and that the old CORE.md and edges.yaml are inert, without touching them",
+      "CORE.md is no longer read" in out and "edges.yaml is no longer read" in out, out[:300])
 check("  and changes nothing while listing", hashes(hurt) == snap, "it wrote something on a read")
 check("  and exits non-zero, so a script notices", r.returncode == 1, str(r.returncode))
 
@@ -105,18 +103,9 @@ check("--fix goes through the writer and commits it",
       "committed as" in (r.stdout + r.stderr), (r.stdout + r.stderr)[-140:])
 check("--fix makes the repository valid again", r.returncode == 0 and not (validate(Store(hurt)).get("errors") or []),
       " | ".join(str(e)[:60] for e in (validate(Store(hurt)).get("errors") or [])[:2]))
-core = open(os.path.join(hurt, "CORE.md"), encoding="utf-8").read()
-check("  with the stale CORE row gone", not re.search(r"^\| `PAYROLL` \|", core, re.M))
-check("  and the rows for areas that are still here kept",
-      len(re.findall(r"^\| `[A-Z_]+` \| ", core, re.M)) == 4,
-      str(re.findall(r"^\| `([A-Z_]+)` \|", core, re.M)))
-# The half that matters as much: an edge between two documents that both exist is somebody's
-# statement, and tidy must not have taken it as collateral.
-kept = Store(hurt).edges()
-have = {n["id"] for n in Store(hurt).nodes()}
-check("  and every surviving edge still has both ends",
-      all(e["from"] in have and e["to"] in have for e in kept), str(len(kept)))
-check("  while edges it had nothing to do with are still there", len(kept) > 0, str(len(kept)))
+after = hashes(hurt)
+changed = sorted(k for k in set(after) | set(snap) if after.get(k) != snap.get(k))
+check("  and the only file it changed is regions.json", changed == ["regions.json"], str(changed))
 
 shutil.rmtree(T, ignore_errors=True)
 print("\n".join(results))

@@ -75,8 +75,7 @@ try:
     p = start(repo)
 
     # ── one spelling ──────────────────────────────────────────────────────────
-    st, _ = call("POST", "/v1/regions", {"source": "back-office", "core_description": "Back office",
-                 "representative": {"id": "back-office", "name": "Back Office", "one_liner": "Keys and access",
+    st, _ = call("POST", "/v1/regions", {"source": "back-office", "representative": {"id": "back-office", "name": "Back Office", "one_liner": "Keys and access",
                                     "use_when": "who opens the office · a key is lost", "export": "yes"}})
     call("POST", "/v1/nodes", {"name": "Spare keys", "one_liner": "Where the spare keys are kept", "region": "back-office",
                                "parent": "back-office", "content": "# Spare keys\n\nWritten 7 October 2026.\n"})

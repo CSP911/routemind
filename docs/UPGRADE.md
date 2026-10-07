@@ -82,6 +82,17 @@ Retired on 2026-10-07, because nothing read them:
   one already in the queue is still read and applied under its new name.
 - **A new document with no description** is refused, with or without an LLM. The ✨ Suggest button
   drafts one for you to edit; the LLM no longer writes it on its own.
+- **`edges.yaml` and `CORE.md`** are no longer read: no agent was ever shown either, and the map drew
+  no edge. Yours stay in `data/repo` untouched and can be deleted. `relations` and `edge_rules` in
+  `vocab.yaml` are ignored; `kinds` stay, because `export: no` on a kind still keeps that sort of
+  thing from crossing a link. A new area needs one sentence (`use_when`), not a CORE.md row as well.
+  On the first start `regions.json` is regenerated without its `description` column, in one commit.
+- **`aliases`** are not checked or served. A file that has them keeps them across an edit.
+- **`knowledge_place`** shows each row's line and nothing else — no column of shared words — and no
+  longer queues proposals to widen the lines above. If a line no longer covers what was placed, the
+  agent says so and a person changes it.
+- **`./ontology/tidy.py`** now mends only `regions.json` after a hand edit; that is all a hand edit
+  can leave out of step.
 
 ## Checking it worked
 

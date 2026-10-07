@@ -43,7 +43,7 @@ for src in sorted(pathlib.Path(__file__).resolve().parent.joinpath("service").gl
 # Promotion is not about identity; it makes room for a sibling (operator, 2026-09-11). There was
 # one AWX document. Continua arrives, so the person names the thing that holds them both and AWX
 # moves under it. The entity being promoted keeps its id, its name and its body — which is why
-# nothing pointing at it has to move. The old promotion minted a new id and had to carry the edges.
+# nothing pointing at it has to move. The old promotion minted a new id.
 def _promote_interposes():
     import shutil, subprocess, tempfile
     from service.write import Writer
@@ -56,22 +56,19 @@ def _promote_interposes():
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
     w = Writer(repo)
     # The shape the operator described: one document under an area, and then a second one arrives.
-    w.create_region({"source": "lib", "core_description": "l",
+    w.create_region({"source": "lib",
                      "representative": {"id": "top", "name": "Top", "kind": "tool",
                                         "one_liner": "the area", "use_when": "when"}}, "c")
     w.create_node({"id": "awx", "name": "AWX", "kind": "tool", "region": "lib", "parent": "top",
-                   "one_liner": "what AWX is", "content": "what AWX is for",
-                   "edges": [{"from": "top", "rel": "CONSISTS_OF", "to": "awx"}]}, "c")
+                   "one_liner": "what AWX is", "content": "what AWX is for"}, "c")
     w.promote_file("top", "awx.md", {"name": "Orchestration", "one_liner": "holds them",
                                      "id": "orch", "kind": "tool"}, "c")
     after = {n["id"]: n for n in w.store.nodes()}
-    edges = w.store.edges()
     return {"holder made": "orch" in after,
             "promoted kept its id": "awx" in after,
             "it moved under the holder": after.get("awx", {}).get("parent"),
             "its body survived": (after.get("awx", {}).get("body") or "").strip(),
-            "the holder sits where it did": after.get("orch", {}).get("parent"),
-            "the edge still resolves": all(e["from"] in after and e["to"] in after for e in edges)}
+            "the holder sits where it did": after.get("orch", {}).get("parent")}
 
 
 try:
@@ -81,7 +78,6 @@ try:
     eq("it moves under the holder", g["it moved under the holder"], "orch")
     eq("its body survives", g["its body survived"], "what AWX is for")
     eq("the holder stands where it stood", g["the holder sits where it did"], "top")
-    eq("the edge that pointed at it still resolves", g["the edge still resolves"], True)
 except Exception as e:
     fails.append("promote"); print(f"FAIL {'the promote check could not run':<52} {e}")
 
@@ -103,18 +99,15 @@ def _move_across():
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
     w = Writer(repo)
     for src, nm in (("alpha", "A"), ("beta", "B")):
-        w.create_region({"source": src, "core_description": nm,
+        w.create_region({"source": src,
                          "representative": {"id": f"{src}-top", "name": nm, "kind": "tool",
                                             "one_liner": "the area", "use_when": "when"}}, "c")
     w.create_node({"id": "mover", "name": "Mover", "kind": "tool", "region": "alpha", "parent": "alpha-top",
-                   "one_liner": "moves", "content": "the body of mover",
-                   "edges": [{"from": "alpha-top", "rel": "CONSISTS_OF", "to": "mover"}]}, "c")
+                   "one_liner": "moves", "content": "the body of mover"}, "c")
     w.create_node({"id": "carried", "name": "Carried", "kind": "tool", "region": "alpha", "parent": "mover",
-                   "one_liner": "carried along", "content": "the body of carried",
-                   "edges": [{"from": "mover", "rel": "CONSISTS_OF", "to": "carried"}]}, "c")
+                   "one_liner": "carried along", "content": "the body of carried"}, "c")
     w.update_node("mover", {"parent": "beta-top"}, "c")
     after = {n["id"]: n for n in w.store.nodes()}
-    edges = w.store.edges()
     left = sorted(f.stem for f in (repo / "regions" / "alpha").glob("*.md"))
     refusals = {}
     for label, call in (("the area's face", lambda: w.update_node("beta-top", {"parent": "alpha-top"}, "c")),
@@ -124,8 +117,7 @@ def _move_across():
         except WriteError as e: refusals[label] = e.status
     return {"moved": after["mover"]["region"], "subtree": after["carried"]["region"],
             "parent": after["mover"]["parent"], "body": after["carried"]["body"].strip(),
-            "left behind": left, "edges": len(edges),
-            "edges resolve": all(e["from"] in after and e["to"] in after for e in edges),
+            "left behind": left,
             "valid": validate(w.store)["ok"], "refusals": refusals}
 
 
@@ -136,8 +128,6 @@ try:
     eq("its parent is what it was dropped on", g["parent"], "beta-top")
     eq("the body travels intact", g["body"], "the body of carried")
     eq("nothing is left behind in the old area", g["left behind"], ["alpha-top"])
-    eq("every edge still resolves", g["edges resolve"], True)
-    eq("the edge count is unchanged", g["edges"], 2)
     eq("and the tree validates", g["valid"], True)
     eq("moving an area's face is refused", g["refusals"]["the area's face"], 409)
     eq("moving an entity under itself is refused", g["refusals"]["a loop"], 409)
@@ -159,7 +149,7 @@ def _delete_refuses_branches():
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
     w = Writer(repo)
-    w.create_region({"source": "a", "core_description": "A",
+    w.create_region({"source": "a",
                      "representative": {"id": "top", "name": "T", "kind": "tool",
                                         "one_liner": "the area", "use_when": "when"}}, "c")
     # `hollow` is what "+ New node" leaves behind: made, not written. On the map it is an area you
@@ -169,8 +159,7 @@ def _delete_refuses_branches():
                            ("doc", "plain", "body of doc"), ("keeper", "top", "body of keeper"),
                            ("hollow", "keeper", "")):
         w.create_node({"id": eid, "name": eid, "kind": "tool", "region": "a", "parent": par,
-                       "one_liner": f"what {eid} is", "content": body,
-                       "edges": [{"from": par, "rel": "CONSISTS_OF", "to": eid}]}, "c")
+                       "one_liner": f"what {eid} is", "content": body}, "c")
     out = {}
     for label, target in (("a branch", "branch"), ("an empty child", "keeper")):
         try: w.delete_node(target, "c"); out[label] = "deleted"
@@ -181,7 +170,6 @@ def _delete_refuses_branches():
     out["the entity went"] = "plain" not in ids
     out["its document went too"] = "doc" not in ids
     out["the branch is still there"] = {"branch", "mid", "leaf", "keeper", "hollow"} <= ids
-    out["edges resolve"] = all(e["from"] in ids and e["to"] in ids for e in w.store.edges())
     return out
 
 
@@ -192,7 +180,6 @@ try:
     eq("an entity holding only documents is deleted", g["the entity went"], True)
     eq("and its document goes with it", g["its document went too"], True)
     eq("the branch it refused is untouched", g["the branch is still there"], True)
-    eq("no edge is left pointing at nothing", g["edges resolve"], True)
 except Exception as e:
     fails.append("delete"); print(f"FAIL {'the delete check could not run':<52} {e!r}")
 
@@ -287,7 +274,7 @@ def _id_without_an_llm():
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
     w = Writer(repo)                     # no LLM of any kind is wired to this
-    r = w.create_region({"source": "p", "core_description": "P",
+    r = w.create_region({"source": "p",
                          "representative": {"name": "Parcels", "kind": "tool",
                                             "one_liner": "Where a parcel is and who carries it",
                                             "use_when": "tracking a parcel"}}, "c")
@@ -324,7 +311,7 @@ def _suggestion_matches_the_write():
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
     w = Writer(repo)                       # no LLM anywhere
-    w.create_region({"source": "a", "core_description": "A",
+    w.create_region({"source": "a",
                      "representative": {"id": "top", "name": "T", "kind": "tool",
                                         "one_liner": "the area", "use_when": "when"}}, "c")
     out = {}
@@ -606,7 +593,7 @@ for _ship in ("examples/back-office", "seed"):
 
 
 # ── a derived file that is also committed can be committed stale ─────────────
-# `regions.json` is generated from the areas' `.md` files and the CORE.md table, and it is versioned
+# `regions.json` is generated from the areas' `.md` files, and it is versioned
 # alongside them, which is the combination that lets the two drift: edit an area's file in an editor,
 # commit, restart, and nothing regenerates. Measured 2026-09-13 on a copy of the live repository —
 # `title` and `use_when` changed by hand, `validate` returned ok with no errors and no warnings, and

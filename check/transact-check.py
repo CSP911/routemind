@@ -40,7 +40,7 @@ def check(name, cond, extra=""):
 src = open(os.path.join(ROOT, "ontology", "service", "write.py"), encoding="utf-8").read()
 tree = ast.parse(src)
 cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "Writer")
-TOUCHES = ("write_text", "store_write", "write_node_index", "_save_edges", "unlink", "rmtree", "mkdir", "rename", "replace")
+TOUCHES = ("write_text", "store_write", "write_node_index", "unlink", "rmtree", "mkdir", "rename", "replace")
 methods = {fn.name: fn for fn in cls.body if isinstance(fn, ast.FunctionDef)}
 def calls(fn): return {ast.unparse(c.func) for c in ast.walk(fn) if isinstance(c, ast.Call)}
 def through_transact(name, seen=()):
@@ -121,12 +121,14 @@ def write(name, method, path, body, *, succeed=True):
 
 try:
     # areas
-    write("create area", "POST", "/v1/regions", {"source": "tx-area", "core_description": "Transact check area",
+    write("create area", "POST", "/v1/regions", {"source": "tx-area",
           "representative": {"id": "tx-area", "name": "Transact Area", "one_liner": "A place for the check", "use_when": "when the check needs an area"}})
-    write("create area (no sentence)", "POST", "/v1/regions", {"source": "tx-area-2", "core_description": "x",
+    write("create area (no sentence)", "POST", "/v1/regions", {"source": "tx-area-2",
           "representative": {"name": "X", "one_liner": "x"}}, succeed=False)
-    write("core row", "PUT", "/v1/core/regions/TX_AREA", {"description": "Transact check area, revised"})
-    write("core row (a pipe in the cell)", "PUT", "/v1/core/regions/TX_AREA", {"description": "a | b"}, succeed=False)
+    # Refused by the validator only, inside the transaction, so it is rolled back: a `use_when` that is
+    # the one-liner again is a description, not a condition.
+    write("create area (its condition is its description)", "POST", "/v1/regions", {"source": "tx-area-3",
+          "representative": {"id": "tx-area-3", "name": "Y", "one_liner": "same words", "use_when": "same words"}}, succeed=False)
     # nodes
     write("create node", "POST", "/v1/nodes", {"name": "Transact node", "one_liner": "A node for the check", "region": "tx-area", "parent": "tx-area", "content": "# Transact node\n\nWritten 6 October 2026.\n"})
     write("create node (parent does not exist — only the validator sees it)", "POST", "/v1/nodes",
@@ -141,12 +143,6 @@ try:
     write("put file (again, to delete it)", "PUT", "/v1/nodes/transact-node/files/note2.md", {"content": "# Two\n\nWritten 6 October 2026.\n", "description": "A second note"})
     write("delete file", "DELETE", "/v1/nodes/transact-node/files/note2.md", None)
     write("delete file (not listed)", "DELETE", "/v1/nodes/transact-node/files/note2.md", None, succeed=False)
-    # edges
-    write("add edge", "POST", "/v1/edges", {"from": "transact-node", "rel": "OWNED_BY", "to": "ga-desk"})
-    write("add edge (to nothing)", "POST", "/v1/edges", {"from": "transact-node", "rel": "OWNED_BY", "to": "no-such-node"}, succeed=False)
-    write("update edge", "PUT", "/v1/edges/transact-node/OWNED_BY/ga-desk", {"note": "the check owns it"})
-    write("delete edge", "DELETE", "/v1/edges/transact-node/OWNED_BY/ga-desk", None)
-    write("delete edge (gone)", "DELETE", "/v1/edges/transact-node/OWNED_BY/ga-desk", None, succeed=False)
     # the proposal queue's accept is a write too
     st, p = call("POST", "/v1/curator/proposals", {"scope": "bb", "region": "tx-area", "after": "when the check needs an area · and when it needs two", "why": "check"})
     pid = p.get("id", "")
@@ -164,9 +160,11 @@ try:
 
     # ── the writers outside the service: tidy, graft, ungraft ─────────────────
     svc.terminate(); svc.wait(5)          # they take the repository lock themselves
-    # a dangling edge, left by hand, for tidy to remove
-    ey = os.path.join(repo, "edges.yaml"); open(ey, "a", encoding="utf-8").write("- from: ga-desk\n  rel: OWNED_BY\n  to: no-such-node\n")
-    git("commit", "-qam", "a dangling edge, by hand")
+    # an area's sentence changed by hand and committed without regenerating, for tidy to mend
+    rp = os.path.join(repo, "regions", "expense", "expense.md")
+    _t = open(rp, encoding="utf-8").read()
+    open(rp, "w", encoding="utf-8").write(_t.replace("use_when: ", "use_when: edited by hand · ", 1))
+    git("commit", "-qam", "a sentence edited by hand")
     h0 = head(); r = subprocess.run([sys.executable, os.path.join(ROOT, "ontology", "tidy.py"), repo, "--fix"], env=env, capture_output=True, text=True)
     check("tidy --fix: one commit, clean tree", r.returncode == 0 and commits_since(h0) == 1 and clean(), (r.stdout + r.stderr)[-200:])
     h0 = head(); r = subprocess.run([sys.executable, os.path.join(ROOT, "ontology", "tidy.py"), repo, "--fix"], env=env, capture_output=True, text=True)
@@ -198,10 +196,12 @@ try:
     for _ in range(80):
         try: urllib.request.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=1); break
         except Exception: time.sleep(0.25)
-    open(os.path.join(repo, "CORE.md"), "a", encoding="utf-8").write("\n<!-- edited by hand -->\n")
+    else:
+        sys.exit("  the ontology did not come back for the dirty-tree step — log:\n" + open(os.path.join(T, "svc3.log")).read()[-1500:])
+    open(os.path.join(repo, "vocab.yaml"), "a", encoding="utf-8").write("\n# edited by hand\n")
     h0 = head(); st, d = call("POST", "/v1/nodes", {"name": "On a dirty tree", "one_liner": "x", "region": "expense", "parent": "expense"})
     check("a hand-edited, uncommitted tree refuses a write", st == 409 and d.get("reason") == "tree_dirty" and commits_since(h0) == 0, f"{st} {json.dumps(d)[:120]}")
-    check("  and leaves the hand edit alone", "edited by hand" in open(os.path.join(repo, "CORE.md"), encoding="utf-8").read())
+    check("  and leaves the hand edit alone", "edited by hand" in open(os.path.join(repo, "vocab.yaml"), encoding="utf-8").read())
 
     check(f"failures that reached the validator and were rolled back: {rollbacks}", rollbacks >= 2, str(rollbacks))
 finally:

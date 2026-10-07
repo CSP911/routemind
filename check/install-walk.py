@@ -103,8 +103,7 @@ check("  and both are in the room, both answering",
       sorted(room) == [("branch", "backbone", True), ("home", "backbone", True)], json.dumps(room))
 
 st, r = call(B + "/regions", "POST", {
-    "source": "site-ops", "core_description": "Running the branch site day to day",
-    "representative": {"name": "Site Operations", "id": "site-ops",
+    "source": "site-ops", "representative": {"name": "Site Operations", "id": "site-ops",
                        "one_liner": "Opening, closing, keys, and who to call when something breaks",
                        "use_when": "who opens the office · a key is lost · the lift is stuck"}})
 check("the second backbone takes an area of its own", st == 200, json.dumps(r)[:110])

@@ -1,5 +1,11 @@
 # Placement gap — where a person's routing table and `knowledge_place`'s part ways
 
+> **2026-10-07: what this measured is gone from the tool.** The shared-word column and the
+> propagation rule were removed from `knowledge_place` on the strength of these runs — the floor found
+> the right parent 9% of the time, and supersession advertised nothing in all three. `gap.py` drives
+> both, so it runs only at a commit before that one (`git checkout a7b9d88 -- ontology/service`).
+> The agent arm's result — right area, parent three levels short — is about the walk and still stands.
+
 `knowledge_place` builds a routing table the way a question is answered: it walks hop 0, follows the
 rows whose sentences share words with the document, and places it where the walk stops; then it
 walks back up and widens any ancestor whose line does not already say such a thing, stopping at the

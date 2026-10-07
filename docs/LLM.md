@@ -65,10 +65,10 @@ name gives is filled in as you type the name, and you can change it before savin
 a model can do is give an address to a name that is not in Latin letters; without one, you type that
 address.
 
-**A kind is never asked for.** Nothing reads one until you declare `edge_rules`, so RouteMind picks it
-with an LLM where there is one and takes `default_kind` from `vocab.yaml` where there is not. The
-response says `kind_generated` either way, so a domain that later makes kinds mean something can find
-the ones nobody actually chose.
+**A kind is never asked for.** Its one reader is `export: no` on a kind in `vocab.yaml`, so RouteMind
+picks it with an LLM where there is one and takes `default_kind` from `vocab.yaml` where there is not.
+The response says `kind_generated` either way, so a domain that relies on `export: no` can find the
+ones nobody actually chose.
 
 `ONTOLOGY_LLM_MAX_TOKENS` and `ONTOLOGY_LLM_TEMPERATURE` are yours. **`response_format` is not**: the
 code sets it per call — the two prompts whose answer is parsed as JSON ask for JSON, the four that read

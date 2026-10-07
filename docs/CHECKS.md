@@ -61,15 +61,15 @@ number to trust is the one the check itself prints.
 | `check/transfer-check.py` | 17 | What an export actually carries, and what it refuses. Half of it is about what must **not** be in the file |
 | `check/session-check.py` | 12 | The six-hour session tokens. Mostly about what must **not** work: an enrolment key that still reads, or a session that can mint another |
 | `check/age-check.py` | 13 | The two times on a routing row, built from a repository it commits into itself. Mostly about *not known* staying not known |
-| `check/tidy-check.py` | 13 | What `rm -rf regions/<area>` leaves, and that tidy removes exactly that. Half of it is that a healthy repository is left alone |
+| `check/tidy-check.py` | 11 | What `rm -rf regions/<area>` leaves, and that tidy mends exactly that. Half of it is that a healthy repository is left alone |
 | `check/llm-probe.py` | — | Not a check: asks a real provider what a real key can use. Needs both, so nothing runs it for you |
 
 ### The data model
 
 | | | |
 |---|---|---|
-| `ontology/check.py` | 110 | The invariants, each stated as an **absence** — the body that must still be there, the old scope spelling that must not be filed. It is not in `check/`, and it is the one people forget |
-| `check/scenarios.py` | 59 | The routing table over a whole lifetime: areas created, advertised, emptied, deleted, created again. [SCENARIOS.md](SCENARIOS.md) is the contract |
+| `ontology/check.py` | 106 | The invariants, each stated as an **absence** — the body that must still be there, the old scope spelling that must not be filed. It is not in `check/`, and it is the one people forget |
+| `check/scenarios.py` | 56 | The routing table over a whole lifetime: areas created, advertised, emptied, deleted, created again. [SCENARIOS.md](SCENARIOS.md) is the contract |
 | `check/overlay-check.py` | 17 | Overlays end to end, through the MCP server, the way an agent uses them |
 | `check/romanize-check.py` | 38 | A name in another script, as an address — and the names that must not become one |
 | `check/concurrency-check.py` | 5 | Reads happening while writes happen, through HTTP, on one server. Probabilistic by nature — the deterministic half of the same question is in `ontology/check.py` |

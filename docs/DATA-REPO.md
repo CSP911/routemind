@@ -9,8 +9,8 @@ That makes editing it by hand not merely allowed but the point. A pull request a
 a pull request. One file in it is the exception.
 
 `data/repo` is meant to be edited by hand — it is the reviewed artefact, and a pull request against it
-is the point. One file in it is not: `regions.json` is **derived** from the areas' own `.md` files and
-from the table in `CORE.md`, and it is also committed, which is the combination that lets it go stale.
+is the point. One file in it is not: `regions.json` is **derived** from the areas' own `.md` files,
+and it is also committed, which is the combination that lets it go stale.
 Every write through the API regenerates it; an edit made in an editor does not.
 
 Stale, it is not inert. `regions.json` is what hop 0 advertises, and `use_when` is the sentence an
@@ -31,17 +31,17 @@ commits in one transaction, which is what the API is for.
 
 ### Deleting an area by hand
 
-`rm -rf regions/payroll` leaves two things behind, and only one of them is loud:
-
-- **edges whose ends are gone.** The validator names them, so every write is refused until they go.
-- **the CORE.md row for that area.** CORE.md is carried *whole* into every prompt and its table is
-  where each area's description at hop 0 comes from — so the row goes on advertising something that
-  is not there. It was silent until 2026-09-30; it is an error now.
+`rm -rf regions/payroll` leaves one thing behind: `regions.json` still listing the area. The
+validator names it, so every write is refused until it is regenerated — which the service does at
+startup on a clean tree, and tidy does on demand:
 
 ```sh
-./ontology/tidy.py data/repo          # what is left over. Changes nothing
-./ontology/tidy.py data/repo --fix    # removes exactly that, and regenerates
+./ontology/tidy.py data/repo          # what is out of step. Changes nothing
+./ontology/tidy.py data/repo --fix    # regenerates regions.json, validates, commits
 ```
+
+(It used to leave dangling edges and a `CORE.md` row too. Neither file is read since 2026-10-07; one
+still in an older repository is inert and can be deleted.)
 
 `--fix` touches only those two, and goes through the same transaction as any other write — a dirty
 tree is refused, the result is validated, anything that fails rolls the repository back, and what

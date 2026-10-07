@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
-"""Placing a document by walking the table — the pure rules, then the whole walk through the MCP.
+"""Placing a document by walking the table — through the MCP, the way an agent does it.
 
     ./check/place-check.py
 
-Two halves. The first runs `service.place` on lines written here: which words of a document count,
-which rows they land on, and the one rule that decides how far up a new document is advertised —
-stop at the first ancestor whose line already covers it. The second starts an ontology on a copy of
-the shipped corpus and drives `knowledge_place` over stdio the way an agent would: open, read hop 0,
-step into the area the evidence points at, step again or stop, `here` — then reads back what was
-written and what was queued, and checks that the two agree with the walk. A pick the table did not
+Starts an ontology on a copy of the shipped corpus and drives `knowledge_place` over stdio: open,
+read hop 0, step into an area, `here` — then reads back what was written. A pick the table did not
 print is refused; `none` at hop 0 writes nothing and asks for an area.
+
+What the tables carry is each row's line and nothing else. Until 2026-10-07 every row also carried
+the words it shared with the document, and `here` queued proposals to widen the lines above by a
+string-matching rule. Both are gone, and the half of this file that tested them with them; what is
+checked instead is that neither comes back — no shared-word column, no proposal queued by a placement.
 """
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(ROOT, "ontology"))
-from service.place import terms, evidence, coverage, propagation           # noqa: E402
-
 results = []
 
 
@@ -25,51 +23,7 @@ def check(name, cond, extra=""):
     return bool(cond)
 
 
-# ── 1. the words of a document ───────────────────────────────────────────────
-doc = {"name": "Overseas vendor registration", "one_liner": "How to register a vendor based abroad with no Korean business number",
-       "aliases": ["해외 거래처", {"name": "foreign supplier", "scope": "kr"}]}
-t = terms(doc)
-check("terms come from name, line and aliases", {"Overseas", "vendor", "registration", "register", "abroad"} <= set(t), str(t))
-check("  stopwords are dropped", not ({"How", "to", "a", "with", "no"} & set(t)), str(t))
-check("  an alias is kept whole, scoped or not", "해외 거래처" in t and "foreign supplier" in t, str(t))
-check("  a Latin name wearing a Hangul particle is the name", "ATL" in terms({"name": "ATL에서 반납", "one_liner": ""}),
-      str(terms({"name": "ATL에서 반납", "one_liner": ""})))
-check("  one word once, whatever its case", [x.lower() for x in t].count("vendor") == 1, str(t))
-
-# ── 2. evidence on a row ──────────────────────────────────────────────────────
-ev = evidence(doc, "how far up this amount has to be approved · how to register a new vendor · how many quotes", ["procurement", "PROCUREMENT"])
-check("evidence names the words found in the line", set(ev["terms"]) == {"vendor", "register"}, str(ev))
-check("  and none in the names here", ev["names"] == [] and ev["hits"] == 2, str(ev))
-ev = evidence(doc, "what counts as evidence for a spend", ["expense", "EXPENSE"])
-check("  a row that shares nothing says so", ev["hits"] == 0, str(ev))
-ev = evidence({"name": "x", "one_liner": "y", "aliases": ["foreign supplier"]}, "", ["vendor", "Foreign supplier"])
-check("  an alias hitting a row's own name counts", ev["names"] == ["foreign supplier"] and ev["hits"] == 1, str(ev))
-
-# ── 3. coverage, and how far up it goes ───────────────────────────────────────
-c = coverage(doc, "how to register a new vendor")
-check("a line with one of the words covers", c["covered"] and "vendor" in c["hits"], str(c))
-check("  a line with none does not", not coverage(doc, "leave, parental leave, and time worked")["covered"])
-
-anc = [{"scope": "entity", "id": "vendor-steps", "label": "Vendor steps", "line": "the steps, in order"},
-       {"scope": "entity", "id": "vendor", "label": "Vendor", "line": "registering a vendor and keeping it registered"},
-       {"scope": "bb", "id": "procurement", "label": "PROCUREMENT", "line": "how to register a new vendor"}]
-p = propagation(doc, anc)
-check("propagation stops at the first ancestor whose line covers it", p["stop_at"] and p["stop_at"]["label"] == "Vendor", str(p["stop_at"]))
-check("  and proposes only for the ancestors below it", [q["label"] for q in p["proposals"]] == ["Vendor steps"], str(p["proposals"]))
-check("  a node's proposal is scope entity, naming the node",
-      p["proposals"][0]["scope"] == "entity" and p["proposals"][0]["entity"] == "vendor-steps", str(p["proposals"][0]))
-check("  widened by the document's own line", p["proposals"][0]["after"] == "the steps, in order · " + doc["one_liner"], p["proposals"][0]["after"])
-check("  and does not reach hop 0", not p["reaches_hop0"])
-
-strange = {"name": "Zorbulant calibration", "one_liner": "Zorbulant units are recalibrated every quarter", "aliases": []}
-p = propagation(strange, anc)
-check("nothing covers it: every ancestor is proposed, up to the area", [q["scope"] for q in p["proposals"]] == ["entity", "entity", "bb"], str(p))
-check("  the area's proposal is scope bb, naming the region", p["proposals"][-1]["region"] == "procurement")
-check("  and it reaches hop 0", p["reaches_hop0"] and p["stop_at"] is None)
-p = propagation(strange, [])
-check("no ancestors: nothing proposed, nothing reached", p["proposals"] == [] and not p["reaches_hop0"])
-
-# ── 4. the whole walk, through the MCP, on a copy of the shipped corpus ───────
+# ── the whole walk, through the MCP, on a copy of the shipped corpus ───────────
 PORT = int(os.environ.get("PLACE_CHECK_PORT") or 18120)
 tmp = tempfile.mkdtemp(prefix="place-check-")
 repo = os.path.join(tmp, "repo")
@@ -152,23 +106,16 @@ atexit.register(m.close)
 tools_text, _ = m.call("knowledge_place", {"op": "list"})
 check("the tool answers", "No placement is open" in tools_text, tools_text[:80])
 
-# A document about vendors, which PROCUREMENT's sentence already covers.
-text, err = m.call("knowledge_place", {"op": "open", "name": doc["name"], "one_liner": doc["one_liner"],
-                                       "aliases": ["해외 거래처"], "content": "# Overseas vendor registration\n\nWritten 1 October 2026.\n"})
+DOC = {"name": "Overseas vendor registration", "one_liner": "How to register a vendor based abroad with no Korean business number"}
+text, err = m.call("knowledge_place", {"op": "open", "name": DOC["name"], "one_liner": DOC["one_liner"],
+                                       "content": "# Overseas vendor registration\n\nWritten 1 October 2026.\n"})
 check("open prints hop 0", not err and "/v1/regions/procurement" in text and "/v1/regions/expense" in text, text[:200])
 pid = text.split("[", 1)[1].split("]", 1)[0] if "[" in text else ""
 check("  with a placement id", pid.startswith("p"), pid)
+proc = next(r for r in get("/v1/regions")["regions"] if r["source"] == "procurement")
 row = next((l for l in text.splitlines() if "/v1/regions/procurement" in l), "")
-check("  and the procurement row shows the shared words", "vendor" in row and "register" in row, row)
-# Not "every other row shares nothing": ATTENDANCE and EXPENSE both say "business trip", and the
-# document says "business number", so they honestly share one word. The property is that the
-# right area shares strictly more than any other — the evidence points, it does not just exist.
-def _shares(line):
-    cells = [c for c in line.split("  ") if c.strip()]
-    return 0 if len(cells) < 2 or cells[1].strip() == "—" else len(cells[1].split(","))
-hop0 = {l.split()[0]: _shares(l) for l in text.splitlines() if l.strip().startswith("/v1/regions/")}
-check("  and procurement shares strictly more than any other area",
-      hop0.get("/v1/regions/procurement", 0) > max(v for k, v in hop0.items() if k != "/v1/regions/procurement"), str(hop0))
+check("  each row is its address and its line", proc["use_when"][:60] in row, row)
+check("  and nothing else — no column of shared words", "SHARES" not in text and "terms" not in text, text[:300])
 
 text, err = m.call("knowledge_place", {"op": "step", "id": pid, "pick": "/v1/regions/payroll/../procurement"})
 check("a pick the table did not print is refused", err and "not an address the last table printed" in text, text[:120])
@@ -179,48 +126,22 @@ text, err = m.call("knowledge_place", {"op": "step", "id": pid, "pick": "/v1/reg
 check("step into procurement prints its table", not err and "child of procurement in procurement" in text, text[:300])
 addrs = [l.split()[0] for l in text.splitlines() if l.strip().startswith("/v1/nodes/")]
 check("  with node addresses to descend into", len(addrs) > 0, str(addrs[:5]))
-check("  and says PROCUREMENT already covers it", "already covers it" in text and "vendor" in text, text[-300:])
-# Descend one more hop if a row shares a word; otherwise place under the representative.
-shared = [l.split()[0] for l in text.splitlines() if l.strip().startswith("/v1/nodes/") and "vendor" in l.lower()]
-if shared:
-    text, err = m.call("knowledge_place", {"op": "step", "id": pid, "pick": shared[0]})
-    check(f"step into {shared[0]} works", not err and "child of" in text, text[:200])
-walked_to = shared[0] if shared else "/v1/regions/procurement"
 
 before = {q["id"] for q in get("/v1/curator/proposals").get("proposals") or []}
+line_before = proc["use_when"]
 text, err = m.call("knowledge_place", {"op": "here", "id": pid})
 check("`here` places it", not err and text.startswith("PLACED"), text[:200])
 nid = text.split(" as ", 1)[1].split(",", 1)[0] if " as " in text else ""
 node = get(f"/v1/nodes/{nid}") if nid else {}
 check("  the node exists afterwards", bool(node.get("id")), str(node)[:120])
-parent_expected = walked_to.rsplit("/", 1)[1] if walked_to.startswith("/v1/nodes/") else "procurement"
-check("  under the parent the walk reached", node.get("parent") == parent_expected, f"parent={node.get('parent')!r} expected {parent_expected!r}")
-check("  carrying the alias people use", "해외 거래처" in json.dumps(node, ensure_ascii=False))
-after = {q["id"] for q in get("/v1/curator/proposals").get("proposals") or []}
-check("  no bb proposal: the area's sentence already said vendor", not any("PROCUREMENT (bb)" in l for l in text.splitlines()), text)
+check("  under the parent the walk reached", node.get("parent") == "procurement", f"parent={node.get('parent')!r}")
 check("  the walk is on record", "walked  :" in text and "/v1/regions/procurement" in text)
-check("  and the placement is closed", "No placement is open" in m.call("knowledge_place", {"op": "list"})[0])
-
-# A document nothing advertises: placed, and proposals climb to hop 0.
-text, err = m.call("knowledge_place", {"op": "open", "name": strange["name"], "one_liner": strange["one_liner"],
-                                       "content": "# Zorbulant\n\nWritten 1 October 2026.\n"})
-pid = text.split("[", 1)[1].split("]", 1)[0]
-check("a document no sentence covers: every row shares nothing", all("—" in l for l in text.splitlines() if l.strip().startswith("/v1/regions/")), text[:400])
-text, err = m.call("knowledge_place", {"op": "step", "id": pid, "pick": "/v1/regions/procurement"})
-check("  inside the area it says nothing above covers it", "nothing above covers it" in text and "reaches hop 0" in text, text[-300:])
-check("  and reports export: no, unchanged", "export: no" in text, text[-200:])
-before = {q["id"] for q in get("/v1/curator/proposals").get("proposals") or []}
-text, err = m.call("knowledge_place", {"op": "here", "id": pid})
-check("  placed under the representative", not err and "child of procurement" in text, text[:200])
 after = {q["id"] for q in get("/v1/curator/proposals").get("proposals") or []}
-new = after - before
-check("  one proposal queued — the area's hop-0 sentence", len(new) == 1 and "PROCUREMENT (bb)" in text, text)
-q = next((q for q in get("/v1/curator/proposals").get("proposals") or [] if q["id"] in new), {})
-check("  scope bb on procurement, widened by the document's line",
-      q.get("scope") == "bb" and q.get("region") == "procurement" and str(q.get("after", "")).endswith(strange["one_liner"]), str(q)[:200])
-check("  and not applied: the sentence at hop 0 is unchanged",
-      not str(next(r for r in get("/v1/regions")["regions"] if r["source"] == "procurement")["use_when"]).endswith(strange["one_liner"]))
-check("  export was not touched", not next(r for r in get("/v1/regions")["regions"] if r["source"] == "procurement").get("export"))
+check("  no proposal was queued by the placement", after == before, str(sorted(after - before)))
+check("  and the area's sentence is unchanged",
+      next(r for r in get("/v1/regions")["regions"] if r["source"] == "procurement")["use_when"] == line_before)
+check("  it says the lines above were not changed", "were not changed" in text, text[-200:])
+check("  and the placement is closed", "No placement is open" in m.call("knowledge_place", {"op": "list"})[0])
 
 # `none` at hop 0: nothing written, an area asked for.
 text, err = m.call("knowledge_place", {"op": "open", "name": "Pigeon loft rota", "one_liner": "Who feeds the pigeons on which day"})

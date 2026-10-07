@@ -161,8 +161,7 @@ try:
     desc = lambda: rpc("tools/list")["result"]["tools"][0]["description"]
     check("the first tool's description carries hop 0", "/v1/regions/" in desc())
     check("  and not an area that does not exist yet", "/v1/regions/follow-area" not in desc())
-    st, d = req(PORT, "POST", "/v1/regions", {"source": "follow-area", "core_description": "Made while the client was connected",
-                                             "representative": {"id": "follow-area", "name": "Follow Area", "one_liner": "x", "use_when": "when the check adds an area"}})
+    st, d = req(PORT, "POST", "/v1/regions", {"source": "follow-area", "representative": {"id": "follow-area", "name": "Follow Area", "one_liner": "x", "use_when": "when the check adds an area"}})
     check("an area is created on ay while the MCP is connected", 200 <= st < 300, f"{st}")
     check("  and the next tools/list carries it, without a restart", "/v1/regions/follow-area" in desc(), desc()[-300:])
     m.stdin.close(); m.wait(5)

@@ -107,14 +107,8 @@ Because it is a write, it needs the service — run it in the ontology container
 whose python has pyyaml. It says so rather than falling back: a second discipline is what produced
 the bugs.
 
-The links between the documents come too, renamed with them. Only those with **both** ends in the
-shared set: an edge naming a node in an area nobody shared would say that node exists, and every 404
-on the export surface is written so "we do not have it" and "we did not share it" read the same. On
-the shipped corpus 4 of 32 edges cross and 4 more are held back for exactly that reason, which leaves
-12 grafted nodes with no relations — the same 12 that have none inside that area to begin with.
-
-One thing a graft cannot bring: **the names.** A document's `kind`, and a link's relation, belong to
-the sender's vocabulary. If the receiving `vocab.yaml` has never heard of one, `validate` refuses and
+One thing a graft cannot bring: **the names.** A document's `kind` belongs to the sender's
+vocabulary. If the receiving `vocab.yaml` has never heard of one, `validate` refuses and
 says which. Nothing here writes entries into somebody else's vocabulary.
 
 And one thing it does bring that wants reading first: the sender's outward line becomes the area's

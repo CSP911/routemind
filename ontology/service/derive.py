@@ -1,19 +1,16 @@
 """Derived files — regenerated after every write, never edited by hand.
 
-  regions/<r>/edges.md   the Region's edge view (Pi's Region sources carry relation knowledge through this)
-  regions.json           catalog descriptors (Pi reads these instead of code-embedded ones)
+  regions.json           the area list hop 0 serves, one row per area, from its top representative
 """
 from __future__ import annotations
-import json, re
+import json
 from pathlib import Path
 from .store import Store
 from .store import write as store_write
 
 def region_label(d: str) -> str:
-    """Area directory → the key in the CORE.md table. This used to be a hard-coded list; every entry
-    in it came out of this rule anyway, and leaving it meant editing code to add an area."""
+    """Area directory → its key (`back-office` → `BACK_OFFICE`), the `id` of its row."""
     return d.replace("-", "_").upper()
-VIEW_NOTE = "- edges.md : relations this area's nodes take part in (generated — edges.yaml is the source)"
 
 
 def regions_doc(store: Store) -> str:
@@ -26,14 +23,11 @@ def regions_doc(store: Store) -> str:
     disagreeing with the repository it is supposed to be. The validator compares the two now, and it
     needs the answer without touching the tree.
     """
-    # edges.md retired (2026-09-09). A relation view was generated per area and **nothing read it** —
-    # agents use the API, the map draws the graph. edges.yaml is the source and `/v1/edges` and
-    # `/v1/graph` serve it. What was left was code that wrote the file, a validator that warned when
-    # it was missing, and — until this was split out — four locals built from `store.edges()` and the
-    # relation templates that nothing below has read since.
+    # No `description` since 2026-10-07. It came from a row in CORE.md that no agent was ever shown —
+    # hop 0 prints `use_when` — and creating an area required writing it anyway, a third sentence for
+    # the one an agent reads.
     root = store.root
     nodes = store.nodes()
-    core = store.core(); core_rows = {m.group(1): m.group(2).strip() for m in re.finditer(r"^\| `([A-Z_]+)` \| (.+?) \|$", core, re.M)}
     regs = []
     for r in sorted(d.name for d in (root / "regions").iterdir() if d.is_dir()):
         # SPEC-v2 §1.1 — an area is a namespace. What it is, **its top representative advertises**.
@@ -45,7 +39,7 @@ def regions_doc(store: Store) -> str:
         # Reported by a user 2026-10-07. Readers still accept the old spelling (`dir_of`), because
         # committed tables and other backbones' answers carry it until they are regenerated.
         regs.append({"id": region_label(r), "source": r,
-                     "title": (top["name"] if top else r), "description": core_rows.get(region_label(r), ""),
+                     "title": (top["name"] if top else r),
                      "use_when": ((top.get("use_when") or "") if top else ""),
                      # Whether this area crosses a link. The line it crosses with is `use_when`
                      # above — there is one sentence (operator, 2026-09-29).
@@ -75,7 +69,7 @@ def regenerate(store: Store) -> list[str]:
 # that is here and in EDITABLE can be changed.
 NODE_FIELDS = ("holds", "injected_by", "status", "role", "parent", "use_when", "export",
                "export_to", "expands_in", "aliases", "grafted_from")
-EDITABLE = ("name", "kind", "one_liner", "aliases", "holds", "status", "use_when", "export",
+EDITABLE = ("name", "kind", "one_liner", "holds", "status", "use_when", "export",
             "export_to", "expands_in", "parent")
 
 

@@ -131,13 +131,11 @@ class Mcp:
 
 
 mcp = Mcp()
-core = lambda: open(os.path.join(repo, "CORE.md"), encoding="utf-8").read()
 regions = lambda: json.loads(open(os.path.join(repo, "regions.json"), encoding="utf-8").read())["regions"]
 
 
 def make_area(src, name, use_when, core_desc):
-    return call("POST", "/regions", {"source": src, "core_description": core_desc,
-                                     "representative": {"id": src, "name": name, "kind": "system",
+    return call("POST", "/regions", {"source": src, "representative": {"id": src, "name": name, "kind": "system",
                                                         "one_liner": f"{name} — what it holds",
                                                         "use_when": use_when}})
 
@@ -164,15 +162,14 @@ st, body = call("DELETE", "/regions/alpha")
 check("A4 an area is deleted", st == 200, json.dumps(body)[:120])
 top = mcp.table()
 check("A4   it leaves hop 0", "/v1/regions/alpha" not in top)
-check("A4   and its CORE row goes with it", "`ALPHA`" not in core())
 check("A4   while the other stays", "/v1/regions/beta" in top)
 
 call("DELETE", "/regions/beta")
 top = mcp.table()
 check("A5 with everything deleted, hop 0 is what it was when empty", top.strip() == empty_top.strip())
 check("A5   regions.json holds nothing", regions() == [])
-check("A5   the CORE table keeps its header, so the next area can be written into it",
-      "| Area | What it holds |" in core() and "|---|---|" in core())
+check("A5   and the repository holds no CORE.md or edges.yaml for anything to drift into",
+      not os.path.exists(os.path.join(repo, "CORE.md")) and not os.path.exists(os.path.join(repo, "edges.yaml")))
 check("A5   and no area directory is left behind",
       sorted(p for p in os.listdir(os.path.join(repo, "regions")) if not p.startswith(".")) == [])
 
@@ -207,21 +204,10 @@ st, _ = call("POST", "/nodes", {"id": "seen", "name": "Seen", "kind": "system", 
 check("C  a plain node is created", st in (200, 201), str(st))
 draft_body = {"id": "hidden", "name": "Hidden", "kind": "system", "region": "gamma",
               "one_liner": "a node the agent should not be sent to yet", "status": "draft"}
+# Any area may hold a draft. Until 2026-10-07 an area had to opt in through `area_rules` in
+# vocab.yaml, a rule that existed for the curator's sleep; the sleep and the rule are gone.
 st, body = call("POST", "/nodes", dict(draft_body))
-check("C0 a draft is refused in an area that has not asked for them", st == 422, str(st))
-check("C0   and the refusal names the rule",
-      "draft" in json.dumps(body).lower(), json.dumps(body)[:140])
-
-# Drafts are opt-in per area (`area_rules` in vocab.yaml), so the area has to say so first. The file
-# is edited and committed the way a person would, because an uncommitted repository blocks writes.
-vocab = os.path.join(repo, "vocab.yaml")
-with open(vocab, "a", encoding="utf-8") as f:
-    f.write("\narea_rules:\n  gamma:\n    drafts: true\n")
-subprocess.run(["git", "-C", repo, "-c", "user.name=seed", "-c", "user.email=s@l",
-                "commit", "-qam", "gamma may hold drafts"], check=True)
-
-st, body = call("POST", "/nodes", dict(draft_body))
-check("C1 a draft node is created once the area allows it", st in (200, 201), json.dumps(body)[:140])
+check("C1 a draft node is created", st in (200, 201), json.dumps(body)[:140])
 listed = next((r["nodes"] for r in regions() if r["source"] == "gamma"), [])
 check("C1   it is not in the area's advertised nodes", "hidden" not in listed and "seen" in listed,
       str(listed))
@@ -288,11 +274,11 @@ import urllib.request as _u2
 with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: health = json.load(r)
 check("G2 it names the file, whole", health.get("uncommitted") == "vocab.yaml",
       repr(health.get("uncommitted")))
-open(os.path.join(repo, "CORE.md"), "a", encoding="utf-8").write("\n")
+open(os.path.join(repo, "regions.json"), "a", encoding="utf-8").write("\n")
 with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: health = json.load(r)
-check("G2   and every file when there are several", health.get("uncommitted") == "CORE.md, vocab.yaml",
+check("G2   and every file when there are several", health.get("uncommitted") == "regions.json, vocab.yaml",
       repr(health.get("uncommitted")))
-subprocess.run(["git", "-C", repo, "checkout", "--", "vocab.yaml", "CORE.md"], check=True)
+subprocess.run(["git", "-C", repo, "checkout", "--", "vocab.yaml", "regions.json"], check=True)
 with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: health = json.load(r)
 check("G3 reverting makes it writable again", health.get("writable") is True and not health.get("uncommitted"),
       repr(health.get("uncommitted")))
@@ -335,8 +321,7 @@ st, b = call("POST", "/nodes", {"id": LONG, "name": "P", "region": "names", "kin
 check("I1 an over-long id is refused, not a crash", st == 400, f"{st} {b}")
 check("I1   and the refusal says why", "255" in str(b.get("error", "")), repr(b.get("error"))[:120])
 
-st, b = call("POST", "/regions", {"source": LONG, "core_description": "p",
-                                  "representative": {"name": "P", "kind": "system",
+st, b = call("POST", "/regions", {"source": LONG, "representative": {"name": "P", "kind": "system",
                                                      "one_liner": "p", "use_when": "never"}})
 check("I2 an over-long area name is refused", st == 400, f"{st} {b}")
 
