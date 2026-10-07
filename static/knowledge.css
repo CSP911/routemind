@@ -406,13 +406,24 @@ body.kn-dragging { user-select: none; }
 .kn-fp-live { font: 600 11px var(--kn-mono); color: var(--orange); letter-spacing: .06em; text-transform: uppercase; }
 .kn-fp-live::before { content: "●"; margin-right: 4px; }
 .kn-fp-select { max-width: 340px; min-width: 0; }
-.kn-fp-now { flex: 1 1 260px; min-width: 0; font: 12px/1.5 var(--kn-mono); color: var(--kn-muted);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.kn-dev.is-fp > rect { stroke: var(--orange); stroke-width: 2.2; }
+.kn-fp-now { flex: 1 1 260px; min-width: 0; font: 12px/1.5 var(--kn-mono); color: var(--kn-muted); }
+.kn-fp-speed { width: auto; min-width: 0; }
+.kn-fp-now { display: flex; flex-direction: column; gap: 2px; white-space: normal; }
+.kn-fp-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 10px;
+  border-left: 3px solid var(--fp, var(--orange)); }
+/* Several walks at once, one colour each. Orange first, then the map's other accents — never purple,
+   which is a VRF. Past four the colours repeat dashed, so walk five is not mistaken for walk one. */
+.is-fp-c0, .is-fp-c4 { --fp: var(--orange); }
+.is-fp-c1, .is-fp-c5 { --fp: var(--cyan); }
+.is-fp-c2, .is-fp-c6 { --fp: var(--green); }
+.is-fp-c3, .is-fp-c7 { --fp: var(--blue); }
+.kn-dev.is-fp > rect { stroke: var(--fp, var(--orange)); stroke-width: 2.2; }
+.kn-dev.is-fp-c4 > rect, .kn-dev.is-fp-c5 > rect, .kn-dev.is-fp-c6 > rect, .kn-dev.is-fp-c7 > rect { stroke-dasharray: 5 3; }
+.kn-fp-line.is-fp-c4, .kn-fp-line.is-fp-c5, .kn-fp-line.is-fp-c6, .kn-fp-line.is-fp-c7 { border-left-style: dashed; }
 .kn-dev.is-fp-now > rect { stroke-width: 3.4; animation: kn-fp-pulse 900ms ease-out 1; }
 @keyframes kn-fp-pulse { from { stroke-opacity: .25; } to { stroke-opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .kn-dev.is-fp-now > rect { animation: none; } }
-.kn-dot.is-fp { border-color: var(--orange); }
+.kn-dot.is-fp { border-color: var(--fp, var(--orange)); }
 
 /* How to write a routing line: folded under its field, quiet until opened. */
 .kn-guide { margin-top: -8px; font-size: 12.5px; color: var(--kn-muted); }

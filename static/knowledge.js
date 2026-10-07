@@ -961,8 +961,22 @@
   // kept and the next poll asks for everything after it, so a step can arrive late but never be
   // missed. A failed poll keeps the cursor where it was. Steps open what they name on top of what
   // the person has open; nothing the person opened is closed.
-  const FP_MS = 1000, FP_REPLAY_MS = 900;
-  const fp = { on: false, cursor: null, walks: new Map(), focus: null, now: null, replaying: false, timer: null };
+  const FP_MS = 1000;
+  // Which walks the live view shows when none is chosen: every walk still open, and every walk that
+  // moved in the last ten minutes. Several agents walking at once are all on the map, each in its own
+  // colour (operator, 2026-10-08) — the view used to jump to whichever had moved last.
+  const FP_LIVE_MIN = 10, FP_COLOURS = 8;
+  // A replay keeps the walk's own rhythm: the recorded gap between two steps, divided by the chosen
+  // speed, and never shorter than a step can be seen or longer than a person will wait. It was a
+  // fixed 0.9 s per step, which made a walk that hesitated look exactly like one that did not.
+  const FP_GAP_MIN = 150, FP_GAP_MAX = 6000;
+  const fp = { on: false, cursor: null, walks: new Map(), focus: "", colours: new Map(), replay: null, timer: null };
+
+  /** A walk's colour, fixed for the page's life so a walk does not change colour as others come and go. */
+  function fpColour(id) {
+    if (!fp.colours.has(id)) fp.colours.set(id, fp.colours.size % FP_COLOURS);
+    return fp.colours.get(id);
+  }
 
   /** The area a step's address is in, and the node path inside it that shows the address. */
   function fpTarget(address) {
@@ -989,11 +1003,33 @@
     return { area, path: chain };
   }
 
-  /** Make one step visible: open its area and the node path to it, then draw. */
-  async function fpShow(step) {
-    fp.now = step;
-    const w = fp.walks.get(step.walk);
-    if (w && step.address) w.seen.add(step.address);
+  /** The walks the map is showing right now: the replay's, or the live ones in view. */
+  function fpShown() {
+    if (fp.replay) return [...fp.replay.walks.values()];
+    const all = [...fp.walks.values()];
+    if (fp.focus) return all.filter((w) => w.id === fp.focus);
+    const since = Date.now() - FP_LIVE_MIN * 60000;
+    return all.filter((w) => w.state === "open" || Date.parse(w.now?.at || 0) >= since);
+  }
+
+  /** Under the map: one line per walk in view, newest first, each with its colour. */
+  function fpNowLine() {
+    const box = $("knFpNow");
+    const rows = fpShown().filter((w) => w.now).sort((a, b) => (b.now.n || 0) - (a.now.n || 0)).slice(0, 4);
+    box.replaceChildren(...rows.map((w) => {
+      const s = w.now;
+      const label = s.op === "open" ? t("knowledge.fp.opened") : s.op;
+      const line = el("span", `kn-fp-line is-fp-c${fpColour(w.id)}`,
+        `${when(s.at)}  ${label}  ${s.address || ""}${s.why ? "  — " + s.why : ""}`);
+      line.title = w.question || w.id;
+      return line;
+    }));
+  }
+
+  /** Make one step visible in the walk it belongs to: open its area and the node path, then draw. */
+  async function fpShow(step, w) {
+    w.now = step;
+    if (step.address) w.seen.add(step.address);
     const tgt = fpTarget(step.address);
     if (tgt && tgt.area) {
       openArea(tgt.area);
@@ -1007,22 +1043,26 @@
         for (const id of tgt.path) await loadFiles(id);
       }
     }
-    const label = step.op === "open" ? t("knowledge.fp.opened") : step.op;
-    $("knFpNow").textContent = `${when(step.at)}  ${label}  ${step.address || ""}${step.why ? "  — " + step.why : ""}`;
+    fpNowLine();
     draw();
   }
 
-  /** Footprint marks: every address the focused walk has touched, and the one it is on now. */
+  /** Footprint marks. A tile walked by any walk in view carries that walk's colour — the most recent
+   *  walk to touch it, when several did — and each walk's current tile is marked as now. */
   function fpClass(row) {
-    if (!fp.on || !fp.focus || !row.address) return "";
-    const w = fp.walks.get(fp.focus);
-    if (!w) return "";
+    if (!fp.on || !row.address) return "";
     // One tile, two addresses: an entity with a body and children is a table at /v1/nodes/x and a
     // document at /v1/nodes/x/body, and either step lit it.
     const base = (a) => String(a || "").replace(/\/body$/, "");
     const mine = base(row.address);
-    if (fp.now && fp.now.walk === fp.focus && base(fp.now.address) === mine) return " is-fp is-fp-now";
-    return [...w.seen].some((a) => base(a) === mine) ? " is-fp" : "";
+    let hit = null, now = false;
+    for (const w of fpShown()) {
+      const isNow = Boolean(w.now) && base(w.now.address) === mine;
+      if (!isNow && ![...w.seen].some((a) => base(a) === mine)) continue;
+      if (!hit || (w.now?.n || 0) > (hit.now?.n || 0)) hit = w;
+      if (isNow) now = true;
+    }
+    return hit ? ` is-fp is-fp-c${fpColour(hit.id)}${now ? " is-fp-now" : ""}` : "";
   }
 
   function fpRemember(step) {
@@ -1030,12 +1070,19 @@
     const w = fp.walks.get(step.walk);
     w.state = step.state; w.outcome = step.outcome;
     w.steps.push(step);
+    w.now = step;
+    if (step.address) w.seen.add(step.address);
+    fpColour(step.walk);
+    return w;
   }
 
   function fpOptions() {
     const sel = $("knFpWalk");
     const rows = [...fp.walks.values()].sort((a, b) => (b.steps.at(-1)?.n || 0) - (a.steps.at(-1)?.n || 0));
-    sel.replaceChildren(...rows.map((w) => {
+    const all = el("option", null, t("knowledge.fp.all"));
+    all.value = "";
+    if (!fp.focus) all.selected = true;
+    sel.replaceChildren(all, ...rows.map((w) => {
       const o = el("option", null, `${w.question || w.id}  ·  ${w.state === "open" ? t("knowledge.fp.open") : (w.outcome || "")}`);
       o.value = w.id;
       if (w.id === fp.focus) o.selected = true;
@@ -1058,45 +1105,74 @@
     const steps = d.steps || [];
     if (fp.cursor === null) {
       // First read: learn every walk kept, and draw nothing — the live view is what happens next.
-      for (const s of steps) { fpRemember(s); if (s.address) fp.walks.get(s.walk).seen.add(s.address); }
+      for (const s of steps) fpRemember(s);
       fp.cursor = Number(d.seq || 0);
-      const last = steps.at(-1);
-      if (last) fp.focus = last.walk;
       fpOptions();
       return;
     }
     for (const s of steps) {
-      fpRemember(s);
+      const w = fpRemember(s);
       fp.cursor = Math.max(fp.cursor, Number(s.n));
-      if (fp.replaying) continue;          // recorded; the replay finishes first, then live resumes
-      fp.focus = s.walk;
-      await fpShow(s);
+      if (fp.replay) continue;             // recorded; the replay finishes first, then live resumes
+      if (fp.focus && fp.focus !== s.walk) continue;
+      await fpShow(s, w);
     }
     if (steps.length) fpOptions();
   }
 
+  /** Replay the chosen walk, or — with none chosen — every kept walk together, interleaved in the
+   *  order the steps were taken. The same button stops it. */
   async function fpReplay() {
-    const id = $("knFpWalk").value || fp.focus;
-    if (!id || fp.replaying) return;
-    let w;
-    try { w = await request("walks/" + encodeURIComponent(id)); } catch { toast(t("knowledge.fp.gone")); return; }
-    fp.replaying = true; fp.focus = id;
-    const mine = fp.walks.get(id) || { id, question: w.question, seen: new Set(), steps: [] };
-    mine.seen = new Set(); fp.walks.set(id, mine);
-    $("knFpPlay").disabled = true;
+    // Stopping wakes the wait it is in, rather than finishing a pause that may be six seconds long.
+    if (fp.replay) { fp.replay.stop = true; if (fp.replay.wake) fp.replay.wake(); return; }
+    const id = $("knFpWalk").value;
+    let steps;
     try {
-      for (const s of w.steps || []) {
-        await fpShow({ ...s, walk: id, question: w.question });
-        await new Promise((r) => setTimeout(r, FP_REPLAY_MS));
+      if (id) {
+        const w = await request("walks/" + encodeURIComponent(id));
+        steps = (w.steps || []).map((s) => ({ ...s, walk: id, question: w.question }));
+      } else {
+        steps = (await request("walks?since=0")).steps || [];
       }
+    } catch { toast(t("knowledge.fp.gone")); return; }
+    if (!steps.length) return;
+    const speed = Number(($("knFpSpeed") || {}).value) || 1;
+    fp.replay = { walks: new Map(), stop: false };
+    const btn = $("knFpPlay");
+    btn.textContent = t("knowledge.fp.stop");
+    const sleep = (ms) => new Promise((r) => {
+      const id = setTimeout(r, ms);
+      fp.replay.wake = () => { clearTimeout(id); r(); };
+    });
+    try {
+      let prev = null;
+      for (const s of steps) {
+        if (fp.replay.stop) break;
+        if (prev) {
+          const gap = (Date.parse(s.at) - Date.parse(prev.at)) || 0;
+          await sleep(Math.min(FP_GAP_MAX, Math.max(FP_GAP_MIN, gap / speed)));
+          if (fp.replay.stop) break;
+        }
+        if (!fp.replay.walks.has(s.walk)) {
+          fp.replay.walks.set(s.walk, { id: s.walk, question: s.question, seen: new Set(), steps: [] });
+          fpColour(s.walk);
+        }
+        await fpShow(s, fp.replay.walks.get(s.walk));
+        prev = s;
+      }
+      await sleep(FP_GAP_MIN);
     } finally {
-      fp.replaying = false; $("knFpPlay").disabled = false;
+      fp.replay = null;
+      btn.textContent = t("knowledge.fp.replay");
+      fpNowLine();
+      draw();
     }
   }
 
-  /** Every step of the focused walk with its reason — the part that need not be live. */
+  /** Every step of the chosen walk with its reason — or, with none chosen, of the latest one. */
   async function fpTrail() {
-    const id = $("knFpWalk").value || fp.focus;
+    const id = $("knFpWalk").value
+      || [...fp.walks.values()].sort((a, b) => (b.now?.n || 0) - (a.now?.n || 0))[0]?.id;
     if (!id) return;
     let w;
     try { w = await request("walks/" + encodeURIComponent(id)); } catch { toast(t("knowledge.fp.gone")); return; }
@@ -1126,7 +1202,7 @@
     fp.on = true; $("knFp").hidden = false;
     $("knFpPlay").addEventListener("click", () => { fpReplay().catch(() => {}); });
     $("knFpTrail").addEventListener("click", () => { fpTrail().catch(() => {}); });
-    $("knFpWalk").addEventListener("change", () => { fp.focus = $("knFpWalk").value; draw(); });
+    $("knFpWalk").addEventListener("change", () => { fp.focus = $("knFpWalk").value; fpNowLine(); draw(); });
     fpPoll().catch(() => {});
     fp.timer = setInterval(() => { fpPoll().catch(() => {}); }, FP_MS);
   }

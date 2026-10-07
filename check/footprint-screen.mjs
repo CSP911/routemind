@@ -35,7 +35,7 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
     regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpPlay","knFpTrail","knFpNow"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
 byId.knFp.hidden = true; byId.knWallPanel.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };
@@ -59,6 +59,8 @@ const settle = async (n = 40) => { for (let i = 0; i < n; i++) await new Promise
 const results = []; const check = (name, cond, extra = "") => results.push(`${cond ? "ok  " : "FAIL"} ${name}${cond || !extra ? "" : "   — " + extra}`);
 const find = (n, pred, acc = []) => { if (pred(n)) acc.push(n); for (const c of [...(n.children || [])]) find(c, pred, acc); return acc; };
 const cls = (n) => `${n.attrs.class || ""} ${n.className || ""}`.split(/\s+/).filter(Boolean);
+// The line under the map is one row per walk in view now, so it is read across its children.
+const nowText = () => [byId.knFpNow.textContent, ...byId.knFpNow.__kids.map((k) => k.textContent)].join("\n");
 const marked = (c) => find(byId.knTopo, (n) => cls(n).includes(c)).map((n) => n.attrs["data-address"] || n.attrs["aria-label"] || "");
 const post = async (path, body) => (await realFetch(`${BASE}/api/knowledge/${path}`, { method: "POST", headers: { "Content-Type": "application/json", "X-Knowledge-Actor": "agent-screen" }, body: JSON.stringify(body) })).json();
 
@@ -81,7 +83,7 @@ check("while hidden, nothing is drawn", state.open.length === 0, String(state.op
 document.visibilityState = "visible";
 await kn.fpPoll(); await settle();
 check("live: the first step opens its area", state.open.includes("procurement"), String(state.open));
-check("  and the line under the map says the step and its reason", byId.knFpNow.textContent.includes("approval bands are in its sentence"), byId.knFpNow.textContent);
+check("  and the line under the map says the step and its reason", nowText().includes("approval bands are in its sentence"), nowText());
 // the rest arrive while one poll fails — none may be lost, and they must apply in order
 for (const s of steps.slice(1)) await post(`walks/${w.id}/steps`, { op: s[0], address: s[1], why: s[2] });
 failNext = 1; await kn.fpPoll(); await settle();
@@ -92,7 +94,7 @@ check("live: a failed poll loses nothing — the next one brings every step, in 
       JSON.stringify(got.slice(-4)) === JSON.stringify(steps.map((s) => s[1])) && afterFail === 2, `${afterFail} then ${JSON.stringify(got)}`);
 check("  the node path to the document is open", JSON.stringify(state.openNode.get("procurement")) === JSON.stringify(["purchase-request", "approval-threshold"]),
       JSON.stringify(state.openNode.get("procurement")));
-check("  the step it is on now is marked as now", byId.knFpNow.textContent.includes("the numbers themselves"), byId.knFpNow.textContent);
+check("  the step it is on now is marked as now", nowText().includes("the numbers themselves"), nowText());
 const tiles = find(byId.knTopo, (n) => cls(n).includes("kn-dev"));
 const fpTiles = tiles.filter((n) => cls(n).includes("is-fp"));
 const nowTiles = tiles.filter((n) => cls(n).includes("is-fp-now"));
@@ -107,7 +109,7 @@ check("  even though the browser held a map cached before nodes carried their pa
 // ── replay ────────────────────────────────────────────────────────────────────
 state.open = []; state.openNode.clear(); kn.draw();
 const seen = [];
-const watch = realSetInterval(() => { const t = byId.knFpNow.textContent; if (t && seen.at(-1) !== t) seen.push(t); }, 50);
+const watch = realSetInterval(() => { const t = nowText(); if (t.trim() && seen.at(-1) !== t) seen.push(t); }, 50);
 byId.knFpWalk.value = w.id;
 await kn.fpReplay();
 realClearInterval(watch);
@@ -115,7 +117,50 @@ const order = steps.map((s) => s[2]).filter((why) => seen.some((t) => t.includes
 check("replay: every step is shown again", order.length === steps.length, JSON.stringify(seen));
 check("  in the order it was walked", seen.map((t) => steps.findIndex((s) => t.includes(s[2]))).filter((i) => i >= 0).every((v, i, a) => i === 0 || v >= a[i - 1]), JSON.stringify(seen));
 check("  and leaves the map open where the walk ended", state.open.includes("procurement") && (state.openNode.get("procurement") || []).includes("approval-threshold"));
-check("  the replay button is usable again afterwards", byId.knFpPlay.disabled === false);
+check("  the replay button is usable again afterwards", byId.knFpPlay.disabled === false && !fp.replay);
+
+// ── several walks at once ─────────────────────────────────────────────────────
+// The live view used to follow whichever walk had moved last, so a second agent pulled the screen
+// away from the first. Every recent walk is on the map now, each in its own colour.
+byId.knFpWalk.value = ""; fp.focus = "";
+const w2 = await post("walks", { question: "what counts as a receipt", how: "screen-check" });
+await post(`walks/${w2.id}/steps`, { op: "table", address: "/v1/regions/expense", why: "receipts are in its sentence" });
+await kn.fpPoll(); await settle(60);
+const tilesNow = () => find(byId.knTopo, (n) => cls(n).includes("kn-dev"));
+const colours = () => new Set(tilesNow().flatMap((n) => cls(n).filter((c) => /^is-fp-c\d$/.test(c))));
+check("several walks: the second walk opens its own area", state.open.includes("expense") && state.open.includes("procurement"), String(state.open));
+check("  both walks are on the map, in two colours", colours().size === 2, JSON.stringify([...colours()]));
+check("  each marked where it is now", tilesNow().filter((n) => cls(n).includes("is-fp-now")).length === 2,
+      String(tilesNow().filter((n) => cls(n).includes("is-fp-now")).length));
+check("  and the line under the map has a row for each", nowText().includes("the numbers themselves") && nowText().includes("receipts are in its sentence"), nowText());
+fp.focus = w2.id; kn.draw();
+check("choosing one walk shows that walk alone", colours().size === 1, JSON.stringify([...colours()]));
+fp.focus = ""; kn.draw();
+
+// ── a replay keeps the walk's rhythm ──────────────────────────────────────────
+// It was a fixed 0.9 s a step, so a walk that stopped to think looked exactly like one that did not.
+const w3 = await post("walks", { question: "a walk that pauses", how: "screen-check" });
+await post(`walks/${w3.id}/steps`, { op: "table", address: "/v1/regions/payroll", why: "before the pause" });
+await new Promise((r) => setTimeout(r, 1500));
+await post(`walks/${w3.id}/steps`, { op: "table", address: "/v1/regions/attendance", why: "after the pause" });
+byId.knFpWalk.value = w3.id;
+byId.knFpSpeed.value = "1"; let t0 = Date.now(); await kn.fpReplay(); const slow = Date.now() - t0;
+byId.knFpSpeed.value = "8"; t0 = Date.now(); await kn.fpReplay(); const fast = Date.now() - t0;
+check("replay: a 1.5 s pause takes about 1.5 s at 1×", slow >= 1300, `${slow} ms`);
+check("  and much less at 8×", fast < slow / 3, `${fast} ms against ${slow} ms`);
+byId.knFpSpeed.value = "1";
+t0 = Date.now(); const running = kn.fpReplay(); await new Promise((r) => setTimeout(r, 250));
+await kn.fpReplay(); await running; const stopped = Date.now() - t0;
+check("  the same button stops it", stopped < 1000 && !fp.replay, `${stopped} ms`);
+
+// ── replaying every walk together ─────────────────────────────────────────────
+byId.knFpWalk.value = ""; byId.knFpSpeed.value = "8";
+const seenAll = [];
+const watchAll = realSetInterval(() => { const t = nowText(); if (t.trim() && seenAll.at(-1) !== t) seenAll.push(t); }, 20);
+await kn.fpReplay();
+realClearInterval(watchAll);
+check("replaying all walks shows every walk's steps", ["the numbers themselves", "receipts are in its sentence", "after the pause"].every((why) => seenAll.some((t) => t.includes(why))),
+      JSON.stringify(seenAll.slice(-3)));
 
 console.log(results.join("\n"));
 const n = results.filter((r) => r.startsWith("FAIL")).length;

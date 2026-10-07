@@ -181,7 +181,7 @@ if (loose.length) {
 // belongs to that element, and one the script builds belongs to the script.
 const SHARED_ON_PURPOSE = new Set([
   "common.cancel",            // one word, and every form that has a Cancel means the same by it
-  "knowledge.publishCore",    // the button's label, reused as the text of the confirm it opens
+  "knowledge.fp.replay",      // the button's label, put back when it stops being "Stop" mid-replay
   "knowledge.wall.here",      // the chip on this backbone's own card, drawn in both places
 ]);
 const markup = new Set([...html.matchAll(/data-i18n(?:-label|-placeholder)?="([^"]+)"/g)].map((m) => m[1]));

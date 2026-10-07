@@ -47,8 +47,18 @@ governs, but they put "where others went" next to the lines an agent routes on �
 a new coat. The agent reads the lines and follows the addresses; the record is for people.
 
 **The screen expands, it does not navigate.** A step opens the rack or node it names, on top of
-whatever the person has open; the replay does the same at a fixed pace. The person's own state is
-not replaced.
+whatever the person has open. The person's own state is not replaced.
+
+**Every recent walk at once.** Several agents can walk together, and the live view shows all of them
+— every walk still open, and every walk that moved in the last ten minutes — each in its own colour,
+with a line under the map for each. Choosing one in the picker shows that one alone. Until
+2026-10-08 the view followed whichever walk had moved last, so a second agent pulled the screen away
+from the first (operator).
+
+**A replay keeps the walk's rhythm.** The gap between two recorded steps, divided by the chosen
+speed (1×, 2×, 4×, 8×), and never under 0.15 s or over 6 s. It was a fixed 0.9 s a step, which made a
+walk that stopped to think look exactly like one that did not. With no walk chosen, every kept walk
+is replayed together, interleaved in the order the steps were taken. The same button stops it.
 
 ## What is not here
 
@@ -65,5 +75,7 @@ back by cursor in order with none lost; an open walk is closed `abandoned` after
 closed one gone after six; the MCP reports every call it makes, shows the agent nothing from the
 record, and closes the walk when the next hop 0 is served. The screen's polling and replay are exercised
 by `check/footprint-screen-check.py`: the real `static/knowledge.js` against a live record — a step
-opens its area and node path, a failed poll loses nothing, exactly one tile is marked as now, and a
-replay shows every step in order. Verified to fire on a poll that jumps to the newest step.
+opens its area and node path, a failed poll loses nothing, exactly one tile is marked as now, a
+replay shows every step in order; two walks at once are both on the map in two colours, each marked
+where it is now; a 1.5 s pause takes about that long at 1× and much less at 8×; and stopping is
+immediate. Verified to fire on a poll that jumps to the newest step.
