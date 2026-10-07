@@ -186,7 +186,7 @@ flowchart LR
   B2 --- B3["awx<br/><i>주소·본문 그대로</i>"]
   B2 --- B4["continua<br/><i>새로 추가</i>"]
 </pre>
-<p class="cap">승격되는 쪽은 자기 주소를 지킵니다. 그래서 <b>그 노드를 가리키던 관계가 하나도 안 움직입니다.</b></p>
+<p class="cap">승격되는 쪽은 자기 주소를 지킵니다. 그래서 <b>그 노드를 가리키던 주소가 하나도 안 바뀝니다.</b></p>
 
     <h4>낱말</h4>
     <div class="scroll"><table>
@@ -199,10 +199,6 @@ flowchart LR
           <td>hop 0 그 자체. 모든 AS 의 광고가 모이는 한 장</td></tr>
       <tr><td><b>개체</b></td><td>prefix</td>
           <td>주소 하나를 갖는 것. 예전엔 <i>노드</i>와 <i>파일</i>로 갈려 있었습니다</td></tr>
-      <tr><td><b>CORE.md</b></td><td>routing policy 문서</td>
-          <td>이 도메인이 무엇으로 이루어져 있는지를 사람 문장으로 적는 곳. 영역 표가 여기 있습니다.
-          <b>이 빌드에서는 어떤 에이전트 경로도 이 파일을 가져가지 않습니다</b> — 갈라져 나온 쪽에서는
-          매 프롬프트에 통째로 실렸습니다</td></tr>
     </table></div>
 
     <div class="note q">
@@ -230,10 +226,11 @@ flowchart TB
   E --> Q["상신 큐"]
   Q --> R{"승인"}
   R -->|"그 사이 값이 바뀜"| C(["409 — 덮지 않고<br/>현재 값을 돌려준다"])
-  R -->|"그대로"| W["일반 쓰기 경로<br/>검증 → 커밋 → 게시"]
+  R -->|"그대로"| W["일반 쓰기 경로<br/>검증 → 커밋"]
 </pre>
 
-    <div class="col"><p>바꿀 수 있는 것은 셋이고, 각각 <strong>에이전트의 다른 판단</strong>을 건드립니다.</p></div>
+    <div class="col"><p>바꿀 수 있는 문장은 둘이고, 각각 <strong>에이전트의 다른 판단</strong>을 건드립니다.
+      (영역을 다른 백본의 circuit에 열지 여부인 <code>export</code>도 같은 큐로 갑니다.)</p></div>
 
     <div class="scroll"><table>
       <tr><th>scope</th><th>무엇이 바뀌나</th><th>에이전트에게 미치는 영향</th></tr>
@@ -241,8 +238,6 @@ flowchart TB
           <td><b>hop 0 에서 이 영역을 고를지</b> — 가장 센 것</td></tr>
       <tr><td><code>as</code></td><td>대표의 <code>one_liner</code></td>
           <td>영역을 열었을 때 자기를 뭐라고 소개하는지 (hop 1)</td></tr>
-      <tr><td><code>core</code></td><td><code>CORE.md</code> 의 그 행</td>
-          <td>hop 0 의 설명 칸 — 다만 <code>use_when</code> 이 있으면 그 칸은 안 쓰입니다</td></tr>
     </table></div>
 
     <h4>LLM 이 관여하는 다섯 지점 — 전부 선택</h4>

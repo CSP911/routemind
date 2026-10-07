@@ -34,7 +34,10 @@ documented = {m.group(1) for m in re.finditer(r"^#?\s*([A-Z][A-Z0-9_]*)=", env_t
 passed = {m.group(1) for m in re.finditer(r"\$\{([A-Z][A-Z0-9_]*)", compose)}
 
 # Passed through but deliberately not in .env.example. Each line is a decision.
-UNDOCUMENTED = {}
+UNDOCUMENTED = {
+    "EXCHANGE_TOKEN_HOME": "the circuit key's name before 2026-10-08, read only when KNOWLEDGE_CIRCUIT_TOKEN "
+                           "is unset so an install updated in place keeps the key it had",
+}
 
 # ── and the installer has to read .env the way docker does ───────────────────
 # `install.sh` waits on the port it thinks the screen is published at, and docker publishes the port
@@ -73,7 +76,7 @@ for v in stale: print(f"--   {v} is in UNDOCUMENTED but no longer needs to be; d
 # Docker creates a missing bind-mount path **owned by root** while the container runs as
 # KNOWLEDGE_UID, so a recipe short by one directory is a container that never becomes healthy, with
 # a message about the directory that *is* there. This has now happened twice: `data-b/…` was in
-# install.sh and in the operator screen's plan and missing from docs/PEERING.md (SCENARIOS Q6), and
+# install.sh and missing from the old peering guide (SCENARIOS Q6), and
 # then `access` — added with the access record — was missing from three recipes in README.md and from
 # the operator screen's plan, which is the screen written to prevent exactly this.
 #
@@ -85,19 +88,17 @@ mounts: dict[str, set[str]] = {}
 for f in COMPOSE:
     for root, sub in MOUNT_RE.findall(f.read_text(encoding="utf-8")):
         mounts.setdefault(root, set()).add(sub)
-# Every `data-<something>` is one backbone laid out like the second one, including the one the
-# operator screen prints for a name nobody has chosen yet.
-peer_layout = set().union(*(v for k, v in mounts.items() if k.startswith("data-")), set())
+peer_layout: set = set()
 
 # A recipe is not always one run of text. It is broken over lines with a trailing backslash in the
-# shell, and in admin/server.py it is two adjacent Python string literals — so the text is joined
+# shell, and it has been two adjacent Python string literals — so the text is joined
 # before it is read, or the check reports a complete recipe as short and the next person "fixes" a
 # file that was right. `\` + newline, and `"` + newline + `f"`, both become one space.
 JOIN_RE = re.compile(r"\\\s*\n\s*|\"\s*\n\s*f?\"")
 RECIPE_RE = re.compile(r"mkdir -p ((?:[A-Za-z0-9{}$_-]+/[a-z]+\s+)*[A-Za-z0-9{}$_-]+/[a-z]+)")
 short = []
 for f in sorted(ROOT.glob("*.sh")) + sorted(ROOT.glob("*.yml")) + sorted(ROOT.glob("docs/*.md")) \
-       + [ROOT / "README.md", ROOT / "admin/server.py"]:
+       + [ROOT / "README.md"]:
     raw = f.read_text(encoding="utf-8")
     text = JOIN_RE.sub(" ", raw)
     for m in RECIPE_RE.finditer(text):

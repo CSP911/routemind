@@ -2,7 +2,7 @@
 #
 # The kinds below are a starting point, not a schema. Replace them with the words your domain
 # actually uses. A node's `kind` must appear here. A kind marked `export: no` never crosses a link,
-# whatever its area says (docs/PEERING.md) — that is the one thing a kind does.
+# whatever its area says (docs/CIRCUIT.md) — that is the one thing a kind does.
 
 budgets:
   kinds: 12                 # more kinds than this and it has stopped being a classification

@@ -476,60 +476,10 @@ body.kn-dragging { user-select: none; }
 }
 .kn-door.is-open { color: var(--warn-fg, #8a5a2b); border-color: var(--warn-line, #e6cfae); background: var(--warn-bg, #fdf7ee); }
 
-/* The export card: three decisions in one place, each separated enough that nobody submits the one
-   below the one they were reading. The rule between them is doing the work a heading cannot. */
+/* The export card: whether another backbone's circuit may read this area, and with what sentence. */
 .kn-export-part { padding: 14px 0 4px; border-top: 1px solid var(--line, #dfe4ea); }
 .kn-export-part:first-of-type { border-top: 0; padding-top: 4px; }
 .kn-cf-sub { margin: 0 0 2px; font-size: 13px; }
-/* A peer this backbone has already been offered something by. Pressing one appends it rather than
-   replacing what is typed: an audience is a list, and the common edit is adding to it. */
-.kn-chip.is-add { cursor: pointer; border-style: dashed; }
-.kn-chip.is-add:hover { border-color: var(--accent, #2d6a5f); color: var(--accent, #2d6a5f); }
-
-/* ── the wall of domains ──────────────────────────────────────────────────────
-   One card per domain, identical down to the empty slots. A card whose shape changes with its
-   contents makes the eye re-read the layout instead of the data, which is the one thing a wall of
-   small multiples exists to avoid. Tokens are this file's own `--kn-*` set. */
-.kn-wall-panel { margin-bottom: 16px; }
-/* Beside the heading, not at the far edge of the panel. `.kn-panel-head` spaces its children apart,
-   and with the count moved down into the group headings this was the only sibling left to push. */
-.kn-wall-lead { margin: 0 auto 0 0; color: var(--kn-muted); font-size: 12.5px; align-self: flex-end; }
-.kn-wall-count { font: 11.5px var(--kn-mono); color: var(--kn-muted); }
-.kn-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(214px, 1fr)); gap: 10px; }
-.kn-wall-group + .kn-wall-group { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--kn-line); }
-.kn-wall-gh { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px;
-  font: 600 10px var(--kn-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--kn-muted); }
-.kn-wall-gh .kn-wall-count { margin-left: auto; letter-spacing: 0; text-transform: none; font-weight: 400; }
-
-.kn-dcard { background: var(--kn-surface); border: 1px solid var(--kn-line); border-radius: 10px;
-  padding: 11px 12px 10px; display: flex; flex-direction: column; gap: 7px;
-  cursor: pointer; text-align: left; font: inherit; color: var(--kn-text); }
-.kn-dcard:hover { border-color: var(--kn-accent); }
-.kn-dcard.is-here { border-color: var(--kn-accent); }
-.kn-dcard.is-down { border-color: var(--kn-danger); }
-.kn-dcard.is-sel { border-color: var(--kn-accent); box-shadow: 0 0 0 3px var(--kn-surface-2); }
-.kn-dcard-top { display: flex; align-items: baseline; gap: 8px; }
-.kn-dcard-name { font: 600 13px var(--kn-mono); }
-.kn-dcard-flag { margin-left: auto; font: 600 9.5px/1.9 var(--kn-mono); padding: 0 7px;
-  border-radius: 999px; border: 1px solid var(--kn-line); color: var(--kn-muted); white-space: nowrap; }
-.kn-dcard-flag.is-here { border-color: var(--kn-accent); color: var(--kn-accent); }
-.kn-dcard-flag.is-down { border-color: var(--kn-danger); color: var(--kn-danger); }
-.kn-dcard-meta { font: 10px var(--kn-mono); color: var(--kn-muted); margin-top: -5px; }
-/* One slot per area on the wall's own scale, filled for the ones this domain advertises. The scale
-   is shared, so two cards side by side compare directly — that is the whole of why it is a row of
-   slots and not a number. */
-.kn-shelf { display: flex; gap: 3px; height: 7px; }
-.kn-shelf i { flex: 1; border-radius: 2px; background: var(--kn-line); }
-.kn-shelf i.is-on { background: var(--kn-accent); }
-.kn-dcard.is-down .kn-shelf i { background: var(--kn-danger); opacity: .35; }
-.kn-dtags { display: flex; flex-wrap: wrap; gap: 4px; min-height: 42px; align-content: flex-start; }
-.kn-dtag { font: 10.5px var(--kn-mono); border: 1px solid var(--kn-line); border-radius: 5px;
-  padding: 1px 6px; background: var(--kn-surface-2); }
-.kn-dtag.is-more { color: var(--kn-muted); border-style: dashed; background: none; }
-.kn-dnone { font: 10.5px var(--kn-mono); color: var(--kn-danger); }
-.kn-dcard-foot { display: flex; gap: 8px; font: 10px var(--kn-mono); color: var(--kn-muted);
-  border-top: 1px solid var(--kn-line); padding-top: 6px; }
-.kn-dcard-foot .kn-r { margin-left: auto; }
 
 .kn-lang { display: inline-flex; align-items: center; gap: 6px; }
 /* The label is for a screen reader and for `title`; the menu shows each language in its own script,
@@ -558,65 +508,6 @@ body.kn-dragging { user-select: none; }
 .kn-zbtn:hover:not(:disabled), .kn-zpct:hover { border-color: var(--line-strong, #c7cfd8); }
 .kn-zbtn:disabled { opacity: .4; cursor: default; }
 .kn-zbtn:focus-visible, .kn-zpct:focus-visible { outline: 2px solid var(--accent, #2d6a5f); outline-offset: 1px; }
-
-/* A link to another backbone. Dashed, because it is the one wire on this map that leaves the
-   building and the one that can be down — everything else here either exists or does not. */
-.kn-wire.is-link { stroke-dasharray: 7 5; }
-.kn-wire.is-link.is-down { stroke: var(--warn, #b0603a); opacity: .75; }
-
-/* ── the export dialog ─────────────────────────────────────────────────────
-   Deliberately plain. It asks for one secret and hands back one file; anything decorative here
-   competes with the only two sentences on it that matter — what is in the file, and that a lost
-   passphrase is a lost file.
-
-   Every colour is one of this page's own tokens. The first draft invented names — `--kn-ok`,
-   `--kn-panel`, `--kn-ink` — none of which exist, so every one fell through to a hard-coded hex.
-   It rendered correctly, which is exactly why nothing said otherwise: a fallback is indistinguishable
-   from a working token until the token is meant to change.
-   (Measured while checking this: theme.css declares --panel, --line, --text, --muted and the colour
-   names only under `html[data-theme="light"]`, so this page has no dark palette at all — setting
-   data-theme="dark" leaves the whole screen on fallbacks, not just this dialog. That is a separate
-   piece of work. What matters here is that these rules now move with the rest of the page.) */
-.kn-export-dialog {
-  border: 1px solid var(--kn-line);
-  border-radius: 12px;
-  padding: 22px 24px 20px;
-  max-width: 34rem;
-  width: calc(100vw - 32px);
-  background: var(--kn-surface);
-  color: var(--kn-text);
-}
-.kn-export-dialog::backdrop { background: color-mix(in srgb, var(--kn-text) 38%, transparent); }
-.kn-export-lead { margin: .4rem 0 0; font-size: .86rem; line-height: 1.5; color: var(--kn-muted); }
-.kn-export-field { display: flex; flex-direction: column; gap: .3rem; margin-top: 1.1rem; }
-.kn-export-field > span { font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; color: var(--kn-muted); }
-.kn-export-field input {
-  font: inherit; padding: .5rem .6rem; border-radius: 7px;
-  border: 1px solid var(--kn-line);
-  background: var(--kn-surface-2); color: inherit;
-}
-.kn-export-field input:focus-visible {
-  outline: none; border-color: var(--kn-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--kn-accent) 30%, transparent);
-}
-.kn-export-note { margin: .9rem 0 0; font-size: .78rem; line-height: 1.5; color: var(--kn-muted); }
-/* The answer, and it has to be told apart from the note above it at a glance — they sit one under
-   the other and the note is the longer of the two. Weight and a rule do that where colour alone did
-   not: "done" and "refused" were rendering the same grey as the advice nobody needed to re-read.
-
-   It is a `div` in the markup for that same reason, and the reason is worth keeping: theme.css has
-   `html[data-theme="light"] p { color: #4b5b6d !important }`, so every `<p>` on this page is that
-   grey in light mode whatever a class says. The rule above about `.kn-btn` and `.button` is the same
-   trap — a tag the inherited sheets have an opinion about cannot be styled from here at all. The
-   lead and the note below stay `<p>`, because muted is what they are meant to be either way. */
-.kn-export-msg {
-  margin: .9rem 0 0; padding: .55rem .7rem; border-radius: 7px;
-  font-size: .82rem; line-height: 1.5; font-weight: 500; white-space: pre-wrap;
-  border-left: 3px solid currentColor; background: var(--kn-surface-2);
-}
-.kn-export-msg.is-bad { color: var(--kn-danger); }
-.kn-export-msg.is-ok  { color: var(--green, #1c6b3f); }
-.kn-export-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1.3rem; }
 
 /* The yes/no on the export card. The page styles its own controls under its own names — the sheets
    it inherits restyle bare `select` with `!important`, the same trap `.kn-btn` was written to avoid. */

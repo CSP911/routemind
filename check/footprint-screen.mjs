@@ -35,11 +35,10 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
     regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
-byId.knFp.hidden = true; byId.knWallPanel.hidden = true;
+byId.knFp.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };
-byId.knExportDialog.showModal = function () {}; byId.knExportDialog.close = function () {};
 globalThis.document = { readyState: "complete", visibilityState: "hidden", getElementById: (i) => byId[i],
   createElement: (t) => new N(t), createElementNS: (_, t) => new N(t), addEventListener() {}, querySelectorAll: () => [] };
 globalThis.window = { addEventListener() {}, IRISI18N: { t: (k, v) => String(dict[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => (v && v[n] != null ? v[n] : `{${n}}`)), apply() {}, lang: () => "en" },

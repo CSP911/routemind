@@ -7,8 +7,7 @@ Two halves. The static one reads `ontology/service/write.py` as a syntax tree an
 public `Writer` method that touches the tree does so inside `transact` — or delegates to one that
 does — so a method added later without the transaction fails here before it fails on somebody's
 repository. The dynamic one starts a real ontology on a copy of the shipped repository and drives
-**every write path there is**: each API write, the proposal queue's accept, `tidy --fix`, a graft and
-its ungraft. For each: one call that should succeed and one that should fail, and after each the
+**every write path there is**: each API write, the proposal queue's accept, and `tidy --fix`. For each: one call that should succeed and one that should fail, and after each the
 same three readings — how many commits the repository gained, whether its tree is clean, and what
 the response said.
 
@@ -58,7 +57,7 @@ for name, fn in methods.items():
     touches = sorted(c for c in calls(fn) if any(c.endswith(t) for t in TOUCHES))
     if touches and not through_transact(name): offenders.append(f"{name} ({', '.join(touches[:3])})")
 check(f"static: every Writer method that touches the tree goes through transact ({len(methods)} methods read)", not offenders, "; ".join(offenders))
-for f in ("ontology/tidy.py", "transfer/import.py"):
+for f in ("ontology/tidy.py",):
     s = open(os.path.join(ROOT, f), encoding="utf-8").read()
     check(f"static: {f} writes through transact", "transact(" in s)
 
@@ -71,7 +70,6 @@ for cmd in (["init", "-q"], ["config", "user.email", "tx@routemind"], ["config",
     git(*cmd)
 os.makedirs(os.path.join(T, "harness"), exist_ok=True)
 env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(PORT), "ONTOLOGY_PEER_TOKEN": TOKEN, "ONTOLOGY_HARNESS": os.path.join(T, "harness"),
-       "ROUTEMIND_EXPORT_PASSPHRASE": "a passphrase long enough for the check",
        "PYTHONPATH": os.pathsep.join(x for x in [os.environ.get("PYTHONPATH", ""), os.path.join(ROOT, "ontology")] if x)}
 svc = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")], env=env, stdout=open(os.path.join(T, "svc.log"), "w"), stderr=subprocess.STDOUT)
 for _ in range(80):
@@ -158,7 +156,7 @@ try:
     write("delete area", "DELETE", "/v1/regions/tx-area", None)
     write("delete area (gone)", "DELETE", "/v1/regions/tx-area", None, succeed=False)
 
-    # ── the writers outside the service: tidy, graft, ungraft ─────────────────
+    # ── the writer outside the service: tidy ───────────────────────────────────
     svc.terminate(); svc.wait(5)          # they take the repository lock themselves
     # an area's sentence changed by hand and committed without regenerating, for tidy to mend
     rp = os.path.join(repo, "regions", "expense", "expense.md")
@@ -169,27 +167,6 @@ try:
     check("tidy --fix: one commit, clean tree", r.returncode == 0 and commits_since(h0) == 1 and clean(), (r.stdout + r.stderr)[-200:])
     h0 = head(); r = subprocess.run([sys.executable, os.path.join(ROOT, "ontology", "tidy.py"), repo, "--fix"], env=env, capture_output=True, text=True)
     check("tidy --fix with nothing to do: no commit", commits_since(h0) == 0 and clean(), (r.stdout + r.stderr)[-200:])
-
-    # graft: export the shipped repo's exported areas from a server, graft into THIS repo under a prefix, then ungraft
-    src_repo = os.path.join(T, "src"); shutil.copytree(os.path.join(ROOT, "data", "repo"), src_repo)
-    git("config", "user.email", "s@r", cwd=src_repo); git("config", "user.name", "s", cwd=src_repo)
-    env2 = {**env, "ONTOLOGY_DATA": src_repo, "PORT": str(PORT + 1)}
-    s2 = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")], env=env2, stdout=open(os.path.join(T, "svc2.log"), "w"), stderr=subprocess.STDOUT)
-    for _ in range(80):
-        try: urllib.request.urlopen(f"http://127.0.0.1:{PORT + 1}/healthz", timeout=1); break
-        except Exception: time.sleep(0.25)
-    bundle = os.path.join(T, "x.rmx")
-    r = subprocess.run([sys.executable, os.path.join(ROOT, "transfer", "export.py"), "--api", f"http://127.0.0.1:{PORT + 1}", "--token", TOKEN, "--out", bundle], env=env, capture_output=True, text=True)
-    s2.terminate(); s2.wait(5)
-    if check("a bundle to graft exists", r.returncode == 0 and os.path.exists(bundle), (r.stdout + r.stderr)[-200:]):
-        h0 = head(); r = subprocess.run([sys.executable, os.path.join(ROOT, "transfer", "import.py"), bundle, "--graft", repo, "--prefix", "tx"], env=env, capture_output=True, text=True)
-        check("graft: one commit, clean tree", r.returncode == 0 and commits_since(h0) == 1 and clean(), (r.stdout + r.stderr)[-300:])
-        h0 = head(); r = subprocess.run([sys.executable, os.path.join(ROOT, "transfer", "import.py"), bundle, "--graft", repo, "--prefix", "tx"], env=env, capture_output=True, text=True)
-        check("graft again (ids taken): refused, no commit, clean tree", r.returncode != 0 and commits_since(h0) == 0 and clean(), (r.stdout + r.stderr)[-300:])
-        h0 = head(); r = subprocess.run([sys.executable, os.path.join(ROOT, "transfer", "import.py"), "--ungraft", repo, "--prefix", "tx"], env=env, capture_output=True, text=True)
-        check("ungraft: one commit, clean tree", r.returncode == 0 and commits_since(h0) == 1 and clean(), (r.stdout + r.stderr)[-300:])
-        h0 = head(); r = subprocess.run([sys.executable, os.path.join(ROOT, "transfer", "import.py"), "--ungraft", repo, "--prefix", "tx"], env=env, capture_output=True, text=True)
-        check("ungraft again (nothing there): no commit, clean tree", commits_since(h0) == 0 and clean(), (r.stdout + r.stderr)[-300:])
 
     # ── a dirty tree refuses every write, and says so ─────────────────────────
     svc = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")], env=env, stdout=open(os.path.join(T, "svc3.log"), "w"), stderr=subprocess.STDOUT)

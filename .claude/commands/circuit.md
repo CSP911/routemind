@@ -18,6 +18,5 @@ If either the address or the token is missing, say what is needed and stop — d
 do not fall back to reading this backbone instead. A circuit that silently answers from the wrong
 ontology is worse than no answer: the rows look the same.
 
-**This is not linking two backbones.** A link is a standing arrangement somebody configures in
-`peers.yaml` and commits, and it shows in hop 0 for everyone. A circuit lasts for this connection,
-writes nothing on either side, and is yours alone — see `docs/PEERING.md`.
+A circuit lasts for this connection, writes nothing on either side, and is yours alone. It reads only
+the areas their owner set `export` on — see `docs/CIRCUIT.md`.

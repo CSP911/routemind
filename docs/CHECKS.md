@@ -3,12 +3,12 @@
 ```sh
 ./check/all.sh              # everything, ~22 suites
 ./check/all.sh --quick      # skip the slow ones
-./check/all.sh --only peer  # the ones whose name contains "peer"
+./check/all.sh --only walk  # the ones whose name contains "walk"
 ```
 
 There is no test framework here. Each check is one file you can read top to bottom and run on its
-own, and most of them build the world they need — a throwaway ontology, one or two backbones, an
-exchange — rather than asking you to have one. That is deliberate: a check that needs a particular
+own, and most of them build the world they need — a throwaway ontology, sometimes a second backbone
+to open a circuit to — rather than asking you to have one. That is deliberate: a check that needs a particular
 install is a check nobody runs on a different one.
 
 `all.sh` is not a framework either. It knows one thing the individual files cannot: **where** each
@@ -30,18 +30,17 @@ Two rules the whole set is written against, and they are worth knowing before ad
 ./check/install-check.sh --keep   # leave it running to poke at
 ```
 
-Clones the **committed** tree into a temporary directory and installs it there, then adds the second
-backbone, wires both halves of the declaration, and walks the whole export decision — advertise, an
-audience, a line for one named reader, withdraw. Its own directory, its own compose project, its own
-ports and its own image tags, so nothing of yours is touched.
+Clones the **committed** tree into a temporary directory and installs it there, then walks the export
+decision as another backbone sees it — a circuit from a second MCP server, at the install's web
+address: advertise, reword, withdraw. Its own directory, its own compose project, its own port and its
+own image tags, so nothing of yours is touched.
 
 Run it after a change large enough that you would not want to be the first person to find out. The
 ordinary checks build their own world; this one is about the world a person arrives in, and that is a
 different set of mistakes. Six real defects came out of its first two runs, and four could not have
 come from any other check: a key written twice in `.env` that the installer and docker read
 differently, a status code believed over a body, an `IndexError` where a sentence belonged, and a
-`mkdir` that was in `install.sh` and in the operator screen's plan and missing from the one command
-you copy out of the peering guide.
+`mkdir` that was in `install.sh` and missing from the one command you copy out of a guide.
 
 ## Everything there is
 
@@ -58,7 +57,7 @@ number to trust is the one the check itself prints.
 | `check/mcp-check.py` | 19 | The MCP protocol over stdio, and an agent's whole walk from the area list to a document |
 | `check/write-paths.sh` | 66 | Every write path, against a throwaway ontology |
 | `check/llm-paths.sh` | 12 | Both LLM modes, so a change to one does not quietly break the other |
-| `check/transfer-check.py` | 17 | What an export actually carries, and what it refuses. Half of it is about what must **not** be in the file |
+| `check/circuit-check.py` | 8 | Another backbone's circuit into this install, through the web port: what it may mint, what it may read, and an agent's walk through it — [CIRCUIT.md](CIRCUIT.md) |
 | `check/session-check.py` | 12 | The six-hour session tokens. Mostly about what must **not** work: an enrolment key that still reads, or a session that can mint another |
 | `check/age-check.py` | 13 | The two times on a routing row, built from a repository it commits into itself. Mostly about *not known* staying not known |
 | `check/tidy-check.py` | 11 | What `rm -rf regions/<area>` leaves, and that tidy mends exactly that. Half of it is that a healthy repository is left alone |
@@ -74,26 +73,11 @@ number to trust is the one the check itself prints.
 | `check/romanize-check.py` | 38 | A name in another script, as an address — and the names that must not become one |
 | `check/concurrency-check.py` | 5 | Reads happening while writes happen, through HTTP, on one server. Probabilistic by nature — the deterministic half of the same question is in `ontology/check.py` |
 
-### Links between backbones
-
-[PEERING.md](PEERING.md) is the contract for all of these.
-
-| | | |
-|---|---|---|
-| `check/peer-check.py` | 98 | What crosses a link between two backbones, and what must not. Mostly negative |
-| `check/exchange-check.py` | 40 | Three backbones meeting at one exchange |
-| `check/ix-peering-check.py` | 37 | Two rooms that meet, and the third they do not carry for — including the deadlock |
-| `check/refresh-check.py` | 20 | Taking an advertisement back, and how long it stays on somebody else's table |
-| `check/domain-check.py` | 31 | What crosses a domain boundary by `kind`, and who is recorded having read it |
-| `check/room-check.py` | 77 | The room over a lifetime — [SCENARIOS.md](SCENARIOS.md) L, M, N |
-| `check/cross-check.py` | 36 | Where the new configuration meets the old — [SCENARIOS.md](SCENARIOS.md) P |
-| `check/admin-check.py` | 44 | The operator's door, and everything it must not open |
-
 ### The screen, and the shape of the tree
 
 | | | |
 |---|---|---|
-| `check/screen-check.mjs` | 43 | The map and the domain wall, drawn against a fake DOM. No browser |
+| `check/screen-check.mjs` | — | The map, drawn against a fake DOM. No browser |
 | `check/css-check.mjs` | 147 classes | Every class the screen puts on an element, against every class the stylesheets define |
 | `check/i18n-check.mjs` | 382 keys × 4 | The dictionaries, against each other and against the screen |
 | `check/auth-check.py` | 32 | The door on the screen's side — [AUTH.md](AUTH.md) |
@@ -123,10 +107,10 @@ docker compose exec ontology python3 /tmp/check/scenarios.py
 an existing directory, and you end up running a stale file and disbelieving the result.
 
 **In the web container**, for `auth-check.py`, which needs fastapi and uvicorn. Same shape, `web`
-instead of `ontology`. `transfer-check.py` runs on the host but does its work there too, because the
-sealing needs `cryptography` and that is where it is installed; it needs a peer token, from
-`ROUTEMIND_TOKEN` or `EXCHANGE_TOKEN_HOME` in `.env`, and fails rather than skipping without one —
-a check whose subject is that an export stays narrow is the last one that should quietly not run.
+instead of `ontology`. `circuit-check.py` runs on the host against the install and needs the circuit
+key, from `ROUTEMIND_TOKEN` or `KNOWLEDGE_CIRCUIT_TOKEN` in `.env`, and fails rather than skipping
+without one — a check whose subject is that an export stays narrow is the last one that should
+quietly not run.
 
 Anything on the host that imports the service needs pyyaml on that python. If `pip` is not available,
 the pure-python copy can be lifted out of the image:
@@ -134,7 +118,7 @@ the pure-python copy can be lifted out of the image:
 ```sh
 docker cp $(docker compose ps -q ontology):/usr/local/lib/python3.12/site-packages/yaml ./pylib/yaml
 rm -f ./pylib/yaml/_yaml*.so        # the Linux C extension; PyYAML falls back to pure python
-PYTHONPATH=./pylib python3 check/peer-check.py
+PYTHONPATH=./pylib python3 check/follow-check.py
 ```
 
 ## Reading a result

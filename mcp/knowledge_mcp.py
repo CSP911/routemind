@@ -155,12 +155,6 @@ def _age(row: dict) -> str:
     return f"{a or '?'} / {b or '?'}"
 
 
-# What a reader is choosing on when two rows cover one subject, in the order they should be preferred.
-# The words are plain rather than `own`/`grafted`/`peer`: a person reading a table is deciding whose
-# answer to quote, and "ours" says that where "own" reads like a flag.
-WHOSE = {"ours": "ours", "copied": "copied", "theirs": "theirs"}
-
-
 def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None, clip: int | None = 100) -> str:
     if not rows:
         # An empty table still has to say what its emptiness means. Without the footer, "(nothing
@@ -172,33 +166,15 @@ def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None, cl
     kind_w = max(len(r["kind"]) for r in rows)
     ages = {id(r): (r.get("age") or "") for r in rows}
     age_w = max((len(v) for v in ages.values()), default=0)
-    whose = {id(r): WHOSE.get(r.get("whose") or "", "") for r in rows}
-    # Only where it says something. A table whose rows are all `ours` is every table on a backbone
-    # that has grafted nothing and linked to nobody, and a column of one repeated word there is ink
-    # that teaches a reader to skip the place the answer will eventually appear.
-    show_whose = len({v for v in whose.values() if v}) > 1
-    whose_w = max((len(v) for v in whose.values()), default=0) if show_whose else 0
     out = [title, lead, ""]
     head = f"  {'KIND'.ljust(kind_w)}  {'ADDRESS'.ljust(addr_w)}  "
     if age_w: head += f"{'AGE'.ljust(age_w)}  "
-    if whose_w: head += f"{'FROM'.ljust(whose_w)}  "
     out.append(head + "WHY YOU WOULD PICK THIS ROW")
     for r in rows:
         line = f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  "
         if age_w: line += f"{ages[id(r)].ljust(age_w)}  "
-        if whose_w: line += f"{whose[id(r)].ljust(whose_w)}  "
         out.append(line + _clip(r["why"], clip))
     out.append("")
-    if whose_w:
-        out.append("  FROM says whose answer a row is, and they are not interchangeable:")
-        out.append("    ours    — written here, and maintained here.")
-        out.append("    copied  — grafted from another backbone. A snapshot of what they had, which")
-        out.append("              nobody here has been keeping up to date since.")
-        out.append("    theirs  — read across a link, right now. Theirs to change, and about their")
-        out.append("              organisation rather than yours.")
-        out.append("  When two rows cover the same subject, prefer `ours`. Quoting one of the others")
-        out.append("  as this organisation's answer is the mistake this column exists to prevent —")
-        out.append("  say whose it is.")
     if age_w:
         # Said once, under the table, because a column of `3y / 2d` with nothing explaining it is
         # read as one number twice. The second half is the one that answers "should I look for
@@ -207,8 +183,7 @@ def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None, cl
         out.append("  An old route over a recently changed document is current. An old route over a")
         out.append("  document that has not moved is the one to ask about before quoting it.")
         if any((r.get("age") or "") in ("—", "") or "?" in (r.get("age") or "") for r in rows):
-            out.append("  `—` is not known here — usually a row from across a link, whose history stays")
-            out.append("  with the backbone that owns it. Not known is not the same as new.")
+            out.append("  `—` is not known here — its history could not be read. That is not the same as new.")
     out.append("  table → knowledge_table({ path })    ·    file → knowledge_read({ path })")
     if any(r["kind"] == KIND["empty"] for r in rows):
         out.append("  empty → nobody has written it yet. Do not fetch it; say so if it is what was asked for.")
@@ -230,14 +205,9 @@ def hop0(api: Api) -> str:
     d = api.json("/v1/regions")
     rows = [{"kind": KIND["table"], "address": r.get("fetch") or f"/v1/regions/{r.get('source')}",
              "why": r.get("use_when") or r.get("description") or r.get("title") or "",
-             "age": _age(r), "whose": r.get("whose")}
+             "age": _age(r)}
             for r in (d.get("regions") or [])]
-    # The API supplies this sentence when it is not the plain one — when this backbone is linked to
-    # others, and above all when a link is down. Whether the list is still the whole world is not
-    # something this side can know: only the thing that just tried to read every peer knows, and
-    # printing the confident sentence over an incomplete list is the one failure this table must
-    # never have. See _absence in ontology/service/server.py.
-    absence = d.get("absence") or (
+    absence = (
         "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
         "something is absent — no smaller table is.")
     # Whole, never clipped (operator, 2026-10-08). `use_when` is the one sentence an agent chooses an
@@ -259,7 +229,7 @@ def area(api: Api, path: str) -> str:
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
     head = f"{d.get('key') or path} — {d.get('advertises') or ''}".strip(" —")
     lead = (f"When to be here: {d['use_when']}" if d.get("use_when") else "") or "What this area holds:"
     return _table(rows, head, lead,
@@ -279,12 +249,12 @@ def node(api: Api, path: str) -> str:
         # a body and children. Nothing in the dev repository has both; the shipped example does, and
         # a clean install caught it on the first boot.
         rows.append({"kind": KIND["file"], "address": path.rstrip("/") + "/body",
-                     "why": "its own document", "age": _age(d), "whose": d.get("whose")})
+                     "why": "its own document", "age": _age(d)})
     for e in (d.get("entries") or []):
         kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
         why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or e.get('description') or ''}"
         if kind == KIND["empty"]: why += "  (nothing written here yet)"
-        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e), "whose": e.get("whose")})
+        rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
     head = f"{d.get('name') or path}"
     return _table(rows, head, str(d.get("one_liner") or ""),
                   "This lists what this node holds. If what you need is not here, go back to /v1/regions.")
@@ -294,8 +264,7 @@ def _row(e: dict) -> dict:
     kind = {"data": KIND["file"], "empty": KIND["empty"]}.get(e.get("type"), KIND["table"])
     why = f"{e.get('name') or e.get('id')} — {e.get('one_liner') or ''}"
     if kind == KIND["empty"]: why += "  (nothing written here yet)"
-    return {"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e),
-            "whose": e.get("whose")}
+    return {"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)}
 
 
 def overlay_text(d: dict) -> str:
@@ -371,12 +340,8 @@ def overlay_call(api: Api, args: dict) -> str:
 
 # ---- circuits: this session reading another RouteMind ---------------------------------------
 #
-# A *peer* links two backbones: declared in `peers.yaml`, reviewed, committed, tokens in the
-# environment, and both sides configured. That weight is the point — it is a standing relationship
-# between two ontologies, and it belongs in git.
-#
-# A *circuit* is the light version and a different thing: **this session** reading a remote
-# backbone, for as long as this connection lasts. Nothing is written, nothing is committed, the
+# A *circuit* is **this session** reading another RouteMind, for as long as this connection lasts —
+# the one way left to read another backbone since standing links were retired (2026-10-08). Nothing is written, nothing is committed, the
 # remote is not told, and closing the client ends it. It exists because "let me look at theirs for a
 # minute" should not require an operator, a restart, and a commit to two repositories.
 #
@@ -393,9 +358,8 @@ CIRCUITS: dict[str, dict] = {}
 def _public_address(url: str) -> bool:
     """Would a token sent here cross a network nobody in this deployment controls?
 
-    The same question `peers.public_address` asks, asked again here because a circuit sends the same
-    kind of secret to the same kind of place, and a check that exists on one path and not the other
-    protects nothing. Unresolvable is not public — a remote that is simply down should not produce a
+    A circuit sends the enrolment key; over plain http to a public address that is a bearer secret
+    in clear text on the wire. Unresolvable is not public — a remote that is simply down should not produce a
     lecture about secrecy, which sends the reader looking in entirely the wrong place.
     """
     try:
@@ -681,36 +645,15 @@ TABLE_ROUTES = (
 )
 
 
-# `/v1/peers/<backbone>/…` is an address on another backbone, relayed by this one. What follows the
-# peer's name is an ordinary address, so the shape tests below run against that and the fetch runs
-# against the whole thing. Rendering is identical on purpose: an area is an area, and which backbone
-# it came from is already visible in the address the table printed.
-_PEER = re.compile(r"^/v1/peers/[a-z][a-z0-9-]{0,30}(?=/)")
-
-
-def _local(p: str) -> str:
-    """The address with every peer prefix taken off, for deciding what kind of thing it is.
-
-    Every, not one. Knowledge two backbones away arrives as `/v1/peers/ix/peers/branch/regions/x` —
-    the path it came by, written into the address. Peeling one prefix leaves something that is still
-    not a local shape, and the client then refuses to follow a row its own hop 0 printed.
-    """
-    while True:
-        m = _PEER.match(p)
-        if not m: return p
-        p = "/v1" + p[m.end():]
-
-
 def table_for(api: Api, path: str) -> str:
     p = (path or "/v1/regions").strip()
     if not p.startswith("/"): p = "/" + p
     if p in ("/v1/regions", "/v1/regions/", "/", ""): return hop0(api)
-    shape = _local(p)
     for prefix, fn in TABLE_ROUTES[1:]:
-        if shape.startswith(prefix) and len(shape) > len(prefix):
+        if p.startswith(prefix) and len(p) > len(prefix):
             return fn(api, p)
     raise ApiError(f"{p} is not a table address. Tables are /v1/regions, /v1/regions/<area>, "
-                   f"/v1/nodes/<id>, and any of those behind /v1/peers/<backbone>/. "
+                   f"or /v1/nodes/<id>. "
                    f"Use an address a table printed.")
 
 
@@ -732,7 +675,7 @@ def read_for(api: Api, path: str) -> str:
     p = (path or "").strip()
     if not p.startswith("/v1/"):
         raise ApiError(f"{p!r} is not an address from Knowledge. Use one a table printed.")
-    if any(rx.match(_local(p)) for rx in TABLE_SHAPES):
+    if any(rx.match(p) for rx in TABLE_SHAPES):
         raise ApiError(f"{p} is a table, not a document — call knowledge_table with it.")
     return api.text(p)
 

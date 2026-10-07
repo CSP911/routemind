@@ -14,7 +14,7 @@ mounted it; agents here read this API), service fragments (`ONTOLOGY_SERVICES`, 
 legacy fragment directory, and the curator's sleep and observations (no caller anywhere).
 """
 from __future__ import annotations
-import json, os, re, sys, threading, time, traceback
+import json, os, re, sys, time, traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, unquote
@@ -25,16 +25,16 @@ from service.validate import validate, export_kinds  # noqa: E402
 from service import ages  # noqa: E402
 from service import derive as deriving  # noqa: E402
 from service.write import Writer, WriteError, head, _dirty   # noqa: E402
-from service import peers as peering                        # noqa: E402
+from service import sessions                                 # noqa: E402
 from service import overlays                                # noqa: E402
 from service import walks                                   # noqa: E402
 from service import curator                                 # noqa: E402
 from service import access                                  # noqa: E402
 
 DATA = Path(os.environ.get("ONTOLOGY_DATA", "/data"))
-# The shared secret a peer backbone presents to read /v1/export. Unset means this backbone has no
-# link and that whole surface answers 501 — which is the right default: opening one is a decision,
-# not something an install drifts into. See docs/PEERING.md.
+# The enrolment key another RouteMind's circuit presents, once, to get a six-hour session for reading
+# /v1/export. Unset means that whole surface answers 501 — which is the right default: letting another
+# backbone read this one is a decision, not something an install drifts into. See docs/CIRCUIT.md.
 PEER_TOKEN = (os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
 # Where the record of cross-domain reads is kept. Unset means stderr only, which every install has
 # without configuring anything — and stderr rotates away, and an audit that rotates away is not one.
@@ -401,6 +401,9 @@ def apply_proposal(p: dict, actor: str):
                 return {"ok": False, "error": "conflict", "code": 409, "field": "one_liner",
                         "current": cur, "submitted_before": p["before"]}
             return writer.update_node(n["id"], {"one_liner": p["after"]}, actor)
+        if scope == "audience":
+            # Who an area crossed to, by name — named peers went with standing links on 2026-10-08.
+            return {"ok": False, "error": "an `audience` proposal names peers, which no longer exist — reject it"}
         if scope == "core":
             # CORE.md is no longer read (2026-10-07); a proposal to change one of its rows that is
             # still queued has nothing to change.
@@ -580,25 +583,6 @@ def advertised(node_id: str) -> list[dict]:
     return [c for c in store.children_of(node_id) if c.get("status") != "draft"]
 
 
-def _whose(node: dict, region_row: dict | None = None) -> str:
-    """Whose answer this row is: `ours`, `copied`, or `theirs`.
-
-    A router picks between two paths to one destination by where each was learned — static beats
-    OSPF beats iBGP — because without that it picks differently each time for no reason anyone can
-    see. The same situation arrives here as soon as anything is grafted or linked: on a backbone that
-    had done both, hop 0 carried **three** rows called `procurement`, and nothing said which to read.
-    An agent choosing well among them was luck.
-
-    `theirs` is decided by the caller, which knows it read the row across a link. `copied` is
-    `grafted_from`, written by the graft rather than guessed from the prefix — a prefix is a naming
-    convention, and somebody using `beta-` for an area of their own would make the convention lie
-    with nothing to check it against.
-    """
-    if node.get("peer"): return "theirs"
-    if node.get("grafted_from") or (region_row or {}).get("grafted_from"): return "copied"
-    return "ours"
-
-
 def _advert_child(c: dict) -> dict:
     """The type comes from **what you get when you call it**, not from where it sits.
 
@@ -620,13 +604,8 @@ def _advert_child(c: dict) -> dict:
     # not moved in three years is the one worth asking about. Read from git rather than stored — see
     # ages.py. Absent when there is no history to read, and absent means *not known*, never new.
     age = ages.of(DATA, head(DATA)).get(c["id"]) or {}
-    # Inherited from the area, because a grafted area's documents are grafted too and only its
-    # representative carries the record. A row that said `ours` inside a copied area would be the
-    # most misleading one on the page.
-    _from = (store.node(c.get("region")) or {}).get("grafted_from") if c.get("region") else None
     row = {"id": c["id"], "name": c["name"], "kind": c["kind"], "one_liner": c["one_liner"],
            "type": kind, "has_body": has_body, "children": len(kids),
-           "whose": _whose(c, {"grafted_from": _from}),
            **({"route_since": age["route_since"]} if age.get("route_since") else {}),
            **({"changed": age["changed"]} if age.get("changed") else {}),
            # The row carries the call that answers it. A document is not read at the address that
@@ -743,38 +722,16 @@ class Handler(BaseHTTPRequestHandler):
                                         **_health_valid()})
             if parts[:1] != ["v1"]: return self._err(404, "unknown path")
             parts = parts[1:]
-            # Before anything else, and read-only. A link carries advertisements and documents in one
-            # direction: writes go to the backbone that owns the area, through its own screen and its
-            # own review queue. That is not a limitation to lift later — it is the reason the link
-            # exists. Two ontologies that write to each other have been merged.
+            # Before anything else, and read-only. A circuit reads; writes go to the backbone that owns
+            # the area, through its own screen and its own review queue.
             if parts[:1] == ["export"]:
-                # One exception, and it is not a write. `refresh` discards something this backbone
-                # *remembers* about the caller and leaves everything it holds untouched: nothing can
-                # be read afterwards that could not be read before, only sooner. A peer sends it when
-                # what it advertises has changed, so a withdrawal does not sit on this table for the
-                # length of a cache. See `peers.announce` for why withdrawal is the case worth it.
-                if parts[1:] == ["refresh"] and method == "POST": return self._refresh()
-                if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
+                if method != "GET": return self._err(405, "the export surface is read-only — write to the backbone that owns it")
                 return self._export(parts[1:])
-            if parts[:1] == ["peers"]:
-                # Not a write to this backbone and not a read of it: the caller is asking for a
-                # credential to read with. It is the one POST a link may make, and it changes
-                # nothing anybody can read — only for how long the caller may keep reading it.
-                if parts[1:] == ["token"] and method == "POST": return self._peer_token()
-                if method != "GET": return self._err(405, "a link is read-only — write to the backbone that owns it")
-                if len(parts) < 3: return self._err(404, "unknown peer path")
-                try:
-                    payload, ctype = peering.relay(DATA, parts[1], parts[2:])
-                    # Sent as whatever it is. A document body is Markdown on this backbone and is
-                    # Markdown across a link too — a caller should not be able to tell, from the shape
-                    # of an answer, which side of a link it came from.
-                    return self._send(200, payload, ctype)
-                except peering.PeerError as e:
-                    # The peer's own status is passed through when it answered, and 504 when it did
-                    # not. A relayed 404 means that backbone does not hold the thing — which is its
-                    # claim to make. A timeout is nobody's claim and must not arrive looking like one.
-                    return self._err(e.status, str(e), reason=("peer_said_no" if e.reachable else "peer_unreachable"),
-                                     data={"peer": parts[1], "reachable": e.reachable})
+            # Not a write and not a read: the caller trades the enrolment key for a session to read
+            # with. It changes nothing anybody can read — only for how long the caller may keep reading.
+            if parts == ["peers", "token"]:
+                if method != "POST": return self._err(405, "POST the enrolment key to get a session")
+                return self._peer_token()
             # One consistent view of the tree per read. Without it a single answer could carry
             # `regions.json` from before a write and an entity from after it — a routing table that
             # never existed. The lock is held only while the snapshot loads, so the peer fetches
@@ -784,15 +741,7 @@ class Handler(BaseHTTPRequestHandler):
                     with store.snapshot(): return self._get(parts)
                 except TimeoutError as e:
                     return self._err(503, str(e), reason="repository_busy")
-            before = _export_state()
-            out = self._write(method, parts)
-            # Only when what crosses a link actually changed — every other save is nobody else's
-            # business, and a poke on each one would make a link's chatter track this backbone's
-            # edit rate instead of its export rate. Off the request thread, because a peer that is
-            # slow must not make somebody's save slow, and one that is down must not make it fail.
-            if _export_state() != before:
-                threading.Thread(target=peering.announce, args=(DATA,), daemon=True).start()
-            return out
+            return self._write(method, parts)
         except WriteError as e:
             if e.status == 200: return self._send(200, {"ok": True, "message": str(e)})
             return self._err(e.status, str(e), e.details, reason=e.code, data=e.data)
@@ -807,28 +756,6 @@ class Handler(BaseHTTPRequestHandler):
     def do_DELETE(self): self._route("DELETE")
     def do_OPTIONS(self): self._route("OPTIONS")
 
-    def _refresh(self):
-        """Forget what this backbone remembers about the caller, and nothing else."""
-        # A session, like every other call on this surface. Forgetting is per peer, and a caller with
-        # no name says which peer to forget no better than a stranger does — so an unnamed session is
-        # refused here even though it reads fine.
-        session = peering.session_peer(self.headers.get("X-Peer-Token") or "")
-        if not session:
-            return self._err(401, "session token missing, wrong or expired")
-        who = _peer_by_name(session.get("peer")) if session.get("peer") else None
-        if not who:
-            # A valid session that names nobody: the caller presented this backbone's own enrolment
-            # key, which is what the other end of a two-secret link does. Until 2026-10-06 this was
-            # refused — "it names no peer" — and so the hint every export change sends was refused
-            # on every link whose two directions do not share one secret: the withdrawal that
-            # announce exists to hurry arrived by the cache timer alone, and nothing said so.
-            # Forgetting everything is the safe reading of an unnamed hint: a caller that can read
-            # this surface can make it re-read its peers, and that is all a refresh is.
-            peering.forget(None)
-            return self._send(200, {"ok": True, "forgot": "*"})
-        peering.forget(who["name"])
-        return self._send(200, {"ok": True, "forgot": who["name"]})
-
     def _peer_token(self):
         """Trade the enrolment key for a session token. The only thing the enrolment key opens.
 
@@ -841,76 +768,47 @@ class Handler(BaseHTTPRequestHandler):
         which makes that the cheapest revocation there is.
         """
         token = self.headers.get("X-Peer-Token") or ""
-        who = _peer_by_token(token)
-        if not PEER_TOKEN and not any(p["token"] for p in peering.declared(DATA)):
-            return self._err(501, "this backbone advertises to no peer — set ONTOLOGY_PEER_TOKEN to open a link")
+        if not PEER_TOKEN:
+            return self._err(501, "this backbone lets nobody read it — set ONTOLOGY_PEER_TOKEN to allow a circuit")
         # The enrolment key only. A session token cannot mint another: a leaked session would
         # otherwise renew itself for ever and the six hours would bound nothing.
-        if not who and not peering.same_secret(token, PEER_TOKEN):
-            return self._err(401, "peer token missing or wrong")
-        session, ttl = peering.mint_session((who or {}).get("name"))
+        if not sessions.same_secret(token, PEER_TOKEN):
+            return self._err(401, "enrolment key missing or wrong")
+        session, ttl = sessions.mint()
         return self._send(200, {"token": session, "expires_in": ttl, "token_type": "session"})
 
     # ---- what crosses a link ----
     def _export(self, parts):
-        """The only surface a peer backbone can read. See docs/PEERING.md.
+        """The only surface another backbone can read — through a circuit. See docs/CIRCUIT.md.
 
-        **It is a separate surface, not the ordinary one behind a check.** An area reaches a peer only
-        by somebody setting `export` on it, and every handler here starts from that set — so there is
-        no path through this code, and no bug in a token check, that can serve an area nobody decided
-        to share. A filter applied on the way out would have to be right every time; a surface built
-        from the exported set is right by construction.
+        **It is a separate surface, not the ordinary one behind a check.** An area crosses only by
+        somebody setting `export` on it, and every handler here starts from that set — so there is no
+        path through this code, and no bug in a token check, that can serve an area nobody decided to
+        share. A filter applied on the way out would have to be right every time; a surface built from
+        the exported set is right by construction.
 
-        The line a peer sees is `use_when` — the same one this backbone routes on. There used to be
-        a second sentence for the outside, on the argument that a subsidiary's "needs head-office
-        approval" means nothing read at head office. Operator, 2026-09-29: one sentence. Two
-        sentences meaning the same thing is one sentence and one copy, and the copy is the one that
-        goes stale; in the shipped repositories all five had drifted into saying different things.
-        What crosses is still a decision — `export` — and it still goes through the review queue.
+        The line a reader sees is `use_when` — the same one this backbone routes on (operator,
+        2026-09-29: one sentence). What crosses is still a decision — `export` — and it still goes
+        through the review queue.
+
+        Until 2026-10-08 an area could also name an audience (`export_to`) — the named peers of
+        `peers.yaml` it would cross to. Named peers went with standing links; every reader now presents
+        the one enrolment key, so an audience could name nobody it could tell apart, and it is ignored.
         """
         # Before the door, so a wrong token is recorded too. A refused read is the one that matters:
-        # a served one is the ordinary case, and a run of refusals is the only signal there is that a
-        # link is being probed rather than used.
+        # a run of refusals is the only signal there is that the surface is being probed.
         self._access = {"path": urlparse(self.path).path, "peer": None, "reader": None}
-        token = self.headers.get("X-Peer-Token") or ""
-        rows = peering.declared(DATA)
-        # Who this backbone recognises may have changed since a session was minted, and a session
-        # carries the answer from its own moment. Re-read here, where the file is already being read.
-        peering.sessions_follow(rows)
-        if not PEER_TOKEN and not any(p["token"] for p in rows):
-            return self._err(501, "this backbone advertises to no peer — set ONTOLOGY_PEER_TOKEN to open a link")
+        if not PEER_TOKEN:
+            return self._err(501, "this backbone lets nobody read it — set ONTOLOGY_PEER_TOKEN to allow a circuit")
         # A session token, and not the enrolment key. The enrolment key opens `/v1/peers/token` and
         # nothing else — if it still worked here, the read path would still carry a secret that never
         # expires and the six hours would be decoration.
-        session = peering.session_peer(token)
-        if not session:
+        if not sessions.valid(self.headers.get("X-Peer-Token") or ""):
             return self._err(401, "session token missing, wrong or expired — POST /v1/peers/token "
                                   "with the enrolment key to get one (they last six hours)")
-        who = _peer_by_name(session["peer"]) if session.get("peer") else None
-
-        # Who is on the other end of the line, and who they are asking for. The two are the same
-        # thing on a direct link and are not behind an exchange: there, the caller is the room and
-        # the reader is one of its members, so the room says which. It is believed only when this
-        # backbone's own peers.yaml calls it an exchange — a claim that gets a caller *more* is
-        # exactly the one that must not be taken on the caller's word.
-        reader = who["name"] if who else None
-        if who and who["kind"] == "exchange":
-            reader = (self.headers.get("X-Peer-For") or "").strip() or who["name"]
-        # Two names, because they answer different questions: which link carried this, and who was at
-        # the far end of it. Behind two rooms the second is the neighbouring room and not the backbone
-        # inside it — which is not a gap in the record, it is what no-transit means.
-        self._access.update(peer=(who or {}).get("name"), reader=reader)
 
         rj = _regions_live()
-        shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", [])
-                  if r.get("export")}
-        # An audience narrows what the line opened. Fail closed twice over: an unnamed caller is
-        # nobody, and a restricted area is invisible to nobody. Only a room is handed rows it may not
-        # pass on — it is the one doing the filtering for its members, and it can only do that if it
-        # can see what it is filtering, which is the same thing as saying an exchange on the data
-        # path sees everything. docs/PEERING.md says so where it says who should run one.
-        to_a_room = bool(who) and who["kind"] == "exchange" and not (self.headers.get("X-Peer-For") or "").strip()
-        visible = {k: r for k, r in shared.items() if _visible(r, reader)}
+        shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", []) if r.get("export")}
         # An area whose **face** is of a kind that does not cross, does not cross. Its entries are
         # that representative's children, so offering the area would offer a table every row of which
         # is refused — and an empty table is the one answer a listing must never give, because it
@@ -921,50 +819,36 @@ class Handler(BaseHTTPRequestHandler):
                 rep = store.node(r.get("representative") or "")
                 return not rep or str(rep.get("kind") or "") not in _denied
             shared = {k: r for k, r in shared.items() if _face_crosses(r)}
-            visible = {k: r for k, r in visible.items() if _face_crosses(r)}
-        if not to_a_room: shared = visible
-        # The revision the peer is being told about. It is what makes staleness visible on the other
-        # side: git already numbers every state this repository has been in, so a link needs no clock.
+        # The revision the reader is told about. It is what makes staleness visible on the other side:
+        # git already numbers every state this repository has been in, so nobody needs a clock.
         rev = head(DATA)
 
         if parts == ["regions"]:
             return self._send(200, {"revision": rev, "schema": rj.get("schema"), "regions": [
                 {"id": r["id"], "source": r["source"], "title": r["title"],
-                 # The area's own line, which is also the one this backbone routes on. One sentence
-                 # for both readers is the whole of the 2026-09-29 decision.
                  "use_when": (r.get("use_when") or "").strip(), "representative": r.get("representative"),
-                 # Carried only to a room, which needs it to filter for its members. A backbone that
-                 # is being answered directly has already been filtered for and has no business
-                 # knowing who else was considered.
-                 **({"export_to": r.get("export_to") or []} if to_a_room and r.get("export_to") else {}),
                  "fetch": f"/v1/export/regions/{src}"}
                 for src, r in sorted(shared.items())]})
 
-        # A document is always answered from the narrow set. The listing may be handed to a room
-        # whole so that it can filter; the prose never is. A room asking for a body without saying
-        # who it is for is asking for itself, and a room is not an audience.
         if len(parts) == 2 and parts[0] == "regions":
-            if parts[1] not in visible: return self._err(404, f"no exported area {parts[1]}")
+            if parts[1] not in shared: return self._err(404, f"no exported area {parts[1]}")
             self._as_peer = True
             return self._get(["regions", parts[1]])
 
         if len(parts) >= 2 and parts[0] == "nodes":
             n = store.node(parts[1])
             # 404 and not 403: whether this backbone holds a thing it has not shared is itself
-            # something the peer has no business learning. The two answers must be indistinguishable.
-            if not n or (n.get("region") or "") not in {dir_of(r["source"]) for r in visible.values()}:
+            # something the reader has no business learning. The two answers must be indistinguishable.
+            if not n or (n.get("region") or "") not in {dir_of(r["source"]) for r in shared.values()}:
                 return self._err(404, f"no exported node {parts[1]}")
-            # A draft is not in the area's advertised list, and across a link that list is the only
+            # A draft is not in the area's advertised list, and across a circuit that list is the only
             # access control there is. Locally the same node answers by address on purpose — the
-            # reader there is the owner, and "draft" means unfinished rather than secret — but a peer
-            # cannot be told "this is hidden" and then be served it by anyone who kept yesterday's
-            # address. The surface must offer exactly what its own tables offer.
+            # reader there is the owner — but a reader elsewhere cannot be told "this is hidden" and
+            # then be served it by anyone who kept yesterday's address.
             if _draft_anywhere(n):
                 return self._err(404, f"no exported node {parts[1]}")
             # And the kind. `vocab.yaml` says which sorts of thing stay inside this backbone, and an
-            # entity under one that does not cross does not cross either — a table nobody may see is
-            # not made visible by hanging a note off it. Same 404 as everything else refused here:
-            # whether this backbone holds it is not something the peer learns.
+            # entity under one that does not cross does not cross either. Same 404 as everything else.
             if _kind_denied_anywhere(n, _denied_kinds()):
                 return self._err(404, f"no exported node {parts[1]}")
             self._as_peer = True
@@ -991,17 +875,10 @@ class Handler(BaseHTTPRequestHandler):
             mine = [
                 {"id": r["id"], "source": r["source"], "title": r["title"],
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
-                 "whose": _whose({}, r),
                  **_area_age(r.get("representative")),
                  "fetch": f"/v1/regions/{r['source'].replace('_', '-')}"}
                 for r in rj.get("regions", [])]
-            theirs, links = peering.rows(DATA)
-            # Through the same function as the local rows, so one place decides and the two halves
-            # of hop 0 cannot disagree about what the word means.
-            theirs = [{**r, "whose": _whose(r)} for r in theirs]
-            return self._send(200, {"revision": head(DATA), "schema": rj.get("schema"),
-                                    "regions": mine + theirs,
-                                    **({"links": links, "absence": _absence(links)} if links else {})})
+            return self._send(200, {"revision": head(DATA), "schema": rj.get("schema"), "regions": mine})
         if len(parts) == 2 and parts[0] == "regions":
             # SPEC-v2 §1.1 — an area is a namespace. The substance of this response is **what the
             # representative advertises**: what it is (advertises), the data it holds (files), and what
@@ -1018,13 +895,10 @@ class Handler(BaseHTTPRequestHandler):
                     "dir": r["dir"], "key": r["key"], "representative": r["representative"],
                     "use_when": r.get("use_when") or "",     # should I come here — the same value the listing gave
                     "advertises": r["advertises"],           # how the representative describes itself (one_liner)
-                    # What crosses a link, both parts of it. Not on the export surface — this is the
-                    # **owner's** view of its own decision, and the only place a person can read what
-                    # they have decided: `export` says whether this area crosses at all, and an
-                    # audience means it crosses to those peers only. A screen that could not show
-                    # these could not be used to make them.
+                    # Whether a circuit from another backbone may read this area. Not on the export
+                    # surface — this is the **owner's** view of its own decision, and the screen
+                    # shows it so a person can make it.
                     "export": bool(r.get("export")),
-                    "export_to": r.get("export_to") or [],
                     "entries": [_advert_child(c) for c in advertised(r["representative"])],
 })
                     # `path`, `data_kind`, `authority`, `nodes` and `docs` are kept out of the
@@ -1324,28 +1198,6 @@ def _regions_live() -> dict:
     return derived
 
 
-def _export_state():
-    """What this backbone advertises across a link, as one comparable value: which areas, the line
-    each shows, who each is for, and what any named reader is shown instead.
-
-    Deliberately not the git revision — most commits change nothing a peer can see, and a poke on
-    every save would tell every peer to re-read for somebody fixing a typo in a document body.
-
-    **Every field a peer can see has to be in here.** A field added to the export surface and not to
-    this is a change that reaches the reader while every cache on the way keeps the old row — the
-    change looks done and is not. It happened once with a per-reader line, which is why this sentence
-    is here. `use_when` is now in the tuple because it is the line a peer reads: editing it used to
-    be an internal change and is not one any more.
-    """
-    try:
-        return sorted((r.get("source"), bool(r.get("export")),
-                       (r.get("use_when") or "").strip(),
-                       tuple(r.get("export_to") or []))
-                      for r in (_regions_live().get("regions") or []))
-    except Exception:
-        return None
-
-
 # The three advertisements a model can revise, and the sentence each one is. A scope missing here is
 # a scope with no prompt: it used to reach `WHAT[scope]` and come back as `500 internal error`, which
 # names neither the mistake nor the fix.
@@ -1354,32 +1206,6 @@ DRAFT_PROMPTS = {
     "bb": "the one line used to decide **whether to choose this area at all** (what question brings you here)",
 }
 DRAFTABLE = frozenset(DRAFT_PROMPTS)
-
-
-def _peer_by_token(token: str) -> dict | None:
-    """Which declared peer presented this, if any.
-
-    The door still opens for the shared `ONTOLOGY_PEER_TOKEN`, which is what a single-link install
-    has and all it needs. What a *named* caller buys is the only thing that needs a name: an audience
-    written on an area is a list of peers, and a list of peers is worthless against a caller nobody
-    can tell apart. One secret per peer, in both directions — the rule the exchange already keeps —
-    is what makes the two ends of a link know each other, and it is declared in the same peers.yaml
-    that says who this backbone reads.
-    """
-    if not token: return None
-    return next((p for p in peering.declared(DATA)
-                 if any(peering.same_secret(token, t) for t in p["accept"])), None)
-
-
-def _peer_by_name(name: str | None) -> dict | None:
-    """The declared peer a session belongs to.
-
-    Read from `peers.yaml` at call time and not stored on the session: a session lasts six hours,
-    and a peer removed from the file during them must stop being that peer on the next request
-    rather than at the next mint.
-    """
-    if not name: return None
-    return next((p for p in peering.declared(DATA) if p["name"] == name), None)
 
 
 def _denied_kinds() -> set[str]:
@@ -1430,17 +1256,6 @@ def _draft_anywhere(node: dict) -> bool:
     return False
 
 
-def _line_for(region: dict, reader: str | None) -> str:
-    """The line this reader is shown. The default unless one was written for them by name.
-
-    An unnamed reader gets the default, which is the one written for everybody — unlike the audience,
-    where an unnamed reader is nobody. The two fields fail in opposite directions on purpose: one
-    decides whether anything is read at all and must fail closed, the other decides which sentence is
-    read and has a right answer for a stranger.
-    """
-    return (region.get("use_when") or "").strip()
-
-
 def _kind_denied_anywhere(node: dict, denied: set[str]) -> bool:
     """Is this entity of a kind that does not cross, or under one.
 
@@ -1456,56 +1271,6 @@ def _kind_denied_anywhere(node: dict, denied: set[str]) -> bool:
         seen.add(parent)
         cur = store.node(parent)
     return False
-
-
-def _visible(region: dict, reader: str | None) -> bool:
-    """May this reader see this area at all.
-
-    Absent audience is the common case and means everyone the area is exported to. A named audience
-    narrows it and can never widen it: an area that is not exported never gets here.
-
-    Fail closed on both unknowns. A caller this backbone cannot name is not on any list, and neither
-    is a reader an exchange declined to name — so a restricted area is invisible to both. The
-    alternative reads far better and is the bug: an unnamed caller falling through to "no audience
-    was matched, so show it" is how a restriction becomes a decoration.
-    """
-    aud = region.get("export_to") or []
-    return not aud or (bool(reader) and reader in aud)
-
-
-def _absence(links) -> str:
-    """What this backbone is entitled to claim, given the state of its links.
-
-    The absence rule is the load-bearing sentence of the whole design — *only hop 0 may say something
-    is not here* — and it is true because hop 0 is the whole world. A link makes that false: the world
-    is now this list plus what the peers advertise. So the sentence is computed rather than written
-    down, because the only thing that knows whether it still holds is the thing that just tried to
-    read every peer.
-
-    With a link down there is no honest version of it. The answer is not a smaller claim, it is no
-    claim: a table that is missing rows cannot be the grounds for saying anything is missing. Saying
-    so out loud is the difference between an agent that reports what it could not see and one that
-    reports that something does not exist.
-    """
-    down = [l for l in links if not l["reachable"]]
-    if not down:
-        # Only the links that actually brought something. A link that is up and advertising nothing
-        # adds nothing to the world, so the plain sentence is not merely acceptable there — it is the
-        # accurate one, and naming an empty link would tell a reader to expect rows that are not
-        # coming. It also stops an install with one backbone from announcing "the backbones it is
-        # linked to (EXCHANGE)", which names as a backbone the one thing that is careful not to be.
-        named = ", ".join(l["label"] for l in links if l.get("areas"))
-        if not named:
-            return ("Nothing outside this list exists in RouteMind. This list is the grounds on which "
-                    "you may say something is absent — no smaller table is.")
-        return (f"Nothing outside this list exists in RouteMind or in the backbones it reaches "
-                f"through {named}. This list is the grounds on which you may say something is absent "
-                f"— no smaller table is.")
-    why = "; ".join(f"{l['label']}: {l['error']}" for l in down)
-    return ("**This list is incomplete.** " + ("A link" if len(down) == 1 else "Links") +
-            f" could not be read ({why}), so areas that exist may be missing from it. Answer from what "
-            f"is here if you can, and say what you could not reach — but do not say anything is absent "
-            f"while a link is down. Nobody has spoken for what is behind it.")
 
 
 def main():

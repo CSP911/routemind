@@ -41,17 +41,10 @@ somebody can edit. The inventory, each with the check that proves it follows:
 | the node cache in the store | every entity file | keyed on every file's mtime | `check/same-answer-check.py` (the hand-edited run) |
 | ages | git history | keyed on the commit | `check/age-check.py` |
 | `/healthz` `valid` | validation | keyed on the commit | `check/drift-check.py` |
-| a peer's advertisement (cached 5 s) | the peer's export surface | the peer pokes `/v1/export/refresh` when its export state changes | `check/follow-check.py` |
-| a reader's session (6 h) | `peers.yaml` | every session dropped when the declared peers change; restart revokes all | `check/follow-check.py`, `check/session-check.py` |
+| what a circuit reads | the other backbone's export surface | not cached — every read is a read of the far end | `check/follow-check.py` |
+| a circuit's session (6 h) | the far end's memory | a restart there revokes every one; the circuit re-mints on the 401 | `check/follow-check.py`, `check/session-check.py` |
 | the MCP's area list in its first tool | hop 0 | refreshed on every `tools/list` | `check/follow-check.py` |
 | a walk (10 min) | the question | ended by a new hop 0, an overlay close, or time | `check/walk-check.py` |
-
-Found while writing `follow-check`, 2026-10-06: the poke had never worked on a link whose two
-directions use different secrets. The far end minted a session with this backbone's own key, which
-names no declared peer, and `/v1/export/refresh` refused an unnamed session — silently, since a hint
-swallows its failures — so every withdrawal arrived by the five-second timer alone, and the one
-check that watched for it waited ten seconds and passed. An unnamed but valid hint now forgets every
-peer, and a refused hint is one line in the log.
 
 **4. Every reader of one fact gets the same answer.** Two paths to one fact return the same bytes:
 the area listing and the area detail, the owner's view and the export surface, `store.regions()`
@@ -63,21 +56,22 @@ an uncommitted hand edit. Verified to fire: with the pre-2026-10-05 stale-table 
 the listing and hop 0 disagree with the file and the check says which cells.
 
 **5. A routing change is a commit.** Every write that changes what hop 0 or a node line says — API,
-screen, graft, tidy, the startup heal — goes through one transaction: refuse a dirty tree, mutate,
+screen, tidy, the startup heal — goes through one transaction: refuse a dirty tree, mutate,
 regenerate, validate, roll back on failure, commit. A hand edit is the one write outside it, and it
 is handled by 3: the validator refuses further writes until the table is regenerated, and readers
 are served the files' truth meanwhile. Checked by `check/transact-check.py`: statically, every
 `Writer` method that touches the tree is read as a syntax tree and must reach `transact`, directly
 or by delegation, so a method added without it fails here first; dynamically, every write path —
-each API write, the proposal queue's accept, `tidy --fix`, a graft and its ungraft — is driven once
+each API write, the proposal queue's accept and `tidy --fix` — is driven once
 to succeed and once to fail, and after each the commits gained, the tree's cleanliness and the
 response are read back. Verified to fire: with the rollback removed for one run, the first failure
 that reached the validator leaves the tree dirty and the check names it.
 
-**6. What crosses a link is a subset of what `export` allows.** A peer sees an area only if its
-representative's *file* says `export: yes`; an audience sees only its own. Checked by
-`check/peer-check.py` and `check/exchange-check.py`, against file truth (3), not the committed
-table — the 2026-10-05 defect was exactly the committed table disagreeing with the file.
+**6. What a circuit reads is a subset of what `export` allows.** Another backbone sees an area only
+if its representative's *file* says `export: yes`, and nothing under a kind marked `export: no`.
+Checked by `check/circuit-check.py`, `check/follow-check.py` and `check/drift-check.py`, against file
+truth (3), not the committed table — the 2026-10-05 defect was exactly the committed table
+disagreeing with the file.
 
 **7. Nothing is reported done that did not happen.** A write's response is the transaction's
 result; a refused step is reported as refused and no summary is printed after it. Checked by the

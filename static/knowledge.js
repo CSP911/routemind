@@ -25,7 +25,7 @@
     return 1;
   };
 
-  const state = { regions: [], nodes: [], open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { derives: false }, flags: new Map(), picked: new Set(), overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom(), domain: null, revision: null };
+  const state = { regions: [], nodes: [], open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { derives: false }, flags: new Map(), picked: new Set(), overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, zoom: readZoom(), revision: null };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -211,128 +211,17 @@
   const textWidth = (text, px = 7) => [...String(text || "")]
     .reduce((n, ch) => n + (/[\u1100-\u11FF\u3000-\u9FFF\uAC00-\uD7AF\uFF00-\uFFEF]/.test(ch) ? px * 1.79 : px), 0);
 
-  /** Every domain hop 0 knows about: this backbone, whoever is advertising through a link, and any
-   *  link that is down.
-   *
-   *  A link that is down is its own row and not a domain that vanished. Behind an exchange this
-   *  backbone cannot tell "that backbone stopped advertising" from "that backbone is gone" — only the
-   *  link's own state is knowable from here — so the wall says what it knows: the link is not
-   *  answering, and the list is therefore incomplete. */
-  function domainRows() {
-    // Named for what it is, not for where it is: the chip beside it already says "here", and a card
-    // whose name and flag are the same word says one thing twice.
-    const rows = [{ id: "", label: t("knowledge.wall.thisBackbone"), here: true, up: true,
-                    areas: state.regions.filter((r) => !r.peer), rev: state.revision, via: null }];
-    const byOrigin = new Map();
-    for (const r of state.regions) {
-      if (!r.peer) continue;
-      const key = String(r.origin || r.peer);
-      if (!byOrigin.has(key)) byOrigin.set(key, { id: key, label: key, here: false, up: true,
-        areas: [], rev: r.peer_revision || null, via: r.peer });
-      byOrigin.get(key).areas.push(r);
-    }
-    rows.push(...[...byOrigin.values()].sort((a, b) => a.id.localeCompare(b.id)));
-    for (const l of state.links || []) {
-      if (l.reachable !== false) continue;
-      // Keyed apart from an origin of the same name: a link is not the backbone behind it.
-      rows.push({ id: `link:${l.name}`, label: l.label || l.name, here: false, up: false,
-                  areas: [], rev: l.revision || null, via: l.name, why: l.error || "" });
-    }
-    return rows;
-  }
-
-  /** The wall. It appears only once there is more than one domain — a wall of one is not a wall, and
-   *  an install with no link should see exactly the screen it saw before this existed. */
-  function drawWall() {
-    const panel = $("knWallPanel"), mine = $("knWallMine"), theirs = $("knWallTheirs");
-    const rows = domainRows();
-    panel.hidden = rows.length < 2;
-    if (panel.hidden) { state.domain = null; mine.replaceChildren(); theirs.replaceChildren(); return; }
-    if (state.domain !== null && !rows.some((d) => d.id === state.domain)) state.domain = null;
-    // One scale across **both** walls, not one per wall. Comparing what this backbone advertises
-    // against what reaches it is the comparison most worth having, and two scales would make five of
-    // five and one of one draw identically.
-    const scale = Math.max(1, ...rows.map((d) => d.areas.length));
-    const CAP = 4;
-    const cardFor = ((d) => {
-      const sel = (state.domain || "") === d.id;
-      const b = el("button", "kn-dcard" + (d.here ? " is-here" : "") + (d.up ? "" : " is-down") +
-                             (sel ? " is-sel" : ""));
-      b.type = "button";
-      b.setAttribute("aria-pressed", String(sel));
-      const top = el("div", "kn-dcard-top");
-      top.append(el("span", "kn-dcard-name", d.label));
-      // Only for the state its own group does not already say. "Across a link" on every card in the
-      // group called *across a link* is a label repeated as many times as there are cards; a link
-      // that is not answering is the one thing the group heading cannot tell you.
-      if (!d.up) top.append(el("span", "kn-dcard-flag is-down", t("knowledge.wall.unreachable")));
-      b.append(top);
-      b.append(el("div", "kn-dcard-meta", d.rev ? `rev ${String(d.rev).slice(0, 7)}` : "—"));
-      const shelf = el("div", "kn-shelf");
-      for (let i = 0; i < scale; i++) shelf.append(el("i", i < d.areas.length ? "is-on" : ""));
-      b.append(shelf);
-      const tags = el("div", "kn-dtags");
-      if (!d.up) tags.append(el("span", "kn-dnone", t("knowledge.wall.noAnswer")));
-      else if (!d.areas.length) tags.append(el("span", "kn-dnone", t("knowledge.wall.nothing")));
-      else {
-        for (const r of d.areas.slice(0, CAP))
-          tags.append(el("span", "kn-dtag", String(r.fetch || "").split("/").pop() || norm(r.source)));
-        if (d.areas.length > CAP) tags.append(el("span", "kn-dtag is-more", `+${d.areas.length - CAP}`));
-      }
-      b.append(tags);
-      const foot = el("div", "kn-dcard-foot");
-      foot.append(el("span", null, d.here ? t("knowledge.wall.here") : `⌁ ${d.via || "—"}`));
-      foot.append(el("span", "kn-r", tv("knowledge.wall.count", { n: d.areas.length })));
-      b.append(foot);
-      // Picking never un-picks: the map below always shows something, and an empty map would be a
-      // hole in the screen rather than a state anybody wants.
-      b.addEventListener("click", () => {
-        if ((state.domain || "") === d.id) return;
-        state.domain = d.id || null;
-        state.open = []; state.openNode = new Map(); state.selected = null;
-        draw();
-      });
-      return b;
-    });
-    mine.replaceChildren(...rows.filter((d) => d.here).map(cardFor));
-    const away = rows.filter((d) => !d.here);
-    theirs.replaceChildren(...away.map(cardFor));
-    $("knWallCount").textContent = tv("knowledge.wall.summary",
-      { n: away.length, areas: away.reduce((a, d) => a + d.areas.length, 0) });
-  }
-
   function draw() {
-    drawWall();
     const canvas = $("knTopo");
     canvas.replaceChildren();
     // Named by its address, not by `source`. `source` comes back with hyphens turned into
     // underscores, so a tile labelled from it reads `order_delivery` while everything that fetches
     // it says `order-delivery` — one area under two names, and the one on screen is the one that
     // does not work if anybody types it.
-    // An area from a linked backbone is not a different kind of thing — it is the same thing, one
-    // backbone further away. So it draws as an ordinary area and the difference is carried where it
-    // matters: which backbone it hangs off, and a key that cannot collide with a local one. Both
-    // sides of this pair of installs have a `payroll`, which is exactly the case that must not merge.
-    // With a wall above, the map is the detail pane for one card. Without one — a single-backbone
-    // install, which is most of them — this is every row there is and nothing changes.
-    const pick = state.domain;
-    const rows = !$("knWallPanel").hidden
-      ? state.regions.filter((r) => (pick === null ? !r.peer : String(r.origin || r.peer) === pick))
-      : state.regions;
-    const ases = rows.map((r) => {
+    const ases = state.regions.map((r) => {
       const dir = String(r.fetch || "").split("/").pop() || norm(r.source);
-      const peer = r.peer || null;
-      return { key: peer ? `${peer}:${dir}` : dir, label: dir, kind: "as",
-               address: r.fetch || `/v1/regions/${dir}`,
-               region: r, peer, peerLabel: r.peer_label || peer,
-               // `peer` is who this backbone asks — the first hop, and what the read-only rules key
-               // on. `origin` is who the area belongs to, which is not the same once an exchange is
-               // in the middle: it carries the area and does not hold it. The picture groups by
-               // origin so that nothing is drawn as belonging to the thing that merely passed it on.
-               origin: r.origin || peer,
-               originLabel: r.origin ? String(r.origin).toUpperCase() : (r.peer_label || peer),
-               originRevision: r.peer_revision || null,
-               flagKey: peer ? null : dir, pickable: !peer };
+      return { key: dir, label: dir, kind: "as", address: r.fetch || `/v1/regions/${dir}`,
+               region: r, flagKey: dir, pickable: true };
     });
     const openIdx = ases.map((_, i) => i).filter((i) => isOpen(ases[i].key));
 
@@ -358,19 +247,8 @@
     const drop = Math.max(0, vrfBottom + VRF.gap - (BASE_Y.core - DEV.core.h / 2));
     const Y = { core: BASE_Y.core + drop, bus: BASE_Y.bus + drop, as: BASE_Y.as + drop };
 
-    // A link whose peer is down advertises nothing, so it has no areas and would take no room — and
-    // the map would then look exactly like a backbone that has no link at all. Those are different
-    // facts and this is the picture that has to tell them apart, so the room is reserved for the
-    // device whether or not anything hangs off it.
-    // A link that answered nothing still gets its room reserved, or a failed link would look exactly
-    // like an install that never had one. With a wall above, that job belongs to its card — so the
-    // device is drawn only when its own card is the one selected, and the map stays the detail of
-    // one thing rather than one thing plus every outage.
-    const silent = (state.links || []).filter(
-      (l) => l.reachable === false && !ases.some((a) => a.peer === l.name)
-             && ($("knWallPanel").hidden || state.domain === `link:${l.name}`));
     const asRow = ases.length * DEV.as.w + (ases.length - 1) * 24;
-    const width = Math.max(1080, asRow + 96, racksW + 40) + silent.length * (DEV.core.w + 48);
+    const width = Math.max(1080, asRow + 96, racksW + 40);
     const links = svgEl("g", {});
     const marks = svgEl("g", {});
     canvas.append(links, marks);
@@ -441,60 +319,13 @@
       marks.append(g);
     });
 
-    // One bus per backbone, and a line between the backbones themselves. A peer's areas hang off the
-    // peer, not off this one: drawn on a single bus they would read as areas of this ontology, which
-    // is the one thing the picture must not say. The link is drawn dashed and labelled with the state
-    // the API reported, because a link is the first thing on this map that can be down.
-    // Grouped by **origin**, not by the peer it was asked of. With an exchange in the middle those
-    // differ, and grouping by the peer would hang three backbones' areas under one EXCHANGE device —
-    // a picture that says the exchange holds them, which is false. It carries them. Network diagrams
-    // draw the adjacency and not the fabric between, for the same reason.
-    //
-    // So a working exchange is not drawn at all. A failed one is, because then it is the thing that
-    // broke and naming it is the only useful thing left to say — that is `silent` below, which keys
-    // on the peer and not on the origin.
-    const groups = new Map();
-    ases.forEach((row, i) => {
-      const g = row.origin || row.peer;
-      if (!groups.has(g)) groups.set(g, []);
-      groups.get(g).push(i);
-    });
-    const linkState = new Map((state.links || []).map((l) => [l.name, l]));
-
-    // The ones that answered nothing: a device and the wire to it, marked, with nothing below.
-    silent.forEach((l, i) => {
-      const hub = width - (silent.length - i) * (DEV.core.w + 48) + DEV.core.w / 2 + 24;
-      seg([[cx + DEV.core.w / 2, Y.core], [hub, Y.core]], "kn-wire is-link is-down");
-      marks.append(device({ key: `__peer:${l.name}`, label: l.label || l.name, kind: "bb",
-                            address: "", peer: l.name, link: l }, hub, Y.core, "core"));
-    });
-
-    for (const [origin, idx] of groups) {
-      const from = asX(idx[0]), to = asX(idx[idx.length - 1]);
-      const hub = (from + to) / 2;
-      if (origin) {
-        const head = ases[idx[0]];
-        // Its own state, not the transport's. Reached directly there is a link entry; reached through
-        // an exchange there is not, and what is knowable from here is what it advertised and the
-        // revision that came with it.
-        const l = linkState.get(origin) || { reachable: true, areas: idx.length,
-                                             revision: head.originRevision };
-        const dev = { key: `__peer:${origin}`, label: head.originLabel || origin, kind: "bb",
-                      address: "", peer: head.peer, link: l };
-        // The wire this backbone reaches it by. Dashed and, when it is down, marked — the rows above
-        // are still drawn because the API still advertised them a moment ago, and a link that has
-        // gone quiet is a thing to see rather than a row that silently disappears.
-        seg([[cx + DEV.core.w / 2, Y.core], [hub, Y.core]],
-            "kn-wire is-link" + (l.reachable === false ? " is-down" : ""));
-        marks.append(device(dev, hub, Y.core, "core"));
-        seg([[hub, Y.core + DEV.core.h / 2], [hub, Y.bus]], "kn-wire is-link" + (l.reachable === false ? " is-down" : ""));
-      }
-      seg([[from, Y.bus], [to, Y.bus]], "kn-wire is-bus" + (origin ? " is-link" : ""));
-      idx.forEach((i) => {
-        const row = ases[i];
-        const on = isOpen(row.key);
-        seg([[asX(i), Y.bus], [asX(i), Y.as - DEV.as.h / 2]],
-            "kn-wire" + (on ? " is-on" : "") + (origin ? " is-link" : ""));
+    // One bus, and the areas hanging off it. (Until 2026-10-08 a linked backbone's areas hung off a
+    // bus of their own, with the link drawn between; standing links were retired for circuits, which
+    // an agent opens for itself and the map does not draw.)
+    if (ases.length) {
+      seg([[asX(0), Y.bus], [asX(ases.length - 1), Y.bus]], "kn-wire is-bus");
+      ases.forEach((row, i) => {
+        seg([[asX(i), Y.bus], [asX(i), Y.as - DEV.as.h / 2]], "kn-wire" + (isOpen(row.key) ? " is-on" : ""));
         marks.append(device(row, asX(i), Y.as, "as"));
       });
     }
@@ -613,15 +444,6 @@
     const row = isArea ? as : { kind: "as", label: holder, address };
     const flagKey = isArea ? as.key : `node:${holder}`;
     const flags = flagsFor(flagKey).length;
-    // An area on a linked backbone is read from here and written where it lives. Its rack was
-    // offering "+ New node", "+ New data", "Advertise upstream" and a delete — four ways to write
-    // into another organisation's ontology, one of them destructive, and every one of them refused
-    // by the far end with 405. Refusing over there is the backstop; not drawing the button is the
-    // interface. What is left is the thing that makes sense at this distance: read its routing table.
-    if (as.peer) {
-      return [{ label: t("knowledge.act.table"),
-                run: () => showRaw({ kind: "as", title: row.label, address }) }];
-    }
     return [
       ...(flags ? [{ label: `⚑ ${t("knowledge.flag.short")} ${flags}`, flag: true, run: () => reviewFlags(flagKey, row.label, address) }] : []),
       // Proposes a new line for what this system advertises upward: an area's own line, or — for a
@@ -659,10 +481,6 @@
     return {
       key: c.fetch || c.id, id: c.id, label: c.name || c.id, kind: read && !enter ? "data" : "as",
       address: c.fetch, node: enter ? c.id : null, ownerRegion: areaKey, level, holder, pickable: true,
-      // Whose backbone this row belongs to, carried down from the area key. A row from a linked
-      // one still opens and still reads; what it must not do is move, because a move is a write
-      // and writes go to the backbone that owns the area.
-      peer: String(areaKey).includes(":") ? String(areaKey).split(":")[0] : null,
       badge: enter ? (counts || t("knowledge.relOnly")) : "", shape,
     };
   }
@@ -817,7 +635,7 @@
     const { w, h } = DEV[shape];
     const pending = row.flagKey ? flagsFor(row.flagKey).length : 0;
     const picked = Boolean(row.address && state.picked.has(row.address));
-    const g = svgEl("g", { class: `kn-dev is-${shape} is-${row.kind}${selected ? " is-sel" : ""}${row.node && pathIn(row.ownerRegion).includes(row.node) ? " is-open" : ""}${place && row.id && !row.peer ? " is-movable" : ""}${pending ? " is-flagged" : ""}${picked ? " is-picked" : ""}${vrfClass(row, shape)}${fpClass(row)}`, tabindex: "0", role: "button" });
+    const g = svgEl("g", { class: `kn-dev is-${shape} is-${row.kind}${selected ? " is-sel" : ""}${row.node && pathIn(row.ownerRegion).includes(row.node) ? " is-open" : ""}${place && row.id ? " is-movable" : ""}${pending ? " is-flagged" : ""}${picked ? " is-picked" : ""}${vrfClass(row, shape)}${fpClass(row)}`, tabindex: "0", role: "button" });
     g.append(svgEl("rect", { x: x - w / 2, y: y - h / 2, width: w, height: h, rx: shape === "core" ? 10 : 5 }));
     if (shape === "as" || shape === "sw" || shape === "leaf") {
       // Port strip along the bottom edge. A leaf has few ports on purpose: one file is in it, room for more.
@@ -865,15 +683,7 @@
     g.append(label);
     if (shape === "core") {
       const sub = svgEl("text", { x, y: y + 14, class: "kn-dev-sub", "text-anchor": "middle" });
-      // A peer's device says what the *link* is, not what this ontology holds. Printing the local
-      // counts under somebody else's name is the map telling a lie in the smallest possible type.
-      // What is knowable from here is how many areas it advertises, and whether it answered.
-      sub.textContent = row.peer
-        ? (row.link && row.link.reachable === false
-            ? t("knowledge.peer.down")
-            : tv("knowledge.peer.up", { as: (row.link && row.link.areas) || 0,
-                                        rev: String((row.link && row.link.revision) || "").slice(0, 7) }))
-        : tv("knowledge.counts", { as: state.regions.filter((r) => !r.peer).length, nodes: state.nodes.length });
+      sub.textContent = tv("knowledge.counts", { as: state.regions.length, nodes: state.nodes.length });
       g.append(sub);
     }
     if (row.badge) {
@@ -883,19 +693,12 @@
     }
     // Anything in a rack can be picked up; a node can also be landed on. A document cannot be landed
     // on: that would make a document into a holder, and making holders is "+ New node".
-    // Not for a row on another backbone: dragging one is a move, a move is a write, and the far end
-    // refuses it. Nor a drop target, for the same reason pointed the other way — nothing of ours
-    // belongs inside somebody else's area.
-    if (place && row.id && !row.peer) {
+    if (place && row.id) {
       g.addEventListener("pointerdown", (e) => pressTile(e, row, g));
       if (row.node) dropAttrs(g, row.node, place.area, [...place.chain, row.node], row.label);
     }
     const run = () => {
       if (justDragged) return;           // the click that ends a drag is not a click on the tile
-      // A peer's backbone is not this one's transcript. Until there is something to show for a link —
-      // what it advertises, when it was last read — pressing it does nothing, rather than opening the
-      // local backbone's document under somebody else's name.
-      if (shape === "core" && row.peer) return;
       if (shape === "core") return showRaw({ kind: "bb", title: "RouteMind Back-Bone", address: "" });
       if (shape === "host" || shape === "mgmt") return showRaw({ kind: row.kind, title: row.label, address: row.address });
       // A switch opens what hangs off it — a rack — and nothing else. The routing table the agent is
@@ -1475,11 +1278,7 @@
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({
         revision: drawnRevision, shape: CACHE_SHAPE, savedAt: Date.now(),
-        // Local areas only. A peer's rows are not this backbone's to remember: the API drops them the
-        // moment a link cannot be read, and a cache that keeps them puts them straight back — so a
-        // dead link draws exactly like a live one, which is the failure the whole absence rule turns
-        // on. They come back on the refresh below, from the wire, or they do not come back.
-        regions: state.regions.filter((r) => !r.peer),
+        regions: state.regions,
         nodes: state.nodes,
         entries: [...state.entries.entries()],
       }));
@@ -1494,7 +1293,6 @@
     const cached = headRev ? readCache(headRev) : null;
     if (cached) {
       state.regions = cached.regions || [];
-      state.links = [];
       state.nodes = cached.nodes || [];
       state.entries = new Map(cached.entries || []);
       drawnRevision = headRev;
@@ -1503,28 +1301,10 @@
       // worth seeing, and they cost one call.
       loadFlags().then(draw);
       loadOverlays().then(draw);
-      // Nor is anything across a link. The cached map is this backbone's own areas, which are as good
-      // as the revision they were saved at; whether a peer is answering *right now* is not something
-      // a saved picture can know, and drawing a link that is down as though it were up is the one
-      // mistake this picture must not make.
-      request("regions").then((fresh) => {
-        state.regions = [...state.regions.filter((r) => !r.peer), ...(fresh.regions || []).filter((r) => r.peer)];
-        state.links = fresh.links || [];
-        // From here too, or a tab that opened on a cached map shows a dash where every other card
-        // shows a revision — which reads as "unknown" rather than as "this one is ours".
-        state.revision = fresh.revision || null;
-        draw();
-      }).catch(() => {});
       return;
     }
     const [regions, graph] = await Promise.all([request("regions"), request("graph")]);
     state.regions = regions.regions || [];
-    // Never cached, for the reason flags are not: whether a link is up is the thing worth seeing now,
-    // and a cached "reachable" is a picture of a link that may have gone since.
-    state.links = regions.links || [];
-    // This backbone's own revision, for its card on the wall. Every other card carries the one that
-    // came with the advertisement, and a card that showed a dash where the others show a revision
-    // would read as "unknown" rather than as "this one is ours".
     state.revision = regions.revision || null;
     state.nodes = graph.nodes || [];
     state.entries = new Map();
@@ -1537,22 +1317,8 @@
 
   /** Entries for one Region — `entries[]` is files and children as one list, each row carrying its own
    *  `type` and `fetch`. Fetched on first open; cached in memory and, once all are in, on disk. */
-  /** Where an area's own table lives, from its key alone.
-   *
-   *  A local area is keyed by its directory; an area on a linked backbone by `<peer>:<dir>`, which can
-   *  be taken apart again because a directory name is ASCII kebab-case and cannot hold a colon.
-   *  Deriving it here rather than threading an address through every caller keeps the three call
-   *  sites — opening a rack, warming the ones nobody opened, redrawing after a change — from each
-   *  having to know that some areas are somewhere else.
-   *
-   *  Before this they rebuilt `regions/<key>`, so a peer's area asked for `regions/branch:payroll`,
-   *  got a 404, and opened as an empty rack: the map drew an area you could see and could not open. */
-  const entriesPath = (key) => {
-    const at = String(key).indexOf(":");
-    return at < 0
-      ? "regions/" + encodeURIComponent(key)
-      : `peers/${encodeURIComponent(key.slice(0, at))}/regions/${encodeURIComponent(key.slice(at + 1))}`;
-  };
+  /** Where an area's own table lives, from its key — its directory. */
+  const entriesPath = (key) => "regions/" + encodeURIComponent(key);
 
   async function loadEntries(key) {
     if (state.entries.has(key)) return state.entries.get(key);
@@ -1606,13 +1372,6 @@
     try {
       const s = await request("state");
       if (s.writable === false) problems.push([t("knowledge.state.readOnly"), String(s.uncommitted || "")]);
-      // A link that is up and not doing what somebody thinks it is doing. This belongs in the bar and
-      // an open door does not: nothing here is a deployment choice, it is a line in a file that has
-      // stopped an audience from having any effect, with everything still looking fine from every
-      // screen.
-      for (const l of state.links || []) {
-        if (l.note) problems.push([`${l.label || l.name}: ${l.note}`, ""]);
-      }
       invalid = s.valid === false;
       if (invalid) problems.push([t("knowledge.validBad"), ""]);
     } catch (error) {
@@ -1899,13 +1658,9 @@
 
   /** What this area sends across a link, both parts of it, in one place.
    *
-   *  Three decisions and three proposals, not one form with three fields: the line everybody sees,
-   *  who sees it, and what one named reader is shown instead. Each goes through the review queue on
-   *  its own because each can be reviewed on its own — and because "stop advertising this area" and
-   *  "reword it" should never arrive as one thing to say yes or no to.
-   *
-   *  Until this existed all three were reachable only by an API nobody publishes outside the compose
-   *  network. docs/PEERING.md described the decision at length and there was nowhere to make it. */
+   *  Two decisions and two proposals: the line, and whether a circuit from another backbone may read
+   *  it at all. Each goes through the review queue on its own, because "stop advertising this area"
+   *  and "reword it" should never arrive as one thing to say yes or no to (docs/CIRCUIT.md). */
   async function exportCard(region) {
     const pane = $("knEdit");
     pane.replaceChildren(el("p", "kn-fnote", t("common.loading")));
@@ -1916,12 +1671,6 @@
 
     const exported = Boolean(r.export);
     const line = String(r.use_when || "");
-    const audience = (r.export_to || []).map(String);
-    // Who there is to name. The backbones whose areas this one can already see are the ones a person
-    // has evidence of; anybody else has to be typed, because a room can hold a member this backbone
-    // has never been offered anything by.
-    const known = [...new Set([...(state.regions || []).filter((x) => x.peer).map((x) => String(x.origin || "")),
-                               ...audience])].filter(Boolean).sort();
 
     const card = el("form", "kn-card-form");
     card.addEventListener("submit", (e) => e.preventDefault());
@@ -1934,17 +1683,15 @@
       card.append(box);
       return box;
     };
-    const send = (box, body, doneKey) => actions(button("knowledge.export.propose", null, (b) =>
-      guarded(b, async () => { await post("proposals", body()); await loadFlags(); draw(); }, doneKey)));
 
     // 1 — the decision, and the sentence it crosses with, asked in that order.
     //
     // Saying yes here is saying "advertise this area", and the next question a person has is *with
     // what*. So the sentence is in this card, editable, prefilled with the area's own line — one
-    // sentence, `use_when`, which is what a peer reads and what this backbone routes on
+    // sentence, `use_when`, which is what another backbone's circuit reads and what this one routes on
     // (operator, 2026-09-29).
     //
-    // **It belongs to the area, never to a document.** The advertisement is what a peer chooses the
+    // **It belongs to the area, never to a document.** The advertisement is what a reader chooses the
     // *area* by; a per-document version would be a second routing table nobody asked for, and the
     // validator refuses one on any node that is not the area's top representative.
     //
@@ -1991,31 +1738,6 @@
                  }
                  await loadFlags(); draw();
                }, "knowledge.submit.sent"))));
-
-    // 2 — who. Empty is everybody the line already reaches, and is what almost every area wants.
-    const two = section("knowledge.export.audience", "knowledge.export.audienceLead");
-    const audBox = input(audience.join(", "), { placeholder: t("knowledge.export.audienceHint") });
-    const audWhy = input("", { maxlength: 600, placeholder: t("knowledge.submit.whyHint") });
-    const chipRow = el("div", "kn-chiprow");
-    for (const name of known) {
-      const chip = el("button", "kn-chip is-add", name);
-      chip.type = "button";
-      chip.addEventListener("click", () => {
-        const have = audBox.value.split(",").map((x) => x.trim()).filter(Boolean);
-        if (!have.includes(name)) audBox.value = [...have, name].join(", ");
-        audBox.focus();
-      });
-      chipRow.append(chip);
-    }
-    two.append(labelled("knowledge.export.audience", audBox));
-    if (known.length) two.append(chipRow);
-    two.append(labelled("knowledge.submit.why", audWhy),
-               send(two, () => {
-                 const text = audBox.value.split(",").map((x) => x.trim()).filter(Boolean).join(", ");
-                 if (text === audience.join(", ")) throw new Error(t("knowledge.submit.unchanged"));
-                 return { scope: "audience", region, before: audience.join(", "), after: text,
-                          why: audWhy.value.trim() };
-               }, "knowledge.submit.sent"));
 
     card.append(actions(button("common.cancel", "quiet", closeCard)));
     pane.replaceChildren(card);
@@ -2957,80 +2679,6 @@
     paint();
   }
 
-  // ── export ────────────────────────────────────────────────────────────────
-  /** Ask the server to seal what this backbone exports, and hand the file to the browser.
-   *
-   *  A POST and not a link, because the passphrase is in the body. A URL is the one part of a request
-   *  that gets written down everywhere — history, proxy logs, the Referer of whatever loads next —
-   *  and this one would carry the only secret in the exchange.
-   *
-   *  `fetch` and a Blob rather than a form submission, so a refusal can be read and shown here. A
-   *  form post replaces the page with whatever came back, which for a 409 is a bare JSON body and the
-   *  map gone. */
-  async function exportBundle(passphrase) {
-    const res = await fetch("/api/knowledge/export/bundle", {
-      method: "POST", credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ passphrase }),
-    });
-    if (!res.ok) throw refusal(await res.json().catch(() => ({})), res.status);
-    const blob = await res.blob();
-    const cd = res.headers.get("Content-Disposition") || "";
-    const name = (/filename="([^"]+)"/.exec(cd) || [, "routemind-export.rmx"])[1];
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    // Revoked on the next tick, not immediately: Safari cancels a download whose object URL is
-    // released in the same turn as the click, and does it without an error anywhere.
-    setTimeout(() => URL.revokeObjectURL(url), 0);
-    return { name, bytes: blob.size,
-             regions: Number(res.headers.get("X-Export-Regions") || 0),
-             nodes: Number(res.headers.get("X-Export-Nodes") || 0) };
-  }
-
-  function exportDialog() {
-    const dialog = $("knExportDialog"), form = $("knExportForm");
-    const pass = $("knExportPass"), again = $("knExportPass2"), msg = $("knExportMsg"), go = $("knExportGo");
-
-    const say = (text, kind) => {
-      msg.textContent = text || "";
-      msg.className = "kn-export-msg" + (kind ? ` is-${kind}` : "");
-      msg.hidden = !text;
-    };
-    // Nothing typed here outlives the dialog. The fields are cleared on every close, including the
-    // one that succeeded and the one the Escape key did.
-    const clear = () => { pass.value = ""; again.value = ""; say(""); };
-
-    const open = () => { clear(); if (!dialog.open) dialog.showModal(); pass.focus(); };
-    $("knExport").addEventListener("click", open);
-    $("knExportClose").addEventListener("click", () => dialog.close());
-    $("knExportCancel").addEventListener("click", () => dialog.close());
-    dialog.addEventListener("close", clear);
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();                       // the dialog stays open, so a refusal has somewhere to appear
-      if (pass.value.length < 12) return say(t("knowledge.bundle.tooShort"), "bad");
-      // Checked here rather than server-side because the server cannot check it: it receives one
-      // string and has no way to know it is not the one that was meant.
-      if (pass.value !== again.value) return say(t("knowledge.bundle.mismatch"), "bad");
-      go.disabled = true;
-      say(t("knowledge.bundle.working"));
-      try {
-        const r = await exportBundle(pass.value);
-        clear();
-        say(tv("knowledge.bundle.done", { name: r.name, regions: r.regions, nodes: r.nodes,
-                                          kb: Math.max(1, Math.round(r.bytes / 1024)) }), "ok");
-      } catch (err) {
-        say(err.message, "bad");
-      } finally {
-        go.disabled = false;
-      }
-    });
-  }
-
   function boot() {
     languagePicker();
     zoomControls();
@@ -3057,7 +2705,6 @@
     }).catch(() => {}));
 
     $("knRawClose").addEventListener("click", () => $("knRawDialog").close());
-    exportDialog();
     // Closing the transcript deselects, so the map never shows a highlight for a panel that is gone.
     $("knRawDialog").addEventListener("close", () => { state.selected = null; draw(); });
 
@@ -3105,15 +2752,9 @@
       "Use an address exactly as printed. Never build one — every row you fetch prints the addresses",
       "of what is inside it, and those are the only ones that work.",
       "",
-      // The service computes this sentence, and it is the only thing that can: whether this list is
-      // still the whole world depends on whether every link answered, which only the side that just
-      // tried to read them knows. This block used to print the confident version unconditionally —
-      // so with a link down it handed an agent "nothing outside this list exists" over a list that
-      // was missing rows, which is the one claim the design forbids. The MCP server has always read
-      // it from the API (mcp/knowledge_mcp.py, hop0); this is the same fallback, for a service too
-      // old to send one.
-      d.absence || ("Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
-                    + "something is absent; no smaller table is."),
+      // The same sentence the MCP server prints under hop 0 (mcp/knowledge_mcp.py, hop0).
+      "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
+        + "something is absent; no smaller table is.",
     ].join("\n");
   }
 

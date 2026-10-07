@@ -10,13 +10,9 @@ __pycache__/
 *.py[cod]
 .DS_Store
 
-# The second backbone's data, for anyone trying a link out locally. Its own repository, the way
-# data/ is — docker-compose.peer.yml, docs/PEERING.md.
+# Data directories from the linked-backbone layouts retired on 2026-10-08 (a second backbone, and the
+# demonstration domain). Nothing makes them any more; a checkout that ran them still has them.
 /data-b/
-
-# The demonstration domain: three more backbones and a second exchange. Built by
-# examples/seed-demo.sh from examples/back-office, so what is versioned is the forty lines that make
-# them different from it rather than five copies of the same worked example.
 /data-vendor/
 /data-audit/
 /data-depot/
@@ -61,10 +57,6 @@ bench/.probe.lock
 /eval/runs/census.log
 /eval/runs/census-overlay.log
 /eval/runs/walks-census/.walk.sh
-
-# Bundles made by transfer/export.py. They are encrypted, but an encrypted copy of the ontology in
-# the ontology's own repository is still a copy nobody meant to keep.
-*.rmx
 
 # A copy of pyyaml lifted out of the ontology image so the checks that import the service can run on
 # a host python that has none (docs/CHECKS.md, "Where each one can run"). It is somebody else's

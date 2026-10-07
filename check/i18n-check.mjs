@@ -172,7 +172,7 @@ if (loose.length) {
 //
 // This is not about duplicate keys — the dictionaries had none, every language was at 100%, and the
 // dialog still rendered somebody else's sentences. `knowledge.export.title` meant "What {area} sends
-// across a link" to the peering panel, and a new export dialog reached for the same obvious name.
+// across a link" to a panel since retired, and a new dialog reached for the same obvious name.
 // Nothing was overwritten and nothing was missing; two features simply asked for one string, and the
 // screen showed the other one's.
 //
@@ -182,7 +182,6 @@ if (loose.length) {
 const SHARED_ON_PURPOSE = new Set([
   "common.cancel",            // one word, and every form that has a Cancel means the same by it
   "knowledge.fp.replay",      // the button's label, put back when it stops being "Stop" mid-replay
-  "knowledge.wall.here",      // the chip on this backbone's own card, drawn in both places
 ]);
 const markup = new Set([...html.matchAll(/data-i18n(?:-label|-placeholder)?="([^"]+)"/g)].map((m) => m[1]));
 const script = new Set([...js.matchAll(/"((?:knowledge|common)\.[A-Za-z0-9_.]+)"/g)].map((m) => m[1]));

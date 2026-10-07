@@ -16,7 +16,7 @@ documents use, retrieval scores **0.028** and this scores **1.000** — and it c
 walking. [The study](#measured), the corpus and every run are in this repository.
 
 ```sh
-./install.sh --name acme --port 9000   # then `claude` in the same directory
+./install.sh --port 9000   # then `claude` in the same directory
 ```
 
 ---
@@ -102,22 +102,20 @@ Docker, with `docker compose`. That is all it needs — the containers carry pyt
 
 ```sh
 git clone https://github.com/CSP911/routemind.git routemind && cd routemind
-./install.sh --name acme --port 9000
+./install.sh --port 9000
 ```
 
 → **http://localhost:9000**
 
-`--name` is what this domain is called: one word, lowercase, and it appears in every address a linked
-backbone prints (`/v1/peers/acme/…`). `--port` is where the map answers, 8080 by default. Run
-`./install.sh` bare and it asks for both, then asks whether you have an LLM — Enter skips it, and
+`--port` is where the map answers, 8080 by default. Run `./install.sh` bare and it asks, then asks
+whether you have an LLM — Enter skips it, and
 `--no-llm` does not ask. An LLM changes one thing: a **✨ Suggest** button that drafts a routing line
 for you to edit.
 
 Safe to run again; an existing `.env` is kept and only what you pass is replaced.
 
-**Three containers, no database.** `ontology` is the API and the only thing that touches your git
-repository; `web` is the map and a proxy; `exchange` is where backbones meet, idle until you link
-one. On first boot an empty ontology is laid into `data/repo` and that becomes a git repository —
+**Two containers, no database.** `ontology` is the API and the only thing that touches your git
+repository; `web` is the map and a proxy. On first boot an empty ontology is laid into `data/repo` and that becomes a git repository —
 every write **commits**, so undo is `git revert`.
 
 Start from [`examples/back-office`](examples/) rather than an empty map: five areas, 79 entities,
@@ -180,80 +178,44 @@ a draft over a rule that has held for a decade. The column supports asking, not 
 
 **[docs/AGE.md](docs/AGE.md)**.
 
-## More than one backbone
+## Reading another backbone
 
-An install is **one backbone and an exchange**. A **domain** is one exchange and the backbones on it —
-head office and a subsidiary are one domain; a company and its supplier are two.
-
-An area crosses by somebody setting `export: yes` on it, and by nothing else. The line a peer reads
-is that area's own `use_when` — one sentence, the same one this backbone routes on. `export_to`
-narrows who sees it; a kind marked `export: no` in `vocab.yaml` never leaves whatever an area says.
+Another RouteMind can read yours — and you theirs — through a **circuit**: one agent session, nothing
+written on either side, gone when the session ends.
 
 ```
-  PEERING — standing, committed, everyone sees it
-     your BB ── peers.yaml ──▶ EXCHANGE ◀── members.yaml ── their BB
-     Their areas appear in YOUR hop 0. An agent never learns there is a link.
-
-  CIRCUIT — this session only, nothing written on either side
-     /circuit http://their-host:8100 <token>
-     Their areas appear under /v1/circuits/<name>/… , beside yours, never in it.
+/circuit http://their-host:8080 <their key>
+Their areas appear under /v1/circuits/<name>/… , beside yours, never in it.
 ```
 
-Both halves of a peering are declarations, so nobody is enrolled by one side alone. A circuit is the
-opposite by design: one person, one session, one address and a token somebody handed them.
+An area crosses by somebody setting `export: yes` on it, through the review queue, and by nothing
+else; the line a reader sees is that area's own `use_when`. A kind marked `export: no` in
+`vocab.yaml` never leaves, whatever an area says. Nothing is copied — every read through a circuit is
+a read of the far end, recorded there in `data/access`.
 
-Three things worth knowing before relying on either. **Nothing is copied** — a document is relayed,
-held for one request and discarded, so the only record of a read is the one its owner writes.
-**No transit** — a room offers a neighbour its own backbones, never a third room's. **Absence
-suspends itself** — hop 0 may claim something is missing only while every link is up, and says so
-when one is not.
+The key is `KNOWLEDGE_CIRCUIT_TOKEN` in `.env` (`install.sh` makes one). It is an **enrolment key**
+that buys a six-hour session and opens nothing else; it shortens how long a leak is worth something,
+and it does not prove who is at the far end.
 
-The credential is an **enrolment key** that buys a six-hour session; the key opens nothing else, and
-a session cannot mint another. It shortens how long a leak is worth something. It does not prove who
-is at the far end.
+Standing links between backbones, the exchange they met at, its operator screen, and encrypted
+export bundles were retired on 2026-10-08: a circuit is the one way left.
 
-**[docs/PEERING.md](docs/PEERING.md)** — the contract, the circuit, the sessions, and the operator's
-screen at `:8090`.
-
-## Carrying one where a link cannot reach
-
-A partner behind a firewall, an air-gapped site, an auditor who gets a copy and nothing else.
-
-```sh
-./transfer/export.py --api http://localhost:8100 --token "$TOK" --out partner.rmx
-./transfer/import.py partner.rmx --graft data/repo --prefix partner
-```
-
-**Export** in the map's header downloads the same file. It is AES-256-GCM with an authenticated
-header, so it says what it claims to be before anyone types a passphrase at it.
-
-It holds exactly what a peer would have been able to read — the areas somebody set `export` on,
-their documents, and the links between them where both ends are inside that set. That is read from
-the same surface a link reads, not filtered on the way out, so no bug in this code can serve an area
-nobody decided to share.
-
-Grafting prefixes every id, and the receiving repository's **own validator** decides whether the
-result is coherent. Without `--graft` it unpacks to a directory and writes into no ontology at all.
-
-**[transfer/README.md](transfer/README.md)**.
+**[docs/CIRCUIT.md](docs/CIRCUIT.md)**.
 
 ## Layout
 
 ```
 ontology/     the ontology API — python + pyyaml + git. Knows nothing about any domain
-exchange/     where backbones meet. No repository, no areas, no hop 0
 web/          the map and a proxy — one FastAPI file. Knows nothing about any domain
-admin/        the operator's screen for an exchange. Off unless EXCHANGE_ADMIN_TOKEN is set
 mcp/          the MCP server, so any MCP-capable agent can read the ontology
-transfer/     export, import and graft — one encrypted file, for where a link cannot reach
 static/       the map screen
 seed/         an empty ontology, copied into data/repo on first boot
-examples/     one worked ontology, and seed-demo.sh — six backbones across two rooms
+examples/     one worked ontology
 check/        every check. docs/CHECKS.md
 docs/         everything below
 
 data/repo     ← your ontology. A git repository, and the only thing to back up
-data/*        overlays, walks, harness, exchange, access — all local.
+data/*        overlays, walks, harness, access — all local.
               docs/DATA-REPO.md
 ```
 
@@ -277,9 +239,8 @@ restart. `/healthz` carries `valid` and the first reasons it is not.
 |---|---|
 | [ROUTING.html](docs/ROUTING.html) | the whole structure, in a browser |
 | [INSTALL.md](docs/INSTALL.md) | installing by hand, what to do when it does not come up, the first two things to write |
-| [PEERING.md](docs/PEERING.md) | links between backbones, circuits, six-hour sessions, the operator's screen |
+| [CIRCUIT.md](docs/CIRCUIT.md) | reading another backbone, what crosses, six-hour sessions |
 | [AGE.md](docs/AGE.md) | the two times on a routing row, and what they deliberately do not say |
-| [transfer/README.md](transfer/README.md) | carrying a backbone somewhere a link cannot reach |
 | [OVERLAY.md](docs/OVERLAY.md) | the working set for one question |
 | [AGENTS.md](docs/AGENTS.md) | connecting an agent — every client, and the tools |
 | [LLM.md](docs/LLM.md) | the optional ✨ Suggest buttons, and the three provider wires |

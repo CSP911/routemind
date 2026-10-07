@@ -184,14 +184,6 @@ def _restore(root: Path):
     _git(root, "checkout", "--", ".", check=False); _git(root, "clean", "-fdq", check=False)
 
 
-def _line_map(value) -> dict:
-    """Peer name to the line that peer is shown. Anything that is not a mapping of text to text is
-    nothing, and an empty line removes that peer's override rather than writing a blank one."""
-    if not isinstance(value, dict): return {}
-    return {str(k).strip(): str(v).strip() for k, v in value.items()
-            if str(k).strip() and str(v).strip()}
-
-
 def _yesno(value) -> bool:
     """yes / no, from a boolean or from the word the review queue carries.
 
@@ -200,15 +192,6 @@ def _yesno(value) -> bool:
     """
     if isinstance(value, bool): return value
     return str(value or "").strip().lower() in ("yes", "true", "on", "1")
-
-
-def _name_list(value) -> list[str]:
-    """Peer names off the wire: a list, or one name, or a comma-separated string. Normalised in one
-    place so that what is stored does not depend on which of those a caller sent."""
-    if value is None: return []
-    if isinstance(value, str): value = [v for v in re.split(r"[,\s]+", value) if v]
-    if not isinstance(value, list): return []
-    return sorted({str(v).strip() for v in value if str(v).strip()})
 
 
 class Writer:
@@ -415,33 +398,15 @@ class Writer:
         if "region" in body and body["region"] != (moves[0][2].parent.name if moves else n["region"]):
             raise WriteError(400, "an area is not set directly — it is where the parent is, so move the entity by its `parent`")
 
-        withdrew: list[str] = []
-
         def mutate():
             unknown = sorted(set(body) - set(EDITABLE) - {"id", "region", "content"})
             if unknown: raise WriteError(400, f"not editable: {unknown} — editable fields are {sorted(EDITABLE) + ['content']}")
             for k in EDITABLE:
                 if k in body: n[k] = body[k]
-            # An audience is a list wherever it is stored and arrives as whatever the caller had:
-            # a list from the API, one comma-separated line from the review queue, which carries a
-            # sentence and not a structure. Normalised here rather than at each door, because the
-            # cost of getting it wrong is silent — `", ".join("branch")` is `b, r, a, n, c, h`.
-            if "export_to" in body: n["export_to"] = _name_list(body["export_to"])
             # yes/no, and it arrives as a boolean from the API or as a word from the review queue,
             # which carries sentences. `bool("no")` is True, so it cannot go through `bool()` — that
             # is a withdrawal that silently turns export on.
             if "export" in body: n["export"] = _yesno(body["export"])
-            # Withdrawing takes the audience with it. An audience narrows what `export` opened, so
-            # with export off there is nothing to narrow and what is left is state that means nothing
-            # and that the validator rightly refuses — it refused the withdrawal itself, telling
-            # somebody deliberately turning export off to turn it on first, which is the advice for
-            # the opposite act.
-            #
-            # Safe because it only ever removes: nothing here can widen what an area shares.
-            if "export" in body and not n.get("export"):
-                dropped = bool(n.get("export_to"))
-                n["export_to"] = []
-                if dropped: withdrew.append(nid)
             # One type: an entity's content is its own field, not a file underneath it. Editing the
             # body and editing the routing line are the same call on the same thing.
             if "content" in body: n["body"] = body["content"]
@@ -459,14 +424,7 @@ class Writer:
 
         where = f" -> {moves[0][2].parent.name}" if moves else ""
         extra = f" (+{len(moves) - 1} under it)" if len(moves) > 1 else ""
-        out = self.transact(f"node {nid}: update{where}{extra}", actor, mutate)
-        # Said, not done quietly. The cascade is right and it is still more than was asked for, and
-        # the one place a person will look for what happened is the answer to the call they made.
-        if withdrew and isinstance(out, dict):
-            out.setdefault("warnings", []).insert(
-                0, f"node {nid}: withdrawing the export line took its audience and its per-peer "
-                   f"lines with it — they only mean something beside a line")
-        return out
+        return self.transact(f"node {nid}: update{where}{extra}", actor, mutate)
 
     def _plan_move(self, n: dict, new_parent: str | None) -> list:
         """Where every file goes when `n` is re-parented. Empty when the area does not change.
@@ -612,13 +570,9 @@ class Writer:
                                           "holds": "content", "injected_by": None, "status": None,
                                           "role": "representative", "use_when": rep["use_when"],
                                           # Off unless somebody says otherwise: export is opt-in per
-                                          # area and in writing — see docs/PEERING.md. The line it
+                                          # area and in writing — see docs/CIRCUIT.md. The line it
                                           # crosses with is `use_when` above; there is one sentence.
                                           "export": _yesno(rep.get("export")),
-                                          # And who, when it is not everybody. Validation refuses an
-                                          # audience on an area that is not exported, so the two
-                                          # arrive or neither does.
-                                          "export_to": _name_list(rep.get("export_to")),
                                           "one_liner": rep["one_liner"], "body": "",
                                           "path": str(base.relative_to(self.root))})
 

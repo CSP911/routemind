@@ -1,17 +1,6 @@
-# RouteMind — one backbone, its screen, and the exchange it meets other backbones at.
+# RouteMind — one backbone and its screen.
 #
 #   docker compose up -d   →   http://localhost:${WEB_PORT:-8080}
-#
-# **The exchange is here from the start, with one backbone attached to it.** A second backbone is
-# then one file and one registration away, and nothing about the first one changes — which is the
-# whole reason for meeting at an exchange rather than pairing off. Wiring it in later would mean
-# rewriting the first backbone's `peers.yaml` at the moment somebody is already busy adding a second.
-#
-# With one backbone it reflects nothing and costs a container. That is the price of the third one
-# being free, and of the second not being a migration.
-#
-#   docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d    a second backbone
-#   docker compose -f docker-compose.yml -f docker-compose.admin.yml up -d   the operator's screen
 #
 # The ontology API is not published. The only way in is the web container's proxy, which is also the
 # one place an actor is stamped on a write. Publishing 8100 would route around both.
@@ -45,24 +34,19 @@ services:
       ONTOLOGY_HARNESS: /data/harness
       # Who read what across a link. A relayed document is held for one request and discarded, so
       # nothing anywhere remembers unless the owner writes a line — and every read through an
-      # exchange arrives from the same container, so the HTTP log cannot tell them apart. Its own
+      # circuit arrives from wherever the reader runs, so the HTTP log says little. Its own
       # directory, one file per UTC day, and to stderr as well so an install that mounts nothing
-      # still has the record. docs/PEERING.md, "Who read what".
+      # still has the record. docs/CIRCUIT.md.
       ONTOLOGY_ACCESS: /data/access
       # How long a write waits for another process holding this data directory before it answers that
       # one is. One ontology per directory is the rule; the lock is what makes breaking it merely slow
       # instead of destructive. Documented in .env.example, so it has to arrive here to be real.
       ONTOLOGY_LOCK_WAIT: "${ONTOLOGY_LOCK_WAIT:-}"
-      # The shared secret a *peer* backbone presents to read /v1/export. Unset — the default —
-      # makes that whole surface answer 501, which is right: opening a link is a decision.
-      # Everything a link needs beyond this is in peers.yaml, in the data repository, because
-      # who this backbone is linked to belongs in git and a secret does not. docs/PEERING.md.
-      # What this backbone accepts from the exchange, and what it presents to it. One secret, both
-      # directions — install.sh writes it on the first run.
-      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_HOME:-}"
-      ONTOLOGY_PEER_TOKEN_IX: "${EXCHANGE_TOKEN_HOME:-}"
-      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
-      ONTOLOGY_PEER_TIMEOUT: "${ONTOLOGY_PEER_TIMEOUT:-}"
+      # The key another backbone's circuit presents to read the areas set `export` here. Empty — the
+      # default before install.sh runs — makes that whole surface answer 501. EXCHANGE_TOKEN_HOME is
+      # what an install made before 2026-10-08 has in .env under the old name; it is read when the new
+      # one is not set, so updating changes nothing about who can read you. docs/CIRCUIT.md.
+      ONTOLOGY_PEER_TOKEN: "${KNOWLEDGE_CIRCUIT_TOKEN:-${EXCHANGE_TOKEN_HOME:-}}"
       # Set these three and Knowledge derives a node's id, kind and description from its name. Leave
       # them out and those are typed by hand — the screen asks for them only in that case.
       # `litellm` is the default because it is what the client always spoke — an existing install
@@ -112,36 +96,6 @@ services:
       KNOWLEDGE_AUTH_HEADER: "${KNOWLEDGE_AUTH_HEADER:-X-Forwarded-Email}"
       KNOWLEDGE_AUTH_TRUSTED_PROXY: "${KNOWLEDGE_AUTH_TRUSTED_PROXY:-}"
       KNOWLEDGE_AUTH_READS: "${KNOWLEDGE_AUTH_READS:-}"
-      # Only so the Export button can read /v1/export. Not an escalation — this process already
-      # proxies the whole ordinary API on this network; the token buys the *narrower* surface, the
-      # one built from the areas somebody wrote `use_when_export` on. Unset and the button says so.
-      ONTOLOGY_PEER_TOKEN: "${EXCHANGE_TOKEN_HOME:-}"
     ports:
       - "${WEB_PORT:-8080}:8080"
-    restart: unless-stopped
-
-  # Where backbones meet. It has no repository, no areas and no hop 0 — so it cannot become one, and
-  # the sentence the whole design rests on has no third kind of thing to be confused about. With a
-  # single backbone it has nothing to reflect and simply waits. docs/PEERING.md.
-  exchange:
-    build:
-      context: .
-      dockerfile: exchange/Dockerfile
-    image: routemind-exchange:${IMAGE_TAG:-0.1.0}
-    user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
-    environment:
-      EXCHANGE_NAME: "${EXCHANGE_NAME:-ix}"
-      EXCHANGE_MEMBERS: /data/members.yaml
-      # One secret per member, used in both directions — which is what lets the exchange know who is
-      # calling, and spare a member its own advertisement coming back at it. install.sh writes the
-      # first one; the operator's screen prints the next.
-      EXCHANGE_TOKEN_HOME: "${EXCHANGE_TOKEN_HOME:-}"
-      EXCHANGE_TOKEN_BRANCH: "${EXCHANGE_TOKEN_BRANCH:-}"
-      EXCHANGE_ADMIN_TOKEN: "${EXCHANGE_ADMIN_TOKEN:-}"
-      ONTOLOGY_PEER_TTL: "${ONTOLOGY_PEER_TTL:-}"
-      ONTOLOGY_PEER_TIMEOUT: "${ONTOLOGY_PEER_TIMEOUT:-}"
-    volumes:
-      - type: bind
-        source: ${KNOWLEDGE_EXCHANGE_DIR:-./data/exchange}
-        target: /data
     restart: unless-stopped

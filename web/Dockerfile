@@ -7,9 +7,6 @@ COPY web/app.py /app/app.py
 # The MCP server ships with the web image: its formatter is what renders "what the agent is handed"
 # in the popup, so that the screen and a connected agent cannot disagree about it.
 COPY mcp/ /app/mcp/
-# And so does the export format, for the same reason: the file this screen offers as a download and
-# the file ./transfer/export.py writes are the same bytes because they are the same code.
-COPY transfer/bundle.py /app/transfer/bundle.py
 COPY static/ /app/static/
 # See ontology/Dockerfile: COPY carries the build host's modes, and a 0600 static tree serves 500s.
 RUN chmod -R a+rX /app

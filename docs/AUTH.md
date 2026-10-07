@@ -26,10 +26,10 @@ mode decided this was meant to be closed, and coming up open instead turns a dec
 The gate is on writes. `KNOWLEDGE_AUTH_READS=1` extends it to reads, which also means giving the
 agent the secret — reads are what the MCP does, and it has no session.
 
-Between backbones the door is different and older: **one secret per link, used in both directions**,
-compared in constant time. Two things make it workable between organisations — a link refuses to
-present its token over plain `http` to a public address, and `also_accept_env` keeps a second secret
-good so rotating one is not a flag day. See **[PEERING.md](PEERING.md)**.
+Another backbone reading this one through a circuit does not come through this door: it presents
+the circuit key (`KNOWLEDGE_CIRCUIT_TOKEN`) at `/v1/peers/token` and `/v1/export/…`, which the
+ontology checks in constant time, and a circuit refuses to send a key over plain `http` to a public
+address. See **[CIRCUIT.md](CIRCUIT.md)**.
 
 The **name** field at the top right is a signature that goes on commits and proposals, kept in that
 person's own browser. **It is not a permission.**
@@ -53,5 +53,5 @@ it. Three of its assertions are about the service saying which mode it is in, be
 
 ---
 
-Between backbones the door is a different and older thing — one secret per link, used in both
-directions. **[PEERING.md](PEERING.md)**. Back to [the README](../README.md).
+Between backbones the door is the circuit key. **[CIRCUIT.md](CIRCUIT.md)**. Back to
+[the README](../README.md).

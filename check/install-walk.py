@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 """The walk `check/install-check.sh` runs against the install it just made.
 
-    ./check/install-walk.py <web-port> <web-b-port> <admin-port>
+    ./check/install-walk.py <web-port> <circuit-key>
 
 A separate file because it is a different question. The shell script asks whether a clean clone
 installs; this asks whether the thing it installed does what the documents say — and it is the half
 worth reading when something fails, so it does not live inside a heredoc.
 
-It goes through the **web** API on the published ports and nothing else: the ontology API is not
-published outside the compose network, so anything reachable only from in there is not a path a
-person or an agent has. Two of the defects the first run of this found were on that boundary — a
-scope the queue accepted and the proxy refused, and guidance the ontology wrote that the proxy
-replaced with four words.
+It goes through the **web** port and nothing else: the ontology API is not published outside the
+compose network, so anything reachable only from in there is not a path a person or an agent has.
+That includes the circuit, which reads this install at the address a person would give another
+backbone — and until 2026-10-08 could not, because the surface it reads lived only on 8100.
 """
 import json
+import os
+import subprocess
 import sys
 import time
 import urllib.error
 import urllib.request
 
-WEB, WEB_B, ADMIN = (int(x) for x in sys.argv[1:4])
-A = f"http://127.0.0.1:{WEB}/api/knowledge"
-B = f"http://127.0.0.1:{WEB_B}/api/knowledge"
-AD = f"http://127.0.0.1:{ADMIN}/api"
+WEB, KEY = int(sys.argv[1]), sys.argv[2]
+BASE = f"http://127.0.0.1:{WEB}"
+A = f"{BASE}/api/knowledge"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 results = []
 
 
@@ -45,123 +46,76 @@ def call(url, method="GET", body=None):
     except Exception as e: return 0, {"error": type(e).__name__}
 
 
-def hop0(base): return call(base + "/regions")[1]
-def remote(base): return [(r.get("origin"), r.get("use_when")) for r in (hop0(base).get("regions") or [])
-                          if r.get("peer")]
-
-
-def queued(body, wait=2.0):
+def queued(body, wait=0.5):
     """A routing decision, the only way a person can make one: submit, then accept. Both statuses are
     returned — an accept that could not be applied answered 200 once, which is how it went unnoticed."""
-    st, p = call(B + "/proposals", "POST", body)
+    st, p = call(A + "/proposals", "POST", body)
     if st not in (200, 201): return st, p
-    st2, d = call(B + f"/proposals/{p['id']}/accept", "POST", {})
+    st2, d = call(A + f"/proposals/{p['id']}/accept", "POST", {})
     time.sleep(wait)
     return st2, d
 
 
-def reaches(want, seconds=10.0):
-    """Wait for the other backbone's table to say `want` — a list of (peer, line), or [] for gone.
-
-    Waited for rather than slept on. The hint travels on a background thread and the reader holds a
-    five-second cache, so a fixed pause is a number that happened to be right on the machine somebody
-    chose it on: two seconds passed for a year here and failed on a cold clean-clone run, twice, for
-    two different writes. A bound is still a bound — not there in ten seconds is not coming, and that
-    is the failure worth reporting.
-    """
-    for _ in range(int(seconds * 4)):
-        if remote(A) == want: return True
-        time.sleep(0.25)
-    return False
+class Mcp:
+    """Another backbone's agent: an MCP server of its own, opening a circuit to this install."""
+    def __init__(self):
+        self.p = subprocess.Popen([sys.executable, os.path.join(ROOT, "mcp", "knowledge_mcp.py"), "--api", A, "--actor", "install-check"],
+                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+        self.n = 0
+        self.rpc("initialize", {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "install-check", "version": "0"}})
+        self.p.stdin.write(json.dumps({"jsonrpc": "2.0", "method": "notifications/initialized"}) + "\n"); self.p.stdin.flush()
+        self.tool("knowledge_table", {})
+    def rpc(self, method, params=None):
+        self.n += 1
+        self.p.stdin.write(json.dumps({"jsonrpc": "2.0", "id": self.n, "method": method, "params": params or {}}) + "\n"); self.p.stdin.flush()
+        return json.loads(self.p.stdout.readline())
+    def tool(self, name, args):
+        r = self.rpc("tools/call", {"name": name, "arguments": args}).get("result") or {}
+        return (r.get("content") or [{}])[0].get("text", "")
+    def close(self):
+        try: self.p.stdin.close(); self.p.wait(5)
+        except Exception: self.p.kill()
 
 
 # ── the shipped shape ─────────────────────────────────────────────────────────
-d = hop0(A)
-own = [r for r in (d.get("regions") or []) if not r.get("peer")]
+own = call(A + "/regions")[1].get("regions") or []
 check("the worked example is on the map", len(own) == 5, json.dumps([r["source"] for r in own]))
-check("  with an exchange up and reflecting nothing",
-      [(l["name"], l["reachable"], l["areas"]) for l in d["links"]] == [("ix", True, 0)],
-      json.dumps(d.get("links")))
-# The one an install with a single backbone gets wrong most easily: being told about a link it has
-# nothing across.
-check("  and absence claimable, naming nobody",
-      "may say something is absent" in (d.get("absence") or "")
-      and "reaches through" not in (d.get("absence") or ""), (d.get("absence") or "")[:80])
-check("  no link carries a note", all(not l.get("note") for l in d["links"]),
-      json.dumps([l.get("note") for l in d["links"]]))
-cfg = call(f"http://127.0.0.1:{WEB}/api/app-config")[1]
+cfg = call(f"{BASE}/api/app-config")[1]
 check("the running service says which door it has", cfg.get("auth") == "open", json.dumps(cfg)[:100])
 check("  and that the name on a change is a signature", cfg.get("auth_names_the_actor") is False)
 
-# ── the room ──────────────────────────────────────────────────────────────────
-st, _ = call(AD + "/members", "POST",
-             {"name": "branch", "label": "BRANCH", "url": "http://ontology-b:8100"})
-check("the operator's screen registers the second backbone", st == 200, str(st))
-time.sleep(3)
-room = [(m["name"], m["kind"], m["reachable"]) for m in (call(AD + "/state")[1].get("members") or [])]
-check("  and both are in the room, both answering",
-      sorted(room) == [("branch", "backbone", True), ("home", "backbone", True)], json.dumps(room))
-
-st, r = call(B + "/regions", "POST", {
+st, r = call(A + "/regions", "POST", {
     "source": "site-ops", "representative": {"name": "Site Operations", "id": "site-ops",
                        "one_liner": "Opening, closing, keys, and who to call when something breaks",
                        "use_when": "who opens the office · a key is lost · the lift is stuck"}})
-check("the second backbone takes an area of its own", st == 200, json.dumps(r)[:110])
+check("a new area can be made", st == 200, json.dumps(r)[:110])
 
-# ── the export decision, both parts, through the queue ──────────────────────
-# One sentence since 2026-09-29: the line a peer reads is the area's own `use_when`, edited under
-# scope `bb`, and `export` decides whether they get it. This file still spoke the older shape — a
-# second sentence under scope `peer`, and a withdrawal as an empty `after` — and nothing caught it,
-# because install-check is the one suite that is not run by default.
+# ── the export decision, through the queue, read by a circuit ────────────────
+# One sentence: the line another backbone reads is the area's own `use_when`, edited under scope
+# `bb`, and `export` decides whether a circuit sees it at all.
 LINE = "who runs the branch site · keys, access, and the on-call for it"
+m = Mcp()
+opened = m.tool("knowledge_circuit", {"op": "open", "url": BASE, "token": KEY, "name": "here"})
+check("another backbone's circuit opens at this install's web address", "CIRCUIT here open" in opened, opened[:200])
+read = lambda: m.tool("knowledge_table", {"path": "/v1/circuits/here/regions", "why": "what it shares"})
+check("  and sees no area that was not set to export", "/v1/circuits/here/regions/site-ops" not in read(), read()[:200])
 
 st, _ = queued({"scope": "bb", "region": "site-ops", "after": LINE, "why": "what it is chosen by"})
-st, d = queued({"scope": "export", "region": "site-ops", "before": "no", "after": "yes",
-                "why": "head office asks"})
-check("advertising it reaches the other backbone", st == 200 and remote(A) == [("branch", LINE)],
-      f"{st} {json.dumps(remote(A))}")
-check("  and the absence sentence starts naming the room",
-      "reaches through" in (hop0(A).get("absence") or ""), (hop0(A).get("absence") or "")[:90])
-row = next((r for r in hop0(A)["regions"] if r.get("peer")), None)
-if check("  under an address of this backbone's own", row and str(row["fetch"]).startswith("/v1/peers/ix/"),
-         json.dumps(row.get("fetch") if row else None)):
-    # Followed exactly as printed, which is what every table tells an agent to do. A row that
-    # arrives without its documents is a promise the link cannot keep.
-    st, tbl = call(A + row["fetch"][len("/v1"):])
-    check("  and what it points at is readable straight away", st == 200, f"{st} {json.dumps(tbl)[:90]}")
-    check("    with its addresses moved onto this side", "/v1/export/" not in json.dumps(tbl))
-
-st, _ = queued({"scope": "audience", "region": "site-ops", "after": "home", "why": "only head office"})
-check("an audience naming the reader keeps it there", st == 200 and remote(A) == [("branch", LINE)],
-      f"{st} {json.dumps(remote(A))}")
-check("  and does not hand the reader the list", "export_to" not in json.dumps(hop0(A)))
-
-# Editing the one sentence reaches the reader at once, not after a cache — that line is now what a
-# peer reads, so a change to it is no longer an internal edit.
+st, d = queued({"scope": "export", "region": "site-ops", "before": "no", "after": "yes", "why": "head office asks"})
+t = read()
+check("exporting it, through the queue, puts it in the circuit's next read", st == 200 and "/v1/circuits/here/regions/site-ops" in t, f"{st} {t[:300]}")
+check("  with the area's own sentence", LINE in t, t[:300])
 REVISED = LINE + " · and who holds the spare keys"
 st, _ = queued({"scope": "bb", "region": "site-ops", "before": LINE, "after": REVISED, "why": "clearer"})
-check("editing the line reaches the reader, without waiting out a cache",
-      st == 200 and reaches([("branch", REVISED)]), f"{st} {json.dumps(remote(A))}")
-
+check("editing the line reaches the reader at once", st == 200 and REVISED in read(), read()[:300])
 st, d = queued({"scope": "export", "region": "site-ops", "before": "yes", "after": "no", "why": "stop"})
 check("withdrawing it works", st == 200, f"{st} {json.dumps(d)[:150]}")
-check("  and it goes from the other backbone's table", reaches([]), json.dumps(remote(A)))
-reg = call(B + "/regions/site-ops")[1]
-check("  taking the audience with it",
-      not reg.get("export_to"),
-      json.dumps({k: reg.get(k) for k in ("export", "export_to")}))
-d = hop0(A)
-# Nothing here may read as an outage: a withdrawal is somebody's decision, and an outage is the one
-# thing that stops a backbone claiming absence.
-check("  with the link still up and unnoted",
-      all(l["reachable"] and not l.get("note") for l in d["links"]), json.dumps(d.get("links")))
-check("  and absence claimable again, naming nobody",
-      "may say something is absent" in (d.get("absence") or "")
-      and "reaches through" not in (d.get("absence") or ""), (d.get("absence") or "")[:80])
+check("  and the circuit's next read no longer lists it", "/v1/circuits/here/regions/site-ops" not in read(), read()[:300])
+m.close()
 
 # `export` is yes or no and both are decisions, so an empty one is a missing field rather than a
-# withdrawal. The empty-string withdrawal it used to be was two different acts wearing one value.
-st, e = call(B + "/proposals", "POST", {"scope": "export", "region": "site-ops", "after": ""})
+# withdrawal.
+st, e = call(A + "/proposals", "POST", {"scope": "export", "region": "site-ops", "after": ""})
 check("an export decision with nothing in it is refused", st == 422, f"{st} {json.dumps(e)[:120]}")
 
 print("\n".join(results))

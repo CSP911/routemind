@@ -475,14 +475,12 @@ def api_knowledge_one_liner_draft(node_id: str, request: Request) -> dict[str, A
     return _ontology_proxy("POST", "/v1/nodes/" + quote(node_id, safe="") + "/one-liner-draft", actor, {})
 
 
-# Every scope the review queue takes. A name in this list and not in
-# the ontology's ROUTE_SCOPES is a 422 from further in; a name in ROUTE_SCOPES and **not** here is the
-# worse one, and is what happened to `peer` and `audience`: the ontology API is not published outside
-# the compose network, so a scope missing here is a scope nobody can reach, and the docs describing
-# the road stayed true of a queue with no door. check/room-check.py holds the two lists together.
-# The old spellings `dr`, `peer` and `peer-line` are no longer filed (2026-10-07); one still sitting in
-# a queue is read and applied under its new name by the ontology.
-QUEUE_SCOPES = ("as", "bb", "entity", "export", "audience")
+# Every scope the review queue takes. A name in this list and not in the ontology's ROUTE_SCOPES is a
+# 422 from further in; a name in ROUTE_SCOPES and **not** here is the worse one — the ontology API is
+# not published outside the compose network, so a scope missing here is a scope nobody can reach.
+# ontology/check.py holds the two lists together. Old spellings (`dr`, `peer`, `peer-line`) and
+# `audience` are no longer filed; one still sitting in a queue is read by the ontology.
+QUEUE_SCOPES = ("as", "bb", "entity", "export")
 
 
 @_iris_route("POST", "/api/knowledge/proposals")
@@ -494,27 +492,16 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     actor = _knowledge_actor(request)
     data = dict(payload or {})
     scope = str(data.get("scope") or "").strip()
-    # `as` is the word since 2026-09-10; `dr` is still taken because Knowledge accepts both during the
-    # handover and a proposal filed under the old spelling must stay reviewable.
     # `entity` is one row in a node's table — the line it shows in its holder's listing. It names the
     # entity and not an area: the entity settles where it is, and a second answer could disagree.
-    # `peer` is the line this area shows in another backbone's hop 0 and `audience` is who that line
-    # reaches — the two halves of the export decision. Neither has a field on the map screen, and
-    # both are refused here until 2026-09-13, which meant the road docs/PEERING.md describes ended at
-    # this function: the ontology API is not published outside the compose network, so "it goes
-    # through the review queue" was true of a queue nobody could reach.
+    # `export` is whether another backbone's circuit may read this area at all.
     if scope not in QUEUE_SCOPES:
         raise HTTPException(status_code=422,
-                            detail="scope must be as, bb, entity, export or audience.")
+                            detail="scope must be as, bb, entity or export.")
     where = "entity" if scope == "entity" else "region"
-    # `export` is yes or no and both are decisions, so it is never empty. An audience may be, and it
-    # means "everybody this area already crosses to". The ontology settles it either way; refusing
-    # here first is only so the message names the field.
-    empty_ok = scope in ("audience", "peer-line")
-    required = [where] if empty_ok else [where, "after"]
-    # An empty `after` is a decision for `audience` alone — everybody the area already crosses to —
-    # and a missing sentence for every other scope.
-    for field in required:
+    # `export` is yes or no and both are decisions, so it is never empty; every other scope is a
+    # sentence. Refused here first only so the message names the field.
+    for field in (where, "after"):
         if not str(data.get(field) or "").strip():
             # The ontology says how a withdrawal is filed and this layer refused first with four
             # words, so the guidance never reached anybody going through the screen.
@@ -610,31 +597,6 @@ def api_knowledge_region(region_dir: str, request: Request) -> dict[str, Any]:
     return _ontology_proxy("GET", "/v1/regions/" + quote(region_dir, safe=""), _knowledge_actor(request))
 
 
-# ── what a linked backbone holds ──────────────────────────────────────────────
-# One route with a wildcard tail, and deliberately not one per shape. Everything under /v1/peers/ is
-# the ontology relaying somebody else's answer, and this layer has no opinion about what shape that
-# answer has — inventing one here would mean a second place to update every time the addresses on the
-# other side change, and the whole discipline is that addresses come from the table that printed them.
-#
-# Read-only, because a link is. The proxy has no write route for this and the ontology answers 405.
-_PEER_SEG = _iris_re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$")
-
-
-@_iris_route("GET", "/api/knowledge/peers/{peer}/{rest:path}")
-def api_knowledge_peer(peer: str, rest: str, request: Request):
-    parts = [p for p in (rest or "").split("/") if p]
-    if not _PEER_SEG.match(peer or "") or not parts or not all(_PEER_SEG.match(p) for p in parts):
-        raise HTTPException(status_code=404, detail="not an address a table printed")
-    path = "/v1/peers/" + "/".join(quote(p, safe="") for p in [peer, *parts])
-    # A document body is Markdown on both sides of a link, so this route cannot assume JSON any more
-    # than the local one can. Which it is follows the address, exactly as it does locally: `/body`
-    # and a fragment file are text, everything else is a table.
-    if parts[-1] == "body" or parts[-1].endswith((".md", ".yaml", ".yml")):
-        return PlainTextResponse(_ontology_text(path, _knowledge_actor(request)),
-                                 media_type="text/markdown; charset=utf-8")
-    return _ontology_proxy("GET", path, _knowledge_actor(request))
-
-
 @_iris_route("GET", "/api/knowledge/vocab")
 def api_knowledge_vocab(request: Request) -> dict[str, Any]:
     # Kinds and relations are Knowledge's vocabulary; the editor offers only these and never a free-text kind.
@@ -710,7 +672,6 @@ def api_knowledge_create_region(payload: dict, request: Request) -> dict[str, An
             **({"export": bool(rep["export"])} if "export" in rep else {}),
             # A list, and passed as one. Who an area crosses to is the ontology's decision like the
             # rest of this; nothing here narrows or widens it.
-            **({"export_to": rep["export_to"]} if rep.get("export_to") else {}),
         },
     }
     return _ontology_proxy("POST", "/v1/regions", actor, body)
@@ -887,94 +848,49 @@ def app_config(request: Request) -> dict[str, Any]:
             "actor_default": DEFAULT_ACTOR}
 
 
-# The token the export surface asks for. Not an escalation: this process already proxies the whole
-# ordinary `/v1` API on the compose network, and the export surface is a strict subset of what that
-# reaches. What the token buys is the *right surface* — the one built from the areas somebody wrote
-# `export` on, rather than the one that shows everything.
-PEER_TOKEN = (_iris_playbook_os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
-
-_BUNDLE = None
-
-
-def _bundle():
-    """`transfer/bundle.py`, the one definition of the export file.
-
-    Imported rather than reimplemented, for the reason `_renderer()` imports the MCP's formatter: a
-    format written out in the tool that makes it and read back by hand somewhere else is two formats
-    that agree until they do not. The file this route hands to a browser and the file
-    `./transfer/export.py` writes are byte-for-byte the same kind of thing because they are the same
-    code.
-    """
-    global _BUNDLE
-    if _BUNDLE is None:
-        here = Path(__file__).resolve().parent
-        for cand in (here / "transfer", here.parent / "transfer"):   # in the image, and in a checkout
-            if (cand / "bundle.py").exists():
-                sys.path.insert(0, str(cand)); break
-        import bundle
-        _BUNDLE = bundle
-    return _BUNDLE
-
-
-@_iris_route("POST", "/api/knowledge/export/bundle")
-def api_knowledge_export_bundle(payload: dict, request: Request):
-    """The same encrypted file `transfer/export.py` writes, handed to the browser as a download.
-
-    POST, and the passphrase is in the body. A GET would put it in a URL, and a URL is the one part
-    of a request that gets written down everywhere — history, proxy logs, the Referer of whatever the
-    page loads next. It is never logged here and never comes back in a response.
-
-    What goes in the file is read from `/v1/export/…` and nowhere else, so this route cannot widen
-    what leaves: an area crosses only by having `export` set on it, and that decision
-    was made in the repository by a person, not here by a button.
-    """
-    b = _bundle()
-    if not PEER_TOKEN:
-        raise KnowledgeError(503, (
-            "This backbone has no peer token set, so its export surface is closed — set "
-            "ONTOLOGY_PEER_TOKEN (EXCHANGE_TOKEN_HOME in .env) and restart. The export is the set of "
-            "areas that may cross a link, so it is the same door."), reason="export_closed")
-    pw = str((payload or {}).get("passphrase") or "")
-    if len(pw) < 12:
-        # Checked before anything is read, so a short passphrase costs a message rather than a walk
-        # of the whole exported tree.
-        raise KnowledgeError(422, (
-            "The passphrase needs at least 12 characters. It is the only thing between this file and "
-            "whoever ends up holding it."), reason="export_passphrase_short")
+# ── what another backbone's circuit reads ─────────────────────────────────────
+# A circuit (`knowledge_circuit` in somebody else's MCP server) reads this backbone's export surface:
+# it trades the enrolment key for a six-hour session at `/v1/peers/token`, then reads `/v1/export/…`.
+# Both lived only on the ontology's own port, which the shipped compose does not publish — so a
+# circuit could reach an install only where somebody had published 8100 by hand (operator,
+# 2026-10-08: circuits are the one way left to read another backbone). Passed through here,
+# unchanged, at the same paths, so a circuit's URL is this install's address.
+#
+# Outside the door below on purpose: these carry their own key, which the ontology checks, and an
+# install whose screen sits behind a proxy login must still be readable by another backbone that
+# holds the key. Nothing here can widen what crosses — the ontology builds the answer from the areas
+# somebody set `export` on, and answers 501 when no key is set at all.
+def _circuit_relay(method: str, path: str, request: Request) -> Response:
+    headers = {"Accept": request.headers.get("accept") or "application/json"}
+    token = request.headers.get("x-peer-token")
+    if token: headers["X-Peer-Token"] = token
+    req = _IrisPlaybookURLRequest(ONTOLOGY_URL + path, data=(b"" if method == "POST" else None),
+                                  method=method, headers=headers)
     try:
-        data = b.collect(ONTOLOGY_URL, PEER_TOKEN)
-    except b.BundleError as exc:
-        raise HTTPException(status_code=502, detail=f"Could not read the export surface — {exc}")
-    if not data["regions"]:
-        # A valid, encrypted, empty file is the worst possible answer here: whoever receives it has no
-        # way to tell it from a mistake at this end. Refuse, and say what would make it non-empty.
-        # The one a fresh install meets: nothing is shared by default and nothing ever will be, so
-        # this is the first thing anybody pressing Export sees. Named, so it is not the one English
-        # sentence on an otherwise translated screen.
-        raise KnowledgeError(409, (
-            "This backbone exports no areas, so there is nothing to download. Set `export` "
-            "on the areas that should be allowed to cross, then export again."), reason="export_empty")
-    try:
-        blob = b.seal(data, pw)
-    except b.BundleError as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        with _iris_playbook_urlopen(req, timeout=30) as r:
+            return Response(r.read(), status_code=r.status,
+                            media_type=r.headers.get("Content-Type") or "application/json")
+    except _IrisPlaybookHTTPError as exc:
+        return Response(exc.read(), status_code=exc.code,
+                        media_type=exc.headers.get("Content-Type") or "application/json")
+    except _IrisPlaybookURLError:
+        return JSONResponse({"error": "the ontology behind this install is not answering"}, status_code=502)
 
-    import time as _time
-    host = (ONTOLOGY_URL.split("//")[-1].split("/")[0].split(":")[0] or "routemind")
-    name = f"{_iris_re.sub(r'[^A-Za-z0-9._-]', '-', host)}-{_time.strftime('%Y-%m-%d')}.rmx"
-    return Response(
-        blob, media_type="application/octet-stream",
-        headers={
-            "Content-Disposition": f'attachment; filename="{name}"',
-            # The browser must not keep this, and neither must anything between here and it.
-            "Cache-Control": "no-store",
-            # So the page can say what it just handed over without opening the file. These are the
-            # header's own counts, which is what the recipient will also see before they decide to
-            # type a passphrase at it.
-            "X-Export-Regions": str(len(data["regions"])),
-            "X-Export-Nodes": str(len(data["nodes"])),
-            "Access-Control-Expose-Headers": "Content-Disposition, X-Export-Regions, X-Export-Nodes",
-        })
+
+@_iris_route("POST", "/v1/peers/token")
+def circuit_token(request: Request) -> Response:
+    return _circuit_relay("POST", "/v1/peers/token", request)
+
+
+_EXPORT_SEG = _iris_re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$")
+
+
+@_iris_route("GET", "/v1/export/{rest:path}")
+def circuit_export(rest: str, request: Request) -> Response:
+    parts = [p for p in (rest or "").split("/") if p]
+    if not parts or not all(_EXPORT_SEG.match(p) for p in parts):
+        return JSONResponse({"error": "unknown export path"}, status_code=404)
+    return _circuit_relay("GET", "/v1/export/" + "/".join(quote(p, safe="") for p in parts), request)
 
 
 @app.middleware("http")

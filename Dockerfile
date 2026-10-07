@@ -1,7 +1,7 @@
 # The MCP server alone, over stdio.
 #
 # **This is not how you run RouteMind.** That is `./install.sh`, which brings up the ontology, the
-# map and the exchange through `docker compose`; the MCP server is normally launched by the client,
+# map through `docker compose`; the MCP server is normally launched by the client,
 # on the client's machine, as one python file with nothing to install.
 #
 # It is at the repository root because that is where MCP directories and harnesses look for one —

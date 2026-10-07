@@ -61,24 +61,18 @@ def decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply) 
 # CORE.md, went with that file on 2026-10-07). `entity` is one row in a table — the line any entity shows in its
 # parent's listing. One type is why it can exist at all: a row is an entity like any other, so the
 # line it shows is edited the same way an area's is, through the same queue.
-# `peer` is `bb` pointed at somebody else's backbone: the line this area shows in a *peer's* hop 0.
-# It goes through this queue and not through a direct write for the reason every other advertisement
-# does — what an area says about itself is the one thing the whole system routes on, and it is worth
-# a second pair of eyes. Across a link that is not a nicety: the reader is another organisation.
-# `audience` is the other half of `peer`: who that line reaches. It travels the same road for the
-# same reason — the two together are the whole export decision, and a widening that could be made
-# with a direct write while the wording needed a second pair of eyes would put the queue in front of
-# the smaller of the two.
+# `export` is whether another backbone's circuit may read this area at all. It goes through this queue
+# and not through a direct write for the reason every other advertisement does — and across to another
+# organisation that is not a nicety. (`audience`, who it crossed to, went with named peers on
+# 2026-10-08; one still queued is refused on accept.)
 PEER_NAME = re.compile(r"^[a-z][a-z0-9-]{0,30}$")
 # `bb` is `use_when`, and since 2026-09-29 that is the line a peer reads too — there is one sentence
 # and `export` decides whether it crosses. So the review that was already required for the local
 # routing line now covers the exported one, and the separate `peer` scope becomes the yes/no.
-ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "entity": "one_liner",
-                "export": "export", "audience": "export_to"}
-# Scopes whose `after` may be empty, and where empty says something. Everywhere else an empty
-# sentence is a proposal to advertise nothing, which is a mistake rather than a decision; for an
-# audience it is "everybody this area already crosses to", which is the value most areas have.
-EMPTIABLE = {"audience"}
+ROUTE_SCOPES = {"as": "one_liner", "bb": "use_when", "entity": "one_liner", "export": "export"}
+# Scopes whose `after` may be empty, and where empty says something. None now: an empty sentence is a
+# proposal to advertise nothing, which is a mistake rather than a decision.
+EMPTIABLE: set = set()
 # `export` is never empty — it is yes or no, and both are decisions. Withdrawing is `no`, which is
 # the most consequential entry on this list and the one most deserving of a review; it used to be an
 # empty string against a non-empty `before`, which was two different acts wearing one string.

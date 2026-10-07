@@ -44,10 +44,6 @@ def regions_doc(store: Store) -> str:
                      # Whether this area crosses a link. The line it crosses with is `use_when`
                      # above — there is one sentence (operator, 2026-09-29).
                      "export": bool(top.get("export")) if top else False,
-                     # Whose answer this area is. Written by a graft and nothing else; an area with
-                     # no value was written here.
-                     **({"grafted_from": top["grafted_from"]} if top and top.get("grafted_from") else {}),
-                     "export_to": ((top.get("export_to") or []) if top else []),
                      "nodes": [n["id"] for n in nodes if n["region"] == r and n.get("status") != "draft"],
                      "representative": (top["id"] if top else None),
                      "fetch": f"/v1/regions/{r}"})
@@ -70,7 +66,7 @@ def regenerate(store: Store) -> list[str]:
 NODE_FIELDS = ("holds", "injected_by", "status", "role", "parent", "use_when", "export",
                "export_to", "expands_in", "aliases", "grafted_from")
 EDITABLE = ("name", "kind", "one_liner", "holds", "status", "use_when", "export",
-            "export_to", "expands_in", "parent")
+            "expands_in", "parent")
 
 
 def write_node_index(store: Store, node: dict) -> None:
@@ -91,10 +87,9 @@ def write_node_index(store: Store, node: dict) -> None:
     # says both would be two spellings of one fact.
     if node.get("export"): fm.append("export: yes")
     if node.get("grafted_from"): fm.append(f"grafted_from: {node['grafted_from']}")
-    # Who may see it, when that is not everybody. A list, written flow-style so the file stays one
-    # frontmatter line per fact. Absent is the common case and means the area crosses to every peer
-    # it reaches at all — the audience narrows what `export` opened, and can never open anything on
-    # its own.
+    # Two fields from retired features, written back only so a file that has them keeps them across
+    # an edit: `grafted_from` (transfer bundles) and `export_to` (audiences of named peers). Nothing
+    # reads either since 2026-10-08.
     if node.get("export_to"):
         fm.append("export_to: [" + ", ".join(sorted(node["export_to"])) + "]")
     if node.get("expands_in"): fm.append(f"expands_in: {node['expands_in']}")

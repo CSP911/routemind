@@ -12,7 +12,7 @@ which is generated, and it does so in a commit that says why.
 
 ```sh
 git clone https://github.com/CSP911/routemind.git routemind && cd routemind
-./install.sh --name acme --port 9000
+./install.sh --port 9000
 ```
 
 `install.sh` makes every directory under `data/`, writes `.env`, builds and starts the containers.
@@ -51,8 +51,12 @@ cannot write there.
 ### 4. Rebuild and restart
 
 ```sh
-docker compose up -d --build
+./install.sh            # carries the circuit key across under its new name; safe to re-run
+docker compose up -d --build --remove-orphans
 ```
+
+`--remove-orphans` takes down the `exchange` container an install made before 2026-10-08 is still
+running; compose no longer defines it.
 
 On start the ontology validates the repository and, if the only problem is that the generated
 `regions.json` no longer matches the files, regenerates it and commits — one commit, its message
@@ -93,6 +97,26 @@ Retired on 2026-10-07, because nothing read them:
   agent says so and a person changes it.
 - **`./ontology/tidy.py`** now mends only `regions.json` after a hand edit; that is all a hand edit
   can leave out of step.
+
+Retired on 2026-10-08 — **a circuit is the one way left to read another backbone** ([CIRCUIT.md](CIRCUIT.md)):
+
+- **Standing links** (`peers.yaml`), the **exchange** and its **operator screen** (`admin/`), and
+  **encrypted export bundles** (`transfer/`, the map's **Export** button). Another backbone's areas no
+  longer appear in your hop 0, and the map draws no domain wall. `data/repo/peers.yaml` and
+  `data/exchange` are inert; delete them when you like.
+- **The circuit key** is `KNOWLEDGE_CIRCUIT_TOKEN` now. `install.sh` copies your old
+  `EXCHANGE_TOKEN_HOME` across, and compose reads the old name if the new one is unset — so whoever
+  held your key still can read what you export. A circuit's URL is your install's web address
+  (`http://host:8080`); it used to need the ontology's own port, which compose never published.
+- **An audience** (`export_to`) is ignored: it named peers, and every reader now presents the one key.
+  An area set to export can be read by any circuit holding it. A file that has `export_to` keeps it.
+  A queued `audience` or `core` proposal can only be rejected.
+- **Overlays are off by default**, on the map as well as for the agent. `ONTOLOGY_OVERLAYS=/data/overlays`
+  in `.env` turns the store and the map's half back on ([OVERLAY.md](OVERLAY.md)).
+
+And two things changed rather than went: hop 0 prints every area's `use_when` whole, never cut with
+`…`; and the map shows every recent walk at once, each in its own colour, with a replay that keeps the
+walk's own timing at a speed you choose ([FOOTPRINT.md](FOOTPRINT.md)).
 
 ## Checking it worked
 

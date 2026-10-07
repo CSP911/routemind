@@ -25,10 +25,7 @@ class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.at
         on?this.add(c):this.remove(c); return on; },
     }; } }
 globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
-const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow"]) byId[id]=new N(id);
-byId.knExportDialog.open=false; byId.knExportDialog.showModal=function(){this.open=true;};
-byId.knExportDialog.close=function(){this.open=false; for(const f of this.listeners.close||[]) f({});};
-byId.knExportForm.submit=function(){for(const f of this.listeners.submit||[]) f({preventDefault(){}});};
+const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow"]) byId[id]=new N(id);
 let opens=0; byId.knRawDialog.open=false; byId.knRawDialog.showModal=function(){this.open=true;opens++;}; byId.knRawDialog.close=function(){this.open=false;};
 globalThis.document={readyState:"complete",visibilityState:"visible",getElementById:(i)=>byId[i],createElement:(t)=>new N(t),createElementNS:(_,t)=>new N(t),addEventListener(){}};
 globalThis.__nav=[]; globalThis.window={addEventListener(){},IRISI18N:{t:(k,v)=>String(dict[k] ?? k).replace(/\{(\w+)\}/g,(_,n)=>(v&&v[n]!=null?v[n]:`{${n}}`))},location:{search:"",set href(v){globalThis.__nav.push(v);},get href(){return "";}}}; globalThis.navigator={}; globalThis.location={origin:BASE}; globalThis.confirm=()=>false; globalThis.setInterval=()=>1;
@@ -64,67 +61,6 @@ const live = await (await realFetch(BASE + "/api/knowledge/regions")).json();
 const areas = (live.regions || []).map((r) => String(r.fetch).split("/").pop());
 check(`every area the API has is on the map (${areas.length})`, areas.every((a) => texts().includes(a)));
 check("the config was read", state.cfg && typeof state.cfg.derives === "boolean");
-
-// ── the wall of domains ───────────────────────────────────────────────────────
-// It appears only once there is more than one domain. Most installs have one backbone and no link,
-// and they must see exactly the screen they saw before this existed — a wall of one is not a wall.
-const originsLive = [...new Set((live.regions || []).filter((r) => r.peer).map((r) => String(r.origin || r.peer)))];
-const downLive = (live.links || []).filter((l) => l.reachable === false).length;
-const nDomains = 1 + originsLive.length + downLive;
-if (nDomains < 2) {
-  check("one domain, so no wall is drawn", byId.knWallPanel.hidden === true);
-  console.log("--   only this backbone here; the wall's own assertions need a link");
-} else {
-  check(`the wall is drawn (${nDomains} domains)`, byId.knWallPanel.hidden === false);
-  const mineCards = find(byId.knWallMine, (n) => cls(n).includes("kn-dcard"));
-  const awayCards = find(byId.knWallTheirs, (n) => cls(n).includes("kn-dcard"));
-  const cards = [...mineCards, ...awayCards];
-  check("  one card per domain, and no more", cards.length === nDomains, );
-  // Two walls: what this backbone holds, and what reaches it. The local one is never among the
-  // others — it is not a peer of itself, and putting it in that group would say it is.
-  check("  this backbone is on its own wall, alone", mineCards.length === 1);
-  check("    and never among the ones across a link",
-        awayCards.length === nDomains - 1 && !awayCards.some((c) => cls(c).includes("is-here")));
-  // The chip is kept for the one state a group heading cannot carry. Every card wearing the name of
-  // its own group is a label repeated once per card.
-  const flags = cards.map((c) => find(c, (n) => cls(n).includes("kn-dcard-flag")).length);
-  check("  only a link that is not answering wears a chip",
-        flags.filter(Boolean).length === downLive, `${flags.filter(Boolean).length} chips, ${downLive} down`);
-  const names = cards.map((c) => find(c, (n) => cls(n).includes("kn-dcard-name")).map((n) => n.textContent)).flat();
-  check("  each origin has one", originsLive.every((o) => names.includes(o)));
-  // Every card has the same slots whether or not it has anything in them. A card that changes shape
-  // with its contents makes the eye re-read the layout instead of the data, which is the whole of
-  // what a wall of identical cards is for.
-  const shelves = cards.map((c) => find(c, (n) => cls(n).includes("kn-shelf"))[0]);
-  check("  every card has a shelf", shelves.every(Boolean));
-  const widths = [...new Set(shelves.filter(Boolean).map((sh) => [...sh.children].length))];
-  check("  all on one scale, so two cards compare directly", widths.length === 1, );
-  check("  and every card keeps its tag row", cards.every((c) => find(c, (n) => cls(n).includes("kn-dtags")).length === 1));
-  // The map is the detail pane for the selected card. At rest that is this backbone, so the map must
-  // hold its own areas and none of anybody else's.
-  const mine = (live.regions || []).filter((r) => !r.peer).map((r) => String(r.fetch).split("/").pop());
-  const theirs = (live.regions || []).filter((r) => r.peer).map((r) => String(r.fetch).split("/").pop());
-  check("  the map shows this backbone at rest", mine.every((a) => texts().includes(a)));
-  // A down link has a card of its own now, so drawing its device beside this backbone's areas would
-  // say the same thing twice — and the map is the detail of one card, not of one card plus every
-  // outage. It comes back when its own card is picked.
-  const downNames = (live.links || []).filter((l) => l.reachable === false)
-    .map((l) => String(l.label || l.name).toUpperCase());
-  check("    and not the devices of links that are down",
-        !downNames.some((n) => texts().includes(n)), JSON.stringify(downNames));
-  check("    and nobody else's areas with it",
-        !theirs.some((a) => !mine.includes(a) && texts().includes(a)));
-  if (cards.length > 1) {
-    const other = cards.find((c) => !cls(c).includes("is-here"));
-    other.click(); await settle();
-    check("  picking another card redraws the map for it",
-          !mine.some((a) => !theirs.includes(a) && texts().includes(a)));
-    check("    and both walls are still whole",
-          find(byId.knWallMine, (n) => cls(n).includes("kn-dcard")).length +
-          find(byId.knWallTheirs, (n) => cls(n).includes("kn-dcard")).length === nDomains);
-    cards.find((c) => cls(c).includes("is-here")).click(); await settle();
-  }
-}
 
 // Picking exists where a pick can go somewhere — a run to start, or an overlay to draw. Asserted in
 // whichever direction this install is configured for, because the interesting failure is the button
@@ -182,18 +118,8 @@ if (ctx === null) check("agentContext is exported for checking", false);
 else {
   check("the pasted block names every area", areas.every((a) => ctx.includes(a)));
   check("it carries a fetchable base URL", /\/api\/knowledge/.test(ctx));
-  // Which rule is the right one depends on the links, so the check asks the service the same
-  // question the service answers: with everything up the block may say the list is the world, and
-  // with a link down it must say the opposite. Asserting the first literal unconditionally is how
-  // this block printed the confident sentence over an incomplete list for as long as it did.
-  const down = (live.links || []).filter((l) => l.reachable === false);
-  if (down.length)
-    check("it suspends the absence rule while a link is down",
-      /This list is incomplete/.test(ctx) && /do not say anything is absent/.test(ctx)
-      && !/grounds on which you may say/.test(ctx));
-  else
-    check("it repeats the absence rule, and only for the whole list",
-      /grounds on which you may say/.test(ctx) && /no smaller table/.test(ctx));
+  check("it repeats the absence rule, and only for the whole list",
+    /grounds on which you may say/.test(ctx) && /no smaller table/.test(ctx));
   check("it tells the agent not to build addresses", /Never build one/.test(ctx));
 }
 
@@ -353,44 +279,6 @@ else {
     const own = globalThis.window.IRISI18N.t("knowledge.err.id_taken", body.values || {});
     check("  and the screen has its own sentence for it", own.includes(taken) && own !== body.detail);
   }
-}
-
-// The export dialog refuses before it sends, or it does not refuse at all.
-//
-// Both checks below are about a request that must NOT happen. A passphrase typed differently twice,
-// or one too short, produces a file that is either unopenable or barely protected — and the person
-// finds out at the far end, days later, with nothing to go back to. So the dialog is the place that
-// has to catch it, and "it showed a message" is not the same claim as "it sent nothing".
-{
-  const sent = [];
-  const realGlobalFetch = globalThis.fetch;
-  globalThis.fetch = async (url, opts) => {
-    if (String(url).includes("export/bundle")) { sent.push(String(url)); throw new Error("blocked by the check"); }
-    return realGlobalFetch(url, opts);
-  };
-  const dialog = byId.knExportDialog, msg = byId.knExportMsg;
-  const submit = async () => { byId.knExportForm.submit(); await settle(); };
-
-  byId.knExport.click();
-  check("the export dialog opens", dialog.open === true);
-
-  byId.knExportPass.value = "correct horse battery";
-  byId.knExportPass2.value = "correct house battery";
-  await submit();
-  check("two different passphrases are refused", sent.length === 0 && !msg.hidden && msg.className.includes("is-bad"));
-  check("  and the dialog stays open to say so", dialog.open === true);
-
-  byId.knExportPass.value = byId.knExportPass2.value = "short";
-  await submit();
-  check("a short passphrase is refused before anything is sent", sent.length === 0);
-
-  byId.knExportPass.value = byId.knExportPass2.value = "correct horse battery";
-  await submit();
-  check("a matching passphrase does reach the server", sent.length === 1);
-
-  dialog.close();
-  check("closing clears what was typed", byId.knExportPass.value === "" && byId.knExportPass2.value === "");
-  globalThis.fetch = realGlobalFetch;
 }
 
 console.log(results.join("\n"));

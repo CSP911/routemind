@@ -3,7 +3,7 @@
 The one-line version is in the [README](../README.md):
 
 ```sh
-./install.sh --name acme --port 9000
+./install.sh --port 9000
 ```
 
 This is everything that did not fit beside it.
@@ -24,7 +24,7 @@ mkdir -p data/repo && cp -r examples/back-office/. data/repo/
 ```sh
 cp .env.example .env
 printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
-mkdir -p data/repo data/overlays data/walks data/harness data/exchange data/access
+mkdir -p data/repo data/overlays data/walks data/harness data/access
 docker compose up -d --build
 ./check/smoke.sh
 ```

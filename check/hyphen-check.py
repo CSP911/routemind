@@ -7,17 +7,15 @@ Reported by a user, 2026-10-07: "derive.py turns the hyphens in `source` into un
 writes regions.json." So an area `back-office` was `back_office` in its `source`, and every reader
 that took `source` for the directory name was wrong for exactly the hyphenated areas. The one that
 broke: the export surface compared a node's area (`back-office`) with the source (`back_office`), so
-every node of an exported hyphenated area was a 404 to every peer while the area's table read fine.
+every node of an exported hyphenated area was a 404 to every reader while the area's table read fine.
 
 `source` is now the directory name, as it is, and readers accept the old spelling because committed
-tables, older backbones and older bundles still carry it. This checks:
+tables and older backbones still carry it. This checks:
 
   one spelling       a hyphenated area's source is its directory, in regions.json and on every read
-  across a link      a peer reads the area, its representative, a node and a node's body
+  a circuit          another backbone reads the area, its representative, a node and its body
   an old table       a regions.json committed in the old spelling is caught by the validator, served
                      in the new one meanwhile, and regenerated at startup
-  an old bundle      a graft of a bundle whose areas are named in the old spelling lands under the
-                     directory name, and validates
 """
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.error, urllib.request
 
@@ -47,7 +45,7 @@ def call(method, path, body=None, token=None, raw=False):
 
 
 T = tempfile.mkdtemp(prefix="hyphen-check-")
-env = {**os.environ, "PORT": str(PORT), "ONTOLOGY_PEER_TOKEN": TOKEN, "ROUTEMIND_EXPORT_PASSPHRASE": "a passphrase long enough for the check",
+env = {**os.environ, "PORT": str(PORT), "ONTOLOGY_PEER_TOKEN": TOKEN,
        "PYTHONPATH": os.pathsep.join(x for x in [os.environ.get("PYTHONPATH", ""), os.path.join(ROOT, "ontology")] if x)}
 procs = []
 
@@ -116,26 +114,6 @@ try:
     st, _ = call("GET", "/v1/export/nodes/spare-keys", token=s.get("token", ""))
     check("  after which a peer still reads its nodes", st == 200, str(st))
 
-    # ── an old bundle ─────────────────────────────────────────────────────────
-    bundle = os.path.join(T, "b.rmx")
-    r = subprocess.run([sys.executable, os.path.join(ROOT, "transfer", "export.py"), "--api", f"http://127.0.0.1:{PORT}", "--token", TOKEN, "--out", bundle],
-                       env=env, capture_output=True, text=True)
-    stop(p)
-    if check("a bundle of the hyphenated area is made", r.returncode == 0, (r.stdout + r.stderr)[-200:]):
-        # Rewrite it as a bundle from before the fix: the same contents, areas named with underscores.
-        sys.path.insert(0, os.path.join(ROOT, "transfer"))
-        import bundle as B
-        payload = B.unseal(open(bundle, "rb").read(), env["ROUTEMIND_EXPORT_PASSPHRASE"])
-        for reg in payload.get("regions") or []: reg["source"] = str(reg["source"]).replace("-", "_")
-        open(bundle, "wb").write(B.seal(payload, env["ROUTEMIND_EXPORT_PASSPHRASE"]))
-        target = os.path.join(T, "target")
-        shutil.copytree(os.path.join(ROOT, "data", "repo"), target, ignore=shutil.ignore_patterns(".git"))
-        git(target, "init", "-q"); git(target, "config", "user.email", "t@r"); git(target, "config", "user.name", "t"); git(target, "add", "-A"); git(target, "commit", "-qm", "x")
-        r = subprocess.run([sys.executable, os.path.join(ROOT, "transfer", "import.py"), bundle, "--graft", target, "--prefix", "hq"], env=env, capture_output=True, text=True)
-        dirs = sorted(d for d in os.listdir(os.path.join(target, "regions")) if d.startswith("hq-"))
-        check("a graft of an old-spelling bundle lands under the directory name", r.returncode == 0 and "hq-back-office" in dirs and not any("_" in d for d in dirs),
-              f"{dirs} {(r.stdout + r.stderr)[-200:]}")
-        check("  and validates", validate(Store(target))["ok"], json.dumps(validate(Store(target))["errors"][:2])[:200])
 finally:
     for p in procs:
         try: stop(p)

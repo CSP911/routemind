@@ -4,17 +4,13 @@ Everything else in `check/` asks whether one call answers correctly; a scenario 
 thing an agent reads still tells the truth after the ontology has been lived in** — areas created,
 advertised, emptied, deleted, and created again.
 
-Two runners, because there are two lifetimes. `check/scenarios.py` is one backbone over time
-(**A**–**K**); `check/room-check.py` is a room over time (**L**–**N**), which became a lifetime worth
-having the day an exchange started shipping in the default install. `check/cross-check.py` is
-**P** — the two crossed, which is where three real defects were: a promise that was right for a local
-reader and wrong for a remote one is invisible from either side alone. All three run against throwaway
-ontologies they start themselves, because several of these delete everything.
+`check/scenarios.py` is one backbone over time (**A**–**K**). It runs against a throwaway ontology it
+starts itself, because several of these delete everything. (**L**–**P** were a room of linked
+backbones over time and that room crossed with the rest; they were retired with standing links and the
+exchange on 2026-10-08.)
 
 ```sh
 docker compose exec ontology python3 /tmp/check/scenarios.py     # see the header of the file
-./check/room-check.py
-./check/cross-check.py
 ```
 
 ## Why these and not others
@@ -134,77 +130,11 @@ a human runs git. None of that looks like a race from outside.
 | K2 | The tree is not left dirty, and the repository is still valid |
 | K3 | A held lock gives up rather than hanging, and says a process is holding it — not that someone edited by hand |
 
-## L — membership in a room
-
-`check/room-check.py`. Two backbones and an exchange. Registering one is an ordinary Tuesday;
-**removing** one is the widest-blast-radius button on the operator's screen, and what it must not
-touch is as much of the scenario as what it must.
-
-| | What it proves |
-|---|---|
-| L1 | The shipped shape: one backbone, one exchange, nothing to reflect. Hop 0 must read exactly as it would with no exchange — same rows, absence claimable, **nobody named** — or every single-backbone install is being told about a link it does not have |
-| L2 | A second backbone registered but not yet advertising changes nothing at hop 0. Being in the room is not the same as sharing |
-| L3 | It advertises → the row arrives with nothing restarted, what it points at is readable straight away, and the absence sentence starts naming the room it comes through. A row that appears without its documents is a promise the link cannot keep |
-| L4 | Removed at the exchange → its rows and **their addresses** go from the other backbone, absence goes back to naming nobody, and **its own ontology is untouched**: it simply stops meeting here |
-| L5 | Registered again → the row comes back |
-
-## M — the room itself goes away
-
-`check/room-check.py`. Not a member: the exchange. This scenario exists because the default changed
-under the older ones — an exchange now ships in every install, which means every link in every install
-runs through one process that nobody had yet switched off on purpose.
-
-| | What it proves |
-|---|---|
-| M1 | Each backbone keeps answering, keeps serving **its own** areas, drops the rows it can no longer stand behind, says the list is incomplete, **stops claiming absence**, and names what failed and why. A read across the dead room is not a 404 — nobody is saying no |
-| M2 | It comes back → used again unprompted, and absence may be claimed again. A backbone that stayed cautious for ever after one blip is as wrong as one that never noticed, and much harder to see, because everything still works |
-
-## N — an audience over a lifetime
-
-`check/room-check.py`, with the steady states in `peer-check.py` and `exchange-check.py`.
-
-| | What it proves |
-|---|---|
-| N1 | An audience naming the reader changes nothing for it — and does not hand it the list. Who else was considered is not the reader's business |
-| N2 | An audience naming somebody who is not in the room leaves **everyone** out, the address stops working and not just the row, the backbone still holds it locally, and **nothing anywhere errors**: the link is up, because "you are not on the list" is not an outage and must not suspend the absence rule |
-| N3 | Taking it away puts the area back, address and all |
-| N4b | **Withdrawing** goes through the queue: an empty `after` on scope `peer` is allowed against a non-empty `before` and refused against nothing. The same empty string is *not written yet* and *stop this area crossing*, and only the second is a decision — until it was split, the one export decision with no queued path was the one that takes knowledge away from another organisation |
-| N4 | It goes through the **review queue**, scope `audience`, like the line it narrows. An empty `after` is a decision here and a mistake everywhere else; there is no drafting it, because who may see something is not in the ontology for a model to read |
-| N6 | A different sentence for **one named reader**: the room picks it, everybody else keeps the default, and nothing tells the reader there are other versions. An empty one removes it |
-| N7 | The room labelled as an ordinary backbone. The backbone side has one lock and no header may stand in for it — believing a caller that says it is a room would hand it the whole shared set — so getting the label wrong fails silently, with audiences and per-peer lines quietly doing nothing. It is noticed now, as a **note** on a link that is up: not an error, because calling a working link down would suspend the absence rule over a line in a file |
-| N4d | Withdrawing takes the whole export decision with it. An audience narrows a line and an override replaces one; with no line there is nothing to narrow and nothing to replace, so the two are cleared alongside it and the answer says they were. Left behind they were state that means nothing, and the validator refused the withdrawal itself — telling somebody deliberately removing a line to "write the line first", which is the advice for the opposite act |
-| N4c | An accept that **could not be applied** must not answer 200. The queue already did the right thing in substance — nothing written, the proposal left pending — and said so in the body while the status line said success. Every caller that branches on a status, the screen's own included, showed "applied" over a queue item still sitting there. The mirror of J, pointing the other way |
-| N5 | The queue has two doors and only one of them is the ontology's. The screen talks to `web/app.py`, and the ontology API is not published outside the compose network — so a scope the proxy does not list is a scope nobody can reach. `peer` and `audience` were both missing there while the docs described the road they take, which made the docs true of a queue with no door. The two lists are read out of the two files and held together |
-
-N2 also pins the one thing the operator's view must keep showing: a member advertising an area, whoever
-it is for. Health is not policy, and an audience that showed up on the exchange's screen would be
-visible to the one party it does not restrict.
-
-## P — where the new configuration meets the old
-
-`check/cross-check.py`. Two backbones and an exchange, with the features that were built before links
-existed switched on beside them. Everything else about peering asks *does a link work*; these ask the
-question that only appears once there is one: **which of the promises this ontology already makes are
-still true when the reader is another backbone?** Each was a settled answer for a local reader and a
-different question for a remote one, and three of them were wrong.
-
-| | What it proves |
-|---|---|
-| P1 | A **draft** is hidden from a listing and answers by address. Right for the owner — "draft" means unfinished, not secret — and across a link that listing is the *only* access control there is, so anyone holding yesterday's address kept reading a thing that had been taken off the table. Now 404 across a link, indistinguishable from a node that was never there, and unchanged locally |
-| P2 | A **hand-edited tree** refuses writes and must keep serving a peer. The tempting answer is to stop until somebody tidies up, and it is wrong twice over: the peer would see an outage, stop claiming absence, and none of it would be true |
-| P3 | An **overlay** refuses an address across a link — it narrows this backbone's own tree, and one that quietly got smaller whenever a link dropped would turn "look here" into "this is all there is". The refusal was right and its *reason* said the address had been assembled, when hop 0 had printed it and every table says to follow one exactly as printed. Blaming the reader for doing the documented thing is worse than not refusing |
-| P4 | An **audience and an outage** are two reasons a row is missing and only one of them suspends absence. Off the list → the row goes, absence stands. The link then drops → the outage is what is reported. It comes back → the policy is what remains |
-| P5 | A **252-character id** — the longest there is, because `.md` makes it 255 — crosses a room whole, three prefixes deep, and reads back untruncated |
-| P6 | **Deleting** an exported area, as opposed to withdrawing it. Refused while it holds anything, by a rule written before links existed and still right; once empty, the row and the address go at the peer, as that backbone saying no rather than a link that failed |
-
-A fourth defect was found while writing P3 and is checked there: a malformed overlay member came back
-`500 internal error`, naming neither the mistake nor the fix — the class of bug section I exists for.
-
 ## Q — the install a stranger gets
 
 `check/install-check.sh`, and it is not run with the others: it clones the **committed** tree,
-installs it in a temporary directory on its own ports and image tags, adds the second backbone, and
-walks the export decision end to end. Minutes, because it builds. Before a release, and after a change
+installs it in a temporary directory on its own port and image tags, and walks the export decision
+end to end as another backbone's circuit sees it. Minutes, because it builds. Before a release, and after a change
 large enough that you would not want to be the first person to find out.
 
 Every scenario above builds its own world. This one is about the world a person arrives in, and the
@@ -215,11 +145,8 @@ not prepare.
 | | What it found |
 |---|---|
 | Q1 | `install.sh` and docker compose read one `.env` and disagreed about which duplicate line wins — the installer waited on a port nothing served and said the stack had not come up, with a healthy stack behind it. Now `check/env-check.py` lifts the pipeline out of install.sh and runs it |
-| Q2 | An accept that could not be applied answered **200**. Right in substance — nothing written, the proposal left pending — and every caller that branches on a status believed it, the screen included. N4c |
-| Q3 | Withdrawing an export line was refused by its own audience and override, with advice written for the opposite act. They go with it now. N4d |
-| Q4 | The refresh hint's fingerprint did not list the newest export field, so that field was the only one with no hint behind it — and it is the one usually written to show somebody *less* |
-| Q5 | The peering checks died with `IndexError` inside the ontology container, whose seed has no areas on purpose. They say so now |
-| Q6 | `mkdir -p data-b/…` was in `install.sh` for the first backbone and in the operator screen's plan, and missing from the one command a person copies out of docs/PEERING.md. Docker creates a missing bind mount **owned by root**, so the second backbone never became healthy |
+| Q2 | An accept that could not be applied answered **200**. Right in substance — nothing written, the proposal left pending — and every caller that branches on a status believed it, the screen included |
+| Q3–Q6 | Found in the standing links retired on 2026-10-08: an audience refusing its own withdrawal, a refresh hint missing a field, checks dying on an empty seed, and a `mkdir` recipe one directory short. The last is now `check/env-check.py`'s to catch anywhere |
 
 The image tags are the reason this can be run at all without thinking about it: they were shared, so a
 verification build would have replaced the images the machine's own install next starts from.
@@ -230,9 +157,6 @@ verification build would have replaced the images the machine's own install next
 **D — moves and containment** (`write-paths.sh` already moves a node within an area, across areas,
 refuses a loop, and refuses deleting a node that holds one).
 **E — absence wording and invented addresses** (`mcp-check.py` already walks that).
-**O — rooms meeting rooms** (`ix-peering-check.py` walks one hop across, two hops refused in both
-directions, the deadlock and the mislabel).
-**Withdrawal latency** (`refresh-check.py`, which needs the cache turned *up* rather than off and so
-cannot share a runner with anything here).
+**What a circuit reads as the far end changes** (`follow-check.py`, which needs a second backbone).
 
 Duplicating them would mean two places to update and one of them going stale.

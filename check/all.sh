@@ -3,7 +3,7 @@
 #
 #   ./check/all.sh              against the install running at :8080
 #   ./check/all.sh --quick      skip the slow ones (install-check, concurrency, llm-paths)
-#   ./check/all.sh --only peer  just the ones whose name contains "peer"
+#   ./check/all.sh --only walk  just the ones whose name contains "walk"
 #
 # There is no framework here and each check runs on its own; this only knows **where** each one can
 # run, which is the part that is not obvious and was previously carried in somebody's head. Three
@@ -67,10 +67,7 @@ cid() { docker compose ps -q "$1" 2>/dev/null; }
 ONT=$(cid ontology); WEB=$(cid web)
 
 printf '\n== on this machine, each starting what it needs ==\n'
-for c in peer-check exchange-check ix-peering-check refresh-check room-check cross-check \
-         domain-check admin-check overlay-check; do
-  run "$c" $HOSTPY "check/$c.py"
-done
+run overlay-check $HOSTPY check/overlay-check.py
 run ontology-check $HOSTPY ontology/check.py
 [ "$QUICK" = 1 ] || run concurrency-check $HOSTPY check/concurrency-check.py
 
@@ -119,19 +116,19 @@ fi
 printf '\n== against the install at %s ==\n' "$BASE"
 run smoke     sh check/smoke.sh "$BASE"
 run mcp-check $HOSTPY check/mcp-check.py "$BASE/api/knowledge"
-# What an export contains and what it refuses. It reads the export surface and needs the peer token
-# for it — from the environment, or from the same .env compose reads, so running the suite needs no
-# extra step. Not skipped when the token is missing: this file's own rule at the top is that a suite
-# which cannot run says so and fails, and the check whose whole point is that an export stays narrow
-# is the last one that should quietly not happen.
-TRANSFER_TOKEN="${EXCHANGE_TOKEN_HOME:-}"
-[ -n "$TRANSFER_TOKEN" ] || TRANSFER_TOKEN=$(sed -n 's/^EXCHANGE_TOKEN_HOME=//p' .env 2>/dev/null | head -1)
-ROUTEMIND_TOKEN="$TRANSFER_TOKEN" run transfer $HOSTPY check/transfer-check.py
+# A circuit into this install, the way another backbone opens one: through the web port, with the key.
+# The key comes from the environment or from the same .env compose reads — under its current name, or
+# the one an install made before 2026-10-08 still has. Not skipped when it is missing: a suite that
+# cannot run says so and fails.
+CIRCUIT_TOKEN="${KNOWLEDGE_CIRCUIT_TOKEN:-}"
+[ -n "$CIRCUIT_TOKEN" ] || CIRCUIT_TOKEN=$(sed -n 's/^KNOWLEDGE_CIRCUIT_TOKEN=//p' .env 2>/dev/null | tail -1)
+[ -n "$CIRCUIT_TOKEN" ] || CIRCUIT_TOKEN=$(sed -n 's/^EXCHANGE_TOKEN_HOME=//p' .env 2>/dev/null | tail -1)
+ROUTEMIND_TOKEN="$CIRCUIT_TOKEN" run circuit $HOSTPY check/circuit-check.py "$BASE"
 # The session tokens, run inside the ontology against itself: that service publishes no port, which
 # is the design — the web proxy is the only way in from outside — so this is where it is reachable.
 if [ -n "$ONT" ]; then
   docker cp check/session-check.py "$ONT:/tmp/session-check.py" >/dev/null 2>&1
-  run session docker exec -i -e ROUTEMIND_TOKEN="$TRANSFER_TOKEN" \
+  run session docker exec -i -e ROUTEMIND_TOKEN="$CIRCUIT_TOKEN" \
       -e ROUTEMIND_API=http://127.0.0.1:8100 "$ONT" python3 /tmp/session-check.py
 fi
 
@@ -153,10 +150,10 @@ else
   # Invariant 4: every reader of one fact gets the same answer. Every fact × every path, on a clean
   # tree and again with an uncommitted hand edit. Starts its own ontology and an MCP.
   run same-answer $HOSTPY check/same-answer-check.py
-  # Invariants 5 and 7: every write path — API, proposal accept, tidy, graft, ungraft — a success
+  # Invariants 5 and 7: every write path — API, proposal accept, tidy — a success
   # and a failure each, with commits and tree state read back. Starts its own ontologies.
   run transact    $HOSTPY check/transact-check.py
-  # Invariant 3, the derived state that is not a file: a peer's advertisement, a session and the
+  # Invariant 3, the derived state that is not a file: what a circuit reads, its session, and the
   # MCP's area list each follow their source without waiting out a timer. Two backbones, an MCP.
   run follow      $HOSTPY check/follow-check.py
   # An area with a hyphen in its directory, on every path that once spelled it two ways (user report 2026-10-07).

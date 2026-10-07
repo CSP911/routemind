@@ -564,6 +564,27 @@ eq("store.write: a reader never does", _bad[:3], [])
 eq(f"  and it really was reading ({_n} clean reads)", _n > 100, True)
 
 
+# ── the review queue has one list of scopes, on both sides of the proxy ──────
+# The web app refuses a scope it does not list before the ontology sees it. A scope the ontology takes
+# and the proxy does not is a decision nobody can reach — `export` and `audience` were exactly that
+# until 2026-09-13; one the proxy offers and the ontology refuses is a form that always fails. Held
+# by room-check until that went with standing links (2026-10-08).
+def _scopes_both_sides():
+    import re as _re
+    from service.curator import ROUTE_SCOPES
+    web = pathlib.Path(__file__).resolve().parent.parent / "web" / "app.py"
+    m = _re.search(r"QUEUE_SCOPES = \((.*?)\)", web.read_text(encoding="utf-8"), _re.S)
+    return set(ROUTE_SCOPES), set(_re.findall(r'"([a-z]+)"', m.group(1))) if m else set()
+
+
+try:
+    _api, _web = _scopes_both_sides()
+    eq("the proxy offers every scope the queue takes", sorted(_api - _web), [])
+    eq("  and none the queue would refuse", sorted(_web - _api), [])
+except Exception as e:
+    fails.append("scopes"); print(f"FAIL {'the scope check could not run':<52} {e!r}")
+
+
 # ── what ships has to validate as shipped ────────────────────────────────────
 # `examples/back-office` is what the README tells a new person to copy over `data/repo` before the
 # first boot, and `seed/` is what the entrypoint lays down when they do not. Both are committed

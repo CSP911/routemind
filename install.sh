@@ -1,8 +1,8 @@
 #!/bin/sh
 # Bring this up on a machine that has never run it.
 #
-#   ./install.sh                        ask what to call this domain, and about the LLM
-#   ./install.sh --name acme --port 9000
+#   ./install.sh                        ask which port, and about the LLM
+#   ./install.sh --port 9000
 #   ./install.sh --no-llm               do not ask about the LLM; run without one
 #   ./install.sh --llm-provider openai|anthropic|litellm --llm-url URL --llm-key KEY --llm-model MODEL
 #   KNOWLEDGE_LLM_PROVIDER=... KNOWLEDGE_LLM_URL=... KNOWLEDGE_LLM_KEY=... KNOWLEDGE_LLM_MODEL=... ./install.sh
@@ -21,14 +21,12 @@ LLM_PROVIDER="${KNOWLEDGE_LLM_PROVIDER:-}"
 DEFAULT_BASE_openai=https://api.openai.com
 DEFAULT_BASE_anthropic=https://api.anthropic.com
 ASK=1
-# The two things an install is asked for. A domain is one exchange and the backbones on it, and its
-# name is what every screen and every relayed address carries — `/v1/peers/acme/…` rather than
-# `/v1/peers/ix/…`. Asked once, at install, because renaming it afterwards rewrites addresses that
-# somebody may already have followed.
-NAME="${ROUTEMIND_NAME:-}"; PORT="${WEB_PORT:-}"
+PORT="${WEB_PORT:-}"
 while [ $# -gt 0 ]; do
   case "$1" in
-    --name)       NAME="$2"; shift ;;
+    # Named the exchange this install met other backbones at; there is no exchange since 2026-10-08.
+    # Still accepted, so a command copied from an older page does not stop at an unknown option.
+    --name)       printf '  --name is no longer used (there is no exchange to name) — ignored\n'; shift ;;
     --port)       PORT="$2"; shift ;;
     --no-llm)     ASK=0 ;;
     --llm-url)    LLM_URL="$2"; ASK=0; shift ;;
@@ -54,29 +52,13 @@ setenv() {
   else printf '%s=%s\n' "$k" "$v" >> .env; fi
 }
 
-# ── what to call this domain, and where to answer ────────────────────────────
+# ── where to answer ───────────────────────────────────────────────────────────
 # Asked only where there is a terminal and the answer is not already in .env, the same rule the LLM
 # question follows: a re-run or a scripted install must not stop and wait for somebody who is not
-# there. Both have working defaults, so pressing Enter twice is a complete answer.
-if [ -z "$NAME" ] && [ -t 0 ] && ! grep -q '^EXCHANGE_NAME=.\+' .env; then
-  printf '\nWhat is this domain called? One word, lowercase — a company, a team, a site.\n'
-  printf 'It names the room these backbones meet in, and shows on every screen.\n'
-  printf '  [ix] > '
-  read -r NAME || NAME=""
-fi
+# there. It has a working default, so pressing Enter is a complete answer.
 if [ -z "$PORT" ] && [ -t 0 ] && ! grep -q '^WEB_PORT=.\+' .env; then
   printf '\nWhich port should the map answer on?\n  [8080] > '
   read -r PORT || PORT=""
-fi
-NAME=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cd 'a-z0-9-')
-# Refused rather than corrected into something else. The name becomes a path segment in every address
-# this backbone prints for the room, and silently turning `Acme Corp` into `acme-corp` would mean the
-# addresses somebody reads are not the name they typed.
-if [ -n "$NAME" ]; then
-  case "$NAME" in
-    [a-z]*) setenv EXCHANGE_NAME "$NAME" ;;
-    *) printf '  ! a domain name starts with a letter and holds only a-z, 0-9 and -\n' >&2; exit 2 ;;
-  esac
 fi
 if [ -n "$PORT" ]; then
   case "$PORT" in
@@ -149,63 +131,15 @@ fi
 
 # Before compose, not after: a bind-mount source Docker has to invent is invented as root, and this
 # container runs as you so that it can commit into your repository.
-mkdir -p data/repo data/overlays data/walks data/harness data/exchange data/access
+mkdir -p data/repo data/overlays data/walks data/harness data/access
 
-# The link this install already has: one backbone, meeting at its own exchange.
-#
-# **Wired now rather than when a second backbone arrives.** Both halves of a link are declarations —
-# the backbone names the exchange, the exchange names the backbone — and writing them at install time
-# means adding a second backbone touches nothing that already works. Doing it later would mean
-# rewriting the first backbone's peers.yaml at exactly the moment somebody is busy adding a second.
-#
-# The secret is generated once and kept. It is the same one in both directions, which is what lets the
-# exchange tell who is calling.
-if ! grep -q '^EXCHANGE_TOKEN_HOME=.\+' .env; then
-  setenv EXCHANGE_TOKEN_HOME "$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
-fi
-# An install made before 2026-09-13 has a peers.yaml naming the exchange with no `kind:` on it, and
-# that entry is skipped by the block below because the file exists. Said rather than edited: this is
-# somebody's repository, a write here makes the tree dirty and every later write is then refused
-# until they commit something they did not do. The screen says the same thing on its own.
-if [ -f data/repo/peers.yaml ] && grep -q 'url: *http://exchange:8110' data/repo/peers.yaml \
-   && ! grep -q 'kind: *exchange' data/repo/peers.yaml; then
-  printf "  ! data/repo/peers.yaml names the exchange without 'kind: exchange'.\n"
-  printf "    Add that line and commit it. Without it this backbone filters for the room instead\n"
-  printf "    of for its members, so an area's audience and a line written for one peer do\n"
-  printf "    nothing — and nothing anywhere looks broken. The map's bar says the same.\n"
-fi
-if [ ! -f data/repo/peers.yaml ]; then
-  # The name typed at install, so the addresses this backbone prints for the room carry it:
-  # `/v1/peers/acme/…`. Only when the file is absent — on a re-run this is somebody's repository and
-  # a write here makes the tree dirty, after which every ordinary write is refused until they commit
-  # something they did not make.
-  ROOM="$(grep '^EXCHANGE_NAME=' .env 2>/dev/null | cut -d= -f2-)"; ROOM="${ROOM:-ix}"
-  cat > data/repo/peers.yaml <<YAML
-# Who this backbone is linked to. The token for each is in the environment, not here — this file is
-# versioned and reviewed like the rest of what this backbone is, and a secret is neither.
-peers:
-  - name: $ROOM
-    label: $(printf '%s' "$ROOM" | tr 'a-z-' 'A-Z ')
-    url: http://exchange:8110
-    # A room, not a backbone. It changes one thing: this backbone believes it when it says which of
-    # its members a document is being fetched for, which is what makes an area's audience mean
-    # anything behind an exchange. An ordinary peer saying the same is not believed.
-    kind: exchange
-    token_env: ONTOLOGY_PEER_TOKEN_IX
-YAML
-fi
-if [ ! -f data/exchange/members.yaml ]; then
-  cat > data/exchange/members.yaml <<'YAML'
-# Who meets here. The token for each is in the environment, not in this file.
-#
-# This is the exchange's half of the declaration; each backbone names the exchange in its own
-# peers.yaml. Both halves are needed, so nobody is enrolled by one side alone.
-members:
-  - name: home
-    label: HOME
-    url: http://ontology:8100
-    token_env: EXCHANGE_TOKEN_HOME
-YAML
+# The key another backbone's circuit presents to read the areas set `export` here. Generated once and
+# kept; nothing crosses until somebody sets `export` on an area, so having a key is not sharing
+# anything. An install made before 2026-10-08 has it as EXCHANGE_TOKEN_HOME, which compose still reads,
+# so it is carried over under the new name rather than replaced — whoever holds it keeps working.
+if ! grep -q '^KNOWLEDGE_CIRCUIT_TOKEN=.\+' .env; then
+  OLD="$(grep '^EXCHANGE_TOKEN_HOME=' .env 2>/dev/null | tail -1 | cut -d= -f2-)"
+  setenv KNOWLEDGE_CIRCUIT_TOKEN "${OLD:-$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')}"
 fi
 
 docker compose up -d --build

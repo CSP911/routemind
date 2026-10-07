@@ -73,7 +73,7 @@ each area, not the word "RouteMind" in your question. If it answers from its own
 that is the finding: some area's `use_when` does not say when to come to it.
 
 `/circuit <url> <token>` is also registered, as a project command — it reads another backbone for the
-length of the session. **[../docs/PEERING.md](PEERING.md)**.
+length of the session. **[CIRCUIT.md](CIRCUIT.md)**.
 
 #### Somewhere else, or another project
 
