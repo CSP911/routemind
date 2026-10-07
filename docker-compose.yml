@@ -29,8 +29,11 @@ services:
     environment:
       ONTOLOGY_DATA: /data/repo
       # Overlays (docs/OVERLAY.md): one question's working set each — run evidence, not structure. Their
-      # own directory, not the repository: a commit per question would bury the ontology.
-      ONTOLOGY_OVERLAYS: /data/overlays
+      # own directory, not the repository: a commit per question would bury the ontology. **Off unless
+      # set** (operator, 2026-10-08): with it empty the map draws no VRFs and the agent has no overlay
+      # tool. `ONTOLOGY_OVERLAYS=/data/overlays` in .env turns the store and the map's half on; the
+      # agent's tool also needs `KNOWLEDGE_TOOLS_EXTRA=overlay` where its MCP server runs.
+      ONTOLOGY_OVERLAYS: "${ONTOLOGY_OVERLAYS:-}"
       # The footprint (docs/FOOTPRINT.md): every walk an agent takes, kept six hours — the map's live
       # view and its replay. Run evidence, like overlays.
       ONTOLOGY_WALKS: /data/walks

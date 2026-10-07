@@ -4,6 +4,12 @@ Status: **built** 2026-09-11 — direction approved by the operator, reviewed an
 Knowledge session (`/v1/overlays`, 0fda554), consumed by the proxy, the map and the MCP server. Not yet
 done: the ten-question comparison at the bottom, and the curator reading closed records.
 
+**Off by default since 2026-10-08** (operator). With `ONTOLOGY_OVERLAYS` unset the store answers 501,
+the map draws no VRFs and offers no tick boxes, and the agent has no overlay tool. To turn it on, set
+`ONTOLOGY_OVERLAYS=/data/overlays` in `.env` (the store and the map's half) and
+`KNOWLEDGE_TOOLS_EXTRA=overlay` where the MCP server runs (the agent's half). `check/overlay-check.py`
+switches both on for itself.
+
 ![How an overlay gets made: the agent reads hop 0, picks every area the question belongs to and says
 why for each, works from the one merged table, and closes it with the addresses the answer actually
 came from. RouteMind serves and checks; it never chooses.](img/overlay-flow.svg)
