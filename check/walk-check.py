@@ -85,6 +85,11 @@ try:
     t, err = m.call("knowledge_table", {})
     check("hop 0 with no address answers", not err and "/v1/regions/expense" in t, t[:120])
     check("  and prints no id for the agent to carry", "wk_" not in t and "walk  " not in t, t[:160])
+    # Every area's sentence, whole. Clipped at 100 characters it lost its last clauses behind a `…`
+    # in five of six areas here, and the clause that matches a question is as often last as first.
+    whole = json.load(urllib.request.urlopen(f"http://127.0.0.1:{PORT}/v1/regions", timeout=10))["regions"]
+    cut = [r["source"] for r in whole if " ".join((r.get("use_when") or "").split()) not in t]
+    check("  and carries every area's sentence whole, nothing cut", not cut and "…" not in t, str(cut))
     t, err = m.call("knowledge_table", {"path": "/v1/regions/expense"})
     check("below hop 0 a step without a reason is refused", err and "why" in t, t[:140])
     t, err = m.call("knowledge_table", {"path": "/v1/regions/expense", "why": "receipts are in its sentence"})

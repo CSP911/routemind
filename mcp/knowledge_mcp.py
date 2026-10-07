@@ -111,9 +111,10 @@ class ApiError(Exception):
 # table has then learned to read all of them. `KIND` names the tool to call, so choosing a row and
 # choosing a tool are one decision rather than two.
 
-def _clip(text: str, limit: int) -> str:
+def _clip(text: str, limit: int | None) -> str:
+    """One line, emphasis marks taken out; cut at `limit` with `…`, or whole when `limit` is None."""
     s = " ".join(str(text or "").replace("*", "").replace("`", "").split())
-    return s if len(s) <= limit else s[: limit - 1] + "…"
+    return s if limit is None or len(s) <= limit else s[: limit - 1] + "…"
 
 
 def _since(iso: str | None) -> str:
@@ -160,7 +161,7 @@ def _age(row: dict) -> str:
 WHOSE = {"ours": "ours", "copied": "copied", "theirs": "theirs"}
 
 
-def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) -> str:
+def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None, clip: int | None = 100) -> str:
     if not rows:
         # An empty table still has to say what its emptiness means. Without the footer, "(nothing
         # here)" is the strongest claim on the page and the only one with no scope attached — an
@@ -186,7 +187,7 @@ def _table(rows: list[dict], title: str, lead: str, foot_absence: str | None) ->
         line = f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  "
         if age_w: line += f"{ages[id(r)].ljust(age_w)}  "
         if whose_w: line += f"{whose[id(r)].ljust(whose_w)}  "
-        out.append(line + _clip(r["why"], 100))
+        out.append(line + _clip(r["why"], clip))
     out.append("")
     if whose_w:
         out.append("  FROM says whose answer a row is, and they are not interchangeable:")
@@ -239,11 +240,15 @@ def hop0(api: Api) -> str:
     absence = d.get("absence") or (
         "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
         "something is absent — no smaller table is.")
+    # Whole, never clipped (operator, 2026-10-08). `use_when` is the one sentence an agent chooses an
+    # area by, and its last clause is as likely as its first to be the one this question matches —
+    # cut at 100 characters, five of six areas here lost theirs behind a `…`.
     return _table(
         rows,
         "ROUTEMIND — the areas of this domain",
         "Pick the row whose condition matches the question, then fetch it. One step, then read.",
         absence,
+        clip=None,
     )
 
 
