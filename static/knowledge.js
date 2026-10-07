@@ -448,7 +448,7 @@
       const g = svgEl("g", { class: "kn-vrf-chip" + (state.vrfSel === ov.id ? " is-sel" : ""), tabindex: "0", role: "button" });
       g.append(svgEl("rect", { x: x0, y: y0, width: w, height: VRF.h, rx: VRF.h / 2 }));
       const tx = svgEl("text", { x: x0 + 14, y: y0 + VRF.h / 2 + 4 });
-      tx.textContent = fitted(label, w - 10);
+      tx.textContent = fitted(label, w - 10, 11, 600);
       g.append(tx);
       // Opening one also makes it the one the map outlines, and it stays outlined after the dialog
       // closes — the dialog covers the map. A second press lets go.
@@ -816,10 +816,34 @@
     return g;
   }
 
-  function fitted(text, boxWidth) {
-    const max = Math.floor((boxWidth - 14) / 7.1);
+  /** Text cut to fit a box, by its drawn width rather than its length.
+   *
+   *  It counted characters at 7.1 px each, which is a Latin monospace glyph — and a Hangul glyph is
+   *  nearly twice that, so a Korean name of the same length ran out of its tile. Measured with the
+   *  tile's own font where the browser can measure; where it cannot (a stub DOM in the checks) the
+   *  width model `textWidth` already uses for the VRF chips, which counts a wide glyph as ~1.8. Cut
+   *  by code point, so a surrogate pair or a Hangul syllable is never split. */
+  const MONO = "ui-monospace, Menlo, Consolas, monospace";
+  let measureCtx;
+  function drawnWidth(s, px, weight) {
+    if (measureCtx === undefined) {
+      try { measureCtx = document.createElement("canvas").getContext?.("2d") || null; } catch { measureCtx = null; }
+    }
+    if (!measureCtx) return textWidth(s, px * 0.62);
+    measureCtx.font = `${weight} ${px}px ${MONO}`;
+    return measureCtx.measureText(s).width;
+  }
+  function fitted(text, boxWidth, px = 11.5, weight = 600) {
     const s = String(text || "");
-    return s.length <= max ? s : `${s.slice(0, max - 1)}…`;
+    const room = Math.max(0, boxWidth - 14);
+    if (drawnWidth(s, px, weight) <= room) return s;
+    const cps = [...s];
+    let lo = 0, hi = cps.length;
+    while (lo < hi) {                       // the longest prefix that still fits with its ellipsis
+      const mid = Math.ceil((lo + hi) / 2);
+      if (drawnWidth(cps.slice(0, mid).join("") + "…", px, weight) <= room) lo = mid; else hi = mid - 1;
+    }
+    return `${cps.slice(0, lo).join("").trimEnd()}…`;
   }
 
   /** One device. The shape says the tier — core router, management host, distribution switch, access
@@ -870,7 +894,11 @@
       g.append(n);
     }
     const label = svgEl("text", { x: shape === "host" ? x + 6 : x, y: shape === "core" ? y - 4 : (shape === "as" || shape === "sw" || shape === "leaf") ? y - 1 : y + 4, class: "kn-dev-title", "text-anchor": "middle" });
-    label.textContent = fitted(row.label, w - (shape === "host" ? 18 : 0));
+    // The title's own font: 12.5 px on the core, weight 500 on a host (knowledge.css). A host's title
+    // is centred 6 px right of the tile's centre, past the dot, and the pick box sits in its top-right
+    // corner — so the room is the tile less both, on both sides of that centre, or the ellipsis runs
+    // under the box (seen on a real install, 2026-10-08).
+    label.textContent = fitted(row.label, w - (shape === "host" ? 34 : 0), shape === "core" ? 12.5 : 11.5, shape === "host" ? 500 : 600);
     g.append(label);
     if (shape === "core") {
       const sub = svgEl("text", { x, y: y + 14, class: "kn-dev-sub", "text-anchor": "middle" });
@@ -887,7 +915,7 @@
     }
     if (row.badge) {
       const b = svgEl("text", { x, y: y + h / 2 + 12, class: "kn-dev-badge", "text-anchor": "middle" });
-      b.textContent = fitted(row.badge, w + 20);
+      b.textContent = fitted(row.badge, w + 20, 10, 400);
       g.append(b);
     }
     // Anything in a rack can be picked up; a node can also be landed on. A document cannot be landed
