@@ -25,7 +25,7 @@ class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.at
         on?this.add(c):this.remove(c); return on; },
     }; } }
 globalThis.localStorage={getItem:()=>null,setItem(){},removeItem(){}};
-const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpPlay","knFpTrail","knFpNow"]) byId[id]=new N(id);
+const byId={}; for (const id of ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpPlay","knFpTrail","knFpNow"]) byId[id]=new N(id);
 byId.knExportDialog.open=false; byId.knExportDialog.showModal=function(){this.open=true;};
 byId.knExportDialog.close=function(){this.open=false; for(const f of this.listeners.close||[]) f({});};
 byId.knExportForm.submit=function(){for(const f of this.listeners.submit||[]) f({preventDefault(){}});};
@@ -170,10 +170,9 @@ check("the status bar is not showing a raw error", !/not configured|HTTP \d|unde
 const st = await (await realFetch(BASE + "/api/knowledge/state")).json();
 check("read-only is reported either way", typeof st.writable === "boolean");
 check("the bar warns only when it should", /read-only/.test(bar) === (st.writable === false));
-// And says nothing at all when nothing is wrong: every write validates and publishes on its own, so a
-// clean, published, valid tree leaves a person nothing to do there.
-const ps = await (await realFetch(BASE + "/api/knowledge/publish-state")).json();
-const quiet = st.writable !== false && (ps.core || {}).in_sync === true && (ps.validate || {}).ok === true;
+// And says nothing at all when nothing is wrong: every write validates and commits on its own, so a
+// clean, valid tree leaves a person nothing to do there.
+const quiet = st.writable !== false && st.valid === true;
 check(`the bar is ${quiet ? "hidden — nothing is wrong" : "shown — something is"}`, byId.knBar.hidden === quiet);
 
 // The third way in: the same starting block as text, for an agent with no MCP. Checked for being

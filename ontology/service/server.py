@@ -1,18 +1,17 @@
 """iris-ontology — HTTP API over the v2 data repository (SPEC-v2 §4).
 
   ONTOLOGY_DATA       the data git repository (default /data)
-  ONTOLOGY_PUBLISH    publication directory Pi mounts read-only (default: none → no publish step)
-  ONTOLOGY_FRAGMENTS  legacy flat fragment directory — no git, no validation (default: none → 501)
-  ONTOLOGY_SERVICES   service-fragment git repository (default: none → 501)
-  ONTOLOGY_SERVICE_PUBLISH  where fragments are published for Pi (default: none → no publish step)
-  ONTOLOGY_HARNESS    data-harness store — experience.jsonl + edges.json (default: none → 501)
-  ONTOLOGY_LLM_BASE_URL / ONTOLOGY_LLM_API_KEY / ONTOLOGY_LLM_MODEL  the sleeping brain's model (SPEC-curator; absent → mechanical sleep only)
+  ONTOLOGY_HARNESS    the review queue for routing changes (default: none → 501)
+  ONTOLOGY_LLM_BASE_URL / ONTOLOGY_LLM_API_KEY / ONTOLOGY_LLM_MODEL  the ✨ Suggest buttons (absent → disabled)
   PORT                listen port (default 8100)
 
 Reads serve the repository working tree. Writes go through Writer.transact: mutate → regenerate derived files →
-validate → git commit → publish atomically (`current` symlink + REVISION). Vocabulary and kinds are not writable
-here — changing them is a Knowledge-approved change to vocab.yaml (operator decision, 2026-09-07).
-Pi never calls this API; it mounts the published tree.
+validate → git commit. Vocabulary and kinds are not writable here — changing them is a Knowledge-approved change
+to vocab.yaml (operator decision, 2026-09-07).
+
+Retired 2026-10-07, all without a reader: the publish step (a checkout per commit for an agent runtime that
+mounted it; agents here read this API), service fragments (`ONTOLOGY_SERVICES`, set by no install), the
+legacy fragment directory, and the curator's sleep and observations (no caller anywhere).
 """
 from __future__ import annotations
 import json, os, re, sys, threading, time, traceback
@@ -26,10 +25,7 @@ from service.validate import validate, export_kinds  # noqa: E402
 from service import ages  # noqa: E402
 from service import derive as deriving  # noqa: E402
 from service import place as placing  # noqa: E402
-from service.write import Writer, WriteError, publish, head, _dirty   # noqa: E402
-from service.service_store import ServiceStore              # noqa: E402
-from service.validate_service import validate_services      # noqa: E402
-from service.write_service import ServiceWriter             # noqa: E402
+from service.write import Writer, WriteError, head, _dirty   # noqa: E402
 from service import peers as peering                        # noqa: E402
 from service import overlays                                # noqa: E402
 from service import walks                                   # noqa: E402
@@ -37,8 +33,6 @@ from service import curator                                 # noqa: E402
 from service import access                                  # noqa: E402
 
 DATA = Path(os.environ.get("ONTOLOGY_DATA", "/data"))
-PUBLISH = Path(os.environ["ONTOLOGY_PUBLISH"]) if os.environ.get("ONTOLOGY_PUBLISH") else None
-FRAGMENTS = Path(os.environ["ONTOLOGY_FRAGMENTS"]) if os.environ.get("ONTOLOGY_FRAGMENTS") else None
 # The shared secret a peer backbone presents to read /v1/export. Unset means this backbone has no
 # link and that whole surface answers 501 — which is the right default: opening one is a decision,
 # not something an install drifts into. See docs/PEERING.md.
@@ -46,21 +40,11 @@ PEER_TOKEN = (os.environ.get("ONTOLOGY_PEER_TOKEN") or "").strip()
 # Where the record of cross-domain reads is kept. Unset means stderr only, which every install has
 # without configuring anything — and stderr rotates away, and an audit that rotates away is not one.
 ACCESS = (os.environ.get("ONTOLOGY_ACCESS") or "").strip() or None
-SERVICES = Path(os.environ["ONTOLOGY_SERVICES"]) if os.environ.get("ONTOLOGY_SERVICES") else None
-SERVICE_PUBLISH = Path(os.environ["ONTOLOGY_SERVICE_PUBLISH"]) if os.environ.get("ONTOLOGY_SERVICE_PUBLISH") else None
-# Its own path, never under ONTOLOGY_PUBLISH: Pi mounts that read-only and it is a git checkout
-# swapped atomically, so a sibling that is neither would be published by accident. Unset → 501, the
-# same way a missing ONTOLOGY_SERVICES answers.
 OVERLAYS = Path(os.environ["ONTOLOGY_OVERLAYS"]) if os.environ.get("ONTOLOGY_OVERLAYS") else None
 # The footprint — every walk, as it is walked (docs/FOOTPRINT.md). Unset → 501, like overlays.
 WALKS = Path(os.environ["ONTOLOGY_WALKS"]) if os.environ.get("ONTOLOGY_WALKS") else None
 PORT = int(os.environ.get("PORT", "8100"))
-store = Store(DATA); writer = Writer(DATA, PUBLISH, FRAGMENTS)
-# Fragments carry decisions, Core carries structure (SPEC-service-fragment §1). Separate repo, separate
-# publish, separate cadence — bound by the `core_revision` each fragment declares.
-svc_store = ServiceStore(SERVICES) if SERVICES else None
-svc_writer = ServiceWriter(SERVICES, SERVICE_PUBLISH, PUBLISH) if SERVICES else None
-writer.keep_provider = lambda: pinned_core_revisions()      # Core publishes must keep the trees fragments pin
+store = Store(DATA); writer = Writer(DATA)
 
 
 def describe_file(name: str, content: str) -> str | None:
@@ -350,8 +334,6 @@ def suggest_node_kind(name: str, one_liner: str, region: str, content: str = "")
 writer.suggest_kind = lambda **kw: suggest_node_kind(**kw) if llm_configured() else None
 writer.suggest_id = lambda **kw: suggest_node_id(**kw) if llm_configured() else None
 writer.suggest_id_configured = lambda: llm_configured()
-writer.describe = lambda name, content: describe_file(name, content) if llm_configured() else None
-writer.describe_configured = lambda: llm_configured()
 
 
 HARNESS = Path(os.environ["ONTOLOGY_HARNESS"]) if os.environ.get("ONTOLOGY_HARNESS") else None
@@ -401,71 +383,14 @@ def cstore():
     return curator.CuratorStore(HARNESS / "curator")
 
 
-# The automatic nap was retired (2026-09-09). It triggered on "something arrived from a run", and
-# that collection path is gone. A timer with no signal never fires — dead code pretending to be
-# alive, so it is not kept. The curator is called by a person (POST /v1/curator/sleep).
-
-def draft_target() -> tuple[str, str] | None:
-    """Where the curator's drafts go, and what kind they get — declared in `vocab.yaml`, not here.
-
-        curator:
-          draft_area: learned      # an area whose `area_rules` allow drafts
-          draft_kind: task         # a kind from this vocabulary
-
-    This used to be two literals naming one domain's area and one of its Korean kind names, which
-    meant the curator could only ever write into that domain. Absent, promotion is refused with a
-    sentence saying what to declare — better than writing into an area that does not exist.
-    """
-    c = (store.vocab().get("curator") or {})
-    area, kind = str(c.get("draft_area") or "").strip(), str(c.get("draft_kind") or "").strip()
-    return (area, kind) if area and kind else None
-
-
-_NO_TARGET = ("this install has not declared where curator drafts go — set curator.draft_area and "
-              "curator.draft_kind in vocab.yaml")
-
-
-def create_draft(d: dict, evidence: list, actor: str):
-    """A guard-passed promotion becomes a draft at once — visible to people, invisible to an agent
-    until it is confirmed."""
-    target = draft_target()
-    if not target: return {"ok": False, "error": _NO_TARGET}
-    area, kind = target
-    runs = sorted({e.split(":", 1)[1] for e in evidence if e.startswith("run:")})
-    content = "\n".join(d.get("points") or []) + ("\n# runs cited: " + ", ".join(runs) if runs else "") + "".join(f"\n# weak: {w}" for w in (d.get("weak") or [])) + "\n"
-    try:
-        return writer.create_node({"id": d["id"], "name": d["name"], "kind": kind, "region": area, "holds": "pointers", "status": "draft",
-                                   "one_liner": d["one_liner"], "injected_by": "curator",
-                                   "files": [{"name": "points.md", "description": d.get("why") or "tidied by the curator", "content": content}]}, actor)
-    except WriteError as e: return {"ok": False, "error": str(e), "details": e.details}
-
-
-def discard_draft(nid: str, actor: str = "curator"):
-    n = store.node(nid)
-    if not n or n.get("status") != "draft": return {"ok": False, "error": "not a draft"}
-    try: return writer.delete_node(nid, actor)
-    except WriteError as e: return {"ok": False, "error": str(e)}
-
-
 def apply_proposal(p: dict, actor: str):
-    """Accepting a proposal runs the ordinary write path — never a side door."""
-    if p["type"] == "promote" and p.get("draft_node"):
-        n = store.node(p["draft_node"])
-        if not n: return {"ok": False, "error": f"draft node {p['draft_node']} no longer exists"}
-        return writer.update_node(p["draft_node"], {"status": "published"}, actor)          # confirmed → next publish carries it
-    if p["type"] == "promote":
-        d = p.get("draft") or {}
-        nid = str(d.get("id") or "").strip()
-        if not nid: return {"ok": False, "error": "promote needs draft.id — a mechanical candidate has no draft; pass one in `override.draft`"}
-        points = list(d.get("points") or [])
-        runs = sorted({r for e in p.get("evidence", []) for r in ([e.split(":",1)[1]] if e.startswith("run:") else [])})
-        target = draft_target()
-        if not target: return {"ok": False, "error": _NO_TARGET}
-        area, kind = target
-        content = "\n".join(points) + ("\n# runs cited: " + ", ".join(runs) if runs else "") + "\n"
-        return writer.create_node({"id": nid, "name": d.get("name"), "kind": kind, "region": area, "holds": "pointers",
-                                   "one_liner": d.get("one_liner"), "injected_by": "curator",
-                                   "files": [{"name": "points.md", "description": d.get("why") or "tidied by the curator — the runs it rests on are in the file", "content": content}]}, actor)
+    """Accepting a proposal runs the ordinary write path — never a side door.
+
+    Only routing changes a person filed (`route`) are applied. The machine-made kinds — `promote`,
+    `repin` and the rest — came from the curator's sleep, retired 2026-10-07 with no caller; one still
+    sitting in a queue is refused here with a sentence, and can be rejected."""
+    if p["type"] != "route":
+        return {"ok": False, "error": f"a {p['type']!r} proposal came from the retired curator sleep and is no longer applied — reject it"}
     if p["type"] == "route":
         # Approval happens later than drafting. If the value moved in between, this does not overwrite
         # it — it **hands the current value back**.
@@ -526,20 +451,7 @@ def apply_proposal(p: dict, actor: str):
             return {"ok": False, "error": "conflict", "code": 409, "field": field,
                     "current": cur, "submitted_before": p["before"]}
         return writer.update_node(rep["id"], {field: after}, actor)
-    if p["type"] == "repin":
-        w = need_services(); return w.update_service(p["service"], {"core_revision": p["to"]}, actor)
     return None
-
-
-
-def pinned_core_revisions() -> set[str]:
-    """Core revisions the fragments pin — publish() must not prune these."""
-    return {str(s.get("core_revision")) for s in svc_store.services() if s.get("core_revision")} if svc_store else set()
-
-
-def need_services():
-    if not svc_writer: raise WriteError(501, "ONTOLOGY_SERVICES is not configured")
-    return svc_writer
 
 
 # `_advert_file` retired (2026-09-11). It advertised a file at `/v1/nodes/<id>/files/<name>` — a
@@ -551,13 +463,6 @@ def need_services():
 # moved onto the file's own row. On a node, `dir` is a character-for-character duplicate of `id`. An
 # area's `dir` is different: that one is a name, and consumers read it.
 _NODE_INTERNAL = ("path", "dir", "present_files", "file_scopes", "holds", "files")
-# Service fragments are the same: `dir` duplicates `id` here too. Confirmed unused by the screen
-# before removal — the second half of the two-phase rule.
-_SERVICE_INTERNAL = ("path", "dir", "present_files")
-
-
-def _advert_service_file(sid: str, f: dict) -> dict:
-    return {**f, "type": "data", "fetch": f"/v1/services/{sid}/files/{f['name']}"}
 
 
 _overlay_store = None
@@ -669,13 +574,11 @@ def overlay_out(ov: dict) -> dict:
 def advertised(node_id: str) -> list[dict]:
     """What a caller is told this thing holds — its children, minus the drafts.
 
-    `status: draft` is how the curator writes something a person has not accepted yet, and the whole
-    point of it is stated on the screen: *"A draft node is invisible to the agent. Accepting publishes
-    it; rejecting deletes it. That is what keeps the curator's own writing from returning as
-    evidence."* `create_draft` says the same thing in one line — visible to people, invisible to an
-    agent.
+    `status: draft` was how the curator's sleep wrote something a person had not accepted yet —
+    visible to people, invisible to an agent. The sleep is retired (2026-10-07) and nothing writes a
+    draft now, but a repository may still hold one, and it must stay out of an agent's table.
 
-    It was not true. `derive.py` drops drafts from `regions.json`, but every advertised listing here
+    That promise was once not kept. `derive.py` drops drafts from `regions.json`, but every advertised listing here
     was built straight from `store.children_of`, which filters nothing — so a draft appeared in the
     area table an agent is handed, and the curator's unreviewed writing came back as evidence, which
     is the one thing the invariant exists to prevent.
@@ -846,8 +749,7 @@ class Handler(BaseHTTPRequestHandler):
                                         # does not. Before this the only place that fact existed was
                                         # one line in the startup log, and a server that had just
                                         # said `valid=False` answered every health check "ok".
-                                        **_health_valid(),
-                                        "published": (PUBLISH / "REVISION").read_text().strip() if PUBLISH and (PUBLISH / "REVISION").exists() else None})
+                                        **_health_valid()})
             if parts[:1] != ["v1"]: return self._err(404, "unknown path")
             parts = parts[1:]
             # Before anything else, and read-only. A link carries advertisements and documents in one
@@ -1104,22 +1006,16 @@ class Handler(BaseHTTPRequestHandler):
     # ---- reads ----
     def _get(self, parts):
         if parts == ["core"]: return self._send(200, store.core(), "text/markdown; charset=utf-8")
-        if parts == ["revision"]: return self._send(200, {"head": head(DATA), "published": store_published()})
+        if parts == ["revision"]: return self._send(200, {"head": head(DATA)})
         if parts == ["vocab"]: return self._send(200, store.vocab())
         if parts == ["graph"]: g = store.graph(); g["revision"] = head(DATA); return self._send(200, g)
         if parts == ["edges"]: return self._send(200, {"revision": head(DATA), "edges": store.edges()})
         if parts == ["regions"]:
-            q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
-            expand = q.get("expand") == "entries"
             # A listing is an advertisement too. `path` and `nodes` stay in regions.json but are
             # **not emitted**: publish a path and someone builds an address out of it (someone did),
             # and `nodes` is internal bookkeeping the validator uses to catch drift against the
             # directory, not something a caller should act on. There is one way to go: `fetch`.
             rj = _regions_live()
-            def entries_of(rep_id):
-                rep = next((n for n in store.nodes() if n["id"] == rep_id), None)
-                if not rep: return []
-                return [_advert_child(c) for c in advertised(rep_id)]
             # An area's age is its representative's: that node is the area's face, and its two
             # times are what somebody choosing between areas at hop 0 is actually choosing on.
             _ages = ages.of(DATA, head(DATA))
@@ -1130,8 +1026,7 @@ class Handler(BaseHTTPRequestHandler):
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
                  "whose": _whose({}, r),
                  **_area_age(r.get("representative")),
-                 "fetch": f"/v1/regions/{r['source'].replace('_', '-')}",
-                 **({"entries": entries_of(r.get("representative"))} if expand else {})}
+                 "fetch": f"/v1/regions/{r['source'].replace('_', '-')}"}
                 for r in rj.get("regions", [])]
             theirs, links = peering.rows(DATA)
             # Through the same function as the local rows, so one place decides and the two halves
@@ -1249,37 +1144,6 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 2 and parts[0] == "curator":
             q = dict(x.split("=", 1) for x in urlparse(self.path).query.split("&") if "=" in x)
             if parts[1] == "proposals": return self._send(200, {"proposals": cstore().proposals(q.get("status"))})
-            if parts[1] == "last-sleep": return self._send(200, cstore().last_sleep())
-            if parts[1] == "observations":
-                rows = cstore().observations()
-                return self._send(200, {"observations": rows[-500:], "total": len(rows),
-                                        "since_last_sleep": max(0, len(rows) - int(str(cstore().last_sleep().get("log_position") or "0").split("-")[0]))})
-        if parts == ["services"]:
-            if not svc_store: return self._err(501, "ONTOLOGY_SERVICES is not configured")
-            return self._send(200, {"revision": head(SERVICES), "services": [
-                {**{k: v for k, v in s.items() if k not in _SERVICE_INTERNAL},
-                 "files": [_advert_service_file(s["id"], f) for f in (s.get("files") or [])],
-                 "fetch": f"/v1/services/{s['id']}"} for s in svc_store.services()]})
-        if len(parts) == 2 and parts[0] == "services":
-            if not svc_store: return self._err(501, "ONTOLOGY_SERVICES is not configured")
-            s = svc_store.service(parts[1])
-            if not s: return self._err(404, f"no fragment for service {parts[1]}")
-            # A fragment's files carry their own fetch too — this was the last place an address was assembled
-            return self._send(200, {**{k: v for k, v in s.items() if k not in _SERVICE_INTERNAL},
-                                    "files": [_advert_service_file(parts[1], f) for f in (s.get("files") or [])]})
-        if len(parts) == 4 and parts[0] == "services" and parts[2] == "files":
-            if not svc_store: return self._err(501, "ONTOLOGY_SERVICES is not configured")
-            t = svc_store.file(parts[1], parts[3])
-            return self._send(200, t, "text/plain; charset=utf-8") if t is not None else self._err(404, "file not listed in the fragment's `## Files`")
-        if parts == ["services-validate"]:
-            if not svc_store: return self._err(501, "ONTOLOGY_SERVICES is not configured")
-            return self._send(200, validate_services(svc_store, PUBLISH))
-        if len(parts) == 4 and parts[0] == "services" and parts[2] == "fragment":
-            p = writer.fragment_path(parts[1], parts[3])
-            return self._send(200, p.read_text(encoding="utf-8"), "text/plain; charset=utf-8") if p.exists() else self._err(404, "no such fragment")
-        if len(parts) == 3 and parts[0] == "services" and parts[2] == "fragment":
-            d = writer.fragment_path(parts[1], "x.md").parent
-            return self._send(200, {"service": parts[1], "files": sorted(p.name for p in d.iterdir() if p.is_file()) if d.exists() else []})
         return self._err(404, "unknown path")
 
     # ---- writes ----
@@ -1380,14 +1244,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {"id": nid, "from": "model" if generated else "name"})
         if parts == ["validate"] and method == "POST":
             res = validate(store); return self._send(200 if res["ok"] else 422, res)
-        if parts == ["curator", "sleep"] and method == "POST":
-            return self._send(200, curator.sleep(store, svc_store, cstore(), PUBLISH, SERVICE_PUBLISH, llm_client(), dry_run=bool(body.get("dry_run")),
-                                                 mode=body.get("mode") or "sleep", create_draft=lambda d, ev: create_draft(d, ev, actor), svc_writer=svc_writer))
         if len(parts) == 4 and parts[0] == "curator" and parts[1] == "proposals" and method == "POST":
             status = {"accept": "accepted", "reject": "rejected"}.get(parts[3])
             if not status: return self._err(404, "accept | reject")
-            out = curator.decide(cstore(), parts[2], status, body.get("why"), lambda p: apply_proposal(p, actor), body.get("override"),
-                                 discard_draft=lambda nid: discard_draft(nid, actor))
+            out = curator.decide(cstore(), parts[2], status, body.get("why"), lambda p: apply_proposal(p, actor))
             # A decision that did not happen must not answer 200. `decide` says so in the body and
             # leaves the proposal pending, which is right, and every caller that reads the status
             # line — a script, a curl, the screen's own `request()` — was told the accept had worked
@@ -1423,9 +1283,6 @@ class Handler(BaseHTTPRequestHandler):
             # A routing proposal raised by a person. There is no immediate-apply path — it always goes through the queue
             try: return self._send(201, curator.submit_route(cstore(), body, actor))
             except ValueError as e: return self._err(422, str(e))
-        if parts == ["curator", "observations"] and method == "POST":
-            try: return self._send(201, cstore().record_observations(body))
-            except ValueError as e: return self._err(422, str(e))
         if len(parts) == 2 and parts[0] == "regions" and method == "DELETE":
             return self._send(200, writer.delete_region(parts[1], actor))
         if parts == ["regions"] and method == "POST":
@@ -1434,9 +1291,6 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 3 and parts[0] == "core" and parts[1] == "regions" and method == "PUT":
             # One row's description cell only. No whole-document write — CORE.md is carried whole into every prompt
             return self._send(200, writer.put_core_row(parts[2], body.get("description"), actor))
-        if parts == ["publish"] and method == "POST":
-            if not PUBLISH: return self._err(501, "ONTOLOGY_PUBLISH is not configured")
-            return self._send(200, {"ok": True, "revision": publish(DATA, PUBLISH, body.get("revision"), keep=pinned_core_revisions())})
         if parts == ["vocab"]: return self._err(405, "vocabulary and kinds change through Knowledge review, not this API (operator decision 2026-09-07)")
         if parts == ["nodes"] and method == "POST": return self._send(201, writer.create_node(body, actor))
         if len(parts) == 2 and parts[0] == "nodes":
@@ -1452,20 +1306,6 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[0] == "edges":
             if method == "PUT": return self._send(200, writer.update_edge(parts[1], parts[2], parts[3], body, actor))
             if method == "DELETE": return self._send(200, writer.delete_edge(parts[1], parts[2], parts[3], actor))
-        if parts == ["services"] and method == "POST": return self._send(201, need_services().create_service(body, actor))
-        if len(parts) == 2 and parts[0] == "services":
-            if method == "PUT": return self._send(200, need_services().update_service(parts[1], body, actor))
-            if method == "DELETE": return self._send(200, need_services().delete_service(parts[1], actor))
-        if len(parts) == 4 and parts[0] == "services" and parts[2] == "files":
-            if method == "PUT":
-                return self._send(200, need_services().put_file(parts[1], parts[3], body.get("content", ""), body.get("description", ""), actor))
-            if method == "DELETE": return self._send(200, need_services().delete_file(parts[1], parts[3], actor))
-        if parts == ["services-publish"] and method == "POST":
-            w = need_services()
-            if not SERVICE_PUBLISH: return self._err(501, "ONTOLOGY_SERVICE_PUBLISH is not configured")
-            return self._send(200, {"ok": True, "revision": w.publish_head()})
-        if len(parts) == 4 and parts[0] == "services" and parts[2] == "fragment" and method == "PUT":
-            return self._send(200, writer.put_fragment(parts[1], parts[3], body.get("content", "")))
         return self._err(405, "method not allowed for this path")
 
 
@@ -1724,11 +1564,6 @@ def _absence(links) -> str:
             f"while a link is down. Nobody has spoken for what is behind it.")
 
 
-def store_published():
-    p = PUBLISH / "REVISION" if PUBLISH else None
-    return p.read_text().strip() if p and p.exists() else None
-
-
 def main():
     if not DATA.is_dir(): sys.exit(f"ONTOLOGY_DATA {DATA} is not a directory")
     res = validate(store)
@@ -1752,7 +1587,7 @@ def main():
             sys.stderr.write(f"iris-ontology: regions.json is committed stale and could not be regenerated — {e}. "
                              f"Readers are served what the files say; commit or discard your changes, then any API "
                              f"write or ./ontology/tidy.py <repo> --fix regenerates it.\n")
-    sys.stderr.write(f"iris-ontology data={DATA} head={head(DATA)} publish={PUBLISH} fragments={FRAGMENTS} nodes={res['stats']['nodes']} edges={res['stats']['edges']} valid={res['ok']}\n")
+    sys.stderr.write(f"iris-ontology data={DATA} head={head(DATA)} nodes={res['stats']['nodes']} edges={res['stats']['edges']} valid={res['ok']}\n")
     # A setting this build does not understand would otherwise be dead quietly: the person set a
     # provider, nothing uses it, and nothing says so. `/healthz` carries the same fact for install.sh.
     if LLM_PROVIDER not in curator.PROVIDERS:
@@ -1765,17 +1600,6 @@ def main():
         missing = sorted(k for k, v in LLM.items() if not v)
         sys.stderr.write(f"iris-ontology: no LLM — ONTOLOGY_LLM_{', ONTOLOGY_LLM_'.join(missing)} unset\n")
     for e in res["errors"]: sys.stderr.write(f"  ERROR {e}\n")
-    if PUBLISH and res["ok"] and head(DATA):
-        try: publish(DATA, PUBLISH, keep=pinned_core_revisions()); sys.stderr.write(f"published {store_published()}\n")
-        except WriteError as e: sys.stderr.write(f"  publish failed: {e}\n")
-    # Fragments are validated against the *published* Core, so this must come after Core's publish.
-    if svc_store:
-        sres = validate_services(svc_store, PUBLISH)
-        sys.stderr.write(f"iris-ontology services={SERVICES} head={head(SERVICES)} publish={SERVICE_PUBLISH} {sres['stats']} valid={sres['ok']}\n")
-        for e in sres["errors"]: sys.stderr.write(f"  SERVICE ERROR {e}\n")
-        if SERVICE_PUBLISH and sres["ok"] and head(SERVICES):
-            try: publish(SERVICES, SERVICE_PUBLISH, head(SERVICES)); sys.stderr.write(f"published services {head(SERVICES)}\n")
-            except WriteError as e: sys.stderr.write(f"  service publish failed: {e}\n")
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 
 

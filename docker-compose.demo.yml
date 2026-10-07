@@ -41,7 +41,6 @@ services:
     user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
     environment:
       ONTOLOGY_DATA: /data/repo
-      ONTOLOGY_PUBLISH: /data/publish
       ONTOLOGY_OVERLAYS: /data/overlays
       ONTOLOGY_HARNESS: /data/harness
       ONTOLOGY_ACCESS: /data/access
@@ -52,9 +51,6 @@ services:
       - type: bind
         source: ./data-vendor/repo
         target: /data/repo
-      - type: bind
-        source: ./data-vendor/publish
-        target: /data/publish
       - type: bind
         source: ./data-vendor/overlays
         target: /data/overlays
@@ -72,7 +68,6 @@ services:
     user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
     environment:
       ONTOLOGY_DATA: /data/repo
-      ONTOLOGY_PUBLISH: /data/publish
       ONTOLOGY_OVERLAYS: /data/overlays
       ONTOLOGY_HARNESS: /data/harness
       ONTOLOGY_ACCESS: /data/access
@@ -83,9 +78,6 @@ services:
       - type: bind
         source: ./data-audit/repo
         target: /data/repo
-      - type: bind
-        source: ./data-audit/publish
-        target: /data/publish
       - type: bind
         source: ./data-audit/overlays
         target: /data/overlays
@@ -103,7 +95,6 @@ services:
     user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
     environment:
       ONTOLOGY_DATA: /data/repo
-      ONTOLOGY_PUBLISH: /data/publish
       ONTOLOGY_OVERLAYS: /data/overlays
       ONTOLOGY_HARNESS: /data/harness
       ONTOLOGY_ACCESS: /data/access
@@ -114,9 +105,6 @@ services:
       - type: bind
         source: ./data-depot/repo
         target: /data/repo
-      - type: bind
-        source: ./data-depot/publish
-        target: /data/publish
       - type: bind
         source: ./data-depot/overlays
         target: /data/overlays

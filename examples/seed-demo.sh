@@ -66,7 +66,7 @@ EOF
 backbone() {      # backbone <data-dir> <room-name> <room-label> <room-host>
   dir=$1
   if [ -d "$dir/repo/regions" ]; then say "--   $dir is already there, left alone"; return 0; fi
-  mkdir -p "$dir/repo" "$dir/publish" "$dir/overlays" "$dir/harness" "$dir/access"
+  mkdir -p "$dir/repo" "$dir/overlays" "$dir/harness" "$dir/access"
   cp -R examples/back-office/. "$dir/repo/"
   peers_file "$dir/repo" "$2" "$3" "$4"
   say "ok   $dir"

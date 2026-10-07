@@ -55,10 +55,6 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Red
 from fastapi.staticfiles import StaticFiles
 
 STATIC_DIR = Path(_iris_playbook_os.environ.get("KNOWLEDGE_STATIC", Path(__file__).resolve().parent.parent / "static"))
-# Where a run is started, when there is anywhere to start one. Empty (the default) hides the button
-# rather than leaving one that goes nowhere: the areas a person picked are the whole input to a run,
-# and a button that drops them on the floor teaches that picking does not matter.
-AGENT_URL = str(_iris_playbook_os.environ.get("KNOWLEDGE_AGENT_URL") or "").strip().rstrip("/")
 DEFAULT_ACTOR = (str(_iris_playbook_os.environ.get("KNOWLEDGE_ACTOR") or "web").strip() or "web")[:64]
 
 # ---- the door (see the module docstring) ----
@@ -401,36 +397,19 @@ def api_knowledge_proposals(request: Request, status: str = Query(default="")) -
     return _ontology_proxy("GET", "/v1/curator/proposals" + suffix, actor)
 
 
-@_iris_route("GET", "/api/knowledge/last-sleep")
-def api_knowledge_last_sleep(request: Request) -> dict[str, Any]:
-    return _ontology_proxy("GET", "/v1/curator/last-sleep", _knowledge_actor(request))
-
-
 @_iris_route("GET", "/api/knowledge/state")
 def api_knowledge_state(request: Request) -> dict[str, Any]:
     actor = _knowledge_actor(request)
     health = _ontology_proxy("GET", "/healthz", actor)
     out: dict[str, Any] = {
-        "core_revision": str(health.get("published") or ""),
+        "core_revision": str(health.get("head") or ""),
         "writable": bool(health.get("writable", True)),
         "uncommitted": str(health.get("uncommitted") or ""),
+        # Whether the repository validates. It used to come from a second call the screen made to
+        # `publish-state`, retired with the publish step on 2026-10-07; /healthz already carries it.
+        "valid": bool(health.get("valid", True)),
     }
-    # The curator is optional and most installs do not configure it. Letting its absence fail this
-    # call put "ONTOLOGY_HARNESS is not configured" across the top of the map on every default
-    # install — a raw environment variable, from a subsystem the screen does not even display, as the
-    # first thing a new person read.
-    try: out["last_sleep"] = _ontology_proxy("GET", "/v1/curator/last-sleep", actor)
-    except HTTPException: pass
     return out
-
-
-@_iris_route("POST", "/api/knowledge/sleep")
-def api_knowledge_sleep(payload: dict, request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    mode = str((payload or {}).get("mode") or "sleep")
-    if mode not in ("sleep", "nap"):
-        raise HTTPException(status_code=422, detail="mode must be sleep or nap.")
-    return _ontology_proxy("POST", "/v1/curator/sleep", actor, {"mode": mode, "dry_run": bool((payload or {}).get("dry_run"))})
 
 
 @_iris_route("POST", "/api/knowledge/suggest/description")
@@ -498,18 +477,14 @@ def api_knowledge_one_liner_draft(node_id: str, request: Request) -> dict[str, A
     return _ontology_proxy("POST", "/v1/nodes/" + quote(node_id, safe="") + "/one-liner-draft", actor, {})
 
 
-# Every scope the review queue takes, plus `dr` for the old spelling. A name in this list and not in
+# Every scope the review queue takes. A name in this list and not in
 # the ontology's ROUTE_SCOPES is a 422 from further in; a name in ROUTE_SCOPES and **not** here is the
 # worse one, and is what happened to `peer` and `audience`: the ontology API is not published outside
 # the compose network, so a scope missing here is a scope nobody can reach, and the docs describing
 # the road stayed true of a queue with no door. check/room-check.py holds the two lists together.
-QUEUE_SCOPES = ("as", "dr", "bb", "core", "entity", "export", "audience", "peer", "peer-line")
-# Scopes whose proposal names a peer as well as an area, because the field is a mapping and the
-# proposal has to say whose line it is.
-# Nothing writes a per-reader line since 2026-09-29. `peer-line` stays accepted because one can
-# still be sitting in a queue, and the ontology aliases it; a proposal the screen can file and the
-# queue would refuse is the failure this pairing exists to prevent, and so is its opposite.
-QUEUE_PEER_SCOPES = ("peer-line",)
+# The old spellings `dr`, `peer` and `peer-line` are no longer filed (2026-10-07); one still sitting in
+# a queue is read and applied under its new name by the ontology.
+QUEUE_SCOPES = ("as", "bb", "core", "entity", "export", "audience")
 
 
 @_iris_route("POST", "/api/knowledge/proposals")
@@ -557,8 +532,6 @@ def api_knowledge_create_proposal(payload: dict, request: Request) -> dict[str, 
     }
     if str(data.get("target") or "").strip():
         body["target"] = str(data["target"]).strip()
-    if scope in QUEUE_PEER_SCOPES:
-        body["peer"] = str(data.get("peer") or "").strip()
     return _ontology_proxy("POST", "/v1/curator/proposals", actor, body)
 
 
@@ -577,9 +550,6 @@ def api_knowledge_proposal_decide(proposal_id: str, decision: str, payload: dict
         body["why"] = why[:600]
     elif why:
         body["why"] = why[:600]
-    override = (payload or {}).get("override")
-    if isinstance(override, dict) and isinstance(override.get("draft"), dict):
-        body["override"] = {"draft": override["draft"]}
     return _ontology_proxy("POST", "/v1/curator/proposals/" + quote(proposal_id, safe="") + "/" + decision, actor, body)
 
 
@@ -587,10 +557,9 @@ def api_knowledge_proposal_decide(proposal_id: str, decision: str, payload: dict
 
 @_iris_route("GET", "/api/knowledge/revision")
 def api_knowledge_revision(request: Request) -> dict[str, Any]:
-    # The one cheap question the screen asks on a timer: has what the agent reads changed? `published`
-    # is the revision the agent gets; `head` is what the repository holds. The screen follows the
-    # former, so a commit that was not published does not redraw anything — the agent does not see it
-    # either, and a map that ran ahead of the agent would be a map of something else.
+    # The one cheap question the screen asks on a timer: has what the agent reads changed? `head` is
+    # the commit the repository is at, and agents read the repository through the API — there is no
+    # separate published copy any more (2026-10-07).
     return _ontology_proxy("GET", "/v1/revision", _knowledge_actor(request))
 
 
@@ -605,16 +574,13 @@ def api_knowledge_regions(request: Request) -> dict[str, Any]:
 
 
 @_iris_route("GET", "/api/knowledge/view")
-def api_knowledge_view(request: Request, path: str = Query(default=""), service: str = Query(default="")) -> dict[str, Any]:
+def api_knowledge_view(request: Request, path: str = Query(default="")) -> dict[str, Any]:
     """What an agent is handed at this step, rendered by the code that hands it to them.
 
     This used to ask the agent runtime for it, so that the screen would never be a second
     implementation of the prompt. There is no such runtime here — and the reason survives the move:
     the renderer is `mcp/knowledge_mcp.py`, the same module an MCP client talks to. The popup shows
     the literal bytes a connected agent receives, because it is produced by the same function.
-
-    `service` is accepted and ignored. It existed to give a run's service fragment as context; the
-    address in `path` already names whatever is being looked at.
     """
     actor = _knowledge_actor(request)
     m = _renderer()
@@ -633,7 +599,7 @@ def api_knowledge_view(request: Request, path: str = Query(default=""), service:
     except m.ApiError as exc:
         text, status = str(exc), "error"
     revision = ""
-    try: revision = str(_ontology_proxy("GET", "/healthz", actor).get("published") or "")
+    try: revision = str(_ontology_proxy("GET", "/healthz", actor).get("head") or "")
     except HTTPException: pass
     return {"status": status, "text": text, "ontology_revision": revision}
 
@@ -880,150 +846,14 @@ def api_knowledge_put_node_file(node_id: str, filename: str, payload: dict, requ
     data = payload or {}
     if "content" not in data:
         raise HTTPException(status_code=422, detail="content is required.")
-    # `description` is the line the agent routes by, and as of 2026-09-10 it is Knowledge's to write
-    # from the document, not a field a person types. Absent is passed through as absent: on an edit the
-    # API keeps the existing line, and on a new file it is Knowledge that has to supply one. Sending
-    # `""` here would look like an intentional blank and is not the same thing.
+    # `description` is the line the agent routes by, and it is the person's (the ✨ Suggest button
+    # drafts one). Absent is passed through as absent: on an edit the API keeps the existing line, and
+    # on a new file it refuses. Sending `""` here would look like an intentional blank and is not the
+    # same thing.
     body: dict[str, Any] = {"content": str(data.get("content") or "")}
     if str(data.get("description") or "").strip():
         body["description"] = str(data["description"]).strip()
     return _ontology_proxy("PUT", "/v1/nodes/" + quote(node_id, safe="") + "/files/" + quote(filename, safe=""), actor, body)
-
-
-@_iris_route("GET", "/api/knowledge/services")
-def api_knowledge_services(request: Request) -> dict[str, Any]:
-    return _ontology_proxy("GET", "/v1/services", _knowledge_actor(request))
-
-
-@_iris_route("GET", "/api/knowledge/services/{service_id}")
-def api_knowledge_service(service_id: str, request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    if not _KNOWLEDGE_SERVICE.match(service_id or ""):
-        raise HTTPException(status_code=422, detail="Invalid service id.")
-    return _ontology_proxy("GET", "/v1/services/" + quote(service_id, safe=""), actor)
-
-
-@_iris_route("GET", "/api/knowledge/services/{service_id}/files/{filename}")
-def api_knowledge_service_file(service_id: str, filename: str, request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    if not _KNOWLEDGE_SERVICE.match(service_id or ""):
-        raise HTTPException(status_code=422, detail="Invalid service id.")
-    _knowledge_fragment_name(filename)
-    body = _ontology_text("/v1/services/" + quote(service_id, safe="") + "/files/" + quote(filename, safe=""), actor)
-    return {"service": service_id, "name": filename, "content": body}
-
-
-@_iris_route("POST", "/api/knowledge/services")
-def api_knowledge_create_service(payload: dict, request: Request) -> dict[str, Any]:
-    # `core_revision` is what makes the fragment's references checkable — the API requires it, and the screen
-    # offers the current Core revision rather than letting a person type one.
-    actor = _knowledge_actor(request)
-    data = dict(payload or {})
-    service = str(data.get("service") or "").strip()
-    if not _KNOWLEDGE_SERVICE.match(service):
-        raise HTTPException(status_code=422, detail="service id must be lowercase letters, digits and underscore.")
-    for field in ("one_liner", "core_revision"):
-        if not str(data.get(field) or "").strip():
-            raise HTTPException(status_code=422, detail=f"{field} is required.")
-    body: dict[str, Any] = {"service": service, "one_liner": str(data["one_liner"]).strip(),
-                            "core_revision": str(data["core_revision"]).strip()}
-    for field in ("publisher", "game_line", "updated"):
-        if data.get(field):
-            body[field] = str(data[field]).strip()
-    if isinstance(data.get("regions"), list):
-        body["regions"] = [str(x).strip() for x in data["regions"] if str(x).strip()]
-    return _ontology_proxy("POST", "/v1/services", actor, body)
-
-
-@_iris_route("PUT", "/api/knowledge/services/{service_id}")
-def api_knowledge_update_service(service_id: str, payload: dict, request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    if not _KNOWLEDGE_SERVICE.match(service_id or ""):
-        raise HTTPException(status_code=422, detail="Invalid service id.")
-    allowed = {k: v for k, v in (payload or {}).items()
-               if k in ("one_liner", "core_revision", "publisher", "game_line", "regions", "updated")}
-    if not allowed:
-        raise HTTPException(status_code=422, detail="Nothing to update.")
-    return _ontology_proxy("PUT", "/v1/services/" + quote(service_id, safe=""), actor, allowed)
-
-
-@_iris_route("DELETE", "/api/knowledge/services/{service_id}")
-def api_knowledge_delete_service(service_id: str, request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    if not _KNOWLEDGE_SERVICE.match(service_id or ""):
-        raise HTTPException(status_code=422, detail="Invalid service id.")
-    return _ontology_proxy("DELETE", "/v1/services/" + quote(service_id, safe=""), actor)
-
-
-@_iris_route("PUT", "/api/knowledge/services/{service_id}/files/{filename}")
-def api_knowledge_put_service_file(service_id: str, filename: str, payload: dict, request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    if not _KNOWLEDGE_SERVICE.match(service_id or ""):
-        raise HTTPException(status_code=422, detail="Invalid service id.")
-    _knowledge_fragment_name(filename)
-    data = payload or {}
-    if "content" not in data:
-        raise HTTPException(status_code=422, detail="content is required.")
-    if not str(data.get("description") or "").strip():
-        raise HTTPException(status_code=422, detail="description is required — one line saying what this file holds.")
-    return _ontology_proxy("PUT", "/v1/services/" + quote(service_id, safe="") + "/files/" + quote(filename, safe=""), actor,
-                           {"content": str(data.get("content") or ""), "description": str(data["description"]).strip()})
-
-
-@_iris_route("DELETE", "/api/knowledge/services/{service_id}/files/{filename}")
-def api_knowledge_delete_service_file(service_id: str, filename: str, request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    if not _KNOWLEDGE_SERVICE.match(service_id or ""):
-        raise HTTPException(status_code=422, detail="Invalid service id.")
-    _knowledge_fragment_name(filename)
-    return _ontology_proxy("DELETE", "/v1/services/" + quote(service_id, safe="") + "/files/" + quote(filename, safe=""), actor)
-
-
-# ---- publishing: the moment a change reaches the agent ----
-#
-# Every write through this API already commits and republishes, so these two are the explicit way to say
-# "publish what is committed now" — and, more importantly, the way the screen can show whether what the agent
-# reads is what the repository holds. A draft node is stripped from the checkout at publish time, which is the
-# rule that keeps the curator's own writing from coming back as evidence.
-
-@_iris_route("GET", "/api/knowledge/publish-state")
-def api_knowledge_publish_state(request: Request) -> dict[str, Any]:
-    actor = _knowledge_actor(request)
-    health = _ontology_proxy("GET", "/healthz", actor)
-    # Service fragments are optional and a standalone install has none. Asking for them unconditionally
-    # made this whole answer a 502, and the screen quietly dropped the publish and validate state with it.
-    try:
-        services = _ontology_proxy("GET", "/v1/services", actor)
-    except (HTTPException, KnowledgeError):
-        services = {}
-    head_rev = str(health.get("head") or "")
-    published = str(health.get("published") or "")
-    return {
-        "core": {"head": head_rev, "published": published, "in_sync": bool(head_rev) and head_rev == published},
-        "fragments": {"head": str(services.get("revision") or ""), "count": len(services.get("services") or [])},
-        "validate": _ontology_proxy("POST", "/v1/validate", actor, {}),
-    }
-
-
-@_iris_route("POST", "/api/knowledge/publish")
-def api_knowledge_publish(payload: dict, request: Request) -> dict[str, Any]:
-    # `what` says which tree: the Core ontology, or the service fragments. They have separate repositories,
-    # separate publish trees and separate validators, so they publish separately.
-    actor = _knowledge_actor(request)
-    what = str((payload or {}).get("what") or "core")
-    if what == "core":
-        check = _ontology_proxy("POST", "/v1/validate", actor, {})
-        if not check.get("ok"):
-            raise HTTPException(status_code=422, detail="Validation fails — publishing would hand the agent a broken map.")
-        return _ontology_proxy("POST", "/v1/publish", actor, {})
-    if what == "fragments":
-        return _ontology_proxy("POST", "/v1/services-publish", actor, {})
-    raise HTTPException(status_code=422, detail="what must be core or fragments.")
-
-
-@_iris_route("POST", "/api/knowledge/services-validate")
-def api_knowledge_validate_services(payload: dict, request: Request) -> dict[str, Any]:
-    return _ontology_proxy("GET", "/v1/services-validate", _knowledge_actor(request))
 
 
 @_iris_route("DELETE", "/api/knowledge/nodes/{node_id}/files/{filename}")
@@ -1053,7 +883,7 @@ def app_config(request: Request) -> dict[str, Any]:
         llm = bool(health.get("llm"))
     except HTTPException:
         pass   # The map says the API is unreachable on its own; this endpoint does not duplicate that.
-    return {"agent": bool(AGENT_URL), "agent_url": AGENT_URL, "derives": llm,
+    return {"derives": llm,
             # Which provider is in use, and which this build understands. A provider it does not know
             # turns the LLM off, and "off" on its own reads as "I forgot to set a key" — these two
             # fields are what lets an install say the true thing instead.

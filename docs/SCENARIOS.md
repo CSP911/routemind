@@ -104,16 +104,17 @@ directory, an attached file name is the file. Every filesystem stops one path co
 | I4 | The longest name that fits is still written — 252 characters, because `.md` makes it exactly 255. A bound nobody has watched permit the longest legal name drifts down to whatever the first refusal happened to be |
 | I5 | One byte over is refused |
 
-## J — the publish that fails after the commit
+## J — what the agent reads is the commit
 
-The commit is inside the transaction; publishing is after it, and publishing can fail on its own.
+There was a publish step until 2026-10-07: every write copied a checkout out for an agent runtime that
+mounted it, and the screen warned "agents are reading an older tree" when the copy lagged. Agents here
+read the repository through the API, so the warning was never true and the copy had no reader.
 
 | | What it proves |
 |---|---|
-| J1 | A write whose publish fails is not reported as failed, and says the checkout is behind. It used to answer `500 internal error` for a write that had fully succeeded — an agent told that retries and gets `409 exists`, a person presses Submit again, and both then act on a lie about what is in the ontology |
-| J2 | The commit stands and the entity reads back straight away. Reads serve the repository, not the checkout |
-| J3 | `/healthz` shows the published tree behind the repository — the exact comparison the screen's bar makes |
-| J4 | The next successful write catches the checkout up. Nothing needs undoing |
+| J1 | A write answers with the commit it made |
+| J2 | The revision the screen follows (`/v1/revision`) is that commit |
+| J3 | No second, "published" revision is offered — by `/v1/revision` or `/healthz` — for anything to fall behind |
 
 ## K — two processes on one data directory
 

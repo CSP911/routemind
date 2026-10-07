@@ -39,31 +39,13 @@ if [ "$derives" = "True" ]; then
   say "  and it says it chose it" "$(field kind_generated)" True
   drop "$n"
 
-  # A description written by the LLM causes `described_by: knowledge` to be added to the file, and
-  # that write must not eat the body. `set_frontmatter` once returned the text after the *match*, and
-  # the pattern ends at the end of the string, so the slice was always empty — the body is group 2.
-  #
-  # Two conditions have to hold at once or this proves nothing: the description must be GENERATED
-  # (a supplied one skips the call entirely) and the content must ALREADY have a frontmatter block
-  # (without one a different, correct branch runs). A first version of this check had neither and
-  # passed against the broken code.
-  body='---\nscope: common\n---\n# Probe\n\nThis body must survive a frontmatter write.\n'
-  code=$(post "$W/nodes/$area-fmprobe/files/fm.md" -d "{\"content\":\"$body\"}" 2>/dev/null || true)
-  post "$W/nodes" -d "{\"id\":\"$area-fmprobe\",\"name\":\"FM Probe\",\"region\":\"$area\",\"one_liner\":\"a probe\"}" >/dev/null
+  # The line a document is chosen by is a person's, LLM or not (2026-10-07). It used to be written
+  # here by the LLM when a raw API caller left it out; the screen never did, and the ✨ Suggest
+  # button is how a draft is asked for. Refused before anything is written, so nothing to clean up.
+  rep=$(curl -fsS "$W/regions" | python3 -c 'import json,sys; r=json.load(sys.stdin).get("regions") or []; print(r[0].get("representative") or "" if r else "")')
   code=$(curl -s -o /tmp/llmout -w '%{http_code}' -H 'Content-Type: application/json' -X PUT \
-     "$W/nodes/$area-fmprobe/files/fm.md" -d "{\"content\":\"$body\"}")
-  say "a generated description is written" "$code" 200
-  # The API answers with JSON, so the document has to be parsed out of it. Grepping the envelope for
-  # an anchored line passed for the body (a plain substring) and failed for the frontmatter, because
-  # inside a JSON string a newline is two characters and `^` never matches there.
-  curl -s "$W/nodes/$area-fmprobe/files/fm.md" \
-    | python3 -c 'import json,sys; sys.stdout.write(json.load(sys.stdin).get("content",""))' > /tmp/llmdoc
-  say "  the body survived it" "$(grep -c 'must survive' /tmp/llmdoc)" 1
-  # This used to also assert that a `scope:` in the submitted content survived. It does not: under one
-  # type the entity's frontmatter is written from the entity's own fields, so any other key in the
-  # content is replaced. That is reported to the Knowledge unit as a question rather than pinned here
-  # — a check that is permanently red is noise, and one asserting the wrong model is worse.
-  drop "$area-fmprobe"
+     "$W/nodes/$rep/files/llmcheck-nodesc.md" -d '{"content":"# Probe"}')
+  say "a new file with no description is refused, LLM or not" "$code" 400
 
   # Drafting the one line an agent routes on.
   code=$(post "$W/suggest/use-when" -d '{"name":"Billing","one_liner":"where a payment goes until it settles"}')
@@ -86,7 +68,7 @@ else
 fi
 
 # The install has to be left the way it was found. Every delete above can answer 200 and the tree
-# still end up dirty — a write that commits nothing, a publish that half-ran — and dirty is not a
+# still end up dirty — a write that commits nothing — and dirty is not a
 # cosmetic state: it is the one in which the ontology refuses every subsequent write. So it is read
 # back from the service rather than inferred from the statuses, and the recovery is printed here
 # rather than left for whoever meets the refusal an hour later with no idea what touched it.

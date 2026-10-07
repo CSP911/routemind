@@ -25,7 +25,7 @@
     return 1;
   };
 
-  const state = { regions: [], nodes: [], edges: [], service: "", open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { agent: false, agentUrl: "", derives: false }, flags: new Map(), picked: new Set(), services: [], overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom(), domain: null, revision: null };
+  const state = { regions: [], nodes: [], edges: [], open: [], openNode: new Map(), selected: null, status: "pending", files: new Map(), entries: new Map(), cfg: { derives: false }, flags: new Map(), picked: new Set(), overlays: [], vrfOn: false, vrfSel: null, curatorOn: false, links: [], zoom: readZoom(), domain: null, revision: null };
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -154,7 +154,7 @@
     pane.className = "kn-raw is-loading";
     pane.textContent = t("common.loading");
     try {
-      const q = new URLSearchParams({ path: address || "", service: state.service || "" });
+      const q = new URLSearchParams({ path: address || "" });
       const view = await request("view?" + q.toString());
       pane.className = `kn-raw is-${view.status === "ok" ? "ok" : "bad"}`;
       pane.textContent = view.text || "";
@@ -398,8 +398,8 @@
     const asX = (i) => (width - asRow) / 2 + DEV.as.w / 2 + i * (DEV.as.w + 24);
     const seg = (pts, cls, extra) => links.append(svgEl("polyline", { points: pts.map((p) => p.join(",")).join(" "), class: cls, ...(extra || {}) }));
 
-    // Core, with the two things the backbone reads directly hung off it as management hosts: the Core
-    // document and the service fragment. They are not Regions and were crowding the Region row.
+    // Core, with the Core document hung off it as a management host. It is not a Region and was
+    // crowding the Region row.
     seg([[cx, Y.core + DEV.core.h / 2], [cx, Y.bus]], "kn-wire");
     marks.append(device({ key: "__bb", label: "RouteMind Back-Bone", kind: "bb", address: "", flagKey: "__bb" }, cx, Y.core, "core"));
     // The selection, summarised where it can be read and started as one act. Ticking three areas and
@@ -408,7 +408,6 @@
       const names = [...state.picked].map(shortAddr);
       const acts = [
         ...(state.vrfOn ? [{ label: `◇ ${t("knowledge.vrf.draw")} ${state.picked.size} — ${names.join(" + ")}`, run: () => drawVrfCard() }] : []),
-        ...(canRun() ? [{ label: `▶ ${t("knowledge.pick.start")} ${state.picked.size}${state.vrfOn ? "" : ` — ${names.join(" + ")}`}`, run: () => startRun([]) }] : []),
       ];
       const widths = acts.map((a) => textWidth(a.label) + 44);
       const total = widths.reduce((n, w) => n + w, 0) + (acts.length - 1) * 10;
@@ -461,12 +460,6 @@
       marks.append(g);
     });
     const mgmt = [{ key: "core", label: "core.md", kind: "data", address: "/v1/core", side: -1 }];
-    // Services hang off the core because that is what they are — read by the backbone, not by an AS —
-    // and they are pickable because a run needs one and there is no dropdown any more.
-    (state.services.length ? state.services : state.service ? [state.service] : []).forEach((id, i) => {
-      mgmt.push({ key: `svc:${id}`, label: `svc · ${id}`, kind: "as", address: `/v1/services/${id}`,
-                  side: 1, order: i, pickable: true });
-    });
     for (const m of mgmt) {
       const x = cx + m.side * (DEV.core.w / 2 + 70 + DEV.mgmt.w / 2);
       const y = Y.core + (m.order || 0) * (DEV.mgmt.h + 10);
@@ -608,10 +601,7 @@
       }
     }
 
-    // Room for the service hosts, which stack down beside the core. Without this a third service is
-    // drawn outside the viewBox and simply does not appear.
-    const svcRows = Math.max((state.services.length || (state.service ? 1 : 0)) - 1, 0);
-    const height = Math.max(bottom, 300, Y.core + svcRows * (DEV.mgmt.h + 10) + DEV.mgmt.h + 40);
+    const height = Math.max(bottom, 300, Y.core + DEV.mgmt.h + 40);
     // The viewBox stays the drawing's own size and only the rendered size is scaled, so zooming
     // changes nothing about where anything is. Every coordinate this function computed — the racks it
     // measured before sizing the canvas, the corner it reserved for the VRF chips, the drop targets a
@@ -660,7 +650,6 @@
     }
     return [
       ...(flags ? [{ label: `⚑ ${t("knowledge.flag.short")} ${flags}`, flag: true, run: () => reviewFlags(flagKey, row.label, address) }] : []),
-      ...(canRun() ? [{ label: t("knowledge.act.start"), primary: true, run: () => startRun([address]) }] : []),
       // Proposes a new line for what this system advertises upward: an area's own line, or — for a
       // node — the row its holder's table shows for it. Both go through the review queue, so it is
       // offered only where there is a queue to reach.
@@ -1411,7 +1400,7 @@
   // store), so the wait was long and the parallelism made it longer. Now: paint on two calls, fetch a
   // Region's entries the first time it is opened, and warm the rest one at a time in the background.
   //
-  // The cache key is the published revision. It is already the identity of what the agent reads, it is
+  // The cache key is the repository's head. It is already the identity of what the agent reads, it is
   // 2 ms to ask for, and the watcher already tracks it — so a revisit at the same revision draws from
   // localStorage with one request, and a revisit at a new one refetches. Nothing is invented for the
   // key and nothing can be served stale past a revision change.
@@ -1420,13 +1409,14 @@
   // changed; it cannot say the screen now needs a field the cached copy was saved without. When the
   // graph gained `parent` (2026-10-07, for the footprint), every browser with a cached map at an
   // unchanged revision kept drawing from nodes without it, and a walk could not open a node's path.
-  // Bump this whenever the screen starts reading a field it did not read before.
-  const CACHE_SHAPE = 2;
+  // Bump this whenever the screen starts reading a field it did not read before. 3: keyed on `head`
+  // since the publish step was retired (2026-10-07), and no services.
+  const CACHE_SHAPE = 3;
 
-  function readCache(published) {
+  function readCache(revision) {
     try {
       const raw = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-      if (!raw || raw.published !== published || raw.shape !== CACHE_SHAPE) return null;
+      if (!raw || raw.revision !== revision || raw.shape !== CACHE_SHAPE) return null;
       return raw;
     } catch { return null; }
   }
@@ -1434,13 +1424,13 @@
     if (!drawnRevision) return;
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({
-        published: drawnRevision, shape: CACHE_SHAPE, savedAt: Date.now(),
+        revision: drawnRevision, shape: CACHE_SHAPE, savedAt: Date.now(),
         // Local areas only. A peer's rows are not this backbone's to remember: the API drops them the
         // moment a link cannot be read, and a cache that keeps them puts them straight back — so a
         // dead link draws exactly like a live one, which is the failure the whole absence rule turns
         // on. They come back on the refresh below, from the wire, or they do not come back.
         regions: state.regions.filter((r) => !r.peer),
-        nodes: state.nodes, edges: state.edges, service: state.service,
+        nodes: state.nodes, edges: state.edges,
         entries: [...state.entries.entries()],
       }));
     } catch { /* quota or private mode: the cache is a convenience, the fetch path still works */ }
@@ -1449,17 +1439,16 @@
   async function loadMap() {
     // One cheap question first: which revision is this? It decides whether the cache is usable, and it
     // seeds the watcher so its first tick is quiet.
-    let published = "";
-    try { published = String((await request("revision")).published || ""); } catch { /* fall through to fetch */ }
-    const cached = published ? readCache(published) : null;
+    let headRev = "";
+    try { headRev = String((await request("revision")).head || ""); } catch { /* fall through to fetch */ }
+    const cached = headRev ? readCache(headRev) : null;
     if (cached) {
       state.regions = cached.regions || [];
       state.links = [];
       state.nodes = cached.nodes || [];
       state.edges = cached.edges || [];
-      state.service = cached.service || "";
       state.entries = new Map(cached.entries || []);
-      drawnRevision = published;
+      drawnRevision = headRev;
       draw();
       // Flags are never cached: a request that arrived while this tab was closed is exactly the one
       // worth seeing, and they cost one call.
@@ -1473,9 +1462,7 @@
         state.regions = [...state.regions.filter((r) => !r.peer), ...(fresh.regions || []).filter((r) => r.peer)];
         state.links = fresh.links || [];
         // From here too, or a tab that opened on a cached map shows a dash where every other card
-        // shows a revision — which reads as "unknown" rather than as "this one is ours". The
-        // repository head and not the published one: the head is what the map is drawn from, and the
-        // two differ exactly when a publish has failed.
+        // shows a revision — which reads as "unknown" rather than as "this one is ours".
         state.revision = fresh.revision || null;
         draw();
       }).catch(() => {});
@@ -1493,16 +1480,10 @@
     state.nodes = graph.nodes || [];
     state.edges = graph.edges || [];
     state.entries = new Map();
-    if (published) drawnRevision = published;
+    if (headRev) drawnRevision = headRev;
     draw();                                   // first paint: two calls in
     loadFlags().then(draw);                   // notifications arrive after the map, never gating it
     loadOverlays().then(draw);                // so do overlays, and an install without them answers 404
-    try {
-      const frag = await request("services").catch(() => ({}));
-      state.services = (frag.services || []).map((x) => String(x.id || x.service || "")).filter(Boolean);
-      state.service = state.services[0] || "";
-      draw();
-    } catch { state.service = ""; state.services = []; }
     warmEntries();
   }
 
@@ -1566,15 +1547,14 @@
   }
 
   /** The bar says something only when something is wrong (operator, 2026-09-11). Every write already
-   *  validates and publishes in one step, so in the ordinary state there is nothing to do: a revision
-   *  hash and two buttons were a bar of nothing. What can go wrong without a write noticing is the
-   *  repository being changed by hand — uncommitted (every write is refused), committed but not
-   *  published (agents read the older tree), or no longer valid — and then the bar appears with the
-   *  one button that fixes it. */
+   *  validates and commits in one step, so in the ordinary state there is nothing to do. What can go
+   *  wrong without a write noticing is the repository being changed by hand — uncommitted (every write
+   *  is refused) or no longer valid — and then the bar says so. "Committed but not published" was a
+   *  third state until 2026-10-07, and it was not true: agents read the repository, not the copy. */
   async function loadState() {
     const row = $("knState");
     const problems = [];
-    let behind = false, invalid = false;
+    let invalid = false;
     try {
       const s = await request("state");
       if (s.writable === false) problems.push([t("knowledge.state.readOnly"), String(s.uncommitted || "")]);
@@ -1585,10 +1565,7 @@
       for (const l of state.links || []) {
         if (l.note) problems.push([`${l.label || l.name}: ${l.note}`, ""]);
       }
-      const ps = await request("publish-state");
-      behind = (ps.core || {}).in_sync === false;
-      invalid = (ps.validate || {}).ok === false;
-      if (behind) problems.push([t("knowledge.behindLong"), ""]);
+      invalid = s.valid === false;
       if (invalid) problems.push([t("knowledge.validBad"), ""]);
     } catch (error) {
       problems.push([t("knowledge.stateUnknown"), error.message]);
@@ -1598,8 +1575,6 @@
       if (v) item.append(el("strong", null, v));
       return item;
     }));
-    // Publishing a tree that fails validation is refused anyway, so it is not offered then.
-    $("knPublish").hidden = !behind || invalid;
     $("knValidate").hidden = !invalid;
     $("knBar").hidden = problems.length === 0;
   }
@@ -1607,46 +1582,11 @@
 
   // ── making things at the backbone ─────────────────────────────────────────
   //
-  // The backbone holds three kinds of thing: the Regions, the Core document, and the service
-  // fragments. Two of them can be created through the API and one cannot — `POST /v1/regions` answers
+  // The backbone holds two kinds of thing: the Regions and the Core document. One of them can be
+  // created through the API and one cannot — `POST /v1/regions` answers
   // 405, because a Region exists only when its directory and representative node do (SPEC-v2 §1.1), so
   // creating one is not a write this screen can compose. That is said out loud below rather than left
   // as a missing button: a person who finds no way to add an AS should learn why, not guess.
-
-  /** A file in a service fragment. The owner writes it in their own format — YAML or Markdown, both
-   *  are read — so the surface stays plain: a name, the one line that goes into the fragment's table,
-   *  and the body. The description is typed here rather than derived, because unlike a node's file
-   *  this is the owner's own channel and nothing else describes it. */
-  function newServiceFileForm(service) {
-    const card = el("form", "kn-card-form");
-    card.addEventListener("submit", (e) => e.preventDefault());
-    card.append(el("h3", "kn-cf-title", t("knowledge.bb.newServiceFile")));
-    card.append(el("p", "kn-cf-lead", `/v1/services/${service}`));
-    const name = input("", { placeholder: "release.yaml" });
-    const desc = input("", { maxlength: 300, placeholder: t("knowledge.oneLinerHint") });
-    const body = area("", 16);
-    card.append(labelled("knowledge.field.name", name));
-    card.append(labelled("knowledge.fileDesc", desc));
-    card.append(uploadRow(body, name));
-    card.append(labelled("knowledge.newFragmentFileHint", body));
-    card.append(actions(
-      button("common.cancel", "quiet", closeCard),
-      button("knowledge.create", "primary", (b) => guarded(b, async () => {
-        const fname = name.value.trim();
-        if (!/^[^/\\.][^/\\]*\.(md|yaml|yml)$/i.test(fname) || fname === "INDEX.md") {
-          throw new Error(t("knowledge.badFragmentName"));
-        }
-        if (!desc.value.trim()) throw new Error(t("knowledge.descRequired"));
-        await send(`services/${encodeURIComponent(service)}/files/${encodeURIComponent(fname)}`, "PUT",
-          { content: body.value, description: desc.value.trim() });
-        await refreshFromKnowledge();
-        await showRaw({ kind: "as", title: `svc · ${service}`, address: `/v1/services/${service}` });
-      }, "knowledge.created")),
-    ));
-    $("knEdit").replaceChildren(card);
-    showEditor(true);
-    name.focus();
-  }
 
   /** Why "add data" does nothing at the backbone yet. The backbone level holds exactly one authored
    *  document — CORE.md. The rest of what sits there is vocabulary or derived: `vocab.yaml`,
@@ -2298,7 +2238,6 @@
       .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     return stem ? `${stem}.md` : "";
   };
-  const FRAG_FILE = /^[^/\\.][^/\\]*\.(md|yaml|yml)$/i;
   const NAME_ID = /^[a-z0-9][a-z0-9-]*$/;
   /** The address a name gives by itself. Only an all-ASCII name has one: "Ürün" would reduce to `r-n`,
    *  which looks deliberate and is not — the same rule Knowledge applies (13934d8). */
@@ -2317,11 +2256,10 @@
   // and not others" — was that: the buttons were right, the reader could not tell which popup they
   // were in. The kind is derived from the address, never from where the click came from.
   const OBJECT = {
-    // Two acts at the backbone: add an AS, add data. Creating a service fragment was here too and is
-    // gone (operator) — services left this screen once already, and Knowledge makes them.
-    backbone: { label: "BACKBONE", actions: ["reviewBB", "startHere", "newRegion", "newBBData", "copyAgent"] },
+    // Two acts at the backbone: add an AS, add data. Service fragments, and the run button that
+    // started an agent from here, were retired on 2026-10-07 — neither had anything behind it.
+    backbone: { label: "BACKBONE", actions: ["reviewBB", "newRegion", "newBBData", "copyAgent"] },
     core:     { label: "CORE",     actions: [] },
-    service:  { label: "SERVICE",  actions: ["newServiceData"] },
     // One word for both (operator, 2026-09-11): an area and a node that holds things are the same
     // kind of thing on this screen — an Autonomous System — and the racks already say so.
     region:   { label: "AS",       actions: [] },
@@ -2330,23 +2268,9 @@
     // job in two steps a person can see. Editing went with it.
     file:     { label: "DATA",     actions: ["deleteData"] },
   };
-  /** Hand a selection to the Operations page. A ticked set wins over the one thing that was clicked:
-   *  a person who ticked three areas and then pressed start on one of them meant the three. Whoever
-   *  selects — a person here, the backbone agent later — the run is started the same way. */
-  function startRun(fallback) {
-    if (!canRun()) return;
-    const chosen = state.picked.size ? [...state.picked] : (fallback || []).filter(Boolean);
-    const q = chosen.length ? "?" + chosen.map((r) => `root=${encodeURIComponent(r)}`).join("&") : "";
-    window.location.href = state.cfg.agentUrl + q;
-  }
-
-  /** Whether picking an area leads anywhere. With no agent configured there is no run to start, so the
-   *  tick boxes, the selection bar and every start button are absent rather than inert — an affordance
-   *  that does nothing teaches that the thing behind it does not work. */
-  const canRun = () => Boolean(state.cfg.agent && state.cfg.agentUrl);
-  /** Ticking is how a person draws a VRF, so it exists wherever a pick can go somewhere: a run to
-   *  start, or an overlay to create. With neither, the boxes would be controls that do nothing. */
-  const canPick = () => canRun() || state.vrfOn;
+  /** Ticking is how a person draws a VRF, so it exists only where an overlay can be created. Without
+   *  one, the boxes would be controls that do nothing. */
+  const canPick = () => state.vrfOn;
 
   const ACTION = {
     reviewBB: { key: "knowledge.flag.short", run: () => reviewFlags("__bb", "RouteMind Back-Bone", ""),
@@ -2356,13 +2280,6 @@
     // For an agent that has no MCP — a chat window, a notebook, a colleague's tool. Here because this
     // popup is the list it copies: the Back-Bone's table is where every run starts.
     copyAgent: { key: "knowledge.copyForAgent", run: () => copyForAgent() },
-    newServiceData: { key: "knowledge.act.newData", run: (x) => newServiceFileForm(x.service) },
-    // Pin where a run starts looking. A Region hands the agent that Region's table at hop 0 instead of
-    // spending a call to fetch it — measured 6 routing steps down to 1 on the same question, with the
-    // same answer. The backbone is the unpinned default, so its button carries no root at all rather
-    // than a root that means "everything": those are different claims and only one of them is true.
-    startHere: { key: "knowledge.act.start", when: canRun,
-      run: (x) => startRun(x.kind === "region" ? [`/v1/regions/${x.dir}`] : []) },
     newNode: { key: "knowledge.act.newNode", run: (x) => newNodeForm(x.dir) },
     newData: { key: "knowledge.act.newData", run: (x) => newFileForm(x.node || representativeOf(x.dir)) },
     deleteData: { key: "knowledge.delete", danger: true, run: async (x) => deleteNodeCard(await entityOf(x)) },
@@ -2389,8 +2306,6 @@
     if (m) return { kind: "node", node: m[1] };
     m = /^\/v1\/regions\/([a-z0-9-]+)$/.exec(address);
     if (m) return { kind: "region", dir: m[1] };
-    m = /^\/v1\/services\/([^/]+)$/.exec(address);
-    if (m) return { kind: "service", service: m[1] };
     return { kind: "backbone" };
   }
 
@@ -2660,7 +2575,7 @@
    *  agent is handed; a person who has just made a node has no use for it and it buried the two facts
    *  that do matter — the address, which can never change, and the kind, which can but is cheapest to
    *  correct now. Confirm closes; the second button is the next thing a new node is for. */
-  function doneCard({ made, nid, node, service }) {
+  function doneCard({ made, nid, node }) {
     const card = el("form", "kn-card-form");
     card.addEventListener("submit", (e) => e.preventDefault());
     card.append(el("h3", "kn-cf-title", t("knowledge.done.created")));
@@ -2673,17 +2588,16 @@
       if (noteKey) v.append(el("span", "kn-fact-n", t(noteKey)));
       facts.append(v);
     };
-    row("knowledge.done.address", service ? `/v1/services/${service}` : `/v1/nodes/${nid}`, "knowledge.done.addressFixed");
+    row("knowledge.done.address", `/v1/nodes/${nid}`, "knowledge.done.addressFixed");
     card.append(facts);
     // "Raise upstream" sits here because this is the moment a person knows what changed. It is optional
     // and costs an LLM call, so it is a button and not something that happens on its own.
-    // The next step differs by what was made: a node takes documents, a service fragment takes its
-    // owner's files, and only a node sits in an AS whose advertisement might now need raising.
+    // A node takes documents next, and sits in an AS whose advertisement might now need raising.
     const onMap = state.nodes.find((n) => n.id === nid) || {};
-    const region = service ? "" : norm(onMap.region_dir || onMap.region || state.open[state.open.length - 1] || "");
+    const region = norm(onMap.region_dir || onMap.region || state.open[state.open.length - 1] || "");
     card.append(actions(
       button("knowledge.done.ok", "primary", () => $("knRawDialog").close()),
-      button("knowledge.act.newData", null, () => (service ? newServiceFileForm(service) : newFileForm(node))),
+      button("knowledge.act.newData", null, () => newFileForm(node)),
       ...(region && state.curatorOn ? [button("knowledge.submit.raise", null, () => submitCard(region, "as", { changed: [`/v1/nodes/${nid}`] }))] : []),
     ));
     $("knEdit").replaceChildren(card);
@@ -2843,19 +2757,19 @@
     await loadMap();
     if (nodeId) await loadFiles(nodeId);
     loadState();
-    // This write moved `published`; take the new value now so the watcher's next tick is quiet rather
+    // This write moved `head`; take the new value now so the watcher's next tick is quiet rather
     // than a second redraw of what is already on screen.
-    try { drawnRevision = String((await request("revision")).published || drawnRevision); } catch { /* next tick will */ }
+    try { drawnRevision = String((await request("revision")).head || drawnRevision); } catch { /* next tick will */ }
   }
 
-  // ── following the published revision ─────────────────────────────────────
+  // ── following the revision ────────────────────────────────────────────────
   //
   // The map is a view of what the agent reads, and that changes from more places than this screen:
   // the Knowledge session writes through the API, the curator applies proposals, another operator has
-  // the page open. So the screen asks one cheap question on a timer — is `published` still what I
-  // drew? — and redraws only when the answer is no. It follows `published`, not `head`: a commit that
-  // has not been published is invisible to the agent, and a map that ran ahead of the agent would be a
-  // map of something else. Nothing is pushed from the server; a 27 ms GET every few seconds is cheaper
+  // the page open. So the screen asks one cheap question on a timer — is `head` still what I drew? —
+  // and redraws only when the answer is no. Agents read the repository through the API, so the head is
+  // what they read (it followed a separate published copy until 2026-10-07, which nothing read).
+  // Nothing is pushed from the server; a 27 ms GET every few seconds is cheaper
   // than a socket and has no reconnect story to get wrong.
   const WATCH_MS = 5000;
   let drawnRevision = null;
@@ -2864,7 +2778,7 @@
   async function checkRevision() {
     if (document.visibilityState === "hidden") return;
     if (drag?.started) return;              // a redraw would pull the map out from under the pointer
-    // Overlays are not in the published tree — an agent opens one mid-run — so they are followed on
+    // Overlays are not in the repository — one is opened mid-question — so they are followed on
     // the same tick, and the map redraws only when what is open actually changed.
     if (state.vrfOn) {
       const before = JSON.stringify(state.overlays.map((o) => [o.id, (o.members || []).length]));
@@ -2873,12 +2787,12 @@
     }
     let rev;
     try { rev = await request("revision"); } catch { return; }   // a missed tick is not an event
-    const published = String(rev.published || "");
-    if (!published) return;
-    if (drawnRevision === null) { drawnRevision = published; return; }
-    if (published === drawnRevision) return;
-    const from = drawnRevision.slice(0, 8), to = published.slice(0, 8);
-    drawnRevision = published;
+    const now = String(rev.head || "");
+    if (!now) return;
+    if (drawnRevision === null) { drawnRevision = now; return; }
+    if (now === drawnRevision) return;
+    const from = drawnRevision.slice(0, 8), to = now.slice(0, 8);
+    drawnRevision = now;
     await refreshFromKnowledge();
     toast(t("knowledge.revisionMoved").replace("{from}", from).replace("{to}", to));
   }
@@ -3097,17 +3011,12 @@
 
     // The toggle carries the whole editing surface for the map: a file or node swaps the transcript for
     // its record, a Region offers the node it cannot otherwise get.
-    // Validation is read-only and free, so it is a button rather than something that happens silently
-    // on a write: a person about to publish should be able to ask, and get the errors verbatim.
+    // Validation is read-only and free, so it is a button rather than something that happens silently:
+    // a person looking at a repository that fails should be able to ask, and get the errors verbatim.
     $("knValidate").addEventListener("click", (e) => guarded(e.currentTarget, async () => {
       const r = await send("validate", "POST", {});
       showValidation(r);
     }).catch(() => {}));
-    $("knPublish").addEventListener("click", (e) => {
-      if (!confirm(t("knowledge.publishCore") + "?")) return;
-      return guarded(e.currentTarget, async () => { await send("publish", "POST", { what: "core" }); await loadState(); },
-        "knowledge.published").catch(() => {});
-    });
 
     $("knRawClose").addEventListener("click", () => $("knRawDialog").close());
     exportDialog();
@@ -3137,7 +3046,7 @@
   }
 
   /** The starting context, for an agent reached by pasting rather than by a tool call. Built from
-   *  the published areas — the same rows, the same conditions, the same rule about absence. */
+   *  the areas — the same rows, the same conditions, the same rule about absence. */
   async function agentContext() {
     const d = await request("regions");
     const rows = (d.regions || []).map((r) => ({
@@ -3203,11 +3112,11 @@
   async function loadConfig() {
     try {
       const cfg = await fetch("/api/app-config", { credentials: "same-origin" }).then((r) => r.json());
-      state.cfg = { agent: Boolean(cfg.agent), agentUrl: String(cfg.agent_url || ""), derives: Boolean(cfg.derives),
+      state.cfg = { derives: Boolean(cfg.derives),
                     auth: String(cfg.auth || "open"), actor: String(cfg.actor || ""),
                     named: Boolean(cfg.auth_names_the_actor) };
       showDoor();
-    } catch { state.cfg = { agent: false, agentUrl: "", derives: false }; }
+    } catch { state.cfg = { derives: false }; }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

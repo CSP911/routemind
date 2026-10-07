@@ -2,8 +2,8 @@
 
 `data/repo` is the artefact. Not a database export, not a cache of one — the reviewed thing itself,
 which is why every write through the screen or the API **commits** into it and undo is `git revert`.
-It is also the only directory here worth backing up: `data/publish` is derived and rebuilt, and
-`data/overlays` is run evidence that expires.
+It is also the only directory here worth backing up: `data/overlays` and `data/walks` are run
+evidence that expires.
 
 That makes editing it by hand not merely allowed but the point. A pull request against an ontology is
 a pull request. One file in it is the exception.
@@ -27,7 +27,7 @@ docker compose exec ontology python3 -c \
 ```
 
 then commit what it changed. Or make any write through the screen — that regenerates, validates,
-commits and publishes in one transaction, which is what the API is for.
+commits in one transaction, which is what the API is for.
 
 ### Deleting an area by hand
 

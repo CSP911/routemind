@@ -146,7 +146,7 @@ def deny_kind(who, kind=None):
 
 for n, port in BB.items():
     e = {**os.environ, **TOK, "ONTOLOGY_DATA": repos[n], "PORT": str(port),
-         "ONTOLOGY_PUBLISH": os.path.join(T, f"pub-{n}"), "ONTOLOGY_ACCESS": ACCESS[n],
+         "ONTOLOGY_ACCESS": ACCESS[n],
          "ONTOLOGY_PEER_TOKEN": TOK[f"TOK_{n.upper()}"], "ONTOLOGY_PEER_TTL": "0"}
     for k in [k for k in e if k.startswith("ONTOLOGY_LLM_")]: e.pop(k)
     procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],

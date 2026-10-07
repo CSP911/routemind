@@ -20,7 +20,7 @@ COPY seed/ /app/seed/
 # has carried a `chmod +x` workaround for exactly this; it belongs in the build, not in a person's
 # troubleshooting.
 RUN chmod -R a+rX /app && chmod +x /app/entrypoint.sh
-ENV ONTOLOGY_DATA=/data/repo ONTOLOGY_PUBLISH=/data/publish PORT=8100 PYTHONUNBUFFERED=1 HOME=/tmp GIT_CONFIG_GLOBAL=/dev/null
+ENV ONTOLOGY_DATA=/data/repo PORT=8100 PYTHONUNBUFFERED=1 HOME=/tmp GIT_CONFIG_GLOBAL=/dev/null
 EXPOSE 8100
 HEALTHCHECK --interval=15s --timeout=3s --retries=5 CMD python3 -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8100/healthz', timeout=2).status==200 else 1)"
 ENTRYPOINT ["/app/entrypoint.sh"]

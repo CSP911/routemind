@@ -57,10 +57,11 @@ else
   else say "FAIL a refusal arrived with no reasons — details[] is being dropped"; exit 1; fi
 fi
 
-# The state behind the status bar. It asked for service fragments unconditionally, and a standalone
-# install has none — so it answered 502 and the bar silently lost the publish and validate state.
-ps=$(curl -s -o /dev/null -w '%{http_code}' "$BASE/api/knowledge/publish-state")
-[ "$ps" = 200 ] && say "ok   publish-state answers" || { say "FAIL publish-state answered $ps"; exit 1; }
+# The state behind the status bar: whether the repository can be written and whether it validates.
+# It once came from a second call that asked for service fragments unconditionally, and a standalone
+# install has none — so it answered 502 and the bar silently lost the validate state.
+st=$(curl -s "$BASE/api/knowledge/state" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(isinstance(d.get("writable"), bool) and isinstance(d.get("valid"), bool))' 2>/dev/null || echo broken)
+[ "$st" = True ] && say "ok   the status bar's state answers" || { say "FAIL the status bar's state answered $st"; exit 1; }
 
 # A move reaches Knowledge. The proxy used to drop `parent` on purpose, so a drag would have been
 # answered "nothing to update" and moved nothing. Aimed at an id that does not exist, so it writes

@@ -105,7 +105,7 @@ for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=peer", "-c", "user.em
     subprocess.run(["git", "-C", repo, *a], check=True)
 
 env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(PORT),
-       "ONTOLOGY_PUBLISH": os.path.join(T, "publish"), "ONTOLOGY_PEER_TOKEN": TOKEN}
+       "ONTOLOGY_PEER_TOKEN": TOKEN}
 for k in [k for k in env if k.startswith("ONTOLOGY_LLM_")]: env.pop(k)
 procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
                               env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
@@ -226,7 +226,7 @@ subprocess.run(["git", "-C", repo, "-c", "user.name=peer", "-c", "user.email=p@l
 
 tokens = {"PEERTOK_A": TOKEN, "PEERTOK_B": TOKEN_B, "PEERTOK_WRONG": "not-the-key"}
 env_b = {**os.environ, **tokens, "ONTOLOGY_DATA": repo_b, "PORT": str(PORT_B),
-         "ONTOLOGY_PUBLISH": os.path.join(T, "publish-b"), "ONTOLOGY_PEER_TOKEN": TOKEN_B,
+         "ONTOLOGY_PEER_TOKEN": TOKEN_B,
          "ONTOLOGY_PEER_TTL": "0"}
 for k in [k for k in env_b if k.startswith("ONTOLOGY_LLM_")]: env_b.pop(k)
 b = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],

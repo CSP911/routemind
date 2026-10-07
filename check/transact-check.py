@@ -51,7 +51,7 @@ def through_transact(name, seen=()):
         if c.startswith("self.") and c[5:] in methods and c[5:] not in seen and not c[5:].startswith("_"):
             if through_transact(c[5:], seen + (name,)): return True
     return False
-LEGACY = {"put_fragment"}     # the flat fragments directory: no git, no validation, by its own header
+LEGACY = set()     # was the flat fragments directory, retired 2026-10-07
 offenders = []
 for name, fn in methods.items():
     if name.startswith("_") or name in ("transact",) or name in LEGACY: continue

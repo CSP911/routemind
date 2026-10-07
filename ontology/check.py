@@ -17,7 +17,7 @@ fail is a check nobody knows the meaning of.
 """
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from service.store import set_frontmatter, file_scope, described_by, FM_RE, Store
+from service.store import FM_RE, Store
 
 fails = []
 
@@ -27,19 +27,6 @@ def eq(label, got, want):
     print(f"{'ok  ' if ok else 'FAIL'} {label:<52} {got!r}" + ("" if ok else f"  <- expected {want!r}"))
     if not ok: fails.append(label)
 
-
-# ── frontmatter round-trip: is what was written what comes back ──────────────
-BODY = "# Heading\n\nThe body has to survive.\n"
-eq("a key added to a document with no frontmatter keeps the body",
-   BODY in set_frontmatter(BODY, "described_by", "knowledge"), True)
-eq("a key added to a document that has frontmatter keeps the body",
-   BODY.strip() in set_frontmatter("---\nscope: common\n---\n" + BODY, "described_by", "knowledge"), True)
-eq("writing the same key twice leaves one",
-   set_frontmatter(set_frontmatter(BODY, "k", "a"), "k", "b").count("k:"), 1)
-eq("the value written reads back",
-   described_by(set_frontmatter(BODY, "described_by", "knowledge")), "knowledge")
-eq("the key beside it survives",
-   file_scope(set_frontmatter("---\nscope: [a1]\n---\n" + BODY, "described_by", "x")), ["a1"])
 
 # ── does everything using FM_RE take the body from group(2) ──────────────────
 m = FM_RE.match("---\na: 1\n---\nbody\n")
@@ -52,39 +39,6 @@ for src in sorted(pathlib.Path(__file__).resolve().parent.joinpath("service").gl
             fails.append(f"{src.name}:{i}")
             print(f"FAIL {src.name}:{i:<46} slices the body at m.end() — it is group(2)")
 
-# ── does publishing hold drafts back ─────────────────────────────────────────
-# A draft is machine-made and unconfirmed. The moment the agent reads one back as fact, the echo
-# the design guards against has started. Under two types this came free: a draft was a directory
-# and its files went with it. One type makes containment a field, so the children have to be
-# collected — otherwise a child publishes with a `parent` that resolves to nothing.
-def _publish_drops_drafts():
-    import subprocess, tempfile
-    from service.write import publish
-    t = pathlib.Path(tempfile.mkdtemp(prefix="check-publish-"))
-    repo, pub = t / "repo", t / "pub"
-    (repo / "regions" / "alpha").mkdir(parents=True); pub.mkdir()
-    (repo / "CORE.md").write_text("| key | description |\n| --- | --- |\n", encoding="utf-8")
-    (repo / "vocab.yaml").write_text("budgets: {}\n", encoding="utf-8")
-    (repo / "edges.yaml").write_text("[]\n", encoding="utf-8")
-    for eid, extra in (("keep", "role: representative"), ("hidden", "status: draft"), ("kid", "parent: hidden")):
-        (repo / "regions" / "alpha" / f"{eid}.md").write_text(
-            f"---\nid: {eid}\n{extra}\n---\nbody of {eid}\n", encoding="utf-8")
-    q = dict(capture_output=True, cwd=repo)
-    subprocess.run(["git", "init", "-q"], **q)
-    subprocess.run(["git", "add", "-A"], **q)
-    subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
-    publish(repo, pub)
-    return {e: (pub / "current" / "regions" / "alpha" / f"{e}.md").exists() for e in ("keep", "hidden", "kid")}
-
-
-try:
-    got = _publish_drops_drafts()
-    eq("a draft is not published", got["hidden"], False)
-    eq("nor is what hangs under it", got["kid"], False)
-    eq("what is not a draft is published", got["keep"], True)
-except Exception as e:
-    fails.append("publish"); print(f"FAIL {'the publish check could not run':<52} {e}")
-
 # ── does promotion insert a parent ───────────────────────────────────────────
 # Promotion is not about identity; it makes room for a sibling (operator, 2026-09-11). There was
 # one AWX document. Continua arrives, so the person names the thing that holds them both and AWX
@@ -95,12 +49,12 @@ def _promote_interposes():
     from service.write import Writer
     here = pathlib.Path(__file__).resolve().parent.parent
     t = pathlib.Path(tempfile.mkdtemp(prefix="check-promote-"))
-    repo, pub = t / "repo", t / "pub"
-    shutil.copytree(here / "seed", repo); pub.mkdir()
+    repo = t / "repo"
+    shutil.copytree(here / "seed", repo)
     q = dict(capture_output=True, cwd=repo)
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
-    w = Writer(repo, pub, None)
+    w = Writer(repo)
     # The shape the operator described: one document under an area, and then a second one arrives.
     w.create_region({"source": "lib", "core_description": "l",
                      "representative": {"id": "top", "name": "Top", "kind": "tool",
@@ -142,12 +96,12 @@ def _move_across():
     from service.validate import validate
     here = pathlib.Path(__file__).resolve().parent.parent
     t = pathlib.Path(tempfile.mkdtemp(prefix="check-move-"))
-    repo, pub = t / "repo", t / "pub"
-    shutil.copytree(here / "seed", repo); pub.mkdir()
+    repo = t / "repo"
+    shutil.copytree(here / "seed", repo)
     q = dict(capture_output=True, cwd=repo)
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
-    w = Writer(repo, pub, None)
+    w = Writer(repo)
     for src, nm in (("alpha", "A"), ("beta", "B")):
         w.create_region({"source": src, "core_description": nm,
                          "representative": {"id": f"{src}-top", "name": nm, "kind": "tool",
@@ -199,12 +153,12 @@ def _delete_refuses_branches():
     from service.write import Writer, WriteError
     here = pathlib.Path(__file__).resolve().parent.parent
     t = pathlib.Path(tempfile.mkdtemp(prefix="check-del-"))
-    repo, pub = t / "repo", t / "pub"
-    shutil.copytree(here / "seed", repo); pub.mkdir()
+    repo = t / "repo"
+    shutil.copytree(here / "seed", repo)
     q = dict(capture_output=True, cwd=repo)
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
-    w = Writer(repo, pub, None)
+    w = Writer(repo)
     w.create_region({"source": "a", "core_description": "A",
                      "representative": {"id": "top", "name": "T", "kind": "tool",
                                         "one_liner": "the area", "use_when": "when"}}, "c")
@@ -269,6 +223,11 @@ def _entity_line_through_queue():
     # an area proposal still needs its region — the entity scope did not loosen the others
     try: submit_route(Fake(), {"scope": "as", "after": "x"}, "c"); out["an area with no region"] = "accepted"
     except ValueError: out["an area with no region"] = "refused"
+    # Old spellings are read when a queued proposal is accepted, and refused when one is filed
+    # (2026-10-07): nothing has sent them since 2026-09-29.
+    for old in SCOPE_ALIAS:
+        try: submit_route(Fake(), {"scope": old, "region": "r", "after": "x"}, "c"); out[f"old {old}"] = "accepted"
+        except ValueError: out[f"old {old}"] = "refused"
     return out
 
 
@@ -283,6 +242,8 @@ try:
     eq("editing any other field at this scope is refused", g["a field that is not the line"], "refused")
     eq("an unknown field is refused", g["a field nobody knows"], "refused")
     eq("an area proposal still needs its region", g["an area with no region"], "refused")
+    for old in ("dr", "peer", "peer-line"):
+        eq(f"filing under the old spelling `{old}` is refused", g[f"old {old}"], "refused")
 except Exception as e:
     fails.append("entity-line"); print(f"FAIL {'the entity-line check could not run':<52} {e!r}")
 
@@ -320,12 +281,12 @@ def _id_without_an_llm():
     from service.write import Writer, WriteError
     here = pathlib.Path(__file__).resolve().parent.parent
     t = pathlib.Path(tempfile.mkdtemp(prefix="check-id-"))
-    repo, pub = t / "repo", t / "pub"
-    shutil.copytree(here / "seed", repo); pub.mkdir()
+    repo = t / "repo"
+    shutil.copytree(here / "seed", repo)
     q = dict(capture_output=True, cwd=repo)
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
-    w = Writer(repo, pub, None)                     # no LLM of any kind is wired to this
+    w = Writer(repo)                     # no LLM of any kind is wired to this
     r = w.create_region({"source": "p", "core_description": "P",
                          "representative": {"name": "Parcels", "kind": "tool",
                                             "one_liner": "Where a parcel is and who carries it",
@@ -357,12 +318,12 @@ def _suggestion_matches_the_write():
     from service.write import Writer, WriteError
     here = pathlib.Path(__file__).resolve().parent.parent
     t = pathlib.Path(tempfile.mkdtemp(prefix="check-sugg-"))
-    repo, pub = t / "repo", t / "pub"
-    shutil.copytree(here / "seed", repo); pub.mkdir()
+    repo = t / "repo"
+    shutil.copytree(here / "seed", repo)
     q = dict(capture_output=True, cwd=repo)
     subprocess.run(["git", "init", "-q"], **q); subprocess.run(["git", "add", "-A"], **q)
     subprocess.run(["git", "-c", "user.name=c", "-c", "user.email=c@l", "commit", "-qm", "t"], **q)
-    w = Writer(repo, pub, None)                       # no LLM anywhere
+    w = Writer(repo)                       # no LLM anywhere
     w.create_region({"source": "a", "core_description": "A",
                      "representative": {"id": "top", "name": "T", "kind": "tool",
                                         "one_liner": "the area", "use_when": "when"}}, "c")

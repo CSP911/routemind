@@ -28,14 +28,13 @@ command -v curl >/dev/null || { echo "write-paths.sh needs curl" >&2; exit 2; }
 trap 'kill ${PID:-0} 2>/dev/null || true; rm -rf "$T"' EXIT
 
 cp -r "$ROOT/seed/." "$T/repo/" 2>/dev/null || { mkdir -p "$T/repo"; cp -r "$ROOT/seed/." "$T/repo/"; }
-mkdir -p "$T/publish"
 git -C "$T/repo" init -q
 git -C "$T/repo" add -A
 # Every commit here names its own author. Without that, a machine with no global git identity —
 # CI, a container, a fresh checkout — aborts partway through with "Author identity unknown".
 git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qm seed
 
-ONTOLOGY_DATA="$T/repo" ONTOLOGY_PUBLISH="$T/publish" PORT="$PORT" \
+ONTOLOGY_DATA="$T/repo" PORT="$PORT" \
   python3 "$ROOT/ontology/service/server.py" >"$T/log" 2>&1 &
 PID=$!
 U="http://127.0.0.1:$PORT/v1"
@@ -48,14 +47,16 @@ say() { if [ "$2" = "$3" ]; then printf '%-56s %s\n' "ok   $1" "$2"
 # check. A name with accents would pass even with the bug, because latin-1 covers it; only a
 # non-Latin script catches the header encoding. Percent-encoded, as the web app sends it.
 code() { curl -s -o "$T/out" -w '%{http_code}' -H 'Content-Type: application/json' -H 'X-Actor: %EC%B2%9C%EC%88%98' "$@"; }
-published() { cat "$T/publish/REVISION" 2>/dev/null || echo none; }
+# The revision the screen follows. There is no published copy since 2026-10-07: what an agent reads is
+# the commit, so a write that committed is a write the agent sees.
+published() { curl -s "$U/revision" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("head") or "none")'; }
 
 BEFORE="$(published)"
 say "the empty seed validates" "$(curl -s "$U/validate" | python3 -c 'import json,sys; print(json.load(sys.stdin)["ok"])')" True
 
 # The first area, into a CORE table that has a header and no rows.
 say "first area into an empty CORE table" "$(code -X POST "$U/regions" -d '{"source":"alpha","core_description":"the first area","representative":{"id":"alpha-core","kind":"system","name":"Alpha","one_liner":"what alpha is","use_when":"when alpha is the question"}}')" 201
-say "  it published"                      "$( [ "$(published)" != "$BEFORE" ] && echo moved || echo stuck )" moved
+say "  it committed, and the revision moved" "$( [ "$(published)" != "$BEFORE" ] && echo moved || echo stuck )" moved
 say "  CORE has exactly one row"          "$(grep -c '^| `ALPHA` |' "$T/repo/CORE.md")" 1
 say "  hop 0 lists it"                    "$(curl -s "$U/regions" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)["regions"]))')" 1
 say "  a non-ASCII actor reached git"     "$(git -C "$T/repo" log -1 --pretty=%an)" "천수"
@@ -119,7 +120,9 @@ say "node with its first edge (one txn)"  "$(code -X POST "$U/nodes" -d '{"id":"
 # is what they check here.
 say "  it is one file on disk"            "$( [ -f "$T/repo/regions/alpha/beta.md" ] && echo yes || echo no )" yes
 say "  it declares its own id"            "$(grep -c '^id: beta$' "$T/repo/regions/alpha/beta.md")" 1
-say "a file needs a description with no LLM" "$(code -X PUT "$U/nodes/beta/files/x.md" -d '{"content":"# x"}')" 503
+# 400, not 503 "no LLM to write one": the line is the person's whether or not an LLM is configured
+# (2026-10-07), so its absence is the caller's to fix, not the install's.
+say "a file needs a description, LLM or not" "$(code -X PUT "$U/nodes/beta/files/x.md" -d '{"content":"# x"}')" 400
 say "  with one, it is written"           "$(code -X PUT "$U/nodes/beta/files/x.md" -d '{"description":"what x holds","content":"# x"}')" 200
 # Hierarchy is declared by the child, not listed by the parent — so a list and the directory can no
 # longer disagree. `beta` is directly in the area and has no parent; `x` hangs under it and says so.
@@ -147,7 +150,7 @@ say "  no edge had to move"               "$(curl -s "$U/edges" | python3 -c 'im
 
 # Moving an entity: drag it onto what should hold it. Containment is one field, and both routing
 # tables are read off it — so one write has to take the entity out of the table it was in and put it
-# into the one it joined, keep its address, and publish. Into another area too (operator, 2026-09-11):
+# into the one it joined, keep its address, and commit. Into another area too (operator, 2026-09-11):
 # the area is the directory, which follows from the parent, so the file moves with it. And the move
 # Knowledge must refuse, refused with nothing left behind: into something inside itself.
 ids_in() { curl -s "$U/$1" | python3 -c 'import json,sys; print(" ".join(sorted(e["id"] for e in json.load(sys.stdin)["entries"])))'; }
@@ -155,7 +158,7 @@ say "move x out of group, into beta"       "$(code -X PUT "$U/nodes/x" -d '{"par
 say "  beta's table lists it"              "$(ids_in nodes/beta | tr ' ' '\n' | grep -cx x)" 1
 say "  group's table does not"             "$(ids_in nodes/group | tr ' ' '\n' | grep -cx x || true)" 0
 say "  it kept its address and body"       "$(curl -s "$U/nodes/x/body" | grep -c '^# x')" 1
-say "  and the move was published"        "$(published)" "$(git -C "$T/repo" rev-parse HEAD)"
+say "  and the revision is the move's commit" "$(published)" "$(git -C "$T/repo" rev-parse HEAD)"
 say "move x to the representative"         "$(code -X PUT "$U/nodes/x" -d '{"parent":"alpha-core"}')" 200
 say "  the area's own table lists it"      "$(ids_in regions/alpha | tr ' ' '\n' | grep -cx x)" 1
 HEAD_OK="$(git -C "$T/repo" rev-parse HEAD)"
@@ -197,7 +200,7 @@ say "a new area goes into the empty table" "$(code -X POST "$U/regions" -d '{"so
 say "  hop 0 shows it and nothing else"    "$(curl -s "$U/regions" | python3 -c 'import json,sys; r=json.load(sys.stdin)["regions"]; print(len(r), r[0]["fetch"].rsplit("/",1)[-1])')" "1 mine"
 
 say "everything still validates"          "$(curl -s "$U/validate" | python3 -c 'import json,sys; print(json.load(sys.stdin)["ok"])')" True
-say "published head matches git head"     "$(published)" "$(git -C "$T/repo" rev-parse HEAD)"
+say "the revision followed is git head"     "$(published)" "$(git -C "$T/repo" rev-parse HEAD)"
 
 [ "$FAILS" -eq 0 ] || { printf '\n%s failed\n' "$FAILS"; exit 1; }
 printf '\nall write paths ok\n'

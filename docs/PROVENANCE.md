@@ -36,10 +36,9 @@ Dropped on the way: `docker/ontology/web/` (2D/3D graph viewers, referenced by n
 
 - **All authentication.** IRIS backs it with PostgreSQL; this build has none (operator decision).
   The seam is `_require_admin` in `web/app.py` — putting a gate back is that one function.
-- **The Pi coupling.** `▶ Start` no longer navigates to `/playbooks`; it goes to
-  `KNOWLEDGE_AGENT_URL`, and with none set the button and the tick boxes are not drawn.
-- **The second source for the service list.** IRIS reconciled ontology fragments against Pi's
-  capability list. Here there is one source: the ontology.
+- **The Pi coupling.** `▶ Start` and `KNOWLEDGE_AGENT_URL`, the publish step that copied a checkout
+  for Pi to mount, the service fragments, and the curator's sleep and observations — all retired on
+  2026-10-07, none of them with anything behind it here.
 - **i18n keys 602 → English only.**
 
 ## Added here

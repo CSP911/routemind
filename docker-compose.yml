@@ -28,15 +28,13 @@ services:
     user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
     environment:
       ONTOLOGY_DATA: /data/repo
-      ONTOLOGY_PUBLISH: /data/publish
       # Overlays (docs/OVERLAY.md): one question's working set each — run evidence, not structure. Their
-      # own directory: not the repository (a commit per question would bury the ontology) and not
-      # publish/ (a checkout swapped atomically; anything beside it would be published by accident).
+      # own directory, not the repository: a commit per question would bury the ontology.
       ONTOLOGY_OVERLAYS: /data/overlays
       # The footprint (docs/FOOTPRINT.md): every walk an agent takes, kept six hours — the map's live
-      # view, its replay, and the HEAT and history an agent is shown. Run evidence, like overlays.
+      # view and its replay. Run evidence, like overlays.
       ONTOLOGY_WALKS: /data/walks
-      # The curator's store — the review queue behind "Advertise upstream", and what `sleep` writes.
+      # The curator's store — the review queue behind "Advertise upstream".
       # Unset, every proposal is refused 501 and the screen shows the name of this variable to whoever
       # pressed Submit. It was unset here until 2026-09-12, which meant the review queue had never
       # worked on any install made from this file. Its own directory, for the overlays' reason: a
@@ -78,9 +76,6 @@ services:
         source: ${KNOWLEDGE_DATA_DIR:-./data/repo}
         target: /data/repo
       - type: bind
-        source: ${KNOWLEDGE_PUBLISH_DIR:-./data/publish}
-        target: /data/publish
-      - type: bind
         source: ${KNOWLEDGE_OVERLAYS_DIR:-./data/overlays}
         target: /data/overlays
       - type: bind
@@ -106,8 +101,6 @@ services:
         condition: service_healthy
     environment:
       KNOWLEDGE_API_URL: http://ontology:8100
-      # Where "▶ Start" sends the areas a person picked. Empty = no such button.
-      KNOWLEDGE_AGENT_URL: "${KNOWLEDGE_AGENT_URL:-}"
       # The name on every commit made through the screen.
       KNOWLEDGE_ACTOR: "${KNOWLEDGE_ACTOR:-web}"
       # The door. open (the default) | token | proxy — see .env.example and the README.

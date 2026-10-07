@@ -68,8 +68,8 @@ number to trust is the one the check itself prints.
 
 | | | |
 |---|---|---|
-| `ontology/check.py` | 127 | The invariants, each stated as an **absence** — the body that must still be there, the draft that must not publish. It is not in `check/`, and it is the one people forget |
-| `check/scenarios.py` | 62 | The routing table over a whole lifetime: areas created, advertised, emptied, deleted, created again. [SCENARIOS.md](SCENARIOS.md) is the contract |
+| `ontology/check.py` | 110 | The invariants, each stated as an **absence** — the body that must still be there, the old scope spelling that must not be filed. It is not in `check/`, and it is the one people forget |
+| `check/scenarios.py` | 59 | The routing table over a whole lifetime: areas created, advertised, emptied, deleted, created again. [SCENARIOS.md](SCENARIOS.md) is the contract |
 | `check/overlay-check.py` | 17 | Overlays end to end, through the MCP server, the way an agent uses them |
 | `check/romanize-check.py` | 38 | A name in another script, as an address — and the names that must not become one |
 | `check/concurrency-check.py` | 5 | Reads happening while writes happen, through HTTP, on one server. Probabilistic by nature — the deterministic half of the same question is in `ontology/check.py` |

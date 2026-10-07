@@ -9,12 +9,11 @@ What differs between engines is only how those two operations reach them.
 
 | Way | For | What it is |
 |---|---|---|
-| **MCP** | Claude Code, Codex, any MCP client | `mcp/knowledge_mcp.py` — two tools over stdio, three where overlays are kept |
+| **MCP** | Claude Code, Codex, any MCP client | `mcp/knowledge_mcp.py` — four tools over stdio |
 | **Paste** | any chat agent, a notebook, someone else's tool | the **Copy for an agent** button on the map |
-| **Launch URL** | a web console that accepts a run | `KNOWLEDGE_AGENT_URL` |
 
-All three hand over the **same advertisement**. That is the point, and it is why there is one
-formatter rather than three descriptions of the ontology: three would drift, and the one that drifts
+Both hand over the **same advertisement**. That is the point, and it is why there is one formatter
+rather than two descriptions of the ontology: two would drift, and the one that drifts
 is the one nobody is checking.
 
 ---
@@ -221,25 +220,6 @@ no such thing" from inside one area, having never looked at the other six.
 **Copy for an agent** on the map puts the same starting block on the clipboard, with a `GET` URL
 instead of a tool call. For an agent that can fetch, that is enough to navigate. For one that cannot,
 it is still a map of where to ask a person to look.
-
----
-
-## Launch URL
-
-For a console that takes a run: set `KNOWLEDGE_AGENT_URL` and the map grows a **▶ Start** button and
-tick boxes. The areas someone picked ride along:
-
-```
-${KNOWLEDGE_AGENT_URL}?root=/v1/regions/alpha&root=/v1/nodes/beta
-```
-
-Several `root` parameters mean an overlay — one run over several areas at once. Your console decides
-what to do with them; the contract is only that they are addresses this ontology printed.
-
-With `KNOWLEDGE_AGENT_URL` empty, **the button and the tick boxes are not drawn at all**. A control
-that does nothing teaches people that the feature does not work.
-
-It is a URL a browser opens, so it must be reachable from the browser — not a container name.
 
 ---
 

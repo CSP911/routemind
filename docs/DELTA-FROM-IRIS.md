@@ -41,7 +41,7 @@ that needs a populated tree — a data-model conversion, for instance — should
 
 ```sh
 cp -r ~/iris_v1.0.1/docker/ontology/data /tmp/fixture && git -C /tmp/fixture status
-ONTOLOGY_DATA=/tmp/fixture ONTOLOGY_PUBLISH=/tmp/pub PORT=8109 python3 ontology/service/server.py
+ONTOLOGY_DATA=/tmp/fixture PORT=8109 python3 ontology/service/server.py
 ```
 
 That tree is still in the old format, which is the point: #7 above means this code reads it.

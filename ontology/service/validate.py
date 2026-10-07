@@ -6,7 +6,7 @@ Every write through the API must pass this before it is committed.
 from __future__ import annotations
 from collections import Counter
 import json, pathlib, re
-from .store import Store, alias_names, file_scope, region_key, FM_RE
+from .store import Store, alias_names, region_key
 from . import derive
 
 FORBIDDEN_STATE_FIELDS = {"state", "supersedes", "superseded_by", "operative", "current", "replaced_by", "replaces"}
@@ -226,32 +226,10 @@ def validate(store: Store) -> dict:
     for v in norm.values():
         if len(v) > 1: errors.append(f"node name spelling variants: {v}")
 
-    # ---- scope (operator decision 2026-09-08): a common file states no service's facts ----
-    # Game-specific facts are a service's own — they live in that service's fragment. Until a service has a
-    # fragment they may sit in Core only inside a file that declares `scope: <svc>` (or a list), so nothing
-    # game-specific hides inside what every run reads as common. `scope: mixed` marks a file still to migrate.
-    known = [str(s) for s in (vocab.get("known_services") or [])]
-    svc_re = re.compile(r"(?<![A-Za-z0-9_-])(" + "|".join(re.escape(s) for s in sorted(known, key=len, reverse=True)) + r")(?![A-Za-z0-9_-])") if known else None
-    def scan(label: str, text: str, scope):
-        if not svc_re: return
-        # The frontmatter is not prose. `aliases: [{name: L2UpdateServer, scope: l2a}]` is the
-        # sanctioned way to say a service-specific name, and `scope: l2a` names the service in its
-        # own declaration — reading either as a claim about a service makes the rule contradict the
-        # mechanism it exists to enforce. Under two types this hid: INDEX.md was never scanned.
-        m = FM_RE.match(text)
-        if m: text = m.group(2)
-        if scope == "mixed": warnings.append(f"scope: {label} is `mixed` — several services' facts in one file; migrate them to their fragments"); return
-        allowed = set(scope) if isinstance(scope, list) else ({scope} if scope != "common" else set())
-        hits = sorted(set(svc_re.findall(text)) - allowed)
-        if hits: errors.append(f"scope: {label} is {scope!r} but names service(s) {hits} — a common file states no service's facts; move the rows to that service's fragment or declare `scope:`")
-    # An entity's content is its own file, and the loop below reads every `regions/<area>/*.md`.
-    for r in regions:
-        for p in sorted((store.root / "regions" / r).glob("*.md")):
-            if p.name in ("INDEX.md", "edges.md"): continue
-            t = p.read_text(encoding="utf-8", errors="replace"); scan(f"regions/{r}/{p.name}", t, file_scope(t))
-    for n in nodes:
-        for a in n["aliases"]:
-            if isinstance(a, dict) and a.get("scope") and a["scope"] not in known: errors.append(f"node {n['id']}: alias {a.get('name')!r} scope {a['scope']!r} is not a known service")
+    # ---- scope ----
+    # A rule that kept one game service's facts out of common files, against `known_services` in
+    # vocab.yaml. It served the service fragments retired 2026-10-07, and no vocabulary here declared a
+    # service, so it never fired. A `scope:` a file still declares is carried and ignored.
 
     # ---- representatives — SPEC-v2 §1.1 ----
     # **Exactly one representative with no `parent` per area.** That one is the area's face, and what

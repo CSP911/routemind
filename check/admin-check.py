@@ -100,7 +100,7 @@ open(MEMBERS, "w", encoding="utf-8").write(
     f"    token_env: TOK_SOLO\n")
 
 env = {**os.environ, "TOK_SOLO": MEMBER_TOKEN, "ONTOLOGY_DATA": repo, "PORT": str(BB_PORT),
-       "ONTOLOGY_PUBLISH": os.path.join(T, "pub"), "ONTOLOGY_PEER_TOKEN": MEMBER_TOKEN,
+       "ONTOLOGY_PEER_TOKEN": MEMBER_TOKEN,
        "ONTOLOGY_PEER_TTL": "0"}
 for k in [k for k in env if k.startswith("ONTOLOGY_LLM_")]: env.pop(k)
 procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],

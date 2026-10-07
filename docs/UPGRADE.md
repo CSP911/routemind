@@ -66,6 +66,23 @@ saying so. That covers two cases you may have:
 If the tree was not clean, nothing is committed: the log says so, and readers are still served what
 the files say. Commit or discard, then restart.
 
+### 5. What went away, and what you can delete
+
+Retired on 2026-10-07, because nothing read them:
+
+- **`data/publish`** — a checkout copied out on every write for an agent runtime that mounted it.
+  Agents read the repository through the API, so the screen's "agents are reading an older tree"
+  warning and its **Publish** button are gone with it. Compose no longer mounts the directory;
+  `rm -rf data/publish` once you have restarted.
+- **`KNOWLEDGE_AGENT_URL`** and the **▶ Start** button — remove the line from `.env` if you set it.
+- **Service fragments** (`ONTOLOGY_SERVICES`, `/v1/services`) and the curator's **sleep** and
+  **observations**. A proposal the sleep filed long ago, still pending in your queue, can only be
+  rejected now; routing changes a person filed are accepted as before.
+- **Filing a routing change under an old scope spelling** (`dr`, `peer`, `peer-line`) is refused;
+  one already in the queue is still read and applied under its new name.
+- **A new document with no description** is refused, with or without an LLM. The ✨ Suggest button
+  drafts one for you to edit; the LLM no longer writes it on its own.
+
 ## Checking it worked
 
 ```sh

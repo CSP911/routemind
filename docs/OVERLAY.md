@@ -147,7 +147,7 @@ marked when someone next looks, which is when it matters. All four numbers are s
 
 | Part | Owner | What |
 |---|---|---|
-| `/v1/overlays`, the store, address checks, the merged rows, the record | **Knowledge** | `ontology/service/`, storing under `ONTOLOGY_OVERLAYS` — its own path: not inside `data/repo` (structure), not under `publish/` (a checkout swapped atomically and mounted read-only elsewhere). Unset → `501` |
+| `/v1/overlays`, the store, address checks, the merged rows, the record | **Knowledge** | `ontology/service/`, storing under `ONTOLOGY_OVERLAYS` — its own path, not inside `data/repo` (structure). Unset → `501` |
 | proxy `/api/knowledge/overlays*` | Web | same shapes, same refusals passed through |
 | MCP | Web | a tool `knowledge_overlay {op: create\|get\|add\|remove\|close, …}`; the `instructions` on connect describe the flow above |
 | map | Web | open overlays drawn on the areas and tiles they hold, with who made it; the tick boxes create a person's overlay through the same `POST` |

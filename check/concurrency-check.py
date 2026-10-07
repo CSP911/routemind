@@ -102,7 +102,7 @@ for rnd in range(ROUNDS):
         subprocess.run(["git", "-C", repo, *a], check=True)
     port = random.randint(9000, 30000)
     env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(port),
-           "ONTOLOGY_PUBLISH": os.path.join(T, "pub"), "ONTOLOGY_OVERLAYS": os.path.join(T, "ov"),
+           "ONTOLOGY_OVERLAYS": os.path.join(T, "ov"),
            "ONTOLOGY_HARNESS": os.path.join(T, "h")}
     for k in [k for k in env if k.startswith("ONTOLOGY_LLM_")]: env.pop(k)
     p = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],

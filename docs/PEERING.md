@@ -285,7 +285,7 @@ Nothing about the backbones already running changes. Each one's `peers.yaml` hol
 the exchange — and still holds one when there are ten.
 
 ```sh
-mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness data-b/access
+mkdir -p data-b/repo data-b/overlays data-b/harness data-b/access
 docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
 #  http://localhost:8080   this office
 #  http://localhost:8081   the other one

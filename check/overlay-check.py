@@ -52,7 +52,7 @@ for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=seed", "-c", "user.em
 
 
 def start(port, overlays):
-    env = {**os.environ, "ONTOLOGY_DATA": repo, "ONTOLOGY_PUBLISH": os.path.join(T, f"publish{port}"), "PORT": str(port)}
+    env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(port)}
     for k in [k for k in env if k.startswith("ONTOLOGY_LLM_") or k == "ONTOLOGY_OVERLAYS"]: env.pop(k)
     if overlays: env["ONTOLOGY_OVERLAYS"] = os.path.join(T, "overlays")
     p = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")], env=env,

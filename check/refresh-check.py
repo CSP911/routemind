@@ -106,7 +106,6 @@ for n, port in (("a", A_PORT), ("b", B_PORT)):
               ["-c", "user.name=x", "-c", "user.email=x@l", "commit", "-qm", "seed"]):
         subprocess.run(["git", "-C", repo, *a], check=True)
     e = {**os.environ, **TOK, "ONTOLOGY_DATA": repo, "PORT": str(port),
-         "ONTOLOGY_PUBLISH": os.path.join(T, f"pub-{n}"),
          "ONTOLOGY_PEER_TOKEN": TOK[f"TOK_{n.upper()}"], "ONTOLOGY_PEER_TTL": TTL}
     for k in [k for k in e if k.startswith("ONTOLOGY_LLM_")]: e.pop(k)
     procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],

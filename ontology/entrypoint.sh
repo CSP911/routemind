@@ -1,8 +1,8 @@
 #!/bin/sh
 # First boot: lay the empty ontology into the mounted directory and commit it.
 #
-# The commit is not ceremony. Publishing only happens when the data repository has a HEAD, and the map
-# follows the *published* revision — so an uncommitted seed boots into a screen that never fills in.
+# The commit is not ceremony. The map follows the repository's HEAD, so an uncommitted seed boots into
+# a screen that never fills in.
 # Seeding is skipped the moment the directory has anything in it: this must be safe to run on every
 # start, because it does.
 set -e
@@ -14,7 +14,7 @@ DATA="${ONTOLOGY_DATA:-/data/repo}"
 if [ ! -w "$DATA" ]; then
   echo "FATAL: $DATA is not writable by uid $(id -u)." >&2
   echo "       Create it before starting, owned by the uid in KNOWLEDGE_UID:" >&2
-  echo "         mkdir -p data/repo data/publish" >&2
+  echo "         mkdir -p data/repo" >&2
   echo "       (Docker made it root-owned because it did not exist.)" >&2
   exit 1
 fi

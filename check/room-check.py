@@ -131,7 +131,6 @@ for n in ("ay", "bee"):
               ["-c", "user.name=x", "-c", "user.email=x@l", "commit", "-qm", "seed"]):
         subprocess.run(["git", "-C", repo, *a], check=True)
     e = {**os.environ, **TOK, "ONTOLOGY_DATA": repo, "PORT": str(PORT[n]),
-         "ONTOLOGY_PUBLISH": os.path.join(T, f"pub-{n}"),
          "ONTOLOGY_PEER_TOKEN": TOK[f"TOK_{n.upper()}"], "ONTOLOGY_PEER_TTL": "0",
          # The review queue, because the audience is set through it and a scenario that reaches it
          # another way is testing a door nobody uses.
@@ -415,14 +414,14 @@ check("   and advertising again starts from a clean line", remote("ay") == ["bee
 # curl, and the screen's own request(), which throws only on a non-2xx — was told the accept had
 # worked and showed "applied" over a queue item still sitting there. The mirror of the publish bug in
 # docs/SCENARIOS.md J, pointing the other way.
-st, gone = post("bee", "proposals", {"scope": "peer", "region": "no-such-area-at-all",
-                                     "after": "a line for an area that is not there", "why": "N4c"})
+st, gone = post("bee", "proposals", {"scope": "export", "region": "no-such-area-at-all",
+                                     "after": "yes", "why": "N4c"})
 if check("N4c a proposal can be filed against an area that is not there", st == 201, json.dumps(gone)[:110]):
     st, d = post("bee", f"proposals/{gone['id']}/accept", {})
     check("   and accepting it does not answer 200", st != 200, str(st))
     check("     but says what failed", d.get("ok") is False and "apply failed" in json.dumps(d),
           json.dumps(d)[:140])
-    st, q = post("bee", "proposals", {"scope": "peer", "region": SHARE["bee"], "after": "x", "why": "peek"})
+    st, q = post("bee", "proposals", {"scope": "export", "region": SHARE["bee"], "after": "yes", "why": "peek"})
     rows = json.loads(urllib.request.urlopen(
         f"http://127.0.0.1:{PORT['bee']}/v1/curator/proposals?status=pending", timeout=20).read())["proposals"]
     check("   and the one that failed is still pending, not quietly accepted",
@@ -484,13 +483,10 @@ scopes_api = {k for k in _scopes("ontology/service/curator.py", r"ROUTE_SCOPES =
 scopes_web = _scopes("web/app.py", r"QUEUE_SCOPES = \((.*?)\)")
 check("N5 every scope the queue takes has a door on the screen's side",
       scopes_api <= scopes_web, json.dumps(sorted(scopes_api - scopes_web)))
-# An alias the queue still accepts is a name the screen may keep sending — that is what an alias is
-# for, and a proposal filed under an old spelling can be sitting in the queue for weeks. Read from
-# SCOPE_ALIAS rather than whitelisted here: `dr` was hard-coded, so the next alias added broke this
-# check for being correct.
-aliases = _scopes("ontology/service/curator.py", r"SCOPE_ALIAS = \{(.*?)\}")
+# Old spellings (`dr`, `peer`, `peer-line`) are refused on filing since 2026-10-07 — a queued one is
+# still read — so the proxy must not offer them either: the two lists are now the same list.
 check("   and the proxy invents none the queue would refuse",
-      scopes_web - scopes_api <= aliases, json.dumps(sorted(scopes_web - scopes_api - aliases)))
+      scopes_web <= scopes_api, json.dumps(sorted(scopes_web - scopes_api)))
 
 shutil.rmtree(T, ignore_errors=True)
 finished.append(True)

@@ -81,7 +81,7 @@ def main() -> int:
     # The same transaction every other write here uses — refuse a dirty tree, mutate, regenerate,
     # validate, roll back on any failure, commit. Removing things from somebody's repository through
     # a path of its own is exactly how the graft ended up with no rollback and no commit.
-    writer = Writer(repo, None, None)
+    writer = Writer(repo)
 
     def mutate():
         store = Store(repo)

@@ -677,7 +677,6 @@ TABLE_ROUTES = (
     ("/v1/regions", hop0),
     ("/v1/regions/", area),
     ("/v1/nodes/", node),
-    ("/v1/services/", node),
     ("/v1/overlays/", overlay_view),
 )
 
@@ -711,7 +710,7 @@ def table_for(api: Api, path: str) -> str:
         if shape.startswith(prefix) and len(shape) > len(prefix):
             return fn(api, p)
     raise ApiError(f"{p} is not a table address. Tables are /v1/regions, /v1/regions/<area>, "
-                   f"/v1/nodes/<id>, /v1/services/<id>, and any of those behind /v1/peers/<backbone>/. "
+                   f"/v1/nodes/<id>, and any of those behind /v1/peers/<backbone>/. "
                    f"Use an address a table printed.")
 
 
@@ -725,7 +724,6 @@ TABLE_SHAPES = (
     re.compile(r"^/v1/regions/?$"),
     re.compile(r"^/v1/regions/[^/]+/?$"),
     re.compile(r"^/v1/nodes/[^/]+/?$"),
-    re.compile(r"^/v1/services/[^/]+/?$"),
     re.compile(r"^/v1/overlays/[^/]+/?$"),
 )
 
@@ -980,7 +978,7 @@ TOOLS = [
      "inputSchema": {"type": "object", "properties": {
          "path": {"type": "string",
                   "description": "An address a table printed: /v1/regions (the areas), "
-                                 "/v1/regions/<area>, /v1/nodes/<id> or /v1/services/<id>. "
+                                 "/v1/regions/<area> or /v1/nodes/<id>. "
                                  "Omit for the list of areas."},
          "why": {"type": "string",
                  "description": "Below hop 0, required: one line on why you are opening this row — what in "

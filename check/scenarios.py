@@ -77,7 +77,6 @@ for a in (["init", "-q"], ["add", "-A"], ["-c", "user.name=seed", "-c", "user.em
     subprocess.run(["git", "-C", repo, *a], check=True)
 
 env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(PORT),
-       "ONTOLOGY_PUBLISH": os.path.join(T, "publish"),
        "ONTOLOGY_OVERLAYS": os.path.join(T, "overlays"),
        # The review queue is the only path that writes `use_when` (B2), so the curator has to exist.
        "ONTOLOGY_HARNESS": os.path.join(T, "harness")}
@@ -357,45 +356,21 @@ st, _ = call("POST", "/nodes", {"id": "y" * 253, "name": "Over", "region": "name
                                 "one_liner": "p", "content": "x"})
 check("I5 one byte over is refused", st == 400, str(st))
 
-# ── J. the publish that fails after the commit ────────────────────────────────
-# The commit is inside the transaction; publishing is after it, and publishing can fail on its own —
-# a full disk, a read-only mount, a checkout directory owned by another uid. It used to propagate, so
-# a write that had fully succeeded answered `500 internal error`. An agent told that retries and gets
-# `409 exists`; a person presses Submit again. Both then act on a lie about what is in the ontology.
-#
-# The state was never in danger, and that is the point: publishing is downstream, every read here
-# serves the repository, and the next successful write publishes a HEAD that carries this commit. Only
-# the report was wrong, which is the kind of bug no amount of checking the data will find.
-_pub = os.path.join(T, "publish")
-# `geteuid` is POSIX-only; on a platform without it there is no root to be, so nobody is.
-if getattr(os, "geteuid", lambda: 1)() == 0:
-    note("J", "skipped — running as root, which walks through the directory permission this needs")
-else:
-    _before = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
-    os.chmod(_pub, 0o555)
-    try:
-        st, b = call("POST", "/nodes", {"id": "pubfail", "name": "Pub Fail", "region": "names",
-                                        "kind": "system", "one_liner": "x", "content": "y"})
-        _after = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
-        check("J1 a write whose publish fails is not reported as failed", st in (200, 201), f"{st} {b}")
-        check("J1   and it says the checkout is behind",
-              any("behind" in str(w) for w in (b.get("warnings") or [])),
-              json.dumps(b.get("warnings") or [])[-160:])
-        check("J2 the commit stands", _after != _before, f"{_before[:8]} -> {_after[:8]}")
-        check("J2   and the entity reads back straight away", call("GET", "/nodes/pubfail")[0] == 200)
-        with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: _h = json.load(r)
-        # The one operator-facing signal: the screen's bar reads exactly this comparison.
-        check("J3 healthz shows the published tree behind the repository",
-              _h.get("head") and _h.get("head") != _h.get("published"),
-              f"head={str(_h.get('head'))[:8]} published={str(_h.get('published'))[:8]}")
-    finally:
-        os.chmod(_pub, 0o755)
-    call("POST", "/nodes", {"id": "pubok", "name": "Pub Ok", "region": "names",
-                            "kind": "system", "one_liner": "x", "content": "y"})
-    with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: _h = json.load(r)
-    check("J4 the next successful write catches the checkout up",
-          _h.get("head") == _h.get("published"),
-          f"head={str(_h.get('head'))[:8]} published={str(_h.get('published'))[:8]}")
+# ── J. what the agent reads is the commit, and nothing says otherwise ─────────
+# There was a publish step: every write copied a checkout out for an agent runtime that mounted it,
+# and the screen warned "agents are reading an older tree" whenever the copy lagged. Agents here read
+# the repository through this API, so the warning was never true. Retired 2026-10-07; what is checked
+# is that the revision the screen follows is the commit a write just made, and that no second
+# revision is offered for anything to compare against.
+st, b = call("POST", "/nodes", {"id": "pubok", "name": "Pub Ok", "region": "names",
+                                "kind": "system", "one_liner": "x", "content": "y"})
+_git_head = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+with _u2.urlopen(f"http://127.0.0.1:{PORT}/v1/revision", timeout=5) as r: _rev = json.load(r)
+with _u2.urlopen(f"http://127.0.0.1:{PORT}/healthz", timeout=5) as r: _h = json.load(r)
+check("J1 a write answers with its commit", st in (200, 201) and b.get("revision") == _git_head, f"{st} {str(b.get('revision'))[:8]} vs {_git_head[:8]}")
+check("J2 the revision the screen follows is that commit", _rev.get("head") == _git_head, json.dumps(_rev))
+check("J3 and there is no second, published revision to fall behind",
+      "published" not in _rev and "published" not in _h, f"revision={sorted(_rev)} healthz has published: {'published' in _h}")
 
 # ── K. two processes on one data directory ────────────────────────────────────
 # The writer's lock was a threading lock, so it held only inside one process, while the transaction it
@@ -412,7 +387,7 @@ import concurrent.futures as _cf                                          # noqa
 from collections import Counter as _Counter                               # noqa: E402
 
 _P2 = PORT + 1
-_env2 = {**env, "PORT": str(_P2), "ONTOLOGY_PUBLISH": os.path.join(T, "publish2")}
+_env2 = {**env, "PORT": str(_P2)}
 procs.append(subprocess.Popen([sys.executable, SERVER],
                               env=_env2, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
 for _ in range(80):

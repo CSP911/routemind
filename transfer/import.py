@@ -223,7 +223,7 @@ def writer_for(repo: pathlib.Path):
     sys.path.insert(0, str(root / "ontology"))
     try:
         from service.write import Writer
-        return Writer(repo, None, None), None
+        return Writer(repo), None
     except Exception as e:
         return None, (f"this python cannot import the service ({e}).\n"
                       f"  A graft is an ordinary write and goes through the same transaction as any "

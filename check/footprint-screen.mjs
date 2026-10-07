@@ -32,10 +32,10 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   const rev = await (await realFetch(`${process.argv[2]}/api/knowledge/revision`)).json();
   const graph = await (await realFetch(`${process.argv[2]}/api/knowledge/graph`)).json();
   const regions = await (await realFetch(`${process.argv[2]}/api/knowledge/regions`)).json();
-  ls.set("iris.knowledge.map", JSON.stringify({ published: rev.published, savedAt: Date.now(),
-    regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, service: "", entries: [] }));
+  ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
+    regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knNap","knSleep","knTabs","knList","knValidate","knPublish","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpPlay","knFpTrail","knFpNow"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knWallPanel","knWallMine","knWallTheirs","knWallCount","knExport","knExportDialog","knExportForm","knExportPass","knExportPass2","knExportMsg","knExportGo","knExportClose","knExportCancel","knFp","knFpLive","knFpWalk","knFpPlay","knFpTrail","knFpNow"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
 byId.knFp.hidden = true; byId.knWallPanel.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };

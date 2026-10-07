@@ -253,7 +253,7 @@ check/        every check. docs/CHECKS.md
 docs/         everything below
 
 data/repo     ← your ontology. A git repository, and the only thing to back up
-data/*        publish, overlays, harness, exchange, access — all derived or local.
+data/*        overlays, walks, harness, exchange, access — all local.
               docs/DATA-REPO.md
 ```
 

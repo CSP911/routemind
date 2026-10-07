@@ -1,17 +1,15 @@
-"""Writes — every mutation is: change the repo working tree → regenerate derived files → validate → git commit →
-publish atomically. On validation failure the working tree is restored and nothing is published.
+"""Writes — every mutation is: change the repo working tree → regenerate derived files → validate → git commit.
+On validation failure the working tree is restored and nothing is committed.
 
-Publication layout (the volume Pi mounts read-only, SPEC-v2 §5):
-  <publish>/<sha>/        complete checkout of one commit — write-once, never modified
-  <publish>/current       symlink → <sha>/, replaced atomically (rename)
-  <publish>/REVISION      the sha behind `current`, written after the swap
-Pi may read through `current/` (fixed root) or pin to REVISION; both never see a half-applied state.
+There is no publish step (retired 2026-10-07). A checkout of every commit was copied out for an agent
+runtime that mounted it read-only; agents here read the repository through the API, so the copy had
+no reader, and the screen's "agents are reading an older tree" warning built on it was not true.
 """
 from __future__ import annotations
-import contextlib, os, re, shutil, subprocess, sys, tempfile, threading, time
+import contextlib, os, re, shutil, subprocess, threading, time
 from pathlib import Path
 import yaml
-from .store import Store, set_frontmatter, FM_RE
+from .store import Store, FM_RE
 from .store import write as store_write, file_lock
 from .validate import validate, ID_RE, NAME_MAX, name_too_long
 from .derive import regenerate, write_node_index, sync_region_node_lists, EDITABLE
@@ -186,67 +184,6 @@ def _restore(root: Path):
     _git(root, "checkout", "--", ".", check=False); _git(root, "clean", "-fdq", check=False)
 
 
-def _world_readable(top: Path) -> None:
-    """Directories 0755, files 0644 — the published tree is read by iris-pi under a different uid."""
-    os.chmod(top, 0o755)
-    for d, dirs, files in os.walk(top):
-        for x in dirs: os.chmod(Path(d) / x, 0o755)
-        for x in files: os.chmod(Path(d) / x, 0o644)
-
-
-def publish(root: Path, publish_dir: Path, sha: str | None = None, keep: set[str] | None = None) -> str:
-    """Check out `sha` (default HEAD) into <publish>/<sha> and swap `current`. Idempotent.
-    `keep`: revisions that must survive pruning — the Core revisions service fragments pin (`core_revision`).
-    A fragment validates its references against the exact tree it was written for; prune that tree and the pin
-    goes dead (found 2026-09-08: bsna's aca32cf was pruned after five later Core publishes)."""
-    sha = sha or head(root)
-    if not sha: raise WriteError(500, "repository has no HEAD")
-    publish_dir.mkdir(parents=True, exist_ok=True)
-    target = publish_dir / sha
-    if not target.exists():
-        tmp = Path(tempfile.mkdtemp(prefix=".stage-", dir=publish_dir))
-        r = subprocess.run(["git", "-c", "safe.directory=*", "-C", str(root), "archive", "--format=tar", sha], capture_output=True)
-        if r.returncode != 0: shutil.rmtree(tmp, ignore_errors=True); raise WriteError(500, "git archive failed: " + r.stderr.decode())
-        subprocess.run(["tar", "-x", "-C", str(tmp)], input=r.stdout, check=True)
-        (tmp / "REVISION").write_text(sha + "\n", encoding="utf-8")
-        # Drafts never reach Pi: a machine-made node the human has not confirmed is removed from the checkout.
-        # The echo the design guards against starts the moment Pi reads such a node.
-        drafts, parent_of = set(), {}
-        for f in tmp.glob("regions/*/*.md"):
-            m = FM_RE.match(f.read_text(encoding="utf-8"))
-            if not m: continue
-            fm = m.group(1)
-            par = re.search(r"^parent:\s*(\S+)\s*$", fm, re.M)
-            if par: parent_of[f.stem] = par.group(1)
-            if re.search(r"^status:\s*draft\s*$", fm, re.M): drafts.add(f.stem)
-        # A draft takes what hangs under it. Under two types this came free — the draft was a
-        # directory and its files went with it. One type makes containment a field, so a child left
-        # behind would publish with a `parent` that resolves to nothing.
-        changed = True
-        while changed:
-            changed = False
-            for kid, par in parent_of.items():
-                if par in drafts and kid not in drafts: drafts.add(kid); changed = True
-        for f in tmp.glob("regions/*/*.md"):
-            if f.stem in drafts: f.unlink(missing_ok=True)
-        _world_readable(tmp)                                    # mkdtemp is 0700 and the host umask may be 0077 — Pi runs as another uid
-        os.rename(tmp, target)                                  # write-once checkout appears atomically
-    link_tmp = publish_dir / f".current-{sha[:8]}"
-    if link_tmp.is_symlink() or link_tmp.exists(): link_tmp.unlink()
-    os.symlink(sha, link_tmp); os.replace(link_tmp, publish_dir / "current")   # atomic swap
-    # Read by `store_published()` and by whatever consumes the checkout, so it is replaced rather
-    # than truncated-and-refilled. The one above it, in the staging directory, is not: that whole
-    # directory is renamed into place, so nothing can see it until it is complete.
-    store_write(publish_dir / "REVISION", sha + "\n"); os.chmod(publish_dir / "REVISION", 0o644); os.chmod(publish_dir, 0o755)
-    # keep the last few checkouts only
-    kept = sorted((p for p in publish_dir.iterdir() if p.is_dir() and not p.is_symlink() and re.fullmatch(r"[0-9a-f]{40}", p.name)), key=lambda p: p.stat().st_mtime)
-    pinned = {k for k in (keep or set()) if k}
-    for old in kept[:-5]:
-        if any(old.name.startswith(k) for k in pinned): continue     # a fragment still points here
-        shutil.rmtree(old, ignore_errors=True)
-    return sha
-
-
 def _line_map(value) -> dict:
     """Peer name to the line that peer is shown. Anything that is not a mapping of text to text is
     nothing, and an empty line removes that peer's override rather than writing a blank one."""
@@ -275,15 +212,12 @@ def _name_list(value) -> list[str]:
 
 
 class Writer:
-    describe_configured = None   # () -> bool. "not configured" (503) and "could not generate" (422) are different facts
     suggest_id = None            # (name, kind, one_liner, region, taken) -> id. Absent → id is required
     suggest_id_configured = None
     suggest_kind = None          # (name, one_liner, region, content) -> a kind from the vocabulary. Absent → kind is required
-    describe = None          # (name, content) -> one line. The server wires the LLM in. Absent → a new file must carry a description
 
-    def __init__(self, root: Path, publish_dir: Path | None, fragments_dir: Path | None, keep_provider=None):
-        self.root, self.publish_dir, self.fragments_dir = root, publish_dir, fragments_dir
-        self.keep_provider = keep_provider          # () -> set of Core revisions fragments pin; publish() will not prune them
+    def __init__(self, root: Path):
+        self.root = root
         self.store = Store(root)
 
     def _resolve_id(self, given: str | None, *, name: str, kind: str, one_liner: str, region: str) -> tuple[str, bool]:
@@ -410,28 +344,7 @@ class Writer:
             except Exception as e:
                 _restore(self.root); raise WriteError(500, f"{type(e).__name__}: {e}")
             sha = head(self.root)
-            # **Publishing is downstream of the write, so its failure is not the write's failure.**
-            # The commit above is already in the repository and every read here serves the repository,
-            # not the checkout — the entity exists and answers the moment this returns. This used to
-            # propagate, so a publish that could not write (a full disk, a read-only mount, a checkout
-            # directory owned by another uid) answered `500 internal error` for a write that had fully
-            # succeeded. An agent told that retries and gets `409 exists`; a person presses Submit
-            # again. Both are then acting on a lie about what is in the ontology, which is the one
-            # thing this codebase cannot afford to be wrong about.
-            #
-            # It is a warning rather than a silence because the checkout really is behind, and it
-            # catches up on its own: the next successful write publishes the new HEAD, which carries
-            # this commit, and a restart republishes. Nothing is lost and nothing needs undoing — but
-            # anything reading the published tree is stale until then, and only this can say so.
             warnings = list(res["warnings"])
-            if self.publish_dir:
-                try:
-                    publish(self.root, self.publish_dir, sha, keep=(self.keep_provider() if self.keep_provider else None))
-                except Exception as e:
-                    sys.stderr.write(f"publish failed after committing {sha}: {type(e).__name__}: {e}\n")
-                    warnings.append(f"committed as {sha[:8]}, but the published checkout could not be written "
-                                    f"({type(e).__name__}: {e}) and is still behind. The write itself is safe: "
-                                    f"the next successful write, or a restart, publishes it.")
             return {"ok": True, "revision": sha, "message": message, "warnings": warnings, "stats": res["stats"]}
 
     # ---- nodes ----
@@ -639,10 +552,11 @@ class Writer:
         """When no `description` is given:
              existing file → **keep the one it has.** Rewriting the routing line on every content
                              edit changes a sentence nobody touched, silently.
-             new file      → **read the body and write one** (operator, 2026-09-10). That line is the
-                             routing signal an agent picks the file on, so it is not left to whatever
-                             tone the author happened to use. If it cannot be written, **refuse** —
-                             an empty description is a row nobody has a reason to choose."""
+             new file      → **refuse.** That line is the routing signal an agent picks the file on,
+                             and every routing line is a person's (operator, 2026-09-11: the LLM is a
+                             button). It used to be written here by the LLM when left out; nothing on
+                             the screen ever left it out, so that path only reached raw API callers
+                             (removed 2026-10-07). The ✨ Suggest button drafts one to edit."""
         n = self.store.node(nid)
         if not n: raise WriteError(404, f"node {nid} not found")
         if not re.fullmatch(r"[a-z0-9][a-z0-9._-]*\.md", name) or name == "INDEX.md": raise WriteError(400, "file name must be <ascii-kebab>.md and not INDEX.md")
@@ -653,14 +567,6 @@ class Writer:
         desc = (body.get("description") or "").strip()
         existing = next((f["description"] for f in n["files"] if f["name"] == name), None)
         content = body["content"].rstrip("\n") + "\n"
-        generated = False
-        if not desc and existing is None:                       # a new file with no description
-            if not (self.describe_configured and self.describe_configured()):
-                raise WriteError(503, "description is required — no LLM is configured to write one (ONTOLOGY_LLM_*)",
-                                 code="no_llm", data={"field": "description"})
-            desc = (self.describe(name, content) or "").strip()
-            if not desc: raise WriteError(422, "description could not be generated — nothing could be drawn from the body. Supply one, or write the body")
-            generated = True
         line = desc or existing or ""
         if not line: raise WriteError(400, "description is required — it is the line an agent chooses this on")
         # A file is an entity that declares a `parent`. Writing one is writing an entity, so this is
@@ -670,7 +576,7 @@ class Writer:
         cid = cur["id"] if cur else self.child_id(nid, name[:-3])
         cp = self.entity_path(n["region"], cid)
         def mutate():
-            text = set_frontmatter(content, "described_by", "knowledge") if generated else content
+            text = content
             m = FM_RE.match(text)
             # The supplied content may declare things **about itself** — `scope` says which service's
             # facts it states, and the validator refuses a common file that names one. Writing the
@@ -682,9 +588,9 @@ class Writer:
                                           "kind": (cur or {}).get("kind") or n["kind"], "region": n["region"],
                                           "parent": nid, "holds": "content", "one_liner": line,
                                           "body": (m.group(2) if m else text),
-                                          "described_by": "knowledge" if generated else (declared.get("described_by") or (cur or {}).get("described_by")),
+                                          "described_by": declared.get("described_by") or (cur or {}).get("described_by"),
                                           "path": str(cp.relative_to(self.root))})
-        return self.transact(f"node {nid}: file {name}" + (" (description generated)" if generated else ""), actor, mutate)
+        return self.transact(f"node {nid}: file {name}", actor, mutate)
 
     def delete_file(self, nid: str, name: str, actor: str) -> dict:
         n = self.store.node(nid)
@@ -908,13 +814,3 @@ class Writer:
         if len(rest) == len(edges): raise WriteError(404, "edge not found")
         def mutate(): self._save_edges(rest)
         return self.transact(f"edge {f} {rel} {t}: delete", actor, mutate)
-
-    # ---- service fragments (owner channel) — no validation, no git ----
-    def fragment_path(self, svc: str, name: str) -> Path:
-        if not self.fragments_dir: raise WriteError(501, "ONTOLOGY_FRAGMENTS is not configured")
-        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", svc) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*\.(md|yaml|yml)", name): raise WriteError(400, "bad service or file name")
-        return self.fragments_dir / svc / name
-
-    def put_fragment(self, svc: str, name: str, content: str) -> dict:
-        p = self.fragment_path(svc, name); p.parent.mkdir(parents=True, exist_ok=True); store_write(p, content)
-        return {"ok": True, "path": str(p)}

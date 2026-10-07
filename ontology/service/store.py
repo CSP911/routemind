@@ -100,39 +100,6 @@ def region_key(d: str) -> str:
 FM_RE = re.compile(r"\A---\n(.*?)\n---\n(.*)\Z", re.S)
 
 
-def file_scope(text: str):
-    """A content file may open with a frontmatter carrying `scope`. Absent → common.
-    Values: "common" | "<service>" | ["svc", ...] | "mixed" (facts of several services — awaiting migration)."""
-    m = FM_RE.match(text)
-    if not m: return "common"
-    fm = yaml.safe_load(m.group(1)) or {}
-    v = fm.get("scope", "common")
-    return [str(x) for x in v] if isinstance(v, list) else str(v)
-
-
-def described_by(text: str) -> str | None:
-    """**Who wrote** this file's one-line description. Absent means a person did.
-
-    That line is a routing signal: an agent picks the file on the strength of it and nothing else.
-    Since 2026-09-10 a new file's description is written by Knowledge from the document itself, so
-    **human-written and machine-written lines now sit in the same table** — and a person deciding
-    whether to correct one has to be able to tell which is which."""
-    m = FM_RE.match(text)
-    if not m: return None
-    return ((yaml.safe_load(m.group(1)) or {}).get("described_by")) or None
-
-
-def set_frontmatter(text: str, key: str, value: str) -> str:
-    """Set one key in a document's frontmatter, creating the block if there is none and replacing
-    only that key if there is."""
-    m = FM_RE.match(text)
-    line = f"{key}: {value}"
-    if not m: return f"---\n{line}\n---\n{text.lstrip()}"
-    fm = m.group(1)
-    kept = [l for l in fm.splitlines() if not l.startswith(f"{key}:")]
-    return "---\n" + "\n".join(kept + [line]) + "\n---\n" + m.group(2).lstrip("\n")
-
-
 def alias_names(aliases) -> list[str]:
     """Aliases are strings or {name, scope} — a game's own name for a common node. Names either way."""
     return [a["name"] if isinstance(a, dict) else str(a) for a in (aliases or [])]
@@ -289,33 +256,6 @@ class Store:
         # core-nodes/ retired 2026-09-08 — every Data area lives in a Region (interface inheritance: a pointer node
         # is the same kind of thing as a content node, so it takes the same path)
 
-    @staticmethod
-    def parse_index(text: str) -> dict:
-        """Parse a **service fragment** `INDEX.md`: frontmatter, a one-liner, and a `## Files` list.
-
-        This is no longer how the ontology is stored — an entity is one file and its children
-        declare themselves. Fragments are a separate tree, written by whoever owns the service, and
-        they still have this shape, so the parser stays for them and says so.
-
-        The Korean `## ...` spelling an early version of this format wrote is not read any more. Nothing
-        produces it, and this product's data starts empty, so the only thing keeping it alive was
-        that it was already written down."""
-        m = FM_RE.match(text)
-        if not m: raise ValueError("INDEX.md without frontmatter")
-        fm = yaml.safe_load(m.group(1)) or {}
-        body = m.group(2)
-        one = ""
-        for para in re.split(r"\n\s*\n", body.split("\n## ", 1)[0].strip()):
-            if para.strip(): one = " ".join(para.split()); break
-        files = []
-        head = "\n## Files\n" if "\n## Files\n" in "\n" + body else None
-        if head:
-            sec = ("\n" + body).split(head, 1)[1].split("\n## ", 1)[0]
-            for l in sec.splitlines():
-                mm = re.match(r"^- ([^\s:][^:]*?) : (.+)$", l.strip())
-                if mm: files.append({"name": mm.group(1).strip(), "description": mm.group(2).strip()})
-        return {"frontmatter": fm, "one_liner": one, "files": files, "body": body}
-
     _nodes_cache: tuple | None = None          # (key, list)
     _nodes_lock = __import__("threading").Lock()
 
@@ -345,7 +285,7 @@ class Store:
     def _read_nodes(self) -> list[dict]:
         out = []
         for order, (region, f) in enumerate(self.entity_files()):
-            # Not `parse_index`: that reads a `## Files` list out of the body, and an entity's body
+            # Not a `## Files` list read out of the body (the old fragment format): an entity's body
             # is a document, which may legitimately have a heading by that name.
             #
             # The listing and the read are two steps, and a writer can delete a file between them —

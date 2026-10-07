@@ -1,6 +1,6 @@
 # A second backbone, meeting the first at the exchange that is already there.
 #
-#   mkdir -p data-b/repo data-b/publish data-b/overlays data-b/harness data-b/access
+#   mkdir -p data-b/repo data-b/overlays data-b/harness data-b/access
 #   docker compose -f docker-compose.yml -f docker-compose.peer.yml up -d
 #   →  http://localhost:8080  this one      http://localhost:8081  the other
 #
@@ -34,7 +34,6 @@ services:
     user: "${KNOWLEDGE_UID:-1000}:${KNOWLEDGE_GID:-1000}"
     environment:
       ONTOLOGY_DATA: /data/repo
-      ONTOLOGY_PUBLISH: /data/publish
       ONTOLOGY_OVERLAYS: /data/overlays
       ONTOLOGY_HARNESS: /data/harness
       # Who read what across a link. A relayed document is held for one request and discarded, so
@@ -55,9 +54,6 @@ services:
       - type: bind
         source: ${KNOWLEDGE_B_DATA_DIR:-./data-b/repo}
         target: /data/repo
-      - type: bind
-        source: ${KNOWLEDGE_B_PUBLISH_DIR:-./data-b/publish}
-        target: /data/publish
       - type: bind
         source: ${KNOWLEDGE_B_OVERLAYS_DIR:-./data-b/overlays}
         target: /data/overlays

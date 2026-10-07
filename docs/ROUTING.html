@@ -286,23 +286,20 @@ flowchart TB
   M["지도에서 체크"] --> S1["/v1/regions/cdn"]
   M --> S2["/v1/regions/channels"]
   M --> S3["/v1/nodes/prewarm-host"]
-  S1 --> R["▶ 시작"]
-  S2 --> R
-  S3 --> R
-  R -->|"?root=…&root=…&root=…"| AG["에이전트<br/>KNOWLEDGE_AGENT_URL"]
+  S1 --> O["overlay 하나"]
+  S2 --> O
+  S3 --> O
 </pre>
 
     <div class="col">
       <p>고른 것은 전부 <strong>온톨로지가 인쇄한 주소</strong>입니다. 영역이든 개체든 섞을 수 있습니다.
-      쿼리 파라미터 <span class="m">root</span> 를 여러 번 실어 보내는 것이 계약의 전부이고,
-      받은 쪽이 그것을 어떻게 쓰는지는 에이전트의 몫입니다.</p>
+      overlay 는 기본으로 꺼져 있습니다(2026-10-07) — <span class="m">KNOWLEDGE_TOOLS_EXTRA=overlay</span>
+      로 켭니다.</p>
     </div>
 
     <div class="note q">
       <p><strong>Overlay 는 좁히는 것이지 부재를 바꾸는 것이 아닙니다.</strong> 세 영역을 골랐다고 해서
       “이 셋에 없으면 없다”가 되지 않습니다. 부재를 단정할 수 있는 것은 여전히 hop 0 전체 목록뿐입니다.</p>
-      <p><code>KNOWLEDGE_AGENT_URL</code> 을 비워 두면 <b>시작 버튼도 체크박스도 아예 안 그려집니다</b> —
-      눌러도 아무 일 없는 버튼을 두지 않기 위해서입니다.</p>
     </div>
   </div>
 </section>
@@ -312,7 +309,7 @@ flowchart TB
 
   <div class="col">
     <p>이 온톨로지를 걷는 것은 <strong>두 동작이고 그 외엔 없습니다.</strong> 표를 가져오거나, 문서를 읽거나.
-    엔진마다 다른 것은 그 두 동작이 <em>어떻게 도착하는가</em>뿐이라, 붙이는 길이 셋이고 <b>뒤에 광고는
+    엔진마다 다른 것은 그 두 동작이 <em>어떻게 도착하는가</em>뿐이라, 붙이는 길이 둘이고 <b>뒤에 광고는
     하나</b>입니다.</p>
   </div>
 
@@ -321,8 +318,6 @@ flowchart TB
       <span class="m">.mcp.json</span> 이 저장소에 있어 클론 + 승인 한 번이면 붙습니다.</p></div>
     <div><h4>붙여넣기</h4><p>MCP 없는 아무 에이전트. 지도의 <b>Copy for an agent</b> 가
       같은 시작 블록을 <span class="m">GET</span> URL 형태로 줍니다.</p></div>
-    <div><h4>런처 URL</h4><p>런을 받는 콘솔. 고른 영역이
-      <span class="m">?root=</span> 로 실려 갑니다. 위 Overlay 가 이 길입니다.</p></div>
   </div>
 
 <pre class="mermaid">

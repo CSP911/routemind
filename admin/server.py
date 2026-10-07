@@ -86,7 +86,6 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
             f'    user: "${{KNOWLEDGE_UID:-1000}}:${{KNOWLEDGE_GID:-1000}}"\n'
             f"    environment:\n"
             f"      ONTOLOGY_DATA: /data/repo\n"
-            f"      ONTOLOGY_PUBLISH: /data/publish\n"
             f"      ONTOLOGY_OVERLAYS: /data/overlays\n"
             f"      ONTOLOGY_HARNESS: /data/harness\n"
             # The access record, and this fragment was written before it existed. Without it a
@@ -99,7 +98,6 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
             f'      ONTOLOGY_PEER_TOKEN_IX: "${{EXCHANGE_TOKEN_{up}}}"\n'
             f"    volumes:\n"
             f"      - ./data-{name}/repo:/data/repo\n"
-            f"      - ./data-{name}/publish:/data/publish\n"
             f"      - ./data-{name}/overlays:/data/overlays\n"
             f"      - ./data-{name}/harness:/data/harness\n"
             f"      - ./data-{name}/access:/data/access\n"
@@ -129,7 +127,7 @@ def plan(name: str, label: str, port: int, taken: list[int]) -> dict:
         # so one omission is a backbone that never becomes healthy. `access` was omitted here — the
         # access record's directory, added after this plan was written — which is the same defect this
         # plan exists to prevent, recurring one directory later.
-        "shell": (f"mkdir -p data-{name}/repo data-{name}/publish data-{name}/overlays "
+        "shell": (f"mkdir -p data-{name}/repo data-{name}/overlays "
                   f"data-{name}/harness data-{name}/access\n"
                   f"cp -r examples/back-office/. data-{name}/repo/     # or start empty\n"
                   f"#  write the two files above, then:\n"

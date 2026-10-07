@@ -137,7 +137,7 @@ open(os.path.join(T, "members.yaml"), "w", encoding="utf-8").write(
 
 for n in NAMES:
     e = {**os.environ, **env_tokens, "ONTOLOGY_DATA": repos[n], "PORT": str(PORTS[n]),
-         "ONTOLOGY_PUBLISH": os.path.join(T, f"pub-{n}"),
+        
          "ONTOLOGY_PEER_TOKEN": TOKENS[n], "ONTOLOGY_PEER_TTL": "0"}
     for k in [k for k in e if k.startswith("ONTOLOGY_LLM_")]: e.pop(k)
     procs.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
