@@ -787,7 +787,17 @@
   // An agent draws one through the API; a person draws one by ticking. The map draws both the same way.
   // Whether this install has overlays at all is asked, not assumed: 404 or 501 means no, and then there
   // are no chips, no highlights and no "Draw VRF" — the screen is what it was before overlays existed.
-  const shortAddr = (a) => String(a || "").replace(/\/body$/, "").split("/").pop();
+  /** An address as a short label: its last part. Through a circuit the backbone's name goes in front
+   *  and its area list is called what it is — `/v1/circuits/self/regions` read as "regions". */
+  const shortAddr = (a) => {
+    const s = String(a || "").replace(/\/body$/, "");
+    const c = /^\/v1\/circuits\/([^/]+)(\/.*)?$/.exec(s);
+    if (c) {
+      const rest = (c[2] || "").replace(/^\/regions\/?$/, "");
+      return `${c[1]} · ${rest ? rest.split("/").pop() : t("knowledge.fp.opened")}`;
+    }
+    return s.split("/").pop();
+  };
 
   async function loadOverlays() {
     try {
@@ -889,19 +899,6 @@
     return all.filter((w) => w.state === "open" || Date.parse(w.now?.at || 0) >= since);
   }
 
-  /** Under the map: one line per walk in view, newest first, each with its colour. */
-  function fpNowLine() {
-    const box = $("knFpNow");
-    const rows = fpShown().filter((w) => w.now).sort((a, b) => (b.now.n || 0) - (a.now.n || 0)).slice(0, 4);
-    box.replaceChildren(...rows.map((w) => {
-      const s = w.now;
-      const label = s.op === "open" ? t("knowledge.fp.opened") : s.op;
-      const line = el("span", `kn-fp-line is-fp-c${fpColour(w.id)}`,
-        `${when(s.at)}  ${label}  ${s.address || ""}${s.why ? "  — " + s.why : ""}`);
-      line.title = w.question || w.id;
-      return line;
-    }));
-  }
 
   /** Open the area a step landed in and the node path down to it. */
   async function fpOpenFor(address) {
@@ -931,7 +928,6 @@
       .sort((a, b) => (a.now.n || 0) - (b.now.n || 0));
     if (!live.length) return;
     for (const w of live) for (const st of w.steps) await fpOpenFor(st.address);
-    fpNowLine();
     draw();
     fpFollow(live[live.length - 1].now);
   }
@@ -943,7 +939,6 @@
     if (w.steps.at(-1) !== step) w.steps.push(step);
     fp.fresh = { walk: w.id, n: step.n };
     await fpOpenFor(step.address);
-    fpNowLine();
     draw();
     fpFollow(step);
     fpPanel();
@@ -1239,7 +1234,7 @@
   function fpLive() {
     if (!fp.pin && !fp.focus) return;
     fp.pin = null; fp.focus = "";
-    fpNowLine(); draw(); fpPanel(); histMark();
+    draw(); fpPanel(); histMark();
   }
 
   /** Footprint marks. A tile walked by any walk in view carries that walk's colour — the most recent
@@ -1357,8 +1352,7 @@
     } finally {
       fp.replay = null;
       btn.textContent = t("knowledge.fp.replay");
-      fpNowLine();
-      draw();
+        draw();
       fpPanel();
     }
   }
@@ -1393,7 +1387,7 @@
   /** On when the backbone keeps a footprint; the first poll says whether it does. */
   function fpStart() {
     // A page served from before the footprint existed has no bar; the map works as it did.
-    if (!$("knFp") || !$("knFpNow")) return;
+    if (!$("knFp")) return;
     fp.on = true; $("knFp").hidden = false;
     $("knFpPlay").addEventListener("click", () => { fpReplay().catch(() => {}); });
     $("knFpTrail").addEventListener("click", () => { fpTrail().catch(() => {}); });

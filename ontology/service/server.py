@@ -978,7 +978,7 @@ class Handler(BaseHTTPRequestHandler):
                     if "since" in q:
                         try: n = int(q.get("since") or 0)
                         except ValueError: return self._err(400, "since must be a step number")
-                        return self._send(200, wstore().since(n))
+                        return self._send(200, wstore().since(n, checks=q.get("checks") == "1"))
                     want = q.get("state") or None
                     # The history: newest first, a page at a time when `limit` is given — six hours of
                     # walks is hundreds of rows on a busy install, and the screen shows ten. Each row
@@ -991,7 +991,7 @@ class Handler(BaseHTTPRequestHandler):
                         return self._err(400, "limit is 1 to 200, and offset is not negative")
                     # By the opening step's number, not `at`: that is to the second, and walks opened in
                     # the same second would come back in an order that changes between pages.
-                    rows = sorted(wstore().all(want), key=lambda w: ((w.get("steps") or [{}])[0].get("n") or 0, w.get("at") or ""), reverse=True)
+                    rows = sorted((w for w in wstore().all(want) if q.get("checks") == "1" or not w.get("check")), key=lambda w: ((w.get("steps") or [{}])[0].get("n") or 0, w.get("at") or ""), reverse=True)
                     page = rows[offset:offset + limit] if limit is not None else rows
                     return self._send(200, {"seq": wstore().seq(), "total": len(rows), "offset": offset,
                                             "walks": [_walk_row(w) for w in page]})
@@ -1049,7 +1049,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 if len(parts) == 1:
                     w = wstore().open(str(body.get("question") or ""), str(body.get("how") or ""),
-                                      {"kind": "agent", "name": actor})
+                                      {"kind": "agent", "name": actor}, check=bool(body.get("check")))
                     return self._send(201, {"id": w["id"], "seq": w["steps"][-1]["n"], "at": w["at"]})
                 if len(parts) == 3 and parts[2] == "steps":
                     s = wstore().step(parts[1], str(body.get("op") or ""), str(body.get("address") or ""), str(body.get("why") or ""))

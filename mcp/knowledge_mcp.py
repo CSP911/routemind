@@ -756,7 +756,10 @@ def open_walk(api: Api, how: str) -> str:
         close_walk(api, prev["id"], "abandoned", "a new question started")
     wid, remote = "", False
     try:
-        d = api.send("POST", "/v1/walks", {"question": "", "how": how})
+        # A check walking a real install marks its walks, so the map and its history show the walks
+        # agents took rather than forty "the check walks here" (2026-10-10). Still recorded.
+        d = api.send("POST", "/v1/walks", {"question": "", "how": how,
+                                           **({"check": True} if os.environ.get("KNOWLEDGE_WALK_CHECK") else {})})
         wid, remote = str(d.get("id") or ""), bool(d.get("id"))
     except ApiError as e:
         if "501" not in str(e) and "not configured" not in str(e):

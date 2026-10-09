@@ -118,14 +118,15 @@ class WalkStore:
         w["steps"].append(s); w["touched_at"] = s["at"]
         return s
 
-    def open(self, question: str, how: str, by: dict | None) -> dict:
+    def open(self, question: str, how: str, by: dict | None, check: bool = False) -> dict:
         """A new walk, from hop 0. The first step is the opening itself, so a reader polling by
         cursor learns of the walk the same way it learns of everything else."""
         q = str(question or "").strip()
         with self._lock:
             w = {"id": f"wk_{time.strftime('%Y-%m-%d', time.gmtime())}_{uuid.uuid4().hex[:6]}",
                  "question": q, "how": str(how or ""), "by": {k: str(v) for k, v in (by or {}).items() if v},
-                 "at": _now(), "touched_at": _now(), "state": OPEN, "outcome": None, "closed_at": None, "steps": []}
+                 "at": _now(), "touched_at": _now(), "state": OPEN, "outcome": None, "closed_at": None, "steps": [],
+                 **({"check": True} if check else {})}
             self._step(w, "open", "/v1/regions", q or "(no question given)")
             self._write(w)
         return w
@@ -156,11 +157,13 @@ class WalkStore:
         return w
 
     # ---- reads for the screen and the next agent ----
-    def since(self, n: int) -> dict:
+    def since(self, n: int, checks: bool = False) -> dict:
         """Every step after cursor `n`, oldest first, with the walk each belongs to. The reader keeps
-        the last `n` it saw and asks again; nothing between two asks can be missed."""
+        the last `n` it saw and asks again; nothing between two asks can be missed. A check's walks
+        are left out unless asked for — they still take step numbers, so the cursor is unaffected."""
         rows = []
         for w in self.all():
+            if w.get("check") and not checks: continue
             for s in w["steps"]:
                 if s["n"] > n:
                     rows.append({"walk": w["id"], "question": w["question"], "state": w["state"], "outcome": w["outcome"],

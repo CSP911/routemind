@@ -110,6 +110,14 @@ try:
         code, one = call("GET", f"/v1/walks/{wid}")
         check("  GET one walk returns it whole, for a replay", code == 200 and len(one.get("steps", [])) == 3 and one["steps"][1]["why"] == "receipts are in its sentence")
         call("POST", f"/v1/walks/{wid}/close", {"outcome": "answered"})
+        # a check's walk is recorded but kept off the map's reads, which show what agents did
+        code, cw = call("POST", "/v1/walks", {"question": "a check walking an install", "how": "check", "check": True})
+        call("POST", f"/v1/walks/{cw['id']}/steps", {"op": "table", "address": "/v1/regions/expense", "why": "the check walks here"})
+        code, feed = call("GET", "/v1/walks?since=0"); code, lst = call("GET", "/v1/walks?limit=200")
+        code, feed2 = call("GET", "/v1/walks?since=0&checks=1"); code, one = call("GET", f"/v1/walks/{cw['id']}")
+        check("  a check's walk is kept off the live feed and the history, and is still recorded",
+              all(x["walk"] != cw["id"] for x in feed.get("steps", [])) and all(w["id"] != cw["id"] for w in lst.get("walks", []))
+              and any(x["walk"] == cw["id"] for x in feed2.get("steps", [])) and code == 200 and one.get("check") is True)
         # the history table pages the listing: newest first, ten at a time, with the total to page by
         for i in range(11):
             call("POST", "/v1/walks", {"question": f"page filler {i}", "how": "check"})

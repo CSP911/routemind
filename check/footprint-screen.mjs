@@ -35,7 +35,7 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
     regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpSpeed","knFpPlay","knFpTrail","knFpNow","knFpSteps","knFpCard","knHist","knHistBody","knHistPages"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpSpeed","knFpPlay","knFpTrail","knFpSteps","knFpCard","knHist","knHistBody","knHistPages"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
 byId.knFp.hidden = true; byId.knHist.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };
@@ -59,7 +59,10 @@ const results = []; const check = (name, cond, extra = "") => results.push(`${co
 const find = (n, pred, acc = []) => { if (pred(n)) acc.push(n); for (const c of [...(n.children || [])]) find(c, pred, acc); return acc; };
 const cls = (n) => `${n.attrs.class || ""} ${n.className || ""}`.split(/\s+/).filter(Boolean);
 // The line under the map is one row per walk in view now, so it is read across its children.
-const nowText = () => [byId.knFpNow.textContent, ...byId.knFpNow.__kids.map((k) => k.textContent)].join("\n");
+// The reason beside the step a walk is on — the bubble on the map. (A line under the bar said the same
+// until 2026-10-10.) Its lines are joined back with spaces, which is where they were broken.
+const nowText = () => find(byId.knTopo, (n) => cls(n).includes("kn-fp-bubble"))
+  .map((g) => find(g, (n) => n.tag === "text").map((n) => n.textContent).join(" ")).join("\n");
 const marked = (c) => find(byId.knTopo, (n) => cls(n).includes(c)).map((n) => n.attrs["data-address"] || n.attrs["aria-label"] || "");
 const post = async (path, body) => (await realFetch(`${BASE}/api/knowledge/${path}`, { method: "POST", headers: { "Content-Type": "application/json", "X-Knowledge-Actor": "agent-screen" }, body: JSON.stringify(body) })).json();
 
@@ -82,7 +85,8 @@ check("while hidden, nothing is drawn", state.open.length === 0, String(state.op
 document.visibilityState = "visible";
 await kn.fpPoll(); await settle();
 check("live: the first step opens its area", state.open.includes("procurement"), String(state.open));
-check("  and the line under the map says the step and its reason", nowText().includes("approval bands are in its sentence"), nowText());
+check("  and the bubble beside its tile says the reason", nowText().includes("approval bands are in its sentence"), nowText());
+check("  and there is no line under the bar repeating it", !readFileSync("static/knowledge.html", "utf8").includes("knFpNow"));
 // the rest arrive while one poll fails — none may be lost, and they must apply in order
 for (const s of steps.slice(1)) await post(`walks/${w.id}/steps`, { op: s[0], address: s[1], why: s[2] });
 failNext = 1; await kn.fpPoll(); await settle();
@@ -185,7 +189,9 @@ check("several walks: the second walk opens its own area", state.open.includes("
 check("  both walks are on the map, in two colours", colours().size === 2, JSON.stringify([...colours()]));
 check("  each marked where it is now", tilesNow().filter((n) => cls(n).includes("is-fp-now")).length === 2,
       String(tilesNow().filter((n) => cls(n).includes("is-fp-now")).length));
-check("  and the line under the map has a row for each", nowText().includes("the numbers themselves") && nowText().includes("receipts are in its sentence"), nowText());
+const traceColours = new Set(find(byId.knTopo, (n) => cls(n).includes("kn-fp-trace")).flatMap((n) => cls(n).filter((c) => /^is-fp-c\d$/.test(c))));
+check("  each with its own trace, and the reason shown is the one that moved last's", traceColours.size === 2
+      && nowText().includes("receipts are in its sentence"), `${[...traceColours]} · ${nowText()}`);
 fp.focus = w2.id; kn.draw();
 check("choosing one walk shows that walk alone", colours().size === 1, JSON.stringify([...colours()]));
 fp.focus = ""; kn.draw();

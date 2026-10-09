@@ -41,6 +41,7 @@ class Client:
     def __init__(self):
         self.p = subprocess.Popen(
             [sys.executable, os.path.join(HERE, "..", "mcp", "knowledge_mcp.py"), "--api", API],
+            env={**os.environ, "KNOWLEDGE_WALK_CHECK": "1"},   # its walks are a check's, not an agent's
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
         self.n = 0
 

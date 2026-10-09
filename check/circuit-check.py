@@ -62,6 +62,7 @@ check("  and lists the areas set to export, and only those", crossing <= exporte
 # The whole thing as an agent does it: an MCP server pointed at nothing in particular opens a circuit
 # to this install's address and walks it.
 m = subprocess.Popen([sys.executable, os.path.join(ROOT, "mcp", "knowledge_mcp.py"), "--api", f"{BASE}/api/knowledge", "--actor", "circuit-check"],
+                     env={**os.environ, "KNOWLEDGE_WALK_CHECK": "1"},   # its walks are a check's, not an agent's
                      stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
 n = [0]
 def rpc(method, params=None):
