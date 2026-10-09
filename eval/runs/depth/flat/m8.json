@@ -1,0 +1,35 @@
+{
+ "id": "m8",
+ "tree": "flat",
+ "q": "Someone paid for one client dinner in two taps on the card, both under the evidence threshold. What did the close cycle do with that?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "expense-audit-close-worked-case"
+ ],
+ "collected": [
+  "expense-audit-close-worked-case"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1368,
+ "usage": {
+  "in": 638,
+  "out": 500,
+  "cache_write": 13844,
+  "cache_read": 25699
+ },
+ "seconds": 9.0,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "This matches split-payment (two taps on the card) under the evidence threshold — a known audit finding related to close cycle handling.\n\nREAD expense-audit-close-worked-case",
+  "This case directly answers the question. The close cycle:\n\n1. **Reconciled** both card taps (45,000 KRW total, two charges under 30,000 KRW each) on the 1st working day of the following month.\n2. **Flagged** the claim in the audit sample on the 3rd working day as a possible split payment.\n3. **Issued a finding** on the 5th working day — treating the two taps as a single 45,000 KRW spend that required qualifying evidence (since the combined amount exceeded the 30,000 KRW threshold, even though each individual swipe fell under it).\n4. The claimant only had simple receipts (no tax invoice requested at the time of payment).\n5. The approver filed a **statement of circumstances** on the 7th working day rather than letting the response window lapse.\n6. That statement was processed within 4 working days, landing just inside the **10th-working-day deadline**.\n7. **The finding was closed** — not because the receipts themselves were upgraded to qualifying evidence, but because the statement was filed in time. Had the statement come in after the 10th working day, it would have escalated regardless of its contents.\n\nSo the close cycle treated the split payment as a single spend subject to the evidence threshold, caught it via the audit sample, and resolved it within the same cycle through a timely statement of circumstances rather than improved documentation.",
+  "DONE"
+ ]
+}

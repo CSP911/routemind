@@ -1,0 +1,41 @@
+{
+ "id": "h5",
+ "tree": "flat",
+ "q": "What has to be cleared before I get on a plane for work?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "trip-approval-overview"
+ ],
+ "collected": [
+  "trip-approval-overview",
+  "trip-approval-role",
+  "overseas-trip-approver-sequence",
+  "trip-approval-deadline"
+ ],
+ "precision": 0.25,
+ "turns": 7,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5232,
+ "usage": {
+  "in": 621,
+  "out": 1261,
+  "cache_write": 18942,
+  "cache_read": 74982
+ },
+ "seconds": 19.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN approval",
+  "OPEN attendance",
+  "READ trip-approval-overview",
+  "READ trip-approval-role",
+  "READ overseas-trip-approver-sequence",
+  "This covers the core answer. Let me check the trip approval deadline doc for completeness.\n\nREAD trip-approval-deadline",
+  "I now have sufficient information to answer. Let me check if there's anything else relevant like working-abroad or late-trip-approval that could matter, but the question is specifically about \"getting on a plane for work\" — a business trip — so trip approval is the core topic.\n\nDONE\n\nBased on what I found: **Before you can get on a plane for work, your trip request must be fully approved — not just submitted — in the attendance system.**\n\n- **Draft → Submit → Approved**: A trip starts as a draft, then becomes a submitted request, and only becomes valid once approved. A draft or pending request creates no attendance record.\n- **Domestic trip**: Needs sign-off from your **line manager alone**, at least **2 working days** before departure.\n- **Overseas trip**: Needs **two approvals in a fixed order** — the **line manager first**, then the **HR desk** (which checks insurance coverage, visa status, and restricted destinations) — at least **5 working days** before departure. \n  - If the HR desk signs off before the line manager, that approval doesn't count — the system discards it and the request still waits on the line manager step.\n  - The deadline is counted in **working days**, so weekends/holidays between submission and departure don't shrink it.\n- If departure arrives before full approval is cleared, the trip isn't automatically invalid, but it shifts to a separate, narrower exception path for approval granted after the fact (covered in `trip-approval-exception-form` / `post-departure-trip-approval-case`, not read here since the core clearance requirement is answered)."
+ ]
+}

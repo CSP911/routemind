@@ -1,0 +1,51 @@
+{
+ "id": "s5",
+ "tree": "folded",
+ "q": "Someone we brought in for a half-day session doesn't charge VAT. What do I need back from them, and from what amount does it start to matter?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "evidence-vat-exempt"
+ ],
+ "collected": [
+  "sole-trader-vendor-registration",
+  "contractor-invoice-requirements",
+  "contractor-withholding-freelancer-rate",
+  "evidence-vat-exempt"
+ ],
+ "precision": 0.25,
+ "turns": 17,
+ "opens": 10,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 4895,
+ "usage": {
+  "in": 667,
+  "out": 4778,
+  "cache_write": 7674,
+  "cache_read": 61984
+ },
+ "seconds": 65.0,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN vendor",
+  "OPEN sec-vendor-registration-cases",
+  "READ sole-trader-vendor-registration",
+  "BACK",
+  "OPEN payroll",
+  "OPEN sec-paying-people-who-are-not-employees",
+  "READ contractor-invoice-requirements",
+  "READ contractor-withholding-freelancer-rate",
+  "OPEN approval",
+  "BACK",
+  "OPEN expense",
+  "OPEN evidence",
+  "OPEN sec-evidence-in-awkward-cases",
+  "OPEN sec-evidence-in-awkward-cases-2",
+  "READ evidence-vat-exempt",
+  "This covers both halves of the question — the person brought in for a half-day session is a VAT-exempt service provider (consistent with e.g. tutoring/lecture-fee type cases), and I now have the evidence requirement and the threshold:\n\n**What you need back:** a **tax-exemption receipt** (not a standard tax invoice, since they don't charge VAT) — it must show the business registration number and the amount. A plain simple receipt from them is not sufficient once above the threshold.\n\n**When it starts to matter:** above **30,000 KRW**. Being VAT-exempt does not raise this threshold or waive the need for qualifying evidence — the same 30,000 KRW rule that applies to a tax invoice applies here.\n\nDONE"
+ ]
+}

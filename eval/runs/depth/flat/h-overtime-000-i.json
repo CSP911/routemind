@@ -1,0 +1,45 @@
+{
+ "id": "h-overtime-000-i",
+ "tree": "flat",
+ "q": "An ordinary tuesday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-legend-revision",
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "precision": 0.2,
+ "turns": 10,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 4102,
+ "usage": {
+  "in": 658,
+  "out": 2085,
+  "cache_write": 29977,
+  "cache_read": 135370
+ },
+ "seconds": 31.1,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-overtime-legend-day",
+  "READ hard-overtime-legend-hours",
+  "READ hard-overtime-legend-place",
+  "READ hard-overtime-legend-revision",
+  "OPEN sec-hard-overtime",
+  "BACK",
+  "OPEN attendance",
+  "READ hard-overtime-row-day-d1-hours-h1-place-p1",
+  "For an ordinary Tuesday, about ninety minutes, at your desk (day D1, hours H1, place P1), under the current rules (in force from 2026-01-01):\n\n- **Multiplier: 1.20x**\n- **Rounding: to the nearest 5 minutes**\n\n(No advance approval was required, and it doesn't count toward the monthly cap.)\n\nDONE"
+ ]
+}

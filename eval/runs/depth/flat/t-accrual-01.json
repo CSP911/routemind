@@ -1,0 +1,38 @@
+{
+ "id": "t-accrual-01",
+ "tree": "flat",
+ "q": "In March 2023, how much leave was accrued or granted for someone with two years of continuous service? Answer under the version of leave accrual that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "leave-accrual"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "accrual-rule"
+ ],
+ "precision": 0.5,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1809,
+ "usage": {
+  "in": 651,
+  "out": 822,
+  "cache_write": 16302,
+  "cache_read": 60053
+ },
+ "seconds": 13.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "DONE\n\nBased on the legend (`hard-accrual-legend-revision`), for a date in March 2023 — before 2024-07-01 — the applicable version is the oldest one, found in `leave-accrual` → `accrual-rule`.\n\n**Answer:** Under the leave accrual rules in force in March 2023, someone with two years of continuous service falls into the \"1 year and over\" band, which grants **15 days** of annual leave (granted on 1 January each fiscal year). The additional +1 day per 2 years only begins once the employee reaches 3 years of service, so at 2 years the entitlement remains at the flat 15 days."
+ ]
+}

@@ -1,0 +1,48 @@
+{
+ "id": "h-perdiem-120-i",
+ "tree": "folded",
+ "q": "I'm a team manager — Jakarta, one night — what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g2-band-b3-stay-s1"
+ ],
+ "collected": [
+  "overseas-rates",
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-legend-grade",
+  "hard-perdiem-legend-band",
+  "hard-perdiem-legend-stay",
+  "hard-perdiem-row-grade-g2-band-b3-stay-s1"
+ ],
+ "precision": 0.16666666666666666,
+ "turns": 12,
+ "opens": 5,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5087,
+ "usage": {
+  "in": 659,
+  "out": 1754,
+  "cache_write": 9080,
+  "cache_read": 46640
+ },
+ "seconds": 27.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "OPEN travel-expense",
+  "OPEN travel-overseas",
+  "READ overseas-rates",
+  "OPEN sec-overseas-trip-cases",
+  "READ hard-perdiem-legend-revision",
+  "OPEN sec-hard-perdiem",
+  "READ hard-perdiem-legend-grade",
+  "READ hard-perdiem-legend-band",
+  "READ hard-perdiem-legend-stay",
+  "READ hard-perdiem-row-grade-g2-band-b3-stay-s1",
+  "Based on the current overseas per-diem schedule (in force from 2026-01-01), here's the answer for a team manager (grade G2) on a one-night trip (stay S1) to Jakarta (band B3):\n\n**Hotel cap:** You can put up to **191 USD per night** on lodging.\n\n**Receipt requirement:** You must keep and attach a receipt for **any spend above 40 USD** (the receipt threshold).\n\nAdditional details for this row:\n- Meals: 75 USD/day\n- Incidentals: 15 USD/day\n- If you exceed the lodging cap without prior approval, the excess is not recoverable. An unavoidable excess can be claimed with a written statement and evidence, decided by the budget holder.\n\nDONE"
+ ]
+}

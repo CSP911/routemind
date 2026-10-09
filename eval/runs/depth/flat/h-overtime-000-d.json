@@ -1,0 +1,36 @@
+{
+ "id": "h-overtime-000-d",
+ "tree": "flat",
+ "q": "For day D1, hours H1, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-revision",
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2145,
+ "usage": {
+  "in": 637,
+  "out": 1113,
+  "cache_write": 15232,
+  "cache_read": 29145
+ },
+ "seconds": 14.1,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "This requires checking the legend/revision warning first before reading the row, since there are multiple versions.\n\nREAD hard-overtime-legend-revision",
+  "READ hard-overtime-row-day-d1-hours-h1-place-p1",
+  "Based on the current (2026-01-01 onwards) version of the overtime rate table — identified via `hard-overtime-legend-revision`, which confirms that rows indexed by three qualifiers (day, hours, place) belong to the current version — for **day D1, hours H1, place P1**:\n\n- **Multiplier:** 1.20x\n- **Rounding:** to the nearest 5 minutes\n\n(Note: if the question concerns a date before 2026-01-01, a different version applies — `hard-overtime-v2` for 2024-07-01 to 2025-12-31, or `overtime-rate-table` for before 2024-07-01 — since this is the only version using the D1/H1/P1 three-qualifier indexing.)\n\nDONE"
+ ]
+}

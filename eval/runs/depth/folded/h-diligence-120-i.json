@@ -1,0 +1,41 @@
+{
+ "id": "h-diligence-120-i",
+ "tree": "folded",
+ "q": "A firm in stuttgart, three hundred million won, just office consumables: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o2-value-w3-goods-k1"
+ ],
+ "collected": [
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-legend-goods",
+  "hard-diligence-row-origin-o2-value-w3-goods-k1"
+ ],
+ "precision": 0.25,
+ "turns": 7,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3171,
+ "usage": {
+  "in": 650,
+  "out": 438,
+  "cache_write": 7033,
+  "cache_read": 26407
+ },
+ "seconds": 10.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-diligence",
+  "READ hard-diligence-legend-origin",
+  "READ hard-diligence-legend-value",
+  "READ hard-diligence-legend-goods",
+  "READ hard-diligence-row-origin-o2-value-w3-goods-k1",
+  "Based on the supplier due diligence table for a firm in Stuttgart (origin O2), three hundred million won (value W3), office consumables (goods K1):\n\n**Site visit required: Yes** — you do need to go visit their premises.\n\n**Re-review interval: Every 12 months** — the file gets reviewed annually.\n\nAdditional details from this row:\n- Screening score required: 54\n- Financial statements needed: last two years\n\nDONE"
+ ]
+}

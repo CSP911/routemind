@@ -1,0 +1,46 @@
+{
+ "id": "h-overtime-023-i",
+ "tree": "flat",
+ "q": "An ordinary tuesday, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "collected": [
+  "hard-overtime-legend-revision",
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "precision": 0.2,
+ "turns": 11,
+ "opens": 5,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4104,
+ "usage": {
+  "in": 654,
+  "out": 2395,
+  "cache_write": 16106,
+  "cache_read": 135212
+ },
+ "seconds": 35.1,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN hard-overtime-legend-revision",
+  "READ hard-overtime-legend-revision",
+  "OPEN hard-overtime-legend-day",
+  "READ hard-overtime-legend-day",
+  "OPEN hard-overtime-legend-hours",
+  "READ hard-overtime-legend-hours",
+  "OPEN hard-overtime-legend-place",
+  "READ hard-overtime-legend-place",
+  "READ hard-overtime-row-day-d1-hours-h3-place-p4",
+  "DONE\n\nBased on the documents collected: an ordinary Tuesday maps to day D1, six hours maps to hours H3, and from home maps to place P4 (per the three legend tables). The current (2026-01-01 onward) overtime rate row for D1/H3/P4 gives:\n\n- **Multiplier: 1.53x**\n- **Rounding: to the nearest 15 minutes**"
+ ]
+}

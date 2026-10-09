@@ -1,0 +1,53 @@
+{
+ "id": "h-perdiem-222-i",
+ "tree": "flat",
+ "q": "I'm a department head — Jakarta, eight nights — what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g3-band-b3-stay-s3"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-legend-grade",
+  "hard-perdiem-legend-band",
+  "hard-perdiem-legend-stay",
+  "hard-perdiem-row-grade-g3-band-b3-stay-s3"
+ ],
+ "precision": 0.2,
+ "turns": 18,
+ "opens": 7,
+ "returns": 5,
+ "exhausted": false,
+ "read_chars": 4128,
+ "usage": {
+  "in": 672,
+  "out": 3749,
+  "cache_write": 69634,
+  "cache_read": 684422
+ },
+ "seconds": 57.1,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision",
+  "OPEN approval",
+  "BACK",
+  "OPEN expense",
+  "BACK",
+  "OPEN procurement",
+  "BACK",
+  "OPEN attendance",
+  "BACK",
+  "OPEN payroll",
+  "BACK",
+  "OPEN expense",
+  "READ hard-perdiem-legend-grade",
+  "READ hard-perdiem-legend-band",
+  "READ hard-perdiem-legend-stay",
+  "Grade G3 (department head), Band B3 (Jakarta), Stay S3 (eight nights) → row: hard-perdiem-row-grade-g3-band-b3-stay-s3\n\nREAD hard-perdiem-row-grade-g3-band-b3-stay-s3",
+  "Based on your profile — **department head** (grade G3), destination **Jakarta** (band B3), trip length **eight nights** (stay S3) — the current (2026-01-01 onward) overseas per-diem table gives:\n\n- **Lodging:** up to **263 USD per night** for the hotel\n- **Meals:** 94 USD/day allowance\n- **Incidentals:** 19 USD/day\n- **Receipt threshold:** you must keep/attach a receipt for any spend **above 50 USD**\n\nSo for the hotel specifically: you can put up to 263 USD on the hotel each night, and you need to retain the receipt for any night's charge exceeding 50 USD (in practice, since the cap itself is well above 50 USD, you'll need receipts for the lodging regardless).\n\nNote: this is the 2026-01-01+ version of the table. If your trip dates fall between 2024-07-01 and 2025-12-31, the applicable figures are instead in the superseded `hard-perdiem-v2` document, not this one.\n\nDONE"
+ ]
+}

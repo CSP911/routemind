@@ -1,0 +1,37 @@
+{
+ "id": "m4",
+ "tree": "flat",
+ "q": "Is unpaid leave taken out of my pay on working days or on calendar days?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "unpaid-leave-deduction-calculation"
+ ],
+ "collected": [
+  "unpaid-leave-deduction-calculation"
+ ],
+ "precision": 1.0,
+ "turns": 6,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 950,
+ "usage": {
+  "in": 627,
+  "out": 772,
+  "cache_write": 18443,
+  "cache_read": 61428
+ },
+ "seconds": 15.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN hr-desk",
+  "BACK",
+  "OPEN payroll",
+  "READ unpaid-leave-deduction-calculation",
+  "Based on this document, I have the answer.\n\nUnpaid leave is deducted from your pay on a **calendar-day basis, not working days**. Specifically:\n\n- Basic pay and nontaxable allowances (meal, own-car, etc.) are prorated using the ratio **days worked ÷ calendar days in the month**.\n- This uses the full calendar days in the month, not just working days — the same basis used when someone joins or leaves mid-month.\n- Example: a 5-day unpaid stretch inside a 31-day month removes 5/31 of pay and allowances, regardless of how many of those 5 days would have been working days.\n- Insurance deduction lines fall automatically as a consequence, since they're based on pay excluding nontaxable allowances.\n\nSo: **calendar days**, not working days.\n\nDONE"
+ ]
+}

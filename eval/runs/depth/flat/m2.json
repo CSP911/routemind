@@ -1,0 +1,36 @@
+{
+ "id": "m2",
+ "tree": "flat",
+ "q": "I'm leaving before the bonus is paid. Does being on headcount when it was calculated mean I qualify?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "bonus-payment-timing"
+ ],
+ "collected": [
+  "bonus-payment-timing",
+  "bonus-leaving-month"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2759,
+ "usage": {
+  "in": 633,
+  "out": 503,
+  "cache_write": 4982,
+  "cache_read": 8551
+ },
+ "seconds": 8.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "READ bonus-payment-timing",
+  "READ bonus-leaving-month",
+  "Based on the documents, I have the answer.\n\n**No — being on headcount when the bonus is calculated does not by itself mean you qualify for payment.**\n\nHere's why:\n\n- Most regular (mid-year/year-end) and performance bonuses require you to **still be employed on the payment date itself**, not just at calculation time (`bonus-payment-timing`).\n- If your last working day falls **before** the scheduled payment date, you can be excluded even though you were on headcount when the bonus amount was calculated (`bonus-leaving-month`).\n- Whether you actually get paid depends on the **specific eligibility wording in your contract or bonus scheme** — not on payroll's discretion. If the scheme requires active employment on the payment date, a resignation before that date fails the condition, and the bonus simply won't appear on your final payslip — no partial payment, no later settlement.\n- Only if your contract explicitly allows payment regardless of exact leave date would it be included on your final payslip (taxed and deducted normally).\n\nSo the key question for you is what your specific bonus scheme/contract says about the \"employed on payment date\" condition — being on headcount at calculation time alone is not sufficient.\n\nDONE"
+ ]
+}

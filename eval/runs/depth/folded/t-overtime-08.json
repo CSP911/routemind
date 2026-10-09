@@ -1,0 +1,39 @@
+{
+ "id": "t-overtime-08",
+ "tree": "folded",
+ "q": "I have a claim dated in 2025 and I am not sure which version of the overtime rate applies to it. Where is that written down?",
+ "needs": "any",
+ "lever": "changed",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-legend-revision"
+ ],
+ "collected": [
+  "hard-moved-overtime",
+  "hard-overtime-legend-revision",
+  "hard-overtime-v2"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 6,
+ "opens": 2,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 3532,
+ "usage": {
+  "in": 641,
+  "out": 540,
+  "cache_write": 4197,
+  "cache_read": 9680
+ },
+ "seconds": 11.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "READ hard-moved-overtime",
+  "BACK\nOPEN attendance",
+  "READ hard-overtime-legend-revision",
+  "A claim dated in 2025 falls in the window 2024-07-01 to 2025-12-31, so the applicable overtime rate version is `hard-overtime-v2` in the attendance area. Let me read it to confirm.\n\nREAD hard-overtime-v2",
+  "DONE\n\nFor a claim dated in 2025, the applicable overtime rate rule is written down in the **attendance** area:\n\n1. **`hard-overtime-legend-revision`** (attendance) — this is the index/legend explaining that overtime rate has three versions over time, and that for a 2025-dated question you must use the *middle* version, not the oldest and not the current one.\n\n2. **`hard-overtime-v2`** (attendance) — this is the actual rule text, in force from 2024-07-01 to 2025-12-31, giving the multiplier table indexed by day and hours. This is the version that applies to your 2025 claim.\n\n(Note: the payroll area also has an old overtime page, `payslip-overtime`, but a `hard-moved-overtime` warning there confirms it only applies before 2024-07-01 and is not relevant to a 2025 date — the current authority for 2025 is `hard-overtime-v2` in attendance.)"
+ ]
+}

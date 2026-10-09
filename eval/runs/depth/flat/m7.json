@@ -1,0 +1,36 @@
+{
+ "id": "m7",
+ "tree": "flat",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "emergency-spend-ceiling",
+  "hard-moved-threshold"
+ ],
+ "precision": 0.0,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2518,
+ "usage": {
+  "in": 624,
+  "out": 1596,
+  "cache_write": 14541,
+  "cache_read": 16296
+ },
+ "seconds": 35.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN approval",
+  "This matches \"emergency-spend-ceiling\" directly, since it describes action taken before a draft exists.\n\nREAD emergency-spend-ceiling",
+  "This document states the answer: the band that authorised the spend still has to match the ordinary spend-band authority requirement — i.e., the draft written afterward still has to carry the right signature matching who was authorized to act for that amount, and it must be filed within the standard deadline. Let me check the hard-moved-threshold warning since spend bands are referenced.\n\nOPEN hard-moved-threshold",
+  "READ hard-moved-threshold",
+  "OPEN procurement",
+  "DONE\n\nBased on **emergency-spend-ceiling**: when money moves in a genuine emergency before a draft exists, the person who authorized it still must match the authority required for that spend under the ordinary spend-band table — i.e., the *authorizing signature* still has to be at the correct level (team lead only under 500,000 KRW, division head or team-lead-with-verbal-sign-off under 3,000,000 KRW, CEO verbal sign-off at/above that). Filing the draft afterward on time does not retroactively fix the wrong person having approved it — the authority on the after-the-fact draft still has to match what the ordinary bands required at the time the spend occurred."
+ ]
+}

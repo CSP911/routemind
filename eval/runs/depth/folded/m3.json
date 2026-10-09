@@ -1,0 +1,36 @@
+{
+ "id": "m3",
+ "tree": "folded",
+ "q": "I travelled Friday through Monday for a client site visit. Which of those days get recorded as worked?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "weekend-trip-case"
+ ],
+ "collected": [
+  "weekend-trip-case"
+ ],
+ "precision": 1.0,
+ "turns": 5,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1207,
+ "usage": {
+  "in": 631,
+  "out": 161,
+  "cache_write": 2775,
+  "cache_read": 6069
+ },
+ "seconds": 7.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance",
+  "OPEN sec-trip-attendance-cases",
+  "READ weekend-trip-case",
+  "This directly answers the question.\n\n**Friday and Monday are recorded as worked** (trip days with actual duty performed). **Saturday and Sunday are not recorded as worked** — they count as travel/transit only, with no duty performed, so they don't get entered as worked days or automatically convert to paid time/comp leave.\n\nDONE"
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "id": "e1",
+ "tree": "flat",
+ "q": "Which year-end deductions does the pre-filled data not show, and what conditions apply to them?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "year-end-manual-deduction-items"
+ ],
+ "collected": [
+  "year-end-prefilled-scope",
+  "year-end-manual-deduction-items"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2652,
+ "usage": {
+  "in": 629,
+  "out": 319,
+  "cache_write": 5678,
+  "cache_read": 13954
+ },
+ "seconds": 8.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "OPEN year-end-tax",
+  "READ year-end-prefilled-scope",
+  "READ year-end-manual-deduction-items",
+  "DONE"
+ ]
+}

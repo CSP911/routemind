@@ -1,0 +1,45 @@
+{
+ "id": "h2",
+ "tree": "folded",
+ "q": "We want to send hampers to customers for the holiday. How much per customer, and what do we keep?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "entertainment-seasonal-gifts"
+ ],
+ "collected": [
+  "expense-overview",
+  "entertainment-seasonal-gifts",
+  "entertainment-seasonal-gifts-table"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 12,
+ "opens": 7,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 3685,
+ "usage": {
+  "in": 643,
+  "out": 1023,
+  "cache_write": 5465,
+  "cache_read": 33848
+ },
+ "seconds": 24.5,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "OPEN evidence",
+  "BACK",
+  "OPEN expense",
+  "READ expense-overview",
+  "OPEN corp-card",
+  "OPEN card-limit",
+  "OPEN entertainment",
+  "OPEN sec-entertainment-cases",
+  "READ entertainment-seasonal-gifts",
+  "READ entertainment-seasonal-gifts-table",
+  "DONE\n\nBased on what I found: for holiday hampers sent to customers, this falls under the **seasonal/occasion gift** entertainment category.\n\n**Cap:** 100,000 KRW per recipient (client contact).\n\n**What you keep:**\n- Qualifying evidence for the purchase if it's above 30,000 KRW (same threshold as other entertainment spend)\n- A **recipient list** (name and company) for each person who received a hamper — this must accompany the claim once you're above 30,000 KRW\n\n**Important detail:** The 100,000 KRW cap is *per recipient*, not per transaction. So if you're sending hampers to 5 customers, that's 500,000 KRW of eligible spend — but only if you can show the breakdown by recipient. If you buy them all in one transaction and file a single receipt without a recipient breakdown, the whole purchase gets capped at 100,000 KRW total (treated as one gift, not five). The receipt needs to be split or attached with a written breakdown to be recognized as multiple gifts."
+ ]
+}

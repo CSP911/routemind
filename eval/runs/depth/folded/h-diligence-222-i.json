@@ -1,0 +1,39 @@
+{
+ "id": "h-diligence-222-i",
+ "tree": "folded",
+ "q": "A vendor in austin, three hundred million won, people's time: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o3-value-w3-goods-k3"
+ ],
+ "collected": [
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-legend-goods",
+  "hard-diligence-row-origin-o3-value-w3-goods-k3"
+ ],
+ "precision": 0.25,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3171,
+ "usage": {
+  "in": 642,
+  "out": 530,
+  "cache_write": 7085,
+  "cache_read": 13979
+ },
+ "seconds": 9.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-diligence",
+  "I need to read the legends first to find the correct codes for origin (Austin), value (300 million won), and goods (people's time = services/labor).\n\nREAD hard-diligence-legend-origin\nREAD hard-diligence-legend-value\nREAD hard-diligence-legend-goods",
+  "Origin O3, value W3, goods K3.\n\nREAD hard-diligence-row-origin-o3-value-w3-goods-k3",
+  "For a vendor in Austin (origin O3), three hundred million won (value W3), and \"people's time\" (goods K3):\n\n- **Site visit required:** Yes, a site visit to the vendor's premises is required.\n- **Re-review interval:** The file is re-reviewed every 12 months.\n\n(Additional details for this row: a screening score of 72 is required, and financial statements covering the last two years must be collected.)\n\nDONE"
+ ]
+}

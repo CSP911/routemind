@@ -1,0 +1,47 @@
+{
+ "id": "h-overtime-000-i",
+ "tree": "folded",
+ "q": "An ordinary tuesday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-revision",
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "precision": 0.2,
+ "turns": 12,
+ "opens": 6,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4102,
+ "usage": {
+  "in": 662,
+  "out": 1593,
+  "cache_write": 7939,
+  "cache_read": 55157
+ },
+ "seconds": 27.9,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN hard-overtime-legend-revision",
+  "READ hard-overtime-legend-revision",
+  "OPEN sec-hard-overtime",
+  "OPEN hard-overtime-legend-day",
+  "READ hard-overtime-legend-day",
+  "OPEN hard-overtime-legend-hours",
+  "READ hard-overtime-legend-hours",
+  "Now I need the place legend to determine P code for \"at my desk\".\n\nOPEN hard-overtime-legend-place",
+  "READ hard-overtime-legend-place",
+  "READ hard-overtime-row-day-d1-hours-h1-place-p1",
+  "DONE\n\nFor an ordinary Tuesday, about ninety minutes of overtime worked at your desk (day D1, hours H1, place P1, per the current table in force from 2026-01-01):\n\n- **Multiplier: 1.20x**\n- **Rounding: to the nearest 5 minutes**\n\n(Additional note: this row does not require advance approval and does not count toward the monthly cap.)"
+ ]
+}

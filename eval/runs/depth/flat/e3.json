@@ -1,0 +1,52 @@
+{
+ "id": "e3",
+ "tree": "flat",
+ "q": "What counts as flexible working here, and where does each specific rule live?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexwork-overview"
+ ],
+ "collected": [
+  "flexwork-overview",
+  "core-hours-table",
+  "flexitime-month-rule",
+  "flexitime-carryover-table",
+  "flexitime-shortfall-case",
+  "wfh-recording-procedure",
+  "flexwork-system-entry",
+  "hybrid-week-pattern",
+  "hybrid-week-swap-procedure",
+  "flexwork-approval-role"
+ ],
+ "precision": 0.1,
+ "turns": 12,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 11471,
+ "usage": {
+  "in": 634,
+  "out": 1474,
+  "cache_write": 18435,
+  "cache_read": 162141
+ },
+ "seconds": 25.8,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "This matches the overview document directly.\n\nREAD flexwork-overview",
+  "READ core-hours-table",
+  "READ flexitime-month-rule",
+  "READ flexitime-carryover-table",
+  "There's a contradiction between flexitime-month-rule (4-hour cap) and flexitime-carryover-table (5-hour cap) — flagging this before continuing.\n\nREAD flexitime-shortfall-case",
+  "Now let's continue exploring the remaining flexwork rules: remote day logging, hybrid week, and approval roles.\n\nREAD wfh-recording-procedure",
+  "READ flexwork-system-entry",
+  "Now let's check the hybrid week rules.\n\nREAD hybrid-week-pattern",
+  "READ hybrid-week-swap-procedure",
+  "READ flexwork-approval-role",
+  "I've now covered all the flexwork-specific documents referenced by the overview. Let me verify there's nothing else tied to this topic.\n\nDONE\n\nBased on my research, here's the answer:\n\n## What counts as flexible working\n\nPer **flexwork-overview**, flexible working covers three distinct things, each recorded differently:\n1. A movable start/finish time around a fixed core (core hours)\n2. A monthly flexitime balance that can run over or under\n3. Remote (WFH) days that substitute for office days without being leave\n\n## Where each rule lives\n\n- **Core hours band** (10:00–16:00 mandatory, 07:00–20:00 flexible window, 8-hour day excluding lunch) — `core-hours-table`. Arriving late/leaving early is a core-hours breach even if total hours are met.\n\n- **Monthly flexitime settlement** — `flexitime-month-rule`: settled monthly, not weekly; shortfalls must clear within the following month or convert to a leave deduction.\n\n- **Carryover/forfeiture cap** — `flexitime-carryover-table`. ⚠️ **Note a contradiction**: `flexitime-month-rule` states the carry-forward cap is **4 hours**, while `flexitime-carryover-table` states it is **5 hours**. These two documents disagree on the exact figure.\n\n- **Shortfall worked example** — `flexitime-shortfall-case`: shows a shortfall surviving two month-closes converting automatically to a quarter-day leave deduction, no warning given.\n\n- **Logging a remote (WFH) day** — `wfh-recording-procedure`: must be submitted by 09:00 same day (or evening before), approved by line manager, core hours still required from home; unlogged days show as unexplained absence.\n\n- **System location for entries** — `flexwork-system-entry`: Flexitime menu holds clock times/balance; Remote work menu holds WFH entries/approval status — distinct from Leave and Overtime menus. Logging WFH under Leave wrongly consumes a leave day.\n\n- **Hybrid week pattern** — `hybrid-week-pattern`: standard split is 3 office/2 remote days, resets weekly, doesn't bank; exceptions need HR desk sign-off.\n\n- **Swapping a single hybrid day** — `hybrid-week-swap-procedure`: notice required (1 working day same-week, 3 working days next-week, same-day not permitted); must still be logged via WFH recording procedure, not just manager chat approval.\n\n- **Approval ownership** — `flexwork-approval-role`: line manager approves individual WFH days/hybrid splits; HR desk must formally enter the standing arrangement for it to count for audit purposes, and HR desk audits monthly flexitime balances."
+ ]
+}

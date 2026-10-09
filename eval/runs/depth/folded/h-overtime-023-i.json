@@ -1,0 +1,42 @@
+{
+ "id": "h-overtime-023-i",
+ "tree": "folded",
+ "q": "An ordinary tuesday, six hours, from home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "collected": [
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "precision": 0.25,
+ "turns": 8,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2937,
+ "usage": {
+  "in": 648,
+  "out": 368,
+  "cache_write": 7756,
+  "cache_read": 35188
+ },
+ "seconds": 10.5,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-hard-overtime",
+  "READ hard-overtime-legend-day",
+  "READ hard-overtime-legend-hours",
+  "READ hard-overtime-legend-place",
+  "READ hard-overtime-row-day-d1-hours-h3-place-p4",
+  "For an ordinary Tuesday (day D1), six hours (hours H3), working from home (place P4):\n\n- **Multiplier: 1.53x**\n- **Rounding: minutes are rounded to the nearest 15 minutes**\n\n(No advance approval was required for this band, though it still counts toward the monthly overtime cap.) This is from the current table (in force 2026-01-01 onward).",
+  "DONE"
+ ]
+}

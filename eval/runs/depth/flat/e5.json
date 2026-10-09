@@ -1,0 +1,34 @@
+{
+ "id": "e5",
+ "tree": "flat",
+ "q": "Which liability and indemnity terms does the company hold fixed, and where can a cap move?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "liability-and-indemnity-position"
+ ],
+ "collected": [
+  "liability-and-indemnity-position"
+ ],
+ "precision": 1.0,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1439,
+ "usage": {
+  "in": 624,
+  "out": 471,
+  "cache_write": 11042,
+  "cache_read": 10527
+ },
+ "seconds": 17.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "READ liability-and-indemnity-position",
+  "This document directly answers the question. Here's the summary:\n\n**Fixed (never negotiable):**\n- Every contract ≥500,000 KRW must carry an indemnity clause covering IP infringement, breach of confidentiality, and gross negligence — **with no cap** on any of these three. No supplier can negotiate a cap on gross negligence or IP indemnity, regardless of contract size.\n\n**Where a cap can move:**\nOrdinary liability (late delivery or defective goods) carries a cap that scales with annual contract value:\n| Annual value | Liability cap (ordinary breach) |\n|---|---|\n| 500,000 – 3,000,000 KRW | 100% of contract value |\n| 3,000,000 – 10,000,000 KRW | 150% of contract value |\n| 10,000,000 KRW and over | Negotiable, Legal sign-off required |\n\n**Key risk flagged:** Supplier standard terms often cap *all* liability at 100% of contract value, improperly folding gross negligence and IP infringement into that same capped bucket — silently waiving the company's fixed uncapped indemnity. Any redline touching liability needs a side-by-side comparison against the standard clause, not just a general read-through.\n\nDONE"
+ ]
+}

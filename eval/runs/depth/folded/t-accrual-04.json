@@ -1,0 +1,36 @@
+{
+ "id": "t-accrual-04",
+ "tree": "folded",
+ "q": "In October 2024, how much leave was accrued or granted for type E2 staff in service band T2? Answer under the version of leave accrual that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-mid",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-v2"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-v2"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2284,
+ "usage": {
+  "in": 648,
+  "out": 240,
+  "cache_write": 2780,
+  "cache_read": 4050
+ },
+ "seconds": 5.7,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "READ hard-accrual-v2",
+  "For October 2024, the applicable table is `hard-accrual-v2` (in force 2024-07-01 to 2025-12-31).\n\n**Type E2, service band T2: monthly accrual rate = 0.50**\n\nDONE"
+ ]
+}

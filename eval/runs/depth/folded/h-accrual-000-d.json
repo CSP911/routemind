@@ -1,0 +1,37 @@
+{
+ "id": "h-accrual-000-d",
+ "tree": "folded",
+ "q": "For type E1, tenure T1, site L1, how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e1-tenure-t1-site-l1"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-row-type-e1-tenure-t1-site-l1"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2138,
+ "usage": {
+  "in": 638,
+  "out": 917,
+  "cache_write": 7211,
+  "cache_read": 10808
+ },
+ "seconds": 17.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN sec-hard-accrual",
+  "READ hard-accrual-row-type-e1-tenure-t1-site-l1",
+  "DONE\n\nBased on the current accrual table (in force from 2026‑01‑01) for type E1, tenure T1, site L1:\n\n- **Monthly accrual rate:** 0.40 days per month\n- **Carry-over limit (what you can still be holding into January):** 4 days\n\n(Notice required to use this leave is 2 working days, and it does not accrue during unpaid leave.)"
+ ]
+}

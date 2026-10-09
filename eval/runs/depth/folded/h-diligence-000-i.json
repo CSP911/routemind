@@ -1,0 +1,45 @@
+{
+ "id": "h-diligence-000-i",
+ "tree": "folded",
+ "q": "A company in daejeon, eight million won, just office consumables: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o1-value-w1-goods-k1"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-legend-goods",
+  "hard-diligence-row-origin-o1-value-w1-goods-k1"
+ ],
+ "precision": 0.2,
+ "turns": 10,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4402,
+ "usage": {
+  "in": 652,
+  "out": 822,
+  "cache_write": 7567,
+  "cache_read": 38430
+ },
+ "seconds": 17.0,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN hard-diligence-legend-revision",
+  "READ hard-diligence-legend-revision",
+  "OPEN sec-hard-diligence",
+  "OPEN hard-diligence-legend-origin",
+  "READ hard-diligence-legend-origin",
+  "READ hard-diligence-legend-value",
+  "READ hard-diligence-legend-goods",
+  "READ hard-diligence-row-origin-o1-value-w1-goods-k1",
+  "DONE\n\nBased on the current (2026-01-01 onward) supplier due diligence table — a company in Daejeon (origin O1), eight million won (value W1), just office consumables (goods K1):\n\n- **Site visit required: No** — you do not need to visit their premises.\n- **Re-review interval: Every 36 months** — their file gets reviewed again every 3 years.\n\n(Also for reference: screening score required is 30, and financial statements are not required for this combination.)"
+ ]
+}

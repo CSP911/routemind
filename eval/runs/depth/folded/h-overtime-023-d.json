@@ -1,0 +1,38 @@
+{
+ "id": "h-overtime-023-d",
+ "tree": "folded",
+ "q": "For day D1, hours H3, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "collected": [
+  "hard-overtime-legend-revision",
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "precision": 0.5,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2147,
+ "usage": {
+  "in": 641,
+  "out": 661,
+  "cache_write": 7051,
+  "cache_read": 12531
+ },
+ "seconds": 11.7,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN hard-overtime-legend-revision",
+  "READ hard-overtime-legend-revision",
+  "OPEN sec-hard-overtime",
+  "READ hard-overtime-row-day-d1-hours-h3-place-p4",
+  "For day D1, hours H3, place P4 (current table, in force from 2026-01-01): the multiplier is **1.53x**, and minutes are rounded **to the nearest 15 minutes**.\n\nNote: this is the current (2026-01-01 onward) version. If your date falls in 2025 or earlier, a different version applies (per the revision legend) — let me know the date if you need that instead.\n\nDONE"
+ ]
+}

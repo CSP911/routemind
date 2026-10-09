@@ -1,0 +1,39 @@
+{
+ "id": "h-perdiem-023-d",
+ "tree": "flat",
+ "q": "For grade G1, band B3, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g1-band-b3-stay-s4"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-row-grade-g1-band-b3-stay-s4"
+ ],
+ "precision": 0.5,
+ "turns": 7,
+ "opens": 2,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 2177,
+ "usage": {
+  "in": 647,
+  "out": 2973,
+  "cache_write": 26330,
+  "cache_read": 90133
+ },
+ "seconds": 37.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision",
+  "BACK",
+  "OPEN expense",
+  "READ hard-perdiem-row-grade-g1-band-b3-stay-s4",
+  "For grade G1, band B3, stay S4 (per the current overseas per-diem table, effective 2026-01-01):\n\n- **Lodging cap per night: 139 USD** — this is what you can put toward a hotel each night.\n- **Receipt threshold: 45 USD** — above this amount, you must keep and submit the receipt as evidence.\n\n(For reference, this row also lists meals at 81 USD/day and incidentals at 16 USD/day, though those weren't directly asked.)\n\nNote: if your trip falls within 2024-07-01 to 2025-12-31, the applicable figures would instead come from the superseded `hard-perdiem-v2` table rather than this one — let me know if that's the case and I can pull those numbers instead.",
+  "DONE"
+ ]
+}

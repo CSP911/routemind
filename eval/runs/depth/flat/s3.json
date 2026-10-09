@@ -1,0 +1,41 @@
+{
+ "id": "s3",
+ "tree": "flat",
+ "q": "Nobody did any work on the Sunday while we were abroad. Who decides whether it counts, and does it still pay?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "weekend-trip-case",
+  "trip-hours-recording-table",
+  "trip-attendance-case-index",
+  "trip-attendance-rule",
+  "overseas-trip-approver-sequence"
+ ],
+ "precision": 0.0,
+ "turns": 8,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5677,
+ "usage": {
+  "in": 643,
+  "out": 1749,
+  "cache_write": 16853,
+  "cache_read": 92656
+ },
+ "seconds": 26.6,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "This looks like it's about a business trip over a weekend — \"biz-trip-attendance\" table likely covers weekend/holiday handling during a trip.\n\nOPEN biz-trip-attendance",
+  "READ weekend-trip-case",
+  "READ trip-hours-recording-table",
+  "READ trip-attendance-case-index",
+  "READ trip-attendance-rule",
+  "I now have enough information. Let me check for who decides this (approval role) since the question asks \"who decides.\"\n\nREAD overseas-trip-approver-sequence",
+  "DONE\n\nBased on what I found, here's the answer:\n\n**Who decides whether the Sunday counts:**\nThe decision isn't made by a single person judging intent — it's determined by what gets *entered into the attendance system*, specifically whether **duty was actually performed on that Sunday**:\n\n- If no work was done on Sunday (just travel/hotel while abroad), it is **not entered as a trip day at all** — it's ordinary time off that happens to occur while away, and gets no special coding or treatment.\n- If actual client/work duty *was* performed on that Sunday, it must be coded as **\"Trip — non-working duty\"**, which is the only code that generates extra entitlement.\n\nSince in your case **nobody did any work on the Sunday**, it falls into the first category: it is simply not recorded as a trip day. The requester/traveller is responsible for coding each day individually at time of entry — the system does not infer this from the approved itinerary, and being away from home on a weekend does not by itself convert the day into worked time.\n\n(For an overseas trip, this trip record only becomes valid once approved in the correct order — line manager first, then HR desk for the overseas leg — but that approval is about the trip as a whole, not about judging individual non-duty weekend days.)\n\n**Does it still pay:**\nNo. Since no duty was performed, the Sunday is **not paid and generates no compensatory time off**. The \"day off in lieu\" entitlement only applies to a weekend/holiday day on which work was *actually performed* during the trip — a quiet Sunday spent purely in transit/at the hotel is treated as ordinary non-working time, not as a paid or compensable trip day."
+ ]
+}

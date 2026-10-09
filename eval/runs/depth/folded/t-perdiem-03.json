@@ -1,0 +1,40 @@
+{
+ "id": "t-perdiem-03",
+ "tree": "folded",
+ "q": "In January 2024, what was the nightly lodging cap for a trip to a band B destination? Answer under the version of the overseas per-diem that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "overseas-rates"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "overseas-rates"
+ ],
+ "precision": 0.5,
+ "turns": 8,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 2165,
+ "usage": {
+  "in": 657,
+  "out": 740,
+  "cache_write": 4282,
+  "cache_read": 17752
+ },
+ "seconds": 14.0,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision",
+  "BACK",
+  "OPEN expense",
+  "OPEN travel-expense",
+  "OPEN travel-overseas",
+  "READ overseas-rates",
+  "**Answer: USD 180**\n\nFor January 2024, the per-diem rules in force were the oldest version — `overseas-rates` (in force until 2024-07-01), as confirmed by `hard-perdiem-legend-revision`. Under that version, a Band B destination (China, South-East Asia, Eastern Europe) carries a nightly lodging cap of **USD 180**.\n\nDONE"
+ ]
+}

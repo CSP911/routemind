@@ -1,0 +1,42 @@
+{
+ "id": "t-accrual-11",
+ "tree": "folded",
+ "q": "How much leave was accrued or granted for someone with two years of continuous service in 2023, and what had it become by 2025? I need both versions of leave accrual, not just the current one.",
+ "needs": "all",
+ "lever": "both",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "leave-accrual",
+  "hard-accrual-v2"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "accrual-rule",
+  "hard-accrual-v2"
+ ],
+ "precision": 0.6666666666666666,
+ "turns": 8,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2931,
+ "usage": {
+  "in": 661,
+  "out": 1223,
+  "cache_write": 7930,
+  "cache_read": 14954
+ },
+ "seconds": 17.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "This is the oldest version (pre-2024-07-01), giving 2 years of service = 15 days. I need the 2024-07-01 to 2025-12-31 version for 2023... wait, let me check dates - 2023 would actually fall under the oldest version (until 2024-07-01), and 2025 falls under the middle version (2024-07-01 to 2025-12-31). Let me read the v2 document.\n\nREAD hard-accrual-v2",
+  "OPEN sec-hard-accrual",
+  "I have what I need. For 2023, the oldest version (`accrual-rule`) applies — 2 years of continuous service = 15 days granted annually. For 2025, the middle version (`hard-accrual-v2`, in force 2024-07-01 to 2025-12-31) applies — it switched to monthly accrual rates indexed by type and tenure (e.g., 0.40–0.70 days/month depending on type/tenure band), rather than a flat annual grant. The current table (`sec-hard-accrual`) only applies from 2026-01-01, so it's not relevant to either date in the question.\n\nDONE"
+ ]
+}

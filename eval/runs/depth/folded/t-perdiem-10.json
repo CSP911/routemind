@@ -1,0 +1,36 @@
+{
+ "id": "t-perdiem-10",
+ "tree": "folded",
+ "q": "For something dated 3 July 2024 — two days after the first change — what was the nightly lodging cap for a grade 2 traveller going to a band B2 destination? Use the version in force on that day.",
+ "needs": "any",
+ "lever": "boundary",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-v2"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-v2"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2408,
+ "usage": {
+  "in": 659,
+  "out": 176,
+  "cache_write": 2789,
+  "cache_read": 4008
+ },
+ "seconds": 5.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision",
+  "READ hard-perdiem-v2",
+  "The nightly lodging cap for a grade 2 (G2) traveller to band B2 was **115 USD**, per the `hard-perdiem-v2` table in force from 2024-07-01 to 2025-12-31 (which covers 3 July 2024).\n\nDONE"
+ ]
+}

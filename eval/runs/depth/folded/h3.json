@@ -1,0 +1,42 @@
+{
+ "id": "h3",
+ "tree": "folded",
+ "q": "My day trip turned into an overnight because the meeting overran. How long do I have to tell anyone?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "trip-attendance-case-index",
+  "trip-request-form",
+  "attendance-correction-deadline",
+  "late-trip-approval-procedure"
+ ],
+ "precision": 0.0,
+ "turns": 10,
+ "opens": 5,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4749,
+ "usage": {
+  "in": 641,
+  "out": 2199,
+  "cache_write": 4734,
+  "cache_read": 23867
+ },
+ "seconds": 32.9,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance",
+  "OPEN sec-trip-attendance-cases",
+  "READ trip-attendance-case-index",
+  "READ trip-request-form",
+  "OPEN sec-trip-approval-before-the-trip",
+  "OPEN sec-attendance-corrections-and-disputes",
+  "READ attendance-correction-deadline",
+  "READ late-trip-approval-procedure",
+  "This answers the question directly.\n\n**Answer: You have 3 calendar days from the departure date to notify/get approval for the unplanned overnight.**\n\nSince your day trip unexpectedly turned into an overnight stay, your trip now falls outside the ordinary trip request/approval process (which requires approval *before* departure). Per the **late-trip-approval-procedure**:\n\n- You must submit (or resubmit) the trip request immediately, and\n- File the **trip approval exception form**, stating that departure already occurred without approval covering the extended stay.\n- This must happen **within 3 calendar days of the departure date** (not the return date) — the clock is based on when you left, not when you got back.\n- The HR desk will sign off on this regardless of whether it's a domestic or overseas trip.\n- Once approved, it's recorded as an \"exception-approved trip\" rather than an ordinary one.\n\nNote: this fixes your attendance record, but it does **not** extend the separate deadline for claiming the daily trip allowance — that runs on its own schedule (covered under expense claim rules).\n\nDONE"
+ ]
+}

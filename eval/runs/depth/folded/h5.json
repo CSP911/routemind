@@ -1,0 +1,47 @@
+{
+ "id": "h5",
+ "tree": "folded",
+ "q": "What has to be cleared before I get on a plane for work?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "trip-approval-overview"
+ ],
+ "collected": [
+  "trip-extends-overseas-case",
+  "working-abroad-request",
+  "trip-approval-overview",
+  "trip-approval-role",
+  "overseas-trip-approver-sequence",
+  "trip-approval-deadline"
+ ],
+ "precision": 0.16666666666666666,
+ "turns": 11,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 8231,
+ "usage": {
+  "in": 629,
+  "out": 1393,
+  "cache_write": 5840,
+  "cache_read": 29284
+ },
+ "seconds": 24.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN approval",
+  "OPEN sec-approvals-about-people",
+  "READ trip-extends-overseas-case",
+  "READ working-abroad-request",
+  "Based on what I've gathered, let me check if there's more relevant info in expense/attendance about business trips before a plane, since the question is about \"getting on a plane for work\" which is a business trip.\n\nOPEN attendance",
+  "OPEN sec-trip-approval-before-the-trip",
+  "READ trip-approval-overview",
+  "READ trip-approval-role",
+  "This gives good detail. Let me check the overseas sequence doc too since it may clarify ordering specifics, and the deadline doc for timing.\n\nREAD overseas-trip-approver-sequence",
+  "I now have comprehensive information. Let me also check the deadline document for completeness regarding timing requirements.\n\nREAD trip-approval-deadline",
+  "I now have a complete picture of what needs to be cleared before flying for work. Let me verify there's nothing else critical by checking DONE.\n\nDONE\n\nBased on my research, here's what has to be cleared before you get on a plane for work (an overseas business trip):\n\n## Approval chain (in strict order)\n1. **Line manager approval** — first, judging whether the trip makes sense for the team/workload.\n2. **HR desk approval** — second, checking insurance coverage abroad, visa status, and whether the destination is restricted, plus confirming allowance eligibility. **This cannot happen before the line manager's approval — an HR sign-off recorded out of order is discarded and doesn't count.**\n\nBoth approvals are required; a trip sitting with only manager approval is still **pending, not confirmed**, no matter how close departure is.\n\n## Timing\n- The request must be **fully approved** (not just submitted) **at least 5 working days before departure** for an overseas trip.\n- This is counted in **working days**, so weekends/holidays between submission and departure don't shrink the window.\n- Missing this deadline doesn't invalidate the trip if it's still approved before departure — but if you're still pending (or haven't submitted) when departure actually arrives, you fall into a separate \"approval after the fact\" exception process.\n\n## Special case: itinerary changes\nIf a trip was approved as **domestic** but later **picks up an overseas leg** (e.g., a side stop in another country), the existing domestic approval does **not** cover it. You cannot amend it — you must **withdraw the original approval and submit a brand-new draft**, which now requires **CEO approval** (not just manager + HR desk), since any itinerary touching an overseas destination is CEO-level regardless of trip cost or duration.\n\n## Note on \"working from abroad\" (different from a work trip)\nIf the travel is being framed as **working remotely from abroad** rather than a client-facing business trip, it is **not covered by this chain at all** — it requires **CEO approval** regardless of cost, plus a **Legal consent step** on tax/immigration exposure, which can take longer than the approval itself.\n\n**In short:** for a standard overseas work trip, clear your **line manager**, then the **HR desk**, at least **5 working days before departure** — and if the destination changed from the original plan, treat it as a new draft requiring fresh (CEO-level) approval rather than an amendment."
+ ]
+}

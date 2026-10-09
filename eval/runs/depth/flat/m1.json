@@ -1,0 +1,37 @@
+{
+ "id": "m1",
+ "tree": "flat",
+ "q": "What happens if my banked hours don't cover the shortfall at the end of the month?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexitime-shortfall-case"
+ ],
+ "collected": [
+  "flexitime-month-rule",
+  "flexitime-shortfall-case"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2231,
+ "usage": {
+  "in": 625,
+  "out": 572,
+  "cache_write": 15960,
+  "cache_read": 44173
+ },
+ "seconds": 11.6,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ flexitime-month-rule",
+  "This directly answers it, but let me check the worked example for full detail.\n\nREAD flexitime-shortfall-case",
+  "Based on these two documents, here's the answer:\n\n## What happens if your banked hours don't cover the shortfall at month close\n\n**It doesn't lapse quietly — it rolls forward, then converts to a leave deduction if unresolved:**\n\n1. **At the close of the month**, if you have a shortfall (worked fewer hours than the standard monthly total), it is **not deducted immediately**. Instead, it **carries into the following month**, with a requirement that you clear it by that next month's close.\n\n2. **If you clear it within that following month** — by working the extra hours — no deduction occurs.\n\n3. **If the shortfall is still open after that second month closes** (i.e., it survives two consecutive month-end settlements), it is **automatically deducted as leave**, using the standard half/quarter-day conversion rule. \n\n   - Example: finishing March 6 hours short carries into April. If only 4 of those 6 hours are made up by the end of April, the remaining 2 hours convert into a **quarter-day leave deduction**.\n\n4. **This conversion happens automatically, with no separate approval step and no advance warning** — you simply see a lower leave balance on your next check.\n\n**Key takeaway:** The only way to avoid a leave deduction is to clear the shortfall before a second month-end closes with hours still outstanding.\n\n(Note: this is treated asymmetrically from surpluses — a surplus is capped at 4 hours carried forward, with anything beyond that simply lost; a shortfall, by contrast, never just disappears — it either gets worked off or turned into a leave deduction.)",
+  "DONE"
+ ]
+}

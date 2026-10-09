@@ -1,0 +1,47 @@
+{
+ "id": "s5",
+ "tree": "flat",
+ "q": "Someone we brought in for a half-day session doesn't charge VAT. What do I need back from them, and from what amount does it start to matter?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "sole-trader-vendor-registration",
+  "vendor-registration-shortcuts-table",
+  "one-off-purchase-vendor-registration",
+  "vendor-form-fields",
+  "contractor-invoice-requirements",
+  "contractor-withholding-freelancer-rate"
+ ],
+ "precision": 0.0,
+ "turns": 13,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 7183,
+ "usage": {
+  "in": 659,
+  "out": 5423,
+  "cache_write": 17403,
+  "cache_read": 143745
+ },
+ "seconds": 68.6,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN vendor",
+  "This seems related to a VAT-exempt individual hired for a half-day session, likely a sole trader/freelancer scenario.\n\nREAD sole-trader-vendor-registration",
+  "READ vendor-registration-shortcuts-table",
+  "READ one-off-purchase-vendor-registration",
+  "OPEN vendor-form",
+  "READ vendor-form-fields",
+  "BACK",
+  "OPEN payroll",
+  "READ contractor-invoice-requirements",
+  "READ contractor-withholding-freelancer-rate",
+  "",
+  "DONE"
+ ]
+}

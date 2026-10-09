@@ -1,0 +1,37 @@
+{
+ "id": "h-perdiem-000-d",
+ "tree": "folded",
+ "q": "For grade G1, band B1, stay S1, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g1-band-b1-stay-s1"
+ ],
+ "collected": [
+  "hard-perdiem-row-grade-g1-band-b1-stay-s1",
+  "hard-perdiem-legend-revision"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2175,
+ "usage": {
+  "in": 643,
+  "out": 483,
+  "cache_write": 7572,
+  "cache_read": 15444
+ },
+ "seconds": 9.6,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "OPEN sec-hard-perdiem",
+  "READ hard-perdiem-row-grade-g1-band-b1-stay-s1",
+  "Since this concerns a dated overseas per-diem figure, let me check the revision warning to confirm this table is the correct one to use.\n\nREAD hard-perdiem-legend-revision",
+  "Since no specific date was given in the question, I'll confirm the current table (sec-hard-perdiem, in force from 2026-01-01) is the appropriate default answer, as already read.\n\nBased on what I've gathered, here's the answer:\n\n**For Grade G1, Band B1, Stay S1 (current rules, in force from 2026-01-01):**\n\n- **Lodging cap per night:** 95 USD\n- **Receipt threshold:** You must keep the receipt for any spend **above 18 USD**\n\n(Additional context: meals are capped at 38 USD/day and incidentals at 7 USD/day.)\n\nNote: this applies under the current table. If your question concerns a date before 2026-01-01, the figures differ — 2024-07-01 to 2025-12-31 uses `hard-perdiem-v2`, and before that `overseas-rates`.\n\nDONE"
+ ]
+}

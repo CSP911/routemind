@@ -1,0 +1,36 @@
+{
+ "id": "m7",
+ "tree": "folded",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "urgent-after-the-fact"
+ ],
+ "collected": [
+  "urgent-after-the-fact"
+ ],
+ "precision": 1.0,
+ "turns": 5,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1213,
+ "usage": {
+  "in": 622,
+  "out": 362,
+  "cache_write": 2158,
+  "cache_read": 4226
+ },
+ "seconds": 8.7,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN approval",
+  "OPEN draft-doc",
+  "OPEN sec-drafts-by-kind",
+  "READ urgent-after-the-fact",
+  "DONE"
+ ]
+}

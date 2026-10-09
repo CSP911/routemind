@@ -1,0 +1,43 @@
+{
+ "id": "h-accrual-000-i",
+ "tree": "folded",
+ "q": "On the regular payroll, been here eight months, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e1-tenure-t1-site-l1"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-legend-type",
+  "hard-accrual-legend-tenure",
+  "hard-accrual-legend-site",
+  "hard-accrual-row-type-e1-tenure-t1-site-l1"
+ ],
+ "precision": 0.2,
+ "turns": 8,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4262,
+ "usage": {
+  "in": 651,
+  "out": 631,
+  "cache_write": 7988,
+  "cache_read": 32745
+ },
+ "seconds": 14.6,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN sec-hard-accrual",
+  "READ hard-accrual-legend-type",
+  "READ hard-accrual-legend-tenure",
+  "READ hard-accrual-legend-site",
+  "READ hard-accrual-row-type-e1-tenure-t1-site-l1",
+  "Based on the current leave accrual table (in force from 2026-01-01), for your situation — regular payroll (type E1), eight months' tenure (tenure T1), Seoul office (site L1):\n\n- **Accrual rate:** 0.40 days per month\n- **Carry-over limit:** 4 days maximum can be carried over/held at one time (e.g., into January)\n\nSo each month you build up 0.4 days of leave, and the most you can be holding onto (carried over) is 4 days.\n\nDONE"
+ ]
+}

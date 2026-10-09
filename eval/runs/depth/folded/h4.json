@@ -1,0 +1,39 @@
+{
+ "id": "h4",
+ "tree": "folded",
+ "q": "Somebody put a purchase through as an ordinary memo instead. Does that change anything?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "kind-misclassification"
+ ],
+ "collected": [
+  "kind-misclassification",
+  "draft-kinds-table"
+ ],
+ "precision": 0.5,
+ "turns": 7,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2564,
+ "usage": {
+  "in": 632,
+  "out": 886,
+  "cache_write": 3140,
+  "cache_read": 9447
+ },
+ "seconds": 15.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN approval",
+  "OPEN sec-the-approval-behind-a-purchase",
+  "OPEN draft-doc",
+  "OPEN sec-drafts-by-kind",
+  "This looks highly relevant - let me check kind-misclassification since it directly addresses filing as wrong kind.\n\nREAD kind-misclassification",
+  "READ draft-kinds-table",
+  "DONE"
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "id": "h-diligence-023-i",
+ "tree": "folded",
+ "q": "A company in daejeon, three hundred million won, a licence: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o1-value-w3-goods-k4"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-legend-goods",
+  "hard-diligence-row-origin-o1-value-w3-goods-k4"
+ ],
+ "precision": 0.2,
+ "turns": 9,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4405,
+ "usage": {
+  "in": 650,
+  "out": 708,
+  "cache_write": 7528,
+  "cache_read": 31955
+ },
+ "seconds": 16.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN hard-diligence-legend-revision",
+  "READ hard-diligence-legend-revision",
+  "OPEN sec-hard-diligence",
+  "READ hard-diligence-legend-origin",
+  "READ hard-diligence-legend-value",
+  "READ hard-diligence-legend-goods",
+  "READ hard-diligence-row-origin-o1-value-w3-goods-k4",
+  "Based on the due diligence table for a Daejeon company (origin O1), ₩300 million contract (value W3), and a licence (goods K4):\n\n- **Site visit: Yes** — you do need to go visit their premises.\n- **Re-review interval: Every 12 months** — the file gets reviewed again annually.\n\n(Also for reference: screening score required is 41, and financial statements for the last two years must be collected.)\n\nDONE"
+ ]
+}

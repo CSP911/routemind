@@ -1,0 +1,37 @@
+{
+ "id": "m3",
+ "tree": "flat",
+ "q": "I travelled Friday through Monday for a client site visit. Which of those days get recorded as worked?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "weekend-trip-case"
+ ],
+ "collected": [
+  "trip-hours-recording-table",
+  "weekend-trip-case"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2370,
+ "usage": {
+  "in": 631,
+  "out": 307,
+  "cache_write": 15644,
+  "cache_read": 44378
+ },
+ "seconds": 9.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance",
+  "READ trip-hours-recording-table",
+  "READ weekend-trip-case",
+  "This directly answers the question. Based on the worked example that matches your exact scenario (Friday–Monday client site visit trip):\n\n**Recorded as worked:**\n- **Friday** — Worked (trip day), since actual client work was performed\n- **Monday** — Worked (trip day), since actual client work was performed\n\n**Not recorded as worked:**\n- **Saturday** — travel/hotel only, no duty performed\n- **Sunday** — travel/hotel only, no duty performed\n\nThe key principle: the attendance system codes each day based on whether duty was actually performed, not simply whether the employee was away on the trip. Since no work occurred on Saturday or Sunday, those days are not entered as trip days at all — being away from home over a weekend does not automatically convert those days into paid working time.\n\nDONE"
+ ]
+}

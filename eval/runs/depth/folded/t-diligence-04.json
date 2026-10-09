@@ -1,0 +1,49 @@
+{
+ "id": "t-diligence-04",
+ "tree": "folded",
+ "q": "In October 2024, what screening was required for an origin O2 supplier at contract value W2? Answer under the version of supplier due diligence that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-mid",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-v2"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-v2",
+  "supplier-due-diligence"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 16,
+ "opens": 6,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 3734,
+ "usage": {
+  "in": 672,
+  "out": 10546,
+  "cache_write": 11165,
+  "cache_read": 75718
+ },
+ "seconds": 141.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision",
+  "READ hard-diligence-v2",
+  "OPEN sec-supplier-due-diligence",
+  "READ supplier-due-diligence",
+  "BACK",
+  "OPEN procurement",
+  "OPEN vendor",
+  "BACK",
+  "OPEN procurement",
+  "OPEN sec-hard-diligence",
+  "",
+  "",
+  "",
+  "",
+  "DONE"
+ ]
+}

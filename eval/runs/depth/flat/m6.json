@@ -1,0 +1,35 @@
+{
+ "id": "m6",
+ "tree": "flat",
+ "q": "What closes out on a leaver's insurance record, and where does the pension cut-off differ from the payslip?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "insurance-leaving-deregistration"
+ ],
+ "collected": [
+  "insurance-leaving-deregistration"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1308,
+ "usage": {
+  "in": 631,
+  "out": 402,
+  "cache_write": 5002,
+  "cache_read": 8600
+ },
+ "seconds": 8.5,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "OPEN insurance",
+  "READ insurance-leaving-deregistration",
+  "This document directly answers the question.\n\n**What closes out on a leaver's insurance record:**\n- National pension, health insurance, and employment insurance are all filed for deregistration within 14 days of the last working day (industrial accident coverage ends automatically).\n- Health and employment insurance coverage ends on the last working day itself.\n- National pension's end date depends on the day of the month of departure (see below).\n\n**Where the pension cut-off differs from the payslip:**\n- A leaver whose last day falls **on or after the 16th of the month** is still charged a **full month's national pension contribution**, even though their basic pay on the payslip is **prorated** for only the days actually worked that month.\n- This pension-specific mismatch does not apply to health or employment insurance, which simply stop on the last working day.\n\nDONE"
+ ]
+}

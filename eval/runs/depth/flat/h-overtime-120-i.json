@@ -1,0 +1,46 @@
+{
+ "id": "h-overtime-120-i",
+ "tree": "flat",
+ "q": "A saturday, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d2-hours-h3-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d2-hours-h3-place-p1",
+  "hard-overtime-legend-revision"
+ ],
+ "precision": 0.2,
+ "turns": 11,
+ "opens": 5,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4105,
+ "usage": {
+  "in": 651,
+  "out": 1249,
+  "cache_write": 16104,
+  "cache_read": 134365
+ },
+ "seconds": 20.9,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN hard-overtime-legend-day",
+  "READ hard-overtime-legend-day",
+  "OPEN hard-overtime-legend-hours",
+  "READ hard-overtime-legend-hours",
+  "OPEN hard-overtime-legend-place",
+  "READ hard-overtime-legend-place",
+  "READ hard-overtime-row-day-d2-hours-h3-place-p1",
+  "OPEN hard-overtime-legend-revision",
+  "READ hard-overtime-legend-revision",
+  "DONE\n\nBased on the documents:\n- \"A Saturday\" → day D2 (per `hard-overtime-legend-day`)\n- \"six hours\" → hours H3 (per `hard-overtime-legend-hours`)\n- \"at my desk\" → place P1 (per `hard-overtime-legend-place`)\n\nThis maps to `hard-overtime-row-day-d2-hours-h3-place-p1`, the current (2026-01-01 onwards) overtime rate row:\n\n**Multiplier: 1.92x**\n**Rounding: minutes are rounded to the nearest 15 minutes**\n\n(Note: this is the current version per `hard-overtime-legend-revision`; if the Saturday in question falls before 2026-01-01, a different version — `hard-overtime-v2` for 2024-07-01–2025-12-31, or `overtime-rate-table` for before that — would apply instead.)"
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "id": "h-accrual-023-d",
+ "tree": "folded",
+ "q": "For type E1, tenure T3, site L4, how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-legend-type",
+  "hard-accrual-legend-tenure",
+  "hard-accrual-legend-site",
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "precision": 0.2,
+ "turns": 11,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4264,
+ "usage": {
+  "in": 650,
+  "out": 797,
+  "cache_write": 8569,
+  "cache_read": 49782
+ },
+ "seconds": 18.7,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN hard-accrual-legend-revision",
+  "READ hard-accrual-legend-revision",
+  "OPEN sec-hard-accrual",
+  "OPEN hard-accrual-legend-type",
+  "READ hard-accrual-legend-type",
+  "READ hard-accrual-legend-tenure",
+  "READ hard-accrual-legend-site",
+  "READ hard-accrual-row-type-e1-tenure-t3-site-l4",
+  "For type E1, tenure T3, site L4 (current table, in force from 2026-01-01):\n\n- **Monthly accrual rate:** 0.62 days per month\n- **Carry-over limit (how much you can still be holding going into January):** 13 days\n\nOther details: 2 working days' notice is required to use the leave, and it continues to accrue even during unpaid leave.\n\nNote: this is the current rule (effective 2026-01-01 onward). If your situation is dated in 2025, the applicable figures would instead come from the superseded `hard-accrual-v2` table rather than this one.",
+  "DONE"
+ ]
+}

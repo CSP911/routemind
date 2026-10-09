@@ -1,0 +1,36 @@
+{
+ "id": "s2",
+ "tree": "flat",
+ "q": "Our whole team was moved across to the subsidiary. Does my start date reset, and what does that do to what I'd be owed on the way out?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "severance-eligibility",
+  "severance-overview",
+  "severance-calculation"
+ ],
+ "precision": 0.0,
+ "turns": 5,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3953,
+ "usage": {
+  "in": 643,
+  "out": 1314,
+  "cache_write": 5352,
+  "cache_read": 13410
+ },
+ "seconds": 17.8,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "READ severance-eligibility",
+  "READ severance-overview",
+  "READ severance-calculation",
+  "DONE"
+ ]
+}

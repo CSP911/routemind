@@ -1,0 +1,34 @@
+{
+ "id": "t-overtime-02",
+ "tree": "folded",
+ "q": "In September 2023, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "overtime",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "hard-moved-overtime",
+  "payslip-overtime"
+ ],
+ "precision": 0.0,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2216,
+ "usage": {
+  "in": 652,
+  "out": 412,
+  "cache_write": 2091,
+  "cache_read": 2959
+ },
+ "seconds": 7.6,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "READ hard-moved-overtime",
+  "READ payslip-overtime",
+  "DONE\n\nThe multiplier in force for ordinary overtime (beyond the 40-hour week) in September 2023 was **+50% (1.5×)** the hourly basic pay rate, per the `payslip-overtime` document in payroll, which was the version in effect until 2024-07-01."
+ ]
+}

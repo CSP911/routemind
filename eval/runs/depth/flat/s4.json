@@ -1,0 +1,34 @@
+{
+ "id": "s4",
+ "tree": "flat",
+ "q": "We settled on a supplier in a room. Is what we wrote down enough to place the order, or is something else needed?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "purchase-steps"
+ ],
+ "precision": 0.0,
+ "turns": 5,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 869,
+ "usage": {
+  "in": 634,
+  "out": 829,
+  "cache_write": 11299,
+  "cache_read": 32073
+ },
+ "seconds": 14.0,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN purchase-request",
+  "READ purchase-steps",
+  "OPEN approval-threshold",
+  "DONE"
+ ]
+}

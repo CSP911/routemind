@@ -1,0 +1,42 @@
+{
+ "id": "h4",
+ "tree": "flat",
+ "q": "Somebody put a purchase through as an ordinary memo instead. Does that change anything?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "kind-misclassification"
+ ],
+ "collected": [
+  "kind-misclassification",
+  "draft-kinds-table",
+  "purchase-draft",
+  "draft-fields"
+ ],
+ "precision": 0.25,
+ "turns": 8,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4639,
+ "usage": {
+  "in": 634,
+  "out": 1347,
+  "cache_write": 5759,
+  "cache_read": 27709
+ },
+ "seconds": 21.3,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN approval",
+  "OPEN draft-doc",
+  "This scenario looks like a misclassification issue — a purchase filed as a different (ordinary memo) kind. Let me check that document.\n\nREAD kind-misclassification",
+  "READ draft-kinds-table",
+  "READ purchase-draft",
+  "OPEN draft-form",
+  "READ draft-fields",
+  "DONE"
+ ]
+}

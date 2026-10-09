@@ -1,0 +1,47 @@
+{
+ "id": "h-overtime-120-i",
+ "tree": "folded",
+ "q": "A saturday, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d2-hours-h3-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-revision",
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d2-hours-h3-place-p1"
+ ],
+ "precision": 0.2,
+ "turns": 12,
+ "opens": 6,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4105,
+ "usage": {
+  "in": 653,
+  "out": 1133,
+  "cache_write": 7935,
+  "cache_read": 55025
+ },
+ "seconds": 22.9,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN hard-overtime-legend-revision",
+  "READ hard-overtime-legend-revision",
+  "OPEN sec-hard-overtime",
+  "OPEN hard-overtime-legend-day",
+  "READ hard-overtime-legend-day",
+  "OPEN hard-overtime-legend-hours",
+  "READ hard-overtime-legend-hours",
+  "OPEN hard-overtime-legend-place",
+  "READ hard-overtime-legend-place",
+  "Saturday → D2, six hours → H3, at my desk → P1.\n\nREAD hard-overtime-row-day-d2-hours-h3-place-p1",
+  "Based on the routing: Saturday maps to day D2, six hours maps to hours H3, and \"at my desk\" maps to place P1, giving row D2/H3/P1 in the current (2026-01-01 onward) overtime rate table.\n\n**Answer:**\n- **Multiplier:** 1.92x\n- **Rounding of minutes:** to the nearest 15 minutes\n\n(Also note: advance approval was required for this to count at this rate, and it counts toward the monthly cap.)\n\nDONE"
+ ]
+}

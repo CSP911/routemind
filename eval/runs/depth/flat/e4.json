@@ -1,0 +1,36 @@
+{
+ "id": "e4",
+ "tree": "flat",
+ "q": "Why doesn't the annual salary quoted at hire map cleanly onto a single month's gross pay?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "pay-structure-vs-monthly-payslip"
+ ],
+ "collected": [
+  "pay-structure-vs-monthly-payslip",
+  "pay-annual-figure-components"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2314,
+ "usage": {
+  "in": 631,
+  "out": 574,
+  "cache_write": 4992,
+  "cache_read": 8474
+ },
+ "seconds": 10.1,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "READ pay-structure-vs-monthly-payslip",
+  "This explains the core reason: the annual figure includes components (basic pay divided evenly, fixed allowances, and bonuses) that don't all land monthly in equal slices — bonuses are paid only on their own calendar, so a given month's gross pay reflects whichever components happened to pay out that month, not a simple 1/12 of the annual figure.\n\nLet me check the related document on annual figure components for completeness.\n\nREAD pay-annual-figure-components",
+  "Both documents together give the full answer.\n\n## Why the annual figure doesn't map cleanly onto a single month's gross pay\n\nThe quoted annual salary is a **planning number built from three components**, not a single payslip line:\n\n1. **Basic pay** — guaranteed, paid as an even 1/12 slice every month.\n2. **Fixed nontaxable allowances** — guaranteed, but only in months the qualifying condition is met.\n3. **Target bonus** — *not* guaranteed. It's included in the annual figure \"at target,\" but actually pays out only on its own separate calendar, in an amount that depends on performance (could be more, less, or zero).\n\nBecause bonus is often a large share of the annual figure but doesn't pay out evenly (or monthly at all), **any single month's gross pay is not the annual figure divided by 12**. A month without a bonus payment will look like a shortfall compared to 1/12 of the annual number — but it isn't an error, it's simply a month missing the bonus component. This also explains why two people quoted the same annual figure can see very different monthly totals, depending on how much of their package is guaranteed (basic pay + allowances) versus variable (target bonus).\n\nDONE"
+ ]
+}

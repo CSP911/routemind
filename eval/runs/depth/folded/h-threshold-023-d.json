@@ -1,0 +1,44 @@
+{
+ "id": "h-threshold-023-d",
+ "tree": "folded",
+ "q": "For category C1, amount V3, term M4, whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c1-amount-v3-term-m4"
+ ],
+ "collected": [
+  "hard-threshold-row-category-c1-amount-v3-term-m4",
+  "hard-threshold-legend-category",
+  "hard-threshold-legend-amount",
+  "hard-threshold-legend-term"
+ ],
+ "precision": 0.25,
+ "turns": 10,
+ "opens": 5,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3103,
+ "usage": {
+  "in": 643,
+  "out": 627,
+  "cache_write": 7298,
+  "cache_read": 47744
+ },
+ "seconds": 22.5,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-threshold",
+  "READ hard-threshold-row-category-c1-amount-v3-term-m4",
+  "The division director must sign off, and three competing quotes are required before approval (11 working days to expect) for category C1, amount V3, term M4.\n\nLet me verify the category/amount/term definitions match your intended case by checking the legends.\n\nOPEN hard-threshold-legend-category",
+  "READ hard-threshold-legend-category",
+  "OPEN hard-threshold-legend-amount",
+  "READ hard-threshold-legend-amount",
+  "OPEN hard-threshold-legend-term",
+  "READ hard-threshold-legend-term",
+  "Based on the legends and the row for **category C1 (a couple of laptops), amount V3 (around ₩12 million), term M4 (until we cancel it)**:\n\n**Who signs it:** The division director must sign off.\n\n**Do you need other prices first?** Yes — this threshold requires **three competing quotes** to be obtained before approval. Also budget for about **11 working days** for the process to complete.\n\n(Note: If the actual spend exceeds the ₩20,011 thousand delegation limit tied to this row without prior approval, the excess at that higher level is not recoverable — any unavoidable excess must instead be claimed separately via a written statement decided by the budget holder.)\n\nDONE"
+ ]
+}

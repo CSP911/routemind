@@ -1,0 +1,42 @@
+{
+ "id": "m5",
+ "tree": "flat",
+ "q": "A counterparty signed on a power of attorney that had already lapsed. What happens now?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "expired-poa-relied-upon"
+ ],
+ "collected": [
+  "expired-poa-relied-upon",
+  "power-of-attorney-issuance",
+  "power-of-attorney-scope",
+  "evidence-of-authority-request",
+  "external-signing-authority-overview"
+ ],
+ "precision": 0.2,
+ "turns": 7,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 6747,
+ "usage": {
+  "in": 631,
+  "out": 1002,
+  "cache_write": 5838,
+  "cache_read": 21955
+ },
+ "seconds": 17.1,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN approval",
+  "READ expired-poa-relied-upon",
+  "READ power-of-attorney-issuance",
+  "READ power-of-attorney-scope",
+  "This covers the scope requirements. Let me also check the evidence-of-authority document since it's directly referenced as relevant to what a counterparty checks.\n\nREAD evidence-of-authority-request",
+  "Now I have a complete picture. Let me verify there's nothing else needed by checking external-signing-authority-overview, since it was flagged as relevant to why a counterparty can't tell from the signature alone.\n\nREAD external-signing-authority-overview",
+  "I now have a complete picture of the answer. Let me summarize what happens:\n\n**Answer:**\n\nWhen a counterparty signs based on a power of attorney (POA) that had already lapsed, **the signature does not bind the company** — regardless of what the counterparty believed or what copy they held on file (per `expired-poa-relied-upon`).\n\nKey points:\n1. **The date is what matters, not possession** — a counterparty holding an old copy of a POA is not a substitute for checking whether it's still current. Only the expiry date on the document controls.\n2. **No valid delegation = no authorization** — once the POA's fixed expiry date passes, the agent's authority to sign on the grantor's behalf lapses entirely. A signature made afterward is not backed by any valid delegation, so the transaction is not properly authorized on the company's side.\n3. **Fix going forward**: The agent must go back to the grantor for a **fresh POA**, naming the same transaction with a new expiry — reissued with the same required fields (grantor, agent, counterparty, transaction, expiry) and sealed by doc admin, exactly as the original issuance required (`power-of-attorney-issuance`, `power-of-attorney-scope`).\n4. **Underlying principle**: A POA only ever carries as much authority as its grantor holds, for the transaction named — and that authority exists only within the stated expiry window. Outside that window, it's as if no POA was ever issued.\n5. **Risk sits with the counterparty**: Since the company's internal signature/approval chain is invisible to an outside party, a counterparty who proceeds without verifying current evidence of authority (a current POA and/or seal certificate) is taking on the company's risk, not reducing it (`evidence-of-authority-request`, `external-signing-authority-overview`). The proper practice is for the counterparty to request current evidence before signing, not rely on a previously-issued copy.\n\nDONE"
+ ]
+}

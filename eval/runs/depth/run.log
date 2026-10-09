@@ -1,0 +1,158 @@
+  folded  {"entities": 1212, "max_depth": 5, "widest": 67, "area_rows": {"approval": 15, "attendance": 23, "expense": 20, "payroll": 15, "procurement": 15}, "tables_over_25": 5}
+  flat    {"entities": 1126, "max_depth": 4, "widest": 244, "area_rows": {"approval": 61, "attendance": 244, "expense": 212, "payroll": 76, "procurement": 162}, "tables_over_25": 9}
+  146 walks · model claude-sonnet-5 · 8 at a time
+  [1/146] folded e1                     HIT  turns  7 opens  3 back 0 $0.023
+  [2/146] folded e2                     HIT  turns  4 opens  2 back 0 $0.015
+  [3/146] folded m2                     HIT  turns  5 opens  2 back 0 $0.015
+  [4/146] folded e4                     HIT  turns  5 opens  2 back 0 $0.014
+  [5/146] folded m3                     HIT  turns  5 opens  3 back 0 $0.017
+  [6/146] folded e5                     HIT  turns  4 opens  2 back 0 $0.018
+  [7/146] folded m1                     HIT  turns  5 opens  2 back 0 $0.021
+  [8/146] folded m5                     HIT  turns  5 opens  2 back 0 $0.017
+  [9/146] folded s1                     miss turns 12 opens  6 back 2 $0.055
+  [10/146] folded h1                     HIT  turns  6 opens  2 back 0 $0.026
+  [11/146] folded e3                     HIT  turns 13 opens  2 back 0 $0.048
+  [12/146] folded m4                     HIT  turns 12 opens  6 back 0 $0.050
+  [13/146] folded h4                     HIT  turns  7 opens  4 back 0 $0.030
+  [14/146] folded s2                     miss turns  5 opens  2 back 0 $0.024
+  [15/146] folded m6                     HIT  turns  5 opens  3 back 0 $0.013
+  [16/146] folded h2                     HIT  turns 12 opens  7 back 1 $0.048
+  [17/146] folded h-perdiem-000-i        HIT  turns 12 opens  5 back 1 $0.076
+  [18/146] folded m7                     HIT  turns  5 opens  3 back 0 $0.017
+  [19/146] folded h5                     HIT  turns 11 opens  4 back 0 $0.053
+  [20/146] folded m8                     HIT  turns  5 opens  2 back 0 $0.020
+  [21/146] folded h3                     miss turns 10 opens  5 back 0 $0.060
+  [22/146] folded s4                     miss turns 11 opens  5 back 1 $0.043
+  [23/146] folded h-perdiem-000-d        HIT  turns  5 opens  2 back 0 $0.042
+  [24/146] folded h-perdiem-222-i        HIT  turns  7 opens  2 back 0 $0.048
+  [25/146] folded h-perdiem-023-d        HIT  turns  4 opens  2 back 0 $0.036
+  [26/146] folded h-perdiem-023-i        HIT  turns  8 opens  2 back 0 $0.055
+  [27/146] folded h-overtime-023-i       HIT  turns  8 opens  2 back 0 $0.047
+  [28/146] folded h-perdiem-120-i        HIT  turns 12 opens  5 back 0 $0.076
+  [29/146] folded h-overtime-000-d       HIT  turns  8 opens  3 back 1 $0.050
+  [30/146] folded s3                     miss turns 19 opens  9 back 2 $0.107
+  [31/146] folded h-overtime-120-i       HIT  turns 12 opens  6 back 0 $0.065
+  [32/146] folded h-overtime-023-d       HIT  turns  6 opens  3 back 0 $0.042
+  [33/146] folded h-overtime-222-i       HIT  turns 12 opens  6 back 0 $0.066
+  [34/146] folded h-overtime-000-i       HIT  turns 12 opens  6 back 0 $0.072
+  [35/146] folded h-accrual-000-i        HIT  turns  8 opens  2 back 0 $0.051
+  [36/146] folded h-accrual-120-i        HIT  turns  8 opens  2 back 0 $0.048
+  [37/146] folded h-accrual-023-i        HIT  turns  6 opens  2 back 0 $0.045
+  [38/146] folded h-accrual-222-i        HIT  turns  7 opens  2 back 0 $0.043
+  [39/146] folded h-threshold-000-d      HIT  turns  4 opens  2 back 0 $0.031
+  [40/146] folded h-threshold-000-i      HIT  turns  5 opens  2 back 0 $0.038
+  [41/146] folded h-accrual-000-d        HIT  turns  5 opens  2 back 0 $0.046
+  [42/146] folded h-accrual-023-d        HIT  turns 11 opens  4 back 0 $0.061
+  [43/146] folded h-threshold-120-i      HIT  turns  9 opens  3 back 0 $0.049
+  [44/146] folded h-threshold-023-i      HIT  turns  9 opens  3 back 0 $0.052
+  [45/146] folded h-threshold-222-i      HIT  turns  9 opens  3 back 0 $0.052
+  [46/146] folded s5                     HIT  turns 17 opens 10 back 2 $0.121
+  [47/146] folded t-accrual-01           HIT  turns  6 opens  3 back 0 $0.020
+  [48/146] folded h-diligence-000-i      HIT  turns 10 opens  4 back 0 $0.054
+  [49/146] folded h-diligence-120-i      HIT  turns  7 opens  2 back 0 $0.043
+  [50/146] folded h-diligence-000-d      HIT  turns  4 opens  2 back 0 $0.030
+  [51/146] folded h-diligence-222-i      HIT  turns  5 opens  2 back 0 $0.041
+  [52/146] folded h-threshold-023-d      HIT  turns 10 opens  5 back 0 $0.053
+  [53/146] folded t-overtime-05          HIT  turns  5 opens  2 back 1 $0.022
+  [54/146] folded t-diligence-01         HIT  turns  5 opens  2 back 0 $0.018
+  [55/146] folded h-diligence-023-d      HIT  turns  5 opens  2 back 0 $0.035
+  [56/146] folded t-overtime-02          miss turns  4 opens  1 back 0 $0.017
+  [57/146] folded t-accrual-04           HIT  turns  4 opens  1 back 0 $0.017
+  [58/146] folded h-diligence-023-i      HIT  turns  9 opens  3 back 0 $0.050
+  [59/146] folded t-diligence-07         HIT  turns  3 opens  1 back 0 $0.010
+  [60/146] folded t-perdiem-06           HIT  turns  4 opens  1 back 0 $0.016
+  [61/146] folded t-perdiem-08           HIT  turns  4 opens  1 back 0 $0.015
+  [62/146] folded t-perdiem-03           HIT  turns  8 opens  4 back 1 $0.034
+  [63/146] folded t-perdiem-10           HIT  turns  4 opens  1 back 0 $0.016
+  [64/146] folded t-overtime-08          HIT  turns  6 opens  2 back 1 $0.029
+  [65/146] folded t-overtime-10          HIT  turns  7 opens  2 back 1 $0.026
+  [66/146] folded t-accrual-09           HIT  turns  6 opens  3 back 0 $0.024
+  [67/146] flat   e1                     HIT  turns  5 opens  2 back 0 $0.032
+  [68/146] folded t-accrual-07           HIT  turns  8 opens  4 back 0 $0.050
+  [69/146] folded t-diligence-09         HIT  turns  8 opens  4 back 1 $0.036
+  [70/146] flat   e2                     HIT  turns  3 opens  1 back 0 $0.066
+  [71/146] folded t-accrual-11           HIT  turns  8 opens  4 back 0 $0.055
+  [72/146] folded t-perdiem-12           HIT  turns  7 opens  3 back 0 $0.028
+  [73/146] flat   e4                     HIT  turns  4 opens  1 back 0 $0.032
+  [74/146] flat   m2                     HIT  turns  4 opens  1 back 0 $0.031
+  [75/146] folded t-diligence-11         HIT  turns  8 opens  3 back 1 $0.046
+  [76/146] flat   m1                     HIT  turns  5 opens  1 back 0 $0.084
+  [77/146] folded t-overtime-12          HIT  turns 12 opens  5 back 1 $0.061
+  [78/146] flat   e5                     HIT  turns  3 opens  1 back 0 $0.054
+  [79/146] flat   m3                     HIT  turns  5 opens  2 back 0 $0.078
+  [80/146] flat   h1                     HIT  turns  3 opens  1 back 0 $0.069
+  [81/146] flat   e3                     HIT  turns 12 opens  1 back 0 $0.142
+  [82/146] flat   s1                     HIT  turns 11 opens  4 back 1 $0.144
+  [83/146] flat   m4                     HIT  turns  6 opens  3 back 1 $0.101
+  [84/146] flat   m5                     HIT  turns  7 opens  1 back 0 $0.045
+  [85/146] flat   h4                     HIT  turns  8 opens  3 back 0 $0.052
+  [86/146] flat   h2                     HIT  turns  7 opens  4 back 0 $0.101
+  [87/146] flat   s2                     miss turns  5 opens  1 back 0 $0.046
+  [88/146] flat   h5                     HIT  turns  7 opens  2 back 0 $0.114
+  [89/146] flat   s4                     miss turns  5 opens  3 back 0 $0.066
+  [90/146] flat   h-perdiem-000-i        HIT  turns 11 opens  4 back 1 $0.190
+  [91/146] flat   m6                     HIT  turns  4 opens  2 back 0 $0.029
+  [92/146] flat   m8                     HIT  turns  4 opens  1 back 0 $0.069
+  [93/146] flat   s3                     miss turns  8 opens  2 back 0 $0.119
+  [94/146] flat   h-perdiem-000-d        HIT  turns  4 opens  1 back 0 $0.074
+  [95/146] flat   m7                     miss turns  6 opens  3 back 0 $0.085
+  [96/146] flat   h-perdiem-120-i        HIT  turns 11 opens  5 back 0 $0.132
+  [97/146] flat   h-perdiem-023-i        HIT  turns 13 opens  7 back 0 $0.218
+  [98/146] flat   h-overtime-120-i       HIT  turns 11 opens  5 back 0 $0.121
+  [99/146] flat   h-perdiem-023-d        HIT  turns  7 opens  2 back 1 $0.172
+  [100/146] flat   h-overtime-000-i       HIT  turns 10 opens  3 back 1 $0.186
+  [101/146] flat   h-perdiem-222-i        HIT  turns 18 opens  7 back 5 $0.525
+  [102/146] flat   s5                     miss turns 13 opens  4 back 1 $0.192
+  [103/146] folded t-diligence-04         HIT  turns 16 opens  6 back 2 $0.225
+  [104/146] flat   h-overtime-000-d       HIT  turns  4 opens  1 back 0 $0.084
+  [105/146] flat   h-overtime-023-i       HIT  turns 11 opens  5 back 0 $0.139
+  [106/146] flat   h-accrual-000-d        ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [107/146] flat   h3                     ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [108/146] flat   h-overtime-222-i       ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [109/146] flat   h-accrual-023-d        ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [110/146] flat   h-threshold-000-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [111/146] flat   h-threshold-120-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [112/146] flat   h-threshold-000-d      HIT  turns  3 opens  1 back 0 $0.049
+  [113/146] flat   h-threshold-023-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [114/146] flat   h-threshold-222-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [115/146] flat   h-threshold-023-d      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [116/146] flat   h-diligence-000-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [117/146] flat   h-diligence-120-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [118/146] flat   h-diligence-023-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [119/146] flat   h-diligence-222-i      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [120/146] flat   t-accrual-01           HIT  turns  6 opens  3 back 0 $0.093
+  [121/146] flat   h-diligence-000-d      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [122/146] flat   h-diligence-023-d      ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [123/146] flat   t-diligence-01         ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [124/146] flat   t-overtime-02          ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [125/146] flat   h-accrual-000-i        ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [126/146] flat   t-overtime-05          HIT  turns  7 opens  2 back 1 $0.102
+  [127/146] flat   t-perdiem-03           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [128/146] flat   t-diligence-04         ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [129/146] flat   t-accrual-04           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [130/146] flat   t-perdiem-06           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [131/146] flat   t-accrual-07           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [132/146] flat   t-diligence-07         ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [133/146] flat   h-accrual-222-i        ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [134/146] flat   t-overtime-08          ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [135/146] flat   t-perdiem-08           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [136/146] flat   t-accrual-09           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [137/146] flat   t-diligence-09         ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [138/146] flat   t-perdiem-10           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [139/146] flat   t-overtime-10          ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [140/146] flat   t-accrual-11           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [141/146] flat   t-diligence-11         ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [142/146] flat   h-accrual-023-i        ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [143/146] flat   t-overtime-12          ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [144/146] flat   t-perdiem-12           ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [145/146] flat   h-overtime-023-d       ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  [146/146] flat   h-accrual-120-i        ERROR agent: HTTP 400: {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to ac
+  35 questions walked on both trees
+  all (35)                 folded: hit 31/35 (89%)  turns 8.1  opens 3.6  back 0.3  $0.041/walk   flat: hit 30/35 (86%)  turns 7.2  opens 2.6  back 0.3  $0.110/walk
+  pilot (22)               folded: hit 18/22 (82%)  turns 8.2  opens 3.8  back 0.4  $0.036/walk   flat: hit 17/22 (77%)  turns 6.1  opens 2.0  back 0.1  $0.080/walk
+  direct (4)               folded: hit 4/4 (100%)  turns 5.2  opens 2.2  back 0.2  $0.040/walk   flat: hit 4/4 (100%)  turns 4.5  opens 1.2  back 0.2  $0.095/walk
+  indirect (7)             folded: hit 7/7 (100%)  turns 10.1  opens 4.0  back 0.1  $0.063/walk   flat: hit 7/7 (100%)  turns 12.1  opens 5.1  back 1.0  $0.216/walk
+  temporal (2)             folded: hit 2/2 (100%)  turns 5.5  opens 2.5  back 0.5  $0.021/walk   flat: hit 2/2 (100%)  turns 6.5  opens 2.5  back 0.5  $0.098/walk
+  discordant: folded only 2, flat only 1 — exact McNemar p = 1.000
+  ran out of turns: folded 0, flat 0
+  estimated spend: folded $1.44, flat $3.84 (Sonnet-class list prices)

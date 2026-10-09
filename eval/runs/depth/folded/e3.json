@@ -1,0 +1,53 @@
+{
+ "id": "e3",
+ "tree": "folded",
+ "q": "What counts as flexible working here, and where does each specific rule live?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexwork-overview"
+ ],
+ "collected": [
+  "flexwork-overview",
+  "core-hours-table",
+  "flexitime-month-rule",
+  "flexitime-carryover-table",
+  "flexitime-shortfall-case",
+  "wfh-recording-procedure",
+  "flexwork-system-entry",
+  "hybrid-week-pattern",
+  "flexwork-approval-role",
+  "hybrid-week-swap-procedure"
+ ],
+ "precision": 0.1,
+ "turns": 13,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 11471,
+ "usage": {
+  "in": 636,
+  "out": 657,
+  "cache_write": 6316,
+  "cache_read": 42880
+ },
+ "seconds": 20.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-flexible-and-remote-working",
+  "This looks like the overview document itself matches the question directly. Let me read it first, then follow its pointers.\n\nREAD flexwork-overview",
+  "This overview confirms the structure. Let me read each specific rule document to get the details.\n\nREAD core-hours-table",
+  "READ flexitime-month-rule",
+  "READ flexitime-carryover-table",
+  "READ flexitime-shortfall-case",
+  "READ wfh-recording-procedure",
+  "READ flexwork-system-entry",
+  "Now let me get the hybrid week rules.\n\nREAD hybrid-week-pattern",
+  "READ flexwork-approval-role",
+  "Now let me check the hybrid swap procedure for completeness.\n\nREAD hybrid-week-swap-procedure",
+  "I've now collected all the documents under `sec-flexible-and-remote-working` that define what counts as flexible working and where each rule lives. This covers: the overview, core hours, flexitime monthly settlement, carryover caps, shortfall conversion, WFH recording, system menu locations, hybrid week pattern, swap procedure, and approval roles.\n\nDONE"
+ ]
+}

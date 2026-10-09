@@ -1,0 +1,47 @@
+{
+ "id": "m4",
+ "tree": "folded",
+ "q": "Is unpaid leave taken out of my pay on working days or on calendar days?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "unpaid-leave-deduction-calculation"
+ ],
+ "collected": [
+  "loa-pay-and-insurance-status",
+  "unpaid-personal-leave-form",
+  "payslip-deduction-lines",
+  "payslip-prorated-month",
+  "unpaid-leave-deduction-calculation"
+ ],
+ "precision": 0.2,
+ "turns": 12,
+ "opens": 6,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5884,
+ "usage": {
+  "in": 639,
+  "out": 866,
+  "cache_write": 6225,
+  "cache_read": 38755
+ },
+ "seconds": 21.9,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-leave-of-absence-other-than-parental",
+  "READ loa-pay-and-insurance-status",
+  "READ unpaid-personal-leave-form",
+  "OPEN payroll",
+  "OPEN payslip",
+  "OPEN sec-payslip-lines-in-detail",
+  "READ payslip-deduction-lines",
+  "READ payslip-prorated-month",
+  "OPEN sec-days-into-money",
+  "READ unpaid-leave-deduction-calculation",
+  "This directly answers the question.\n\n**Unpaid leave is deducted from pay based on calendar days, not working days.**\n\nThe proration ratio is: days of unpaid leave ÷ total calendar days in that month. This same ratio is applied to:\n- Basic pay\n- Nontaxable allowances (meal, own-car, etc.)\n- Insurance deduction lines (which fall automatically since they're based on pay excluding nontaxable allowances)\n\nFor example, a 5-day unpaid leave stretch within a 31-day month would deduct 5/31 of that month's pay and allowances — regardless of how many of those 5 days would have actually been working days. Calculating the deduction based on working days instead would produce an incorrect figure that doesn't match how the rest of the payslip proration works (the same calendar-day basis is used for mid-month joiners/leavers).\n\nDONE"
+ ]
+}

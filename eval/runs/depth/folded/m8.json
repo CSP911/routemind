@@ -1,0 +1,37 @@
+{
+ "id": "m8",
+ "tree": "folded",
+ "q": "Someone paid for one client dinner in two taps on the card, both under the evidence threshold. What did the close cycle do with that?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "expense-audit-close-worked-case"
+ ],
+ "collected": [
+  "expense-audit-close-worked-case",
+  "expense-audit-finding-response-procedure"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2601,
+ "usage": {
+  "in": 640,
+  "out": 255,
+  "cache_write": 3157,
+  "cache_read": 6696
+ },
+ "seconds": 7.8,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "OPEN sec-month-end-close-and-expense-audit",
+  "READ expense-audit-close-worked-case",
+  "This directly answers the question. Let me check the related procedure page briefly for completeness.\n\nREAD expense-audit-finding-response-procedure",
+  "This gives full context. The two documents together answer the question completely.\n\nDONE"
+ ]
+}

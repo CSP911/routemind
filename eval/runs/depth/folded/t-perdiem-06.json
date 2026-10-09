@@ -1,0 +1,36 @@
+{
+ "id": "t-perdiem-06",
+ "tree": "folded",
+ "q": "In August 2025, what was the nightly lodging cap for a grade 2 traveller going to a band B2 destination? Answer under the version of the overseas per-diem that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-mid",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-v2"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-v2"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2408,
+ "usage": {
+  "in": 658,
+  "out": 180,
+  "cache_write": 2788,
+  "cache_read": 4006
+ },
+ "seconds": 5.4,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision",
+  "READ hard-perdiem-v2",
+  "The nightly lodging cap for a Grade 2 traveller to a Band B2 destination, under the version in force in August 2025 (hard-perdiem-v2, 2024-07-01 to 2025-12-31), is **115 USD**.\n\nDONE"
+ ]
+}

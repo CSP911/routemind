@@ -1,0 +1,42 @@
+{
+ "id": "s4",
+ "tree": "folded",
+ "q": "We settled on a supplier in a room. Is what we wrote down enough to place the order, or is something else needed?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "purchase-steps",
+  "threshold-table",
+  "vendor-steps"
+ ],
+ "precision": 0.0,
+ "turns": 11,
+ "opens": 5,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 2484,
+ "usage": {
+  "in": 646,
+  "out": 1328,
+  "cache_write": 3929,
+  "cache_read": 21570
+ },
+ "seconds": 23.0,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN purchase-request",
+  "READ purchase-steps",
+  "OPEN approval-threshold",
+  "READ threshold-table",
+  "OPEN BACK",
+  "BACK",
+  "OPEN procurement",
+  "OPEN vendor",
+  "READ vendor-steps",
+  "The question: after settling on a supplier in a meeting, is the write-up (quotes/decision) alone enough to place the order?\n\nBased on what I've gathered:\n\n**No — a decision/quotes alone is not enough.** Two more things are required before the order can actually be placed:\n\n1. **Vendor registration** (from `vendor-steps`): A new supplier must be registered before any order can be placed or invoice paid. This requires collecting their papers (business registration certificate, bank details, corporate registry extract if a company), filling in the vendor registration form, and submitting it — registration takes 2 working days (5 for overseas suppliers). Even a one-off purchase needs this; \"it's only this once\" is explicitly called out as the most common cause of delay.\n\n2. **Formal approval through the purchase request process** (from `purchase-steps` and `threshold-table`): The decision needs to become a filed draft purchase request with quotes attached (and the vendor registration form, if new) and go through approval at the right level depending on the amount band (team lead / division head / CEO, with 1–3 quotes or more). Only once approved does **the desk place the order** — teams do not order directly.\n\nSo writing down the supplier decision is just step one. Before the order can be placed, the supplier must be registered (if not already), and the request must be filed with quotes and go through the required approval — the purchasing desk, not the team, actually places the order.\n\nDONE"
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "id": "h-threshold-222-i",
+ "tree": "folded",
+ "q": "Flights and hotels, around 12 million won, locked in for three years: whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c3-amount-v3-term-m3"
+ ],
+ "collected": [
+  "hard-threshold-legend-revision",
+  "hard-threshold-legend-category",
+  "hard-threshold-legend-amount",
+  "hard-threshold-legend-term",
+  "hard-threshold-row-category-c3-amount-v3-term-m3"
+ ],
+ "precision": 0.2,
+ "turns": 9,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4303,
+ "usage": {
+  "in": 649,
+  "out": 818,
+  "cache_write": 7597,
+  "cache_read": 32272
+ },
+ "seconds": 17.5,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN hard-threshold-legend-revision",
+  "READ hard-threshold-legend-revision",
+  "OPEN sec-hard-threshold",
+  "READ hard-threshold-legend-category",
+  "READ hard-threshold-legend-amount",
+  "READ hard-threshold-legend-term",
+  "READ hard-threshold-row-category-c3-amount-v3-term-m3",
+  "Based on the research: flights and hotels locked in for three years, around 12 million won, maps to **category C3, amount V3, term M3**.\n\n**Answer:**\n- **Signature needed:** The division director signs it off.\n- **Other prices (quotes) required:** Yes — three competing quotes are needed.\n- Additional context: delegation limit for this band is 20,042 thousand KRW, and expect about 10 working days for the approval to process.\n\n(Note: this is the current table, in force from 2026-01-01. If your purchase date falls in 2025 instead, the applicable rules would come from `hard-threshold-v2` rather than this one — let me know if you need that version checked.)\n\nDONE"
+ ]
+}

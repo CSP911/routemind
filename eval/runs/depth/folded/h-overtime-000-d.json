@@ -1,0 +1,41 @@
+{
+ "id": "h-overtime-000-d",
+ "tree": "folded",
+ "q": "For day D1, hours H1, place P1, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "collected": [
+  "hard-moved-overtime",
+  "hard-overtime-legend-revision",
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 8,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 3382,
+ "usage": {
+  "in": 645,
+  "out": 738,
+  "cache_write": 8372,
+  "cache_read": 19625
+ },
+ "seconds": 15.8,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN payroll",
+  "READ hard-moved-overtime",
+  "BACK",
+  "OPEN attendance",
+  "READ hard-overtime-legend-revision",
+  "OPEN sec-hard-overtime",
+  "READ hard-overtime-row-day-d1-hours-h1-place-p1",
+  "For day D1, hours H1, place P1 (current table, in force from 2026-01-01):\n\n- **Multiplier: 1.20x**\n- **Rounding: to the nearest 5 minutes**\n\n(Additional context: no advance approval needed, and it does not count toward the monthly cap.)\n\nNote: this is the current rule (effective 2026-01-01 onward). If your date falls between 2024-07-01 and 2025-12-31, the applicable version would instead be `hard-overtime-v2`, which has different qualifiers.\n\nDONE"
+ ]
+}

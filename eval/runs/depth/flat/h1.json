@@ -1,0 +1,34 @@
+{
+ "id": "h1",
+ "tree": "flat",
+ "q": "I stayed late three nights last week but never put anything in beforehand. Will that reach my pay?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "unrequested-overtime-case"
+ ],
+ "collected": [
+  "unrequested-overtime-case"
+ ],
+ "precision": 1.0,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1083,
+ "usage": {
+  "in": 626,
+  "out": 498,
+  "cache_write": 14696,
+  "cache_read": 14327
+ },
+ "seconds": 8.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ unrequested-overtime-case",
+  "This directly answers your question.\n\n**No — those three late nights will not reach your pay, because nothing was submitted beforehand (or within the late-filing window).**\n\nPer the overtime rules here:\n- Overtime pay requires a *request* — filed before the hours are worked, or at latest within the 3-working-day late-filing window afterward.\n- Simply staying late and having that show up in the attendance system is **not sufficient**. The hours will just be logged as ordinary hours worked, not overtime.\n- HR does not backfill a request for you retroactively, and even if your manager verbally acknowledges you stayed late, that acknowledgement does not substitute for a filed request.\n- The only remaining path is to raise it as an exception with the HR desk — but approval of such exceptions is explicitly **not routine**, so it's not a reliable way to get paid.\n\n**Bottom line:** since you filed nothing beforehand for any of the three nights, that time will very likely not convert into overtime pay. Going forward, you'd need to submit the request before the hours happen (or within 3 working days after) for it to count.\n\nDONE"
+ ]
+}

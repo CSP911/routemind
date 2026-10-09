@@ -1,0 +1,38 @@
+{
+ "id": "t-accrual-09",
+ "tree": "folded",
+ "q": "For something dated 29 June 2024 — two days before the first change — how much leave was accrued or granted for someone with two years of continuous service? Use the version in force on that day.",
+ "needs": "any",
+ "lever": "boundary",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "leave-accrual"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "accrual-rule"
+ ],
+ "precision": 0.5,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1809,
+ "usage": {
+  "in": 655,
+  "out": 619,
+  "cache_write": 2714,
+  "cache_read": 8848
+ },
+ "seconds": 14.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "DONE\n\nBased on the version in force on 29 June 2024 (the original `leave-accrual` rule, valid until 2024-07-01 — two days after the date in question), someone with **two years of continuous service** falls under \"1 year and over\" and would be granted **15 days** of leave."
+ ]
+}

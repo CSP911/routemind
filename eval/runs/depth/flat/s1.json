@@ -1,0 +1,46 @@
+{
+ "id": "s1",
+ "tree": "flat",
+ "q": "I want to work out of Portugal for a few months. Who has to say yes, and does anything change about what comes off my pay?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "working-abroad-approval-role"
+ ],
+ "collected": [
+  "working-abroad-overview",
+  "working-abroad-approval-procedure",
+  "working-abroad-approval-role",
+  "working-abroad-tax-day-table",
+  "insurance-rates"
+ ],
+ "precision": 0.2,
+ "turns": 11,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 6241,
+ "usage": {
+  "in": 649,
+  "out": 1350,
+  "cache_write": 20671,
+  "cache_read": 146792
+ },
+ "seconds": 26.1,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN working-abroad-overview",
+  "READ working-abroad-overview",
+  "READ working-abroad-approval-procedure",
+  "READ working-abroad-approval-role",
+  "READ working-abroad-tax-day-table",
+  "BACK",
+  "OPEN payroll",
+  "OPEN insurance",
+  "READ insurance-rates",
+  "DONE"
+ ]
+}

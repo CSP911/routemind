@@ -1,0 +1,35 @@
+{
+ "id": "h-threshold-000-d",
+ "tree": "folded",
+ "q": "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "collected": [
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1002,
+ "usage": {
+  "in": 631,
+  "out": 229,
+  "cache_write": 6342,
+  "cache_read": 7433
+ },
+ "seconds": 7.5,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-threshold",
+  "READ hard-threshold-row-category-c1-amount-v1-term-m1",
+  "For **category C1, amount V1, term M1**:\n\n- **Signature required:** the **team lead** (delegation limit 1,000 thousand KRW)\n- **Competing quotes needed:** **none** — so you do **not** need to get other prices first\n- **Turnaround:** 2 working days to expect\n\n(Note: this is the current rule in force from 2026-01-01, per `sec-hard-threshold`.)\n\nDONE"
+ ]
+}

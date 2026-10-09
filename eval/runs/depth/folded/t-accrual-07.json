@@ -1,0 +1,41 @@
+{
+ "id": "t-accrual-07",
+ "tree": "folded",
+ "q": "How many times has leave accrual been rewritten, and from what date does each version apply?",
+ "needs": "any",
+ "lever": "changed",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-legend-revision"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "accrual-rule",
+  "hard-accrual-v2"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 8,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2931,
+ "usage": {
+  "in": 631,
+  "out": 968,
+  "cache_write": 7843,
+  "cache_read": 14703
+ },
+ "seconds": 21.0,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "This is the oldest version (in force until 2024-07-01), which doesn't mention a specific start date for itself but is the original \"Leave entitlement\" document. Let me now get the other two versions.\n\nREAD hard-accrual-v2",
+  "Now let me check the current version for completeness.\n\nOPEN sec-hard-accrual",
+  "I have gathered enough information to answer the question. The legend document already confirmed the three versions and their dates, and I've read the oldest two versions' content for confirmation. The third (current) version's structure is confirmed by this table listing.\n\nDONE\n\n**Answer: Leave accrual has been rewritten 3 times (2 rewrites after the original), giving 3 total versions:**\n\n1. **Original — in force until 2024-07-01** (`leave-accrual`/`accrual-rule`): Entitlement based on length of service alone (e.g., 15 days at 1+ years, capped progression to 25 days at 3+ years). No end date is stated within this version itself — it was written as if permanent.\n\n2. **Second version — in force from 2024-07-01 to 2025-12-31** (`hard-accrual-v2`): Monthly accrual rate by **type and tenure** (a 4×4 grid, e.g., E1/T1 = 0.40/month up to E4/T4 = 0.70/month). Explicitly superseded, effective only in this window.\n\n3. **Current version — in force from 2026-01-01 onward** (`sec-hard-accrual`): Monthly accrual rate, carry-over limit, and notice period indexed by **type, tenure, and site** (a 64-row table, 4×4×4), replacing the second version."
+ ]
+}

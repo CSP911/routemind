@@ -1,0 +1,43 @@
+{
+ "id": "h-perdiem-023-i",
+ "tree": "folded",
+ "q": "I'm a junior analyst — Jakarta, three weeks — what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g1-band-b3-stay-s4"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-legend-grade",
+  "hard-perdiem-legend-band",
+  "hard-perdiem-legend-stay",
+  "hard-perdiem-row-grade-g1-band-b3-stay-s4"
+ ],
+ "precision": 0.2,
+ "turns": 8,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4128,
+ "usage": {
+  "in": 655,
+  "out": 793,
+  "cache_write": 8294,
+  "cache_read": 33888
+ },
+ "seconds": 15.5,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision",
+  "OPEN sec-hard-perdiem",
+  "READ hard-perdiem-legend-grade",
+  "READ hard-perdiem-legend-band",
+  "READ hard-perdiem-legend-stay",
+  "READ hard-perdiem-row-grade-g1-band-b3-stay-s4",
+  "Based on the current overseas per-diem table (in force from 2026-01-01), for a junior analyst (grade G1) traveling to Jakarta (band B3) for three weeks (stay band S4):\n\n- **Lodging cap: 139 USD per night**\n- **Receipts must be kept for any single expense above 45 USD** (the receipt threshold)\n\nAdditional context: meals are capped at 81 USD/day and incidentals at 16 USD/day. Any unapproved excess over the lodging cap is not reimbursable; an unavoidable excess requires a written justification plus evidence, decided by the budget holder.\n\nDONE"
+ ]
+}

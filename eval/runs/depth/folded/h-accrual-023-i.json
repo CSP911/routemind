@@ -1,0 +1,40 @@
+{
+ "id": "h-accrual-023-i",
+ "tree": "folded",
+ "q": "On the regular payroll, been here five years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "collected": [
+  "hard-accrual-legend-type",
+  "hard-accrual-legend-tenure",
+  "hard-accrual-legend-site",
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "precision": 0.25,
+ "turns": 6,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3102,
+ "usage": {
+  "in": 643,
+  "out": 420,
+  "cache_write": 8050,
+  "cache_read": 22786
+ },
+ "seconds": 9.9,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-hard-accrual",
+  "READ hard-accrual-legend-type\nREAD hard-accrual-legend-tenure\nREAD hard-accrual-legend-site",
+  "READ hard-accrual-row-type-e1-tenure-t3-site-l4",
+  "Based on your profile — **regular payroll (type E1)**, **five years of tenure (T3)**, **fully remote (site L4)** — the current accrual table (in force from 2026-01-01) gives:\n\n- **Monthly accrual:** 0.62 days per month\n- **Carry-over limit (max you can be holding into January):** 13 days\n\nSo each month you build up 0.62 days of leave, and the most you're allowed to carry over into the new year (January) is 13 days — any unapproved excess beyond that is forfeited, though an unavoidable excess can be claimed separately with written justification.",
+  "DONE"
+ ]
+}

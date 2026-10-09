@@ -1,0 +1,37 @@
+{
+ "id": "m1",
+ "tree": "folded",
+ "q": "What happens if my banked hours don't cover the shortfall at the end of the month?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexitime-shortfall-case"
+ ],
+ "collected": [
+  "flexitime-shortfall-case",
+  "flexitime-month-rule"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2231,
+ "usage": {
+  "in": 625,
+  "out": 397,
+  "cache_write": 3037,
+  "cache_read": 6629
+ },
+ "seconds": 9.2,
+ "model": "claude-sonnet-5",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-flexible-and-remote-working",
+  "READ flexitime-shortfall-case",
+  "Let me also check the flexitime month rule for complete context.\n\nREAD flexitime-month-rule",
+  "Based on these documents, I now have a complete answer.\n\nDONE\n\nIf your banked flex hours don't cover the month's shortfall at settlement: the shortfall isn't deducted immediately at the first month's close — it carries forward into the next month, with a requirement to clear it before that next month's close. If it's still not fully made up by the end of that following month (i.e., it survives two consecutive month closes), the remaining shortfall is automatically converted into a leave deduction (following the standard half/quarter-day partial-leave conversion rule), with no separate approval step and no warning at the time of conversion — you'll simply see a lower leave balance on your next check. The only way to avoid this conversion is to clear the shortfall within the same month it opens (or at latest, during the one grace month before close)."
+ ]
+}
