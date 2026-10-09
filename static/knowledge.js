@@ -899,25 +899,46 @@
     }));
   }
 
+  /** Open the area a step landed in and the node path down to it. */
+  async function fpOpenFor(address) {
+    const tgt = fpTarget(address);
+    if (!tgt || !tgt.area) return;
+    openArea(tgt.area);
+    await loadEntries(tgt.area);
+    if (tgt.path.length) {
+      const have = pathIn(tgt.area);
+      // Only ever extended, never shortened: the person's own deeper path is left alone when it
+      // already passes through this one.
+      const keep = tgt.path.every((id, i) => have[i] === id);
+      if (!keep || have.length < tgt.path.length) setPath(tgt.area, tgt.path);
+      for (const id of tgt.path) await loadFiles(id);
+    }
+  }
+
+  /** On load, the walks still going — open, or moved in the last ten minutes, the live view's own
+   *  window — are opened on the map the way the live view would have opened them, and the camera
+   *  goes to the newest. Only on a map nobody has opened anything on yet: the screen expands, it
+   *  does not take over what a person has open. An older walk is the history's "show on the map". */
+  async function fpRestore() {
+    if (state.open.length) return;
+    const since = Date.now() - FP_LIVE_MIN * 60000;
+    const live = [...fp.walks.values()]
+      .filter((w) => w.now && (w.state === "open" || Date.parse(w.now.at || 0) >= since))
+      .sort((a, b) => (a.now.n || 0) - (b.now.n || 0));
+    if (!live.length) return;
+    for (const w of live) for (const st of w.steps) await fpOpenFor(st.address);
+    fpNowLine();
+    draw();
+    fpFollow(live[live.length - 1].now);
+  }
+
   /** Make one step visible in the walk it belongs to: open its area and the node path, then draw. */
   async function fpShow(step, w) {
     w.now = step;
     if (step.address) w.seen.add(step.address);
     if (w.steps.at(-1) !== step) w.steps.push(step);
     fp.fresh = { walk: w.id, n: step.n };
-    const tgt = fpTarget(step.address);
-    if (tgt && tgt.area) {
-      openArea(tgt.area);
-      await loadEntries(tgt.area);
-      if (tgt.path.length) {
-        const have = pathIn(tgt.area);
-        // Only ever extended, never shortened: the person's own deeper path is left alone when it
-        // already passes through this one.
-        const keep = tgt.path.every((id, i) => have[i] === id);
-        if (!keep || have.length < tgt.path.length) setPath(tgt.area, tgt.path);
-        for (const id of tgt.path) await loadFiles(id);
-      }
-    }
+    await fpOpenFor(step.address);
     fpNowLine();
     draw();
     fpFollow(step);
@@ -1020,13 +1041,54 @@
     return `${d} L ${z[0]} ${z[1]}`;
   }
 
+  const FP_BUBBLE_W = 340;
+
+  /** A sentence broken into lines no wider than `w`, at spaces where it has them and between
+   *  characters where it does not (Japanese, Chinese). Past `max` lines the last one ends in "…". */
+  function fpWrap(text, w, px, weight, max) {
+    const lines = [];
+    let cur = "";
+    const push = (tok) => {
+      const next = cur ? cur + tok : tok.trimStart();
+      if (drawnWidth(next, px, weight) <= w) { cur = next; return; }
+      if (cur.trim()) lines.push(cur.trimEnd());
+      cur = "";
+      // A word wider than the line is broken where it must be.
+      for (const ch of [...tok.trimStart()]) {
+        if (drawnWidth(cur + ch, px, weight) > w && cur) { lines.push(cur); cur = ""; }
+        cur += ch;
+      }
+    };
+    for (const tok of String(text).match(/\s*\S+/g) || []) push(tok);
+    if (cur.trim()) lines.push(cur.trimEnd());
+    if (lines.length <= max) return lines;
+    const kept = lines.slice(0, max - 1);
+    kept.push(fitted(lines.slice(max - 1).join(" "), w + 14, px, weight));
+    return kept;
+  }
+
+  /** Where the reason goes: right of the tile, else left, else under it — the first place inside the
+   *  drawing that covers no other tile. If none is clear, the first that is inside. */
+  function fpBubbleAt(now, bw, bh, width, height) {
+    const spots = [
+      { x: now.x + now.w / 2 + 12, y: now.y - bh / 2 },
+      { x: now.x - now.w / 2 - 12 - bw, y: now.y - bh / 2 },
+      // Under the tile's own caption ("2 nodes"), not on it.
+      { x: Math.min(Math.max(now.x - bw / 2, 8), width - 8 - bw), y: now.y + now.h / 2 + 22 },
+    ];
+    const inside = (s) => s.x >= 8 && s.x + bw <= width - 8 && s.y >= 4 && s.y + bh <= height - 4;
+    const clear = (s) => ![...drawPos.values()].some((p) => p !== now && !(p.x === now.x && p.y === now.y)
+      && s.x < p.x + p.w / 2 && s.x + bw > p.x - p.w / 2 && s.y < p.y + p.h / 2 && s.y + bh > p.y - p.h / 2);
+    return spots.find((s) => inside(s) && clear(s)) || spots.find(inside) || spots[0];
+  }
+
   const fpLen = (pts) => pts.reduce((n, p, i) => (i ? n + Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]) : 0), 0);
 
   /** The footprint drawn over the map: each walk's trace along the cables it took, and for the walk in
    *  focus its step numbers, the reason it gave for the step it is on, and — for a step that has just
    *  arrived — that stretch of cable lit in from end to end with a packet running along it. Above
    *  everything, and never in the way of a click. */
-  function fpOverlay(canvas, width) {
+  function fpOverlay(canvas, width, height = Infinity) {
     fp.spot = fpSpotOn();
     if (canvas.classList) canvas.classList.toggle("is-spot", fp.spot);
     if (!fp.on) return;
@@ -1087,16 +1149,23 @@
       const why = now && (now.step.op === "open" ? t("knowledge.fp.opened") : now.step.why);
       if (now && why) {
         const text = `${pts.length}. ${why}`;
-        // 24 for the bubble's own padding and 14 for the room `fitted` keeps: short of either, every
-        // reason came out cut with a `…` however short it was.
-        const bw = Math.min(drawnWidth(text, 11.5, 500) + 38, 360);
-        const right = now.x + now.w / 2 + 12 + bw <= width - 8;
-        const bx = right ? now.x + now.w / 2 + 12 : now.x - now.w / 2 - 12 - bw;
+        // Wrapped to four lines rather than cut to one: a reason is a sentence, and one line of 360px
+        // held about forty characters of it. Longer than four, the rest is a hover away and in full
+        // on the line above the map.
+        const lines = fpWrap(text, FP_BUBBLE_W, 11.5, 500, 4);
+        const bw = Math.max(...lines.map((l) => drawnWidth(l, 11.5, 500))) + 26;
+        const bh = lines.length * 15 + 13;
+        const at = fpBubbleAt(now, bw, bh, width, height);
         const bubble = svgEl("g", { class: `kn-fp-bubble ${col}` });
-        bubble.append(svgEl("rect", { x: bx, y: now.y - 14, width: bw, height: 28, rx: 14 }));
-        const tx = svgEl("text", { x: bx + 12, y: now.y + 4 });
-        tx.textContent = fitted(text, bw - 24, 11.5, 500);
-        bubble.append(tx);
+        if (lines.join(" ").replace(/\s+/g, " ").length < text.replace(/\s+/g, " ").length) {
+          const tip = svgEl("title", {}); tip.textContent = text; bubble.append(tip);
+        }
+        bubble.append(svgEl("rect", { x: at.x, y: at.y, width: bw, height: bh, rx: Math.min(14, bh / 2) }));
+        lines.forEach((line, i) => {
+          const tx = svgEl("text", { x: at.x + 13, y: at.y + 18 + i * 15 });
+          tx.textContent = line;
+          bubble.append(tx);
+        });
         layer.append(bubble);
       }
     }
@@ -1228,11 +1297,13 @@
     catch (e) { if (e.status === 501) fpOff(); return; }
     const steps = d.steps || [];
     if (fp.cursor === null) {
-      // First read: learn every walk kept, and draw nothing — the live view is what happens next.
+      // First read: learn every walk kept, and open the ones still going — a reload in the middle of
+      // a walk came back to a closed map, with the trace stopping at the area tiles.
       for (const s of steps) fpRemember(s);
       fp.cursor = Number(d.seq || 0);
       fpOptions();
       draw();
+      await fpRestore().catch(() => {});
       fpPanel();
       return;
     }

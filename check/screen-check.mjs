@@ -33,6 +33,9 @@ globalThis.__nav=[]; globalThis.window={addEventListener(){},IRISI18N:{t:(k,v)=>
 // check talks to a live server and node's own fetch schedules its socket timeouts through it — a
 // no-op setTimeout takes undici down inside the first request.
 globalThis.fetch = async (url, opts) => {
+  // The map, not the footprint (that is footprint-screen's): with walks still going on the install,
+  // a load opens their areas, and this check needs the map as a person who walks up to it finds it.
+  if (/walks\?since=/.test(String(url))) return { ok: true, status: 200, json: async () => ({ seq: 0, steps: [] }), text: async () => "" };
   const res = await realFetch(BASE + String(url), opts);
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text() };
 };

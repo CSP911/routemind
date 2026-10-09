@@ -81,6 +81,15 @@ is a break in the line: the tile itself is lit. Walks sharing a cable run beside
 pixels apart, in lanes taken from their colours, like lines on a metro map. A step onto something
 the cabling does not reach falls back to a squared-off elbow.
 
+**The reason in full, and a reload that comes back to the walk** (2026-10-09, operator). The reason
+beside the tile wraps onto up to four lines of 340px — about 190 characters — instead of being cut to
+one line of 360; anything longer ends in "…", with the whole sentence on hover and on the line above
+the map. It goes right of the tile, else left, else under the tile's caption: the first of those
+inside the drawing that covers no other tile. On load, the walks still going (open, or moved in the
+last ten minutes) are opened on the map as the live view would have opened them, and the camera goes
+to the newest — but only on a map nobody has opened anything on yet. Until then a reload in the middle
+of a walk came back to a closed map, the trace stopping at the area tiles.
+
 **History under the map, ten to a page** (2026-10-09, operator). Every kept walk, newest first: when,
 the question, who, what it did (tables · documents → where it stopped), how long, how it ended. Each
 row can be shown on the map at its last step, replayed, or opened for its reasons. The service pages
@@ -110,5 +119,6 @@ where it is now; a 1.5 s pause takes about that long at 1× and much less at 8×
 immediate; the trace, its numbers and the reason are drawn — every straight run of the trace level or
 upright, and some of them lying on the cables themselves — a step pressed in the row pins the map
 there, and the card appears once the walk ends; the history pages ten at a time with no walk on two
-pages, and showing a row on the map pins that walk at its last step. The service side of the paging —
+pages, and showing a row on the map pins that walk at its last step; a long reason is wrapped, not cut; and
+a reload opens the walks still going, but not over what a person has open nor for a walk long over. The service side of the paging —
 ten, then the rest, newest first, a row's summary not counting the close — is in footprint-check. Verified to fire on a poll that jumps to the newest step.

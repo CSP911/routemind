@@ -52,7 +52,7 @@ globalThis.fetch = async (url, opts) => {
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text(), headers: res.headers };
 };
 new Function(src.replace('if (document.readyState === "loading")',
-  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw, hist, histLoad };\n  if (document.readyState === "loading")'))();
+  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw, hist, histLoad, fpRestore };\n  if (document.readyState === "loading")'))();
 const kn = globalThis.__kn; const { state, fp } = kn;
 const settle = async (n = 40) => { for (let i = 0; i < n; i++) await new Promise((r) => setTimeout(r, 5)); };
 const results = []; const check = (name, cond, extra = "") => results.push(`${cond ? "ok  " : "FAIL"} ${name}${cond || !extra ? "" : "   — " + extra}`);
@@ -239,6 +239,28 @@ check("  'show on the map' pins that walk at its last step, and marks its row", 
       JSON.stringify({ focus: fp.focus, pin: fp.pin && fp.pin.now }));
 pageBtns().find((b) => cls(b).includes("is-prev")).click(); await settle();
 check("  and ‹ goes back to page 1", kn.hist.page === 0 && histRows()[0].dataset.walk === firstPage[0]);
+
+// ── a long reason, wrapped rather than cut (2026-10-09) ───────────────────────
+byId.knFpLive.click(); fp.focus = ""; byId.knFpWalk.value = ""; await settle();
+const LONG = "the expense area's sentence names receipts, per-diems and the evidence a claim needs, and this question is about which receipt counts as evidence for a taxi ride";
+const w4 = await post("walks", { question: "which receipt counts", how: "screen-check" });
+await post(`walks/${w4.id}/steps`, { op: "table", address: "/v1/regions/expense", why: LONG });
+await kn.fpPoll(); await settle();
+const bubbleLines = layerEls("kn-fp-bubble").flatMap((g) => find(g, (n) => n.tag === "text").map((n) => n.textContent));
+check("a long reason is wrapped onto lines, not cut to one", bubbleLines.length >= 2 && bubbleLines.join(" ").includes("taxi ride") && !bubbleLines.join(" ").includes("…"),
+      JSON.stringify(bubbleLines));
+
+// ── a reload in the middle of a walk ──────────────────────────────────────────
+state.open = []; state.openNode.clear();
+await kn.fpRestore(); await settle();
+check("reload: the walks still going are opened on the map again", state.open.includes("expense"), String(state.open));
+state.open = ["workspace"]; state.openNode.clear();
+await kn.fpRestore(); await settle();
+check("  but not over what the person has open", JSON.stringify(state.open) === JSON.stringify(["workspace"]), String(state.open));
+for (const x of fp.walks.values()) { x.state = "closed"; if (x.now) x.now = { ...x.now, at: "2020-01-01T00:00:00Z" }; }
+state.open = [];
+await kn.fpRestore(); await settle();
+check("  and not a walk that ended long ago", state.open.length === 0, String(state.open));
 
 console.log(results.join("\n"));
 const n = results.filter((r) => r.startsWith("FAIL")).length;
