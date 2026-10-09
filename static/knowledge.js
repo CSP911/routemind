@@ -1187,7 +1187,7 @@
       const chip = el("button", `kn-fp-step is-fp-c${fpColour(src.id)}${st.n === nowN ? " is-now" : ""}${st.op === "read" ? " is-read" : ""}`,
         `${i + 1} ${label}`);
       chip.type = "button";
-      chip.title = st.why || label;
+      chip.title = st.op === "open" ? label : (st.why || label);
       chip.addEventListener("click", () => { fpJump(src, i).catch(() => {}); });
       return chip;
     }));
@@ -1215,7 +1215,7 @@
       el("div", "kn-fp-card-out", outcome),
       el("div", "kn-fp-card-q", w.question || t("knowledge.fp.thisWalk")),
       el("div", "kn-fp-card-facts",
-         `${tv("knowledge.fp.hops", { n: tables })} · ${tv("knowledge.fp.reads", { n: reads })} · ${took < 60 ? `${took}s` : `${Math.round(took / 60)}m`}`),
+         `${tv("knowledge.fp.hops", { n: tables })} · ${tv("knowledge.fp.reads", { n: reads })} · ${tookText(took)}`),
       el("div", "kn-fp-card-last", `${t("knowledge.fp.endedAt")} ${w.now.op === "open" || fpKey(w.now.address) === "@hop0" ? t("knowledge.fp.opened") : shortAddr(w.now.address)}`),
     );
   }
@@ -1433,6 +1433,9 @@
     histPages(nav, last);
   }
 
+  /** A walk's duration, in the reader's language. */
+  const tookText = (s) => (s < 60 ? tv("knowledge.fp.seconds", { n: s || 0 }) : tv("knowledge.fp.minutes", { n: Math.round(s / 60) }));
+
   function histOutcome(w) {
     if (w.state === "open") return [t("knowledge.fp.open"), "is-open"];
     if (w.outcome === "answered") return [t("knowledge.fp.out.answered"), "is-answered"];
@@ -1450,7 +1453,7 @@
     cell((w.by && (w.by.name || w.by.kind)) || "—", "kn-hist-who");
     const where = w.last_op === "open" || !w.last || fpKey(w.last) === "@hop0" ? t("knowledge.fp.opened") : shortAddr(w.last);
     cell(`${tv("knowledge.fp.hops", { n: w.tables || 0 })} · ${tv("knowledge.fp.reads", { n: w.reads || 0 })} → ${where}`, "kn-hist-did");
-    cell(w.took < 60 ? `${w.took || 0}s` : `${Math.round(w.took / 60)}m`, "kn-hist-took");
+    cell(tookText(w.took), "kn-hist-took");
     const [label, cls] = histOutcome(w);
     const out = el("td", "kn-hist-out");
     out.append(el("span", `kn-hist-badge ${cls}`, label));
@@ -2625,6 +2628,7 @@
   function staleShow(lines) {
     const box = $("knStale");
     if (!box) return;
+    state.staleLines = lines;
     const byId = new Map(state.nodes.map((n) => [n.id, n]));
     box.replaceChildren(el("span", "kn-stale-title", t("knowledge.stale.title")));
     for (const l of lines) {
@@ -2645,7 +2649,10 @@
           await submitCard(region, "entity", { entity: l.id });
         }
       }));
-      const ok = button("knowledge.stale.ok", "quiet small", () => { row.remove(); if (!box.querySelector(".kn-stale-row")) box.hidden = true; });
+      const ok = button("knowledge.stale.ok", "quiet small", () => {
+        row.remove(); state.staleLines = (state.staleLines || []).filter((x) => x !== l);
+        if (!box.querySelector(".kn-stale-row")) { box.hidden = true; state.staleLines = null; }
+      });
       row.append(fix, ok);
       box.append(row);
     }
@@ -3148,7 +3155,7 @@
     $("knRawKind").textContent = "VALIDATE";
     $("knRawTitle").textContent = t(result.ok ? "knowledge.validOk" : "knowledge.validBad");
     $("knRawAddr").textContent = "/v1/validate";
-    $("knRawMeta").textContent = `${(result.errors || []).length} errors · ${(result.warnings || []).length} warnings`;
+    $("knRawMeta").textContent = tv("knowledge.validCounts", { e: (result.errors || []).length, w: (result.warnings || []).length });
     $("knRawKind").className = "kn-chip-kind is-backbone";
     const pane = $("knRaw");
     pane.className = "kn-raw is-" + (result.ok ? "ok" : "bad");
@@ -3174,6 +3181,15 @@
    *
    *  Nothing is sent anywhere. The choice lives in this browser's localStorage, because one install is
    *  a team's ontology and the person at the next desk keeps theirs. */
+  /** The picker's label, in the language chosen — and in English beside it when that is not English,
+   *  so someone who cannot read the current language can still find the way back. */
+  function langLabel() {
+    const lab = document.querySelector(".kn-lang-label");
+    if (!lab) return;
+    const here = t("knowledge.language");
+    lab.textContent = here === "Language" ? here : `${here} · Language`;
+  }
+
   function languagePicker() {
     const sel = $("knLang");
     if (!sel || !window.IRISI18N) return;
@@ -3186,6 +3202,7 @@
       return opt;
     }));
     sel.value = window.IRISI18N.language();
+    langLabel();
     sel.addEventListener("change", () => {
       // Read the transcript's title BEFORE switching. `knRawTitle` carries a `data-i18n` for the
       // empty state, so `apply()` inside setLanguage overwrites whatever entity name is in it with
@@ -3195,7 +3212,12 @@
       const open = $("knRawDialog").open && state.selected;
       const title = open ? $("knRawTitle").textContent : "";
       if (!window.IRISI18N.setLanguage(sel.value)) return;
+      langLabel();
       draw();
+      // Built from strings at the time they were drawn, so they would keep the old language: the
+      // footprint's step chips and card, the history table, the strip of stale lines.
+      if (fp.on) { fpPanel(); histLoad().catch(() => {}); }
+      if (state.staleLines) staleShow(state.staleLines);
       if (open) {
         showRaw({ kind: state.selected.kind, title, address: state.selected.address || "" }).catch(() => {});
       }

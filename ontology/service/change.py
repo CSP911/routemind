@@ -333,7 +333,7 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> d
                 blockers = sorted(x["id"] for x in all_nodes if x.get("parent") == n["id"] and (x["id"] in holds or not (x.get("body") or "").strip()))
                 if blockers:
                     raise WriteError(409, f"{n['id']} holds {', '.join(blockers)} — nodes, not documents; move or delete them in the set first",
-                                     code="holds_children", data={"id": n["id"], "held": ", ".join(blockers)})
+                                     code="holds_children", data={"id": n["id"], "n": len(blockers), "held": ", ".join(blockers)})
                 by_id = {x["id"]: x for x in all_nodes}
                 for eid in [n["id"], *_descendants(all_nodes, n["id"])]:
                     t = writer.root / by_id[eid]["path"]

@@ -109,7 +109,7 @@ if (unknown.length) {
 //
 // The reverse is checked too. A `knowledge.err.*` string with no refusal behind it is one nobody will
 // ever be shown, which usually means the code was renamed on one side only.
-const py = ["ontology/service/write.py", "web/app.py"]
+const py = ["ontology/service/write.py", "ontology/service/change.py", "web/app.py"]
   .map((f) => readFileSync(new URL("../" + f, import.meta.url), "utf8")).join("\n");
 const reasons = new Set([...py.matchAll(/\b(?:code|reason)=\"([a-z_]+)\"/g)].map((m) => m[1]));
 const fields = new Set([...py.matchAll(/\"field\":\s*\"([a-z_]+)\"/g)].map((m) => m[1]));
@@ -161,6 +161,19 @@ for (const m of stripped.matchAll(/<([a-zA-Z][^>]*)>([^<>]+)/g)) {
   if (SAME_IN_EVERY_LANGUAGE.has(text)) continue;
   loose.push(`${text.length > 60 ? text.slice(0, 60) + "…" : text}   (inside <${tag.split(/\s/)[0]}>)`);
 }
+// The words a screen reader says and a hover shows are text too. Until 2026-10-10 three of them —
+// the map's name, the action group's, the dialog's Close — were written into the markup in English
+// and read out in English on every screen. An aria-label, title or placeholder with words in it needs
+// the attribute that translates it.
+for (const m of stripped.matchAll(/<([a-zA-Z][^>]*)>/g)) {
+  const tag = m[1];
+  for (const a of tag.matchAll(/\b(aria-label|title|placeholder)="([^"]*)"/g)) {
+    const [, attr, val] = a;
+    if (!/[A-Za-z]{2,}/.test(val) || SAME_IN_EVERY_LANGUAGE.has(val)) continue;
+    const covered = attr === "placeholder" ? /\bdata-i18n-placeholder\s*=/.test(tag) : /\bdata-i18n(?:-label)?\s*=/.test(tag);
+    if (!covered) loose.push(`${attr}="${val}"   (on <${tag.split(/\s/)[0]}>)`);
+  }
+}
 if (loose.length) {
   bad = true;
   console.log(`FAIL ${loose.length} piece(s) of text in knowledge.html with no data-i18n — they stay ` +
@@ -183,6 +196,8 @@ const SHARED_ON_PURPOSE = new Set([
   "common.cancel",            // one word, and every form that has a Cancel means the same by it
   "knowledge.fp.replay",      // the button's label, put back when it stops being "Stop" mid-replay
   "knowledge.fp.trail",       // "Reasons" — the footprint bar's button and each history row's, the same act
+  "common.close",             // the dialog's × and the result card's ×: one word, one act
+  "knowledge.language",       // the picker's accessible name, and its visible label set by the script
 ]);
 const markup = new Set([...html.matchAll(/data-i18n(?:-label|-placeholder)?="([^"]+)"/g)].map((m) => m[1]));
 const script = new Set([...js.matchAll(/"((?:knowledge|common)\.[A-Za-z0-9_.]+)"/g)].map((m) => m[1]));

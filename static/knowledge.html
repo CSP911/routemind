@@ -84,7 +84,7 @@
            or deleted. Shown, not enforced — the person can see the map. -->
       <div class="kn-stale" id="knStale" role="status" hidden></div>
       <div class="kn-topo-wrap">
-        <svg id="knTopo" class="kn-topo" role="img" aria-label="RouteMind topology"></svg>
+        <svg id="knTopo" class="kn-topo" role="img" data-i18n-label="knowledge.mapLabel" aria-label="RouteMind map"></svg>
         <!-- How a walk went, once it has stopped. Over the map's corner, out of the way of the trace. -->
         <div class="kn-fp-card" id="knFpCard" role="status" aria-live="polite" hidden></div>
       </div>
@@ -130,8 +130,8 @@
         <span id="knRawMeta" class="kn-raw-meta"></span>
       </div>
       <div class="kn-raw-tools">
-        <div id="knActions" class="kn-actions" role="group" aria-label="actions"></div>
-        <button type="button" id="knRawClose" class="kn-btn kn-icon kn-quiet" aria-label="Close" title="Close">×</button>
+        <div id="knActions" class="kn-actions" role="group" data-i18n-label="knowledge.actionsLabel" aria-label="Actions"></div>
+        <button type="button" id="knRawClose" class="kn-btn kn-icon kn-quiet" data-i18n-label="common.close" aria-label="Close" title="Close">×</button>
       </div>
     </div>
     <p id="knBanner" class="kn-banner" hidden></p>
