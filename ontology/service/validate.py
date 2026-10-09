@@ -367,7 +367,7 @@ def validate(store: Store) -> dict:
                           f"derived from. It is generated, not written — any write through the API "
                           f"regenerates it, as does `./ontology/tidy.py <repo> --fix`, and the server regenerates it at "
                           f"startup when the tree is clean; readers are served what the files say meanwhile. "
-                          f"See README, \u201cA hand-edited repository\u201d.")
+                          f"See docs/DATA-REPO.md.")
     # ---- cross-reference cycles ----
     # Every other check here asks whether one node is right. This one asks whether they are right
     # *together*, and it is the only finding in the file that no single document can be blamed for:
