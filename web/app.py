@@ -813,6 +813,10 @@ def api_knowledge_put_node_file(node_id: str, filename: str, payload: dict, requ
     body: dict[str, Any] = {"content": str(data.get("content") or "")}
     if str(data.get("description") or "").strip():
         body["description"] = str(data["description"]).strip()
+    # The name the person typed, kept as the document's name when it is new — "출장비 기준" rather than
+    # the address it was romanised into. Dropped here until 2026-10-10, so the map showed the slug.
+    if str(data.get("name") or "").strip():
+        body["name"] = str(data["name"]).strip()[:200]
     return _ontology_proxy("PUT", "/v1/nodes/" + quote(node_id, safe="") + "/files/" + quote(filename, safe=""), actor, body)
 
 
@@ -878,6 +882,11 @@ def _circuit_relay(method: str, path: str, request: Request) -> Response:
     headers = {"Accept": request.headers.get("accept") or "application/json"}
     token = request.headers.get("x-peer-token")
     if token: headers["X-Peer-Token"] = token
+    # Where the reader is, for the owner's access log. Every relayed request otherwise reaches the
+    # ontology from this container's address, and "who read what" could only ever say "?".
+    client = request.client.host if request.client else ""
+    prior = request.headers.get("x-forwarded-for") or ""
+    if client or prior: headers["X-Forwarded-For"] = ", ".join(x for x in (prior, client) if x)
     req = _IrisPlaybookURLRequest(ONTOLOGY_URL + path, data=(b"" if method == "POST" else None),
                                   method=method, headers=headers)
     try:
@@ -889,6 +898,16 @@ def _circuit_relay(method: str, path: str, request: Request) -> Response:
                         media_type=exc.headers.get("Content-Type") or "application/json")
     except _IrisPlaybookURLError:
         return JSONResponse({"error": "the ontology behind this install is not answering"}, status_code=502)
+
+
+@_iris_route("GET", "/healthz")
+def web_healthz(request: Request) -> Response:
+    # The install's health on the port people actually reach. The docs and the door both named
+    # `/healthz`, and it answered 404 here — it existed only inside the ontology's container (2026-10-10).
+    try:
+        return JSONResponse(_ontology_proxy("GET", "/healthz", "web"))
+    except HTTPException as exc:
+        return JSONResponse({"ok": False, "error": str(exc.detail)}, status_code=503)
 
 
 @_iris_route("POST", "/v1/peers/token")

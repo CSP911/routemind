@@ -11,12 +11,18 @@ This is everything that did not fit beside it.
 ## Start from the worked example, not an empty map
 
 An empty install is a backbone with no areas: correct, and hard to read.
-[`examples/back-office`](../examples/) is five areas, 79 entities, five levels deep. Copy it in **before**
-the first boot:
+[`examples/back-office`](../examples/) is five areas, 79 entities, five levels deep. On a first install
+`install.sh` asks whether to start from it (Enter says yes); `--example` answers yes without asking,
+`--no-example` no. It has to go in **before** the first boot — that boot is what makes `data/repo` a git
+repository and commits what is there.
+
+Already installed with an empty map, and nothing in it you want to keep? Copy it over and commit it
+yourself, or every write is refused as an uncommitted tree:
 
 ```sh
-mkdir -p data/repo && cp -r examples/back-office/. data/repo/
-./install.sh --no-llm
+cp -r examples/back-office/. data/repo/
+git -C data/repo add -A && git -C data/repo commit -m "start from examples/back-office"
+docker compose restart ontology
 ```
 
 ## Without install.sh
@@ -38,9 +44,9 @@ container that never becomes healthy.
 | What you see | Why | What to do |
 |---|---|---|
 | `./install.sh: Permission denied` | The tree arrived without its exec bits — a zip, or a share that does not carry them | `chmod +x install.sh check/*.sh check/*.py check/*.mjs` |
-| `FATAL: /data/repo is not writable by uid …`, then a restart loop | Docker invented a bind-mount path as root | Remove it, `mkdir` **all six** as above, check `KNOWLEDGE_UID`/`KNOWLEDGE_GID` against `id -u` / `id -g`, start again |
+| `FATAL: /data/repo is not writable by uid …`, then a restart loop | Docker invented a bind-mount path as root | Remove it, `mkdir` **all five** as above, check `KNOWLEDGE_UID`/`KNOWLEDGE_GID` against `id -u` / `id -g`, start again |
 | `exec /app/entrypoint.sh: no such file or directory`, on a file that is plainly there | CRLF line endings, so the kernel read the shebang as `/bin/sh\r` | Re-clone with `git clone`, which honours the repository's `eol=lf`. In place: `git add --renormalize . && git checkout -- .` |
-| `port is already allocated` | Something else holds 8080 | `WEB_PORT=9000` in `.env`, then `docker compose up -d` |
+| `port is already allocated` | Something else holds 8080 | `./install.sh --port 9000`, or `WEB_PORT=9000` in `.env` and `docker compose up -d`. Claude Code follows: the MCP server reads the port from `.env` |
 | Every write is refused **read-only** | `data/repo` has uncommitted changes | Commit or revert them |
 | A save fails with `git add -A failed: … index.lock` | Something else is running git in `data/repo` — your own shell, an editor's git integration, a second ontology on the same mount | Wait and retry; the service's own polling no longer does this. If it persists, `docker compose logs ontology` and look for a second writer |
 | A change to `static/` or `ontology/` does nothing | Both are `COPY`ed into the image | `docker compose up -d --build` |

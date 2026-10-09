@@ -179,7 +179,12 @@ def compare(repo, label):
             pr = table_rows(t)
             addr = next((k for k in pr if k.rstrip("/body").endswith(f"/v1/nodes/{i}") or k == f"/v1/nodes/{i}/body" or k == f"/v1/nodes/{i}"), None)
             if addr:
-                n_cells += 1; same(f"node {i} one_liner", "file", f.get("one_liner"), "mcp table", pr[addr].split(" — ", 1)[-1] if " — " in pr[addr] else pr[addr], prefix=True)
+                # The row is "name — line". Cut after the *name*, not at the first " — ": a name may hold
+                # one itself ("Office & purchasing desk — scope, cut-offs"), and splitting there read half
+                # the name as the line — a failure of this check, not of the screen (2026-10-10).
+                row, nm = pr[addr], (f.get("name") or "")
+                line = row[len(nm) + 3:] if nm and row.startswith(nm + " — ") else (row.split(" — ", 1)[-1] if " — " in row else row)
+                n_cells += 1; same(f"node {i} one_liner", "file", f.get("one_liner"), "mcp table", line, prefix=True)
         body = (f.get("_body") or "").strip()
         if body:
             st, api_body = get(f"/v1/nodes/{i}/body", raw=True)

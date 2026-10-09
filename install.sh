@@ -4,6 +4,7 @@
 #   ./install.sh                        ask which port, and about the LLM
 #   ./install.sh --port 9000
 #   ./install.sh --no-llm               do not ask about the LLM; run without one
+#   ./install.sh --example              start from the example back office (asked on a first install)
 #   ./install.sh --llm-provider openai|anthropic|litellm --llm-url URL --llm-key KEY --llm-model MODEL
 #   KNOWLEDGE_LLM_PROVIDER=... KNOWLEDGE_LLM_URL=... KNOWLEDGE_LLM_KEY=... KNOWLEDGE_LLM_MODEL=... ./install.sh
 #
@@ -21,6 +22,7 @@ LLM_PROVIDER="${KNOWLEDGE_LLM_PROVIDER:-}"
 DEFAULT_BASE_openai=https://api.openai.com
 DEFAULT_BASE_anthropic=https://api.anthropic.com
 ASK=1
+EXAMPLE=""
 PORT="${WEB_PORT:-}"
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -29,11 +31,13 @@ while [ $# -gt 0 ]; do
     --name)       printf '  --name is no longer used (there is no exchange to name) — ignored\n'; shift ;;
     --port)       PORT="$2"; shift ;;
     --no-llm)     ASK=0 ;;
+    --example)    EXAMPLE=yes ;;
+    --no-example) EXAMPLE=no ;;
     --llm-url)    LLM_URL="$2"; ASK=0; shift ;;
     --llm-key)    LLM_KEY="$2"; ASK=0; shift ;;
     --llm-model)    LLM_MODEL="$2"; ASK=0; shift ;;
     --llm-provider) LLM_PROVIDER="$2"; ASK=0; shift ;;
-    -h|--help)    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help)    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) printf 'unknown option: %s (try --help)\n' "$1" >&2; exit 2 ;;
   esac
   shift
@@ -67,24 +71,17 @@ if [ -n "$PORT" ]; then
   esac
 fi
 
-# `.mcp.json` is what makes opening this repository in Claude Code the whole setup, and it names the
-# port. It shipped with 8080 in it, so before this an install on any other port handed Claude Code a
-# server that registers, lists its tools, and fails on every call — which is worse than no server at
-# all, because the tools are visibly there.
-#
-# Rewritten rather than templated: Claude Code reads this file directly and nothing expands `.env`
-# for it. The common case writes the same bytes back, so the tree stays clean unless the port moved.
-MCP_PORT="$(grep '^WEB_PORT=' .env 2>/dev/null | cut -d= -f2-)"; MCP_PORT="${MCP_PORT:-8080}"
-if [ -f .mcp.json ] && ! grep -q "localhost:$MCP_PORT/api/knowledge" .mcp.json; then
-  tmp="$(mktemp)"
-  sed "s#localhost:[0-9][0-9]*/api/knowledge#localhost:$MCP_PORT/api/knowledge#" .mcp.json > "$tmp"
-  mv "$tmp" .mcp.json
-  printf '  .mcp.json now points at :%s — Claude Code picks it up on the next session.\n' "$MCP_PORT"
-fi
+# `.mcp.json` names no port: the MCP server reads WEB_PORT from this .env itself (mcp/knowledge_mcp.py).
+# It used to be rewritten here, which left every checkout on another port with a modified tracked file,
+# a `git pull` that could refuse, and a port changed by hand in .env pointing Claude Code at the old one.
+
+# Each checkout builds its own images. The tag was shared, so a second install on the same machine
+# retagged the first one's images, and the first picked up the second's code at its next recreate.
+grep -q '^IMAGE_TAG=.\+' .env || setenv IMAGE_TAG "$(basename "$PWD" | tr 'A-Z' 'a-z' | tr -c 'a-z0-9.\n-' '-' | cut -c1-40)"
 
 # Only when there is a terminal AND the .env has no answer yet. A re-run, or a scripted one, must not
 # stop and wait for somebody who is not there.
-if [ "$ASK" = 1 ] && [ -t 0 ] && ! grep -q '^ONTOLOGY_LLM_BASE_URL=.\+' .env; then
+if [ "$ASK" = 1 ] && [ -t 0 ] && ! grep -q '^ONTOLOGY_LLM_BASE_URL=.\+' .env && ! grep -q '^# llm: skipped' .env; then
   cat <<'TXT'
 
 An LLM is optional. Everything works without one.
@@ -98,7 +95,9 @@ openai, anthropic, or a LiteLLM-style gateway. Press Enter to skip; you can
 add it later by editing .env and running this again.
 
 TXT
-  printf 'Provider — openai, anthropic, litellm (Enter to skip): '; read -r LLM_PROVIDER
+  printf 'Provider — openai, anthropic, litellm (Enter to skip): '; read -r LLM_PROVIDER || LLM_PROVIDER=""
+  # Skipping is an answer, and it is kept: an update run must not ask it again every time.
+  [ -z "$LLM_PROVIDER" ] && printf '# llm: skipped at install — set ONTOLOGY_LLM_* below and run ./install.sh to add one\n' >> .env
   if [ -n "$LLM_PROVIDER" ]; then
     # The two hosted providers have one address each; a gateway is wherever you put it.
     case "$LLM_PROVIDER" in
@@ -106,9 +105,9 @@ TXT
       anthropic) SUGGEST="$DEFAULT_BASE_anthropic" ;;
       *)         SUGGEST="" ;;
     esac
-    printf 'Base URL, no /v1 %s: ' "${SUGGEST:+[$SUGGEST]}"; read -r LLM_URL
+    printf 'Base URL, no /v1 %s: ' "${SUGGEST:+[$SUGGEST]}"; read -r LLM_URL || LLM_URL=""
     [ -z "$LLM_URL" ] && LLM_URL="$SUGGEST"
-    printf 'API key: '; read -r LLM_KEY
+    printf 'API key: '; read -r LLM_KEY || LLM_KEY=""
     # Which models this key can use is a question only the provider can answer, and the answer
     # changes. Asking it beats any list written into this repository, which would start going stale
     # the day it was written and would fail by refusing a model that exists.
@@ -117,7 +116,7 @@ TXT
       ./check/llm-probe.py --provider "$LLM_PROVIDER" --base "$LLM_URL" --key "$LLM_KEY" 2>&1 | head -40 || true
       printf '\n'
     fi
-    printf 'Model: '; read -r LLM_MODEL
+    printf 'Model: '; read -r LLM_MODEL || LLM_MODEL=""
   fi
 fi
 [ -n "$LLM_URL" ] && [ -z "$LLM_PROVIDER" ] && LLM_PROVIDER=litellm
@@ -133,6 +132,21 @@ fi
 # container runs as you so that it can commit into your repository.
 mkdir -p data/repo data/overlays data/walks data/harness data/access
 
+# A first install — nothing in data/repo yet — may start from the example back office instead of an
+# empty map. Before compose, because the first boot is what makes data/repo a git repository and
+# commits what is there; copied in afterwards it was an uncommitted tree that refused every write.
+if [ -z "$(ls -A data/repo 2>/dev/null)" ]; then
+  if [ -z "$EXAMPLE" ] && [ -t 0 ]; then
+    printf '\nStart from the example back office (five areas, 79 documents) instead of an empty map? [Y/n] '
+    read -r ans || ans=""
+    case "$ans" in [nN]*) EXAMPLE=no ;; *) EXAMPLE=yes ;; esac
+  fi
+  if [ "$EXAMPLE" = yes ]; then
+    cp -R examples/back-office/. data/repo/
+    printf '  data/repo starts from examples/back-office — yours to change or replace.\n'
+  fi
+fi
+
 # The key another backbone's circuit presents to read the areas set `export` here. Generated once and
 # kept; nothing crosses until somebody sets `export` on an area, so having a key is not sharing
 # anything. An install made before 2026-10-08 has it as EXCHANGE_TOKEN_HOME, which compose still reads,
@@ -142,7 +156,9 @@ if ! grep -q '^KNOWLEDGE_CIRCUIT_TOKEN=.\+' .env; then
   setenv KNOWLEDGE_CIRCUIT_TOKEN "${OLD:-$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')}"
 fi
 
-docker compose up -d --build
+# --remove-orphans: an install from before 2026-10-08 still has containers for services that no longer
+# exist (the exchange), and compose would warn about them on every start.
+docker compose up -d --build --remove-orphans
 
 # One base URL, used to wait and then to check. Computing it twice is how the check ends up talking
 # to a different install than the one just started — which it did, and passed.
@@ -177,7 +193,18 @@ while [ $i -lt 60 ]; do
       fi
       printf '\n'
     fi
-    exec ./check/smoke.sh "$BASE"
+    ./check/smoke.sh "$BASE" || { printf '\nThe install is up, and the checks above found something wrong.\n' >&2; exit 1; }
+    # What to do next, last, where a person looks — the checks above are long and end on detail.
+    printf '\n────────────────────────────────────────────────────────────\n'
+    printf 'RouteMind is ready:  %s\n\n' "$BASE"
+    printf '  Claude Code:  run `claude` in this directory and approve the "knowledge" server\n'
+    printf '                (it asks once); /mcp then lists four tools.\n'
+    printf '  Another agent: python3 mcp/knowledge_mcp.py   (reads the port from .env)\n'
+    if grep -q '^KNOWLEDGE_AUTH=.\+' .env && ! grep -q '^KNOWLEDGE_AUTH=open' .env; then :; else
+      printf '\n  Anyone who can reach this port can write to it (no login). docs/AUTH.md closes it.\n'
+    fi
+    printf '────────────────────────────────────────────────────────────\n'
+    exit 0
   fi
   printf '.'; sleep 2; i=$((i+1))
 done

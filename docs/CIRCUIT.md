@@ -1,7 +1,8 @@
 # Reading another backbone — circuits
 
 A **circuit** is one agent session reading another RouteMind: opened by the agent, read-only, nothing
-written on either side, gone when the session ends. It is the one way left to read another backbone
+written into either repository, gone when the session ends. (The owner keeps an access log of what was
+read, and the reader's own walk record shows the walk — neither is part of anybody's ontology.) It is the one way left to read another backbone
 (operator, 2026-10-08). Standing links (`peers.yaml`), the exchange they met at, its operator screen
 and encrypted export bundles were retired that day; this page is what remains of docs/PEERING.md.
 
@@ -12,6 +13,14 @@ knowledge_circuit { op: open, url, token, name }           an agent, through the
 Their areas appear under /v1/circuits/<name>/… , beside yours, never in it.
 ```
 
+**The name** is optional. Left out, it is made from the address — `http://127.0.0.1:9330` becomes
+`127-0-0-1-9330`, `https://kb.example.com` becomes `kb-example-com`. Your own hop 0 lists every circuit
+open in the session, and a walk starts there as always: open hop 0, then the circuit's table.
+
+**The key ends up in the agent's transcript**, because it is typed into the conversation. Treat it as
+shared with whoever can read that transcript; rotating it is changing `KNOWLEDGE_CIRCUIT_TOKEN` and
+restarting, which also ends every session already minted.
+
 The URL is **their install's address** — the same one their map answers on. The web app passes the
 two paths a circuit uses through to the ontology, outside its own login door, because they carry
 their own key. (Until 2026-10-08 they lived only on the ontology's own port, which the shipped
@@ -21,9 +30,11 @@ by hand.)
 ## What crosses
 
 **An area crosses by somebody setting `export: yes` on it, and by nothing else.** On the map that is
-the area's **Export** card, which files the decision through the review queue like any other routing
-change. The line a reader sees is the area's own `use_when` — one sentence, the same one this
-backbone routes on (operator, 2026-09-29).
+the area rack's **Export** button, which files the decision through the review queue like any other
+routing change. **What crosses is the whole area:** its sentence (`use_when`, the same one this backbone
+routes on — operator, 2026-09-29) as the row a reader chooses by, and then every table and document in
+it, which a reader can open. Until 2026-10-10 the card said "peers may read the line above", which
+was true of the row and nothing else.
 
 **A kind marked `export: no` in `vocab.yaml` never crosses, whatever its area says:**
 
@@ -75,7 +86,8 @@ being worth something by the end of the shift (operator, 2026-09-29).
 
 **A session cannot mint another** — otherwise a leaked session renews itself for ever. **Sessions live
 in memory,** so a restart revokes every one; the circuit re-mints on the 401 and carries on.
-`ONTOLOGY_PEER_SESSION_TTL` overrides the six hours, in seconds.
+`ONTOLOGY_PEER_SESSION_TTL` in `.env` overrides the six hours, in seconds (passed to the container
+since 2026-10-10; before that, setting it changed nothing).
 
 **What this does not do** is prove who is at the far end. A circuit refuses to send a key over plain
 `http` to a public address — that would be a bearer secret in clear text on the wire — and that is the
@@ -85,9 +97,13 @@ whole of the endpoint protection. Use https, or a private address.
 
 **Nothing is copied.** Every read through a circuit is a read of the far end, held for one request and
 discarded. So the owner records one JSON line per read of the export surface: when, what was asked for,
-served or refused, and how big. **Refusals are recorded too, and matter more** — a run of them is the
-only signal there is that the surface is being probed rather than used. A read without a valid
-session is recorded before it is refused.
+served or refused, how big, **where it came from** (`reader`, the address the web relay forwarded) and
+**which session it carried** (`peer`, `s:` and eight characters of a hash — every reader holds the same
+key, so the session is what tells two of them apart). **Refusals are recorded too, and matter more** —
+a run of them is the only signal there is that the surface is being probed rather than used. A read
+without a valid session is recorded before it is refused, and so is every attempt to mint a session
+with a wrong key (`/v1/peers/token`), the probe that matters most. A circuit follows no redirect: the
+session rides in a header, and a redirect would carry it to a host nobody checked.
 
 To stderr always, and to `data/access` as well — one file per UTC day, because stderr rotates away.
 

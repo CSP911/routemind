@@ -35,7 +35,7 @@ fi
 if [ ! -d "$DATA/.git" ]; then
   git -C "$DATA" init -q
   git -C "$DATA" add -A
-  git -C "$DATA" -c user.name=knowledge -c user.email=knowledge@local commit -q -m "empty ontology" || true
+  git -C "$DATA" -c user.name=knowledge -c user.email=knowledge@local commit -q -m "initial ontology: what data/repo held on the first boot" || true
   echo "initialised git in $DATA at $(git -C "$DATA" rev-parse --short HEAD 2>/dev/null || echo none)"
 fi
 exec "$@"

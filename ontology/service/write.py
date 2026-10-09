@@ -348,7 +348,7 @@ class Writer:
                     _restore(self.root)
                     return {"ok": True, "dry_run": True, "revision": None, "message": msg, "warnings": list(res["warnings"]),
                             "stats": res["stats"], "impacted": impacted, **extra}
-                _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@iris.local", "commit", "-q", "-m", msg)
+                _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@routemind.local", "commit", "-q", "-m", msg)
             except WriteError:
                 _restore(self.root); raise
             except Exception as e:
@@ -403,7 +403,7 @@ class Writer:
         res = self.transact(f"node {nid}: create", actor, mutate)
         return {**res, "id": nid, "id_generated": id_generated, "kind": kind, "kind_generated": kind_generated}
 
-    def update_node(self, nid: str, body: dict, actor: str) -> dict:
+    def update_node(self, nid: str, body: dict, actor: str, note: str = "") -> dict:
         """Edit an entity's fields. Setting `parent` to something in another area **moves it there**,
         with everything under it, in this same transaction.
 
@@ -452,7 +452,9 @@ class Writer:
 
         where = f" -> {moves[0][2].parent.name}" if moves else ""
         extra = f" (+{len(moves) - 1} under it)" if len(moves) > 1 else ""
-        return self.transact(f"node {nid}: update{where}{extra}", actor, mutate)
+        # `note` says what the update was for, when the caller knows: an export accepted from the
+        # review queue read "node expense: update" — the same as its withdrawal (2026-10-10).
+        return self.transact(f"node {nid}: update{where}{extra}" + (f" — {note}" if note else ""), actor, mutate)
 
     def _plan_move(self, n: dict, new_parent: str | None) -> list:
         """Where every file goes when `n` is re-parented. Empty when the area does not change.
@@ -551,7 +553,10 @@ class Writer:
             # carried across or it disappears with no error and no sign on the screen.
             declared = (yaml.safe_load(m.group(1)) or {}) if m else {}
             write_node_index(self.store, {**(cur or {}), **{k: declared[k] for k in CONTENT_DECLARED if k in declared},
-                                          "id": cid, "name": (cur or {}).get("name") or name_from_file(cid),
+                                          # The name the person typed, when they typed one: a document
+                                          # filed as "출장비 기준" is called that on the map, not by the
+                                          # address its name was romanised into (2026-10-10).
+                                          "id": cid, "name": (cur or {}).get("name") or str(body.get("name") or "").strip() or name_from_file(cid),
                                           "kind": (cur or {}).get("kind") or n["kind"], "region": n["region"],
                                           "parent": nid, "holds": "content", "one_liner": line,
                                           "body": (m.group(2) if m else text),

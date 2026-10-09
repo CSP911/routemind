@@ -214,6 +214,13 @@ def hop0(api: Api) -> str:
     absence = (
         "Nothing outside this list exists in RouteMind. This list is the grounds on which you may say\n"
         "something is absent — no smaller table is.")
+    # A circuit opened in this session reads another backbone. Without a line here hop 0 said nothing
+    # existed outside it while the circuit stood open, and the agent had no way in but to guess that
+    # the circuit's table was reachable (2026-10-10).
+    if CIRCUITS:
+        absence += ("\n\nCircuits open in this session — other backbones, read-only. Their tables are not\n"
+                    "part of this list, and what they do not hold says nothing about what exists:\n" +
+                    "\n".join(f"  table  /v1/circuits/{n}/regions   {c['url']}" for n, c in CIRCUITS.items()))
     # Whole, never clipped (operator, 2026-10-08). `use_when` is the one sentence an agent chooses an
     # area by, and its last clause is as likely as its first to be the one this question matches —
     # cut at 100 characters, five of six areas here lost theirs behind a `…`.
@@ -382,6 +389,17 @@ def _public_address(url: str) -> bool:
         return False
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """A circuit follows no redirect. The session rides in a header, and following one sent it to
+    whatever host the far end named — past the plain-http check, which only ever saw the address the
+    circuit was opened with (found 2026-10-10)."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise urllib.error.HTTPError(req.full_url, code, f"redirect to {newurl} refused — a circuit does not follow redirects", headers, fp)
+
+
+_CIRCUIT_OPENER = urllib.request.build_opener(_NoRedirect)
+
+
 def circuit_session(name: str) -> str:
     """The circuit's six-hour session, minted from the token the person gave, and held on it."""
     c = CIRCUITS[name]
@@ -389,10 +407,17 @@ def circuit_session(name: str) -> str:
     req = urllib.request.Request(c["url"] + "/v1/peers/token", data=b"", method="POST",
                                  headers={"X-Peer-Token": c["token"], "Accept": "application/json"})
     try:
-        with urllib.request.urlopen(req, timeout=30) as r:
+        with _CIRCUIT_OPENER.open(req, timeout=30) as r:
             tok = str(json.loads(r.read().decode("utf-8")).get("token") or "")
     except urllib.error.HTTPError as e:
-        raise ApiError(f"circuit {name}: {c['url']} refused the token (HTTP {e.code})", e.code)
+        # What each refusal means for the person who has to fix it, rather than "refused the token"
+        # for all of them — a 501 is the far end having no key at all, a 404 is the wrong address.
+        why = {401: "refused the key — check it is the far end's KNOWLEDGE_CIRCUIT_TOKEN",
+               501: "has no circuit key set (KNOWLEDGE_CIRCUIT_TOKEN in its .env is empty), so nothing can be read from it",
+               404: "has no circuit endpoint at that address — give the install's own address, e.g. http://host:8080, without /api/knowledge",
+               }.get(e.code, f"refused the circuit (HTTP {e.code})")
+        if 300 <= e.code < 400: why = f"answered with a redirect, which a circuit does not follow (HTTP {e.code})"
+        raise ApiError(f"circuit {name}: {c['url']} {why}", e.code)
     except urllib.error.URLError as e:
         raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e.reason})")
     if not tok: raise ApiError(f"circuit {name}: no token came back from {c['url']}", 502)
@@ -411,7 +436,7 @@ def circuit_fetch(name: str, path: str, accept: str) -> str:
     # here more than anywhere, because a walk's reads are the ones that end up in a transcript.
     def go(tok):
         req = urllib.request.Request(url, headers={"Accept": accept, "X-Peer-Token": tok})
-        with urllib.request.urlopen(req, timeout=30) as r:
+        with _CIRCUIT_OPENER.open(req, timeout=30) as r:
             return r.read().decode("utf-8")
     try:
         return go(circuit_session(name))
@@ -428,6 +453,8 @@ def circuit_fetch(name: str, path: str, accept: str) -> str:
                                + (f" — {detail}" if detail else ""), e2.code)
             except urllib.error.URLError as e2:
                 raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e2.reason})")
+        if 300 <= e.code < 400:
+            raise ApiError(f"circuit {name}: {c['url']} answered with a redirect, which a circuit does not follow (HTTP {e.code})", e.code)
         detail = (e.read().decode("utf-8", "replace") or "").strip()[:200]
         raise ApiError(f"circuit {name}: HTTP {e.code} from /v1/export/{tail}"
                        + (f" — {detail}" if detail else ""), e.code)
@@ -496,7 +523,11 @@ def circuit_call(args: dict) -> str:
 
     url = str(args.get("url") or "").strip().rstrip("/")
     token = str(args.get("token") or "").strip()
-    name = str(args.get("name") or "").strip() or (urllib.parse.urlsplit(url).hostname or "remote")
+    # From the address when none is given: `127.0.0.1:9330` and `kb.example.com` have dots, and a dot
+    # is not allowed in a name, so the bare host refused every address but `localhost` (2026-10-10).
+    parts = urllib.parse.urlsplit(url)
+    auto = re.sub(r"[^a-z0-9]+", "-", f"{parts.hostname or 'remote'}{'-' + str(parts.port) if parts.port else ''}".lower()).strip("-")
+    name = str(args.get("name") or "").strip() or (auto[:40].strip("-") or "remote")
     if not url or not token:
         return "url and token are both required — a circuit is a read into somebody else's ontology."
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
@@ -514,7 +545,8 @@ def circuit_call(args: dict) -> str:
         # none: the agent spends its hops discovering that, and the table said it was there.
         return f"Could not open circuit {name} — {e}\n\nNothing was kept."
     return (f"CIRCUIT {name} open  \u2192  {url}\n\n"
-            f"  Read it at /v1/circuits/{name}/regions, then follow the addresses it prints.\n"
+            f"  Read it at /v1/circuits/{name}/regions, then follow the addresses it prints — after your own\n"
+            "  hop 0 (knowledge_table, no path), which now lists this circuit; every walk starts there.\n"
             "  It is read-only and holds only what its owner chose to let cross; the line on each\n"
             "  row is the one they route on themselves.\n"
             "  This lasts for this connection. Nothing was written on either side.")
@@ -709,6 +741,7 @@ PLACE_TOOL = {
         "name": {"type": "string", "description": "open: the document's name"},
         "one_liner": {"type": "string", "description": "open: one sentence, the line a table will print for it"},
         "content": {"type": "string", "description": "open: the body, Markdown"},
+        "kind": {"type": "string", "description": "open, optional: a kind from this backbone's vocabulary. Left out, the document takes the kind its documented siblings mostly have"},
         "id": {"type": "string", "description": "step/here/close: the placement id `open` returned"},
         "pick": {"type": "string", "description": "step: an address the last table printed, or `none`"},
         "why": {"type": "string", "description": "here: one line on what this change is for — it becomes the commit"},
@@ -747,7 +780,7 @@ WALK_TTL = float(os.environ.get("KNOWLEDGE_WALK_TTL") or 600)
 _walk_n = [0]
 
 
-def open_walk(api: Api, how: str) -> str:
+def open_walk(api: Api, how: str, question: str = "") -> str:
     """A new walk from hop 0. The walk before it is over — here, and on the record, as `abandoned`:
     nothing said it was answered, and the next question started."""
     prev = WALKS.get(CURRENT["walk"] or "")
@@ -758,7 +791,7 @@ def open_walk(api: Api, how: str) -> str:
     try:
         # A check walking a real install marks its walks, so the map and its history show the walks
         # agents took rather than forty "the check walks here" (2026-10-10). Still recorded.
-        d = api.send("POST", "/v1/walks", {"question": "", "how": how,
+        d = api.send("POST", "/v1/walks", {"question": str(question or "").strip()[:300], "how": how,
                                            **({"check": True} if os.environ.get("KNOWLEDGE_WALK_CHECK") else {})})
         wid, remote = str(d.get("id") or ""), bool(d.get("id"))
     except ApiError as e:
@@ -833,11 +866,14 @@ def place_call(api: Api, args: dict) -> str:
                          for k, p in PLACEMENTS.items())
     if op == "open":
         doc = {"name": str(args.get("name") or "").strip(), "one_liner": str(args.get("one_liner") or "").strip(),
-               "content": str(args.get("content") or "")}
+               "content": str(args.get("content") or ""), "kind": str(args.get("kind") or "").strip()}
         if not doc["name"] or not doc["one_liner"]:
             raise ApiError("open needs `name` and `one_liner` — the line is what every table will print for it")
         pid = f"p{len(PLACEMENTS) + 1}"
         PLACEMENTS[pid] = {"doc": doc, "path": [], "at": "/v1/regions", "printed": []}
+        # Its first table is hop 0, so it opens a walk like hop 0 does: reading a document while
+        # placing was refused with "hop 0 has not been opened" while hop 0 was on screen (2026-10-10).
+        open_walk(api, "knowledge_place", f"file “{doc['name']}”")
         return _place_hop(api, pid)
     pid = str(args.get("id") or "").strip()
     p = PLACEMENTS.get(pid)
@@ -924,7 +960,8 @@ def _place_here(api: Api, pid: str, args: dict) -> str:
         if parent and parent.startswith("/v1/nodes/"): parent = parent[len("/v1/nodes/"):]
         if not parent: raise ApiError("nowhere to place it — step into an area first")
     decisions.insert(0, {"op": "create", "ref": "$doc", "name": doc["name"], "one_liner": doc["one_liner"],
-                         "content": doc.get("content") or "", "parent": parent})
+                         "content": doc.get("content") or "", "parent": parent,
+                         **({"kind": doc["kind"]} if doc.get("kind") else {})})
     body = {"why": why, "decisions": decisions, "expose": list(args.get("expose") or []),
             **({"base": p["revision"]} if p.get("revision") else {}), "dry_run": bool(args.get("dry_run"))}
     try:
@@ -933,7 +970,7 @@ def _place_here(api: Api, pid: str, args: dict) -> str:
         v = (e.payload or {}).get("values") or {}
         imp = v.get("impact")
         if imp and (e.payload or {}).get("reason") in ("undecided", "exposure"):
-            return "\n".join([f"NOT WRITTEN — {e.payload.get('error')}", "", *_impact_lines(imp, v.get("ids") or {}), "",
+            return "\n".join([f"NOT WRITTEN — {e.payload.get('error') or e.payload.get('detail') or e}", "", *_impact_lines(imp, v.get("ids") or {}), "",
                                "Call `here` again with the same arguments and `decisions` carrying, for each line above:",
                                "  {op: keep, id, field, why}  — its text still covers what is under it now, or",
                                "  {op: reword, id, field, after} — the sentence it should print instead.",
@@ -946,8 +983,13 @@ def _place_here(api: Api, pid: str, args: dict) -> str:
         return "\n".join([f"DRY RUN — nothing written. {'It applies as it is.' if res.get('applies') else 'It does not apply yet:'}", "",
                            *_impact_lines(imp, res.get("ids") or {})])
     if res.get("queued"):
+        # The set is filed; a person decides it. The placement ends here, because filing the same
+        # document again some other way (keeping the sentence instead of rewording it) placed it
+        # twice over — once now, once more if the queued set were ever accepted (2026-10-10).
+        del PLACEMENTS[pid]
         return "\n".join([f"QUEUED {res['queued']} — {res.get('message')}", "", *_impact_lines(res.get("impact") or {}, res.get("ids") or {}),
-                           "", "The placement stays open until the queue decides; `close` it when you are done."])
+                           "", "Nothing is written until a person accepts it in the review queue, and this placement is",
+                           "closed: do not file the document again another way. Tell the person it is waiting there."])
     del PLACEMENTS[pid]
     ids = res.get("ids") or {}
     imp = res.get("impact") or {}
@@ -995,7 +1037,10 @@ TOOLS = [
                                  "Omit for the list of areas."},
          "why": {"type": "string",
                  "description": "Below hop 0, required: one line on why you are opening this row — what in "
-                                "its line made you choose it. Recorded on the walk (docs/FOOTPRINT.md)."}}}},
+                                "its line made you choose it. Recorded on the walk (docs/FOOTPRINT.md)."},
+         "question": {"type": "string",
+                      "description": "At hop 0 (no path): the question you are answering, in one line. Recorded "
+                                     "on the walk, so a person replaying it can see what was asked."}}}},
     {"name": "knowledge_read",
      "description": "Read one document from Knowledge, by the address a table printed for it. "
                     "Returns the document as written.",
@@ -1122,7 +1167,7 @@ class Server:
                     f"({e}). Questions about the domain it covers will need it.")
         intro = ("RouteMind is this team's own domain knowledge base. It holds facts that are specific to "
                  "this domain and are not in general knowledge or in any repository.\n\n"
-                 "When a question touches anything in the list below, consult Knowledge BEFORE answering "
+                 "When a question touches anything in the list below, consult RouteMind BEFORE answering "
                  "from general knowledge or searching files. A generic answer to a question this list "
                  "covers is a wrong answer.\n\n")
         if OPTIONAL["overlay"] and self.overlays():
@@ -1140,8 +1185,12 @@ class Server:
                             "  5. knowledge_overlay { op: close, id, outcome: answered | not_found, used: [addresses] }.\n\n"
                             + areas)
         # Off by default (2026-10-07): one way to work, the walk from hop 0.
-        return intro + ("Every question starts at hop 0: call knowledge_table with no arguments, pick the "
-                        "row whose sentence matches, and follow the addresses the tables print — "
+        # "The list below is a preview" because the agent read addresses off it and called them
+        # straight away, and the server refused: hop 0 had not been opened (seen 2026-10-10).
+        return intro + ("Every question starts at hop 0: call knowledge_table with no path — with "
+                        "`question` set to what you are answering — even though the list is below: this "
+                        "list is a preview, and the server refuses any table under it until that call is "
+                        "made. Then pick the row whose sentence matches, and follow the addresses the tables print — "
                         "knowledge_table for a table, knowledge_read for a document, each with a one-line "
                         "`why`. Only this list may tell you something is absent; a smaller table only "
                         "tells you it is not in there.\n\n" + areas)
@@ -1175,7 +1224,7 @@ class Server:
             path = str(args.get("path") or "").strip()
             # Hop 0 itself: the one table that needs no walk, because it is where one begins.
             if name == "knowledge_table" and path.rstrip("/") in ("", "/", "/v1/regions"):
-                open_walk(self.api, "knowledge_table")
+                open_walk(self.api, "knowledge_table", str(args.get("question") or ""))
                 return hop0(self.api), False
             # Everything below hop 0 belongs to the walk hop 0 opened — invariant 1 — and every step
             # is recorded with the reason the agent gave — invariant 11.
@@ -1323,9 +1372,26 @@ def serve(api: Api, stdin=sys.stdin, stdout=sys.stdout) -> None:
             stdout.flush()
 
 
+def _default_api() -> str:
+    """Where this checkout's install answers: `KNOWLEDGE_API` if set, else the port in the `.env` beside
+    this repository, else 8080. `.mcp.json` no longer names a port, so install.sh does not rewrite a
+    tracked file — that left every checkout on another port dirty, a `git pull` that could refuse, and
+    a port changed in `.env` by hand (as docs/INSTALL.md says to) pointing Claude Code at the old one."""
+    if os.environ.get("KNOWLEDGE_API"): return os.environ["KNOWLEDGE_API"]
+    port = ""
+    env = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+    try:
+        for line in open(env, encoding="utf-8"):
+            k, _, v = line.strip().partition("=")
+            if k.strip() == "WEB_PORT" and v.strip().strip("'\""): port = v.strip().strip("'\"")   # the last one wins, as compose reads it
+    except OSError:
+        pass
+    return f"http://localhost:{port if port.isdigit() else '8080'}/api/knowledge"
+
+
 def main() -> None:
     p = argparse.ArgumentParser(description="RouteMind over MCP (stdio).")
-    p.add_argument("--api", default=os.environ.get("KNOWLEDGE_API", "http://localhost:8080/api/knowledge"),
+    p.add_argument("--api", default=_default_api(),
                    help="The v1 root: the web app's Knowledge API (http://localhost:8080/api/knowledge), "
                         "or an ontology directly (http://localhost:8100/v1)")
     p.add_argument("--actor", default=os.environ.get("KNOWLEDGE_ACTOR", "mcp"),

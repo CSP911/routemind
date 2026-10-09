@@ -266,6 +266,17 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> d
     store = writer.store
     cs = parse(body, store)
     nodes0 = {n["id"]: n for n in store.nodes()}
+    # Stale is checked first, here and again inside the lock. A queued set accepted after the tree
+    # moved on was refused for a name already taken — by the very document it would have created,
+    # filed meanwhile another way — which told the reviewer to rename it (2026-10-10).
+    if cs["base"]:
+        rest0 = set()
+        for d in cs["decisions"]:
+            for x in (d.get("id"), d.get("parent")):
+                if x and not str(x).startswith("$") and x in nodes0:
+                    rest0.add(nodes0[x]["path"])
+                    rest0.update(nodes0[a]["path"] for a in _ancestors(nodes0, x))
+        _check_base(writer.root, cs["base"], rest0)
     # ids for what is created, before the lock (the id may come from a model), and checked again
     # inside it, as create_node does.
     ids: dict[str, str] = {}
@@ -274,7 +285,14 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> d
     for d in _order(cs["decisions"]):
         if d["op"] != "create": continue
         region = _region_of(d, cs["refs"], nodes0)
-        kind, _ = writer._resolve_kind(d.get("kind"), name=d["name"], one_liner=d["one_liner"], region=region,
+        given = d.get("kind")
+        if not given and d.get("content") and d["parent"] and not str(d["parent"]).startswith("$"):
+            # A document takes the kind its documented siblings mostly have. The install's default kind
+            # is a holder's ("a place that only groups") in the shipped vocabulary, and every document an
+            # agent filed came out as one (2026-10-10).
+            sib = [n["kind"] for n in nodes0.values() if n.get("parent") == d["parent"] and (n.get("body") or "").strip() and n.get("kind")]
+            if sib: given = max(set(sib), key=sib.count)
+        kind, _ = writer._resolve_kind(given, name=d["name"], one_liner=d["one_liner"], region=region,
                                        content=str(d.get("content") or "")[:3000])
         nid, _ = writer._resolve_id(d.get("id"), name=d["name"], kind=kind, one_liner=d["one_liner"], region=region)
         if nid in taken: raise WriteError(409, f"{d['ref']}: id {nid} is taken (by another decision in this set, or the tree)", code="id_taken", data={"id": nid})

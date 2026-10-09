@@ -92,8 +92,9 @@ for repo in (repo_a, repo_b): git(repo, "add", "-A"); git(repo, "commit", "-qm",
 area_b = sorted(d for d in os.listdir(os.path.join(repo_b, "regions")) if os.path.isdir(os.path.join(repo_b, "regions", d)))[0]
 
 try:
+    ACC = os.path.join(T, "access-bee")
     a = start(repo_a, PORT, TOKEN_A, {})
-    b = start(repo_b, PORT_B, TOKEN_B, {})
+    b = start(repo_b, PORT_B, TOKEN_B, {"ONTOLOGY_ACCESS": ACC})
     # nothing exported on bee to begin with, whatever the copied data says
     st, rows = req(PORT_B, "GET", "/v1/regions")
     for r in rows.get("regions", []):
@@ -128,11 +129,27 @@ try:
 
     # ── a circuit's session survives the far end restarting ───────────────────
     req(PORT_B, "PUT", f"/v1/nodes/{area_b}", {"export": "yes"})
-    stop(b); b = start(repo_b, PORT_B, TOKEN_B, {})              # every session bee had is gone
+    stop(b); b = start(repo_b, PORT_B, TOKEN_B, {"ONTOLOGY_ACCESS": ACC})   # every session bee had is gone
     t = circuit()
     check("bee restarts, revoking every session: the circuit re-mints and reads on", f"/v1/circuits/bee/regions/{area_b}" in t, t[:300])
     st, d = req(PORT_B, "GET", "/v1/export/regions", token=TOKEN_B)
     check("  while the enrolment key itself still reads nothing — only a session does", st == 401, f"{st}")
+
+    # ── a circuit named from its address, on hop 0, and in the far end's record (2026-10-10) ──
+    t, err = tool("knowledge_circuit", {"op": "open", "url": f"http://127.0.0.1:{PORT_B}", "token": TOKEN_B})
+    auto = f"127-0-0-1-{PORT_B}"
+    check("a circuit opened with no name takes one from the address — dots and all", not err and f"CIRCUIT {auto} open" in t, t[:160])
+    t, err = tool("knowledge_table", {})
+    check("  and hop 0 lists the circuits open in this session", f"/v1/circuits/{auto}/regions" in t and "/v1/circuits/bee/regions" in t, t[-400:])
+    req(PORT_B, "POST", "/v1/peers/token", token="not-the-key")
+    lines = []
+    for f in sorted(os.listdir(ACC)) if os.path.isdir(ACC) else []:
+        lines += [json.loads(l) for l in open(os.path.join(ACC, f), encoding="utf-8") if l.strip()]
+    reads = [l for l in lines if l["path"].startswith("/v1/export/") and l["outcome"] == "served"]
+    check("  the far end's access log says where each read came from and which session it carried",
+          reads and all(l["reader"] not in ("?", "") and str(l["peer"]).startswith("s:") for l in reads), json.dumps(reads[-1:]))
+    check("  and records a mint with a wrong key, the probe that matters most",
+          any(l["path"] == "/v1/peers/token" and l["outcome"] == "refused" for l in lines), json.dumps(lines[-2:]))
 
     # ── the MCP's area list follows hop 0 ─────────────────────────────────────
     desc = lambda: rpc("tools/list")["result"]["tools"][0]["description"]

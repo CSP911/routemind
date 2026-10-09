@@ -405,7 +405,8 @@ def apply_proposal(p: dict, actor: str):
             if p.get("before") and cur != p["before"]:
                 return {"ok": False, "error": "conflict", "code": 409, "field": "one_liner",
                         "current": cur, "submitted_before": p["before"]}
-            return writer.update_node(n["id"], {"one_liner": p["after"]}, actor)
+            return writer.update_node(n["id"], {"one_liner": p["after"]}, actor,
+                                      note=f"one_liner, proposal {p['id']}" + (f": {p['why']}" if p.get("why") else ""))
         if scope == "audience":
             # Who an area crossed to, by name — named peers went with standing links on 2026-10-08.
             return {"ok": False, "error": "an `audience` proposal names peers, which no longer exist — reject it"}
@@ -449,7 +450,9 @@ def apply_proposal(p: dict, actor: str):
         if p.get("before") and cur != p["before"]:
             return {"ok": False, "error": "conflict", "code": 409, "field": field,
                     "current": cur, "submitted_before": p["before"]}
-        return writer.update_node(rep["id"], {field: after}, actor)
+        what = (f"export {after}" if field == "export" else field)
+        return writer.update_node(rep["id"], {field: after}, actor,
+                                  note=f"{what}, proposal {p['id']}" + (f": {p['why']}" if p.get("why") else ""))
     return None
 
 
@@ -761,6 +764,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_DELETE(self): self._route("DELETE")
     def do_OPTIONS(self): self._route("OPTIONS")
 
+    def _reader(self) -> str:
+        """Where a circuit's request came from: the first address the web relay forwarded, else the
+        socket's own (which, behind the relay, is the relay)."""
+        fwd = (self.headers.get("X-Forwarded-For") or "").split(",")[0].strip()
+        return fwd or (self.client_address[0] if self.client_address else "?")
+
     def _peer_token(self):
         """Trade the enrolment key for a session token. The only thing the enrolment key opens.
 
@@ -773,8 +782,11 @@ class Handler(BaseHTTPRequestHandler):
         which makes that the cheapest revocation there is.
         """
         token = self.headers.get("X-Peer-Token") or ""
+        # Recorded like a read, refusals above all: a wrong key tried here is the probe that matters
+        # most, and it reached only the HTTP log until 2026-10-10.
+        self._access = {"path": "/v1/peers/token", "peer": None, "reader": self._reader()}
         if not PEER_TOKEN:
-            return self._err(501, "this backbone lets nobody read it — set ONTOLOGY_PEER_TOKEN to allow a circuit")
+            return self._err(501, "this backbone lets nobody read it — set KNOWLEDGE_CIRCUIT_TOKEN in its .env (ONTOLOGY_PEER_TOKEN inside the container) to allow a circuit")
         # The enrolment key only. A session token cannot mint another: a leaked session would
         # otherwise renew itself for ever and the six hours would bound nothing.
         if not sessions.same_secret(token, PEER_TOKEN):
@@ -802,9 +814,13 @@ class Handler(BaseHTTPRequestHandler):
         """
         # Before the door, so a wrong token is recorded too. A refused read is the one that matters:
         # a run of refusals is the only signal there is that the surface is being probed.
-        self._access = {"path": urlparse(self.path).path, "peer": None, "reader": None}
+        # Who: the address the request came from (the web relay forwards it) and which session it
+        # carried, as a short hash — every reader holds the same key, so the session is the one thing
+        # that tells two of them apart. "?" for both until 2026-10-10.
+        self._access = {"path": urlparse(self.path).path, "reader": self._reader(),
+                        "peer": sessions.tag(self.headers.get("X-Peer-Token") or "")}
         if not PEER_TOKEN:
-            return self._err(501, "this backbone lets nobody read it — set ONTOLOGY_PEER_TOKEN to allow a circuit")
+            return self._err(501, "this backbone lets nobody read it — set KNOWLEDGE_CIRCUIT_TOKEN in its .env (ONTOLOGY_PEER_TOKEN inside the container) to allow a circuit")
         # A session token, and not the enrolment key. The enrolment key opens `/v1/peers/token` and
         # nothing else — if it still worked here, the read path would still carry a secret that never
         # expires and the six hours would be decoration.
@@ -1141,6 +1157,10 @@ class Handler(BaseHTTPRequestHandler):
             rewords_hop0 = any(isinstance(d, dict) and d.get("op") == "reword" and d.get("field") == "use_when"
                                for d in (body.get("decisions") or []) if isinstance(body.get("decisions"), list))
             if HARNESS and rewords_hop0 and not dry:
+                # The set is proved against the tree as it is now, and queued with that revision as its
+                # base — so if the tree moves on before somebody accepts it, accepting says it is stale
+                # rather than doing whatever the decisions mean against a tree they were not made on.
+                if not body.get("base"): body = {**body, "base": head(DATA)}
                 res = change.apply(writer, body, actor, dry_run=True)
                 pid = f"cp_{uuid.uuid4().hex[:10]}"
                 cstore().append({"event": "proposal", "id": pid, "at": curator._now(), "type": "change",

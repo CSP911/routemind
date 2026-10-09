@@ -77,3 +77,11 @@ def same_secret(given: str | None, expected: str | None) -> bool:
     """
     if not given or not expected: return False
     return hmac.compare_digest(str(given), str(expected))
+
+
+def tag(token: str) -> str | None:
+    """A session as the access log names it: eight hex characters of a hash, which tells two readers
+    apart without writing down anything that could be presented back. None for no token."""
+    import hashlib
+    t = str(token or "").strip()
+    return ("s:" + hashlib.sha256(t.encode()).hexdigest()[:8]) if t else None

@@ -27,13 +27,23 @@ What it is there to show:
 
 ## Using it
 
-Copy it over a **fresh** `data/repo` — before the first `docker compose up`, or over an install whose
-ontology you do not mind losing:
+On a first install, `./install.sh` asks whether to start from it — or `./install.sh --example`.
+
+By hand, over a **fresh** `data/repo`, before the first `docker compose up`:
 
 ```sh
 mkdir -p data/repo && cp -r examples/back-office/. data/repo/
 docker compose up -d          # the entrypoint git-inits and commits it on first boot
 ./check/smoke.sh
+```
+
+Over an install that has already booted (and whose ontology you do not mind losing), the first boot
+is past, so commit it yourself — an uncommitted tree refuses every write:
+
+```sh
+cp -r examples/back-office/. data/repo/
+git -C data/repo add -A && git -C data/repo commit -m "start from examples/back-office"
+docker compose restart ontology
 ```
 
 It is a starting point to edit or delete, not a schema. The first thing to change is `vocab.yaml`:

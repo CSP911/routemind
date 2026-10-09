@@ -47,6 +47,9 @@ services:
       # what an install made before 2026-10-08 has in .env under the old name; it is read when the new
       # one is not set, so updating changes nothing about who can read you. docs/CIRCUIT.md.
       ONTOLOGY_PEER_TOKEN: "${KNOWLEDGE_CIRCUIT_TOKEN:-${EXCHANGE_TOKEN_HOME:-}}"
+      # How long a circuit's session lasts, in seconds (docs/CIRCUIT.md). Six hours when empty. Read by
+      # the service and documented since 2026-09-29, but never passed in, so setting it changed nothing.
+      ONTOLOGY_PEER_SESSION_TTL: "${ONTOLOGY_PEER_SESSION_TTL:-}"
       # Set these three and Knowledge derives a node's id, kind and description from its name. Leave
       # them out and those are typed by hand — the screen asks for them only in that case.
       # `litellm` is the default because it is what the client always spoke — an existing install

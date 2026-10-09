@@ -1830,6 +1830,7 @@
     state.revision = regions.revision || null;
     state.nodes = graph.nodes || [];
     state.entries = new Map();
+    staleRefresh();
     if (headRev) drawnRevision = headRev;
     draw();                                   // first paint: two calls in
     loadFlags().then(draw);                   // notifications arrive after the map, never gating it
@@ -2036,7 +2037,8 @@
     const card = el("form", "kn-card-form");
     card.addEventListener("submit", (e) => e.preventDefault());
     card.append(el("h3", "kn-cf-title", t("knowledge.delNode.title").replace("{id}", rec.name || id)));
-    card.append(el("p", "kn-cf-lead", lossy ? t("knowledge.delNode.lossy") : t("knowledge.delNode.empty")));
+    // "It goes with what is inside it" only when something is: a document alone says its text goes.
+    card.append(el("p", "kn-cf-lead", inside.length ? t("knowledge.delNode.lossy") : hasBody ? t("knowledge.delNode.bodyGoes") : t("knowledge.delNode.empty")));
     if (inside.length) {
       const box = el("div", "kn-uncovered");
       box.append(el("span", "kn-fact-k", t("knowledge.del.alsoGoes").replace("{n}", String(inside.length))));
@@ -2045,15 +2047,18 @@
       box.append(list);
       card.append(box);
     }
-    if (hasBody) card.append(el("p", "kn-fnote", t("knowledge.delNode.bodyGoes")));
+    if (hasBody && inside.length) card.append(el("p", "kn-fnote", t("knowledge.delNode.bodyGoes")));
     card.append(el("p", "kn-fnote", t("knowledge.del.revertable")));
-    const typed = input("", { class: "kn-input is-mono", spellcheck: "false", placeholder: id });
-    if (lossy) card.append(labelled("knowledge.del.confirmLabel", typed, t("knowledge.del.confirmHint").replace("{name}", id)));
+    // The name the title shows is the one to type — "출장비 기준", not the address it was romanised
+    // into. The address is accepted too, for whoever reads that instead.
+    const shown = rec.name || id;
+    const typed = input("", { class: "kn-input", spellcheck: "false", placeholder: shown });
+    if (lossy) card.append(labelled("knowledge.del.confirmLabel", typed, t("knowledge.del.confirmHint").replace("{name}", shown)));
 
     card.append(actions(
       button("common.cancel", "quiet", closeCard),
       button("knowledge.del.go", "danger", (b) => guarded(b, async () => {
-        if (lossy && typed.value.trim() !== id) throw new Error(t("knowledge.del.nameMismatch"));
+        if (lossy && ![id, shown].includes(typed.value.trim())) throw new Error(t("knowledge.del.nameMismatch"));
         await send("nodes/" + encodeURIComponent(id), "DELETE");
         forgetOpen(id);
         $("knRawDialog").close();
@@ -2353,7 +2358,9 @@
     const card = el("form", "kn-card-form");
     card.addEventListener("submit", (e) => e.preventDefault());
     card.append(el("h3", "kn-cf-title", t("knowledge.submit.sentTitle")));
-    card.append(el("p", "kn-cf-lead", t("knowledge.submit.sentLead")));
+    // Where the flag goes: an area's sentence is hop 0's, so its request is flagged on the Back-Bone,
+    // not on the area — the screen said "the area is flagged" and the person looked there.
+    card.append(el("p", "kn-cf-lead", t(scope === "bb" ? "knowledge.submit.sentLeadBb" : "knowledge.submit.sentLead")));
     const buttons = [button("knowledge.done.ok", "primary", () => $("knRawDialog").close())];
     if (scope === "as" || scope === "dr") {
       const now = (state.regions.find((r) => norm(r.source) === norm(region)) || {}).use_when || "";
@@ -2625,6 +2632,20 @@
 
   /** The strip over the map: each line a write may have left behind, with the way to rewrite it and
    *  the way to say it still holds. Replaced by the next write's, cleared when every line is answered. */
+  /** Drop the strip's lines that no longer read as they did — rewritten since, through a proposal
+   *  accepted or an edit elsewhere. A strip showing yesterday's sentence as "may be stale" is wrong
+   *  twice. */
+  function staleRefresh() {
+    if (!state.staleLines) return;
+    const node = new Map(state.nodes.map((n) => [n.id, n]));
+    const area = new Map(state.regions.map((r) => [r.representative, r]));
+    const now = (l) => l.field === "use_when" ? (area.get(l.id)?.use_when ?? null) : (node.get(l.id)?.desc ?? null);
+    const keep = state.staleLines.filter((l) => { const cur = now(l); return cur !== null && String(cur).trim() === String(l.text).trim(); });
+    if (keep.length === state.staleLines.length) return;
+    if (keep.length) staleShow(keep);
+    else { state.staleLines = null; const box = $("knStale"); if (box) { box.hidden = true; box.replaceChildren(); } }
+  }
+
   function staleShow(lines) {
     const box = $("knStale");
     if (!box) return;
@@ -3005,14 +3026,37 @@
     // person sees `/v1/nodes/organization-rules` before pressing anything. Refused only when nothing
     // in it can be an address at all.
     const where = el("span", "kn-addr-preview");
-    const showWhere = () => {
-      const f = fileNameFor(name.value);
-      where.classList.toggle("is-bad", Boolean(name.value.trim()) && !f);
-      where.textContent = !name.value.trim() ? t("knowledge.fileNameRule")
-        : f ? t("knowledge.savedAs").replace("{addr}", `/v1/nodes/${f.replace(/\.md$/, "")}`)
-        : t("knowledge.noAddressIn");
+    // A name in Hangul, kana or with accents has no address by the rule above, and the server knows
+    // how to romanise it — the same resolution a save performs (`suggest/id`). Until 2026-10-10 the
+    // form refused "출장비 기준" outright: a Korean team could not file a document by its own name.
+    let resolved = { name: null, file: "", error: "" };
+    const resolve = async (raw) => {
+      const n = String(raw || "").trim().replace(/\.(md|txt|markdown)$/i, "");
+      if (!n) return { name: n, file: "", error: "" };
+      if (!/[^\x00-\x7f]/.test(n)) return { name: n, file: fileNameFor(n), error: "" };
+      if (resolved.name === n) return resolved;
+      try {
+        const d = await post("suggest/id", { name: n });
+        resolved = { name: n, file: d.id ? `${d.id}.md` : "", error: "" };
+      } catch (error) {
+        // No id could be made — Han characters with no LLM, or an LLM that did not answer. This form
+        // has no address field, so the useful sentence is the one that says what to type instead.
+        resolved = { name: n, file: "", error: [422, 503].includes(error.status) ? t("knowledge.noAddressIn") : error.message };
+      }
+      return resolved;
     };
-    name.addEventListener("input", showWhere);
+    let ticket = 0;
+    const showWhere = async () => {
+      const mine = ++ticket;
+      const r = await resolve(name.value);
+      if (mine !== ticket) return;           // typed on since; a later call will answer
+      where.classList.toggle("is-bad", Boolean(name.value.trim()) && !r.file);
+      where.textContent = !name.value.trim() ? t("knowledge.fileNameRule")
+        : r.file ? t("knowledge.addressWillBe").replace("{addr}", `/v1/nodes/${r.file.replace(/\.md$/, "")}`)
+        : (r.error || t("knowledge.noAddressIn"));
+    };
+    let wait = null;
+    name.addEventListener("input", () => { clearTimeout(wait); wait = setTimeout(showWhere, 250); });
     const nameRow = labelled("knowledge.field.name", name);
     nameRow.append(where);
     form.append(nameRow);
@@ -3053,11 +3097,12 @@
       button("common.cancel", "quiet", closeCard),
       button("knowledge.create", "primary", (b) => guarded(b, async () => {
         if (upload.checked && !loaded) throw new Error(t("knowledge.chooseFileFirst"));
-        const fname = fileNameFor(name.value);
-        if (!fname || !NODE_FILE.test(fname)) throw new Error(t("knowledge.noAddressIn"));
+        const r = await resolve(name.value);
+        const fname = r.file;
+        if (!fname || !NODE_FILE.test(fname)) throw new Error(r.error || t("knowledge.noAddressIn"));
         if (!desc.value.trim()) throw new Error(t("knowledge.descRequired"));
         await send(`nodes/${encodeURIComponent(node)}/files/${encodeURIComponent(fname)}`, "PUT",
-          { content: body.value, description: desc.value.trim() });
+          { content: body.value, description: desc.value.trim(), name: r.name });
         await afterWrite(node);
         $("knRawDialog").close();       // it is on the map now, in the rack that was open
       }, "knowledge.created")),
@@ -3073,7 +3118,13 @@
   async function afterWrite(nodeId) {
     state.files.delete(nodeId);
     await loadMap();
+    // The new revision emptied every area's entries, and refilling them was left to the background
+    // warm-up — which stops in a hidden tab, and goes area by area. The racks on screen are the ones
+    // that must show the write, now: a document added to an area's face sat behind "No data files"
+    // until something else redrew (2026-10-10).
+    for (const key of state.open) await loadEntries(key);
     if (nodeId) await loadFiles(nodeId);
+    draw();
     loadState();
     // This write moved `head`; take the new value now so the watcher's next tick is quiet rather
     // than a second redraw of what is already on screen.

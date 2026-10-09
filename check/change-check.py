@@ -210,6 +210,38 @@ try:
     st, d = call("POST", f"/v1/curator/proposals/{pid}/accept", {"why": "yes"})
     check("  accepting it applies it as one commit", 200 <= st < 300 and commits_since(h0) == 1 and (d.get("result") or {}).get("revision") == head(), f"{st} {json.dumps(d)[:160]}")
 
+    # ── a queued set accepted after the tree moved is stale, and says so (2026-10-10) ──
+    h0 = head()
+    st, d = change({"why": "a reword that waits", "decisions": [
+        {"op": "create", "ref": "$q", "name": "Queued note", "one_liner": "filed while the sentence waits for review", "parent": "expense",
+         "content": "# Queued\n\nbody\n"},
+        {"op": "reword", "id": "expense", "field": "use_when", "after": "expenses, receipts, per-diems — and notes filed while a sentence waits"}]})
+    qid = d.get("queued")
+    call("PUT", "/v1/nodes/expense", {"one_liner": "the expense area, moved on while the set waited"})
+    st, d = call("POST", f"/v1/curator/proposals/{qid}/accept", {"why": "late"})
+    det = d.get("detail") or {}
+    check("a queued set accepted after a file it rests on moved is refused as stale, not as a taken name",
+          st == 409 and (det.get("code") == "stale" or "stale" in json.dumps(d) or "changed since" in json.dumps(d)) and "taken" not in json.dumps(d),
+          f"{st} {json.dumps(d)[:200]}")
+
+    # ── a document takes its documented siblings' kind; a typed name is kept ──
+    st, kids = call("GET", "/v1/nodes/purchase-request")
+    sib = [c for c in (kids.get("entries") or []) if c.get("type") != "node"]
+    st, d = change({"why": "kind from siblings", "decisions": [
+        {"op": "create", "ref": "$k", "name": "Kind probe", "one_liner": "what kind a document gets with none given", "parent": "purchase-request",
+         "content": "# Kind\n\nbody\n"}, {"op": "keep", "id": "purchase-request", "field": "one_liner"}]})
+    st2, made = call("GET", f"/v1/nodes/{(d.get('ids') or {}).get('$k', 'x')}")
+    wanted = {}
+    for f in os.listdir(os.path.join(repo, "regions", "procurement")):
+        t = open(os.path.join(repo, "regions", "procurement", f), encoding="utf-8").read()
+        if "\nparent: purchase-request\n" in t and t.split("---", 2)[2].strip() and "kind-probe" not in f:
+            k = [l.split(":", 1)[1].strip() for l in t.splitlines() if l.startswith("kind:")][0]; wanted[k] = wanted.get(k, 0) + 1
+    check("a placed document with no kind takes the kind its documented siblings mostly have", st == 201 and wanted
+          and wanted.get(made.get("kind"), 0) == max(wanted.values()), f"{made.get('kind')} vs {wanted}")
+    st, d = call("PUT", "/v1/nodes/purchase-request/files/gyeonjeok-bigyopyo.md", {"content": "# 견적 비교표\n\n세 곳.\n", "description": "견적을 몇 곳에서 받는지", "name": "견적 비교표"})
+    st2, n = call("GET", "/v1/nodes/gyeonjeok-bigyopyo")
+    check("a document written with a name keeps it, rather than being called by its address", 200 <= st < 300 and n.get("name") == "견적 비교표", f"{st} {n.get('name')} {json.dumps(d)[:160]}")
+
     # ── the agent's door ──────────────────────────────────────────────────────
     m = subprocess.Popen([sys.executable, os.path.join(ROOT, "mcp", "knowledge_mcp.py"), "--api", f"http://127.0.0.1:{PORT}/v1", "--actor", "agent-c"],
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
@@ -249,6 +281,15 @@ try:
     t, err = tool("knowledge_place", {"op": "here", "id": pid, "why": "nothing covers the office itself",
                                       "area": {"source": "office", "name": "Office", "one_liner": "the office itself — plants, keys, the kitchen", "use_when": "when the question is about the office as a place: plants, keys, the kitchen"}})
     check("  `here` with `area` makes the area, its sentence and the document in one commit", not err and t.startswith("PLACED") and "$area = office" in t and commits_since(h0) == 1, t[:300])
+    # a set the queue takes ends the placement: the agent is not invited to file it again another way
+    t, err = tool("knowledge_place", {"op": "open", "name": "Queue probe", "one_liner": "a document whose area sentence is reworded"})
+    pid = t.split("[", 1)[1].split("]", 1)[0]
+    tool("knowledge_place", {"op": "step", "id": pid, "pick": "/v1/regions/attendance"})
+    t, err = tool("knowledge_place", {"op": "here", "id": pid, "why": "probe", "decisions": [
+        {"op": "reword", "id": "attendance", "field": "use_when", "after": "leave, attendance and the queue probe"}]})
+    t2, _ = tool("knowledge_place", {"op": "list"})
+    check("  a set the review queue takes ends the placement and says not to file it again", t.startswith("QUEUED") and "do not file the document again" in t
+          and "No placement is open" in t2, t[:300])
     m.stdin.close(); m.wait(5)
 finally:
     svc.terminate()

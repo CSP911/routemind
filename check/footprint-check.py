@@ -176,6 +176,15 @@ try:
         code, one = call("GET", f"/v1/walks/{w1}")
         check("  a new hop 0 closes the walk before it, abandoned",
               one.get("state") == "closed" and one.get("outcome") == "abandoned", json.dumps({k: one.get(k) for k in ("state", "outcome")}))
+        # The question, when the agent gives it at hop 0, is on the walk — the history showed "—" for
+        # every agent walk until 2026-10-10, because hop 0 had nowhere to put it.
+        m.call("knowledge_table", {"question": "how far up does a 3.2M purchase go"})
+        qw = newest_walk(); code, one = call("GET", f"/v1/walks/{qw}")
+        check("  a question given at hop 0 is recorded on the walk", one.get("question") == "how far up does a 3.2M purchase go", one.get("question"))
+        # A placement's first table is hop 0, so it opens a walk, and reading while placing is allowed.
+        t, err = m.call("knowledge_place", {"op": "open", "name": "Probe", "one_liner": "a placement that reads first"})
+        t, err = m.call("knowledge_read", {"path": "/v1/nodes/threshold-table/body", "why": "check what is there before placing"})
+        check("  a placement opens a walk: reading while placing is not refused", not err and "hop 0 has not been opened" not in t, t[:160])
         m.close()
     finally:
         svc.terminate()

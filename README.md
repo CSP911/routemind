@@ -157,21 +157,22 @@ git clone https://github.com/CSP911/routemind.git routemind && cd routemind
 ./install.sh --port 9000
 ```
 
-→ **http://localhost:9000**. You can run it again safely: an existing `.env` is kept. An optional
-LLM adds a **✨ Suggest** button that drafts a line for you to edit. Nothing else depends on it.
-Start from [`examples/back-office`](examples/) rather than an empty map.
+→ **http://localhost:9000**. On a first install it asks whether to start from the example back office
+([`examples/back-office`](examples/): five areas, 79 documents) — say yes unless you have data of your
+own ready. You can run it again safely: an existing `.env` is kept. An optional LLM adds a **✨ Suggest**
+button that drafts a line for you to edit; nothing else depends on it.
 [docs/INSTALL.md](docs/INSTALL.md) · already running one: [docs/UPGRADE.md](docs/UPGRADE.md).
 
-**An agent.** For Claude Code, `install.sh` writes `.mcp.json`, so you only need:
+**An agent.** Claude Code finds the server in `.mcp.json`, which reads the port from `.env`:
 
 ```sh
-claude          # in the same directory; /mcp lists the four tools
+claude          # in the same directory; approve the "knowledge" server once, then /mcp lists four tools
 ```
 
-For any other MCP client:
+For any other MCP client, run the same server — it finds the install the same way, or take `--api`:
 
 ```sh
-python3 mcp/knowledge_mcp.py --api http://localhost:9000/api/knowledge
+python3 mcp/knowledge_mcp.py      # or: --api http://localhost:9000/api/knowledge
 ```
 
 The area list reaches the agent in the server's instructions, so you do not have to name RouteMind in

@@ -32,6 +32,9 @@ subq() {
 
 say "== API =="
 curl -fsS "$BASE/api/app-config" >/dev/null && say "ok   config"
+# The health on the port people reach — the docs and the door both named it, and it was a 404 here
+# until 2026-10-10.
+curl -fsS "$BASE/healthz" | grep -q '"valid"' && say "ok   /healthz on the web port" || { say "FAIL /healthz on the web port"; exit 1; }
 curl -fsS "$BASE/api/knowledge/regions" >/dev/null && say "ok   hop 0"
 curl -fsS "$BASE/knowledge" >/dev/null && say "ok   the map page"
 for f in knowledge.js knowledge.css i18n.js theme.css theme.js iris_ui.css; do
