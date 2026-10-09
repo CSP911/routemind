@@ -110,6 +110,18 @@ try:
         code, one = call("GET", f"/v1/walks/{wid}")
         check("  GET one walk returns it whole, for a replay", code == 200 and len(one.get("steps", [])) == 3 and one["steps"][1]["why"] == "receipts are in its sentence")
         call("POST", f"/v1/walks/{wid}/close", {"outcome": "answered"})
+        # the history table pages the listing: newest first, ten at a time, with the total to page by
+        for i in range(11):
+            call("POST", "/v1/walks", {"question": f"page filler {i}", "how": "check"})
+        code, p1 = call("GET", "/v1/walks?limit=10&offset=0")
+        code2, p2 = call("GET", "/v1/walks?limit=10&offset=10")
+        check("  the listing pages: ten, then the rest, with the total", len(p1.get("walks", [])) == 10 and len(p2.get("walks", [])) == p1.get("total", 0) - 10 >= 2,
+              f"{len(p1.get('walks', []))} {len(p2.get('walks', []))} {p1.get('total')}")
+        check("  newest first, and no walk on two pages", p1["walks"][0]["question"] == "page filler 10"
+              and not {w["id"] for w in p1["walks"]} & {w["id"] for w in p2.get("walks", [])})
+        row = next((w for w in p2.get("walks", []) if w["id"] == wid), {})
+        check("  a row summarises its walk: one table, one read, answered, the close not counted as a step",
+              row.get("tables") == 1 and row.get("reads") == 1 and row.get("outcome") == "answered" and row.get("last") == "/v1/nodes/qualified-list/body", str(row))
 
         # ── the MCP ───────────────────────────────────────────────────────────
         class Mcp:

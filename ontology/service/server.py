@@ -14,7 +14,7 @@ mounted it; agents here read this API), service fragments (`ONTOLOGY_SERVICES`, 
 legacy fragment directory, and the curator's sleep and observations (no caller anywhere).
 """
 from __future__ import annotations
-import json, os, re, sys, time, traceback
+import datetime, json, os, re, sys, time, traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, unquote
@@ -975,9 +975,21 @@ class Handler(BaseHTTPRequestHandler):
                         except ValueError: return self._err(400, "since must be a step number")
                         return self._send(200, wstore().since(n))
                     want = q.get("state") or None
-                    return self._send(200, {"seq": wstore().seq(), "walks": [
-                        {k: w[k] for k in ("id", "question", "how", "by", "at", "touched_at", "state", "outcome", "closed_at")}
-                        | {"steps": len(w["steps"])} for w in wstore().all(want)]})
+                    # The history: newest first, a page at a time when `limit` is given — six hours of
+                    # walks is hundreds of rows on a busy install, and the screen shows ten. Each row
+                    # carries what the history table prints, so a page costs one request, not eleven.
+                    try:
+                        limit = int(q["limit"]) if q.get("limit") else None
+                        offset = int(q.get("offset") or 0)
+                    except ValueError: return self._err(400, "limit and offset must be numbers")
+                    if (limit is not None and not 1 <= limit <= 200) or offset < 0:
+                        return self._err(400, "limit is 1 to 200, and offset is not negative")
+                    # By the opening step's number, not `at`: that is to the second, and walks opened in
+                    # the same second would come back in an order that changes between pages.
+                    rows = sorted(wstore().all(want), key=lambda w: ((w.get("steps") or [{}])[0].get("n") or 0, w.get("at") or ""), reverse=True)
+                    page = rows[offset:offset + limit] if limit is not None else rows
+                    return self._send(200, {"seq": wstore().seq(), "total": len(rows), "offset": offset,
+                                            "walks": [_walk_row(w) for w in page]})
                 if len(parts) == 2: return self._send(200, wstore().get(parts[1]))
             except walks.WalkError as e: return self._err(e.status, str(e))
             return self._err(404, "unknown path")
@@ -1206,6 +1218,24 @@ DRAFT_PROMPTS = {
     "bb": "the one line used to decide **whether to choose this area at all** (what question brings you here)",
 }
 DRAFTABLE = frozenset(DRAFT_PROMPTS)
+
+
+def _walk_row(w: dict) -> dict:
+    """One walk as the history lists it: who and when, how it ended, and what it did — the tables it
+    opened, the documents it read, where it stopped and how long it took. `close` is an outcome, not a
+    step, so it is left out of all of those."""
+    moves = [s for s in w.get("steps") or [] if s.get("op") != "close"]
+    def _t(s):
+        try: return datetime.datetime.fromisoformat(str(s.get("at") or "").replace("Z", "+00:00"))
+        except ValueError: return None
+    first, last = (_t(moves[0]), _t(moves[-1])) if moves else (None, None)
+    return {**{k: w.get(k) for k in ("id", "question", "how", "by", "at", "touched_at", "state", "outcome", "closed_at")},
+            "steps": len(w.get("steps") or []),
+            "tables": sum(1 for s in moves if s.get("op") == "table"),
+            "reads": sum(1 for s in moves if s.get("op") == "read"),
+            "last": (moves[-1].get("address") or "") if moves else "",
+            "last_op": (moves[-1].get("op") or "") if moves else "",
+            "took": int((last - first).total_seconds()) if first and last else 0}
 
 
 def _denied_kinds() -> set[str]:

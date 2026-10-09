@@ -140,7 +140,7 @@ if (missingReasons.length || missingFields.length || orphanErrs.length) {
 // belongs to the page rather than to a reader. Each entry is a decision.
 const SAME_IN_EVERY_LANGUAGE = new Set([
   "ROUTEMIND", "RouteMind",     // the product's name
-  "MAP", "DOMAINS",             // the eyebrows, set in the stylesheet's voice rather than the reader's
+  "MAP", "HISTORY",             // the eyebrows, set in the stylesheet's voice rather than the reader's
   // The kind chips. These are the identifiers the screen and the API both use for a thing — an AS is
   // an AS in every language, and translating the chip would break the one word that ties the map, the
   // address and the docs together. JS overwrites this element with one of them from OBJECT.
@@ -182,6 +182,7 @@ if (loose.length) {
 const SHARED_ON_PURPOSE = new Set([
   "common.cancel",            // one word, and every form that has a Cancel means the same by it
   "knowledge.fp.replay",      // the button's label, put back when it stops being "Stop" mid-replay
+  "knowledge.fp.trail",       // "Reasons" — the footprint bar's button and each history row's, the same act
 ]);
 const markup = new Set([...html.matchAll(/data-i18n(?:-label|-placeholder)?="([^"]+)"/g)].map((m) => m[1]));
 const script = new Set([...js.matchAll(/"((?:knowledge|common)\.[A-Za-z0-9_.]+)"/g)].map((m) => m[1]));

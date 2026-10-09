@@ -359,11 +359,19 @@ def api_knowledge_create_proposal_from_agent(payload: dict, request: Request) ->
 
 
 @_iris_route("GET", "/api/knowledge/walks")
-def api_knowledge_walks(request: Request, since: str = Query(default=""), state: str = Query(default="")) -> dict[str, Any]:
-    # The footprint, for the map: every step after a cursor (the live view), or the list of walks.
+def api_knowledge_walks(request: Request, since: str = Query(default=""), state: str = Query(default=""),
+                        limit: str = Query(default=""), offset: str = Query(default="")) -> dict[str, Any]:
+    # The footprint, for the map: every step after a cursor (the live view), or the list of walks —
+    # the history, newest first, a page at a time when `limit` is given.
     if since and not since.isdigit(): raise HTTPException(status_code=422, detail="since must be a step number.")
     if state and state not in ("open", "closed"): raise HTTPException(status_code=422, detail="state must be open or closed.")
-    q = "?since=" + since if since else ("?state=" + state if state else "")
+    if (limit and not limit.isdigit()) or (offset and not offset.isdigit()):
+        raise HTTPException(status_code=422, detail="limit and offset must be numbers.")
+    if since:
+        q = "?since=" + since
+    else:
+        parts = [f"{k}={v}" for k, v in (("state", state), ("limit", limit), ("offset", offset)) if v]
+        q = ("?" + "&".join(parts)) if parts else ""
     return _ontology_proxy("GET", "/v1/walks" + q, _knowledge_actor(request))
 
 

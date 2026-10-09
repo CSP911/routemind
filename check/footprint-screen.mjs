@@ -35,9 +35,9 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
     regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow","knFpSteps","knFpCard","knHist","knHistBody","knHistPages"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
-byId.knFp.hidden = true;
+byId.knFp.hidden = true; byId.knHist.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };
 globalThis.document = { readyState: "complete", visibilityState: "hidden", getElementById: (i) => byId[i],
   createElement: (t) => new N(t), createElementNS: (_, t) => new N(t), addEventListener() {}, querySelectorAll: () => [] };
@@ -52,7 +52,7 @@ globalThis.fetch = async (url, opts) => {
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text(), headers: res.headers };
 };
 new Function(src.replace('if (document.readyState === "loading")',
-  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw };\n  if (document.readyState === "loading")'))();
+  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw, hist, histLoad };\n  if (document.readyState === "loading")'))();
 const kn = globalThis.__kn; const { state, fp } = kn;
 const settle = async (n = 40) => { for (let i = 0; i < n; i++) await new Promise((r) => setTimeout(r, 5)); };
 const results = []; const check = (name, cond, extra = "") => results.push(`${cond ? "ok  " : "FAIL"} ${name}${cond || !extra ? "" : "   — " + extra}`);
@@ -104,6 +104,34 @@ const topoText = find(byId.knTopo, (n) => n.textContent).map((n) => n.textConten
 check("  and the sub-racks down to the document are drawn on the map", ["purchase-request", "approval-threshold"].every((id) => topoText.includes(`[${id}]`)),
       JSON.stringify(topoText.filter((x) => /threshold|purchase/.test(x))));
 check("  even though the browser held a map cached before nodes carried their parent", state.nodes.some((n) => "parent" in n));
+
+// ── the footprint, drawn (2026-10-08) ─────────────────────────────────────────
+// The walk as a trace on the map, numbered, with its reason beside the step it is on; everything else
+// dimmed while it moves; the steps as a row to jump between; and a card once it stops.
+const layerEls = (c) => find(byId.knTopo, (n) => cls(n).includes(c));
+const traceSegs = layerEls("kn-fp-trace").filter((n) => cls(n).includes("is-focus"));
+const tracePts = traceSegs.reduce((k, n) => k + (n.attrs.points ? n.attrs.points.split(" ").length : 1), 0);
+check("drawn: the walk is a trace through the tiles it visited", traceSegs.length >= 1 && tracePts >= 4, `${traceSegs.length} pieces, ${tracePts} points`);
+const badgeNums = layerEls("kn-fp-badge").map((g) => find(g, (n) => n.tag === "text").map((n) => n.textContent).join(""));
+check("  each step numbered on its tile, in order", ["1", "2", "3", "4"].every((x) => badgeNums.includes(x)), JSON.stringify(badgeNums));
+const bubble = layerEls("kn-fp-bubble").map((g) => find(g, (n) => n.tag === "text").map((n) => n.textContent).join("")).join(" | ");
+check("  and the reason for the step it is on, beside it", bubble.includes("the numbers themselves"), bubble);
+check("  while it moves, the rest of the map is dimmed", byId.knTopo.classList.contains("is-spot"));
+const chips = () => (byId.knFpSteps.__kids || []);
+check("the walk is a row of steps under the bar, one per step", chips().length === 1 + steps.length, `${chips().length} chips`);
+chips()[2].click(); await settle(60);
+check("  pressing a step shows the map as it was at that step", fp.pin && fp.pin.now.address === steps[1][1], JSON.stringify(fp.pin && fp.pin.now));
+check("    with the trace stopping there", !layerEls("kn-fp-bubble").map((g) => find(g, (n) => n.tag === "text").map((n) => n.textContent).join("")).join("").includes("the numbers themselves"));
+byId.knFpLive.click(); await settle();
+check("  and Live goes back to the walk as it is", fp.pin === null);
+await post(`walks/${w.id}/close`, { outcome: "answered", why: "the band table answered it" });
+await kn.fpPoll(); await settle();
+check("once the walk ends, a card says how it went", byId.knFpCard.hidden === false
+      && find(byId.knFpCard, (n) => String(n.textContent).includes(dict["knowledge.fp.out.answered"] || "Answered")).length > 0,
+      find(byId.knFpCard, (n) => n.textContent).map((n) => n.textContent).join(" | "));
+const traceAfter = layerEls("kn-fp-trace").filter((n) => cls(n).includes("is-focus"));
+check("  and the close is an outcome, not a step: the trace does not run back to hop 0",
+      traceAfter.reduce((k, n) => k + (n.attrs.points ? n.attrs.points.split(" ").length : 1), 0) === tracePts);
 
 // ── replay ────────────────────────────────────────────────────────────────────
 state.open = []; state.openNode.clear(); kn.draw();
@@ -160,6 +188,31 @@ await kn.fpReplay();
 realClearInterval(watchAll);
 check("replaying all walks shows every walk's steps", ["the numbers themselves", "receipts are in its sentence", "after the pause"].every((why) => seenAll.some((t) => t.includes(why))),
       JSON.stringify(seenAll.slice(-3)));
+
+// ── the history under the map ─────────────────────────────────────────────────
+check("history: shown when the backbone keeps walks", byId.knHist.hidden === false);
+for (let i = 0; i < 11; i++) await post("walks", { question: `history filler ${i}`, how: "screen-check" });
+await kn.histLoad(0); await settle();
+const histRows = () => byId.knHistBody.__kids.filter((r) => cls(r).includes("kn-hist-row"));
+const rowText = (r) => find(r, (n) => n.textContent).map((n) => n.textContent).join(" | ");
+check("  ten rows to a page, newest first", histRows().length === 10 && rowText(histRows()[0]).includes("history filler 10"),
+      `${histRows().length} rows; first: ${histRows()[0] && rowText(histRows()[0])}`);
+const pageBtns = () => byId.knHistPages.__kids.filter((b) => cls(b).includes("kn-hist-page"));
+check("  with pages to move through once there are more than ten", byId.knHistPages.hidden === false && pageBtns().some((b) => b.textContent === "2"),
+      pageBtns().map((b) => b.textContent).join(" "));
+const firstPage = histRows().map((r) => r.dataset.walk);
+pageBtns().find((b) => b.textContent === "2").click(); await settle();
+check("  page 2 holds the older walks, none from page 1", kn.hist.page === 1 && histRows().length >= 4 && !histRows().some((r) => firstPage.includes(r.dataset.walk)),
+      `page ${kn.hist.page}, ${histRows().length} rows`);
+const old = histRows().find((r) => r.dataset.walk === w.id);
+check("  the first walk is there, summarised", old && rowText(old).includes("how far up does a purchase") && rowText(old).includes(dict["knowledge.fp.out.answered"] || "Answered"),
+      old ? rowText(old) : "not on page 2");
+const showBtn = old && find(old, (n) => n.tag === "button" && n.textContent === (dict["knowledge.hist.show"] || "knowledge.hist.show"))[0];
+showBtn && showBtn.click(); await settle();
+check("  'show on the map' pins that walk at its last step, and marks its row", fp.focus === w.id && fp.pin && fp.pin.now.address === steps.at(-1)[1] && cls(old).includes("is-sel"),
+      JSON.stringify({ focus: fp.focus, pin: fp.pin && fp.pin.now }));
+pageBtns().find((b) => cls(b).includes("is-prev")).click(); await settle();
+check("  and ‹ goes back to page 1", kn.hist.page === 0 && histRows()[0].dataset.walk === firstPage[0]);
 
 console.log(results.join("\n"));
 const n = results.filter((r) => r.startsWith("FAIL")).length;

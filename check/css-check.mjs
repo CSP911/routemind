@@ -52,6 +52,7 @@ const KNOWN = new Map([
   ["kn-map-panel", "a hook on the map section; `.panel` beside it carries the styling"],
   ["kn-id-note", "a modifier beside `.kn-fhint`, which carries the styling"],
   ["kn-draft-notes", "a bare wrapper in the proposal card; its children carry their own spacing"],
+  ["is-fp-c", "the stem of `is-fp-c0`…`is-fp-c7`, a walk's colour, built from its number; each is styled"],
 ]);
 
 const missing = [...used].filter((c) => !defined.has(c)).sort();

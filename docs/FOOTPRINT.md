@@ -24,6 +24,7 @@ agent ──MCP──▶ POST /v1/walks            opens                        
           ──▶ POST /v1/walks/{id}/close {outcome: answered|not_found}
 screen ◀──    GET  /v1/walks?since=N    every step after N, oldest first — the live footprint
 screen ◀──    GET  /v1/walks/{id}       one walk, whole — the replay
+screen ◀──    GET  /v1/walks?limit=10&offset=20   a page of the history, newest first, with the total
 ```
 
 ## Decisions, and why
@@ -60,6 +61,23 @@ speed (1×, 2×, 4×, 8×), and never under 0.15 s or over 6 s. It was a fixed 0
 walk that stopped to think look exactly like one that did not. With no walk chosen, every kept walk
 is replayed together, interleaved in the order the steps were taken. The same button stops it.
 
+**A walk is drawn as a trace, not only as marked tiles** (2026-10-09). A line runs through the tiles
+in the order they were walked, each numbered on its tile; the newest stretch is drawn as it arrives,
+with a dot travelling along it, and the reason for the step it is on sits beside that tile. While a
+walk moves the rest of the map is dimmed. Under the bar the walk in focus is a row of steps: pressing
+one shows the map as it was at that step, until Live. When a walk ends, a card in the window's corner
+says how it went — tables, documents, how long, the outcome — and the close itself is an outcome,
+never a step, so the trace does not run back to hop 0. With reduced motion the dot and the drawing-in
+are left out.
+
+**History under the map, ten to a page** (2026-10-09, operator). Every kept walk, newest first: when,
+the question, who, what it did (tables · documents → where it stopped), how long, how it ended. Each
+row can be shown on the map at its last step, replayed, or opened for its reasons. The service pages
+it (`limit` 1–200, `offset`), ordered by the walk's opening step number — `at` is to the second, and
+walks opened in the same second came back in an order that changed between pages. The first page
+follows the record as steps arrive; another page stays put while somebody reads it. The result card
+steps aside while the history is in view, since it would sit on its last rows and page buttons.
+
 ## What is not here
 
 - Pushing from the server. A one-second GET of a small JSON is cheaper than a socket and has no
@@ -78,4 +96,7 @@ by `check/footprint-screen-check.py`: the real `static/knowledge.js` against a l
 opens its area and node path, a failed poll loses nothing, exactly one tile is marked as now, a
 replay shows every step in order; two walks at once are both on the map in two colours, each marked
 where it is now; a 1.5 s pause takes about that long at 1× and much less at 8×; and stopping is
-immediate. Verified to fire on a poll that jumps to the newest step.
+immediate; the trace, its numbers and the reason are drawn, a step pressed in the row pins the map
+there, and the card appears once the walk ends; the history pages ten at a time with no walk on two
+pages, and showing a row on the map pins that walk at its last step. The service side of the paging —
+ten, then the rest, newest first, a row's summary not counting the close — is in footprint-check. Verified to fire on a poll that jumps to the newest step.

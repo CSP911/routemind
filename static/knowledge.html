@@ -71,7 +71,7 @@
       <!-- The footprint (docs/FOOTPRINT.md): an agent's walk, opening the map as it walks, and a
            replay of any walk kept in the last six hours. Hidden when the backbone keeps none. -->
       <div class="kn-fp" id="knFp" hidden>
-        <span class="kn-fp-live" id="knFpLive" data-i18n="knowledge.fp.live">Live</span>
+        <button type="button" class="kn-fp-live" id="knFpLive" data-i18n="knowledge.fp.live">Live</button>
         <select id="knFpWalk" class="kn-fp-select" data-i18n-label="knowledge.fp.pick"></select>
         <select id="knFpSpeed" class="kn-fp-speed" data-i18n-label="knowledge.fp.speed">
           <option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option>
@@ -79,9 +79,42 @@
         <button type="button" id="knFpPlay" class="kn-btn" data-i18n="knowledge.fp.replay">Replay</button>
         <button type="button" id="knFpTrail" class="kn-btn kn-quiet" data-i18n="knowledge.fp.trail">Reasons</button>
         <span class="kn-fp-now" id="knFpNow" aria-live="polite"></span>
+        <!-- The walk in focus as a row of steps; pressing one shows the map as it was at that step. -->
+        <div class="kn-fp-steps" id="knFpSteps"></div>
       </div>
-      <div class="kn-topo-wrap"><svg id="knTopo" class="kn-topo" role="img" aria-label="RouteMind topology"></svg></div>
+      <div class="kn-topo-wrap">
+        <svg id="knTopo" class="kn-topo" role="img" aria-label="RouteMind topology"></svg>
+        <!-- How a walk went, once it has stopped. Over the map's corner, out of the way of the trace. -->
+        <div class="kn-fp-card" id="knFpCard" role="status" aria-live="polite" hidden></div>
+      </div>
       <p class="kn-hint" data-i18n="knowledge.mapHint2">Click a Region or node to open what hangs off it. The routing table the agent is handed is the ▤ button on that rack; a DATA tile opens the file it would read.</p>
+    </section>
+
+    <!-- Every walk kept on the backbone, newest first, a page at a time — what the footprint bar's picker
+         lists, as a table that can be read and paged. Hidden when the backbone keeps no walks. -->
+    <section class="panel kn-hist-panel" id="knHist" hidden>
+      <div class="kn-panel-head">
+        <div>
+          <span class="eyebrow">HISTORY</span>
+          <h2 data-i18n="knowledge.hist.title">Walk history</h2>
+        </div>
+        <p class="kn-hist-lead" data-i18n="knowledge.hist.lead">Every walk kept for the last six hours, newest first.</p>
+      </div>
+      <div class="kn-hist-wrap">
+        <table class="kn-hist">
+          <thead><tr>
+            <th data-i18n="knowledge.hist.when">When</th>
+            <th data-i18n="knowledge.hist.question">Question</th>
+            <th data-i18n="knowledge.hist.who">Who</th>
+            <th data-i18n="knowledge.hist.did">What it did</th>
+            <th data-i18n="knowledge.hist.took">Took</th>
+            <th data-i18n="knowledge.hist.outcome">How it ended</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="knHistBody"></tbody>
+        </table>
+      </div>
+      <nav class="kn-hist-pages" id="knHistPages" data-i18n-label="knowledge.hist.pages"></nav>
     </section>
 
   </main>

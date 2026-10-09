@@ -425,6 +425,60 @@ body.kn-dragging { user-select: none; }
 @media (prefers-reduced-motion: reduce) { .kn-dev.is-fp-now > rect { animation: none; } }
 .kn-dot.is-fp { border-color: var(--fp, var(--orange)); }
 
+/* ── the footprint, drawn: the trace, the packet, the numbers, the reason ───────────────────────────
+   The spotlight dims what the walk has not touched so the eye goes where the agent is; it lifts by
+   itself. The trace is a wire in the walk's colour, on top of the map and never in the way of a click. */
+.kn-topo-wrap { position: relative; }
+.kn-topo .kn-dev, .kn-topo .kn-wire, .kn-topo .kn-rack > rect { transition: opacity .45s ease; }
+.kn-topo.is-spot .kn-dev:not(.is-fp) { opacity: .28; }
+.kn-topo.is-spot .kn-wire { opacity: .35; }
+.kn-topo.is-spot .kn-rack > rect, .kn-topo.is-spot .kn-rack-title, .kn-topo.is-spot .kn-rack-note { opacity: .55; }
+.kn-fp-layer { pointer-events: none; }
+.kn-fp-trace { fill: none; stroke: var(--fp, var(--orange)); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: .45; }
+.kn-fp-trace.is-focus { opacity: .95; stroke-width: 3.5; filter: drop-shadow(0 0 3px var(--fp, var(--orange))); }
+.kn-fp-trace.is-fresh { animation: kn-fp-draw .7s ease-out forwards; }
+@keyframes kn-fp-draw { to { stroke-dashoffset: 0; } }
+.kn-fp-packet { fill: var(--fp, var(--orange)); filter: drop-shadow(0 0 7px var(--fp, var(--orange)));
+  animation: kn-fp-fade 1.4s ease-in forwards; }
+@keyframes kn-fp-fade { 0%, 55% { opacity: 1; } 100% { opacity: 0; } }
+.kn-fp-badge circle { fill: var(--fp, var(--orange)); stroke: var(--panel, #fff); stroke-width: 2; }
+.kn-fp-badge text { fill: #fff; font: 700 10px var(--kn-mono); }
+.kn-fp-badge.is-now circle { animation: kn-fp-beat 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes kn-fp-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+.kn-fp-bubble rect { fill: var(--panel, #fff); stroke: var(--fp, var(--orange)); stroke-width: 1.5;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .18)); }
+.kn-fp-bubble text { fill: var(--text, #1c2530); font: 500 11.5px var(--kn-mono); }
+@media (prefers-reduced-motion: reduce) {
+  .kn-fp-trace.is-fresh, .kn-fp-packet, .kn-fp-badge.is-now circle { animation: none; }
+  .kn-topo .kn-dev, .kn-topo .kn-wire, .kn-topo .kn-rack > rect { transition: none; }
+}
+
+/* The steps of the walk in focus, as a row to jump between. */
+.kn-fp-steps { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.kn-fp-steps:empty { display: none; }
+.kn-fp-step { font: 600 11px var(--kn-mono); padding: 3px 10px; border-radius: 999px; cursor: pointer;
+  color: var(--text, #1c2530); background: var(--panel, #fff); border: 1px solid var(--fp, var(--orange));
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kn-fp-step.is-read::after { content: " ▤"; }
+.kn-fp-step.is-now { background: var(--fp, var(--orange)); color: #fff; }
+.kn-fp-step:focus-visible { outline: 2px solid var(--fp, var(--orange)); outline-offset: 2px; }
+.kn-fp-live { border: 0; background: none; padding: 0; cursor: pointer; }
+.kn-fp-live.is-off { color: var(--muted, #6b7684); }
+.kn-fp-live.is-off::before { content: "○"; }
+
+/* How a walk went. Fixed to the window's corner, not the map's: the camera has usually followed the
+   walk down by the time it ends, and a card at the map's top was then off the screen. */
+.kn-fp-card { position: fixed; bottom: 24px; right: 24px; z-index: 20; width: 280px; padding: 12px 14px 12px;
+  background: var(--panel, #fff); border: 1px solid var(--line, #dfe4ea); border-left: 4px solid var(--fp, var(--orange));
+  border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .14); font-size: 12.5px; color: var(--text, #1c2530); }
+.kn-fp-card.is-away { display: none; }
+.kn-fp-card-x { position: absolute; top: 6px; right: 8px; border: 0; background: none; cursor: pointer;
+  font-size: 16px; color: var(--muted, #6b7684); }
+.kn-fp-card-out { font: 700 11px var(--kn-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--fp, var(--orange)); }
+.kn-fp-card.is-answered .kn-fp-card-out::before { content: "✓ "; }
+.kn-fp-card-q { margin: 4px 22px 6px 0; font-weight: 600; overflow-wrap: anywhere; }
+.kn-fp-card-facts, .kn-fp-card-last { font: 11.5px var(--kn-mono); color: var(--muted, #6b7684); overflow-wrap: anywhere; }
+
 /* How to write a routing line: folded under its field, quiet until opened. */
 .kn-guide { margin-top: -8px; font-size: 12.5px; color: var(--kn-muted); }
 .kn-guide summary { cursor: pointer; width: fit-content; font-size: 12px; color: var(--kn-accent); }
@@ -525,3 +579,39 @@ body.kn-dragging { user-select: none; }
    sibling after it lands underneath. */
 .kn-export-what { display: grid; gap: 6px; }
 .kn-export-what > .kn-fhint { margin: 2px 0 0; }
+
+/* ── the history, below the map ─────────────────────────────────────────────────────────────────────
+   A plain table, one walk a row, the walk's colour on its left edge so a row and its trace on the map
+   are visibly the same thing. Paged ten at a time; the page buttons are the same pills as the map's. */
+.kn-hist-panel { margin-top: 18px; }
+.kn-hist-lead { margin: 0; font-size: 12.5px; color: var(--muted, #6b7684); }
+.kn-hist-wrap { overflow-x: auto; margin-top: 10px; }
+.kn-hist { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.kn-hist th { text-align: left; font: 600 10.5px var(--kn-mono); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted, #6b7684); padding: 6px 10px; border-bottom: 1px solid var(--line, #dfe4ea); white-space: nowrap; }
+.kn-hist td { padding: 8px 10px; border-bottom: 1px solid var(--line, #dfe4ea); vertical-align: middle; }
+.kn-hist-row td:first-child { border-left: 4px solid var(--fp, var(--orange)); }
+.kn-hist-row:hover { background: color-mix(in srgb, var(--fp, var(--orange)) 6%, transparent); }
+.kn-hist-row.is-sel { background: color-mix(in srgb, var(--fp, var(--orange)) 12%, transparent); }
+.kn-hist-when, .kn-hist-took, .kn-hist-did, .kn-hist-who { font-family: var(--kn-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.kn-hist-q { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kn-hist-badge { font: 600 10.5px var(--kn-mono); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line, #dfe4ea);
+  white-space: nowrap; color: var(--muted, #6b7684); }
+.kn-hist-badge.is-open { color: var(--orange); border-color: var(--orange); }
+.kn-hist-badge.is-open::before { content: "● "; }
+.kn-hist-badge.is-answered { color: var(--green); border-color: var(--green); }
+.kn-hist-badge.is-answered::before { content: "✓ "; }
+.kn-hist-badge.is-missing { color: var(--red); border-color: var(--red); }
+.kn-hist-out { white-space: nowrap; }
+.kn-hist-acts { white-space: nowrap; text-align: right; }
+.kn-hist-act { padding: 3px 9px; font-size: 11.5px; }
+.kn-hist-empty td { text-align: center; color: var(--muted, #6b7684); padding: 18px; }
+.kn-hist-pages { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; }
+.kn-hist-page { min-width: 30px; padding: 4px 9px; border-radius: 999px; cursor: pointer; font: 600 11.5px var(--kn-mono);
+  color: var(--text, #1c2530); background: var(--panel, #fff); border: 1px solid var(--line, #dfe4ea); }
+.kn-hist-page.is-on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.kn-hist-page:disabled { opacity: .35; cursor: default; }
+.kn-hist-page:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.kn-hist-gap { color: var(--muted, #6b7684); }
+.kn-hist-range { margin-left: auto; font: 11.5px var(--kn-mono); color: var(--muted, #6b7684); }
+

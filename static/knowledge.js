@@ -214,6 +214,7 @@
   function draw() {
     const canvas = $("knTopo");
     canvas.replaceChildren();
+    drawPos.clear(); drawEl.clear();
     // Named by its address, not by `source`. `source` comes back with hyphens turned into
     // underscores, so a tile labelled from it reads `order_delivery` while everything that fetches
     // it says `order-delivery` — one area under two names, and the one on screen is the one that
@@ -413,6 +414,7 @@
     // drag tests with `elementFromPoint` — is still in the same place, and the wrapper's existing
     // `overflow-x: auto` becomes the pan. Redrawing at a scaled size instead would mean every one of
     // those measurements happening in a different coordinate system depending on the zoom.
+    fpOverlay(canvas, width, height);
     canvas.setAttribute("viewBox", `0 0 ${width} ${height}`);
     canvas.setAttribute("width", Math.round(width * state.zoom));
     canvas.setAttribute("height", Math.round(height * state.zoom));
@@ -637,6 +639,9 @@
     const picked = Boolean(row.address && state.picked.has(row.address));
     const g = svgEl("g", { class: `kn-dev is-${shape} is-${row.kind}${selected ? " is-sel" : ""}${row.node && pathIn(row.ownerRegion).includes(row.node) ? " is-open" : ""}${place && row.id ? " is-movable" : ""}${pending ? " is-flagged" : ""}${picked ? " is-picked" : ""}${vrfClass(row, shape)}${fpClass(row)}`, tabindex: "0", role: "button" });
     g.append(svgEl("rect", { x: x - w / 2, y: y - h / 2, width: w, height: h, rx: shape === "core" ? 10 : 5 }));
+    // Where this address is drawn, for the footprint's trace and its camera. The backbone is hop 0.
+    const at = shape === "core" ? "@hop0" : row.address ? fpKey(row.address) : null;
+    if (at && !drawPos.has(at)) { drawPos.set(at, { x, y, w, h }); drawEl.set(at, g); }
     if (shape === "as" || shape === "sw" || shape === "leaf") {
       // Port strip along the bottom edge. A leaf has few ports on purpose: one file is in it, room for more.
       const n = shape === "as" ? 8 : shape === "sw" ? 6 : 3, pw = 8, gap = 4, total = n * pw + (n - 1) * gap;
@@ -773,7 +778,22 @@
   // speed, and never shorter than a step can be seen or longer than a person will wait. It was a
   // fixed 0.9 s per step, which made a walk that hesitated look exactly like one that did not.
   const FP_GAP_MIN = 150, FP_GAP_MAX = 6000;
-  const fp = { on: false, cursor: null, walks: new Map(), focus: "", colours: new Map(), replay: null, timer: null };
+  // The spotlight: while a walk is moving — a step in the last ninety seconds, or a replay, or a step
+  // jumped to — everything off its path dims, so the eye goes where the agent is. It lifts on its own.
+  const FP_SPOT_S = 90;
+  // The summary card comes up when a walk has stopped: closed, or no step for this long.
+  const FP_IDLE_S = 20;
+  // `pin` is one walk frozen at a step a person jumped to; `fresh` is the step the next draw animates.
+  const fp = { on: false, cursor: null, walks: new Map(), focus: "", colours: new Map(), replay: null, timer: null,
+               pin: null, fresh: null, spot: false, card: null, cardShut: new Set(), cardAway: false };
+  // Where each address was drawn by the last draw(), and the element, for the trace and the camera.
+  const drawPos = new Map(), drawEl = new Map();
+  const reduceMotion = () => Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  /** One key per tile: a table and its own document are one tile, and hop 0 is the backbone. */
+  const fpKey = (a) => {
+    const s = String(a || "").replace(/\/body$/, "");
+    return s === "" || s === "/v1/regions" ? "@hop0" : s;
+  };
 
   /** A walk's colour, fixed for the page's life so a walk does not change colour as others come and go. */
   function fpColour(id) {
@@ -806,8 +826,9 @@
     return { area, path: chain };
   }
 
-  /** The walks the map is showing right now: the replay's, or the live ones in view. */
+  /** The walks the map is showing right now: a step jumped to, the replay's, or the live ones in view. */
   function fpShown() {
+    if (fp.pin) return [fp.pin];
     if (fp.replay) return [...fp.replay.walks.values()];
     const all = [...fp.walks.values()];
     if (fp.focus) return all.filter((w) => w.id === fp.focus);
@@ -833,6 +854,8 @@
   async function fpShow(step, w) {
     w.now = step;
     if (step.address) w.seen.add(step.address);
+    if (w.steps.at(-1) !== step) w.steps.push(step);
+    fp.fresh = { walk: w.id, n: step.n };
     const tgt = fpTarget(step.address);
     if (tgt && tgt.area) {
       openArea(tgt.area);
@@ -848,6 +871,181 @@
     }
     fpNowLine();
     draw();
+    fpFollow(step);
+    fpPanel();
+  }
+
+  /** The camera: bring the tile a step landed on into view, unless a dialog has the person's attention. */
+  function fpFollow(step) {
+    if ($("knRawDialog").open) return;
+    const g = drawEl.get(step.op === "open" ? "@hop0" : fpKey(step.address));
+    if (g && typeof g.scrollIntoView === "function") {
+      g.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "center", inline: "center" });
+    }
+  }
+
+  /** The walk the spotlight, the numbers and the reason bubble are about: the chosen one, or the one
+   *  that moved last. */
+  function fpFocusWalk(walks = fpShown()) {
+    if (fp.pin) return fp.pin;
+    if (fp.focus) return walks.find((w) => w.id === fp.focus) || null;
+    return walks.filter((w) => w.now).sort((a, b) => (b.now.n || 0) - (a.now.n || 0))[0] || null;
+  }
+
+  /** Is a walk moving right now, as far as the spotlight is concerned. */
+  function fpSpotOn() {
+    if (!fp.on) return false;
+    if (fp.pin || fp.replay) return true;
+    const w = fpFocusWalk();
+    return Boolean(w && w.now && (Date.now() - Date.parse(w.now.at || 0)) / 1000 < FP_SPOT_S);
+  }
+
+  /** The points a walk's trace passes through: every step that landed on something drawn, in order,
+   *  with a step on the same tile as the one before it counted once. */
+  function fpPoints(w) {
+    const out = [];
+    w.steps.forEach((st) => {
+      const key = st.op === "open" ? "@hop0" : fpKey(st.address);
+      const p = drawPos.get(key);
+      if (!p) return;
+      if (out.length && out[out.length - 1].key === key) { out[out.length - 1].step = st; return; }
+      out.push({ key, ...p, step: st });
+    });
+    return out;
+  }
+
+  /** The footprint drawn over the map: each walk's trace, and for the walk in focus its step numbers,
+   *  the reason it gave for the step it is on, and — for a step that has just arrived — the segment
+   *  drawn in and a packet running along it. Above everything, and never in the way of a click. */
+  function fpOverlay(canvas, width) {
+    fp.spot = fpSpotOn();
+    if (canvas.classList) canvas.classList.toggle("is-spot", fp.spot);
+    if (!fp.on) return;
+    const walks = fpShown();
+    if (!walks.length) return;
+    const focus = fpFocusWalk(walks);
+    const layer = svgEl("g", { class: "kn-fp-layer", "aria-hidden": "true" });
+    const fresh = fp.fresh; fp.fresh = null;
+    const animate = !reduceMotion();
+    for (const w of [...walks].sort((a) => (a === focus ? 1 : -1))) {        // the focus walk on top
+      const pts = fpPoints(w);
+      const col = `is-fp-c${fpColour(w.id)}`;
+      const mine = w === focus;
+      const isFresh = animate && fresh && fresh.walk === w.id && pts.length >= 2 && pts[pts.length - 1].step.n === fresh.n;
+      const settled = isFresh ? pts.slice(0, -1) : pts;
+      if (settled.length >= 2) {
+        layer.append(svgEl("polyline", { class: `kn-fp-trace ${col}${mine ? " is-focus" : ""}`,
+          points: settled.map((p) => `${p.x},${p.y}`).join(" ") }));
+      }
+      if (isFresh) {
+        const a = pts[pts.length - 2], b = pts[pts.length - 1];
+        const len = Math.hypot(b.x - a.x, b.y - a.y);
+        const seg = svgEl("line", { class: `kn-fp-trace is-fresh ${col}${mine ? " is-focus" : ""}`,
+          x1: a.x, y1: a.y, x2: b.x, y2: b.y, style: `stroke-dasharray:${len};stroke-dashoffset:${len}` });
+        layer.append(seg);
+        const dot = svgEl("circle", { class: `kn-fp-packet ${col}`, r: 6, cx: 0, cy: 0 });
+        dot.append(svgEl("animateMotion", { dur: "0.7s", fill: "freeze", path: `M ${a.x} ${a.y} L ${b.x} ${b.y}` }));
+        layer.append(dot);
+      }
+      if (!mine) continue;
+      // Step numbers, on the tile's top-left corner. A tile walked twice shows its latest number.
+      const last = new Map();
+      pts.forEach((p, i) => last.set(p.key, { p, i: i + 1 }));
+      for (const { p, i } of last.values()) {
+        const bx = p.x - p.w / 2 + 2, by = p.y - p.h / 2 + 2;
+        const badge = svgEl("g", { class: `kn-fp-badge ${col}${i === pts.length ? " is-now" : ""}` });
+        badge.append(svgEl("circle", { cx: bx, cy: by, r: 9 }));
+        const n = svgEl("text", { x: bx, y: by + 3.5, "text-anchor": "middle" });
+        n.textContent = String(i);
+        badge.append(n);
+        layer.append(badge);
+      }
+      // The reason, beside the tile the walk is on.
+      const now = pts[pts.length - 1];
+      // Hop 0's record carries the question, which the MCP leaves empty — "(no question given)" in
+      // a bubble says nothing. The step is hop 0, and that is what it says.
+      const why = now && (now.step.op === "open" ? t("knowledge.fp.opened") : now.step.why);
+      if (now && why) {
+        const text = `${pts.length}. ${why}`;
+        // 24 for the bubble's own padding and 14 for the room `fitted` keeps: short of either, every
+        // reason came out cut with a `…` however short it was.
+        const bw = Math.min(drawnWidth(text, 11.5, 500) + 38, 360);
+        const right = now.x + now.w / 2 + 12 + bw <= width - 8;
+        const bx = right ? now.x + now.w / 2 + 12 : now.x - now.w / 2 - 12 - bw;
+        const bubble = svgEl("g", { class: `kn-fp-bubble ${col}` });
+        bubble.append(svgEl("rect", { x: bx, y: now.y - 14, width: bw, height: 28, rx: 14 }));
+        const tx = svgEl("text", { x: bx + 12, y: now.y + 4 });
+        tx.textContent = fitted(text, bw - 24, 11.5, 500);
+        bubble.append(tx);
+        layer.append(bubble);
+      }
+    }
+    canvas.append(layer);
+  }
+
+  /** The bar's lower half: the focus walk as a row of steps to jump between, and — once a walk has
+   *  stopped — a card that says how it went. */
+  function fpPanel() {
+    const strip = $("knFpSteps"), card = $("knFpCard"), live = $("knFpLive");
+    if (!strip || !card) return;
+    const w = fpFocusWalk();
+    live.classList.toggle("is-off", Boolean(fp.pin || fp.replay));
+    live.title = fp.pin || fp.replay ? t("knowledge.fp.backLive") : "";
+    if (!w || !w.steps.length) { strip.replaceChildren(); card.hidden = true; return; }
+    const src = fp.pin ? (fp.walks.get(fp.pin.id) || fp.pin) : w;   // pinned: every step, the pin marked
+    const nowN = (fp.pin ? fp.pin.now : w.now)?.n;
+    strip.replaceChildren(...src.steps.map((st, i) => {
+      const label = st.op === "open" || fpKey(st.address) === "@hop0" ? t("knowledge.fp.opened") : shortAddr(st.address);
+      const chip = el("button", `kn-fp-step is-fp-c${fpColour(src.id)}${st.n === nowN ? " is-now" : ""}${st.op === "read" ? " is-read" : ""}`,
+        `${i + 1} ${label}`);
+      chip.type = "button";
+      chip.title = st.why || label;
+      chip.addEventListener("click", () => { fpJump(src, i).catch(() => {}); });
+      return chip;
+    }));
+    // The card: for a walk that has stopped — closed, or quiet for a while — and not shut by hand.
+    const ended = w.state && w.state !== "open";
+    const quiet = w.now && (Date.now() - Date.parse(w.now.at || 0)) / 1000 >= FP_IDLE_S;
+    const show = !fp.replay && !fp.pin && (ended || quiet) && !fp.cardShut.has(`${w.id}:${w.now?.n}`);
+    card.hidden = !show;
+    if (!show) return;
+    fp.card = `${w.id}:${w.now?.n}`;
+    const tables = w.steps.filter((x) => x.op === "table").length;
+    const reads = w.steps.filter((x) => x.op === "read").length;
+    const took = Math.max(0, Math.round((Date.parse(w.steps.at(-1).at) - Date.parse(w.steps[0].at)) / 1000));
+    const outcome = w.outcome === "answered" ? t("knowledge.fp.out.answered")
+      : w.outcome === "not_found" ? t("knowledge.fp.out.notFound")
+      : w.outcome === "abandoned" ? t("knowledge.fp.out.ended")
+      : t("knowledge.fp.out.paused");
+    const close = el("button", "kn-fp-card-x", "×");
+    close.type = "button";
+    close.setAttribute("aria-label", t("common.close"));
+    close.addEventListener("click", () => { fp.cardShut.add(fp.card); card.hidden = true; });
+    card.className = `kn-fp-card is-fp-c${fpColour(w.id)}${w.outcome === "answered" ? " is-answered" : ""}${fp.cardAway ? " is-away" : ""}`;
+    card.replaceChildren(
+      close,
+      el("div", "kn-fp-card-out", outcome),
+      el("div", "kn-fp-card-q", w.question || t("knowledge.fp.thisWalk")),
+      el("div", "kn-fp-card-facts",
+         `${tv("knowledge.fp.hops", { n: tables })} · ${tv("knowledge.fp.reads", { n: reads })} · ${took < 60 ? `${took}s` : `${Math.round(took / 60)}m`}`),
+      el("div", "kn-fp-card-last", `${t("knowledge.fp.endedAt")} ${w.now.op === "open" || fpKey(w.now.address) === "@hop0" ? t("knowledge.fp.opened") : shortAddr(w.now.address)}`),
+    );
+  }
+
+  /** Show one walk as it was at step `i`: the map opened to there, the steps after it not yet taken.
+   *  Live steps keep arriving and are kept; "Live" goes back to them. */
+  async function fpJump(w, i) {
+    if (fp.replay) return;
+    const steps = w.steps.slice(0, i + 1);
+    fp.pin = { id: w.id, question: w.question, state: "open", seen: new Set(steps.map((x) => x.address).filter(Boolean)),
+               steps, now: steps[steps.length - 1] };
+    await fpShow(steps[steps.length - 1], fp.pin);
+  }
+
+  function fpLive() {
+    if (!fp.pin) return;
+    fp.pin = null;
+    fpNowLine(); draw(); fpPanel();
   }
 
   /** Footprint marks. A tile walked by any walk in view carries that walk's colour — the most recent
@@ -872,6 +1070,9 @@
     if (!fp.walks.has(step.walk)) fp.walks.set(step.walk, { id: step.walk, question: step.question, seen: new Set(), steps: [] });
     const w = fp.walks.get(step.walk);
     w.state = step.state; w.outcome = step.outcome;
+    // A walk's last record is its close: an outcome, not a place. It ends the walk on the card and is
+    // not a step on the map — drawn, it would send the trace back to hop 0.
+    if (step.op === "close") return w;
     w.steps.push(step);
     w.now = step;
     if (step.address) w.seen.add(step.address);
@@ -911,16 +1112,25 @@
       for (const s of steps) fpRemember(s);
       fp.cursor = Number(d.seq || 0);
       fpOptions();
+      draw();
+      fpPanel();
       return;
     }
     for (const s of steps) {
       const w = fpRemember(s);
       fp.cursor = Math.max(fp.cursor, Number(s.n));
-      if (fp.replay) continue;             // recorded; the replay finishes first, then live resumes
+      if (s.op === "close") continue;
+      if (fp.replay || fp.pin) continue;   // recorded; the replay or the pinned step first, then live
       if (fp.focus && fp.focus !== s.walk) continue;
       await fpShow(s, w);
     }
-    if (steps.length) fpOptions();
+    if (steps.length) {
+      fpOptions();
+      if (hist.page === 0) histLoad().catch(() => {});
+    }
+    // Nothing arrived, but time passed: the spotlight lifts and the card comes up on their own.
+    if (fpSpotOn() !== fp.spot) draw();
+    fpPanel();
   }
 
   /** Replay the chosen walk, or — with none chosen — every kept walk together, interleaved in the
@@ -939,6 +1149,7 @@
       }
     } catch { toast(t("knowledge.fp.gone")); return; }
     if (!steps.length) return;
+    fp.pin = null;
     const speed = Number(($("knFpSpeed") || {}).value) || 1;
     fp.replay = { walks: new Map(), stop: false };
     const btn = $("knFpPlay");
@@ -949,7 +1160,7 @@
     });
     try {
       let prev = null;
-      for (const s of steps) {
+      for (const s of steps.filter((x) => x.op !== "close")) {
         if (fp.replay.stop) break;
         if (prev) {
           const gap = (Date.parse(s.at) - Date.parse(prev.at)) || 0;
@@ -969,12 +1180,13 @@
       btn.textContent = t("knowledge.fp.replay");
       fpNowLine();
       draw();
+      fpPanel();
     }
   }
 
   /** Every step of the chosen walk with its reason — or, with none chosen, of the latest one. */
-  async function fpTrail() {
-    const id = $("knFpWalk").value
+  async function fpTrail(which) {
+    const id = which || $("knFpWalk").value
       || [...fp.walks.values()].sort((a, b) => (b.now?.n || 0) - (a.now?.n || 0))[0]?.id;
     if (!id) return;
     let w;
@@ -995,6 +1207,7 @@
 
   function fpOff() {
     fp.on = false; $("knFp").hidden = true;
+    if ($("knHist")) $("knHist").hidden = true;
     if (fp.timer) { clearInterval(fp.timer); fp.timer = null; }
   }
 
@@ -1005,9 +1218,149 @@
     fp.on = true; $("knFp").hidden = false;
     $("knFpPlay").addEventListener("click", () => { fpReplay().catch(() => {}); });
     $("knFpTrail").addEventListener("click", () => { fpTrail().catch(() => {}); });
-    $("knFpWalk").addEventListener("change", () => { fp.focus = $("knFpWalk").value; fpNowLine(); draw(); });
+    if ($("knHist")) { $("knHist").hidden = false; histLoad().catch(() => {}); }
+    $("knFpWalk").addEventListener("change", () => { fp.focus = $("knFpWalk").value; fp.pin = null; fpNowLine(); draw(); fpPanel(); histMark(); });
+    $("knFpLive").addEventListener("click", () => fpLive());
+    // The card is pinned to the window so it stays in sight while the camera follows a walk — and so
+    // it would sit on the history table's last rows and page buttons once somebody scrolls down to
+    // them. It goes while any of the history is in view; the table says how each walk ended anyway.
+    if (typeof IntersectionObserver === "function" && $("knFpCard") && $("knHist")) {
+      new IntersectionObserver(([e]) => { fp.cardAway = e.isIntersecting; $("knFpCard").classList.toggle("is-away", fp.cardAway); }).observe($("knHist"));
+    }
     fpPoll().catch(() => {});
     fp.timer = setInterval(() => { fpPoll().catch(() => {}); }, FP_MS);
+  }
+
+  // ── the history (below the map) ────────────────────────────────────────────
+  //
+  // Every walk kept on the backbone, newest first, ten to a page, read from the service a page at a
+  // time — six hours of walks is hundreds of rows on a busy install. The first page follows the
+  // record as steps arrive; another page stays put while somebody is reading it. Each row can be
+  // shown on the map at its last step, replayed, or opened for its reasons.
+  const HIST_SIZE = 10;
+  const hist = { page: 0, total: 0 };
+
+  async function histLoad(page = hist.page) {
+    const body = $("knHistBody"), nav = $("knHistPages");
+    if (!body || !nav) return;
+    const d = await request(`walks?limit=${HIST_SIZE}&offset=${page * HIST_SIZE}`);
+    hist.total = Number(d.total || 0);
+    const last = Math.max(0, Math.ceil(hist.total / HIST_SIZE) - 1);
+    if (page > last && hist.total) return histLoad(last);    // the page emptied as walks expired
+    hist.page = page;
+    const rows = d.walks || [];
+    if (!rows.length) {
+      const tr = el("tr", "kn-hist-empty");
+      const td = el("td", null, t("knowledge.hist.empty"));
+      td.setAttribute("colspan", "7");
+      tr.append(td);
+      body.replaceChildren(tr);
+    } else {
+      body.replaceChildren(...rows.map(histRow));
+    }
+    histPages(nav, last);
+  }
+
+  function histOutcome(w) {
+    if (w.state === "open") return [t("knowledge.fp.open"), "is-open"];
+    if (w.outcome === "answered") return [t("knowledge.fp.out.answered"), "is-answered"];
+    if (w.outcome === "not_found") return [t("knowledge.fp.out.notFound"), "is-missing"];
+    if (w.outcome === "abandoned") return [t("knowledge.fp.out.ended"), "is-ended"];
+    return [t("knowledge.fp.out.paused"), "is-ended"];
+  }
+
+  function histRow(w) {
+    const tr = el("tr", `kn-hist-row is-fp-c${fpColour(w.id)}${fp.focus === w.id ? " is-sel" : ""}`);
+    tr.dataset.walk = w.id;
+    const cell = (text, cls) => { const td = el("td", cls || null, text); tr.append(td); return td; };
+    cell(when(w.at), "kn-hist-when");
+    cell(w.question || "—", "kn-hist-q").title = w.question || "";
+    cell((w.by && (w.by.name || w.by.kind)) || "—", "kn-hist-who");
+    const where = w.last_op === "open" || !w.last || fpKey(w.last) === "@hop0" ? t("knowledge.fp.opened") : shortAddr(w.last);
+    cell(`${tv("knowledge.fp.hops", { n: w.tables || 0 })} · ${tv("knowledge.fp.reads", { n: w.reads || 0 })} → ${where}`, "kn-hist-did");
+    cell(w.took < 60 ? `${w.took || 0}s` : `${Math.round(w.took / 60)}m`, "kn-hist-took");
+    const [label, cls] = histOutcome(w);
+    const out = el("td", "kn-hist-out");
+    out.append(el("span", `kn-hist-badge ${cls}`, label));
+    tr.append(out);
+    const acts = el("td", "kn-hist-acts");
+    const act = (key, run) => {
+      const b = el("button", "kn-btn kn-quiet kn-hist-act", t(key));
+      b.type = "button";
+      b.addEventListener("click", () => { run().catch(() => {}); });
+      acts.append(b);
+    };
+    act("knowledge.hist.show", () => histShow(w.id));
+    act("knowledge.fp.replay", () => histReplay(w.id));
+    act("knowledge.fp.trail", () => fpTrail(w.id));
+    tr.append(acts);
+    return tr;
+  }
+
+  /** Page buttons: previous, the first, a window around this one, the last, next — and the range. */
+  function histPages(nav, last) {
+    const go = (p, label, cls, on) => {
+      const b = el("button", `kn-hist-page${cls ? " " + cls : ""}`, label);
+      b.type = "button";
+      if (on === false) b.disabled = true;
+      if (p === hist.page && !cls) { b.classList.add("is-on"); b.setAttribute("aria-current", "page"); }
+      b.addEventListener("click", () => { histLoad(p).catch(() => {}); });
+      return b;
+    };
+    const kids = [go(hist.page - 1, "‹", "is-prev", hist.page > 0)];
+    const want = new Set([0, last, hist.page - 1, hist.page, hist.page + 1].filter((p) => p >= 0 && p <= last));
+    let prev = -1;
+    for (const p of [...want].sort((a, b) => a - b)) {
+      if (p - prev > 1) kids.push(el("span", "kn-hist-gap", "…"));
+      kids.push(go(p, String(p + 1)));
+      prev = p;
+    }
+    kids.push(go(hist.page + 1, "›", "is-next", hist.page < last));
+    const from = hist.total ? hist.page * HIST_SIZE + 1 : 0;
+    const to = Math.min(hist.total, (hist.page + 1) * HIST_SIZE);
+    kids.push(el("span", "kn-hist-range", tv("knowledge.hist.range", { from, to, total: hist.total })));
+    nav.replaceChildren(...kids);
+    nav.hidden = hist.total === 0;
+  }
+
+  /** A walk from the history, on the map: chosen in the picker, opened to its last step. */
+  async function histShow(id) {
+    histPick(id);
+    let w = fp.walks.get(id);
+    if (!w || !w.steps.length) {
+      const d = await request("walks/" + encodeURIComponent(id));
+      w = { id, question: d.question, state: d.state, outcome: d.outcome, seen: new Set(), steps: (d.steps || []).filter((x) => x.op !== "close") };
+    }
+    if (w.steps.length) await fpJump(w, w.steps.length - 1);
+    histMark();
+    $("knTopo").scrollIntoView?.({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+  }
+
+  async function histReplay(id) {
+    if (fp.replay) return;
+    histPick(id);
+    histMark();
+    $("knTopo").scrollIntoView?.({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+    await fpReplay();
+  }
+
+  /** Choose a walk in the footprint bar's picker, adding it there if the picker does not list it yet —
+   *  a replay reads the picker, and an unknown value would fall back to replaying every walk. */
+  function histPick(id) {
+    fp.focus = id;
+    const sel = $("knFpWalk");
+    if (!sel) return;
+    if (![...(sel.children || [])].some((o) => o.value === id)) {
+      const o = el("option", null, id); o.value = id; sel.append(o);
+    }
+    sel.value = id;
+  }
+
+  /** The row the map is showing, marked. */
+  function histMark() {
+    for (const tr of [...($("knHistBody")?.children || [])]) {
+      tr.classList.toggle("is-sel", Boolean(tr.dataset) && tr.dataset.walk === fp.focus);
+    }
   }
 
   /** Members of the chosen overlay (or of every open one, when none is chosen) are outlined; an area
