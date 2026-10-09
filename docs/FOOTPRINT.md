@@ -61,14 +61,25 @@ speed (1×, 2×, 4×, 8×), and never under 0.15 s or over 6 s. It was a fixed 0
 walk that stopped to think look exactly like one that did not. With no walk chosen, every kept walk
 is replayed together, interleaved in the order the steps were taken. The same button stops it.
 
-**A walk is drawn as a trace, not only as marked tiles** (2026-10-09). A line runs through the tiles
-in the order they were walked, each numbered on its tile; the newest stretch is drawn as it arrives,
+**A walk is drawn as a trace, not only as marked tiles** (2026-10-09). A line runs along the map's own
+cables in the order the tiles were walked, each numbered on its tile; the newest stretch is drawn as it arrives,
 with a dot travelling along it, and the reason for the step it is on sits beside that tile. While a
 walk moves the rest of the map is dimmed. Under the bar the walk in focus is a row of steps: pressing
 one shows the map as it was at that step, until Live. When a walk ends, a card in the window's corner
 says how it went — tables, documents, how long, the outcome — and the close itself is an outcome,
 never a step, so the trace does not run back to hop 0. With reduced motion the dot and the drawing-in
 are left out.
+
+**Along the cables, not across the map** (2026-10-09, operator). The first trace joined tile centres
+with straight lines, which cut diagonally over names and ignored the wiring — it did not say which way
+the walk went. The trace now follows the cabling the map draws: down the trunk, along the bus, down
+the drop to the area, into its rack and on to the tile; a step back up and across goes up to where the
+two branches part, never over the shared stretch twice. Inside a rack it crosses the header at the gap
+nearest the incoming cable — between two buttons, or beside the title — then runs along the rule
+under the header and down the gaps between tiles, so it never covers a word. Passing through a tile
+is a break in the line: the tile itself is lit. Walks sharing a cable run beside each other a few
+pixels apart, in lanes taken from their colours, like lines on a metro map. A step onto something
+the cabling does not reach falls back to a squared-off elbow.
 
 **History under the map, ten to a page** (2026-10-09, operator). Every kept walk, newest first: when,
 the question, who, what it did (tables · documents → where it stopped), how long, how it ended. Each
@@ -96,7 +107,8 @@ by `check/footprint-screen-check.py`: the real `static/knowledge.js` against a l
 opens its area and node path, a failed poll loses nothing, exactly one tile is marked as now, a
 replay shows every step in order; two walks at once are both on the map in two colours, each marked
 where it is now; a 1.5 s pause takes about that long at 1× and much less at 8×; and stopping is
-immediate; the trace, its numbers and the reason are drawn, a step pressed in the row pins the map
+immediate; the trace, its numbers and the reason are drawn — every straight run of the trace level or
+upright, and some of them lying on the cables themselves — a step pressed in the row pins the map
 there, and the card appears once the walk ends; the history pages ten at a time with no walk on two
 pages, and showing a row on the map pins that walk at its last step. The service side of the paging —
 ten, then the rest, newest first, a row's summary not counting the close — is in footprint-check. Verified to fire on a poll that jumps to the newest step.

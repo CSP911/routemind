@@ -214,7 +214,7 @@
   function draw() {
     const canvas = $("knTopo");
     canvas.replaceChildren();
-    drawPos.clear(); drawEl.clear();
+    drawPos.clear(); drawEl.clear(); drawWire.clear();
     // Named by its address, not by `source`. `source` comes back with hyphens turned into
     // underscores, so a tile labelled from it reads `order_delivery` while everything that fetches
     // it says `order-delivery` — one area under two names, and the one on screen is the one that
@@ -262,6 +262,7 @@
     // crowding the Region row.
     seg([[cx, Y.core + DEV.core.h / 2], [cx, Y.bus]], "kn-wire");
     marks.append(device({ key: "__bb", label: "RouteMind Back-Bone", kind: "bb", address: "", flagKey: "__bb" }, cx, Y.core, "core"));
+    drawWire.set("@hop0", { parent: null, lead: null });
     // The selection, summarised where it can be read and started as one act. Ticking three areas and
     // then hunting for a button on one of them is how a person ends up starting with the wrong set.
     if (state.picked.size && canPick()) {
@@ -328,6 +329,7 @@
       ases.forEach((row, i) => {
         seg([[asX(i), Y.bus], [asX(i), Y.as - DEV.as.h / 2]], "kn-wire" + (isOpen(row.key) ? " is-on" : ""));
         marks.append(device(row, asX(i), Y.as, "as"));
+        wireTo(fpKey(row.address), "@hop0", [[cx, Y.core + DEV.core.h / 2], [cx, Y.bus], [asX(i), Y.bus], [asX(i), Y.as - DEV.as.h / 2]]);
       });
     }
 
@@ -359,9 +361,10 @@
         // middle: a rack still sitting under its switch takes a straight drop, and one pushed aside to
         // make room for a neighbour is entered at the near corner instead of crossing its own face.
         const port = Math.min(Math.max(asX(i), r.left + RACK.pad), r.left + r.w - RACK.pad);
-        seg(port === asX(i)
+        r.cable = port === asX(i)
           ? [[asX(i), Y.as + DEV.as.h / 2], [asX(i), rackTop]]
-          : [[asX(i), Y.as + DEV.as.h / 2], [asX(i), stub], [port, stub], [port, rackTop]], "kn-wire is-on");
+          : [[asX(i), Y.as + DEV.as.h / 2], [asX(i), stub], [port, stub], [port, rackTop]];
+        seg(r.cable, "kn-wire is-on");
       });
 
       for (const r of plans) {
@@ -374,6 +377,7 @@
                                         openNode: path[0] || null,
                                         drop: rep ? { id: rep, area: r.as.key, chain: [rep], label: r.as.label } : null });
         marks.append(rack.g);
+        wireRack(rack, r.cable, fpKey(r.as.address));
         let colBottom = rack.bottom + 48;
 
         // A sub-rack for each node opened, each hung below the one that holds it. Same rule: one line.
@@ -398,8 +402,11 @@
             top: above.bottom + 48, sub: true, actions: subActions, metrics: sm, openNode: path[k + 1] || null,
             drop: { id: openNode, area: r.as.key, chain, label: openNode },
           });
-          seg([[ax, above.anchorY ?? above.bottom], [ax, above.bottom], [ax, sub.top]], "kn-wire is-on");
+          const feed = [[ax, above.anchorY ?? above.bottom], [ax, above.bottom], [ax, sub.top]];
+          seg(feed, "kn-wire is-on");
           marks.append(sub.g);
+          const holder = above.placed.find((p) => p.row.node === openNode);
+          if (holder && holder.row.address) wireRack(sub, feed, fpKey(holder.row.address));
           colBottom = sub.bottom + 32;
           above = sub;
         }
@@ -418,6 +425,34 @@
     canvas.setAttribute("viewBox", `0 0 ${width} ${height}`);
     canvas.setAttribute("width", Math.round(width * state.zoom));
     canvas.setAttribute("height", Math.round(height * state.zoom));
+  }
+
+  /** One cable in the tree the trace runs along. The first cable drawn to a thing is its own. */
+  function wireTo(key, parent, lead) {
+    if (key && parent && !drawWire.has(key)) drawWire.set(key, { parent, lead });
+  }
+
+  /** The cables into a rack's tiles: the drop that feeds the rack, then down through the header at
+   *  the gap nearest the drop — between two buttons, or beside the title — along the rule under the
+   *  header, and down the gaps between tiles to the one it feeds. Only gaps, so the trace never runs
+   *  across a word. */
+  function wireRack(rack, lead, parent) {
+    if (!lead || !parent) return;
+    const [px] = lead[lead.length - 1];
+    const gaps = rack.gaps && rack.gaps.length ? rack.gaps : [rack.left + RACK.pad / 2];
+    const lane = gaps.reduce((best, x) => (Math.abs(x - px) < Math.abs(best - px) ? x : best), gaps[0]);
+    const rule = rack.top + rack.headH;
+    for (const p of rack.placed) {
+      if (!p.row.address) continue;
+      const into = [...lead, [lane, rack.top], [lane, rule]];
+      if (p.r === 0) into.push([p.x, rule], [p.x, p.top]);
+      else {
+        const gx = p.x + (lane < p.x ? -1 : 1) * (DEV.host.w / 2 + RACK.gap / 2);
+        const gy = rule + RACK.pad - 8 + p.r * (50 + RACK.gap) - RACK.gap / 2;
+        into.push([gx, rule], [gx, gy], [p.x, gy], [p.x, p.top]);
+      }
+      wireTo(fpKey(p.row.address), parent, into);
+    }
   }
 
   /** Everything about one open area's rack except where it goes: its tiles, its header, its actions
@@ -527,13 +562,13 @@
     if (cur.items.length || !rows.length) rows.push(cur);
     const headH = RACK.head + (rows.length - 1) * 36;
     const tileRows = Math.max(Math.ceil(tiles.length / cols), 1);
-    return { cols, w, headH, rows, h: headH + tileRows * 50 + (tileRows - 1) * RACK.gap + RACK.pad * 2 - 10 };
+    return { cols, w, headH, rows, titleW, h: headH + tileRows * 50 + (tileRows - 1) * RACK.gap + RACK.pad * 2 - 10 };
   }
 
   /** A rack: tiles in a grid inside a titled box, drawn where `draw` decided it goes. Returns the
    *  group plus where its bottom is and where a given tile's uplink port is, for a sub-rack. */
   function rackBox(tiles, { title, note, left, top, sub, metrics, openNode, drop }) {
-    const { cols, w, h, headH, rows } = metrics;
+    const { cols, w, h, headH, rows, titleW } = metrics;
     const tileH = 50;
     const g = svgEl("g", { class: "kn-rack" + (sub ? " is-sub" : "") });
     if (drop) dropAttrs(g, drop.id, drop.area, drop.chain, drop.label);
@@ -574,7 +609,7 @@
         g.append(b);
       }
     });
-    const anchors = new Map();
+    const anchors = new Map(), placed = [];
     let anchorY = null;
     if (!tiles.length) {
       const e = svgEl("text", { x: left + w / 2, y: top + headH + 30, class: "kn-rack-note", "text-anchor": "middle" });
@@ -586,9 +621,19 @@
       const tx = left + RACK.pad + c * (DEV.host.w + RACK.gap) + DEV.host.w / 2;
       const ty = top + headH + RACK.pad - 8 + r * (tileH + RACK.gap) + DEV[tile.shape].h / 2;
       g.append(device(tile, tx, ty, tile.shape, drop ? { area: drop.area, chain: drop.chain } : null));
+      placed.push({ row: tile, x: tx, top: ty - DEV[tile.shape].h / 2, r, c });
       if (tile.node) { anchors.set(tile.node, tx); if (tile.node === openNode) anchorY = ty + DEV[tile.shape].h / 2; }
     });
-    return { g, top, bottom: top + h, anchorFor: (id) => anchors.get(id), anchorY };
+    // Where a cable can cross the header without running over its words: the gaps between the
+    // title, every button on every row, and the note — a cable crosses all the rows.
+    const busy = [[left + RACK.pad - 4, left + RACK.pad + (titleW || 0) - 18],
+                  [left + w - RACK.pad - textWidth(note) - 4, left + w - RACK.pad + 4],
+                  ...rows.flatMap((row) => row.items.map((it) => [left + it.x - 3, left + it.x + it.bw + 3]))].sort((a, b) => a[0] - b[0]);
+    const gaps = [];
+    let from = left + 4;
+    for (const [a, b] of busy) { if (a - from >= 6) gaps.push((from + a) / 2); from = Math.max(from, b); }
+    if (left + w - 4 - from >= 6) gaps.push((from + left + w - 4) / 2);
+    return { g, top, bottom: top + h, left, w, headH, placed, gaps, anchorFor: (id) => anchors.get(id), anchorY };
   }
 
 
@@ -788,6 +833,10 @@
                pin: null, fresh: null, spot: false, card: null, cardShut: new Set(), cardAway: false };
   // Where each address was drawn by the last draw(), and the element, for the trace and the camera.
   const drawPos = new Map(), drawEl = new Map();
+  // The map's cabling as a tree, for the trace to run along: every drawn thing a walk can land on,
+  // the thing it hangs off, and the cable between — from the parent's lower edge to its own upper
+  // edge, the way it is drawn. Filled by `draw`, read by `fpRoute`.
+  const drawWire = new Map();
   const reduceMotion = () => Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   /** One key per tile: a table and its own document are one tile, and hop 0 is the backbone. */
   const fpKey = (a) => {
@@ -914,9 +963,69 @@
     return out;
   }
 
-  /** The footprint drawn over the map: each walk's trace, and for the walk in focus its step numbers,
-   *  the reason it gave for the step it is on, and — for a step that has just arrived — the segment
-   *  drawn in and a packet running along it. Above everything, and never in the way of a click. */
+  /** The way from one step to the next, along the map's own cables: up from the first to the nearest
+   *  thing both hang off, then down to the second. Returned as pieces, because passing through a tile
+   *  is a break in the cable — the tile itself is lit, and a line across it would cover its name. A
+   *  step onto something the tree does not hold falls back to a squared-off elbow between the two. */
+  function fpRoute(a, b) {
+    const chain = (k) => {
+      const out = [];
+      for (let x = k; x != null; x = drawWire.get(x).parent) { if (!drawWire.has(x)) return null; out.push(x); }
+      return out;
+    };
+    const ca = chain(a), cb = chain(b);
+    if (!ca || !cb) return fpElbow(a, b);
+    const top = cb.find((k) => ca.includes(k));
+    const ups = ca.slice(0, ca.indexOf(top)).map((k) => [...drawWire.get(k).lead].reverse());
+    const downs = cb.slice(0, cb.indexOf(top)).reverse().map((k) => drawWire.get(k).lead);
+    // Up one branch and down its neighbour meet where they part: the cable they share is not run twice.
+    if (ups.length && downs.length) { const turn = [...ups.pop(), ...downs.shift()]; return [...ups, turn, ...downs].map(fpTidy); }
+    return [...ups, ...downs].map(fpTidy);
+  }
+
+  function fpElbow(a, b) {
+    const pa = drawPos.get(a), pb = drawPos.get(b);
+    if (!pa || !pb) return [];
+    const down = pb.y >= pa.y;
+    const sy = pa.y + (down ? 1 : -1) * pa.h / 2, ey = pb.y + (down ? -1 : 1) * pb.h / 2, my = (sy + ey) / 2;
+    return [fpTidy([[pa.x, sy], [pa.x, my], [pb.x, my], [pb.x, ey]])];
+  }
+
+  /** A line with its repeated points and the corners that are not corners taken out — including the
+   *  spur where a route runs out along a cable and straight back. */
+  function fpTidy(pts) {
+    let out = pts.filter((p, i) => !i || p[0] !== pts[i - 1][0] || p[1] !== pts[i - 1][1]);
+    for (let again = true; again;) {
+      again = false;
+      for (let i = 1; i < out.length - 1; i++) {
+        const [a, b, c] = [out[i - 1], out[i], out[i + 1]];
+        if (Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])) < 0.01) { out.splice(i, 1); again = true; break; }
+      }
+      out = out.filter((p, i) => !i || p[0] !== out[i - 1][0] || p[1] !== out[i - 1][1]);
+    }
+    return out;
+  }
+
+  /** SVG path data for a line, its corners rounded the way a cable bends. */
+  function fpD(pts, r = 9) {
+    if (pts.length < 2) return "";
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const [p, q, n] = [pts[i - 1], pts[i], pts[i + 1]];
+      const l1 = Math.hypot(q[0] - p[0], q[1] - p[1]), l2 = Math.hypot(n[0] - q[0], n[1] - q[1]);
+      const k = Math.min(r, l1 / 2, l2 / 2);
+      d += ` L ${q[0] + (p[0] - q[0]) * k / l1} ${q[1] + (p[1] - q[1]) * k / l1} Q ${q[0]} ${q[1]} ${q[0] + (n[0] - q[0]) * k / l2} ${q[1] + (n[1] - q[1]) * k / l2}`;
+    }
+    const z = pts[pts.length - 1];
+    return `${d} L ${z[0]} ${z[1]}`;
+  }
+
+  const fpLen = (pts) => pts.reduce((n, p, i) => (i ? n + Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]) : 0), 0);
+
+  /** The footprint drawn over the map: each walk's trace along the cables it took, and for the walk in
+   *  focus its step numbers, the reason it gave for the step it is on, and — for a step that has just
+   *  arrived — that stretch of cable lit in from end to end with a packet running along it. Above
+   *  everything, and never in the way of a click. */
   function fpOverlay(canvas, width) {
     fp.spot = fpSpotOn();
     if (canvas.classList) canvas.classList.toggle("is-spot", fp.spot);
@@ -931,20 +1040,31 @@
       const pts = fpPoints(w);
       const col = `is-fp-c${fpColour(w.id)}`;
       const mine = w === focus;
+      // Walks sharing a cable run beside each other, a few pixels apart, like lines on a metro map.
+      // The lane comes from the walk's colour, so a walk keeps its lane while others come and go.
+      const off = walks.length > 1 ? ((fpColour(w.id) % 4) - 1.5) * 3.5 : 0;
+      const shift = (line) => line.map(([x, y]) => [x + off, y + off]);
+      const hops = [];
+      for (let i = 1; i < pts.length; i++) hops.push(fpRoute(pts[i - 1].key, pts[i].key).map(shift).filter((l) => l.length >= 2));
       const isFresh = animate && fresh && fresh.walk === w.id && pts.length >= 2 && pts[pts.length - 1].step.n === fresh.n;
-      const settled = isFresh ? pts.slice(0, -1) : pts;
-      if (settled.length >= 2) {
-        layer.append(svgEl("polyline", { class: `kn-fp-trace ${col}${mine ? " is-focus" : ""}`,
-          points: settled.map((p) => `${p.x},${p.y}`).join(" ") }));
-      }
-      if (isFresh) {
-        const a = pts[pts.length - 2], b = pts[pts.length - 1];
-        const len = Math.hypot(b.x - a.x, b.y - a.y);
-        const seg = svgEl("line", { class: `kn-fp-trace is-fresh ${col}${mine ? " is-focus" : ""}`,
-          x1: a.x, y1: a.y, x2: b.x, y2: b.y, style: `stroke-dasharray:${len};stroke-dashoffset:${len}` });
-        layer.append(seg);
+      const settled = isFresh ? hops.slice(0, -1) : hops;
+      const d = settled.flat().map((l) => fpD(l)).join(" ");
+      if (d) layer.append(svgEl("path", { class: `kn-fp-trace ${col}${mine ? " is-focus" : ""}`, d }));
+      if (isFresh && hops.length) {
+        // Lit in piece by piece, each starting where the last ended, in about the time the packet
+        // takes: a long way round looks long.
+        const pieces = hops[hops.length - 1];
+        const total = pieces.reduce((n, l) => n + fpLen(l), 0) || 1;
+        const secs = Math.min(1.6, Math.max(0.6, total / 520));
+        let before = 0;
+        for (const l of pieces) {
+          const len = fpLen(l);
+          layer.append(svgEl("path", { class: `kn-fp-trace is-fresh ${col}${mine ? " is-focus" : ""}`, d: fpD(l),
+            style: `stroke-dasharray:${len + 1};stroke-dashoffset:${len + 1};animation-duration:${(secs * len / total).toFixed(3)}s;animation-delay:${(secs * before / total).toFixed(3)}s` }));
+          before += len;
+        }
         const dot = svgEl("circle", { class: `kn-fp-packet ${col}`, r: 6, cx: 0, cy: 0 });
-        dot.append(svgEl("animateMotion", { dur: "0.7s", fill: "freeze", path: `M ${a.x} ${a.y} L ${b.x} ${b.y}` }));
+        dot.append(svgEl("animateMotion", { dur: `${secs.toFixed(2)}s`, fill: "freeze", path: fpD(pieces.flat()) }));
         layer.append(dot);
       }
       if (!mine) continue;

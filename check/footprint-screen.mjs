@@ -110,8 +110,34 @@ check("  even though the browser held a map cached before nodes carried their pa
 // dimmed while it moves; the steps as a row to jump between; and a card once it stops.
 const layerEls = (c) => find(byId.knTopo, (n) => cls(n).includes(c));
 const traceSegs = layerEls("kn-fp-trace").filter((n) => cls(n).includes("is-focus"));
-const tracePts = traceSegs.reduce((k, n) => k + (n.attrs.points ? n.attrs.points.split(" ").length : 1), 0);
-check("drawn: the walk is a trace through the tiles it visited", traceSegs.length >= 1 && tracePts >= 4, `${traceSegs.length} pieces, ${tracePts} points`);
+// The trace runs along the cables: one path, a piece per stretch of cable, its corners rounded and
+// every straight run either level or upright — never a diagonal across the map.
+const pieces = (n) => String(n.attrs.d || "").split("M").filter((x) => x.trim()).map((x) => x.trim());
+const tracePts = traceSegs.reduce((k, n) => k + pieces(n).length, 0);
+check("drawn: the walk is a trace through the tiles it visited", traceSegs.length >= 1 && tracePts >= 4, `${traceSegs.length} paths, ${tracePts} pieces`);
+const straights = traceSegs.flatMap((n) => pieces(n).flatMap((pc) => {
+  const out = [];
+  // `L` endpoints in order; a run is from one to the next with the `Q` corner's control point skipped.
+  const toks = ("M " + pc).match(/[MLQ][^MLQ]*/g).map((t) => [t[0], t.slice(1).trim().split(/\s+/).map(Number)]);
+  let at = null;
+  for (const [op, v] of toks) {
+    if (op === "Q") { at = [v[2], v[3]]; continue; }
+    if (at && op === "L") out.push([at, [v[0], v[1]]]);
+    at = [v[0], v[1]];
+  }
+  return out;
+}));
+const diagonal = straights.filter(([a, b]) => Math.abs(a[0] - b[0]) > 0.5 && Math.abs(a[1] - b[1]) > 0.5);
+check("  along the map's cables: every straight run level or upright, none across the map", straights.length >= 4 && diagonal.length === 0,
+      `${straights.length} runs, ${diagonal.length} diagonal: ${JSON.stringify(diagonal.slice(0, 2))}`);
+// …and on the cables themselves, not beside them: the drop from the bus to the area it chose is a run.
+const wires = find(byId.knTopo, (n) => cls(n).includes("kn-wire")).flatMap((n) => {
+  const p = String(n.attrs.points || "").split(" ").map((xy) => xy.split(",").map(Number));
+  return p.slice(1).map((b, i) => [p[i], b]);
+});
+const onWire = straights.filter(([a, b]) => wires.some(([c, d]) => a[0] === b[0] && c[0] === d[0] && Math.abs(a[0] - c[0]) < 0.5
+  && Math.min(a[1], b[1]) < Math.max(c[1], d[1]) && Math.max(a[1], b[1]) > Math.min(c[1], d[1])));
+check("  lying on the cables drawn on the map", onWire.length >= 2, `${onWire.length} runs on a cable`);
 const badgeNums = layerEls("kn-fp-badge").map((g) => find(g, (n) => n.tag === "text").map((n) => n.textContent).join(""));
 check("  each step numbered on its tile, in order", ["1", "2", "3", "4"].every((x) => badgeNums.includes(x)), JSON.stringify(badgeNums));
 const bubble = layerEls("kn-fp-bubble").map((g) => find(g, (n) => n.tag === "text").map((n) => n.textContent).join("")).join(" | ");
@@ -131,7 +157,7 @@ check("once the walk ends, a card says how it went", byId.knFpCard.hidden === fa
       find(byId.knFpCard, (n) => n.textContent).map((n) => n.textContent).join(" | "));
 const traceAfter = layerEls("kn-fp-trace").filter((n) => cls(n).includes("is-focus"));
 check("  and the close is an outcome, not a step: the trace does not run back to hop 0",
-      traceAfter.reduce((k, n) => k + (n.attrs.points ? n.attrs.points.split(" ").length : 1), 0) === tracePts);
+      traceAfter.reduce((k, n) => k + pieces(n).length, 0) === tracePts);
 
 // ── replay ────────────────────────────────────────────────────────────────────
 state.open = []; state.openNode.clear(); kn.draw();
