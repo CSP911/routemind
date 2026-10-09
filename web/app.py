@@ -340,6 +340,12 @@ def api_knowledge_place(payload: dict, request: Request) -> dict[str, Any]:
     return _ontology_proxy("POST", "/v1/place", _knowledge_actor(request), dict(payload or {}))
 
 
+@_iris_route("POST", "/api/knowledge/changes")
+def api_knowledge_changes(payload: dict, request: Request) -> dict[str, Any]:
+    # A change set (docs/CHANGE.md): several decisions, one commit, or a dry run of the same.
+    return _ontology_proxy("POST", "/v1/changes", _knowledge_actor(request), dict(payload or {}))
+
+
 @_iris_route("POST", "/api/knowledge/walks")
 def api_knowledge_open_walk(payload: dict, request: Request) -> dict[str, Any]:
     return _ontology_proxy("POST", "/v1/walks", _knowledge_actor(request), dict(payload or {}))

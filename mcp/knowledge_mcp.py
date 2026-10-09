@@ -77,11 +77,14 @@ class Api:
             with urllib.request.urlopen(req, timeout=self.timeout) as r:
                 return r.read().decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", "replace")[:400]
-            detail = ""
-            try: detail = (json.loads(body).get("detail") or json.loads(body).get("error") or "")
-            except Exception: detail = body
-            raise ApiError(f"HTTP {e.code} from {path}" + (f" — {detail}" if detail else ""), e.code)
+            body = e.read().decode("utf-8", "replace")
+            detail, payload = "", None
+            try:
+                payload = json.loads(body)
+                detail = (payload.get("detail") or payload.get("error") or "")
+            except Exception: detail = body[:400]
+            raise ApiError(f"HTTP {e.code} from {path}" + (f" — {detail}" if detail else ""), e.code,
+                           payload if isinstance(payload, dict) else None)
         except (urllib.error.URLError, TimeoutError) as e:
             raise ApiError(f"RouteMind is unreachable at {self.base} ({e})")
 
@@ -100,9 +103,10 @@ class Api:
 
 
 class ApiError(Exception):
-    def __init__(self, message: str, status: int | None = None):
+    def __init__(self, message: str, status: int | None = None, payload: dict | None = None):
         super().__init__(message)
         self.status = status
+        self.payload = payload or {}      # the refusal whole, where it carries more than a sentence
 
 
 # ── the tables an agent is handed ─────────────────────────────────────────────
@@ -690,16 +694,33 @@ PLACE_TOOL = {
                    "the lines and choose. `step` with an address from that table descends one hop and "
                    "prints the next table; at every hop below the top you may `here` instead, and the "
                    "document becomes a child of the node whose table you are reading. `none` at hop "
-                   "0 means no area advertises such things, and the answer is a new area, not a "
-                   "hiding place. `here` writes the document under the parent reached; the lines "
-                   "above it are not changed — if one no longer says this is there, say so.",
+                   "0 means no area advertises such things; then `here` with `area` makes the area, "
+                   "its sentence and the document in one commit. "
+                   "`here` is one commit of several decisions. The document is one; the lines over it "
+                   "are the rest: every table the change alters has a line above it, and each must be "
+                   "decided — `keep` it, or `reword` it. Refused, `here` prints those lines with the "
+                   "table before and after; call it again with the decisions added. Decisions may also "
+                   "make a holder (`create` with a `ref` like $h, and `parent` $h on the document or on "
+                   "siblings you `move` under it — how a wide table is folded), `move` a sibling, "
+                   "`write` a body, `delete` a leaf. The order of decisions does not matter. "
+                   "`dry_run` shows all of this without writing.",
     "inputSchema": {"type": "object", "required": ["op"], "properties": {
         "op": {"type": "string", "enum": ["open", "step", "here", "list", "close"]},
         "name": {"type": "string", "description": "open: the document's name"},
         "one_liner": {"type": "string", "description": "open: one sentence, the line a table will print for it"},
         "content": {"type": "string", "description": "open: the body, Markdown"},
         "id": {"type": "string", "description": "step/here/close: the placement id `open` returned"},
-        "pick": {"type": "string", "description": "step: an address the last table printed, or `none`"}}},
+        "pick": {"type": "string", "description": "step: an address the last table printed, or `none`"},
+        "why": {"type": "string", "description": "here: one line on what this change is for — it becomes the commit"},
+        "parent": {"type": "string", "description": "here: put the document under this instead of the node reached — a ref like $h the decisions create, or an address the last table printed"},
+        "decisions": {"type": "array", "description": "here: the other decisions, each {op: keep|reword|create|move|write|delete, …}: "
+                      "keep {id, field, why?} · reword {id, field, after, before?} · create {ref, name, one_liner, content?, parent} · "
+                      "move {id, parent} · write {id, content} · delete {id}. field is one_liner, or use_when for an area's face.",
+                      "items": {"type": "object"}},
+        "expose": {"type": "array", "items": {"type": "string"}, "description": "here: ids this change knowingly makes readable through a circuit (moved into an exported area)"},
+        "area": {"type": "object", "description": "here at hop 0: the new area — {source, name, one_liner, use_when}; the document goes under its face",
+                 "properties": {"source": {"type": "string"}, "name": {"type": "string"}, "one_liner": {"type": "string"}, "use_when": {"type": "string"}}},
+        "dry_run": {"type": "boolean", "description": "here: show the impact and the lines to decide without writing"}}},
 }
 
 PLACEMENTS: dict[str, dict] = {}
@@ -824,19 +845,21 @@ def place_call(api: Api, args: dict) -> str:
         pick = str(args.get("pick") or "").strip().rstrip("/")
         if pick == "none":
             if p["at"] == "/v1/regions":
-                del PLACEMENTS[pid]
                 return ("No area at hop 0 advertises such things, so there is nowhere to place this without hiding it.\n"
-                        "What is needed is a new area: a representative and one sentence saying when to come.\n"
-                        f"A candidate for that sentence is the document's own line:\n  {p['doc']['one_liner']}\n"
-                        "Nothing was written.")
-            return _place_here(api, pid)
+                        "What is needed is a new area: a face and one sentence saying when to come. Make it with\n"
+                        f"  here {{ id: {pid}, area: {{ source, name, one_liner, use_when }}, why }}\n"
+                        "and the document goes under it, in the same commit. A candidate for the sentence is the\n"
+                        f"document's own line:\n  {p['doc']['one_liner']}\n"
+                        "Nothing was written yet; `close` to drop it.")
+            return _place_here(api, pid, args)
         if pick not in p["printed"]:
             raise ApiError(f"{pick} is not an address the last table printed. Pick one of: {', '.join(p['printed'])} — or `none`.")
         p["path"].append(pick); p["at"] = pick
         return _place_hop(api, pid)
     if op == "here":
-        if p["at"] == "/v1/regions": raise ApiError("a document cannot be placed at hop 0 — step into an area first, or say `none`")
-        return _place_here(api, pid)
+        if p["at"] == "/v1/regions" and not isinstance(args.get("area"), dict):
+            raise ApiError("a document cannot be placed at hop 0 — step into an area first, or make one: `here` with `area` {source, name, one_liner, use_when}")
+        return _place_here(api, pid, args)
     raise ApiError(f"op must be open · step · here · list · close (got {op!r})")
 
 
@@ -844,6 +867,7 @@ def _place_hop(api: Api, pid: str) -> str:
     p = PLACEMENTS[pid]
     d = api.send("POST", "/v1/place", {"at": p["at"]})
     p["printed"] = [r["address"] for r in d.get("rows") or []]
+    p["revision"] = d.get("revision")      # what the decisions will rest on
     out = [f"ROUTEMIND — placing {p['doc']['name']!r}  [{pid}]",
            f"  its line: {p['doc']['one_liner']}",
            f"  walked  : {' → '.join(p['path']) or '(hop 0)'}", ""]
@@ -857,27 +881,102 @@ def _place_hop(api: Api, pid: str) -> str:
         out.append("  (no rows — this node has no children yet)")
     out.append("")
     here = d.get("here")
+    # A wide table is the one a person would fold. Said once, not enforced: whether these rows
+    # belong together is the judgement the agent is here to make.
+    if len(rows) > WIDE_TABLE:
+        out.append(f"  This table is wide ({len(rows)} rows). If some of these belong together, `here` can fold them:")
+        out.append("  create a holder ({op: create, ref: $h, name, one_liner, parent: <this node>}) and move them under it.")
     if here:
-        out.append(f"  `here` places it as a child of {here['parent']} in {here['region']}.")
+        out.append(f"  `here` places it as a child of {here['parent']} in {here['region']} — with `why`, and a decision for each line over it.")
         out.append("  `step` with an address above goes one hop deeper.")
     else:
         out.append("  Pick the area whose sentence covers this document (`step` with its address), or `none` if no area does.")
     return "\n".join(out)
 
 
-def _place_here(api: Api, pid: str) -> str:
+WIDE_TABLE = 9
+
+
+def _place_here(api: Api, pid: str, args: dict) -> str:
+    """The write, as one change set: the document, and every decision the caller added. Refused with
+    the lines over it undecided, the refusal prints them with the tables before and after — the
+    next call carries the decisions. Nothing is partly written."""
     p = PLACEMENTS[pid]
-    d = api.send("POST", "/v1/place", {"at": p["at"]})
-    here = d.get("here") or {}
-    body = {"name": p["doc"]["name"], "one_liner": p["doc"]["one_liner"], "region": here.get("region"),
-            "parent": here.get("parent"), "content": p["doc"].get("content") or ""}
-    made = api.send("POST", "/v1/nodes", body)
-    nid = made.get("id") or made.get("node", {}).get("id") or "?"
+    doc = p["doc"]
+    why = str(args.get("why") or "").strip() or f"place {doc['name']}"
+    decisions = list(args.get("decisions") or [])
+    for d in decisions:
+        if not isinstance(d, dict): raise ApiError("every decision is an object: {op: keep|reword|create|move|write|delete, …}")
+    area = args.get("area") if p["at"] == "/v1/regions" else None
+    if area is not None:
+        for k in ("source", "name", "one_liner", "use_when"):
+            if not str(area.get(k) or "").strip(): raise ApiError(f"area.{k} is required — a new area is a face and the sentence hop 0 prints for it")
+        decisions.append({"op": "create", "ref": "$area", "name": area["name"], "one_liner": area["one_liner"],
+                          "parent": None, "area": area["source"], "use_when": area["use_when"]})
+        parent = "$area"
+    else:
+        d = api.send("POST", "/v1/place", {"at": p["at"]})
+        here = d.get("here") or {}
+        parent = str(args.get("parent") or "").strip() or here.get("parent")
+        if parent and parent.startswith("/v1/nodes/"): parent = parent[len("/v1/nodes/"):]
+        if not parent: raise ApiError("nowhere to place it — step into an area first")
+    decisions.insert(0, {"op": "create", "ref": "$doc", "name": doc["name"], "one_liner": doc["one_liner"],
+                         "content": doc.get("content") or "", "parent": parent})
+    body = {"why": why, "decisions": decisions, "expose": list(args.get("expose") or []),
+            **({"base": p["revision"]} if p.get("revision") else {}), "dry_run": bool(args.get("dry_run"))}
+    try:
+        res = api.send("POST", "/v1/changes", body)
+    except ApiError as e:
+        v = (e.payload or {}).get("values") or {}
+        imp = v.get("impact")
+        if imp and (e.payload or {}).get("reason") in ("undecided", "exposure"):
+            return "\n".join([f"NOT WRITTEN — {e.payload.get('error')}", "", *_impact_lines(imp, v.get("ids") or {}), "",
+                               "Call `here` again with the same arguments and `decisions` carrying, for each line above:",
+                               "  {op: keep, id, field, why}  — its text still covers what is under it now, or",
+                               "  {op: reword, id, field, after} — the sentence it should print instead.",
+                               *(["  and `expose: [ids]` for what this knowingly makes readable through a circuit."] if imp.get("unacknowledged") else [])])
+        if (e.payload or {}).get("reason") == "stale":
+            raise ApiError(f"{e} — the tables this walk read have changed; `close` it and walk again")
+        raise
+    if res.get("dry_run"):
+        imp = res.get("impact") or {}
+        return "\n".join([f"DRY RUN — nothing written. {'It applies as it is.' if res.get('applies') else 'It does not apply yet:'}", "",
+                           *_impact_lines(imp, res.get("ids") or {})])
+    if res.get("queued"):
+        return "\n".join([f"QUEUED {res['queued']} — {res.get('message')}", "", *_impact_lines(res.get("impact") or {}, res.get("ids") or {}),
+                           "", "The placement stays open until the queue decides; `close` it when you are done."])
     del PLACEMENTS[pid]
-    return "\n".join([f"PLACED {p['doc']['name']!r} as {nid}, child of {here.get('parent')} in {here.get('region')}",
-                      f"  walked  : {' → '.join(p['path'])}", "",
-                      "The lines on the way down were not changed. If one of them — the area's sentence above all —",
-                      "no longer says that this is there, tell the person; they change it from the map."])
+    ids = res.get("ids") or {}
+    imp = res.get("impact") or {}
+    out = [f"PLACED {doc['name']!r} as {ids.get('$doc', '?')} — commit {str(res.get('revision') or '')[:10]}",
+           f"  walked  : {' → '.join(p['path']) or '(hop 0)'}"]
+    for k, v in ids.items():
+        if k != "$doc": out.append(f"  made    : {k} = {v}")
+    for l in imp.get("lines", []):
+        out.append(f"  line    : {l['id']}.{l['field']} {l['decided']}" + (f" — was: {l['was']}" if l.get("was") else ""))
+    for e in imp.get("exposure", []):
+        out.append(f"  {'exposed' if e['to'] else 'withdrawn'}: {e['id']}")
+    return "\n".join(out)
+
+
+def _impact_lines(imp: dict, ids: dict) -> list[str]:
+    """The impact, printed: each table that changes, before and after, and the line over it."""
+    out = []
+    if ids: out.append("  ids     : " + ", ".join(f"{k} = {v}" for k, v in ids.items()))
+    for t in imp.get("tables", []):
+        owner = "hop 0" if t["owner"] == "@hop0" else t["owner"]
+        out.append(f"  table of {owner}:")
+        before = {r["id"]: r["line"] for r in t.get("before", [])}; after = {r["id"]: r["line"] for r in t.get("after", [])}
+        for k in sorted(set(before) | set(after)):
+            mark = "  " if before.get(k) == after.get(k) else ("- " if k not in after else ("+ " if k not in before else "~ "))
+            out.append(f"    {mark}{k}  {(after.get(k) if k in after else before.get(k)) or ''}"[:160])
+    for l in imp.get("lines", []):
+        out.append(f"  line {l['id']}.{l['field']}: {l['decided'] or 'UNDECIDED'}  — now reads: {l['text']!r}"[:220])
+    for e in imp.get("exposure", []):
+        out.append(f"  {'newly readable through a circuit' if e['to'] else 'no longer readable through a circuit'}: {e['id']}")
+    for c in imp.get("carried", []):
+        out.append(f"  carried along: {c['id']} (under {c['under']})")
+    return out
 
 
 TOOLS = [

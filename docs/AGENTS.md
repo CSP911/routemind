@@ -144,6 +144,10 @@ knowledge_read(path)     one document, as written.
                          Below hop 0 both need `why`, one line — and hop 0 opened first in this
                          session; otherwise they refuse and say how to start (invariant 1).
 knowledge_place(op)      where a new page belongs: a walk from hop 0 down, one level at a time.
+                         `here` is one commit of several decisions — the page, a holder if it
+                         needs one, siblings moved under it, and the line over each changed table
+                         kept or reworded (docs/CHANGE.md). Undecided, it prints them and writes
+                         nothing.
 knowledge_circuit(op)    read another backbone for the length of this connection. open · list ·
                          close. It needs nothing of this install to work.
 ```

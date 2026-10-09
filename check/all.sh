@@ -141,6 +141,9 @@ else
   # Placing a document by walking the table, through the MCP, with the write and the queued
   # proposal read back. Starts an ontology on a copy of the shipped corpus, so it sits here.
   run place       $HOSTPY check/place-check.py
+  # A change set (docs/CHANGE.md): several decisions, one commit, the lines over them decided; the
+  # preview is the write without the commit; through the API and through the MCP's `here`.
+  run change      $HOSTPY check/change-check.py
   # A hand-edited repository, served: a stale regions.json regenerated at startup when the tree is
   # clean, the files' truth served when it is not. Starts its own ontology twice.
   run drift       $HOSTPY check/drift-check.py

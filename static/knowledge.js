@@ -125,6 +125,10 @@
     const res = await fetch("/api/knowledge/" + path, o);
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw refusal(data, res.status);
+    // Every write answers with the lines whose tables it changed (docs/CHANGE.md). A person at the
+    // map is shown them and not stopped: they can see the map, and an agent's door is the one that
+    // refuses an undecided line. Here, under every write there is, rather than in each form.
+    if (data && Array.isArray(data.impacted) && data.impacted.length) staleShow(data.impacted);
     return data;
   }
   const post = (path, body) => request(path, {
@@ -2621,6 +2625,38 @@
     method, headers: { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body || {}),
   });
+
+  /** The strip over the map: each line a write may have left behind, with the way to rewrite it and
+   *  the way to say it still holds. Replaced by the next write's, cleared when every line is answered. */
+  function staleShow(lines) {
+    const box = $("knStale");
+    if (!box) return;
+    const byId = new Map(state.nodes.map((n) => [n.id, n]));
+    box.replaceChildren(el("span", "kn-stale-title", t("knowledge.stale.title")));
+    for (const l of lines) {
+      const n = byId.get(l.id);
+      const row = el("div", "kn-stale-row");
+      row.append(el("code", "kn-stale-id", `${l.id}.${l.field}`),
+                 el("span", "kn-stale-text", l.text || "—"),
+                 el("span", "kn-stale-why", tv("knowledge.stale.because", { ids: (l.because || []).join(", ") })));
+      // The same door the map uses: the thing opened over the map first, then the card on it —
+      // the card alone fills a pane inside a dialog that is not open.
+      const fix = button("knowledge.stale.fix", "quiet small", (b) => guarded(b, async () => {
+        const region = n ? regionOf(n) : "";
+        if (l.field === "use_when") {
+          await showRaw({ kind: "as", title: region, address: `/v1/regions/${region}` });
+          await submitCard(region, "bb");
+        } else {
+          await showRaw({ kind: "as", title: l.id, address: `/v1/nodes/${l.id}` });
+          await submitCard(region, "entity", { entity: l.id });
+        }
+      }));
+      const ok = button("knowledge.stale.ok", "quiet small", () => { row.remove(); if (!box.querySelector(".kn-stale-row")) box.hidden = true; });
+      row.append(fix, ok);
+      box.append(row);
+    }
+    box.hidden = false;
+  }
 
   // ── form primitives ───────────────────────────────────────────────────────
   // ── the LLM, as a button (operator, 2026-09-11) ─────────────────────────

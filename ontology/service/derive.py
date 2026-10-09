@@ -82,7 +82,9 @@ def write_node_index(store: Store, node: dict) -> None:
     if node.get("status") == "draft": fm.append("status: draft")
     if node.get("role") == "representative": fm.append("role: representative")
     if node.get("parent"): fm.append(f"parent: {node['parent']}")
-    if node.get("use_when"): fm.append(f"use_when: {node['use_when']}")
+    # Quoted, like the name and the line: a sentence with a colon in it ("when the question is
+    # about the office: plants, keys") was written bare and no file with it could be read back.
+    if node.get("use_when"): fm.append(f"use_when: {json.dumps(str(node['use_when']).strip(), ensure_ascii=False)}")
     # Written only when true. `export: no` and no line at all mean the same thing, and a file that
     # says both would be two spellings of one fact.
     if node.get("export"): fm.append("export: yes")

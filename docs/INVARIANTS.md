@@ -10,7 +10,7 @@ validator caught and the server served stale anyway), the first stranger's fixtu
 reached and obeyed, or not reached at all). The common cause, almost every time, was one fact with
 two homes, or a rule that lived in a prompt rather than in code.
 
-## The ten
+## The twelve
 
 **1. Every walk starts at hop 0.** Nothing below the area list — an area's table, a node's table,
 a document, a circuit's table — is served to an agent that has not been served hop 0 *for this
@@ -106,6 +106,15 @@ the agent is shown nothing from it (2026-10-07: a hint of where others went is n
 polling by cursor loses nothing; a step without a reason is refused. Checked by
 `check/footprint-check.py`; the screen's polling and replay by `check/footprint-screen-check.py`.
 
+**12. An agent's write decides the lines over it.** A change set (`docs/CHANGE.md`) — the agent's
+one way to write, through `knowledge_place` — is refused while any line whose table it changes is
+neither reworded nor kept in it, and its decisions are the commit's trailers. The impact is computed
+from the tree before and after, never declared: an entity is impacted when its children's ids or
+lines differ. A person's write at the map is not gated — they can see it — but every write's answer
+carries the same `impacted` list and the screen shows it. Checked by `check/change-check.py`
+(refused by name, kept stops the cascade, reworded climbs it, a set in any order the same) and
+`check/place-check.py`.
+
 ## What is not on this list
 
 Things that are true but are design, not invariants: one sentence per area; `use_when` is what an
@@ -114,5 +123,5 @@ agent routes on and what a peer reads; ages come from git. They follow from 3 an
 ## How the list is used
 
 No new mechanism until every existing one has the invariant it depends on checked. A finding that
-does not map to one of these ten is either a new invariant — add it here first — or a bug in an
+does not map to one of these twelve is either a new invariant — add it here first — or a bug in an
 existing one, named by number in the commit.

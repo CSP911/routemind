@@ -81,6 +81,9 @@
         <!-- The walk in focus as a row of steps; pressing one shows the map as it was at that step. -->
         <div class="kn-fp-steps" id="knFpSteps"></div>
       </div>
+      <!-- Lines a write may have left stale (docs/CHANGE.md): the parent of what was added, moved
+           or deleted. Shown, not enforced — the person can see the map. -->
+      <div class="kn-stale" id="knStale" role="status" hidden></div>
       <div class="kn-topo-wrap">
         <svg id="knTopo" class="kn-topo" role="img" aria-label="RouteMind topology"></svg>
         <!-- How a walk went, once it has stopped. Over the map's corner, out of the way of the trace. -->

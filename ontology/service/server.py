@@ -14,7 +14,7 @@ mounted it; agents here read this API), service fragments (`ONTOLOGY_SERVICES`, 
 legacy fragment directory, and the curator's sleep and observations (no caller anywhere).
 """
 from __future__ import annotations
-import datetime, json, os, re, sys, time, traceback
+import datetime, json, os, re, sys, time, traceback, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, unquote
@@ -29,6 +29,7 @@ from service import sessions                                 # noqa: E402
 from service import overlays                                # noqa: E402
 from service import walks                                   # noqa: E402
 from service import curator                                 # noqa: E402
+from service import change                                  # noqa: E402
 from service import access                                  # noqa: E402
 
 DATA = Path(os.environ.get("ONTOLOGY_DATA", "/data"))
@@ -384,6 +385,10 @@ def apply_proposal(p: dict, actor: str):
     Only routing changes a person filed (`route`) are applied. The machine-made kinds — `promote`,
     `repin` and the rest — came from the curator's sleep, retired 2026-10-07 with no caller; one still
     sitting in a queue is refused here with a sentence, and can be rejected."""
+    if p["type"] == "change":
+        # A change set queued whole (docs/CHANGE.md). Its `base` check still holds at accept: what
+        # moved under it since is handed back as stale, not overwritten.
+        return change.apply(writer, p.get("set") or {}, actor)
     if p["type"] != "route":
         return {"ok": False, "error": f"a {p['type']!r} proposal came from the retired curator sleep and is no longer applied — reject it"}
     if p["type"] == "route":
@@ -1127,6 +1132,24 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["regions"] and method == "POST":
             return self._send(201, writer.create_region(body, actor))
         if parts == ["vocab"]: return self._err(405, "vocabulary and kinds change through Knowledge review, not this API (operator decision 2026-09-07)")
+        if parts == ["changes"] and method == "POST":
+            # A change set (docs/CHANGE.md): several decisions, one commit, the lines over them
+            # decided. `dry_run` is the same transaction without the commit. Where a review queue is
+            # configured, a set that rewords an area's sentence — the line hop 0 prints, a person's —
+            # is queued whole after a dry run proves it applies; accepting it applies it.
+            dry = bool(body.get("dry_run"))
+            rewords_hop0 = any(isinstance(d, dict) and d.get("op") == "reword" and d.get("field") == "use_when"
+                               for d in (body.get("decisions") or []) if isinstance(body.get("decisions"), list))
+            if HARNESS and rewords_hop0 and not dry:
+                res = change.apply(writer, body, actor, dry_run=True)
+                pid = f"cp_{uuid.uuid4().hex[:10]}"
+                cstore().append({"event": "proposal", "id": pid, "at": curator._now(), "type": "change",
+                                 "set": {k: v for k, v in body.items() if k != "dry_run"}, "why": str(body.get("why") or ""),
+                                 "submitted_by": actor, "impact": res.get("impact"), "ids": res.get("ids"),
+                                 "evidence": [f"node:{d.get('id')}" for d in body.get("decisions") if isinstance(d, dict) and d.get("id")]})
+                return self._send(202, {"ok": True, "queued": pid, "status": "pending", "impact": res.get("impact"), "ids": res.get("ids"),
+                                        "message": "the set rewords an area's sentence, so it waits in the review queue; accepting it applies it whole"})
+            return self._send(200 if dry else 201, change.apply(writer, body, actor, dry_run=dry))
         if parts == ["nodes"] and method == "POST": return self._send(201, writer.create_node(body, actor))
         if len(parts) == 2 and parts[0] == "nodes":
             if method == "PUT": return self._send(200, writer.update_node(parts[1], body, actor))

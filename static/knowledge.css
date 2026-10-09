@@ -471,6 +471,13 @@ body.kn-dragging { user-select: none; }
   background: var(--panel, #fff); border: 1px solid var(--line, #dfe4ea); border-left: 4px solid var(--fp, var(--orange));
   border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, .14); font-size: 12.5px; color: var(--text, #1c2530); }
 .kn-fp-card.is-away { display: none; }
+/* the lines a write may have left stale */
+.kn-stale { margin: 0 0 10px; padding: 8px 12px; border: 1px solid var(--line); border-left: 3px solid var(--orange); border-radius: 8px; background: var(--panel, #fff); display: grid; gap: 6px; }
+.kn-stale-title { font: 700 11px var(--kn-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--orange); }
+.kn-stale-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-size: 12.5px; }
+.kn-stale-id { font: 500 11.5px var(--kn-mono); color: var(--text, #1c2530); }
+.kn-stale-text { flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; }
+.kn-stale-why { font: 11px var(--kn-mono); color: var(--muted, #6b7684); }
 .kn-fp-card-x { position: absolute; top: 6px; right: 8px; border: 0; background: none; cursor: pointer;
   font-size: 16px; color: var(--muted, #6b7684); }
 .kn-fp-card-out { font: 700 11px var(--kn-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--fp, var(--orange)); }

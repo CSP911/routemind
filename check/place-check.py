@@ -11,6 +11,10 @@ What the tables carry is each row's line and nothing else. Until 2026-10-07 ever
 the words it shared with the document, and `here` queued proposals to widen the lines above by a
 string-matching rule. Both are gone, and the half of this file that tested them with them; what is
 checked instead is that neither comes back — no shared-word column, no proposal queued by a placement.
+
+Since 2026-10-09 `here` is a change set (docs/CHANGE.md): the line over the document has to be
+decided — kept or reworded — or nothing is written, and the refusal prints the line. The set itself
+is check/change-check.py's; here it is the walk around it.
 """
 import json, os, shutil, subprocess, sys, tempfile, time, urllib.request
 
@@ -129,9 +133,13 @@ check("  with node addresses to descend into", len(addrs) > 0, str(addrs[:5]))
 
 before = {q["id"] for q in get("/v1/curator/proposals").get("proposals") or []}
 line_before = proc["use_when"]
-text, err = m.call("knowledge_place", {"op": "here", "id": pid})
-check("`here` places it", not err and text.startswith("PLACED"), text[:200])
-nid = text.split(" as ", 1)[1].split(",", 1)[0] if " as " in text else ""
+text, err = m.call("knowledge_place", {"op": "here", "id": pid, "why": "the check places one"})
+check("`here` with the line over it undecided writes nothing, and says which line", not err and text.startswith("NOT WRITTEN")
+      and "procurement.use_when: UNDECIDED" in text, text[:200])
+text, err = m.call("knowledge_place", {"op": "here", "id": pid, "why": "the check places one",
+                                       "decisions": [{"op": "keep", "id": "procurement", "field": "use_when", "why": "its sentence covers it"}]})
+check("`here` with the line kept places it", not err and text.startswith("PLACED"), text[:200])
+nid = text.split(" as ", 1)[1].split(" — ", 1)[0].strip() if " as " in text else ""
 node = get(f"/v1/nodes/{nid}") if nid else {}
 check("  the node exists afterwards", bool(node.get("id")), str(node)[:120])
 check("  under the parent the walk reached", node.get("parent") == "procurement", f"parent={node.get('parent')!r}")
@@ -140,7 +148,7 @@ after = {q["id"] for q in get("/v1/curator/proposals").get("proposals") or []}
 check("  no proposal was queued by the placement", after == before, str(sorted(after - before)))
 check("  and the area's sentence is unchanged",
       next(r for r in get("/v1/regions")["regions"] if r["source"] == "procurement")["use_when"] == line_before)
-check("  it says the lines above were not changed", "were not changed" in text, text[-200:])
+check("  and says the line over it was kept", "procurement.use_when keep" in text, text[-200:])
 check("  and the placement is closed", "No placement is open" in m.call("knowledge_place", {"op": "list"})[0])
 
 # `none` at hop 0: nothing written, an area asked for.
@@ -150,6 +158,7 @@ n_before = len(get("/v1/nodes")["nodes"])
 text, err = m.call("knowledge_place", {"op": "step", "id": pid, "pick": "none"})
 check("`none` at hop 0 asks for a new area and writes nothing",
       not err and "new area" in text and "Nothing was written" in text and len(get("/v1/nodes")["nodes"]) == n_before, text[:200])
+check("  and offers to make it with `here` and `area`, in the document's commit", "area:" in text and "here {" in text, text[:300])
 check("  offering the document's own line as the sentence", "Who feeds the pigeons" in text)
 
 sys._place_check_done = True

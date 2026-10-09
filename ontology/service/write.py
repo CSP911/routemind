@@ -181,7 +181,11 @@ def _dirty(root) -> str:
 
 
 def _restore(root: Path):
-    _git(root, "checkout", "--", ".", check=False); _git(root, "clean", "-fdq", check=False)
+    """Back to HEAD, whatever the transaction did — including what it had already staged. A dry run
+    restores after `git add`, and `checkout -- .` restores the *index*, which by then holds the
+    change; `reset --hard` restores the commit. The tree was clean when the transaction opened (it
+    refuses otherwise), so there is nothing of anybody's to lose."""
+    _git(root, "reset", "-q", "--hard", check=False); _git(root, "clean", "-fdq", check=False)
 
 
 def _yesno(value) -> bool:
@@ -304,12 +308,27 @@ class Writer:
             out += kids; frontier += kids
         return out
 
-    def transact(self, message: str, actor: str, mutate) -> dict:
+    def transact(self, message, actor: str, mutate, *, dry_run: bool = False, after=None) -> dict:
+        """mutate → regenerate → validate → commit, or nothing.
+
+        `after(before, now)` runs once the tree validates and before the commit, with the tree as it
+        was and as it is: a change set decides there whether the lines over it are all decided, and
+        anything it raises rolls the write back like a validation failure. What it returns goes into
+        the result. `message` may be a callable, for a commit message that names what `after` found.
+
+        `dry_run` is the same transaction with the commit left out — the one way a preview cannot
+        disagree with the write it previews.
+
+        Every result carries `impacted`: the lines whose tables this write changed — the parent of
+        what was added, moved or deleted, the parent of a line reworded. Nobody has to act on it; the
+        screen shows it so a line going stale is seen by somebody."""
+        from .change import stale_lines
         with _lock, repo_lock(self.root):
             if not (self.root / ".git").exists(): raise WriteError(500, "data directory is not a git repository")
             if (dirty := _dirty(self.root)):
                 raise WriteError(409, "working tree is dirty — someone edited the repository by hand; commit or revert it first",
                                  code="tree_dirty", data={"files": dirty})
+            before = self.store.nodes()
             try:
                 mutate()
                 sync_region_node_lists(self.store); regenerate(self.store)
@@ -321,14 +340,23 @@ class Writer:
                                      code="validation_failed", data={"n": len(res["errors"])})
                 _git(self.root, "add", "-A")
                 if not _git(self.root, "status", "--porcelain"): raise WriteError(200, "no change")
-                _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@iris.local", "commit", "-q", "-m", message)
+                now = self.store.nodes()
+                extra = after(before, now) if after else {}
+                impacted = stale_lines(before, now)
+                msg = message() if callable(message) else message
+                if dry_run:
+                    _restore(self.root)
+                    return {"ok": True, "dry_run": True, "revision": None, "message": msg, "warnings": list(res["warnings"]),
+                            "stats": res["stats"], "impacted": impacted, **extra}
+                _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@iris.local", "commit", "-q", "-m", msg)
             except WriteError:
                 _restore(self.root); raise
             except Exception as e:
                 _restore(self.root); raise WriteError(500, f"{type(e).__name__}: {e}")
             sha = head(self.root)
             warnings = list(res["warnings"])
-            return {"ok": True, "revision": sha, "message": message, "warnings": warnings, "stats": res["stats"]}
+            return {"ok": True, "revision": sha, "message": msg, "warnings": warnings, "stats": res["stats"],
+                    "impacted": impacted, **extra}
 
     # ---- nodes ----
     def create_node(self, body: dict, actor: str) -> dict:

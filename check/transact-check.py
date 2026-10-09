@@ -141,6 +141,15 @@ try:
     write("put file (again, to delete it)", "PUT", "/v1/nodes/transact-node/files/note2.md", {"content": "# Two\n\nWritten 6 October 2026.\n", "description": "A second note"})
     write("delete file", "DELETE", "/v1/nodes/transact-node/files/note2.md", None)
     write("delete file (not listed)", "DELETE", "/v1/nodes/transact-node/files/note2.md", None, succeed=False)
+    # a change set is a write path of its own (docs/CHANGE.md): one commit, or none
+    write("change set", "POST", "/v1/changes", {"why": "two at once", "decisions": [
+          {"op": "create", "ref": "$h", "name": "Holder", "one_liner": "what the check folds", "parent": "tx-area"},
+          {"op": "move", "id": "transact-node", "parent": "$h"}, {"op": "keep", "id": "tx-area", "field": "use_when"}]})
+    write("change set (a line over it undecided — refused after the files were written)", "POST", "/v1/changes",
+          {"why": "undecided", "decisions": [{"op": "create", "ref": "$x", "name": "Undecided", "one_liner": "x", "parent": "tx-area"}]}, succeed=False)
+    h0 = head(); st, d = call("POST", "/v1/changes", {"why": "dry", "dry_run": True, "decisions": [
+          {"op": "create", "ref": "$x", "name": "Dry", "one_liner": "x", "parent": "tx-area"}, {"op": "keep", "id": "tx-area", "field": "use_when"}]})
+    check("change set, dry: answers 200 with no revision, and no commit, clean tree", st == 200 and d.get("revision") is None and commits_since(h0) == 0 and clean(), f"{st} {json.dumps(d)[:120]}")
     # the proposal queue's accept is a write too
     st, p = call("POST", "/v1/curator/proposals", {"scope": "bb", "region": "tx-area", "after": "when the check needs an area · and when it needs two", "why": "check"})
     pid = p.get("id", "")
@@ -152,7 +161,9 @@ try:
     # delete node / area
     write("delete node (promoted child)", "DELETE", "/v1/nodes/a-note-promoted", None)
     write("delete node (gone)", "DELETE", "/v1/nodes/a-note-promoted", None, succeed=False)
-    write("delete node", "DELETE", "/v1/nodes/transact-node", None)
+    # The holder the change set made, with transact-node under it: a document with a body goes with
+    # its holder, the way a file inside a node always did.
+    write("delete node (the holder, its document along)", "DELETE", "/v1/nodes/holder", None)
     write("delete area", "DELETE", "/v1/regions/tx-area", None)
     write("delete area (gone)", "DELETE", "/v1/regions/tx-area", None, succeed=False)
 

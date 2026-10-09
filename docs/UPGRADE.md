@@ -8,6 +8,16 @@ Nothing on this page touches your documents. `data/` is bind-mounted into the co
 on disk across a rebuild; the only file an update may rewrite there is `data/repo/regions.json`,
 which is generated, and it does so in a commit that says why.
 
+## 2026-10-09 — `knowledge_place` writes a change set
+
+`here` no longer puts a page in and leaves the line above untouched. It is one commit of several
+decisions — the page, a holder if it needs one, siblings moved under it — and the line over every
+table it changes has to be kept or reworded in the same call, or it writes nothing and prints the
+lines (docs/CHANGE.md). An agent that calls `here` the old way gets that refusal and the way to answer
+it; nothing to configure. Every write's answer now also carries `impacted`, the lines a write may
+have left stale, and the map shows them in a strip. `use_when` in an entity's frontmatter is written
+quoted from now on; files written earlier read as before.
+
 ## A new install
 
 ```sh
