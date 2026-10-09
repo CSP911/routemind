@@ -52,7 +52,8 @@ whatever the person has open. The person's own state is not replaced.
 
 **Every recent walk at once.** Several agents can walk together, and the live view shows all of them
 — every walk still open, and every walk that moved in the last ten minutes — each in its own colour,
-with a line under the map for each. Choosing one in the picker shows that one alone. Until
+with a line under the map for each. Choosing one in the history below the map shows that one alone,
+until Live lets it go (a picker in the bar did this until 2026-10-09). Until
 2026-10-08 the view followed whichever walk had moved last, so a second agent pulled the screen away
 from the first (operator).
 

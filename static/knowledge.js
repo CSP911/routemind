@@ -1178,8 +1178,8 @@
     const strip = $("knFpSteps"), card = $("knFpCard"), live = $("knFpLive");
     if (!strip || !card) return;
     const w = fpFocusWalk();
-    live.classList.toggle("is-off", Boolean(fp.pin || fp.replay));
-    live.title = fp.pin || fp.replay ? t("knowledge.fp.backLive") : "";
+    live.classList.toggle("is-off", Boolean(fp.pin || fp.replay || fp.focus));
+    live.title = fp.pin || fp.replay || fp.focus ? t("knowledge.fp.backLive") : "";
     if (!w || !w.steps.length) { strip.replaceChildren(); card.hidden = true; return; }
     const src = fp.pin ? (fp.walks.get(fp.pin.id) || fp.pin) : w;   // pinned: every step, the pin marked
     const nowN = (fp.pin ? fp.pin.now : w.now)?.n;
@@ -1231,10 +1231,11 @@
     await fpShow(steps[steps.length - 1], fp.pin);
   }
 
+  /** Back to every recent walk as it is: the step jumped to and the walk chosen in the history both let go. */
   function fpLive() {
-    if (!fp.pin) return;
-    fp.pin = null;
-    fpNowLine(); draw(); fpPanel();
+    if (!fp.pin && !fp.focus) return;
+    fp.pin = null; fp.focus = "";
+    fpNowLine(); draw(); fpPanel(); histMark();
   }
 
   /** Footprint marks. A tile walked by any walk in view carries that walk's colour — the most recent
@@ -1269,19 +1270,6 @@
     return w;
   }
 
-  function fpOptions() {
-    const sel = $("knFpWalk");
-    const rows = [...fp.walks.values()].sort((a, b) => (b.steps.at(-1)?.n || 0) - (a.steps.at(-1)?.n || 0));
-    const all = el("option", null, t("knowledge.fp.all"));
-    all.value = "";
-    if (!fp.focus) all.selected = true;
-    sel.replaceChildren(all, ...rows.map((w) => {
-      const o = el("option", null, `${w.question || w.id}  ·  ${w.state === "open" ? t("knowledge.fp.open") : (w.outcome || "")}`);
-      o.value = w.id;
-      if (w.id === fp.focus) o.selected = true;
-      return o;
-    }));
-  }
 
   /** One poll. Everything after the cursor, applied in order; the cursor moves only past what was
    *  applied, so an error in the middle leaves the rest for the next poll. */
@@ -1301,7 +1289,6 @@
       // a walk came back to a closed map, with the trace stopping at the area tiles.
       for (const s of steps) fpRemember(s);
       fp.cursor = Number(d.seq || 0);
-      fpOptions();
       draw();
       await fpRestore().catch(() => {});
       fpPanel();
@@ -1315,10 +1302,7 @@
       if (fp.focus && fp.focus !== s.walk) continue;
       await fpShow(s, w);
     }
-    if (steps.length) {
-      fpOptions();
-      if (hist.page === 0) histLoad().catch(() => {});
-    }
+    if (steps.length && hist.page === 0) histLoad().catch(() => {});
     // Nothing arrived, but time passed: the spotlight lifts and the card comes up on their own.
     if (fpSpotOn() !== fp.spot) draw();
     fpPanel();
@@ -1329,7 +1313,7 @@
   async function fpReplay() {
     // Stopping wakes the wait it is in, rather than finishing a pause that may be six seconds long.
     if (fp.replay) { fp.replay.stop = true; if (fp.replay.wake) fp.replay.wake(); return; }
-    const id = $("knFpWalk").value;
+    const id = fp.focus;
     let steps;
     try {
       if (id) {
@@ -1377,7 +1361,7 @@
 
   /** Every step of the chosen walk with its reason — or, with none chosen, of the latest one. */
   async function fpTrail(which) {
-    const id = which || $("knFpWalk").value
+    const id = which || fp.focus
       || [...fp.walks.values()].sort((a, b) => (b.now?.n || 0) - (a.now?.n || 0))[0]?.id;
     if (!id) return;
     let w;
@@ -1405,12 +1389,11 @@
   /** On when the backbone keeps a footprint; the first poll says whether it does. */
   function fpStart() {
     // A page served from before the footprint existed has no bar; the map works as it did.
-    if (!$("knFp") || !$("knFpWalk") || !$("knFpNow")) return;
+    if (!$("knFp") || !$("knFpNow")) return;
     fp.on = true; $("knFp").hidden = false;
     $("knFpPlay").addEventListener("click", () => { fpReplay().catch(() => {}); });
     $("knFpTrail").addEventListener("click", () => { fpTrail().catch(() => {}); });
     if ($("knHist")) { $("knHist").hidden = false; histLoad().catch(() => {}); }
-    $("knFpWalk").addEventListener("change", () => { fp.focus = $("knFpWalk").value; fp.pin = null; fpNowLine(); draw(); fpPanel(); histMark(); });
     $("knFpLive").addEventListener("click", () => fpLive());
     // The card is pinned to the window so it stays in sight while the camera follows a walk — and so
     // it would sit on the history table's last rows and page buttons once somebody scrolls down to
@@ -1514,7 +1497,7 @@
     nav.hidden = hist.total === 0;
   }
 
-  /** A walk from the history, on the map: chosen in the picker, opened to its last step. */
+  /** A walk from the history, on the map: chosen, and opened to its last step. */
   async function histShow(id) {
     histPick(id);
     let w = fp.walks.get(id);
@@ -1535,16 +1518,10 @@
     await fpReplay();
   }
 
-  /** Choose a walk in the footprint bar's picker, adding it there if the picker does not list it yet —
-   *  a replay reads the picker, and an unknown value would fall back to replaying every walk. */
+  /** Choose a walk: the map, a replay and the reasons are about it until Live. (A picker in the bar
+   *  did this until 2026-10-09; the history table is where a walk is chosen now.) */
   function histPick(id) {
     fp.focus = id;
-    const sel = $("knFpWalk");
-    if (!sel) return;
-    if (![...(sel.children || [])].some((o) => o.value === id)) {
-      const o = el("option", null, id); o.value = id; sel.append(o);
-    }
-    sel.value = id;
   }
 
   /** The row the map is showing, marked. */

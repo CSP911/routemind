@@ -35,7 +35,7 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
     regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpWalk","knFpSpeed","knFpPlay","knFpTrail","knFpNow","knFpSteps","knFpCard","knHist","knHistBody","knHistPages"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpSpeed","knFpPlay","knFpTrail","knFpNow","knFpSteps","knFpCard","knHist","knHistBody","knHistPages"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
 byId.knFp.hidden = true; byId.knHist.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };
@@ -163,7 +163,7 @@ check("  and the close is an outcome, not a step: the trace does not run back to
 state.open = []; state.openNode.clear(); kn.draw();
 const seen = [];
 const watch = realSetInterval(() => { const t = nowText(); if (t.trim() && seen.at(-1) !== t) seen.push(t); }, 50);
-byId.knFpWalk.value = w.id;
+fp.focus = w.id;
 await kn.fpReplay();
 realClearInterval(watch);
 const order = steps.map((s) => s[2]).filter((why) => seen.some((t) => t.includes(why)));
@@ -175,7 +175,7 @@ check("  the replay button is usable again afterwards", byId.knFpPlay.disabled =
 // ── several walks at once ─────────────────────────────────────────────────────
 // The live view used to follow whichever walk had moved last, so a second agent pulled the screen
 // away from the first. Every recent walk is on the map now, each in its own colour.
-byId.knFpWalk.value = ""; fp.focus = "";
+fp.focus = "";
 const w2 = await post("walks", { question: "what counts as a receipt", how: "screen-check" });
 await post(`walks/${w2.id}/steps`, { op: "table", address: "/v1/regions/expense", why: "receipts are in its sentence" });
 await kn.fpPoll(); await settle(60);
@@ -196,7 +196,7 @@ const w3 = await post("walks", { question: "a walk that pauses", how: "screen-ch
 await post(`walks/${w3.id}/steps`, { op: "table", address: "/v1/regions/payroll", why: "before the pause" });
 await new Promise((r) => setTimeout(r, 1500));
 await post(`walks/${w3.id}/steps`, { op: "table", address: "/v1/regions/attendance", why: "after the pause" });
-byId.knFpWalk.value = w3.id;
+fp.focus = w3.id;
 byId.knFpSpeed.value = "1"; let t0 = Date.now(); await kn.fpReplay(); const slow = Date.now() - t0;
 byId.knFpSpeed.value = "8"; t0 = Date.now(); await kn.fpReplay(); const fast = Date.now() - t0;
 check("replay: a 1.5 s pause takes about 1.5 s at 1×", slow >= 1300, `${slow} ms`);
@@ -207,7 +207,7 @@ await kn.fpReplay(); await running; const stopped = Date.now() - t0;
 check("  the same button stops it", stopped < 1000 && !fp.replay, `${stopped} ms`);
 
 // ── replaying every walk together ─────────────────────────────────────────────
-byId.knFpWalk.value = ""; byId.knFpSpeed.value = "8";
+fp.focus = ""; byId.knFpSpeed.value = "8";
 const seenAll = [];
 const watchAll = realSetInterval(() => { const t = nowText(); if (t.trim() && seenAll.at(-1) !== t) seenAll.push(t); }, 20);
 await kn.fpReplay();
@@ -241,7 +241,10 @@ pageBtns().find((b) => cls(b).includes("is-prev")).click(); await settle();
 check("  and ‹ goes back to page 1", kn.hist.page === 0 && histRows()[0].dataset.walk === firstPage[0]);
 
 // ── a long reason, wrapped rather than cut (2026-10-09) ───────────────────────
-byId.knFpLive.click(); fp.focus = ""; byId.knFpWalk.value = ""; await settle();
+byId.knFpLive.click(); await settle();
+check("  and Live lets the chosen walk go: every recent walk again, no row marked", fp.focus === "" && fp.pin === null && !histRows().some((r) => cls(r).includes("is-sel")),
+      JSON.stringify({ focus: fp.focus }));
+check("the bar has no walk picker any more — the history is where a walk is chosen", !readFileSync("static/knowledge.html", "utf8").includes("knFpWalk"));
 const LONG = "the expense area's sentence names receipts, per-diems and the evidence a claim needs, and this question is about which receipt counts as evidence for a taxi ride";
 const w4 = await post("walks", { question: "which receipt counts", how: "screen-check" });
 await post(`walks/${w4.id}/steps`, { op: "table", address: "/v1/regions/expense", why: LONG });

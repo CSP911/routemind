@@ -126,7 +126,7 @@ docker compose logs ontology --tail 20 | grep valid=  # valid=True
 curl -s http://localhost:9000/api/knowledge/walks?since=0   # {"seq": …, "steps": […]} — the footprint is on
 ```
 
-Then open the map. Above it there is a bar — **Live · a walk picker · Replay · Reasons**. Ask your
+Then open the map. Above it there is a bar — **Live · speed · Replay · Reasons**, and under the map a walk history. Ask your
 agent something; the map opens as it walks.
 
 If the map does not show the bar, or opens the area but not the path inside it, reload the page

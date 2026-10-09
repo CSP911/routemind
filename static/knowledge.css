@@ -405,7 +405,6 @@ body.kn-dragging { user-select: none; }
 .kn-fp { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
 .kn-fp-live { font: 600 11px var(--kn-mono); color: var(--orange); letter-spacing: .06em; text-transform: uppercase; }
 .kn-fp-live::before { content: "●"; margin-right: 4px; }
-.kn-fp-select { max-width: 340px; min-width: 0; }
 .kn-fp-now { flex: 1 1 260px; min-width: 0; font: 12px/1.5 var(--kn-mono); color: var(--kn-muted); }
 .kn-fp-speed { width: auto; min-width: 0; }
 .kn-fp-now { display: flex; flex-direction: column; gap: 2px; white-space: normal; }
