@@ -35,6 +35,15 @@ Nothing to do beyond the usual `git pull && ./install.sh`. What changes on its o
 - **An empty map** shows a "Create the first area" button; the starter vocabulary's default kind is
   `document`, not `system`.
 - **Large maps:** a 200-row table on a few thousand entities went from 20 s to under 0.2 s.
+- **Closed doors and re-runs:** `./install.sh` re-run on an install in token mode (or with reads
+  guarded) no longer fails its own checks — they present `KNOWLEDGE_TOKEN` from `.env`.
+- **Names:** an area can be named in Hangul or kana on the screen; it gets a romanised address and keeps
+  the name as its title, as documents already did.
+- **Agents:** a walk ends as *ended* when the client stops the MCP server, instead of staying
+  *walking*; an agent now says which line was wrong when a line and its document disagree, and looks
+  at the area list again when what it found answers a narrower question ([eval/philosophy](../eval/philosophy/)).
+- **On a phone** the map no longer scrolls the page sideways and opens on the Back-Bone.
+- **New doc:** [WRITING.md](WRITING.md) — five rules for sentences and pages an agent stays right on.
 
 ## 2026-10-09 — `knowledge_place` writes a change set
 
