@@ -1,0 +1,37 @@
+{
+ "id": "h-threshold-000-d",
+ "tree": "folded",
+ "q": "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "collected": [
+  "hard-threshold-legend-revision",
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2202,
+ "usage": {
+  "in": 8,
+  "out": 260,
+  "cache_write": 17780,
+  "cache_read": 0,
+  "cost_usd": 0.147472
+ },
+ "seconds": 12.5,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "READ hard-threshold-legend-revision\nOPEN sec-hard-threshold",
+  "READ hard-threshold-row-category-c1-amount-v1-term-m1",
+  "The question has no date, and today is 2026-10-10, so the current table applies. The question already gives the codes, so the legends aren't strictly needed. The row answers it: the team lead signs, and no competing quotes are needed.\n\nDONE"
+ ]
+}

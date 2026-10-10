@@ -1,0 +1,56 @@
+{
+ "id": "h3",
+ "tree": "folded",
+ "q": "My day trip turned into an overnight because the meeting overran. How long do I have to tell anyone?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "domestic-trip-same-day-overrun-deadline"
+ ],
+ "collected": [
+  "trip-attendance-case-index",
+  "trip-attendance-rule",
+  "trip-request-form",
+  "trip-handoff",
+  "expense-trip-days-correction-deadline",
+  "expense-trip-days-scenario-table",
+  "domestic-trip-cases-index",
+  "domestic-rates",
+  "domestic-trip-same-day-overrun-deadline",
+  "domestic-trip-same-day-overrun"
+ ],
+ "precision": 0.1,
+ "turns": 15,
+ "opens": 12,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 11000,
+ "usage": {
+  "in": 30,
+  "out": 1311,
+  "cache_write": 94665,
+  "cache_read": 0,
+  "cost_usd": 0.78366
+ },
+ "seconds": 76.3,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance\nOPEN sec-trip-approval-before-the-trip",
+  "OPEN sec-trip-attendance-cases",
+  "READ trip-attendance-case-index\nREAD trip-attendance-rule",
+  "READ trip-request-form\nOPEN trip-settlement-handoff",
+  "READ trip-handoff",
+  "BACK\nOPEN expense",
+  "OPEN sec-trip-days-versus-allowance-days\nOPEN travel-expense",
+  "READ expense-trip-days-correction-deadline\nREAD expense-trip-days-scenario-table\nOPEN travel-domestic",
+  "OPEN sec-domestic-trip-cases",
+  "OPEN sec-domestic-trip-cases-1",
+  "READ domestic-trip-cases-index\nREAD domestic-rates",
+  "OPEN sec-domestic-trip-cases-2",
+  "READ domestic-trip-same-day-overrun-deadline\nREAD domestic-trip-same-day-overrun",
+  "DONE"
+ ]
+}

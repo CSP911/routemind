@@ -1,0 +1,37 @@
+{
+ "id": "h-overtime-023-d",
+ "tree": "folded",
+ "q": "For day D1, hours H3, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "collected": [
+  "hard-overtime-legend-revision",
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2147,
+ "usage": {
+  "in": 8,
+  "out": 201,
+  "cache_write": 18514,
+  "cache_read": 0,
+  "cost_usd": 0.152164
+ },
+ "seconds": 6352.7,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "READ hard-overtime-legend-revision\nOPEN sec-hard-overtime",
+  "READ hard-overtime-row-day-d1-hours-h3-place-p4",
+  "DONE"
+ ]
+}

@@ -1,0 +1,42 @@
+{
+ "id": "t-diligence-07",
+ "tree": "flat",
+ "q": "How many times has supplier due diligence been rewritten, and from what date does each version apply?",
+ "needs": "any",
+ "lever": "changed",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-legend-revision"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-v2",
+  "supplier-due-diligence"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 8,
+ "opens": 5,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 3734,
+ "usage": {
+  "in": 16,
+  "out": 1160,
+  "cache_write": 122872,
+  "cache_read": 857,
+  "cost_usd": 1.0064114
+ },
+ "seconds": 37.0,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision\nREAD hard-diligence-v2\nREAD supplier-due-diligence",
+  "```\nOPEN vendor\n```",
+  "BACK",
+  "OPEN procurement",
+  "OPEN ga-desk",
+  "BACK\nOPEN approval",
+  "DONE"
+ ]
+}

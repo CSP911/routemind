@@ -1,0 +1,40 @@
+{
+ "id": "t-accrual-09",
+ "tree": "flat",
+ "q": "For something dated 29 June 2024 — two days before the first change — how much leave was accrued or granted for someone with two years of continuous service? Use the version in force on that day.",
+ "needs": "any",
+ "lever": "boundary",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "leave-accrual"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-legend-tenure",
+  "accrual-rule"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2483,
+ "usage": {
+  "in": 12,
+  "out": 236,
+  "cache_write": 80989,
+  "cache_read": 883,
+  "cost_usd": 0.6528566
+ },
+ "seconds": 20.5,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision\nREAD hard-accrual-legend-tenure",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "DONE"
+ ]
+}

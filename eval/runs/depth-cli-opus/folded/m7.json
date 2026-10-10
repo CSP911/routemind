@@ -1,0 +1,43 @@
+{
+ "id": "m7",
+ "tree": "folded",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "urgent-after-the-fact"
+ ],
+ "collected": [
+  "urgent-after-the-fact",
+  "after-the-fact-deadline",
+  "hard-moved-threshold",
+  "hard-threshold-legend-revision"
+ ],
+ "precision": 0.25,
+ "turns": 8,
+ "opens": 5,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 4796,
+ "usage": {
+  "in": 16,
+  "out": 491,
+  "cache_write": 28719,
+  "cache_read": 0,
+  "cost_usd": 0.23963600000000002
+ },
+ "seconds": 26.1,
+ "model": "opus",
+ "log": [
+  "OPEN approval",
+  "OPEN draft-doc",
+  "Retroactive draft (post-facto approval). Likely under sec-drafts-by-kind.\n\nOPEN sec-drafts-by-kind",
+  "READ urgent-after-the-fact",
+  "READ after-the-fact-deadline\nREAD hard-moved-threshold",
+  "BACK\nOPEN procurement",
+  "READ hard-threshold-legend-revision\nOPEN sec-hard-threshold",
+  "DONE"
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "id": "m2",
+ "tree": "folded",
+ "q": "I'm leaving before the bonus is paid. Does being on headcount when it was calculated mean I qualify?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "bonus-payment-timing"
+ ],
+ "collected": [
+  "bonus-payment-timing",
+  "bonus-leaving-month"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2759,
+ "usage": {
+  "in": 8,
+  "out": 58,
+  "cache_write": 8802,
+  "cache_read": 0,
+  "cost_usd": 0.071608
+ },
+ "seconds": 10.9,
+ "model": "opus",
+ "log": [
+  "OPEN payroll",
+  "OPEN sec-bonuses-and-incentives",
+  "READ bonus-payment-timing\nREAD bonus-leaving-month",
+  "DONE"
+ ]
+}

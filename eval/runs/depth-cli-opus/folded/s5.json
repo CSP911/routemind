@@ -1,0 +1,39 @@
+{
+ "id": "s5",
+ "tree": "folded",
+ "q": "Someone we brought in for a half-day session doesn't charge VAT. What do I need back from them, and from what amount does it start to matter?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "evidence-vat-exempt"
+ ],
+ "collected": [
+  "evidence-vat-exempt",
+  "evidence-vat-exempt-categories"
+ ],
+ "precision": 0.5,
+ "turns": 6,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2488,
+ "usage": {
+  "in": 12,
+  "out": 492,
+  "cache_write": 16323,
+  "cache_read": 0,
+  "cost_usd": 0.14047199999999999
+ },
+ "seconds": 20.0,
+ "model": "opus",
+ "log": [
+  "OPEN expense",
+  "OPEN evidence",
+  "OPEN sec-evidence-in-awkward-cases",
+  "OPEN sec-evidence-in-awkward-cases-2",
+  "READ evidence-vat-exempt\nREAD evidence-vat-exempt-categories",
+  "DONE"
+ ]
+}

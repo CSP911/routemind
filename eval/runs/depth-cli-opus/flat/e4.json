@@ -1,0 +1,36 @@
+{
+ "id": "e4",
+ "tree": "flat",
+ "q": "Why doesn't the annual salary quoted at hire map cleanly onto a single month's gross pay?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "pay-structure-vs-monthly-payslip"
+ ],
+ "collected": [
+  "pay-structure-vs-monthly-payslip",
+  "pay-annual-figure-components"
+ ],
+ "precision": 0.5,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2314,
+ "usage": {
+  "in": 6,
+  "out": 81,
+  "cache_write": 11364,
+  "cache_read": 0,
+  "cost_usd": 0.092556
+ },
+ "seconds": 9.0,
+ "model": "opus",
+ "log": [
+  "OPEN payroll",
+  "READ pay-structure-vs-monthly-payslip\nREAD pay-annual-figure-components",
+  "DONE"
+ ]
+}

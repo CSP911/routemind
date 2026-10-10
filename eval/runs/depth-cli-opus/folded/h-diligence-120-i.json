@@ -1,0 +1,41 @@
+{
+ "id": "h-diligence-120-i",
+ "tree": "folded",
+ "q": "A firm in stuttgart, three hundred million won, just office consumables: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o2-value-w3-goods-k1"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-legend-goods",
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-row-origin-o2-value-w3-goods-k1"
+ ],
+ "precision": 0.2,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4405,
+ "usage": {
+  "in": 10,
+  "out": 118,
+  "cache_write": 26150,
+  "cache_read": 0,
+  "cost_usd": 0.2116
+ },
+ "seconds": 16.6,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision\nOPEN sec-hard-diligence",
+  "READ hard-diligence-legend-goods\nREAD hard-diligence-legend-origin\nREAD hard-diligence-legend-value",
+  "READ hard-diligence-row-origin-o2-value-w3-goods-k1",
+  "DONE"
+ ]
+}

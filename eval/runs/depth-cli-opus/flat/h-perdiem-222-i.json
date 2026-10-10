@@ -1,0 +1,40 @@
+{
+ "id": "h-perdiem-222-i",
+ "tree": "flat",
+ "q": "I'm a department head — Jakarta, eight nights — what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g3-band-b3-stay-s3"
+ ],
+ "collected": [
+  "hard-perdiem-legend-band",
+  "hard-perdiem-legend-grade",
+  "hard-perdiem-legend-stay",
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-row-grade-g3-band-b3-stay-s3"
+ ],
+ "precision": 0.2,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4128,
+ "usage": {
+  "in": 8,
+  "out": 132,
+  "cache_write": 43844,
+  "cache_read": 0,
+  "cost_usd": 0.35342399999999996
+ },
+ "seconds": 11.8,
+ "model": "opus",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-band\nREAD hard-perdiem-legend-grade\nREAD hard-perdiem-legend-stay\nREAD hard-perdiem-legend-revision",
+  "READ hard-perdiem-row-grade-g3-band-b3-stay-s3",
+  "DONE"
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "id": "h4",
+ "tree": "flat",
+ "q": "Somebody put a purchase through as an ordinary memo instead. Does that change anything?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "kind-misclassification"
+ ],
+ "collected": [
+  "kind-misclassification",
+  "draft-kinds-table",
+  "purchase-draft",
+  "draft-fields",
+  "hard-threshold-legend-revision"
+ ],
+ "precision": 0.2,
+ "turns": 8,
+ "opens": 5,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 5839,
+ "usage": {
+  "in": 16,
+  "out": 1114,
+  "cache_write": 62430,
+  "cache_read": 0,
+  "cost_usd": 0.521784
+ },
+ "seconds": 29.5,
+ "model": "opus",
+ "log": [
+  "OPEN approval",
+  "OPEN draft-doc",
+  "READ kind-misclassification\nREAD draft-kinds-table\nREAD purchase-draft",
+  "OPEN draft-form",
+  "READ draft-fields\nBACK",
+  "OPEN procurement",
+  "READ hard-threshold-legend-revision\nOPEN purchase-request",
+  "DONE"
+ ]
+}

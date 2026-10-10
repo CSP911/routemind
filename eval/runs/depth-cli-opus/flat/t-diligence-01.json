@@ -1,0 +1,41 @@
+{
+ "id": "t-diligence-01",
+ "tree": "flat",
+ "q": "In March 2023, what screening was required for a new supplier? Answer under the version of supplier due diligence that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "supplier-due-diligence"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "supplier-due-diligence",
+  "sanctions-ownership-checks",
+  "supplier-code-of-conduct",
+  "disqualification-triggers"
+ ],
+ "precision": 0.2,
+ "turns": 5,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 6459,
+ "usage": {
+  "in": 10,
+  "out": 142,
+  "cache_write": 48644,
+  "cache_read": 870,
+  "cost_usd": 0.392206
+ },
+ "seconds": 18.6,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision",
+  "READ supplier-due-diligence",
+  "READ sanctions-ownership-checks\nREAD supplier-code-of-conduct\nREAD disqualification-triggers",
+  "DONE"
+ ]
+}

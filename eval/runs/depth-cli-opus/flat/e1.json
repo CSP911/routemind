@@ -1,0 +1,39 @@
+{
+ "id": "e1",
+ "tree": "flat",
+ "q": "Which year-end deductions does the pre-filled data not show, and what conditions apply to them?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "year-end-manual-deduction-items"
+ ],
+ "collected": [
+  "year-end-prefilled-scope",
+  "year-end-manual-deductions",
+  "year-end-manual-deduction-items",
+  "year-end-manual-deduction-rent-condition"
+ ],
+ "precision": 0.25,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5030,
+ "usage": {
+  "in": 8,
+  "out": 88,
+  "cache_write": 17537,
+  "cache_read": 859,
+  "cost_usd": 0.1422598
+ },
+ "seconds": 10.9,
+ "model": "opus",
+ "log": [
+  "OPEN payroll",
+  "OPEN year-end-tax",
+  "READ year-end-prefilled-scope\nREAD year-end-manual-deductions\nREAD year-end-manual-deduction-items\nREAD year-end-manual-deduction-rent-condition",
+  "DONE"
+ ]
+}

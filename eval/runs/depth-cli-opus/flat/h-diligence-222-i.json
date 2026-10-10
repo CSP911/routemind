@@ -1,0 +1,40 @@
+{
+ "id": "h-diligence-222-i",
+ "tree": "flat",
+ "q": "A vendor in austin, three hundred million won, people's time: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o3-value-w3-goods-k3"
+ ],
+ "collected": [
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-legend-goods",
+  "hard-diligence-legend-revision",
+  "hard-diligence-row-origin-o3-value-w3-goods-k3"
+ ],
+ "precision": 0.2,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4405,
+ "usage": {
+  "in": 8,
+  "out": 187,
+  "cache_write": 36799,
+  "cache_read": 872,
+  "cost_usd": 0.2983384
+ },
+ "seconds": 12.2,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-origin\nREAD hard-diligence-legend-value\nREAD hard-diligence-legend-goods\nREAD hard-diligence-legend-revision",
+  "READ hard-diligence-row-origin-o3-value-w3-goods-k3",
+  "DONE"
+ ]
+}

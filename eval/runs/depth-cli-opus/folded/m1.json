@@ -1,0 +1,37 @@
+{
+ "id": "m1",
+ "tree": "folded",
+ "q": "What happens if my banked hours don't cover the shortfall at the end of the month?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexitime-shortfall-case"
+ ],
+ "collected": [
+  "flexitime-shortfall-case",
+  "flexitime-month-rule"
+ ],
+ "precision": 0.5,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2231,
+ "usage": {
+  "in": 8,
+  "out": 199,
+  "cache_write": 10174,
+  "cache_read": 0,
+  "cost_usd": 0.08540400000000001
+ },
+ "seconds": 12.2,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "Banked hours shortfall relates to flexible working.\n\nOPEN sec-flexible-and-remote-working",
+  "READ flexitime-shortfall-case\nREAD flexitime-month-rule",
+  "DONE"
+ ]
+}

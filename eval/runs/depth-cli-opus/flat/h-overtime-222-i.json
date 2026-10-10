@@ -1,0 +1,40 @@
+{
+ "id": "h-overtime-222-i",
+ "tree": "flat",
+ "q": "Liberation day, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d3-hours-h3-place-p3"
+ ],
+ "collected": [
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-legend-revision",
+  "hard-overtime-row-day-d3-hours-h3-place-p3"
+ ],
+ "precision": 0.2,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4105,
+ "usage": {
+  "in": 8,
+  "out": 178,
+  "cache_write": 48912,
+  "cache_read": 0,
+  "cost_usd": 0.394888
+ },
+ "seconds": 12.5,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "READ hard-overtime-legend-day\nREAD hard-overtime-legend-hours\nREAD hard-overtime-legend-place\nREAD hard-overtime-legend-revision",
+  "READ hard-overtime-row-day-d3-hours-h3-place-p3",
+  "DONE"
+ ]
+}

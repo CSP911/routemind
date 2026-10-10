@@ -1,0 +1,44 @@
+{
+ "id": "t-diligence-11",
+ "tree": "flat",
+ "q": "What screening was required for a new supplier in 2023, and what had it become by 2025? I need both versions of supplier due diligence, not just the current one.",
+ "needs": "all",
+ "lever": "both",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "supplier-due-diligence",
+  "hard-diligence-v2"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-v2",
+  "supplier-due-diligence",
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "sanctions-ownership-checks",
+  "supplier-code-of-conduct",
+  "disqualification-triggers"
+ ],
+ "precision": 0.25,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 9042,
+ "usage": {
+  "in": 8,
+  "out": 559,
+  "cache_write": 38091,
+  "cache_read": 876,
+  "cost_usd": 0.3161152
+ },
+ "seconds": 19.7,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision\nREAD hard-diligence-v2\nREAD supplier-due-diligence",
+  "READ hard-diligence-legend-origin\nREAD hard-diligence-legend-value\nREAD sanctions-ownership-checks\nREAD supplier-code-of-conduct",
+  "READ disqualification-triggers\nDONE"
+ ]
+}

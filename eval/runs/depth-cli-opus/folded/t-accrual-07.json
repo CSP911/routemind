@@ -1,0 +1,41 @@
+{
+ "id": "t-accrual-07",
+ "tree": "folded",
+ "q": "How many times has leave accrual been rewritten, and from what date does each version apply?",
+ "needs": "any",
+ "lever": "changed",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-legend-revision"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-v2",
+  "accrual-rule",
+  "hard-accrual-row-type-e1-tenure-t1-site-l1"
+ ],
+ "precision": 0.25,
+ "turns": 6,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3907,
+ "usage": {
+  "in": 12,
+  "out": 479,
+  "cache_write": 36213,
+  "cache_read": 0,
+  "cost_usd": 0.29933200000000004
+ },
+ "seconds": 21.0,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision\nREAD hard-accrual-v2\nOPEN sec-hard-accrual",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "READ hard-accrual-row-type-e1-tenure-t1-site-l1\nDONE"
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "id": "s1",
+ "tree": "folded",
+ "q": "I want to work out of Portugal for a few months. Who has to say yes, and does anything change about what comes off my pay?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "working-abroad-request",
+  "insurance-movement-triggers",
+  "insurance-rates",
+  "payslip-items",
+  "payslip-deduction-lines",
+  "payslip-withholding-tax",
+  "payroll-overview"
+ ],
+ "precision": 0.0,
+ "turns": 9,
+ "opens": 8,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 7998,
+ "usage": {
+  "in": 18,
+  "out": 822,
+  "cache_write": 39037,
+  "cache_read": 0,
+  "cost_usd": 0.328808
+ },
+ "seconds": 31.6,
+ "model": "opus",
+ "log": [
+  "OPEN approval\nOPEN payroll",
+  "OPEN sec-approvals-about-people\nOPEN insurance",
+  "READ working-abroad-request\nOPEN sec-social-insurance-movements",
+  "READ insurance-movement-triggers\nREAD insurance-rates",
+  "OPEN payslip\nOPEN payroll-desk",
+  "OPEN sec-payslip-lines-in-detail\nREAD payslip-items",
+  "READ payslip-deduction-lines\nREAD payslip-withholding-tax",
+  "READ payroll-overview",
+  "DONE"
+ ]
+}

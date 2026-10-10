@@ -1,0 +1,38 @@
+{
+ "id": "m6",
+ "tree": "folded",
+ "q": "What closes out on a leaver's insurance record, and where does the pension cut-off differ from the payslip?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "insurance-leaving-deregistration"
+ ],
+ "collected": [
+  "insurance-leaving-deregistration",
+  "insurance-movement-triggers"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2592,
+ "usage": {
+  "in": 10,
+  "out": 150,
+  "cache_write": 11953,
+  "cache_read": 0,
+  "cost_usd": 0.098664
+ },
+ "seconds": 14.4,
+ "model": "opus",
+ "log": [
+  "OPEN payroll",
+  "OPEN insurance\nOPEN sec-severance-and-leaving-pay",
+  "OPEN sec-social-insurance-movements",
+  "READ insurance-leaving-deregistration\nREAD insurance-movement-triggers",
+  "DONE"
+ ]
+}

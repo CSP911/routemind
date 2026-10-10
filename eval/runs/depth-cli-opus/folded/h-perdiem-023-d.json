@@ -1,0 +1,36 @@
+{
+ "id": "h-perdiem-023-d",
+ "tree": "folded",
+ "q": "For grade G1, band B3, stay S4, what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g1-band-b3-stay-s4"
+ ],
+ "collected": [
+  "hard-perdiem-row-grade-g1-band-b3-stay-s4"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 971,
+ "usage": {
+  "in": 8,
+  "out": 91,
+  "cache_write": 18581,
+  "cache_read": 0,
+  "cost_usd": 0.1505
+ },
+ "seconds": 11.3,
+ "model": "opus",
+ "log": [
+  "OPEN expense",
+  "OPEN sec-hard-perdiem",
+  "READ hard-perdiem-row-grade-g1-band-b3-stay-s4",
+  "DONE"
+ ]
+}

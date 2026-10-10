@@ -1,0 +1,43 @@
+{
+ "id": "s4",
+ "tree": "flat",
+ "q": "We settled on a supplier in a room. Is what we wrote down enough to place the order, or is something else needed?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "purchase-steps",
+  "minuted-meeting-criteria",
+  "minute-required-contents",
+  "minute-signoff-procedure",
+  "purchase-draft-quote-attachments",
+  "minute-filing-deadline",
+  "minute-custody-location"
+ ],
+ "precision": 0.0,
+ "turns": 7,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 8278,
+ "usage": {
+  "in": 14,
+  "out": 826,
+  "cache_write": 83663,
+  "cache_read": 0,
+  "cost_usd": 0.68588
+ },
+ "seconds": 29.4,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "OPEN purchase-request",
+  "READ purchase-steps",
+  "BACK\nOPEN approval",
+  "READ minuted-meeting-criteria\nREAD minute-required-contents\nREAD minute-signoff-procedure\nREAD purchase-draft-quote-attachments",
+  "READ minute-filing-deadline\nREAD minute-custody-location",
+  "DONE"
+ ]
+}

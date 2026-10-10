@@ -1,0 +1,38 @@
+{
+ "id": "m3",
+ "tree": "flat",
+ "q": "I travelled Friday through Monday for a client site visit. Which of those days get recorded as worked?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "weekend-trip-case"
+ ],
+ "collected": [
+  "weekend-trip-case",
+  "trip-hours-recording-table",
+  "trip-attendance-rule"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3089,
+ "usage": {
+  "in": 8,
+  "out": 66,
+  "cache_write": 48177,
+  "cache_read": 0,
+  "cost_usd": 0.386768
+ },
+ "seconds": 11.0,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance",
+  "READ weekend-trip-case\nREAD trip-hours-recording-table\nREAD trip-attendance-rule",
+  "DONE"
+ ]
+}

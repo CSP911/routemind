@@ -1,0 +1,47 @@
+{
+ "id": "m7",
+ "tree": "flat",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "urgent-after-the-fact"
+ ],
+ "collected": [
+  "emergency-spend-ceiling",
+  "hard-moved-threshold",
+  "advance-authority-table",
+  "advance-reconciliation-deadline",
+  "advance-shortfall-case",
+  "hard-threshold-legend-revision",
+  "urgent-after-the-fact",
+  "after-the-fact-deadline"
+ ],
+ "precision": 0.125,
+ "turns": 8,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 9648,
+ "usage": {
+  "in": 16,
+  "out": 1029,
+  "cache_write": 91884,
+  "cache_read": 0,
+  "cost_usd": 0.7557160000000002
+ },
+ "seconds": 36.4,
+ "model": "opus",
+ "log": [
+  "OPEN approval",
+  "READ emergency-spend-ceiling\nREAD hard-moved-threshold",
+  "READ advance-authority-table\nREAD advance-reconciliation-deadline\nREAD advance-shortfall-case",
+  "BACK\nOPEN procurement",
+  "READ hard-threshold-legend-revision",
+  "OPEN approval\nOPEN draft-doc",
+  "READ urgent-after-the-fact\nREAD after-the-fact-deadline",
+  "DONE"
+ ]
+}

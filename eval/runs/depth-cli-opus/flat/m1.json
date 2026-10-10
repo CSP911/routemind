@@ -1,0 +1,42 @@
+{
+ "id": "m1",
+ "tree": "flat",
+ "q": "What happens if my banked hours don't cover the shortfall at the end of the month?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexitime-shortfall-case"
+ ],
+ "collected": [
+  "flexitime-shortfall-case",
+  "flexitime-month-rule",
+  "flexitime-carryover-table",
+  "half-quarter-day-conversion-table",
+  "half-and-quarter-day-leave"
+ ],
+ "precision": 0.2,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 6069,
+ "usage": {
+  "in": 12,
+  "out": 241,
+  "cache_write": 84388,
+  "cache_read": 0,
+  "cost_usd": 0.6799719999999999
+ },
+ "seconds": 23.8,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "READ flexitime-shortfall-case\nREAD flexitime-month-rule\nREAD flexitime-carryover-table",
+  "OPEN annual-leave",
+  "OPEN leave-use",
+  "READ half-quarter-day-conversion-table\nREAD half-and-quarter-day-leave",
+  "DONE"
+ ]
+}

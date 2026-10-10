@@ -1,0 +1,41 @@
+{
+ "id": "t-perdiem-03",
+ "tree": "flat",
+ "q": "In January 2024, what was the nightly lodging cap for a trip to a band B destination? Answer under the version of the overseas per-diem that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "overseas-rates"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-legend-band",
+  "overseas-rates",
+  "overseas-trip-band-country-table"
+ ],
+ "precision": 0.25,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3933,
+ "usage": {
+  "in": 12,
+  "out": 334,
+  "cache_write": 73505,
+  "cache_read": 881,
+  "cost_usd": 0.5949442
+ },
+ "seconds": 22.0,
+ "model": "opus",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision\nREAD hard-perdiem-legend-band",
+  "OPEN travel-expense",
+  "OPEN travel-overseas",
+  "READ overseas-rates\nREAD overseas-trip-band-country-table",
+  "DONE"
+ ]
+}

@@ -1,0 +1,47 @@
+{
+ "id": "h2",
+ "tree": "folded",
+ "q": "We want to send hampers to customers for the holiday. How much per customer, and what do we keep?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "entertainment-seasonal-gifts"
+ ],
+ "collected": [
+  "qualified-list",
+  "entertainment-limit",
+  "entertainment-seasonal-gifts",
+  "entertainment-seasonal-gifts-table",
+  "retention-table"
+ ],
+ "precision": 0.2,
+ "turns": 11,
+ "opens": 11,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 5535,
+ "usage": {
+  "in": 22,
+  "out": 870,
+  "cache_write": 45482,
+  "cache_read": 0,
+  "cost_usd": 0.381344
+ },
+ "seconds": 42.8,
+ "model": "opus",
+ "log": [
+  "OPEN expense",
+  "OPEN corp-card\nOPEN evidence",
+  "OPEN sec-card-use-by-situation\nOPEN qualified-evidence",
+  "READ qualified-list\nOPEN card-limit",
+  "OPEN entertainment",
+  "READ entertainment-limit\nOPEN sec-entertainment-cases",
+  "READ entertainment-seasonal-gifts\nREAD entertainment-seasonal-gifts-table",
+  "BACK\nOPEN approval",
+  "OPEN retention",
+  "READ retention-table\nOPEN sec-retention-cases",
+  "DONE"
+ ]
+}

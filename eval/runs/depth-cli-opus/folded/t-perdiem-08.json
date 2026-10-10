@@ -1,0 +1,36 @@
+{
+ "id": "t-perdiem-08",
+ "tree": "folded",
+ "q": "I have a claim dated in 2025 and I am not sure which version of the overseas per-diem applies to it. Where is that written down?",
+ "needs": "any",
+ "lever": "changed",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-legend-revision"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-v2"
+ ],
+ "precision": 0.5,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2408,
+ "usage": {
+  "in": 6,
+  "out": 131,
+  "cache_write": 6998,
+  "cache_read": 0,
+  "cost_usd": 0.058628
+ },
+ "seconds": 11.9,
+ "model": "opus",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision\nREAD hard-perdiem-v2",
+  "DONE"
+ ]
+}

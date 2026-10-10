@@ -1,0 +1,40 @@
+{
+ "id": "h-threshold-023-i",
+ "tree": "folded",
+ "q": "A couple of laptops, around 12 million won, until we cancel it: whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c1-amount-v3-term-m4"
+ ],
+ "collected": [
+  "hard-threshold-legend-amount",
+  "hard-threshold-legend-category",
+  "hard-threshold-legend-term",
+  "hard-threshold-row-category-c1-amount-v3-term-m4"
+ ],
+ "precision": 0.25,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3103,
+ "usage": {
+  "in": 10,
+  "out": 170,
+  "cache_write": 25057,
+  "cache_read": 0,
+  "cost_usd": 0.20389600000000002
+ },
+ "seconds": 15.0,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-threshold",
+  "READ hard-threshold-legend-amount\nREAD hard-threshold-legend-category\nREAD hard-threshold-legend-term",
+  "READ hard-threshold-row-category-c1-amount-v3-term-m4",
+  "DONE"
+ ]
+}

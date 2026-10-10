@@ -1,0 +1,45 @@
+{
+ "id": "s2",
+ "tree": "flat",
+ "q": "Our whole team was moved across to the subsidiary. Does my start date reset, and what does that do to what I'd be owed on the way out?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "severance-eligibility",
+  "severance-calculation",
+  "severance-overview",
+  "severance-at-a-glance",
+  "leave-payout-overview",
+  "hr-contact",
+  "hard-accrual-legend-tenure",
+  "leave-payout-vs-severance"
+ ],
+ "precision": 0.0,
+ "turns": 8,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 9310,
+ "usage": {
+  "in": 16,
+  "out": 866,
+  "cache_write": 102751,
+  "cache_read": 0,
+  "cost_usd": 0.839392
+ },
+ "seconds": 33.5,
+ "model": "opus",
+ "log": [
+  "OPEN payroll",
+  "READ severance-eligibility\nREAD severance-calculation\nREAD severance-overview",
+  "READ severance-at-a-glance\nREAD leave-payout-overview",
+  "OPEN attendance",
+  "OPEN hr-desk",
+  "READ hr-contact",
+  "READ hard-accrual-legend-tenure\nREAD leave-payout-vs-severance",
+  "DONE"
+ ]
+}

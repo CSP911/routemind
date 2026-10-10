@@ -1,0 +1,40 @@
+{
+ "id": "h5",
+ "tree": "flat",
+ "q": "What has to be cleared before I get on a plane for work?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "travel-insurance-restricted-country-exception-role",
+  "overseas-trip-authority",
+  "ceo-band-subjects",
+  "travel-insurance-overview",
+  "travel-insurance-restricted-country-list",
+  "line-rule"
+ ],
+ "precision": 0.0,
+ "turns": 5,
+ "opens": 6,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 7164,
+ "usage": {
+  "in": 10,
+  "out": 502,
+  "cache_write": 73384,
+  "cache_read": 0,
+  "cost_usd": 0.597152
+ },
+ "seconds": 21.4,
+ "model": "opus",
+ "log": [
+  "OPEN approval\nOPEN expense",
+  "OPEN approval-line\nOPEN travel-expense",
+  "OPEN delegated-approval\nOPEN travel-overseas\nREAD travel-insurance-restricted-country-exception-role",
+  "READ overseas-trip-authority\nREAD ceo-band-subjects\nREAD travel-insurance-overview",
+  "READ travel-insurance-restricted-country-list\nREAD line-rule\nDONE"
+ ]
+}

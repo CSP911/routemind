@@ -1,0 +1,40 @@
+{
+ "id": "h-accrual-023-i",
+ "tree": "flat",
+ "q": "On the regular payroll, been here five years, fully from home: how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-legend-type",
+  "hard-accrual-legend-tenure",
+  "hard-accrual-legend-site",
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "precision": 0.2,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4264,
+ "usage": {
+  "in": 8,
+  "out": 193,
+  "cache_write": 48116,
+  "cache_read": 871,
+  "cost_usd": 0.38899419999999996
+ },
+ "seconds": 12.1,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision\nREAD hard-accrual-legend-type\nREAD hard-accrual-legend-tenure\nREAD hard-accrual-legend-site",
+  "READ hard-accrual-row-type-e1-tenure-t3-site-l4",
+  "DONE"
+ ]
+}

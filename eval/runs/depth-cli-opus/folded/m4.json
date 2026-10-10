@@ -1,0 +1,36 @@
+{
+ "id": "m4",
+ "tree": "folded",
+ "q": "Is unpaid leave taken out of my pay on working days or on calendar days?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "unpaid-leave-deduction-calculation"
+ ],
+ "collected": [
+  "unpaid-leave-deduction-calculation"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 950,
+ "usage": {
+  "in": 8,
+  "out": 47,
+  "cache_write": 7771,
+  "cache_read": 0,
+  "cost_usd": 0.06314
+ },
+ "seconds": 12.1,
+ "model": "opus",
+ "log": [
+  "OPEN payroll",
+  "OPEN sec-days-into-money",
+  "READ unpaid-leave-deduction-calculation",
+  "DONE"
+ ]
+}

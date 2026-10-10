@@ -1,0 +1,34 @@
+{
+ "id": "h5",
+ "tree": "folded",
+ "q": "What has to be cleared before I get on a plane for work?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "trip-extends-overseas-case"
+ ],
+ "precision": 0.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1527,
+ "usage": {
+  "in": 8,
+  "out": 413,
+  "cache_write": 7561,
+  "cache_read": 0,
+  "cost_usd": 0.06878
+ },
+ "seconds": 15.2,
+ "model": "opus",
+ "log": [
+  "OPEN approval",
+  "OPEN sec-approvals-about-people",
+  "READ trip-extends-overseas-case",
+  "DONE"
+ ]
+}

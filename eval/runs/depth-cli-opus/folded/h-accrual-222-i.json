@@ -1,0 +1,41 @@
+{
+ "id": "h-accrual-222-i",
+ "tree": "folded",
+ "q": "In three days a week, been here five years, in the Singapore entity: how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e3-tenure-t3-site-l3"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-legend-type",
+  "hard-accrual-legend-tenure",
+  "hard-accrual-legend-site",
+  "hard-accrual-row-type-e3-tenure-t3-site-l3"
+ ],
+ "precision": 0.2,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4263,
+ "usage": {
+  "in": 10,
+  "out": 118,
+  "cache_write": 27921,
+  "cache_read": 0,
+  "cost_usd": 0.22576800000000002
+ },
+ "seconds": 15.2,
+ "model": "opus",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision\nOPEN sec-hard-accrual",
+  "READ hard-accrual-legend-type\nREAD hard-accrual-legend-tenure\nREAD hard-accrual-legend-site",
+  "READ hard-accrual-row-type-e3-tenure-t3-site-l3",
+  "DONE"
+ ]
+}

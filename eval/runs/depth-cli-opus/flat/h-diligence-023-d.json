@@ -1,0 +1,36 @@
+{
+ "id": "h-diligence-023-d",
+ "tree": "flat",
+ "q": "For origin O1, value W3, goods K4, do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o1-value-w3-goods-k4"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-row-origin-o1-value-w3-goods-k4"
+ ],
+ "precision": 0.5,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2248,
+ "usage": {
+  "in": 6,
+  "out": 58,
+  "cache_write": 23556,
+  "cache_read": 868,
+  "cost_usd": 0.1898056
+ },
+ "seconds": 9.3,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision\nREAD hard-diligence-row-origin-o1-value-w3-goods-k4",
+  "DONE"
+ ]
+}

@@ -104,6 +104,20 @@ run cannot say: whether a weaker model or a much larger map (thousands of rows i
 accuracy on the flat tree — the two places the argument for folding would have to be made on
 accuracy rather than cost.
 
+### And with Opus (claude -p opus), 2026-10-10
+
+Same 73 questions, same trees, `ROUTER_MODEL=opus`. Walks in `eval/runs/depth-cli-opus/`.
+
+| | hit | turns | opens | $ / walk |
+|---|---|---|---|---|
+| folded | **67/73 (92%)** | 5.5 | 2.9 | 0.185 |
+| flat | **67/73 (92%)** | 4.6 | 1.9 | 0.421 |
+
+Discordant: **0 and 0** — the same six questions missed on both trees (five in the hard pilot set, one
+temporal). The strongest walker repeats Sonnet's pattern a step higher: the tree's shape changes
+nothing about accuracy, and flat costs **2.3×**. Every miss is a question neither tree could answer
+better, which says the remaining errors are in the questions or the documents, not in the folding.
+
 ### And with a weaker model (claude -p haiku), 2026-10-10
 
 Same 73 questions, same trees, `ROUTER_MODEL=haiku`. Walks in `eval/runs/depth-cli-haiku/`.

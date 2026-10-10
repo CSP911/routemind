@@ -103,8 +103,8 @@ agent per question:
 
 **Flat or folded** ([eval/depth/](eval/depth/), 2026-10-09/10). The same 73 questions on two trees:
 area tables of 15–23 rows behind holders, against the same documents with every holder removed
-(61–244 rows per area). With a Sonnet-class walker both trees scored **65/73**; the flat tree cost
-**2.4×** the input. With a Haiku-class walker the flat tree scored *higher* — 66 vs 61 — because every
+(61–244 rows per area). With a Sonnet-class walker both trees scored **65/73**, with Opus **67/73**
+(the same questions missed on both); the flat tree cost **2.3–2.4×** the input. With a Haiku-class walker the flat tree scored *higher* — 66 vs 61 — because every
 holder is one more decision a weak model can get wrong. Folding buys tokens, not accuracy, and costs
 a weak model accuracy.
 

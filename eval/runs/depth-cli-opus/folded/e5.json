@@ -1,0 +1,36 @@
+{
+ "id": "e5",
+ "tree": "folded",
+ "q": "Which liability and indemnity terms does the company hold fixed, and where can a cap move?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "liability-and-indemnity-position"
+ ],
+ "collected": [
+  "liability-and-indemnity-position"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1439,
+ "usage": {
+  "in": 8,
+  "out": 52,
+  "cache_write": 8559,
+  "cache_read": 0,
+  "cost_usd": 0.069544
+ },
+ "seconds": 10.8,
+ "model": "opus",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-contract-terms-the-company-insists-on",
+  "READ liability-and-indemnity-position",
+  "DONE"
+ ]
+}

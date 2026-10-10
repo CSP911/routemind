@@ -1,0 +1,52 @@
+{
+ "id": "h4",
+ "tree": "folded",
+ "q": "Somebody put a purchase through as an ordinary memo instead. Does that change anything?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "kind-misclassification"
+ ],
+ "collected": [
+  "hard-moved-threshold",
+  "purchase-draft-quote-attachments",
+  "kind-misclassification",
+  "purchase-draft",
+  "draft-kinds-table",
+  "draft-fields",
+  "retention-table",
+  "early-destruction-violation"
+ ],
+ "precision": 0.125,
+ "turns": 13,
+ "opens": 9,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 9565,
+ "usage": {
+  "in": 26,
+  "out": 1460,
+  "cache_write": 65557,
+  "cache_read": 0,
+  "cost_usd": 0.55376
+ },
+ "seconds": 57.5,
+ "model": "opus",
+ "log": [
+  "OPEN approval",
+  "READ hard-moved-threshold\nOPEN sec-the-approval-behind-a-purchase",
+  "READ purchase-draft-quote-attachments\nBACK\nOPEN approval",
+  "OPEN draft-doc",
+  "OPEN sec-drafts-by-kind",
+  "READ kind-misclassification\nREAD purchase-draft",
+  "READ draft-kinds-table",
+  "OPEN draft-form",
+  "READ draft-fields",
+  "OPEN retention",
+  "READ retention-table\nOPEN sec-retention-cases",
+  "READ early-destruction-violation\nBACK\nOPEN procurement",
+  "DONE"
+ ]
+}
