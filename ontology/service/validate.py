@@ -333,9 +333,13 @@ def validate(store: Store) -> dict:
     #     `status` from (1). What separates the two is not in the data — it is **whether any code ever
     #     writes something other than the default** — and that cannot be seen from here.
 
+    # Optional on purpose, so empty everywhere is the ordinary state of a map that has no use for them —
+    # and the warning rode on every write's answer for every install (QA, 2026-10-10). `expands_in`
+    # marks a boundary (validated above when set); `described_by` and `injected_by` are carried for files that have them.
+    OPTIONAL = {"expands_in", "described_by", "injected_by"}
     for label, records in (("node", nodes), ("region", store.regions())):
         if not records: continue
-        for k in sorted(set().union(*(r.keys() for r in records))):
+        for k in sorted(set().union(*(r.keys() for r in records)) - OPTIONAL):
             if all(r.get(k) in (None, "", [], {}) for r in records):
                 warnings.append(f"{label}.{k}: empty in all {len(records)} records — a dead field, or a slot nobody uses. From outside it looks like one you may fill")
 

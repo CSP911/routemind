@@ -757,7 +757,12 @@ PLACE_TOOL = {
     "inputSchema": {"type": "object", "required": ["op"], "properties": {
         "op": {"type": "string", "enum": ["open", "step", "here", "list", "close"]},
         "name": {"type": "string", "description": "open: the document's name"},
-        "one_liner": {"type": "string", "description": "open: one sentence, the line a table will print for it"},
+        # Measured 2026-10-10: given a one-paragraph policy to file, the agent wrote the paragraph itself
+        # as the line. The table then prints the answer instead of when to open the page, and the next
+        # walker reads a summary in place of the document.
+        "one_liner": {"type": "string", "description": "open: one sentence, the line a table will print for it — what a "
+                      "reader would come to it for (\"how many days a week may be worked from home, and how to book it\"), "
+                      "not its content restated; the content goes in `content`"},
         "content": {"type": "string", "description": "open: the body, Markdown"},
         "kind": {"type": "string", "description": "open, optional: a kind from this backbone's vocabulary. Left out, the document takes the kind its documented siblings mostly have"},
         "id": {"type": "string", "description": "step/here/close: the placement id `open` returned"},
