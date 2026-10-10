@@ -80,6 +80,13 @@ check("a far end with no circuit key says so, and names the setting", "KNOWLEDGE
 out = M.circuit_call({"op": "open", "url": f"http://127.0.0.1:{WRONG}", "token": "enrol", "name": "wrong"})
 check("a wrong address says to give the install's own address", "without /api/knowledge" in out, out)
 
+# A key kept out of the conversation: KNOWLEDGE_CIRCUIT_KEYS fills it in for an address opened alone.
+os.environ["KNOWLEDGE_CIRCUIT_KEYS"] = f"http://127.0.0.1:{WRONG}/knowledge=from-env"
+check("a key in KNOWLEDGE_CIRCUIT_KEYS is found for the address, page path and all",
+      M._circuit_key_for(f"http://127.0.0.1:{WRONG}") == "from-env" and M._circuit_key_for("http://elsewhere") == "")
+out = M.circuit_call({"op": "open", "url": "http://elsewhere.invalid"})
+check("  and an address with no key anywhere says how to keep one out of the conversation", "KNOWLEDGE_CIRCUIT_KEYS" in out, out)
+
 print("\n".join(results))
 n = sum(r.startswith("FAIL") for r in results)
 print(f"\n{n} failed of {len(results)}")

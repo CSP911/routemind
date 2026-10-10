@@ -2,7 +2,7 @@
 
 Open work that has been decided on but not done. Newest first. Each item says who it waits on.
 
-## A partial table that looks complete still traps the agent — *Knowledge, then measure*
+## A partial table that looks complete still traps the agent — *decided: leave to the writing rules*
 
 `eval/philosophy` (trap-pure, 2026-10-10): a false hop-0 sentence sends "what can a division head
 approve" to procurement, whose threshold table answers it for purchases only and does not say so. Both
@@ -11,7 +11,13 @@ narrowing was visible (a range for a figure) and not this one. The defences toda
 (docs/WRITING.md rules 1–2). Open: whether anything on the agent's side helps without making every
 walk visit two areas — measure any idea against `questions-trap-pure.yaml` *and* the controls.
 
-## Agent notes about wrong lines go nowhere — *Web*
+**Decision (2026-10-10):** no further agent-side mechanism for now. Two were measured and one kept
+(the narrower-answer instruction: 3/4 → 2/4 trapped); a table-footer reminder had no effect and was
+reverted. What fixes p1 is on the writing side — a page that covers part of a question says so and
+says where the rest is (docs/WRITING.md, rule 2) — and that is the guidance, not a check, because
+nothing in a page's text marks it as partial. Reopen with a real install's miss, not a constructed one.
+
+## Agent notes about wrong lines go nowhere — *decided: not now*
 
 Agents now say "the line … is wrong" at the end of an answer (eval/philosophy: 4/4 once asked), and the
 server notes a walk that switched areas. Both land in the answer the person reads, and nowhere else: the
@@ -19,15 +25,15 @@ map does not collect them. A walk record could carry them (a `why` on close alre
 history could mark walks that switched areas. Not built — the first question is whether anyone acts on
 the note in the answer.
 
+**Decision (2026-10-10):** not built. The note already reaches the one person who can act on it — the
+one reading the answer — and collecting it would mean parsing free text out of answers or a new tool
+argument agents would have to remember. Build it when a real install's maintainer asks where the notes
+went.
+
 ## Han-character names need an LLM — *watch*
 
 Hangul and kana are romanised for an address; kanji and hanzi have no reading without a model, so a
 name in them is refused with "add a Latin letter or a digit". Known since 2026-10-10's QA.
-
-## The circuit key is in agent transcripts — *documented*
-
-The far end's key is passed in the `knowledge_circuit` call, so it is in the agent's transcript.
-docs/CIRCUIT.md says so; there is no environment-variable path for it yet.
 
 ## Snapshot isolation costs hop 0 twenty percent — *watch, then measure again*
 

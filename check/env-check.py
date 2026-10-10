@@ -65,7 +65,9 @@ else:
         f"install.sh reads WEB_PORT as {_got!r}, docker compose reads '8480'"]
 
 # Read by docker compose itself, not passed to a container: compose takes the project name from .env.
-COMPOSE_OWN = {"COMPOSE_PROJECT_NAME"}
+COMPOSE_OWN = {"COMPOSE_PROJECT_NAME",
+               # Read by the MCP server on the host, which reads .env itself (mcp/knowledge_mcp.py).
+               "KNOWLEDGE_CIRCUIT_KEYS"}
 dead = sorted(documented - passed - COMPOSE_OWN)
 hidden = sorted(v for v in passed - documented if v not in UNDOCUMENTED)
 stale = sorted(v for v in UNDOCUMENTED if v in documented or v not in passed)

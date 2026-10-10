@@ -17,9 +17,12 @@ Their areas appear under /v1/circuits/<name>/… , beside yours, never in it.
 `127-0-0-1-9330`, `https://kb.example.com` becomes `kb-example-com`. Your own hop 0 lists every circuit
 open in the session, and a walk starts there as always: open hop 0, then the circuit's table.
 
-**The key ends up in the agent's transcript**, because it is typed into the conversation. Treat it as
-shared with whoever can read that transcript; rotating it is changing `KNOWLEDGE_CIRCUIT_TOKEN` and
-restarting, which also ends every session already minted.
+**A key typed into the conversation ends up in the agent's transcript.** To keep it out, put it in
+`KNOWLEDGE_CIRCUIT_KEYS` on the machine the agent runs on — `<address>=<key>` pairs, in the environment
+or in `.env` beside the MCP server — and ask the agent to open the circuit by address alone; the server
+fills the key in. A key that did reach a transcript is shared with whoever can read it; rotating it is
+changing `KNOWLEDGE_CIRCUIT_TOKEN` on the far end and restarting, which also ends every session already
+minted.
 
 The URL is **their install's address** — the same one their map answers on. The web app passes the
 two paths a circuit uses through to the ontology, outside its own login door, because they carry

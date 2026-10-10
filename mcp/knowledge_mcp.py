@@ -535,14 +535,16 @@ def circuit_call(args: dict) -> str:
     # CIRCUIT.md tells them to use the address their map answers on. Take the page, or the API path,
     # back to the install's own address rather than refusing it (QA, 2026-10-10).
     url = re.sub(r"/(api/knowledge|knowledge)/?$", "", url)
-    token = str(args.get("token") or "").strip()
+    token = str(args.get("token") or "").strip() or _circuit_key_for(url)
     # From the address when none is given: `127.0.0.1:9330` and `kb.example.com` have dots, and a dot
     # is not allowed in a name, so the bare host refused every address but `localhost` (2026-10-10).
     parts = urllib.parse.urlsplit(url)
     auto = re.sub(r"[^a-z0-9]+", "-", f"{parts.hostname or 'remote'}{'-' + str(parts.port) if parts.port else ''}".lower()).strip("-")
     name = str(args.get("name") or "").strip() or (auto[:40].strip("-") or "remote")
     if not url or not token:
-        return "url and token are both required — a circuit is a read into somebody else's ontology."
+        return ("url and token are both required — a circuit is a read into somebody else's ontology. To keep the "
+                "key out of this conversation, the person can put `<address>=<key>` in KNOWLEDGE_CIRCUIT_KEYS "
+                "(environment or .env) and you open it with the address alone.")
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
         return f"name must be ascii kebab-case, got {name!r}"
     if _public_address(url):
@@ -1183,7 +1185,8 @@ CIRCUIT_TOOL = {
     "inputSchema": {"type": "object", "required": ["op"], "properties": {
         "op": {"type": "string", "enum": ["open", "list", "close"]},
         "url": {"type": "string", "description": "open: the remote RouteMind's address, e.g. https://kb.example.com"},
-        "token": {"type": "string", "description": "open: the read token its owner gave you"},
+        "token": {"type": "string", "description": "open: the read token its owner gave you — leave it out when the "
+                  "person has put the address in KNOWLEDGE_CIRCUIT_KEYS, so the key stays out of the conversation"},
         "name": {"type": "string",
                  "description": "open: a short name to address it by (ascii kebab-case; defaults to "
                                 "the host). close: which one to close"}}}}
@@ -1481,6 +1484,18 @@ def _end_session(api: Api) -> None:
     if w and not w["ended"]:
         w["ended"] = "the session ended"
         close_walk(api, w["id"], "ended", "the session ended")
+
+
+def _circuit_key_for(url: str) -> str:
+    """The key for a circuit address from KNOWLEDGE_CIRCUIT_KEYS — `address=key` pairs separated by
+    spaces or commas, in the environment or .env. Typed into the conversation, a key ends up in the
+    agent's transcript (docs/CIRCUIT.md); kept here, the agent opens the circuit with the address alone."""
+    def norm(u):
+        return re.sub(r"/(api/knowledge|knowledge)/?$", "", u.strip().rstrip("/")).lower()
+    for pair in re.split(r"[\s,]+", _env_value("KNOWLEDGE_CIRCUIT_KEYS")):
+        addr, _, key = pair.rpartition("=")
+        if addr and key and norm(addr) == norm(url): return key
+    return ""
 
 
 def _env_value(key: str) -> str:
