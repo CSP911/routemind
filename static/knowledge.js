@@ -549,8 +549,11 @@
       badge: enter ? (counts || t("knowledge.relOnly")) : "", shape,
     };
   }
+  // One count per tile: a document is a tile you only read, a node one you can open. A node with text
+  // of its own was counted as both, so "Data files 4 · Nodes 3" sat over four tiles (newcomer QA,
+  // 2026-10-10).
   const noteFor = (tiles) =>
-    `${t("knowledge.files")} ${tiles.filter((x) => canReadShape(x.shape)).length} · ${t("knowledge.nodes")} ${tiles.filter((x) => x.shape !== "host").length}`;
+    `${t("knowledge.files")} ${tiles.filter((x) => x.shape === "host").length} · ${t("knowledge.nodes")} ${tiles.filter((x) => x.shape !== "host").length}`;
 
   const btnW = (a) => (a.icon ? 34 : textWidth(a.label) + 40);
 
@@ -761,7 +764,10 @@
     g.append(label);
     if (shape === "core") {
       const sub = svgEl("text", { x, y: y + 14, class: "kn-dev-sub", "text-anchor": "middle" });
-      sub.textContent = tv("knowledge.counts", { as: state.regions.length, nodes: state.nodes.length });
+      // An area's own face is the area, already counted as an AS — "1 AS · 2 nodes" over one document.
+      const faces = new Set(state.regions.map((r) => r.representative).filter(Boolean));
+      sub.textContent = tv("knowledge.counts", { as: state.regions.length,
+                                                 nodes: state.nodes.filter((n) => !faces.has(n.id)).length });
       g.append(sub);
     }
     if (row.badge) {

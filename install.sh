@@ -186,7 +186,7 @@ mkdir -p data/repo data/overlays data/walks data/harness data/access
 # commits what is there; copied in afterwards it was an uncommitted tree that refused every write.
 if [ -z "$(ls -A data/repo 2>/dev/null)" ]; then
   if [ -z "$EXAMPLE" ] && [ -t 0 ]; then
-    printf '\nStart from the example back office (five areas, 79 documents) instead of an empty map? [Y/n] '
+    printf '\nStart from the example back office (five areas, 74 documents) instead of an empty map? [Y/n] '
     read -r ans || ans=""
     case "$ans" in [nN]*) EXAMPLE=no ;; *) EXAMPLE=yes ;; esac
   fi

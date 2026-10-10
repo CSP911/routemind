@@ -171,7 +171,7 @@ git clone https://github.com/CSP911/routemind.git routemind && cd routemind
 ```
 
 → **http://localhost:9000**. On a first install it asks whether to start from the example back office
-([`examples/back-office`](examples/): five areas, 79 documents) — say yes unless you have data of your
+([`examples/back-office`](examples/): five areas, 74 documents) — say yes unless you have data of your
 own ready. You can run it again safely: an existing `.env` is kept. An optional LLM adds a **✨ Suggest**
 button that drafts a line for you to edit; nothing else depends on it.
 [docs/INSTALL.md](docs/INSTALL.md) · already running one: [docs/UPGRADE.md](docs/UPGRADE.md).
