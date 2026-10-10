@@ -312,6 +312,7 @@ window.IRISI18N_DICTS.ja = {
   "knowledge.type.change": "変更セット",
   "knowledge.change.by": "送信者: {who}",
   "knowledge.change.create": "{parent} の下に「{name}」を作成",
+  "knowledge.change.newArea": "新しい領域 {area} — hop 0 に行が増えます",
   "knowledge.change.move": "{id} を {parent} の下へ移動",
   "knowledge.change.reword": "{id} の {field} を書き直す",
   "knowledge.change.keep": "{id} の {field} はそのまま",

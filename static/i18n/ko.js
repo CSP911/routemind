@@ -313,6 +313,7 @@ window.IRISI18N_DICTS.ko = {
   "knowledge.type.change": "변경 묶음",
   "knowledge.change.by": "보낸 쪽: {who}",
   "knowledge.change.create": "{parent} 아래에 “{name}” 만들기",
+  "knowledge.change.newArea": "새 영역 {area} — hop 0에 새 행이 생깁니다",
   "knowledge.change.move": "{id}을(를) {parent} 아래로 옮기기",
   "knowledge.change.reword": "{id}의 {field} 고쳐 쓰기",
   "knowledge.change.keep": "{id}의 {field}은(는) 그대로 두기",

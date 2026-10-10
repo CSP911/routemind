@@ -313,6 +313,7 @@ window.IRISI18N_DICTS.en = {
   "knowledge.type.change": "Change set",
   "knowledge.change.by": "Sent by {who}",
   "knowledge.change.create": "Create “{name}” under {parent}",
+  "knowledge.change.newArea": "New area {area} — a new row at hop 0",
   "knowledge.change.move": "Move {id} under {parent}",
   "knowledge.change.reword": "Rewrite {id}'s {field}",
   "knowledge.change.keep": "Keep {id}'s {field} as it is",

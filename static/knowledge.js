@@ -2500,7 +2500,8 @@
     const say = (d) => {
       const ref = (x) => (x && String(x).startsWith("$") ? (ids[x] || x) : x) || "";
       switch (d.op) {
-        case "create": return tv("knowledge.change.create", { name: d.name || "", parent: ref(d.parent) || (d.area || "") });
+        case "create": return d.parent ? tv("knowledge.change.create", { name: d.name || "", parent: ref(d.parent) })
+          : tv("knowledge.change.newArea", { area: d.area || d.name || "" });
         case "move": return tv("knowledge.change.move", { id: d.id, parent: ref(d.parent) });
         case "reword": return tv("knowledge.change.reword", { id: d.id, field: d.field });
         case "keep": return tv("knowledge.change.keep", { id: d.id, field: d.field });
@@ -2511,6 +2512,12 @@
     };
     for (const d of set.decisions || []) list.append(el("li", null, say(d)));
     box.append(list);
+    // A new area is the reason the set is here at all — it adds a row to hop 0 — so its sentence is
+    // what the reviewer is asked to approve. The card listed "Create “Expenses” under expenses" and
+    // never showed it (2026-10-10).
+    for (const d of (set.decisions || []).filter((x) => x.op === "create" && !x.parent)) {
+      box.append(beforeAfter({ field: "use_when", before: "", after: d.use_when || "", region: d.area || d.name }));
+    }
     for (const d of (set.decisions || []).filter((x) => x.op === "reword")) {
       const cur = d.field === "use_when" ? (state.regions.find((r) => r.representative === d.id) || {}).use_when
         : (state.nodes.find((n) => n.id === d.id) || {}).desc;

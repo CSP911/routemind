@@ -316,6 +316,7 @@ window.IRISI18N_DICTS.zh = {
   "knowledge.type.change": "变更集",
   "knowledge.change.by": "提交者：{who}",
   "knowledge.change.create": "在 {parent} 下创建“{name}”",
+  "knowledge.change.newArea": "新区域 {area} — hop 0 多出一行",
   "knowledge.change.move": "将 {id} 移到 {parent} 下",
   "knowledge.change.reword": "改写 {id} 的 {field}",
   "knowledge.change.keep": "保留 {id} 的 {field}",
