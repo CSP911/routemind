@@ -89,7 +89,7 @@ Each starts the service itself on a throwaway repository, except where it says o
 | `check/transact-check.py` | — | Invariants 5 and 7: a routing change is a commit, and nothing is reported done that did not happen |
 | `check/follow-check.py` | — | Invariant 3: what a reader holds follows its source |
 | `check/hyphen-check.py` | — | An area whose directory has a hyphen, on every path that used to spell it two ways |
-| `check/footprint-screen.mjs` | 52 | The footprint on the screen — the real `static/knowledge.js`, a stub DOM, a live record. Takes the install's URL |
+| `check/footprint-screen-check.py` | 52 | The footprint on the screen — the real `static/knowledge.js`, a stub DOM, against a fresh service it starts. Not `footprint-screen.mjs` against a live install: that one's map holds every walk of the last six hours |
 | `check/secrets-check.py` | — | Invariant 10: nothing secret-shaped in a tracked file. Run before every push |
 | `check/mcp-routes-check.py` | — | Every path the MCP server calls exists on the web app |
 | `check/circuit-client-check.py` | — | The circuit's client against far ends that misbehave |

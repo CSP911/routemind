@@ -13,6 +13,18 @@ const realSetInterval = globalThis.setInterval, realClearInterval = globalThis.c
 import { readFileSync } from "node:fs";
 import { dict } from "./dict.mjs";
 const BASE = process.argv[2];
+// Meant to run through footprint-screen-check.py, which gives it a fresh service with no walks. Run
+// directly against an install it still closes what it opened — but that install's map shows every
+// walk of the last six hours, so a second direct run there fails on the first run's walks (2026-10-10).
+async function closeMine() {
+  try {
+    const d = await (await realFetch(`${BASE}/api/knowledge/walks?limit=200`)).json();
+    for (const w of d.walks || []) if (w.how === "screen-check" && !w.outcome)
+      await realFetch(`${BASE}/api/knowledge/walks/${w.id}/close`, { method: "POST", headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ outcome: "ended", why: "footprint-screen finished" }) });
+  } catch { /* an install without walks has nothing to close */ }
+}
+await closeMine();
 const src = readFileSync("static/knowledge.js", "utf8");
 const collection = (arr) => { const c = Object.create(null); arr.forEach((x, i) => { c[i] = x; }); c.length = arr.length;
   c[Symbol.iterator] = function* () { yield* arr; }; return c; };
@@ -273,6 +285,7 @@ state.open = [];
 await kn.fpRestore(); await settle();
 check("  and not a walk that ended long ago", state.open.length === 0, String(state.open));
 
+await closeMine();
 console.log(results.join("\n"));
 const n = results.filter((r) => r.startsWith("FAIL")).length;
 console.log(`\n${n} failed of ${results.length}`);
