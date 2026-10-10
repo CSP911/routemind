@@ -217,6 +217,16 @@ Only the **list of areas** may be read as a claim that something does not exist.
 lists what that area holds, and says so at the bottom. An agent told otherwise will answer "there is
 no such thing" from inside one area, having never looked at the other six.
 
+### When the map is wrong
+
+The agent is the only reader who sees a line and the document under it at once, so the server asks
+it to say when they disagree: answer from the document, and name the line. And when a walk leaves one
+area for another, the second area's table opens with a note naming the first — so a hop-0 sentence that
+sent the agent to the wrong place gets reported instead of quietly searched past. Both were measured
+before they were added: with lines made false on purpose, the answers were right and the map's errors
+went unreported ([eval/philosophy/](../eval/philosophy/)). Look for "the line … is wrong" at the end
+of an answer; it is a fix for the map, waiting for whoever keeps it.
+
 ---
 
 ## Paste
