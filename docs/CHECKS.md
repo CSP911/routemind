@@ -73,6 +73,27 @@ number to trust is the one the check itself prints.
 | `check/romanize-check.py` | 38 | A name in another script, as an address — and the names that must not become one |
 | `check/concurrency-check.py` | 5 | Reads happening while writes happen, through HTTP, on one server. Probabilistic by nature — the deterministic half of the same question is in `ontology/check.py` |
 
+### Agents writing, invariants on a live service, and what goes wrong
+
+Each starts the service itself on a throwaway repository, except where it says otherwise.
+
+| | | |
+|---|---|---|
+| `check/place-check.py` | 21 | Placing a document the way an agent does, through the MCP — [CHANGE.md](CHANGE.md) |
+| `check/change-check.py` | 42 | Change sets: one commit or none, the cascade of lines over a change, the queue for hop-0 sentences |
+| `check/b2c-check.py` | 17 | What a non-expert meets on the screen's own flows: names in any script, refusals that say why, the review queue |
+| `check/robust-check.py` | 16 | What an operator meets: a write killed mid-way, SIGTERM, a hand edit, a 200-row table on a large map, a file that does not parse, an area deleted by hand, `reset.sh`, the agent's secret, the area-switch note |
+| `check/drift-check.py` | 17 | A hand-edited repository served while `regions.json` is stale |
+| `check/walk-check.py` | — | Invariant 1 at the agent's door: every walk starts at hop 0 |
+| `check/same-answer-check.py` | — | Invariant 4: every reader of one fact gets the same answer |
+| `check/transact-check.py` | — | Invariants 5 and 7: a routing change is a commit, and nothing is reported done that did not happen |
+| `check/follow-check.py` | — | Invariant 3: what a reader holds follows its source |
+| `check/hyphen-check.py` | — | An area whose directory has a hyphen, on every path that used to spell it two ways |
+| `check/footprint-screen.mjs` | 52 | The footprint on the screen — the real `static/knowledge.js`, a stub DOM, a live record. Takes the install's URL |
+| `check/secrets-check.py` | — | Invariant 10: nothing secret-shaped in a tracked file. Run before every push |
+| `check/mcp-routes-check.py` | — | Every path the MCP server calls exists on the web app |
+| `check/circuit-client-check.py` | — | The circuit's client against far ends that misbehave |
+
 ### The screen, and the shape of the tree
 
 | | | |

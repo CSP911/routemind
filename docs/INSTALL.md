@@ -16,13 +16,11 @@ An empty install is a backbone with no areas: correct, and hard to read.
 `--no-example` no. It has to go in **before** the first boot — that boot is what makes `data/repo` a git
 repository and commits what is there.
 
-Already installed with an empty map, and nothing in it you want to keep? Copy it over and commit it
-yourself, or every write is refused as an uncommitted tree:
+Already installed? The reset replaces the map in one commit and tags the one it replaces, so it can
+be brought back ([DATA-REPO.md](DATA-REPO.md#starting-over)):
 
 ```sh
-cp -r examples/back-office/. data/repo/
-git -C data/repo add -A && git -C data/repo commit -m "start from examples/back-office"
-docker compose restart ontology
+./ontology/reset.sh --example      # or --empty
 ```
 
 ## Without install.sh
@@ -46,7 +44,9 @@ container that never becomes healthy.
 | `./install.sh: Permission denied` | The tree arrived without its exec bits — a zip, or a share that does not carry them | `chmod +x install.sh check/*.sh check/*.py check/*.mjs` |
 | `FATAL: /data/repo is not writable by uid …`, then a restart loop | Docker invented a bind-mount path as root | Remove it, `mkdir` **all five** as above, check `KNOWLEDGE_UID`/`KNOWLEDGE_GID` against `id -u` / `id -g`, start again |
 | `exec /app/entrypoint.sh: no such file or directory`, on a file that is plainly there | CRLF line endings, so the kernel read the shebang as `/bin/sh\r` | Re-clone with `git clone`, which honours the repository's `eol=lf`. In place: `git add --renormalize . && git checkout -- .` |
-| `port is already allocated` | Something else holds 8080 | `./install.sh --port 9000`, or `WEB_PORT=9000` in `.env` and `docker compose up -d`. Claude Code follows: the MCP server reads the port from `.env` |
+| `! port 8080 is already in use by something else` (or Docker's `port is already allocated`) | Something else holds the port | `./install.sh --port <the one it suggests>`, or `WEB_PORT=…` in `.env` and `docker compose up -d`. Claude Code follows: the MCP server reads the port from `.env` |
+| `! another RouteMind is running under the name …` | A checkout elsewhere on this machine has the same compose project name — starting would replace its containers | Give this one its own name: the two `echo … >> .env` lines it prints, then `./install.sh` |
+| `The install is up, and the checks above found something wrong` | One of the install's own checks failed | The full output is in `data/install-checks.log`, and printed above the message |
 | Every write is refused **read-only** | `data/repo` has uncommitted changes | Commit or revert them |
 | A save fails with `git add -A failed: … index.lock` | Something else is running git in `data/repo` — your own shell, an editor's git integration, a second ontology on the same mount | Wait and retry; the service's own polling no longer does this. If it persists, `docker compose logs ontology` and look for a second writer |
 | A change to `static/` or `ontology/` does nothing | Both are `COPY`ed into the image | `docker compose up -d --build` |
