@@ -138,7 +138,7 @@ every run including the failures (`eval/runs/`). Re-running needs an API key —
 | | |
 |---|---|
 | **Evidence** | one synthetic corpus, one domain, model-written or templated questions; no real organisation's data |
-| **Scale** | routing measured at 5 and 30 areas (30 with thin distractor areas); about 1,100 documents. Nothing larger has been tried |
+| **Scale** | agent routing measured at 5 and 30 areas (30 with thin distractor areas) on about 1,100 documents; the service timed at 10,000 documents (reads 0.1–0.2 s, a write 2 s). Agents on a map that large are untested |
 | **Models** | Sonnet- and Opus-class on the stress test; Haiku-class only on the depth and behaviour runs, where folded tables cost it accuracy |
 | **Staleness** | no mechanism decides which version is current. That is said by a person, in a line. Ages from git help someone ask; they do not decide ([docs/AGE.md](docs/AGE.md)) |
 | **Maintenance** | change sets keep the lines over a change in step, but they are days old and unproven in real use. The map has no editor for a multi-step change |
