@@ -803,6 +803,28 @@ WALK_TTL = float(os.environ.get("KNOWLEDGE_WALK_TTL") or 600)
 _walk_n = [0]
 
 
+def second_area_note(w: dict, path: str) -> str:
+    """A line over a second area's table, naming the first.
+
+    Measured 2026-10-10 (eval/philosophy, M3): a hop-0 sentence made false sent both models into the
+    wrong area; they found nothing, went on to the right one, answered correctly — and neither said
+    the sentence was wrong, even with an instruction asking for exactly that. From inside the walk,
+    leaving an area looks like ordinary searching. The server is the one that sees the walk switch,
+    so it says so, at the moment it happens. A question that really spans two areas is ordinary, and
+    the line says that too."""
+    m = re.match(r"^/v1/regions/([^/]+)/?$", path or "")
+    if not m: return ""
+    here = m.group(1)
+    seen = w.setdefault("areas", [])
+    before = [a for a in seen if a != here]
+    if here not in seen: seen.append(here)
+    if not before: return ""
+    return (f"(This walk entered {', '.join(before)} first. If hop 0's sentence for {before[-1]} is what sent you "
+            f"there and that area did not hold the answer, say so in your answer — the sentence is wrong for "
+            f"this question, and the person who keeps the map can fix it. If the question spans both areas, "
+            f"carry on.)\n\n")
+
+
 def open_walk(api: Api, how: str, question: str = "") -> str:
     """A new walk from hop 0. The walk before it is over — here, and on the record, as `abandoned`:
     nothing said it was answered, and the next question started."""
@@ -822,7 +844,8 @@ def open_walk(api: Api, how: str, question: str = "") -> str:
             sys.stderr.write(f"knowledge-mcp: footprint not recorded — {e}\n")
     if not wid:
         _walk_n[0] += 1; wid = f"w{_walk_n[0]}"
-    WALKS[wid] = {"id": wid, "how": how, "opened": time.time(), "ended": None, "calls": 0, "remote": remote}
+    WALKS[wid] = {"id": wid, "how": how, "opened": time.time(), "ended": None, "calls": 0, "remote": remote,
+                  "areas": []}
     CURRENT["walk"] = wid
     return wid
 
@@ -1298,7 +1321,9 @@ class Server:
                 body = circuit_fetch(cname, "/v1/" + tail,
                                      "text/markdown" if doc else "application/json")
                 return (body if doc else circuit_table(cname, body)), False
-            if name == "knowledge_table": return table_for(self.api, path), False
+            if name == "knowledge_table":
+                out = table_for(self.api, path)
+                return second_area_note(w, path) + out, False
             if name == "knowledge_read":  return read_for(self.api, path), False
             if name == "knowledge_overlay" and OPTIONAL["overlay"] and self.overlays():
                 out = overlay_call(self.api, args)

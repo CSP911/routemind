@@ -1,0 +1,77 @@
+{
+ "id": "w3",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "How far in advance do I have to tell HR before my parental leave starts?",
+ "answer": "You need to agree the dates with the HR desk **at least 30 days before the leave starts**.\n\nTo apply:\n1. Agree the dates with the HR desk at least 30 days before the start.\n2. File a draft document, attaching the family relation certificate and the parental leave form.\n3. The approval chain is team lead, then division head, then HR desk.\n4. Once it's confirmed, HR explains the employment-insurance benefit claim. You file that claim yourself, because the company doesn't file it for you.\n\nSeparately, tell the Payroll desk about your health insurance deferral as soon as the leave is agreed, not when it starts. Late filings are corrected retroactively as one large deduction. Ask about this before you go, since the deferral is easier to arrange then.\n\nThe parental leave answer is under Attendance, not Payroll. The Payroll area's line \"how to apply for parental leave\" sent me to the insurance pages first, which only cover the payroll side. That line may be worth rewording so it points to Attendance's Parental leave page.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How far in advance do I have to tell HR before my parental leave starts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "The row \"how to apply for parental leave\" matches the question about notifying HR before parental leave."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/insurance",
+    "why": "Its line covers leave of absence, which is where parental leave notice would sit."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/insurance/body",
+    "why": "The node's own document, which covers leave of absence and may state the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/insurance-rates/body",
+    "why": "Its line says it covers what happens during leave, so it may state a notice period."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Leave booking may be documented under attendance, which could state how far ahead leave must be notified."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "The Parental leave node in attendance covers who is eligible and the order to apply, which should include the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "The node's own document, which should state the notice period for HR."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "The applying-and-returning document, which covers the order to apply in and may give the notice period."
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.0036343800000000004,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

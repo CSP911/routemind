@@ -1,0 +1,98 @@
+{
+ "id": "c4",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "My overseas business trip runs over a weekend. What do the weekend days count as for attendance, and do I still get the daily allowance for them?",
+ "answer": "**Short answer:** The documents say how a weekend trip counts for attendance, but they don't say outright whether the daily allowance is paid for the weekend days. Confirm that with the HR desk and the office & purchasing desk before you file.\n\n**Attendance**\n- A trip over a weekend is not holiday working. It settles as **one day off in lieu**, and you must get it **approved in advance**. It cannot be claimed afterwards.\n- If the trip request isn't approved, those days stay blank in attendance, and blank counts as absence.\n- Each trip day counts as 8 hours worked. Travel time is not added.\n- Confirm the dates in the attendance system **within three days** of returning.\n\n**Daily allowance**\n- The allowance is calculated from confirmed attendance days. A day that is not in attendance pays nothing.\n- Overseas, the allowance is set by region band in USD: Band A (US, Western Europe, Japan) USD 80; Band B (China, South-East Asia, Eastern Europe) USD 60; Band C (elsewhere) USD 50. It is paid without receipts.\n- The departure and arrival days each count as a full day.\n- The exchange rate is the first posted mid-market rate on the departure date. State that rate date on the claim, or it is sent back.\n- The allowance is tax free up to a separate cap. Any amount above the policy rate is taxed on the payslip.\n\n**What's not stated:** The pages don't say whether a weekend day inside the trip earns the daily allowance. The attendance pages suggest it may, since the weekend day is in attendance as a day off in lieu, but nothing says that explicitly. Ask the HR desk (attendance) and the office & purchasing desk (amounts) to confirm before you file.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "My overseas business trip runs over a weekend. What do the weekend days count as for attendance, and do I still get the daily allowance for them?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Weekend days on a business trip affect how attendance is counted, which this area covers under business-trip logging."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The daily allowance for a business trip is covered by the expense area's business-trip pay row."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance",
+    "why": "The attendance row for business trips says it covers what a trip day counts as and a trip over a weekend."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "The daily allowance question depends on what the company pays on an overseas trip."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance",
+    "why": "The row is the business-trip attendance table; I need the document under it on weekend days."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "This is the travel expense table for what the company pays on an overseas trip, which the daily allowance depends on."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance/body",
+    "why": "Its own document on attendance for a business trip, including weekends."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/trip-attendance-rule/body",
+    "why": "The rule for what a trip day counts as, which the weekend question turns on."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "The overseas travel table holds the daily allowance by region band."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "The daily allowance by region band, which the weekend-day allowance question depends on."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "Its own document on overseas travel, to check whether weekend days are paid the allowance."
+   }
+  }
+ ],
+ "turns": 13,
+ "cost_usd": 0.004048960000000001,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

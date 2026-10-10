@@ -1,0 +1,98 @@
+{
+ "id": "c4",
+ "kind": "control",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "My overseas business trip runs over a weekend. What do the weekend days count as for attendance, and do I still get the daily allowance for them?",
+ "answer": "**Attendance:** Weekend days on a trip are not holiday working. The trip settles as **one day off in lieu**, and you have to get that approved **in advance**. It can't be claimed afterwards. Each trip day counts as 8 hours worked, and travel time isn't added on top. The trip only reaches attendance once your trip request is approved. Without an approved request, the days stay blank and record as absence.\n\n**Daily allowance:** The documents don't say outright whether weekend days are paid. They do say how the allowance is worked out:\n- It is calculated from your **confirmed attendance days**. A day that isn't in attendance pays nothing, however many receipts you have for it.\n- Overseas, the departure day and the arrival day each count as a full day, with no half days.\n- The rate depends on the region band, in USD per day: A (US, Western Europe, Japan) is 80, B (China, South-East Asia, Eastern Europe) is 60, and C (elsewhere) is 50.\n\nNothing I found excludes weekend days from the allowance. Once they are in your confirmed attendance as trip days, they appear to be covered like any other trip day. I'd confirm that with the HR desk or the office & purchasing desk before relying on it.\n\n**Steps for your trip:**\n1. Get the trip request approved, with the weekend day-off-in-lieu approved in advance, before you leave.\n2. Confirm the trip dates in the attendance system **within three days of returning**. If you record dates that overlap across time zones, use local time.\n3. Calculate the allowance from the confirmed days, then file the claim. State the exchange-rate date, which is the departure date. A claim without it is sent back.\n\nThe attendance and expense areas gave me different pieces here, so you need both.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "My overseas business trip runs over a weekend. What do the weekend days count as for attendance, and do I still get the daily allowance for them?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Line mentions what to log for business trip days"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Line mentions how much a business trip pays (daily allowance)"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance",
+    "why": "Covers trip over a weekend or holiday"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Overseas daily allowance rules"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance/body",
+    "why": "Weekend trip handling"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/trip-attendance-rule/body",
+    "why": "What trip day counts as"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Overseas daily allowance"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/trip-settlement-handoff",
+    "why": "Where attendance meets expense"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "Overseas allowance rules"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "Allowance by band, weekend treatment"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/trip-handoff/body",
+    "why": "Order from attendance to claim"
+   }
+  }
+ ],
+ "turns": 13,
+ "cost_usd": 0.0655306,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

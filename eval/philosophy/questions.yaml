@@ -66,3 +66,4 @@ questions:
 - {id: w3, kind: wrong-map, mutation: M3, q: "How far in advance do I have to tell HR before my parental leave starts?", expect: "(?i)30 days|thirty days"}
 - {id: w4, kind: wrong-map, mutation: M4, q: "I lost my corporate card. Who do I call first?", expect: "(?i)issuer|card company|bank"}
 - {id: w5, kind: wrong-map, mutation: M5, q: "I joined in September. How many leave days do I get in my first grant?", expect: "\\b5\\b|five"}
+- {id: c4, kind: control, q: "My overseas business trip runs over a weekend. What do the weekend days count as for attendance, and do I still get the daily allowance for them?", expect: "(?i)in lieu", note: "spans attendance and expense on purpose — the second-area note must not make the agent call a sentence wrong here"}

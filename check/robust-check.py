@@ -15,6 +15,7 @@
                 restart; it is now left out, named with its line, and writes wait for the fix
   starting over ontology/reset.sh empties the map or puts the example back in one commit, tagging what
                 was there; before it, starting over was 79 deletes or a hand edit that left it read-only
+  area switch   a walk that leaves one area for another is told so, so a false hop-0 sentence gets reported
   the agent     in token mode the MCP server sent no secret, so an agent could read but not place, and
                 its walks went unrecorded; it sends KNOWLEDGE_TOKEN now
 """
@@ -182,6 +183,18 @@ try:
     out = subprocess.run([sys.executable, "-c", "import sys; sys.path.insert(0, 'mcp'); import knowledge_mcp as M; M.Api(sys.argv[1], 'robust').json('/v1/regions')",
                           f"http://127.0.0.1:{srv.server_address[1]}"], cwd=ROOT, env={**env0, "KNOWLEDGE_TOKEN": "s3cret"}, capture_output=True, text=True)
     check("the MCP server sends KNOWLEDGE_TOKEN as a bearer secret", seen and seen[-1] == "Bearer s3cret", f"{seen} {out.stderr[-200:]}")
+
+    # ── the walk names an area switch ─────────────────────────────────────────
+    # eval/philosophy M3: sent into the wrong area by a false hop-0 sentence, neither model reported it
+    # until the server pointed out the switch. No note on the first area, nor on going back to it.
+    out = subprocess.run([sys.executable, "-c", "import sys, json; sys.path.insert(0, 'mcp'); import knowledge_mcp as M; w = {}; "
+                          "print(json.dumps([M.second_area_note(w, p) for p in ('/v1/regions/payroll', '/v1/nodes/insurance', "
+                          "'/v1/regions/attendance', '/v1/regions/payroll')]))"], cwd=ROOT, env=env0, capture_output=True, text=True)
+    try: notes = json.loads(out.stdout)
+    except Exception: notes = []
+    check("a walk that switches areas is told which area it entered first, once per switch",
+          len(notes) == 4 and notes[0] == "" and notes[1] == "" and "entered payroll first" in notes[2]
+          and "entered attendance first" in notes[3], out.stderr[-200:] or notes)
 finally:
     shutil.rmtree(T, ignore_errors=True)
 

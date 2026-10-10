@@ -111,7 +111,8 @@ a weak model accuracy.
 MCP door, Sonnet and Haiku: every walk started at hop 0 with a reason on every step; every question
 with no answer in the documents was answered "not here", with no invented rule; deliberately false
 lines were answered around by reading the document. But the agents did not *report* the false lines
-until one instruction asked them to (1/4 → 4/4), and a false hop-0 sentence is still never reported.
+until one instruction asked them to (1/4 → 4/4), nor a false hop-0 sentence until the server pointed out
+that the walk had switched areas (0/2 → 2/2).
 Twelve questions, one run each — read it as "did not fail", not as a rate.
 
 Everything is in the repository: the corpus generator (`bench/`), the gold sets (`eval/gold/`), and

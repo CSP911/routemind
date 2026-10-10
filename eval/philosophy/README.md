@@ -20,7 +20,7 @@ Use an install of `examples/back-office` of its own: the wrong-map half commits 
 into its data repository and reverts them when it is done. Questions and falsehoods are in
 [questions.yaml](questions.yaml).
 
-## Result, 2026-10-10 — 12 questions × 2 models (Claude Code's `sonnet` and `haiku`)
+## Result, 2026-10-10 — 12 questions × 2 models (c4 was added with the second-area note, below) (Claude Code's `sonnet` and `haiku`)
 
 | | sonnet | haiku |
 |---|---|---|
@@ -67,8 +67,17 @@ is wrong.* Re-run (`2026-10-10-philosophy-flag/`):
 | a wrong document line (M4, M5) | 1/4 | **4/4** — e.g. "Map issue for whoever maintains RouteMind: the proration table is listed under 'Returning from parental leave'…" |
 | a wrong hop-0 sentence (M3) | 0/2 | **0/2** |
 
-The hop-0 case is the one that matters most, and it is still silent: an agent that walked into the
-wrong area, found nothing and moved on does not report the sentence that sent it there. Not fixed.
+The hop-0 case stayed silent under the instruction: from inside a walk, leaving an area that held
+nothing looks like ordinary searching. The server is what sees the walk switch areas, so since this run
+it says so over the second area's table — *"This walk entered payroll first. If hop 0's sentence for
+payroll is what sent you there and that area did not hold the answer, say so … If the question spans
+both areas, carry on."* Re-run (`2026-10-10-philosophy-note/`), with a question that spans two areas on
+purpose (c4) to see whether the note makes the agent blame a sentence that is fine:
+
+| | before the note | with it |
+|---|---|---|
+| a wrong hop-0 sentence reported (M3) | 0/2 | **2/2** — "The payroll line sent me to the wrong place first, so whoever keeps the map may want to fix it." |
+| a sentence blamed on a question that genuinely spans two areas (c4) | — | **0/2** — both answered from both areas and blamed nothing |
 
 ## What this does not show
 
