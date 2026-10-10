@@ -1,0 +1,77 @@
+{
+ "id": "s5",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Who issues a new corporate card to an employee?",
+ "answer": "I couldn't find who issues a new corporate card. The knowledge base doesn't say.\n\n- **Expense area:** The corporate card pages cover what the card can be used for, its limits, and what to do if it's lost. None of them names who issues a first card to an employee.\n- **Reissue after a loss:** Reissue takes 3–5 working days. You tell the office & purchasing desk (ext. 2210) after you've stopped the card with the card issuer. The pages don't say who orders the replacement.\n- **Onboarding area:** The equipment and accounts page is a generic stub. It doesn't mention the card.\n\nThe office & purchasing desk (ext. 2210) is probably the right place to ask, since it handles card loss. That's my inference, not something the documents state.\n\nThe expense area's description (\"whether the corporate card may be used here…\") doesn't point to card issuance. Whoever maintains the map may want to add a page for it.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who issues a new corporate card to an employee?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Corporate card questions are under expense"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Corporate card documents"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Check who issues cards"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Reissue after loss may name issuer"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "May name who reissues"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "May name who reissues"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/onboarding",
+    "why": "New joiner equipment may include who issues the corporate card"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/onboarding-setup/body",
+    "why": "Check whether corporate card issuance is listed"
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.054454100000000005,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

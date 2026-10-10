@@ -1,0 +1,77 @@
+{
+ "id": "s2",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Who keeps the signed original of a supplier contract, and for how long?",
+ "answer": "**Who keeps it:** The records room, which the office desk (records desk) runs, holds the signed original. A supplier contract is signed in two originals. One goes to the records room, and the team that signed it keeps neither. The scan goes into the groupware document store under `contracts/<year>/<vendor>`. The original is filed and the scan uploaded on the same day.\n\n**For how long:** 10 years. This comes from the Commercial Act.\n- **When the clock starts:** The 10 years run from the end of the contract, not from the signing date. For example, a contract that ends in 2025 is kept until 2035.\n- **Early destruction:** Don't destroy it when the contract ends if retention still has time to run.\n- **Litigation or audit:** Anything under litigation or audit is not destroyed, even after its period has run.\n- **Destruction process:** Each January the records desk lists what has passed retention. The owning team checks the list, then the items are entered in the destruction log and shredded.\n\n**Other points:**\n- An electronic contract has no original. Keep the PDF together with the signing certificate.\n- Borrowing an original is logged with the records desk, and originals don't leave the building. If an outside party needs to see one, send the scan.\n\nThe Procurement area only said the original goes to the records room \"for as long as retention says\". The 10-year figure is in the Approval area's retention schedule.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who keeps the signed original of a supplier contract, and for how long?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Row says where the signed contract is kept"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/contract-custody",
+    "why": "Covers who keeps signed original and how long"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/custody-rule/body",
+    "why": "Rule on who keeps the original and until when"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/contract-custody/body",
+    "why": "Node's own document"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Retention schedule for contracts lives here"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "Retention period for contracts"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "Retention years per document type"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention/body",
+    "why": "Context on how retention is counted"
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.0479613,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

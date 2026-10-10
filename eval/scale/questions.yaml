@@ -1,0 +1,13 @@
+# Each question's answer is in one of the five real areas (`area`). Several are worded to pull toward
+# a distractor next door (`lure`). Scored on the first area a walk enters, and on the answer.
+questions:
+- {id: s1, area: expense, lure: it-helpdesk, q: "My laptop bag was stolen with my corporate card inside. What do I do about the card first?", expect: "(?i)issuer|stop"}
+- {id: s2, area: procurement, lure: legal, q: "Who keeps the signed original of a supplier contract, and for how long?", expect: "(?i)\\d+ years|year"}
+- {id: s3, area: attendance, lure: people-benefits, q: "How far in advance do I have to tell HR before my parental leave starts?", expect: "(?i)30 days|thirty days"}
+- {id: s4, area: expense, lure: travel-desk, q: "What is the daily allowance for a business trip to Japan?", expect: "(?i)USD ?80|\\$ ?80|80 USD"}
+- {id: s5, area: procurement, lure: facilities, q: "Who issues a new corporate card to an employee?", expect: "(?i)office (&|and) purchasing|purchasing desk"}
+- {id: s6, area: payroll, lure: compensation, q: "Which allowances on my payslip are tax free, and up to how much?", expect: "(?i)meal|car"}
+- {id: s7, area: approval, lure: legal, q: "What can a division head approve without going to the CEO?", expect: "(?i)division head|KRW|\\d"}
+- {id: s8, area: expense, lure: customer-support, q: "Above what amount do I need qualifying evidence for a client dinner?", expect: "30,000"}
+- {id: s9, area: attendance, lure: engineering-oncall, q: "What do the hours of a business-trip day count as for attendance?", expect: "(?i)work|hours|day"}
+- {id: s10, area: approval, lure: quality, q: "How many years do we keep tax invoices and the accounting books before destroying them?", expect: "(?i)5 years|five years"}

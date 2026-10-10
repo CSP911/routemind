@@ -1,0 +1,56 @@
+{
+ "id": "k2",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "일본 출장 가면 일비가 하루에 얼마예요?",
+ "answer": "일본은 해외 출장 일비 **A지역(미국, 서유럽, 일본)** 기준으로 **하루 USD 80**입니다. 숙박비 상한은 하루 USD 250입니다.\n\n- **환율:** 출발일에 고시된 첫 시장 중간환율을 씁니다. 정산일 환율이 아닙니다. 청구서에 환율 기준일을 적어야 하며, 빠지면 반려됩니다.\n- **출발일과 도착일:** 각각 하루로 셉니다. 야간 비행이어도 반나절은 없습니다.\n- **세금:** 정책 기준 이내의 일비는 비과세입니다. 다만 일비에도 별도의 비과세 한도가 있다고 되어 있는데, 이 금액은 제가 확인하지 못했습니다. 정확한 한도는 연말정산/급여 쪽 비과세 항목 문서를 확인하시는 것이 좋습니다.\n\n참고로 RouteMind의 `travel-overseas` 문서 본문에는 일본이 따로 나와 있지 않고, 지역 구간표 문서(`overseas-rates`)에서 일본이 A구간으로 분류되어 있습니다. 두 문서가 같은 내용이라 문제는 없어 보입니다.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "일본 출장 가면 일비가 하루에 얼마예요?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "출장 일비 금액을 묻는 질문이라 \"how much a business trip pays\" 행에 해당합니다."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "출장 시 회사가 지급하는 항목과 해외 출장 차이를 다루는 행이라 일비 금액이 있을 것 같습니다."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "해외 출장의 일비(일일 수당)가 지역 구분별로 나와 있는 행이라 일본이 어느 구간인지 확인합니다."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "해외 출장 일비 금액과 지역 구간 기준을 확인하기 위해 본문을 읽습니다."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "지역 구간별 일비와 적용 환율을 담은 전용 문서라 일본이 어느 구간인지 확인합니다."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.00231793,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

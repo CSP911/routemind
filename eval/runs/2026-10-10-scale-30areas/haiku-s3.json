@@ -1,0 +1,49 @@
+{
+ "id": "s3",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How far in advance do I have to tell HR before my parental leave starts?",
+ "answer": "You need to agree the dates with the HR desk **at least 30 days before the leave starts**.\n\nThe 30 days exists so your team can be covered. Once the dates are agreed, the leave is an entitlement, so HR can't refuse it. The steps are:\n\n1. Agree the dates with the HR desk at least 30 days ahead.\n2. File a draft document with the family relation certificate and the parental leave form. It goes team lead → division head → HR desk.\n3. After confirmation, HR explains the employment-insurance benefit. You claim it yourself; the company doesn't file it for you.\n\nBefore you go, ask the Payroll desk about deferring health insurance payments, since that's easier to arrange before leave than after.\n\nWhen you come back, confirm your return date two weeks in advance. Not confirming isn't treated as resigning, but it can delay your placement.\n\nSources: RouteMind parental leave documents (`/v1/nodes/childcare-leave/body` and `/v1/nodes/childcare-apply/body`). Both state the 30-day rule. Eligibility is a child aged 8 or under (or in the second year of primary school or below) and 6 months of service.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How far in advance do I have to tell HR before my parental leave starts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The attendance row lists \"how to apply for parental leave\", which matches the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "The \"Parental leave\" row says it covers who is eligible and the order to apply in, which should include the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "Its own document on parental leave, which should state the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "The applying document, which covers the order to apply in and may state the notice period."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.00229341,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

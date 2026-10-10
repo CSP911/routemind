@@ -1,0 +1,56 @@
+{
+ "id": "k2",
+ "kind": "control",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "일본 출장 가면 일비가 하루에 얼마예요?",
+ "answer": "규정 문서를 찾아서 확인했습니다. 결과는 아래와 같습니다.\n\n일본은 **A군(미국, 서유럽, 일본)**에 속해서 일비는 **하루 USD 80**입니다. 숙박비 한도는 하루 USD 250입니다.\n\n- **일수 계산**: 출발일과 도착일을 각각 하루로 계산합니다. 야간 비행이어도 반일 계산은 없습니다.\n- **영수증**: 일비는 영수증 없이 지급됩니다.\n- **환율**: 정산일 환율이 아니라 **출발일에 처음 고시된 매매기준율**을 씁니다. 청구서에 환율 기준일을 적지 않으면 반려됩니다.\n- **세금**: 정책 기준 금액 안에서 지급되면 비과세입니다. 예외 승인으로 기준을 넘긴 금액만 급여명세서에서 과세됩니다.\n- **현금 사용**: 현지에서 현금으로 30,000원 상당을 넘게 쓰면 적격 증빙이 필요합니다. 해외 간이영수증은 보통 인정되지 않으니, 현금 지출은 일비 한도 안에서 쓰는 편이 안전합니다.\n\n출처는 \"Overseas allowance and exchange rate\" 문서와 \"Overseas travel\" 문서입니다.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "일본 출장 가면 일비가 하루에 얼마예요?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Business trip per diem question falls under expense"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Overseas travel expense rules, per diem for Japan"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Daily allowance by region band for overseas trips"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "Daily allowance by region band"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "Overseas travel rules, may define band for Japan"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0376132,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

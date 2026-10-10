@@ -1,0 +1,49 @@
+{
+ "id": "s9",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "What do the hours of a business-trip day count as for attendance?",
+ "answer": "A business-trip day counts as **8 hours worked**. Travelling time isn't added on top of that.\n\nSome related rules from the same pages:\n- **Approval:** Trip days only reach attendance once the trip request is approved. Without approval, those days stay blank and record as absence.\n- **Weekend or public holiday trips:** These don't count as holiday working. They settle as one day off in lieu, and you have to get that approved in advance.\n- **Overseas trips:** The departure day and the arrival day each count as a day. If time zones make the dates overlap, record them in local time.\n- **After you return:** Confirm the dates in the attendance system within three days. The daily allowance is calculated from confirmed attendance days, so confirm before you file the expense claim.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What do the hours of a business-trip day count as for attendance?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Row mentions what to log for business trip days"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance",
+    "why": "Directly covers what trip-day hours count as"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/trip-attendance-rule/body",
+    "why": "Rule on what trip-day hours count as"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance/body",
+    "why": "Node's own document, may add weekend/holiday detail"
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.030075,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

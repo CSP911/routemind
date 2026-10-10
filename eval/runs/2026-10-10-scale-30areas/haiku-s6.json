@@ -1,0 +1,56 @@
+{
+ "id": "s6",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Which allowances on my payslip are tax free, and up to how much?",
+ "answer": "Five allowances are tax free under the company's rules. Amounts are in KRW:\n\n| Allowance | Tax-free cap | Condition |\n|---|---|---|\n| Meals | 200,000 a month | Only where meals in kind are not also provided |\n| Own-car use | 200,000 a month | Your own vehicle, used for work, and not alongside a per-kilometre claim for the same vehicle |\n| Trip daily allowance | Reasonable actual cost | Within the policy rates (20,000 domestic; USD 50–80 overseas). The excess is taxed |\n| Childcare | 200,000 a month | Child aged 6 or under. It stops automatically in the year the child turns 7 |\n| Research | 200,000 a month | Qualifying roles only |\n\nSome points that often cause surprises:\n\n- **Going over a cap taxes only the excess.** A 250,000 meal allowance taxes 50,000, not the whole line.\n- **A failed condition makes the whole line taxable,** not just the part over the cap.\n- **A trip allowance is taxable if no attendance was confirmed for that day.** Without attendance it counts as pay.\n- **Claiming a meal receipt for a day you also drew the trip allowance** double counts meals, and that amount is moved back into taxable pay.\n\nI can't see your payslip, so I can't say which of these lines appear on it. If you send me the line names, I can match them to this list.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Which allowances on my payslip are tax free, and up to how much?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Payroll row covers whether an allowance is tax free, which is the question asked."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip node explains what each payment line is, which should cover the allowance lines and their tax status."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "Tax-free allowances node lists the allowances that are not taxed and the cap on each, which is what the question asks."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "This is the table of tax-free allowances and their caps, the direct answer to the question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "The overview document may explain conditions or exceptions to the caps in the table."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0026692400000000007,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

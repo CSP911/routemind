@@ -1,0 +1,42 @@
+{
+ "id": "s10",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How many years do we keep tax invoices and the accounting books before destroying them?",
+ "answer": "Tax invoices and accounting books are kept for **5 years**, under the Framework Act on National Taxes.\n\nThe clock starts at the end of the business period (contract end or fiscal year end), not the date the document was written. Anything under litigation or audit is not destroyed even after its period has run. Destruction happens in January: the records desk lists what has passed retention, the owning team checks it, and it is then entered in the destruction log and shredded.\n\nSource: RouteMind, Document retention table (`/v1/nodes/retention-table/body`).",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How many years do we keep tax invoices and the accounting books before destroying them?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Its row lists \"how many years this is kept\", the closest match to the retention question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "Document retention row: how many years each kind of document is kept and when it is destroyed."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "Retention period by document: the table giving how long tax invoices and accounting books are kept."
+   }
+  }
+ ],
+ "turns": 5,
+ "cost_usd": 0.00203236,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

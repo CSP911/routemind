@@ -1,0 +1,56 @@
+{
+ "id": "s6",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Which allowances on my payslip are tax free, and up to how much?",
+ "answer": "Five allowances on your payslip can be tax free. Each has a cap, and the business trip allowance has no fixed cap.\n\n| Allowance | Tax-free cap | Condition |\n|---|---|---|\n| Meals | 200,000 KRW a month | Only where meals in kind (e.g. a canteen) are not also provided |\n| Own-car use | 200,000 KRW a month | Your own vehicle, used for work, and not alongside a per-kilometre claim for the same vehicle |\n| Business trip daily allowance | \"Reasonable actual cost\" (no fixed cap) | Within the policy rates (20,000 KRW domestic, USD 50–80 overseas) and only for days your attendance is confirmed |\n| Childcare allowance | 200,000 KRW a month | Child aged 6 or under; it stops automatically in the year the child turns 7 |\n| Research allowance | 200,000 KRW a month | Qualifying roles only |\n\nSome points that often cause surprises:\n\n- **Going over a cap only taxes the excess.** A 250,000 KRW meal allowance taxes 50,000 KRW, not the whole amount.\n- **Failing a condition makes the whole line taxable,** not just the part over the cap.\n- **Trip allowance on an unconfirmed day is taxable pay.** If you also claim a meal receipt on a day you drew the trip allowance, that amount is moved back into taxable pay as double counting.\n\nI took these from RouteMind's \"Tax-free allowances and their caps\" and \"Tax-free allowances\" documents. Both agree. I did not check your own payslip, so if a line looks wrong, the payroll desk can confirm how it was classified.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Which allowances on my payslip are tax free, and up to how much?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Payroll row matches \"whether an allowance is tax free\" for the payslip question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip node describes each payment line, which should cover which allowances are tax free."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "The tax-free allowances table lists each allowance and its cap, which answers the question directly."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "This document lists the tax-free allowances and their caps, the direct answer to the question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "The parent document may explain the rules behind the caps; checking it alongside the table."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0022480900000000003,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

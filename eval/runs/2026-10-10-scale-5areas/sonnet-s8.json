@@ -1,0 +1,70 @@
+{
+ "id": "s8",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Above what amount do I need qualifying evidence for a client dinner?",
+ "answer": "I've found the rule in the expense policy, so here is the answer.\n\n**The threshold is 30,000 KRW.**\n\n- **Up to 30,000 KRW:** a simple receipt is enough.\n- **Over 30,000 KRW:** you need qualifying evidence. For a client dinner (entertainment), you also need the **attendee list**.\n\n**What counts as qualifying evidence:**\n- a tax invoice or invoice\n- a credit card slip, corporate or personal\n- a cash receipt issued for business expense\n\n**What doesn't count:**\n- a simple or handwritten receipt\n- a statement of account\n- a deposit slip\n- a bank transfer record\n\n**Watch the cash receipt.** It must be issued against the company registration number. Say \"사업자 지출증빙\" and give the company number before they ring it up. A receipt taken against a mobile number becomes a personal deduction and can't be fixed afterwards. It's the most common reason claims are rejected.\n\n**If you lack qualifying evidence:** the company pays a 2% penalty on the amount, not you, which is why the claim gets refused. If you have nothing and the amount is small, roughly up to 100,000 KRW, a disbursement form is possible at the division head's discretion. If you paid by card, the slip on your statement counts as evidence even if the paper receipt is lost.\n\nI didn't find a separate entertainment spending cap in these pages. The corporate card limits page (`/v1/nodes/card-limit`) may have caps if you need them.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Above what amount do I need qualifying evidence for a client dinner?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Entertainment/client dinner evidence threshold is an expense question"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/evidence",
+    "why": "Evidence requirements for spends"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Entertainment caps may be here"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence",
+    "why": "Ceiling on simple receipt / qualifying evidence"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/evidence/body",
+    "why": "Evidence overview document"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-list/body",
+    "why": "Check amounts per kind, possibly entertainment-specific"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence/body",
+    "why": "Qualifying evidence document"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0442782,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

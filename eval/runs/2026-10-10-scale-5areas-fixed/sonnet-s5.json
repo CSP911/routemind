@@ -1,0 +1,49 @@
+{
+ "id": "s5",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Who issues a new corporate card to an employee?",
+ "answer": "The Office & purchasing desk (the GA desk) issues new corporate cards. It also stops and reissues cards, and it decides temporary limit raises.\n\nYou can reach it at ext. 2210 or through the shared \"Office\" groupware account.\n\nIf a card is lost, stop it with the card issuer first. Then tell the desk.\n\nThe pages I read don't describe the application steps or say what you need to submit. The desk is where to ask about those.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who issues a new corporate card to an employee?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Row mentions getting a corporate card issued or cancelled"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/ga-desk",
+    "why": "Desk that issues and cancels corporate cards"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/ga-desk/body",
+    "why": "Main document of the desk"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/ga-contact/body",
+    "why": "Scope and cut-offs for card issuance"
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.050375500000000004,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

@@ -1,0 +1,49 @@
+{
+ "id": "k3",
+ "kind": "control",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "육아휴직 시작하기 며칠 전까지 인사팀에 알려야 해요?",
+ "answer": "**시작일 최소 30일 전**까지 인사팀(HR desk)과 날짜를 협의해야 합니다.\n\n- 30일 전 규정은 팀이 업무 공백을 메울 수 있게 하려는 것이지, 휴직을 거절하려는 게 아닙니다. 휴직은 신청하면 받는 권리이고, 날짜만 협의합니다.\n- 협의가 끝나면 기안 문서를 올립니다. 가족관계증명서와 육아휴직 신청서를 첨부하고, 결재는 팀장 → 본부장 → 인사팀 순서입니다.\n- 휴직을 연장할 때도 같은 30일 전 규정이 적용됩니다.\n- 복귀할 때는 복귀 2주 전까지 복귀 의사를 확인해 줘야 합니다.\n\n참고로 휴직 중에는 급여가 나오지 않습니다. 고용보험 급여는 직접 청구해야 하고, 회사가 대신 신청해 주지 않습니다.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "육아휴직 시작하기 며칠 전까지 인사팀에 알려야 해요?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Line mentions how to apply for parental leave"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "Parental leave: order to apply"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "Application order and notice period"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "Parental leave own document, may state notice period"
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.0312466,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

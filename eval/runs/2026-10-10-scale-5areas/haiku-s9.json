@@ -1,0 +1,49 @@
+{
+ "id": "s9",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "What do the hours of a business-trip day count as for attendance?",
+ "answer": "A trip day counts as **8 hours worked**, and travelling time is not added on top of that.\n\nTwo related points from the same page: the trip only reaches attendance after the trip request is approved, and a trip taken without approval leaves those days blank, which records as absence.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What do the hours of a business-trip day count as for attendance?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The attendance row lists \"what to log for the days of a business trip\", which matches the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance",
+    "why": "The row \"Attendance on a business trip\" says it covers what the hours of a trip day count as."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/trip-attendance-rule/body",
+    "why": "This document is the one whose line says it defines what a trip day counts as."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance/body",
+    "why": "The node's own document may also cover the trip-day hours and weekend or holiday handling."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.0017128300000000003,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

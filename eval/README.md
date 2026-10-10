@@ -48,6 +48,7 @@ strangely the question is worded. A corpus built on that principle measures **hi
 | Routing on it | **run** (2026-09-20 census) — 700 questions × 2 arms on the frozen corpus, 699/700 each; `eval/runs/2026-09-20-census.json`. The README's table is this run |
 | Failure attribution | **done** (2026-10-10, issue #2) — `bench/attribution.py` reads which areas each walk entered: the one miss per arm is lost at the area (`t-overtime-08`, walked into payroll from a false relocation line), none inside it. It also recomputes the numbers quoted on issue #2 and fails if the files stop saying them; `eval/runs/2026-10-10-attribution.json` |
 | Behaviour claims | **run** (2026-10-10) — `eval/philosophy/`: hop 0 first and a `why` on every step 24/24; absent questions answered "not here" with no invented rule 8/8; false lines answered around 10/10 — but the map's errors went unreported until one instruction asked (1/4 → 4/4), and a false hop-0 sentence went unreported until the server named the area switch (0/2 → 2/2) |
+| Scale | **run** (2026-10-10) — `eval/scale/`: 5 vs 30 areas, confusable neighbours, 10 questions × 2 models: first-area choice unchanged, no lure taken; the one wrong answer was a false absence caused by a hop-0 sentence missing a topic (fixed in the example). Korean questions on the English map: 8/8 |
 
 ## Before anything runs
 

@@ -1,0 +1,56 @@
+{
+ "id": "s1",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "My laptop bag was stolen with my corporate card inside. What do I do about the card first?",
+ "answer": "**Stop the card first, before telling anyone at work.** Call the card issuer and have the card blocked. The issuer's liability process for fraudulent charges is measured from the moment the card is stopped, so each minute before that is exposure for the company.\n\nAfter that, the steps are:\n\n1. **Tell the office & purchasing desk at ext. 2210.**\n2. **File a statement of the circumstances as a draft.** A replacement card takes 3–5 working days.\n3. **Fraudulent charges made before the stop** go through the issuer's liability process. The company does not cover them up front.\n4. **Spending you can't avoid while the card is stopped** goes on a personal card. Claim it on a disbursement form and keep the receipts as you normally would.\n\nTell the desk what else was in the bag. The laptop and any access cards have their own procedures and different desks. I haven't read those procedures. The IT helpdesk area covers a stolen laptop, and the facilities area covers access cards.\n\nSeparately, if you later see a charge you don't recognise, raise it within 7 days of the statement. After that it is treated as your own spending.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "My laptop bag was stolen with my corporate card inside. What do I do about the card first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Corporate card was stolen with the laptop bag; the expense row covers \"the card was lost\"."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Corporate card row covers what to do when the card is lost or misused."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Lost card and misuse row: the in-order steps when the card is lost."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "The in-order steps for a lost card, which is what the user asked about."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "Full lost-card and misuse document, to check against the ordered steps."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0040205300000000005,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

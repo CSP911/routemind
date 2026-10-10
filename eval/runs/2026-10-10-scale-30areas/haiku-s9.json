@@ -1,0 +1,49 @@
+{
+ "id": "s9",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "What do the hours of a business-trip day count as for attendance?",
+ "answer": "A business-trip day counts as **8 hours worked**. Travelling time is not added on top of that.\n\nRelated conditions from the same RouteMind pages:\n- Attendance only counts once the trip request is approved. A trip taken without an approved request leaves those days blank, and blank is recorded as absence.\n- A trip over a weekend or public holiday settles as one day off in lieu, which must be approved in advance.\n- For an overseas trip, the departure day and the arrival day each count as a day. If time zones make the dates overlap, record them in local time.\n\nSources: `/v1/nodes/trip-attendance-rule/body` and `/v1/nodes/biz-trip-attendance/body`. The second page also says the daily allowance is calculated from confirmed attendance days, and dates should be confirmed in the attendance system within three days of returning.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What do the hours of a business-trip day count as for attendance?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The attendance row lists logging what to record for business-trip days, which matches the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance",
+    "why": "Its line says it covers what the hours of a trip day count as, which is the question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/trip-attendance-rule/body",
+    "why": "It is the document titled \"What a trip day counts as\", the direct answer to the question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/biz-trip-attendance/body",
+    "why": "It is the node's own document on attendance during a business trip, which may cover the same hours rule and the weekend or holiday case."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.0022312100000000004,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

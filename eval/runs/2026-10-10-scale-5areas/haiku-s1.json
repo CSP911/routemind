@@ -1,0 +1,56 @@
+{
+ "id": "s1",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "My laptop bag was stolen with my corporate card inside. What do I do about the card first?",
+ "answer": "**Call the card issuer first and have the card stopped.** Do this before you tell anyone at the company. The issuer's liability process for fraudulent charges is measured from the moment the card is stopped, so each minute before that is exposure for the company.\n\nThen:\n\n1. **Tell the office & purchasing desk (ext. 2210)** that the card is lost.\n2. **File a statement of the circumstances as a draft.**\n3. **Expect a replacement in 3–5 working days.**\n\nCharges made before the stop go through the issuer's liability process. The company does not cover them up front.\n\nWhile the card is stopped, any spending you can't avoid goes on a personal card. Keep the receipts and claim the amount on a disbursement form.\n\nThe bag also held other things, so tell the desk what else was in it. Access cards and laptops have their own procedures and different desks.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "My laptop bag was stolen with my corporate card inside. What do I do about the card first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The expense row says \"the card was lost\", which matches a corporate card stolen with a bag."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The corp-card row covers the card caps and what to do when it is lost or misused."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "The card-loss row is \"Lost card and misuse — what to do, in order, when the card is lost\"."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "This is the ordered steps document for a lost card or a charge that is not yours."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "The parent document may hold the full rules behind the ordered steps."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.00261377,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

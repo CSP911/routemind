@@ -1,0 +1,70 @@
+{
+ "id": "s2",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Who keeps the signed original of a supplier contract, and for how long?",
+ "answer": "**Who keeps it:** The records room, which the office desk runs. A supplier contract is signed in two originals. One goes to the records room, and the team that signed it keeps neither. The scan is uploaded to the groupware document store under `contracts/<year>/<vendor>`. The original is filed and the scan uploaded on the same day.\n\n**For how long:** 10 years, under the Commercial Act. The clock starts when the contract ends, not when it was signed. A contract that ended in 2025 is kept until 2035. Don't destroy it when the contract ends if retention still has time to run.\n\n- **Litigation or audit:** Anything under litigation or audit is not destroyed, even after its 10 years are up.\n- **Electronic contracts:** There is no original. Keep the PDF together with the signing certificate.\n- **Borrowing an original:** Log it with the records desk. Originals never leave the building. If an outsider needs to see the contract, send the scan.\n\nThe retention table lists \"Contracts\" as a single category at 10 years. It has no separate line for supplier contracts, so I've applied the general figure.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who keeps the signed original of a supplier contract, and for how long?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Line says where the signed contract is kept"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/contract-custody",
+    "why": "Who keeps signed original and how long"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/custody-rule/body",
+    "why": "The rule itself"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/contract-custody/body",
+    "why": "Node's own document"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Document retention schedule: years kept"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "Retention years for supplier contracts"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "Retention period per document type"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.05105389999999999,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

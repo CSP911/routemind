@@ -1,0 +1,49 @@
+{
+ "id": "s10",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How many years do we keep tax invoices and the accounting books before destroying them?",
+ "answer": "Tax invoices and accounting books are kept for **5 years**, under the Framework Act on National Taxes. That is a legal period, so the company can't shorten it.\n\n- **When the clock starts:** at the close of the fiscal year the invoice or book belongs to, not on the date it was written. Counting from the written date is the most common error, and it destroys records early.\n- **Before destruction:** each January the records desk lists what has passed its period, and the owning team checks the list. Anything under audit or litigation is kept even after its period has run.\n\nSource: the retention table (`/v1/nodes/retention-table/body`) and the retention document (`/v1/nodes/retention/body`). Both agree.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How many years do we keep tax invoices and the accounting books before destroying them?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Its row lists \"how many years this is kept\", which matches the retention question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "The row \"Document retention — How many years each kind of document is kept, and when it is destroyed\" matches the question directly."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "The retention-by-document table should state the period for tax invoices and accounting books."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention/body",
+    "why": "Its own document may hold the general rule or exceptions for tax invoices and accounting books."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.0018395700000000002,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

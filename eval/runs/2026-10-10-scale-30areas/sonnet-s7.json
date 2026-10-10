@@ -1,0 +1,56 @@
+{
+ "id": "s7",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "What can a division head approve without going to the CEO?",
+ "answer": "I've found the delegated-authority documents, so here is the answer.\n\n**A division head can approve, without going to the CEO:**\n- Spend **under 3,000,000 KRW**\n- **Domestic business trips**\n- **Over-cap expenses**\n- Use of the **company seal**\n\n**What still goes to the CEO:**\n- Spend of 3,000,000 KRW and over\n- Signing contracts (any size, because subject beats amount)\n- Hiring and dismissal\n- The corporate seal\n- Overseas trips\n\n**Rules for reading the bands:**\n- **VAT:** Amounts are net of VAT.\n- **Splitting:** You can't split a purchase to land in a lower band. Orders to the same vendor for the same item within three months are added together.\n- **Annual agreements:** These are banded on the annual total, not the monthly instalment.\n- **Absence:** If the division head is away, their standing deputy approves at the same level. It doesn't move up to the CEO.\n- **Skipping delegation:** Sending upward something that is delegated breaks the rule as much as approving beyond your authority does.\n- **Urgent items:** These can go ahead on verbal approval. You must file them as a draft within three days, or the cost becomes personal.\n\nThe source documents list both the \"company seal\" (division head) and the \"corporate seal\" (CEO) without saying how they differ. If you need to know which seal a particular document requires, ask the records desk before filing.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Approval authority limits for division head vs CEO"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-line",
+    "why": "Likely holds approval authority levels"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/delegated-approval",
+    "why": "Directly covers division head delegated authority"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegation-scope/body",
+    "why": "Scope by authority document"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegated-approval/body",
+    "why": "Node's own document"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0432462,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

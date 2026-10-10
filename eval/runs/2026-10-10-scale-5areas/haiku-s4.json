@@ -1,0 +1,56 @@
+{
+ "id": "s4",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "Japan is in **Band A** (with the US and Western Europe), so the daily allowance is **USD 80** per day, with a lodging cap of **USD 250**.\n\n- **Day counting:** the departure and arrival days each count as a full day, with no half day at either end.\n- **Exchange rate:** use the first posted mid-market rate on the departure day, not the settlement day. State the rate date on the claim, or it is sent back.\n- **Tax:** the allowance is tax free at policy rates. Any amount above the policy rate is taxed on the payslip. A separate cap limits how much of the allowance can be paid tax free, and I did not open that document, so check the tax-free allowances page if your amount is near the limit.\n\nSources: the overseas rates document (`/v1/nodes/overseas-rates/body`) and the overseas travel page (`/v1/nodes/travel-overseas/body`). Both agree on the rules above.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The expense row says it covers how much a business trip pays, which is the daily allowance question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "It covers what the company pays on a trip and differs for overseas, so it should hold the Japan daily allowance."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Overseas travel lists the daily allowance by region band, and Japan would fall under one of those bands."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "This document holds the daily allowance by region band, which should show the rate for Japan."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "The overseas travel body may state which region band Japan belongs to and the exchange rate day, so I can check the rate document against it."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0022087800000000005,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

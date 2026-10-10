@@ -1,0 +1,70 @@
+{
+ "id": "s7",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "What can a division head approve without going to the CEO?",
+ "answer": "A division head can close out, without going to the CEO:\n\n- **Spend under 3,000,000 KRW**\n- **Domestic trips**\n- **Over-cap expenses**\n- **The company seal**\n\nSome conditions apply:\n\n- **Amounts are net of VAT.** A 2,900,000 KRW order plus VAT is still within the band, but the threshold is applied before VAT.\n- **Purchases can't be split** to stay under the limit. Orders to the same vendor for the same item within three months are added together.\n- **The CEO signs anything at 3,000,000 KRW or more, all contracts, hiring and dismissal, the corporate seal, and overseas trips.** Contracts go to the CEO whatever their value, because the commitment is more than money.\n- **Delegation is an authority, not a preference.** If the division head can close something, it should not be routed upward first, and routing it up is treated as a breach.\n- **When the division head is away, their standing deputy approves at the same level.** It does not move up to the CEO.\n\nIf you're unsure which band something falls in, the records desk will confirm before you file.\n\nSources: the Delegated authority scope table (`/v1/nodes/delegation-scope/body`) and the Delegated authority document (`/v1/nodes/delegated-approval/body`). The map's area sentences for procurement and approval were accurate for this question, so I have no corrections to report.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "The question is about approval limits by amount, and this row covers how far up an amount has to be approved."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "The approval area covers whom to put in the approval chain and whether a team lead can sign off, which may also bear on division-head authority."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/purchase-request",
+    "why": "Purchase request covers the approval step for buying, which is where the amount limits for a division head should be."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-line",
+    "why": "Approval chain says whom to put in the chain and which teams must consent, which determines whether a division head can approve alone."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/delegated-approval",
+    "why": "Delegated authority is described as what a team lead or division head may close out without going to the CEO, which is the question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegation-scope/body",
+    "why": "Scope by authority states what can be closed out without going to the CEO, which answers the question directly."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegated-approval/body",
+    "why": "The delegated authority document is the main rule on what a team lead or division head may close out, and may add conditions to the scope list."
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0028000000000000004,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

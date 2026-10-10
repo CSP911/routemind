@@ -1,0 +1,77 @@
+{
+ "id": "s5",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Who issues a new corporate card to an employee?",
+ "answer": "RouteMind doesn't say who issues a new corporate card, so I can't give you a name from it.\n\nWhat I checked:\n- **Expense > Corporate card** (the card's own page, plus its card-limit and card-loss pages): covers what the card may be used for, the caps, blocked categories, and what to do when a card is lost. Nothing on issuing.\n- **Expense > Expenses where to start**: covers card limits, entertainment, lost cards and trip rates. Nothing on issuing.\n- **Approval** (approval chain, records desk, draft documents, retention): nothing on cards.\n- **Onboarding > Equipment and accounts prepared before a joiner arrives**: says to use the intranet form and expect an answer within five working days, but doesn't mention a card. It also says to ask the onboarding owner for anything it doesn't cover.\n\nThe expense area's sentence (\"whether the corporate card may be used here\") points to usage rules, not issuance, so it led me to pages that don't answer this. The onboarding page is the closest place a new card might come up, but it doesn't say the card is part of it. The likely next step is to ask the onboarding owner, or whoever runs the card programme, since RouteMind doesn't name them.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who issues a new corporate card to an employee?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The corporate card question falls under the expense area, which covers whether the corporate card may be used."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The corporate card row covers what the card may be used for and its caps; issuing may be described here."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "The corporate card's own document may say who issues a card."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/expense-overview/body",
+    "why": "The expense overview may say where a new card is requested and who issues it."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "Card limits may state who sets or issues the card's caps when a card is issued."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Issuing a card may run through an approval chain, so I'm checking the approval area before saying it is not covered."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/onboarding",
+    "why": "A new card may be part of the equipment and accounts a joiner gets, so I'm checking onboarding."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/onboarding-setup/body",
+    "why": "The equipment and accounts a joiner gets may include a corporate card and who issues it."
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.0037869900000000005,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

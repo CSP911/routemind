@@ -1,0 +1,63 @@
+{
+ "id": "s8",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Above what amount do I need qualifying evidence for a client dinner?",
+ "answer": "For a client dinner, you need qualifying evidence for any amount over **30,000 KRW**. A simple receipt is accepted only up to that amount.\n\nBecause it's entertainment, anything over 30,000 KRW also needs the **attendee list** with the receipt.\n\nQualifying evidence is a tax invoice, an invoice, a card slip (corporate or personal), or a cash receipt issued for business expense. A simple receipt, handwritten note, statement, deposit slip, or transfer record does not qualify.\n\nIf you take a cash receipt, it must be issued against the company registration number. One issued to a mobile number becomes a personal deduction and can't be claimed as a company cost. Say \"사업자 지출증빙\" and give the company number when you ask for it.\n\nIf the evidence is missing over 30,000 KRW, the company pays a 2% penalty.\n\nSources: the qualifying-evidence documents in RouteMind (`/v1/nodes/qualified-evidence/body` and `/v1/nodes/qualified-list/body`). I didn't check the separate entertainment cap document, so if you need the spending limit itself, that's a separate question.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Above what amount do I need qualifying evidence for a client dinner?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The \"entertainment cap\" row matches a client dinner expense question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/evidence",
+    "why": "Evidence row says what has to be attached for a spend to be accepted, which is the threshold asked about."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Corporate card row holds the caps, which may include the entertainment cap."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence",
+    "why": "Qualifying evidence row names the ceiling on a simple receipt, which answers the threshold question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence/body",
+    "why": "Its own document states which evidence qualifies and the simple-receipt ceiling."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-list/body",
+    "why": "Listed as covering what qualifies and the ceiling by amount, which is the figure asked for."
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.0023893200000000003,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

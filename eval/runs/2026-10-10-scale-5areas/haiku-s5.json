@@ -1,0 +1,98 @@
+{
+ "id": "s5",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Who issues a new corporate card to an employee?",
+ "answer": "RouteMind doesn't say who issues a new corporate card. I checked the corporate card pages (purpose, limits, lost card), the expense overview, and the approval chain page, and none of them names an issuer or describes how a new card is requested.\n\nThe closest things it does say:\n- **Lost cards:** you stop the card with \"the issuer\" first, then tell the office & purchasing desk. A replacement takes three to five working days.\n- **Limit increases:** these go through the office & purchasing desk, before the spend.\n\nThe expense area's sentence (\"whether the corporate card may be used here\") matched this question, but it covers card use, not issuance. That may be why the walk didn't reach the answer. The people who keep the map could add a page on card issuance, or name who handles it.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who issues a new corporate card to an employee?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Issuing a corporate card is about the card itself, and the expense area covers the corporate card rules, so this row is the closest match."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The corporate card row names the card's uses, caps, and lost/misuse handling; issuance may be covered there."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Its own document is the first place to check for who issues a card."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "Limits may name who sets or grants a card, which could cover issuance."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Replacement after loss may name who issues a new card, which could answer the question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "The loss page may describe how a replacement card is issued."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-limit/body",
+    "why": "The limits document may say who grants or sets a card's caps, which bears on issuance."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/expense-overview/body",
+    "why": "The expense area's starting page may say who handles card issuance."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Card issuance may need an approval, so the approval area may name who signs off on a new card."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-line",
+    "why": "Issuing a card may go through an approval chain, so this row may name who signs it."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/approval-line/body",
+    "why": "The approval chain document may name who signs off a card issuance."
+   }
+  }
+ ],
+ "turns": 13,
+ "cost_usd": 0.00418337,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

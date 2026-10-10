@@ -1,0 +1,63 @@
+{
+ "id": "s6",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Which allowances on my payslip are tax free, and up to how much?",
+ "answer": "I've read the tax-free allowances pages, so here's the answer.\n\n## Tax-free allowances and their caps\n\n| Allowance | Tax-free cap | Condition |\n|---|---|---|\n| Meals | 200,000 KRW a month | Only if meals in kind (e.g. a canteen) aren't also provided |\n| Own-car use | 200,000 KRW a month | Your own vehicle, used for work. Not alongside a per-kilometre claim for the same vehicle |\n| Childcare | 200,000 KRW a month | Child aged 6 or under. It stops automatically in the year they turn 7 |\n| Research | 200,000 KRW a month | Qualifying roles only |\n| Trip daily allowance | \"Reasonable actual cost\" | Within policy rates: 20,000 KRW a day domestic, USD 50–80 a day overseas |\n\n## How the caps behave\n- **Over a cap:** only the excess is taxed. A 250,000 KRW meal allowance against the 200,000 KRW cap taxes 50,000 KRW.\n- **Failing a condition:** the whole line becomes taxable, not just part of it. An example is drawing the meal allowance while also using the canteen.\n- **Trip allowance:** it is taxed in two cases.\n  - **Unconfirmed day:** an allowance for a day that attendance hasn't confirmed is treated as ordinary pay and is fully taxable.\n  - **Double claim:** if you also claim a meal receipt as an expense on a day you drew the allowance, that amount moves back into taxable pay.\n\n## On your payslip\nThe payslip lines page lists only the meal allowance (200,000 KRW) and own-car allowance (200,000 KRW) as fixed tax-free lines. The trip allowance appears as its own line, paid for days attendance confirms. Childcare and research allowances would show up only if you qualify.\n\nI can't see your actual payslip. If a line looks taxed, check its condition above first. The two usual causes are an unconfirmed attendance day and a meal receipt claimed on an allowance day.\n\nThe two pages differ slightly on how a failed condition is treated. The payslip lines page only mentions \"excess over cap is taxed\". The tax-free allowances page adds that failing a condition makes the whole line taxable. I went with the tax-free allowances page because it is the more detailed one.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Which allowances on my payslip are tax free, and up to how much?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Payroll row covers whether an allowance is tax free"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip lines, likely includes tax-free allowances"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "Tax-free allowances and their caps"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payslip-items/body",
+    "why": "Map payslip lines to allowances"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "Caps for each tax-free allowance"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "Rules context for tax-free allowances"
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.0439014,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

@@ -1,0 +1,42 @@
+{
+ "id": "s5",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Who issues a new corporate card to an employee?",
+ "answer": "The **Office & purchasing desk** issues corporate cards. It also stops and reissues them, and decides temporary limit raises.\n\nThe procurement area lists \"getting a corporate card issued or cancelled\" as a topic, and the desk's own document confirms the role. Contact details and cut-offs are in a separate page (`/v1/nodes/ga-contact/body`), which I didn't open.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who issues a new corporate card to an employee?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "The procurement row lists \"getting a corporate card issued or cancelled\", which matches the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/ga-desk",
+    "why": "The ga-desk row says it issues and cancels corporate cards, so I'm checking its table for the exact step."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/ga-desk/body",
+    "why": "Its own document should say exactly how a corporate card is issued."
+   }
+  }
+ ],
+ "turns": 5,
+ "cost_usd": 0.0025306,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

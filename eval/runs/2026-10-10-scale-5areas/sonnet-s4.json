@@ -1,0 +1,56 @@
+{
+ "id": "s4",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "The daily allowance for a business trip to Japan is **USD 80 per day**. Japan is in Band A, along with the US and Western Europe.\n\n- **Lodging:** The Band A cap is USD 250.\n- **Counting days:** The departure day and the arrival day each count as a full day. There is no half day, even on an overnight flight.\n- **Receipts:** The allowance is paid without receipts.\n- **Exchange rate:** Use the first posted mid-market rate on the day the trip departed, not the day you settle. State the rate date on the claim, or it is sent back. Card payments are taken at the amount the issuer billed.\n- **Tax:** At the policy rate the allowance is tax free. Only an amount above the policy rate, such as an approved exception for an expensive city, is taxed on the payslip.\n\nSource: the \"Overseas allowance and exchange rate\" and \"Overseas travel\" documents in the Expense area.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Row covers how much a business trip pays"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Travel expenses, overseas allowances"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Overseas daily allowance by region band"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "Rates by region band"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "Overseas travel rules"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.034496900000000004,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

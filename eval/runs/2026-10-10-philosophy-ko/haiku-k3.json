@@ -1,0 +1,49 @@
+{
+ "id": "k3",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "육아휴직 시작하기 며칠 전까지 인사팀에 알려야 해요?",
+ "answer": "육아휴직 시작 **최소 30일 전**까지 인사팀과 날짜를 합의해야 합니다.\n\n- 인사팀과 시작일을 정하고, 가족관계증명서와 육아휴직 신청서를 붙여 기안 문서를 올립니다.\n- 결재선은 팀장 → 본부장 → 인사팀 순서입니다.\n- 복직을 2주 전에 확정해야 합니다. 확정하지 않아도 퇴사로 보지는 않지만, 배치가 늦어질 수 있습니다.\n- 휴직 기간을 연장하거나 일찍 복직하려면 새로 합의해야 하며, 연장도 같은 30일 기준이 적용됩니다.\n\n참고로 대상은 만 8세 이하(또는 초등 2학년 이하) 자녀가 있고 근속 6개월 이상인 직원입니다. 휴직 중에는 회사에서 급여가 나오지 않고, 고용보험 육아휴직급여는 본인이 직접 청구합니다. 건강보험료 납부 유예 여부는 시작 전에 급여 담당에게 확인하는 것이 좋습니다.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "육아휴직 시작하기 며칠 전까지 인사팀에 알려야 해요?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The attendance row lists \"how to apply for parental leave\", which matches the question about notice to HR."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "The \"Parental leave\" row says it covers who is eligible and the order to apply in, which should include the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "This is the parental leave document itself; it should state the notice period before leave starts."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "The applying-and-returning document covers the order to apply in, which is where a notice deadline would be stated."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.00198048,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

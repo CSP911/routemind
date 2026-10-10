@@ -1,0 +1,49 @@
+{
+ "id": "s5",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Who issues a new corporate card to an employee?",
+ "answer": "The Office & purchasing desk issues corporate cards. It also cancels and reissues them, and decides temporary limit raises. Reach it at ext. 2210 or through the shared \"Office\" groupware account.\n\nIf a card is lost, stop it with the card issuer first, then tell the desk.\n\nSources: RouteMind procurement area → Office & purchasing desk (`/v1/nodes/ga-desk/body`, `/v1/nodes/ga-contact/body`).",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who issues a new corporate card to an employee?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "The procurement row lists getting a corporate card issued or cancelled."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/ga-desk",
+    "why": "The GA desk row says it issues and cancels corporate cards."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/ga-desk/body",
+    "why": "Its own document describes the desk; confirm the card issuing detail."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/ga-contact/body",
+    "why": "Scope and cut-offs for the office and purchasing desk, in case the card issuing has a cut-off."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.00219639,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

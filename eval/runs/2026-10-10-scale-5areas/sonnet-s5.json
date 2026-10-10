@@ -1,0 +1,70 @@
+{
+ "id": "s5",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Who issues a new corporate card to an employee?",
+ "answer": "RouteMind doesn't say who issues a *new* corporate card to an employee. I read the Expense area, the Corporate card pages, the Expenses overview, and both lost-card pages. None of them covers first-time issuance or how to apply for a card.\n\nHere is what the pages do say:\n- **Card issuer:** The lost-card pages refer to \"the card issuer\" as the party you call to stop a lost card. They also say it runs the fraud and liability process. That reads as the card company, but the pages don't say it also decides who gets a card.\n- **Replacement cards:** Reissue after a loss takes 3–5 working days. The office & purchasing desk (ext. 2210) is who you tell after stopping the card. The pages don't say that desk issues cards.\n\nFor a new card, the office & purchasing desk is the most likely place to ask, but that's a guess and not something the documents state.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Who issues a new corporate card to an employee?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Corporate card questions are listed under the expense area"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Corporate card documents; looking for issuance"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Check whether it states who issues cards"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/expense-overview/body",
+    "why": "Overview may mention issuance"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Replacement card may name the issuer"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "Look for who issues replacement/new cards"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "Look for who issues replacement/new cards"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0422675,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

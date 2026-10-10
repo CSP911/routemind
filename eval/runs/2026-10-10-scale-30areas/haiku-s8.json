@@ -1,0 +1,70 @@
+{
+ "id": "s8",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Above what amount do I need qualifying evidence for a client dinner?",
+ "answer": "For a client dinner, the threshold is **over 30,000 KRW**. Above that, you need qualifying evidence plus the attendee list. A simple receipt is fine only up to 30,000 KRW.\n\nQualifying evidence means a tax invoice, an invoice, a card slip (corporate or personal), or a cash receipt issued for business expense. If you take a cash receipt, it must be issued against the company registration number. One issued to a mobile number becomes a personal deduction and can't be used as a company cost.\n\nWithout qualifying evidence, the company pays a 2% penalty on the amount.\n\nI didn't check the entertainment cap itself (the maximum you can spend on entertainment), which is a separate rule in the expense area.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Above what amount do I need qualifying evidence for a client dinner?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The question is about a client dinner threshold; the expense row covers the entertainment cap."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/evidence",
+    "why": "The evidence row says what must be attached for a spend to be accepted, which is the qualifying evidence the question asks about."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The corporate card row covers the caps, which may include the entertainment cap for client dinners."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence",
+    "why": "The qualified evidence row covers which documents qualify and the ceiling on a simple receipt, which answers the threshold question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "The travel expense row may hold the entertainment cap for client dinners, which the expense area names."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-list/body",
+    "why": "This document states what qualifies as evidence and the ceiling on a simple receipt, the threshold asked about."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence/body",
+    "why": "The qualified evidence node's own document may state the same ceiling and needs checking against the list."
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.00291074,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

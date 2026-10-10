@@ -1,0 +1,56 @@
+{
+ "id": "k4",
+ "kind": "absent",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "재택근무는 일주일에 며칠까지 가능한가요?",
+ "answer": "RouteMind에는 재택근무가 일주일에 며칠까지 가능한지 알려 주는 문서가 없습니다.\n\n가장 관련 있어 보이는 근태(Attendance) 영역을 확인했습니다. 개요, 근태 시스템, 메뉴 안내 문서를 읽었습니다. 이 영역은 연차, 육아휴직, 출장 근태, 초과근무만 다루고, 재택근무 규정이나 신청 메뉴는 없었습니다. 다른 영역(결재, 경비, 급여, 구매)은 설명상 재택근무와 관련이 없어 열지 않았습니다. RouteMind 전체 목록에도 재택근무 항목은 없습니다.\n\n그래서 며칠까지 가능한지는 말씀드릴 수 없습니다. 추측한 숫자를 드리면 오해를 만들 수 있어서 그렇게 하지 않았습니다.\n\n- 정확한 규정은 HR 데스크에 문의하시는 게 좋습니다. 근태 예외를 처리하는 곳입니다.\n- 근태 영역 문서에는 \"시스템에 없는 기록은 존재하지 않는다\"고 나와 있습니다. 재택을 쓰게 되면 팀장에게 구두로 승인받는 것만으로는 부족하고, 시스템에 기록되는지 확인하세요.\n\n재택근무 규정 문서를 갖고 계시면 알려 주세요. `knowledge_place`로 RouteMind에 등록해 둘 수 있습니다. 규정 내용은 말씀하시는 그대로만 넣겠습니다.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "재택근무는 일주일에 며칠까지 가능한가요?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Remote work days per week is an attendance/working-pattern question"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-overview/body",
+    "why": "Overview may mention remote work policy"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/attendance-system",
+    "why": "Groupware attendance menus might include remote work booking"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system/body",
+    "why": "Check for remote work rules"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system-guide/body",
+    "why": "Check menus for remote work"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.036819500000000005,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

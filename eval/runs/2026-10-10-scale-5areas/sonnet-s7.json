@@ -1,0 +1,63 @@
+{
+ "id": "s7",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "What can a division head approve without going to the CEO?",
+ "answer": "I've found the delegation tables, so here's the answer.\n\n**A division head can approve, without going to the CEO:**\n- Spend **under 3,000,000 KRW**\n- **Domestic business trips**\n- **Over-cap expenses**\n- Use of **the company seal**\n\n**These still go to the CEO:**\n- Spend of 3,000,000 KRW or more\n- Signing contracts, however small\n- Hiring and dismissal\n- The corporate seal\n- Overseas trips\n\n**Rules for applying these limits:**\n- **VAT:** Amounts are net of VAT.\n- **Splitting:** You can't split a purchase to land in a lower band. Orders to the same vendor for the same item within three months are added together.\n- **Annual agreements:** These are banded on the annual total, not the monthly instalment.\n- **Subject over amount:** A contract goes to the CEO even if the amount is small.\n- **Absence:** If the division head is away, their standing deputy approves at the same level. It doesn't move up to the CEO.\n- **Urgent items:** These can go ahead on a verbal approval, but you must file a draft within three days. Otherwise the cost becomes a personal one.\n- **Don't send up what is delegated:** If something is within a division head's band, sending it to the CEO breaks the rule just as approving beyond your band does. The same applies to routing a team lead's items (spend under 500,000 KRW, leave under 3 days) through the division head.\n\nThe table lists both \"the company seal\" (division head) and \"the corporate seal\" (CEO). It doesn't say how the two differ. If a seal question comes up, check with the records desk.\n\nSources: the \"Scope by authority\" and \"Delegated authority\" documents under the approval area.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Question is about approval authority of a division head"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-line",
+    "why": "Approval chain likely holds sign-off authority limits"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Amount approval thresholds may list division head limits"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/delegated-approval",
+    "why": "Delegated authority for division head"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegation-scope/body",
+    "why": "Scope by authority"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegated-approval/body",
+    "why": "Its own document"
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.041396100000000005,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "id": "s7",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "What can a division head approve without going to the CEO?",
+ "answer": "A division head can close out these without going to the CEO, per the company's delegated authority table (amounts net of VAT):\n\n- **Spend under 3,000,000 KRW**\n- **Domestic trips**\n- **Over-cap expenses**\n- **The company seal**\n\nThings that still go to the CEO: spend of 3,000,000 KRW or more, signing contracts, hiring and dismissal, the corporate seal, and overseas trips.\n\nSome rules that limit this:\n\n- **Delegation is an authority, not a preference.** If a division head may close something out, it should not be sent upward first. Sending it up breaks the rule as much as approving beyond your band does.\n- **Purchases can't be split to fit a lower band.** Orders to the same vendor for the same item within three months are added together.\n- **Subject matters more than amount.** A contract goes to the CEO however small it is.\n- **Annual agreements are banded on the annual total**, not the monthly instalment.\n- **If the division head is away**, their standing deputy approves at the same level. It does not move up to the CEO.\n- **Urgent items** may go ahead on a verbal approval, but must be filed as a draft within three days. Without a draft afterwards, the cost becomes personal.\n\nOne thing to check: the table gives the division head \"the company seal\" and the CEO \"the corporate seal.\" These may be the same thing, but the wording differs, so confirm with the records desk before relying on it for a specific case.\n\nSources: RouteMind, Approval → Delegated authority → Scope by authority, and the Delegated authority document.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "The approval row covers whom to put in the approval chain and whether a team lead can sign off, which is the closest match to a division head's approval authority."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-line",
+    "why": "The approval chain table is where whom to put in the chain, including who may approve alone, would be stated."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/delegated-approval",
+    "why": "Its line says it covers what a team lead or a division head may close out without going to the CEO, which is the question asked."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegation-scope/body",
+    "why": "Scope by authority is the document that states what can be closed out without going to the CEO."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegated-approval/body",
+    "why": "The parent delegated-authority document may state the general rule alongside the scope list."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0027647,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

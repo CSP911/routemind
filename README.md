@@ -27,8 +27,9 @@ The bet is lost if any of these turns out to be true:
 - **Retrieval is already good enough** on real documents. Then the walk costs more and buys nothing.
 - **Keeping the map costs more than the wrong answers it prevents.** The map is human work, every
   week.
-- **A large map loses the agent.** No one has measured a map with dozens of areas or tens of
-  thousands of documents.
+- **A large map loses the agent.** Measured once, small: 5 areas against 30, with confusable
+  neighbours, did not change which area was chosen ([eval/scale/](eval/scale/)). Dozens of real areas
+  or tens of thousands of documents have not been tried.
 
 None of these has been settled on real data. Everything measured so far is listed below, together
 with what it does not show.
@@ -134,7 +135,7 @@ every run including the failures (`eval/runs/`). Re-running needs an API key —
 | | |
 |---|---|
 | **Evidence** | one synthetic corpus, one domain, model-written or templated questions; no real organisation's data |
-| **Scale** | measured at 5 areas and about 1,100 documents. Nothing larger has been tried |
+| **Scale** | routing measured at 5 and 30 areas (30 with thin distractor areas); about 1,100 documents. Nothing larger has been tried |
 | **Models** | Sonnet- and Opus-class on the stress test; Haiku-class only on the depth and behaviour runs, where folded tables cost it accuracy |
 | **Staleness** | no mechanism decides which version is current. That is said by a person, in a line. Ages from git help someone ask; they do not decide ([docs/AGE.md](docs/AGE.md)) |
 | **Maintenance** | change sets keep the lines over a change in step, but they are days old and unproven in real use. The map has no editor for a multi-step change |

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Score a philosophy run from what the agent did and said.
 
-    ./eval/philosophy/score.py eval/runs/<date>-philosophy
+    ./eval/philosophy/score.py eval/runs/<date>-philosophy [questions.yaml]
 
 Per walk: whether the answer matches `expect` and avoids `refuse`, whether the first call was hop 0,
 whether every step carried a `why`, how many documents were read, and — for the absent questions —
@@ -12,7 +12,8 @@ import json, pathlib, re, sys
 import yaml
 
 HERE = pathlib.Path(__file__).resolve().parent
-spec = {q["id"]: q for q in yaml.safe_load((HERE / "questions.yaml").read_text())["questions"]}
+qfile = pathlib.Path(sys.argv[2]) if len(sys.argv) > 2 else HERE / "questions.yaml"
+spec = {q["id"]: q for q in yaml.safe_load(qfile.read_text())["questions"]}
 run = pathlib.Path(sys.argv[1])
 rows = []
 for f in sorted(run.glob("*-*.json")):

@@ -73,8 +73,9 @@ def main():
     ap.add_argument("--api", required=True); ap.add_argument("--repo", required=True)
     ap.add_argument("--compose-dir", required=True); ap.add_argument("--models", default="sonnet")
     ap.add_argument("--out", required=True); ap.add_argument("--only", default="")
+    ap.add_argument("--questions", default=str(HERE / "questions.yaml"), help="another question file (eval/scale uses its own)")
     a = ap.parse_args()
-    spec = yaml.safe_load((HERE / "questions.yaml").read_text())
+    spec = yaml.safe_load(pathlib.Path(a.questions).read_text())
     out = pathlib.Path(a.out); out.mkdir(parents=True, exist_ok=True)
     work = tempfile.mkdtemp(prefix="philosophy-")
     qs = [q for q in spec["questions"] if not a.only or q["id"] in a.only.split(",")]
@@ -88,11 +89,11 @@ def main():
                 if f.exists(): continue          # resumable: a run cut short picks up where it stopped
                 sys.stderr.write(f"{phase} {model} {q['id']}\n")
                 res = walk(q["q"], model, a.api, work)
-                f.write_text(json.dumps({"id": q["id"], "kind": q["kind"], "model": model, "phase": phase,
+                f.write_text(json.dumps({"id": q["id"], "kind": q.get("kind", ""), "model": model, "phase": phase,
                                          "q": q["q"], **res}, ensure_ascii=False, indent=1) + "\n")
 
-    run([q for q in qs if q["kind"] != "wrong-map"], "clean")
-    wrong = [q for q in qs if q["kind"] == "wrong-map"]
+    run([q for q in qs if q.get("kind") != "wrong-map"], "clean")
+    wrong = [q for q in qs if q.get("kind") == "wrong-map"]
     if wrong:
         repo = pathlib.Path(a.repo)
         for m in spec["mutations"]:
@@ -105,7 +106,7 @@ def main():
             git(a.repo, "revert", "--no-edit", f"{start}..HEAD")
             regenerate(a.compose_dir)
     (out / "meta.json").write_text(json.dumps({"api": a.api, "start": start, "models": a.models.split(","),
-                                               "questions": str((HERE / "questions.yaml").relative_to(ROOT))}, indent=1) + "\n")
+                                               "questions": str(pathlib.Path(a.questions).resolve().relative_to(ROOT))}, indent=1) + "\n")
 
 
 if __name__ == "__main__":

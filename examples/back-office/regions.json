@@ -114,7 +114,7 @@
    "id": "PROCUREMENT",
    "source": "procurement",
    "title": "Purchasing & Contracts",
-   "use_when": "how far up this amount has to be approved · how to register a new vendor · how many quotes are needed · where the signed contract is kept",
+   "use_when": "how far up this amount has to be approved · how to register a new vendor · how many quotes are needed · where the signed contract is kept · getting a corporate card issued or cancelled",
    "export": false,
    "nodes": [
     "approval-threshold",

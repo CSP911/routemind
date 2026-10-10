@@ -1,0 +1,49 @@
+{
+ "id": "s10",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "How many years do we keep tax invoices and the accounting books before destroying them?",
+ "answer": "Tax invoices and accounting books are kept for **5 years**. That period comes from the Framework Act on National Taxes. It is a legal minimum, so the company can't shorten it.\n\n- **When the clock starts:** the 5 years count from the close of the fiscal year the invoice or book belongs to. They don't count from the date on the document. Counting from the written date is the most common mistake, and it destroys records early.\n- **When they're destroyed:** the records desk lists everything past its retention period each January. The owning team checks the list, and the records are then entered in the destruction log and shredded.\n- **Holds:** anything under audit or litigation is not destroyed, even if its 5 years have run.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How many years do we keep tax invoices and the accounting books before destroying them?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Row mentions how many years a document is kept"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "Retention years per document kind"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "Retention period per document type"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention/body",
+    "why": "Node's own document may add rules"
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.028863700000000003,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

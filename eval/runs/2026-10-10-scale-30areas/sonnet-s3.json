@@ -1,0 +1,49 @@
+{
+ "id": "s3",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "How far in advance do I have to tell HR before my parental leave starts?",
+ "answer": "You need to agree the dates with the HR desk **at least 30 days before the leave starts**.\n\n- **Why 30 days:** it gives the team time to arrange cover. It isn't there so the leave can be refused. Parental leave is an entitlement, but the dates are agreed with HR.\n- **Extensions:** if you later extend, the same 30 days applies.\n- **Application steps:**\n  1. Agree the dates with the HR desk.\n  2. File a draft document. Attach the family relation certificate and the parental leave form.\n  3. The approval chain is team lead → division head → HR desk.\n- **Eligibility:** you need a child aged 8 or under (or in the second year of primary school or below) and 6 months of service.\n- **Coming back:** confirm your return two weeks before.\n\nThe leave is unpaid by the company. You claim the employment-insurance benefit yourself, and HR explains how once your leave is confirmed.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How far in advance do I have to tell HR before my parental leave starts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Row covers how to apply for parental leave"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "Parental leave eligibility and application order"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "Main parental leave document"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "Application order and notice timing"
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.0373089,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

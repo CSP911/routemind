@@ -1,0 +1,63 @@
+{
+ "id": "s8",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Above what amount do I need qualifying evidence for a client dinner?",
+ "answer": "I've found the answer in the expense and evidence documents. Here it is.\n\n**The threshold is 30,000 KRW.** Up to that, a simple receipt is enough. Over it, a client dinner needs qualifying evidence and the attendee list.\n\n- **What qualifies:** a tax invoice, an invoice, a card slip (corporate or personal), or a cash receipt issued for business expense.\n- **What doesn't:** a simple receipt, a handwritten receipt, a statement of account, a deposit slip, or a bank transfer record.\n- **Attendee list:** entertainment over 30,000 KRW needs it in addition to the qualifying evidence.\n- **Penalty:** without qualifying evidence the company pays a 2% penalty on the amount, so the claim is refused rather than absorbed.\n\nIf you pay in cash, ask for the receipt against the company registration number. Say \"사업자 지출증빙\" and give the company number before they ring it up. A receipt taken against a mobile number counts as a personal deduction and can't be converted afterwards. It's the most common reason claims are rejected.\n\nIf you paid by card, the slip is your evidence. Check the card statement if you've lost the paper receipt.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Above what amount do I need qualifying evidence for a client dinner?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Entertainment cap / client dinner evidence threshold"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/evidence",
+    "why": "Evidence requirements for spends"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence",
+    "why": "Ceiling on a simple receipt"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/evidence/body",
+    "why": "Evidence document itself"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-list/body",
+    "why": "Ceiling amount for simple receipt"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence/body",
+    "why": "Check for entertainment-specific threshold"
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.0468351,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

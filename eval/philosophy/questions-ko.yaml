@@ -1,0 +1,7 @@
+# The same corpus (English), asked in Korean — how a Korean team would ask it. Does hop 0 still route,
+# and does the answer come back right, in the asker's language?
+questions:
+- {id: k1, kind: control, q: "법인카드를 잃어버렸어요. 제일 먼저 뭘 해야 하나요?", expect: "카드사|발급사|정지|issuer"}
+- {id: k2, kind: control, q: "일본 출장 가면 일비가 하루에 얼마예요?", expect: "(?i)80"}
+- {id: k3, kind: control, q: "육아휴직 시작하기 며칠 전까지 인사팀에 알려야 해요?", expect: "30"}
+- {id: k4, kind: absent, q: "재택근무는 일주일에 며칠까지 가능한가요?", expect: "없|찾을 수 없|나와 있지 않|확인되지 않|not"}

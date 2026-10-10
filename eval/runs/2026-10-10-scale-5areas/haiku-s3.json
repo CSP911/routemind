@@ -1,0 +1,49 @@
+{
+ "id": "s3",
+ "kind": "",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How far in advance do I have to tell HR before my parental leave starts?",
+ "answer": "You need to agree the dates with the HR desk **at least 30 days before the leave starts**.\n\nTo apply, you also file a draft document with the family relation certificate and the parental leave form attached. It goes through your team lead, then the division head, then the HR desk. Once HR confirms, they explain how to claim the employment-insurance benefit. The company doesn't file that claim for you.\n\nSource: the \"Applying\" section of the Parental leave document in RouteMind (`/v1/nodes/childcare-apply/body`).",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How far in advance do I have to tell HR before my parental leave starts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The row says it covers how to apply for parental leave, which is the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "The Parental leave row covers eligibility and the order of applying, which should include the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "The parental leave document itself, to find the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "The applying-and-returning document, which covers the order to apply in and may state the notice period."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.00179136,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

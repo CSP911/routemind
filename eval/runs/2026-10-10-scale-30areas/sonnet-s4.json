@@ -1,0 +1,56 @@
+{
+ "id": "s4",
+ "kind": "",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "I've found the rate in the overseas travel rules, so I'm writing up the answer now.\n\n**The daily allowance for a business trip to Japan is USD 80.** Japan is in Band A, along with the US and Western Europe. Band A lodging is capped at USD 250.\n\n- **Counting days:** the departure day and the arrival day each count as a full day. There is no half day, even on an overnight flight.\n- **Receipts:** the allowance is paid without receipts. Keep cash spending abroad inside it, because a foreign simple receipt usually doesn't qualify as evidence for cash spends over about 30,000 KRW.\n- **Exchange rate:** use the first posted mid-market rate on the day the trip departed, not the day you settle. Put the rate date on the claim, or it will be sent back. Card payments are taken at the amount the issuer billed in KRW and aren't converted again.\n- **Tax:** at the policy rate the allowance is tax free. Only an amount above the policy rate, such as an approved exception for an expensive city, is taxed on the payslip.\n\nThe documents also mention a separate cap on how much of the allowance can ride on pay tax free. I didn't open the \"Tax-free allowances\" page, so I haven't checked that cap.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Row covers how much a business trip pays"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Overseas trip allowances"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Daily allowance by region band"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "Rates by region band"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "Overview of overseas travel rules"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0429521,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}
