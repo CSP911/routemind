@@ -1,0 +1,47 @@
+# The checks that need no Docker and no running install: each starts the service it tests on a
+# throwaway copy of the example map. The Docker-side ones (install-check, smoke, the container
+# checks) are run by hand before a release — docs/CHECKS.md.
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Python dependencies
+        run: pip install pyyaml==6.0.2 fastapi uvicorn
+      - name: A data repository, as a first install leaves one
+        run: |
+          git config --global user.name ci
+          git config --global user.email ci@routemind.local
+          mkdir -p data && cp -r examples/back-office data/repo
+          git -C data/repo init -q && git -C data/repo add -A && git -C data/repo commit -qm "first boot"
+      - name: Static
+        run: |
+          python3 check/eol-check.py
+          python3 check/secrets-check.py
+          python3 check/env-check.py
+          node check/i18n-check.mjs
+          node check/css-check.mjs
+          python3 check/mcp-routes-check.py
+      - name: The invariants
+        run: python3 ontology/check.py
+      - name: Services started per check
+        run: |
+          for c in auth romanize circuit-client age tidy place change b2c robust drift walk same-answer transact follow hyphen footprint footprint-screen; do
+            echo "== $c"; python3 check/$c-check.py
+          done
+      - name: Every write path
+        run: sh check/write-paths.sh
