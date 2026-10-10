@@ -124,6 +124,11 @@ again before you answer* (`…-trap-pure-narrow/`):
 | trapped, of four | 3 | **2** — haiku p2 now looks again and finds USD 80; p1 stays trapped for both |
 | controls and absences, unchanged questions (`…-narrow-controls/`) | 10/10 | 10/10, calls per walk about the same |
 
+Tried and not kept: the same reminder at the foot of every area's table, where the agent reads it at
+the moment it decides ("what this area's pages say holds for this area's own subject; if the question
+is wider, the rest may be in another area"). p1 again, both models: still 2/2 trapped. Reverted —
+nothing goes in without a measured effect.
+
 p1 is the hard one and it is not fixed: a purchase-threshold table *looks* like a complete answer to
 "what can a division head approve", and nothing in it says it is only purchases. Against that, the
 defences are the map's sentence being right and the page saying what it does not cover — both a
