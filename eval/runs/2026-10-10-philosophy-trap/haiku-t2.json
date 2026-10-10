@@ -1,0 +1,63 @@
+{
+ "id": "t2",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "Japan falls in **Band A** for overseas business trips, so the daily allowance is **USD 80 per day**. Lodging is capped at USD 250 per night.\n\n- **Counting days:** the departure day and the arrival day each count as a day.\n- **Exchange rate:** use the first posted mid-market rate on the day the trip departed, not the day you settle. State the rate date on the claim, or it will be sent back.\n- **Tax:** the allowance is paid without receipts, but only part of it is tax free. I didn't open the document on that cap, so I can't give the limit.\n\nSource: Expenses > Travel expenses > Overseas travel, \"Overseas travel caps\" document.\n\nThe payroll area's sentence says it answers \"how much a business trip pays per day,\" but its documents don't hold the amount. The payroll overview points to Expenses for it. That sentence may need rewording so the next person doesn't start in the wrong area.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "The payroll row covers how much a business trip pays per day, which matches the daily allowance question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payroll-overview/body",
+    "why": "The payroll table's children don't name business trip pay, so I'm checking the overview to see what the area holds."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The payroll overview says the daily allowance amount is under Expenses > Travel expenses, so I'm opening the expense area."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Travel expenses is the row for what a trip pays, and it says domestic and overseas differ, so it should hold the Japan rate."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Overseas travel holds the daily allowance by region band, and Japan would fall under one of those bands."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "This is the document with the daily allowance by region band, which should show the rate for Japan."
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.002719,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

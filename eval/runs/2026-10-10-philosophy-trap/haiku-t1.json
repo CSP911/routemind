@@ -1,0 +1,91 @@
+{
+ "id": "t1",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "What can a division head approve on their own, without going to the CEO?",
+ "answer": "A division head can approve on their own:\n\n- **Spend under 3,000,000 KRW.** For a purchase, that means the 500,000 to 3,000,000 KRW band, which needs 2 quotes. Below 500,000 KRW is a team lead's band.\n- **Domestic trips.**\n- **Over-cap expenses.**\n- **The company seal.**\n\nThings that still go to the CEO:\n\n- Spend of 3,000,000 KRW or more.\n- Signing contracts, regardless of amount.\n- Hiring and dismissal.\n- The corporate seal.\n- Overseas trips.\n\nRules that apply to these approvals:\n\n- **Amounts are net of VAT.** A 480,000 KRW item plus VAT is still in the team lead's band.\n- **Don't split purchases.** Orders to the same vendor for the same item within three months are added together.\n- **Annual agreements are banded on the annual total**, not the monthly rate.\n- **Delegation is an authority, not a preference.** Sending a matter up to the division head when it is delegated to you breaks the rule, just as approving beyond your band does.\n- **If the holder is away,** their standing deputy approves at the same level. It does not move up.\n- **Urgent matters** can proceed on verbal approval, but must be filed as a draft within three days, or the cost becomes personal.\n\nSources: the approval thresholds table and its body (`/v1/nodes/approval-threshold`), and the delegated authority scope and body (`/v1/nodes/delegation-scope/body`, `/v1/nodes/delegated-approval/body`). I found no conflicts between them, and the approval area's wording needed no correction.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve on their own, without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "The procurement row names division head approval alone, which matches the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/purchase-request",
+    "why": "The purchase request row covers the approval step, which is where approval limits by role would be."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-threshold",
+    "why": "Approval thresholds by amount is the table that should state what a division head may approve alone."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/approval-threshold/body",
+    "why": "Its own document is the approval thresholds by amount, the likely source for division head limits."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/threshold-table/body",
+    "why": "Approval steps and quote counts by amount band, to check the division head limit against the bands."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "The threshold document says the delegation rules in Documents & Approval set the authority and govern over the table."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-line",
+    "why": "The approval area's sentence says it covers what a manager may sign off alone, and the approval chain row is the likely place for the delegation rules."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/delegated-approval",
+    "why": "Delegated authority is named as what a team lead or division head may close out without the CEO, which is the question."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegation-scope/body",
+    "why": "Scope by authority is the document that says what can be closed out without the CEO."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegated-approval/body",
+    "why": "Its own document on delegated authority, to check against the scope document."
+   }
+  }
+ ],
+ "turns": 12,
+ "cost_usd": 0.00513965,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

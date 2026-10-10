@@ -1,0 +1,84 @@
+{
+ "id": "t2",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "The daily allowance for a business trip to Japan is **USD 80 per day**. Japan is in Band A, along with the US and Western Europe. The lodging cap for Band A is USD 250 per night.\n\n- **Counting days:** the departure day and the arrival day each count as a day.\n- **Receipts:** the allowance is paid without receipts.\n- **Exchange rate:** use the first posted mid-market rate on the day the trip departed, not the day you settle. State the rate date on the claim, or it is sent back.\n- **Tax:** the policy rates are treated as tax free, but only for days that attendance confirms. An allowance for a day with no attendance record is taxable pay.\n- **Meal receipts:** if you claim a meal receipt on a day you also drew the allowance, that is double counting. The amount is moved back into taxable pay.\n\n**Map correction:** the payroll area's hop-0 line says it covers \"how much a business trip pays per day\". It doesn't hold the amount. Its overview points to Expenses > Travel expenses, which is where the figure was. The person who keeps the map may want to fix that line.\n\nSources: Overseas allowance and exchange rate, and Tax-free allowances and their caps.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Row says how much a business trip pays per day"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip allowances likely include business trip per diem"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payroll-overview/body",
+    "why": "Overview may point to the business trip allowance"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Overview says the daily allowance amount is under Expenses > Travel expenses"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "Tax-free allowances include a trip's daily allowance"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Travel expenses: overseas daily allowance"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "Caps on trip daily allowance for tax purposes"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Overseas daily allowance by region band, for Japan"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "Daily allowance by region band"
+   }
+  }
+ ],
+ "turns": 11,
+ "cost_usd": 0.0536686,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

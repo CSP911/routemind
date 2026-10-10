@@ -79,13 +79,38 @@ purpose (c4) to see whether the note makes the agent blame a sentence that is fi
 | a wrong hop-0 sentence reported (M3) | 0/2 | **2/2** — "The payroll line sent me to the wrong place first, so whoever keeps the map may want to fix it." |
 | a sentence blamed on a question that genuinely spans two areas (c4) | — | **0/2** — both answered from both areas and blamed nothing |
 
+## The plausible wrong area ([questions-trap.yaml](questions-trap.yaml))
+
+The case the first pass left out — a false hop-0 sentence that sends the agent into an area holding a
+plausible *wrong* answer, the shape of the census's one miss. T1 moves "what a division head may approve
+alone" from approval to procurement, whose purchase-threshold table has a division-head band (purchases
+only). T2 moves "how much a business trip pays" from expense to payroll, whose tax-free table mentions
+the trip allowance "within policy rates" without the amounts.
+
+| `2026-10-10-philosophy-trap/` | sonnet | haiku |
+|---|---|---|
+| followed the false sentence into the wrong area | 2/2 | 2/2 |
+| stopped there with the plausible answer | 0/2 | 0/2 |
+| went on, and answered from the right document | 2/2 | 2/2 |
+| reported the false sentence | 2/2 | 1/2 |
+
+**It was the documents that saved it, not only the agent.** The plausible page in procurement says, in
+its own text, *"The authority itself is set by the delegation rules in Documents & Approval; this table
+is those rules applied to purchasing"*; payroll's overview points to Expenses for trip amounts. Both
+agents followed those pointers. The example corpus is written that way on purpose — a page that is a
+partial view says where the whole is. A corpus whose pages do not point onward is the real trap, and
+this does not test it. What it does say: in a map that is wrong at hop 0, cross-references in the
+documents are what stand between the agent and a confident wrong answer — which makes "say where the
+authority is" a writing rule for whoever keeps the documents, not a nicety.
+
 ## What this does not show
 
 - **Twelve questions, one corpus, one run each.** A rate from n=1 per cell is an anecdote; read the
   table as "did not fail", not as an accuracy.
 - **The corpus is redundant on purpose** (eval/COLLAPSE.md), which is why two of the five falsehoods
   never met the agent. A map whose facts each live once would test claim 3 harder.
-- **The wrong area here was empty of answers.** The dangerous misroute — a wrong area holding a
-  plausible wrong document — is not in this set.
+- **The wrong areas here held either nothing (M3) or plausible pages that point onward (T1, T2).** A
+  wrong area whose plausible page does not say where the real answer is — the census miss — is not in
+  this set.
 - `haiku` and `sonnet` are Claude Code's aliases as of the run; the models actually used are recorded
   in each result file.

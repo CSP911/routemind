@@ -1,0 +1,23 @@
+# The misroute the first pass did not test: a false hop-0 sentence that sends the agent into an area
+# holding a plausible *wrong* answer — the shape of the census's one miss. Its own file because its
+# falsehoods touch the same sentences as M3 in questions.yaml.
+mutations:
+  # T1: "may a team lead / division head sign this off" moves from approval to procurement, whose
+  # purchase-threshold table has a division-head band (purchases only).
+  - file: regions/approval/approval.md
+    field: use_when
+    to: "how to write a draft document · whom to put in the approval chain · how many years this is kept · how to get the company seal"
+  - file: regions/procurement/procurement.md
+    field: use_when
+    to: "how far up this amount has to be approved · what a team lead or a division head may approve alone · how to register a new vendor · how many quotes are needed · where the signed contract is kept · getting a corporate card issued or cancelled"
+  # T2: "how much a business trip pays" moves from expense to payroll, whose tax-free table mentions
+  # the trip allowance "within policy rates" without the bands.
+  - file: regions/expense/expense.md
+    field: use_when
+    to: "what to do with a receipt · whether the corporate card may be used here · the entertainment cap · the card was lost"
+  - file: regions/payroll/payroll.md
+    field: use_when
+    to: "what this payslip line means · whether an allowance is tax free · how much a business trip pays per day · when year-end settlement papers are due · why the insurance deduction changed"
+questions:
+- {id: t1, kind: wrong-map, q: "What can a division head approve on their own, without going to the CEO?", expect: "(?i)seal|domestic trip|over-cap|over cap", note: "right answer is approval's delegation scope; the trap is procurement's purchase band alone"}
+- {id: t2, kind: wrong-map, q: "What is the daily allowance for a business trip to Japan?", expect: "(?i)USD ?80|\\$ ?80|80 USD", note: "right answer is expense's band table (Japan = band A = USD 80); the trap is payroll's 'within policy rates'"}

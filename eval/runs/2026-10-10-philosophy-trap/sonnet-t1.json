@@ -1,0 +1,98 @@
+{
+ "id": "t1",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "What can a division head approve on their own, without going to the CEO?",
+ "answer": "A division head can close out the following without going to the CEO.\n\n- **Spending under 3,000,000 KRW**, net of VAT. The purchasing table puts 500,000–3,000,000 KRW at division head level, and it needs 2 quotes. Under 500,000 KRW is the team lead's call.\n- **Domestic business trips.**\n- **Over-cap expenses.**\n- **The company seal.**\n\nThe following go to the CEO:\n- Spending of 3,000,000 KRW and over. From 10,000,000 KRW the CEO also needs a separate proposal and 3 quotes plus a comparison.\n- Signing contracts. The subject beats the amount, so a contract goes to the CEO however small it is.\n- Hiring and dismissal.\n- The corporate seal.\n- Overseas trips.\n\n**Rules that affect the amount**\n- **Splitting:** You can't split a purchase to land in a lower band. Orders to the same vendor for the same item within three months are added together.\n- **Annual agreements:** These are banded on the annual total, not the monthly rate. A 400,000 KRW monthly service counts as 4,800,000 KRW, so it goes to the CEO.\n- **Absence:** If the division head is away, their standing deputy approves at the same level. It doesn't move up to the CEO.\n- **Urgent items:** These can go ahead on a verbal approval, but you must file the draft within three days. Otherwise the cost becomes a personal one.\n- **Sole quote:** A written reason can drop one approval step.\n\nThe sources are Documents & Approval > Delegated authority, which governs, and Purchasing > Approval thresholds. They agree with each other.\n\nThe procurement area's description in the top-level list says it covers \"what a team lead or a division head may approve alone\". The answer is actually under the approval area, in Approval chain > Delegated authority. Procurement only holds the purchasing bands. The person who keeps the map may want to fix that line.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve on their own, without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Line mentions what a division head may approve alone"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/purchase-request",
+    "why": "Approval amounts for purchase requests"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-threshold",
+    "why": "Amount bands and who approves each"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/threshold-table/body",
+    "why": "Band table with approval steps"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/approval-threshold/body",
+    "why": "Node's own document, may contain the rule"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Delegation rules govern authority per the threshold page"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-line",
+    "why": "Likely holds delegation / what a manager may sign alone"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/approval-overview/body",
+    "why": "Overview may point to delegation rules"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/delegated-approval",
+    "why": "Authoritative delegated authority for division head"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegation-scope/body",
+    "why": "Scope by authority"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/delegated-approval/body",
+    "why": "Node's own document"
+   }
+  }
+ ],
+ "turns": 13,
+ "cost_usd": 0.08496219999999999,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}
