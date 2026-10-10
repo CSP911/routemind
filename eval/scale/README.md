@@ -44,6 +44,24 @@ With 30 areas there were more plausible places to look before giving up.
 The example's sentence was fixed (`… · getting a corporate card issued or cancelled`) and s5 re-run on
 both maps: 4/4 straight to procurement, right, in 4–5 calls (`*-fixed/`).
 
+## Operating a map of 10,000 documents
+
+Not walked by an agent — timed. `examples/back-office` plus ten areas of 20 holders × 50 documents each
+(10,289 entities, every document with a body), on one service on a laptop:
+
+| | |
+|---|---|
+| start to healthy (reads and validates every file) | 6.6 s |
+| hop 0 · an area's table · a 50-row holder · a document | 0.20 · 0.22 · 0.18 · 0.14 s |
+| full validation | 0.37 s |
+| a write (create, regenerate, validate, commit) | 2.1 s |
+| the graph the map loads on open | 3.9 MB, **120 KB gzipped**, 0.8 s |
+| the map in a browser, from navigation to drawn | 2.4 s |
+
+Every read pays a stat of every file (it is how a hand edit is seen at once), which is most of the
+0.1–0.2 s. Nothing here stops a 10,000-document map; the open question at that size is the agent's,
+not the service's — and that is what the walk above starts to measure.
+
 ## Korean questions on the English map
 
 Four of the same questions asked in Korean ([../philosophy/questions-ko.yaml](../philosophy/questions-ko.yaml),

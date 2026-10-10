@@ -64,6 +64,10 @@ const live = await (await realFetch(BASE + "/api/knowledge/regions")).json();
 // From `fetch`, not `source`: `source` looks like the directory and is not — hyphens come back
 // as underscores, so using it as a name produces one that does not exist.
 const areas = (live.regions || []).map((r) => String(r.fetch).split("/").pop());
+// Until the map has loaded, not a fixed pause: on a map of 10,000 documents the graph takes most of a
+// second to arrive, and the check read an empty backbone as "areas missing" (2026-10-10).
+for (let i = 0; i < 200 && state.regions.length < areas.length; i++) await new Promise((r) => setTimeout(r, 100));
+await settle();
 check(`every area the API has is on the map (${areas.length})`, areas.every((a) => texts().includes(a)));
 check("the config was read", state.cfg && typeof state.cfg.derives === "boolean");
 
