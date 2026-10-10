@@ -1,0 +1,51 @@
+{
+ "id": "s5",
+ "tree": "folded",
+ "q": "Someone we brought in for a half-day session doesn't charge VAT. What do I need back from them, and from what amount does it start to matter?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "evidence-vat-exempt"
+ ],
+ "collected": [
+  "sole-trader-vendor-registration",
+  "vendor-registration-shortcuts-table",
+  "one-off-purchase-vendor-registration",
+  "evidence-vat-exempt",
+  "evidence-vat-exempt-categories"
+ ],
+ "precision": 0.2,
+ "turns": 15,
+ "opens": 9,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 6165,
+ "usage": {
+  "in": 30,
+  "out": 1495,
+  "cache_write": 125300,
+  "cache_read": 0,
+  "cost_usd": 0.51621
+ },
+ "seconds": 59.1,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-diligence",
+  "BACK\n\n\n<invoke name=\"x\">\n</invoke>",
+  "OPEN procurement\n\n\n<invoke name=\"x\">\n</invoke>",
+  "OPEN vendor",
+  "OPEN sec-vendor-registration-cases",
+  "READ sole-trader-vendor-registration\nREAD vendor-registration-shortcuts-table",
+  "READ one-off-purchase-vendor-registration",
+  "BACK",
+  "OPEN expense",
+  "OPEN evidence",
+  "OPEN sec-evidence-in-awkward-cases",
+  "OPEN sec-evidence-in-awkward-cases-2",
+  "READ evidence-vat-exempt\nREAD evidence-vat-exempt-categories",
+  "DONE"
+ ]
+}

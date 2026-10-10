@@ -30,7 +30,9 @@ class CuratorStore:
         cur: dict[str, dict] = {}
         for e in self._lines():                                    # last state wins
             if e.get("event") == "proposal": cur[e["id"]] = {**e, "status": "pending"}
-            elif e.get("event") == "status" and e["id"] in cur: cur[e["id"]].update({"status": e["status"], "why": e.get("why"), "at_status": e["at"]})
+            # The reviewer's reason beside the proposer's, not over it: a rejected proposal read back
+            # with the rejection as its own "why" (2026-10-10).
+            elif e.get("event") == "status" and e["id"] in cur: cur[e["id"]].update({"status": e["status"], "decided_why": e.get("why"), "at_status": e["at"]})
         out = list(cur.values())
         return [p for p in out if p["status"] == status] if status else out
 

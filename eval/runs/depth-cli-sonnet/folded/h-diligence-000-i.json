@@ -1,0 +1,40 @@
+{
+ "id": "h-diligence-000-i",
+ "tree": "folded",
+ "q": "A company in daejeon, eight million won, just office consumables: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o1-value-w1-goods-k1"
+ ],
+ "collected": [
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-legend-goods",
+  "hard-diligence-row-origin-o1-value-w1-goods-k1"
+ ],
+ "precision": 0.25,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3168,
+ "usage": {
+  "in": 10,
+  "out": 105,
+  "cache_write": 24785,
+  "cache_read": 0,
+  "cost_usd": 0.10021
+ },
+ "seconds": 16.6,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-diligence",
+  "READ hard-diligence-legend-origin\nREAD hard-diligence-legend-value\nREAD hard-diligence-legend-goods",
+  "READ hard-diligence-row-origin-o1-value-w1-goods-k1",
+  "DONE"
+ ]
+}

@@ -58,7 +58,7 @@ do what retrieval does in one call, that is the finding, and it is only visible 
 allowed. A cost ceiling, if the design wants one, belongs in the report — fitted to measured walks —
 not in the harness that measures them.
 """
-import json, os, re, time, urllib.error, urllib.request
+import json, os, re, sys, time, urllib.error, urllib.request
 
 READ_CLIP = 6000      # the real server clips too; a walk that reads forty rows must not be free
 
@@ -89,6 +89,30 @@ SYSTEM = (
  "answer, not a detour.")
 
 
+def _limit_wait(text: str) -> float:
+    """Seconds until a usage limit resets, from what the CLI said; 0 when it was not a limit.
+
+    The CLI reports a limit as text, in a few shapes — "usage limit reached|<epoch>", "resets 3pm",
+    "rate_limit", HTTP 429. Anything recognisably a limit with no time in it waits fifteen minutes and
+    asks again."""
+    import re as _re
+    low = text.lower()
+    if not any(w in low for w in ("usage limit", "rate limit", "rate_limit", "limit reached", "hit your limit", "429", "overloaded")):
+        return 0
+    m = _re.search(r"\|(\d{10})\b", text)
+    if m:
+        return max(60.0, float(m.group(1)) - time.time() + 60)
+    m = _re.search(r"resets?\s+(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)?", low)
+    if m:
+        h, mi, ap = int(m.group(1)), int(m.group(2) or 0), m.group(3)
+        if ap == "pm" and h < 12: h += 12
+        if ap == "am" and h == 12: h = 0
+        now = time.localtime(); target = time.mktime((now.tm_year, now.tm_mon, now.tm_mday, h, mi, 0, 0, 0, -1))
+        if target <= time.time(): target += 86400
+        return target - time.time() + 60
+    return 900.0
+
+
 class Agent:
     def __init__(self, rows, children, one_liner, has_body, budget=None, steps=30,
                  model=None, provider=None, body=None, overlay=False):
@@ -107,7 +131,14 @@ class Agent:
         # not a routing-logic failure, an instruction-following one, and the two are exactly what Q3
         # is trying to keep apart. A weak router turns every question into "was the model able".
         self.provider = provider or os.environ.get("ROUTER_PROVIDER", "anthropic")
-        if self.provider == "openai":
+        if self.provider == "claude-cli":
+            # A fresh, isolated `claude -p` session per turn: no tools, no MCP servers, no settings, no
+            # CLAUDE.md (an empty working directory), this walker's own system prompt in place of the
+            # CLI's. For runs without API credit; the transcript goes as one message per turn rather
+            # than as API messages, and a result says so (2026-10-10).
+            self.model = model or os.environ.get("ROUTER_MODEL", "sonnet")
+            self.base, self.key = "claude-cli", ""
+        elif self.provider == "openai":
             self.base, self.key = "https://api.openai.com", os.environ["EMBED_API_KEY"]
             self.model = model or os.environ.get("ROUTER_MODEL", "gpt-5")
         else:
@@ -115,7 +146,41 @@ class Agent:
             self.key = os.environ["ONTOLOGY_LLM_API_KEY"]
             self.model = model or os.environ.get("ROUTER_MODEL", "claude-opus-5")
 
+    def _ask_cli(self, convo):
+        import subprocess, tempfile
+        if not getattr(self, "_empty", None): self._empty = tempfile.mkdtemp(prefix="walker-")
+        parts = [("USER" if m["role"] == "user" else "YOU (your earlier reply)") + ":\n" + m["content"] for m in convo]
+        prompt = ("The conversation so far, oldest first. Reply to the last USER message with commands only, "
+                  "exactly as your instructions say.\n\n" + "\n\n---\n\n".join(parts))
+        last = ""
+        for attempt in range(3):
+            r = subprocess.run(["claude", "-p", "--model", self.model, "--tools", "", "--strict-mcp-config",
+                                "--setting-sources", "", "--disable-slash-commands", "--no-session-persistence",
+                                "--system-prompt", self._sys, "--output-format", "json"],
+                               input=prompt, capture_output=True, text=True, cwd=self._empty, timeout=600)
+            try: d = json.loads(r.stdout)
+            except Exception: d = {}
+            if d.get("terminal_reason") == "completed" and d.get("result") is not None:
+                u = d.get("usage") or {}
+                self.usage["in"] += u.get("input_tokens", 0); self.usage["out"] += u.get("output_tokens", 0)
+                self.usage["cache_write"] += u.get("cache_creation_input_tokens", 0)
+                self.usage["cache_read"] += u.get("cache_read_input_tokens", 0)
+                self.usage["cost_usd"] = self.usage.get("cost_usd", 0) + float(d.get("total_cost_usd") or 0)
+                self.cli_models = sorted(set(getattr(self, "cli_models", [])) | set((d.get("modelUsage") or {}).keys()))
+                return d["result"]
+            last = (r.stderr or r.stdout or "")[-300:]
+            wait = _limit_wait(f"{r.stdout}\n{r.stderr}\n{d.get('result') or ''}")
+            if wait:
+                # A usage limit, not a failure: wait for the reset and ask again, as many times as it
+                # takes — an unattended run must pick up where it stopped, not record a miss.
+                sys.stderr.write(f"agent: usage limit — waiting {int(wait)}s for the reset\n")
+                time.sleep(wait)
+                continue
+            time.sleep(5 * (attempt + 1))
+        raise RuntimeError(f"agent: claude -p failed: {last}")
+
     def _ask(self, convo):
+        if self.provider == "claude-cli": return self._ask_cli(convo)
         if self.provider == "openai":
             url, hdr = self.base + "/v1/chat/completions", {}
             body = {"model": self.model, "max_tokens": 2000,

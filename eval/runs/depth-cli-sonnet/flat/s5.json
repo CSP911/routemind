@@ -1,0 +1,44 @@
+{
+ "id": "s5",
+ "tree": "flat",
+ "q": "Someone we brought in for a half-day session doesn't charge VAT. What do I need back from them, and from what amount does it start to matter?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "evidence-vat-exempt"
+ ],
+ "collected": [
+  "sole-trader-vendor-registration",
+  "vendor-registration-shortcuts-table",
+  "one-off-purchase-vendor-registration",
+  "evidence-vat-exempt",
+  "evidence-vat-exempt-categories"
+ ],
+ "precision": 0.2,
+ "turns": 8,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 6165,
+ "usage": {
+  "in": 16,
+  "out": 849,
+  "cache_write": 127060,
+  "cache_read": 873,
+  "cost_usd": 0.5168493000000001
+ },
+ "seconds": 28.1,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "OPEN vendor",
+  "READ sole-trader-vendor-registration\nREAD vendor-registration-shortcuts-table\nREAD one-off-purchase-vendor-registration",
+  "BACK",
+  "OPEN expense",
+  "OPEN evidence",
+  "READ evidence-vat-exempt\nREAD evidence-vat-exempt-categories",
+  "DONE"
+ ]
+}

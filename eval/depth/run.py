@@ -27,7 +27,9 @@ os.environ.setdefault("BENCH_EXTRA_CORPUS", "bench/corpus-hard")
 import run as bench                    # noqa: E402  the bench's own corpus and hop 0
 from agent import Agent                # noqa: E402
 
-OUT = ROOT / "eval" / "runs" / "depth"
+# A second run with another walker goes beside the first, never into it: DEPTH_RUN=cli-sonnet writes to
+# eval/runs/depth-cli-sonnet/. The first run (claude-sonnet-5 through the API) stays where it is.
+OUT = ROOT / "eval" / "runs" / ("depth" + (f"-{os.environ['DEPTH_RUN']}" if os.environ.get("DEPTH_RUN") else ""))
 GOLD = ["eval/gold/pilot.yaml", "eval/gold/hard.yaml", "eval/gold/hard-temporal.yaml"]
 PILOT = ["e1", "s1", "h-perdiem-000-i", "h-threshold-000-d", "t-accrual-01", "t-overtime-05"]
 
@@ -96,7 +98,9 @@ def walk_one(tree, q, agent_args):
 
 
 def cost(u):
-    # Sonnet-class list prices per million tokens; an estimate, said so wherever it is printed.
+    # What the CLI reported when the walker was `claude -p`; otherwise Sonnet-class list prices per
+    # million tokens — an estimate, said so wherever it is printed.
+    if "cost_usd" in u: return float(u["cost_usd"])
     return (u["in"] * 3 + u["cache_write"] * 3.75 + u["cache_read"] * 0.3 + u["out"] * 15) / 1e6
 
 

@@ -1,0 +1,36 @@
+{
+ "id": "e2",
+ "tree": "folded",
+ "q": "Who qualifies for family care leave, and which family members does it cover?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "family-care-leave-eligibility"
+ ],
+ "collected": [
+  "family-care-leave-eligibility"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1350,
+ "usage": {
+  "in": 8,
+  "out": 85,
+  "cache_write": 9869,
+  "cache_read": 0,
+  "cost_usd": 0.040342
+ },
+ "seconds": 12.1,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-leave-of-absence-other-than-parental",
+  "READ family-care-leave-eligibility",
+  "DONE"
+ ]
+}

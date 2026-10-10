@@ -1,0 +1,45 @@
+{
+ "id": "s3",
+ "tree": "flat",
+ "q": "Nobody did any work on the Sunday while we were abroad. Who decides whether it counts, and does it still pay?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "trip-attendance-case-index",
+  "trip-attendance-outcomes-table",
+  "weekend-trip-case",
+  "trip-hours-recording-table",
+  "trip-attendance-rule",
+  "expense-trip-days-weekend-lieu",
+  "expense-trip-days-weekend-lieu-worked-example",
+  "expense-trip-days-discrepancy-owner"
+ ],
+ "precision": 0.0,
+ "turns": 8,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 9627,
+ "usage": {
+  "in": 16,
+  "out": 1165,
+  "cache_write": 143721,
+  "cache_read": 867,
+  "cost_usd": 0.5866527
+ },
+ "seconds": 32.8,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance",
+  "READ trip-attendance-case-index\nREAD trip-attendance-outcomes-table\nREAD weekend-trip-case",
+  "READ trip-hours-recording-table\nREAD trip-attendance-rule",
+  "BACK",
+  "OPEN expense",
+  "READ expense-trip-days-weekend-lieu\nREAD expense-trip-days-weekend-lieu-worked-example\nREAD expense-trip-days-discrepancy-owner",
+  "DONE"
+ ]
+}

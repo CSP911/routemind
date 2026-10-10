@@ -1,0 +1,40 @@
+{
+ "id": "h-threshold-120-i",
+ "tree": "flat",
+ "q": "A consultant's time, around 12 million won, just the once: whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c2-amount-v3-term-m1"
+ ],
+ "collected": [
+  "hard-threshold-legend-revision",
+  "hard-threshold-legend-amount",
+  "hard-threshold-legend-category",
+  "hard-threshold-legend-term",
+  "hard-threshold-row-category-c2-amount-v3-term-m1"
+ ],
+ "precision": 0.2,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4300,
+ "usage": {
+  "in": 8,
+  "out": 227,
+  "cache_write": 36705,
+  "cache_read": 867,
+  "cost_usd": 0.1491927
+ },
+ "seconds": 14.9,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "READ hard-threshold-legend-revision\nREAD hard-threshold-legend-amount\nREAD hard-threshold-legend-category\nREAD hard-threshold-legend-term",
+  "READ hard-threshold-row-category-c2-amount-v3-term-m1",
+  "DONE"
+ ]
+}

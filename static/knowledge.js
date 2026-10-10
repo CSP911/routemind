@@ -128,7 +128,8 @@
     // Every write answers with the lines whose tables it changed (docs/CHANGE.md). A person at the
     // map is shown them and not stopped: they can see the map, and an agent's door is the one that
     // refuses an undecided line. Here, under every write there is, rather than in each form.
-    if (data && Array.isArray(data.impacted) && data.impacted.length) staleShow(data.impacted);
+    const impacted = (data && (Array.isArray(data.impacted) ? data.impacted : data.result && data.result.impacted)) || [];
+    if (impacted.length) staleShow(impacted);
     return data;
   }
   const post = (path, body) => request(path, {
@@ -396,13 +397,16 @@
           const subTiles = (state.files.get(openNode) || []).map((c) => tileFor(c, r.as.key, k + 1, openNode));
           const subActions = asActions(r.as, openNode, subTiles);
           const subNote = noteFor(subTiles);
-          const sm = rackMetrics(subTiles, { title: openNode, note: subNote, actions: subActions, cap, wrap: plans.length > 1 });
+          // Titled by the node's name, not its address: "법인카드 분실", not "beobinkadeu-bunsil" — the
+          // address is a romanisation nobody typed (2026-10-10). An area's rack keeps its directory.
+          const subTitle = (state.nodes.find((x) => x.id === openNode) || {}).name || openNode;
+          const sm = rackMetrics(subTiles, { title: subTitle, note: subNote, actions: subActions, cap, wrap: plans.length > 1 });
           // Kept inside its own column where it fits, and inside the canvas always — a sub-rack that
           // wandered under the neighbouring column would read as belonging to it.
           const lo = Math.max(20, Math.min(r.left, width - sm.w - 20));
           const hi = Math.max(lo, Math.min(r.left + r.w - sm.w, width - sm.w - 20));
           const sub = rackBox(subTiles, {
-            title: openNode, note: subNote, left: Math.min(Math.max(ax - sm.w / 2, lo), hi),
+            title: subTitle, note: subNote, left: Math.min(Math.max(ax - sm.w / 2, lo), hi),
             top: above.bottom + 48, sub: true, actions: subActions, metrics: sm, openNode: path[k + 1] || null,
             drop: { id: openNode, area: r.as.key, chain, label: openNode },
           });
@@ -1749,6 +1753,15 @@
     card.append(facts);
     if (toArea !== row.ownerRegion) {
       card.append(el("p", "kn-fnote", t("knowledge.move.crossArea").replace("{from}", row.ownerRegion).replace("{to}", toArea)));
+      // Into an exported area, out of one that is not: what moves becomes readable by every circuit
+      // holding this install's key. The change-set API refuses that unless it is acknowledged; a drag
+      // made it with no word at all (2026-10-10). Said here, before the button, from the two areas'
+      // own answers.
+      const warn = el("p", "kn-fnote is-warn");
+      card.append(warn);
+      Promise.all([request("regions/" + encodeURIComponent(row.ownerRegion)), request("regions/" + encodeURIComponent(toArea))])
+        .then(([a, b]) => { if (b.export && !a.export) warn.textContent = t("knowledge.move.exposes").replace("{to}", toArea); })
+        .catch(() => {});
     }
     card.append(actions(
       button("common.cancel", "quiet", () => $("knRawDialog").close()),
@@ -1949,7 +1962,12 @@
     card.append(el("h3", "kn-cf-title", t("knowledge.del.title").replace("{area}", name)));
     card.append(el("p", "kn-cf-lead", t("knowledge.del.holdsAS").replace("{n}", String(held.length))));
     const list = el("div", "kn-chiprow");
-    for (const x of held) list.append(el("span", "kn-chip", x));
+    // By name, with the address on hover: "법인카드 분실", not "beobinkadeu-bunsil".
+    for (const x of held) {
+      const chip = el("span", "kn-chip", (state.nodes.find((n) => n.id === x) || {}).name || x);
+      chip.title = x;
+      list.append(chip);
+    }
     const box = el("div", "kn-uncovered");
     box.append(list);
     card.append(box);
@@ -2043,7 +2061,7 @@
       const box = el("div", "kn-uncovered");
       box.append(el("span", "kn-fact-k", t("knowledge.del.alsoGoes").replace("{n}", String(inside.length))));
       const list = el("div", "kn-chiprow");
-      for (const x of inside) list.append(el("span", "kn-chip", x));
+      for (const x of inside) { const c = el("span", "kn-chip", (state.nodes.find((n) => n.id === x) || {}).name || x); c.title = x; list.append(c); }
       box.append(list);
       card.append(box);
     }
@@ -2119,7 +2137,7 @@
       button("knowledge.create", "primary", (b) => guarded(b, async () => {
         const src = source.value.trim();
         if (!NAME_ID.test(src)) throw new Error(t("knowledge.bb.badAsName"));
-        if (!useWhen.value.trim()) throw new Error(t("knowledge.bb.useWhen") + " " + t("knowledge.required"));
+        if (!useWhen.value.trim()) throw new Error(tv("knowledge.fieldRequired", { field: t("knowledge.bb.useWhen") }));
         // Derived, not asked for. `name` is the area's name in display form; the API needs a
         // representative to have one and nothing an agent reads ever shows it.
         const label = src.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -2406,7 +2424,16 @@
       state.curatorOn = true;
       const add = (key, p) => { if (!key) return; if (!next.has(key)) next.set(key, []); next.get(key).push(p); };
       for (const p of rows) {
+        // A change set an agent's `here` sent to the queue rewords an area's sentence, so it waits on
+        // the Back-Bone with the other hop-0 changes. It was skipped here, and the person the agent
+        // said "it is waiting in the review queue" to could not find it anywhere (2026-10-10).
+        if (p.type === "change") { add("__bb", p); continue; }
         if (p.type !== "route") continue;
+        // A proposal whose target is gone has nowhere on the map to wear its flag; it waits on the
+        // Back-Bone, where it can at least be rejected rather than hang in the queue for ever.
+        const gone = p.scope === "entity" ? !state.nodes.some((x) => x.id === p.entity)
+          : !BB_SCOPES.has(p.scope) && p.region && !state.regions.some((r) => norm(r.source) === norm(p.region));
+        if (gone) { add("__bb", p); continue; }
         if (p.scope === "entity") {
           // One row in a node's table: its own rack wears the flag, and its area counts it, so the
           // map shows there is work without the node being open.
@@ -2441,15 +2468,44 @@
     showEditor(true);
   }
 
+  /** A queued change set, as a reviewer has to see it: who sent it and why, each decision in plain
+   *  words, and the lines over it — reworded ones before and after. */
+  function changeBlockBody(box, p) {
+    const set = p.set || {};
+    if (p.submitted_by) box.append(el("p", "kn-fnote", tv("knowledge.change.by", { who: p.submitted_by })));
+    const list = el("ul", "kn-change-list");
+    const ids = p.ids || {};
+    const say = (d) => {
+      const ref = (x) => (x && String(x).startsWith("$") ? (ids[x] || x) : x) || "";
+      switch (d.op) {
+        case "create": return tv("knowledge.change.create", { name: d.name || "", parent: ref(d.parent) || (d.area || "") });
+        case "move": return tv("knowledge.change.move", { id: d.id, parent: ref(d.parent) });
+        case "reword": return tv("knowledge.change.reword", { id: d.id, field: d.field });
+        case "keep": return tv("knowledge.change.keep", { id: d.id, field: d.field });
+        case "write": return tv("knowledge.change.write", { id: d.id });
+        case "delete": return tv("knowledge.change.delete", { id: d.id });
+        default: return d.op;
+      }
+    };
+    for (const d of set.decisions || []) list.append(el("li", null, say(d)));
+    box.append(list);
+    for (const d of (set.decisions || []).filter((x) => x.op === "reword")) {
+      const cur = d.field === "use_when" ? (state.regions.find((r) => r.representative === d.id) || {}).use_when
+        : (state.nodes.find((n) => n.id === d.id) || {}).desc;
+      box.append(beforeAfter({ field: d.field, before: cur || "", after: d.after, region: d.id }));
+    }
+  }
+
   function reviewBlock(p, key) {
     const box = el("div", "kn-review");
     const head = el("div", "kn-card-top");
-    head.append(el("span", "kn-type", t("knowledge.type.route")));
+    head.append(el("span", "kn-type", t(p.type === "change" ? "knowledge.type.change" : "knowledge.type.route")));
     if (p.scope) head.append(el("span", "kn-scope", t(SCOPE_KEY[p.scope] || p.scope)));
     head.append(el("span", "kn-when", when(p.at)));
     box.append(head);
     if (p.why) box.append(el("p", "kn-fnote", p.why));
-    box.append(beforeAfter({ ...p, region: p.region || p.entity, peer: p.peer }));
+    if (p.type === "change") changeBlockBody(box, p);
+    else box.append(beforeAfter({ ...p, region: p.region || p.entity, peer: p.peer }));
 
     const why = input("", { placeholder: t("knowledge.rejectPlaceholder") });
     const decide = (decision) => (b) => guarded(b, async () => {
@@ -2707,9 +2763,23 @@
    *  gives no address of its own leaves it empty and asking — or Suggest translates one. */
   function addressField(nameInput, prefix) {
     const addr = input("", { class: "kn-input is-mono", spellcheck: "false", placeholder: "billing-gateway" });
-    let touched = false;
+    let touched = false, pending = null, wait = null;
     addr.addEventListener("input", () => { touched = Boolean(addr.value.trim()); });
-    nameInput.addEventListener("input", () => { if (!touched) addr.value = idFor(nameInput.value); });
+    // A name in Hangul, kana or with accents gives no address by `idFor`, and the field stayed empty —
+    // "법인카드 분실" was refused as "the address must be ASCII kebab-case" with nothing typed there.
+    // The server romanises it (`suggest/id`, the same resolution a save performs), so ask it.
+    const fill = () => {
+      const n = nameInput.value.trim();
+      if (touched) return;
+      if (!/[^\x00-\x7f]/.test(n)) { addr.value = idFor(n); note.textContent = ""; return; }
+      pending = post("suggest/id", { name: n }).then((d) => {
+        if (touched || nameInput.value.trim() !== n) return;
+        addr.value = String(d.id || "");
+        note.textContent = d.from === "model" ? t("knowledge.field.idByModel") : "";
+      }).catch(() => { if (!touched) { addr.value = ""; note.textContent = t("knowledge.noAddressIn"); } })
+        .finally(() => { pending = null; });
+    };
+    nameInput.addEventListener("input", () => { clearTimeout(wait); wait = setTimeout(fill, 250); });
     const row = labelled("knowledge.field.id", addr, t("knowledge.field.idHint").replace("{prefix}", prefix));
     row.append(suggest(async () => {
       if (!nameInput.value.trim()) throw new Error(t("knowledge.bb.draftNeedsName"));
@@ -2724,6 +2794,11 @@
     row.append(note);
     return {
       row,
+      /** Wait for an address still being worked out from the name, so a quick Create is not refused. */
+      async settle() {
+        if (wait) { clearTimeout(wait); wait = null; fill(); }
+        if (pending) await pending;
+      },
       read() {
         const v = addr.value.trim();
         if (!NAME_ID.test(v)) throw new Error(t("knowledge.badId"));
@@ -2861,7 +2936,10 @@
         chosen.textContent = file.name;
         if (onLoad) onLoad();
         if (nameInput && !nameInput.value.trim() && !nameInput.disabled) {
-          nameInput.value = fileNameFor(file.name);
+          // The file's own name, as its author wrote it — "분실 신고 절차.md" fills "분실 신고 절차", and the
+          // address is worked out from that like any typed name. `fileNameFor` gave "" for it, and the
+          // form refused a file it had just read (2026-10-10).
+          nameInput.value = String(file.name || "").replace(/\.(md|txt|markdown)$/i, "").trim();
           if (onName) onName();
         }
         toast(t("knowledge.uploaded").replace("{name}", file.name));
@@ -2970,10 +3048,10 @@
     card.append(actions(
       button("common.cancel", "quiet", closeCard),
       button("knowledge.create", "primary", (b) => guarded(b, async () => {
-        if (!label.value.trim()) throw new Error(t("knowledge.field.name") + " " + t("knowledge.required"));
-        if (!one.value.trim()) throw new Error(t("knowledge.field.oneLiner") + " " + t("knowledge.required"));
+        if (!label.value.trim()) throw new Error(tv("knowledge.fieldRequired", { field: t("knowledge.field.name") }));
+        if (!one.value.trim()) throw new Error(tv("knowledge.fieldRequired", { field: t("knowledge.field.oneLiner") }));
         const made = await send("nodes", "POST", {
-          id: addr.read(), name: label.value.trim(), region: regionDir, one_liner: one.value.trim(), holds: "content",
+          id: (await addr.settle(), addr.read()), name: label.value.trim(), region: regionDir, one_liner: one.value.trim(), holds: "content",
           ...(parent ? { parent } : {}),
         });
         const nid = String(made?.id || made?.node || "");
@@ -3102,7 +3180,7 @@
         if (!fname || !NODE_FILE.test(fname)) throw new Error(r.error || t("knowledge.noAddressIn"));
         if (!desc.value.trim()) throw new Error(t("knowledge.descRequired"));
         await send(`nodes/${encodeURIComponent(node)}/files/${encodeURIComponent(fname)}`, "PUT",
-          { content: body.value, description: desc.value.trim(), name: r.name });
+          { content: body.value, description: desc.value.trim(), name: r.name, create_only: true });
         await afterWrite(node);
         $("knRawDialog").close();       // it is on the map now, in the rack that was open
       }, "knowledge.created")),

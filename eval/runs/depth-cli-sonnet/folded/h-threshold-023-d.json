@@ -1,0 +1,36 @@
+{
+ "id": "h-threshold-023-d",
+ "tree": "folded",
+ "q": "For category C1, amount V3, term M4, whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c1-amount-v3-term-m4"
+ ],
+ "collected": [
+  "hard-threshold-row-category-c1-amount-v3-term-m4"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1013,
+ "usage": {
+  "in": 8,
+  "out": 94,
+  "cache_write": 16909,
+  "cache_read": 0,
+  "cost_usd": 0.068592
+ },
+ "seconds": 13.5,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-threshold",
+  "READ hard-threshold-row-category-c1-amount-v3-term-m4",
+  "DONE"
+ ]
+}

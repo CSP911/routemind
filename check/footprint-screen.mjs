@@ -103,9 +103,11 @@ const fpTiles = tiles.filter((n) => cls(n).includes("is-fp"));
 const nowTiles = tiles.filter((n) => cls(n).includes("is-fp-now"));
 check("  the walked tiles carry the footprint mark", fpTiles.length >= 3, `${fpTiles.length} marked`);
 check("  exactly one tile is marked as now", nowTiles.length === 1, `${nowTiles.length}`);
-// Drawn, not only remembered: each node on the path is a sub-rack on the map, titled with its id.
+// Drawn, not only remembered: each node on the path is a sub-rack on the map, titled with its name —
+// not its address, which for a Korean name is a romanisation nobody typed (2026-10-10).
 const topoText = find(byId.knTopo, (n) => n.textContent).map((n) => n.textContent);
-check("  and the sub-racks down to the document are drawn on the map", ["purchase-request", "approval-threshold"].every((id) => topoText.includes(`[${id}]`)),
+const nameOf = (id) => (state.nodes.find((n) => n.id === id) || {}).name || id;
+check("  and the sub-racks down to the document are drawn on the map, titled by name", ["purchase-request", "approval-threshold"].every((id) => topoText.includes(`[${nameOf(id)}]`) && nameOf(id) !== id),
       JSON.stringify(topoText.filter((x) => /threshold|purchase/.test(x))));
 check("  even though the browser held a map cached before nodes carried their parent", state.nodes.some((n) => "parent" in n));
 

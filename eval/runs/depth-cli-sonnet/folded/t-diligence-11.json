@@ -1,0 +1,39 @@
+{
+ "id": "t-diligence-11",
+ "tree": "folded",
+ "q": "What screening was required for a new supplier in 2023, and what had it become by 2025? I need both versions of supplier due diligence, not just the current one.",
+ "needs": "all",
+ "lever": "both",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "supplier-due-diligence",
+  "hard-diligence-v2"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-v2",
+  "supplier-due-diligence"
+ ],
+ "precision": 0.6666666666666666,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3734,
+ "usage": {
+  "in": 8,
+  "out": 236,
+  "cache_write": 10486,
+  "cache_read": 0,
+  "cost_usd": 0.04432
+ },
+ "seconds": 13.3,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision\nREAD hard-diligence-v2\nOPEN sec-supplier-due-diligence",
+  "READ supplier-due-diligence",
+  "DONE"
+ ]
+}

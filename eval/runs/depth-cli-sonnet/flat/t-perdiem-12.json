@@ -1,0 +1,41 @@
+{
+ "id": "t-perdiem-12",
+ "tree": "flat",
+ "q": "We are reconciling claims from 2023 and from 2025 against the overseas per-diem. Which two versions do I need, and what was the nightly lodging cap under each?",
+ "needs": "all",
+ "lever": "both",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "overseas-rates",
+  "hard-perdiem-v2"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-v2",
+  "overseas-rates"
+ ],
+ "precision": 0.6666666666666666,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3367,
+ "usage": {
+  "in": 12,
+  "out": 388,
+  "cache_write": 74319,
+  "cache_read": 883,
+  "cost_usd": 0.30126830000000004
+ },
+ "seconds": 20.7,
+ "model": "sonnet",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision\nREAD hard-perdiem-v2",
+  "OPEN travel-expense",
+  "OPEN travel-overseas",
+  "READ overseas-rates",
+  "DONE"
+ ]
+}

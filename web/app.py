@@ -817,6 +817,8 @@ def api_knowledge_put_node_file(node_id: str, filename: str, payload: dict, requ
     # the address it was romanised into. Dropped here until 2026-10-10, so the map showed the slug.
     if str(data.get("name") or "").strip():
         body["name"] = str(data["name"]).strip()[:200]
+    # "This is a new document": an existing one under the same name is refused rather than replaced.
+    if data.get("create_only"): body["create_only"] = True
     return _ontology_proxy("PUT", "/v1/nodes/" + quote(node_id, safe="") + "/files/" + quote(filename, safe=""), actor, body)
 
 

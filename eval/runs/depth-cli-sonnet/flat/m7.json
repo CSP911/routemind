@@ -1,0 +1,39 @@
+{
+ "id": "m7",
+ "tree": "flat",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "emergency-spend-ceiling",
+  "hard-moved-threshold",
+  "advance-reconciliation-deadline",
+  "advance-shortfall-case",
+  "advance-authority-table"
+ ],
+ "precision": 0.0,
+ "turns": 5,
+ "opens": 2,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 6119,
+ "usage": {
+  "in": 10,
+  "out": 1040,
+  "cache_write": 32472,
+  "cache_read": 852,
+  "cost_usd": 0.1403932
+ },
+ "seconds": 20.8,
+ "model": "sonnet",
+ "log": [
+  "OPEN approval",
+  "READ emergency-spend-ceiling\nREAD hard-moved-threshold",
+  "READ advance-reconciliation-deadline\nREAD advance-shortfall-case\nREAD advance-authority-table",
+  "BACK\n\n\n<invoke_placeholder>\nOPEN procurement",
+  "DONE"
+ ]
+}

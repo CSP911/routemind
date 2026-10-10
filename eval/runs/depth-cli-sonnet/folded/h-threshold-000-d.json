@@ -1,0 +1,36 @@
+{
+ "id": "h-threshold-000-d",
+ "tree": "folded",
+ "q": "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "collected": [
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1002,
+ "usage": {
+  "in": 8,
+  "out": 310,
+  "cache_write": 16566,
+  "cache_read": 0,
+  "cost_usd": 0.06938
+ },
+ "seconds": 16.2,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "OPEN sec-hard-threshold",
+  "READ hard-threshold-row-category-c1-amount-v1-term-m1",
+  "Based on the row for category C1, amount V1, term M1 (current, in force from 2026-01-01): the team lead signs it off, and no competing quotes are needed — so you do not have to get other prices first.\n\nDONE"
+ ]
+}

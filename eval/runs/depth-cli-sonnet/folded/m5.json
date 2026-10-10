@@ -1,0 +1,44 @@
+{
+ "id": "m5",
+ "tree": "folded",
+ "q": "A counterparty signed on a power of attorney that had already lapsed. What happens now?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "expired-poa-relied-upon"
+ ],
+ "collected": [
+  "standard-contract-clauses",
+  "liability-and-indemnity-position",
+  "expired-poa-relied-upon",
+  "external-signing-authority-overview"
+ ],
+ "precision": 0.25,
+ "turns": 9,
+ "opens": 7,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 5824,
+ "usage": {
+  "in": 18,
+  "out": 871,
+  "cache_write": 38689,
+  "cache_read": 0,
+  "cost_usd": 0.163502
+ },
+ "seconds": 35.9,
+ "model": "sonnet",
+ "log": [
+  "Most likely area is procurement (contracts, signed contract kept).\n\nOPEN procurement",
+  "<invoke name=\"OPEN\">\n<parameter name=\"id\">sec-contract-terms-the-company-insists-on</parameter>\n</invoke>\n\nYour instructions say to reply with commands only, in the plain format. Let me restate that correctly.\n\nOPEN sec-contract-terms-the-company-insists-on",
+  "READ standard-contract-clauses\nREAD liability-and-indemnity-position",
+  "BACK\nOPEN procurement\nOPEN contract-custody",
+  "OPEN sec-contract-custody-cases",
+  "BACK\nOPEN approval",
+  "OPEN sec-signing-authority-for-outside-parties",
+  "READ expired-poa-relied-upon\nREAD external-signing-authority-overview",
+  "DONE"
+ ]
+}

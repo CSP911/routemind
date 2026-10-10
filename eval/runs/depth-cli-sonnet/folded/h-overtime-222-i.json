@@ -1,0 +1,40 @@
+{
+ "id": "h-overtime-222-i",
+ "tree": "folded",
+ "q": "Liberation day, six hours, on standby at home: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d3-hours-h3-place-p3"
+ ],
+ "collected": [
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d3-hours-h3-place-p3"
+ ],
+ "precision": 0.25,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2938,
+ "usage": {
+  "in": 10,
+  "out": 147,
+  "cache_write": 26129,
+  "cache_read": 0,
+  "cost_usd": 0.10600599999999999
+ },
+ "seconds": 21.3,
+ "model": "sonnet",
+ "log": [
+  "Standby pay multiplier on a holiday is likely in attendance or payroll. Attendance seems closer to hours/leave rules.\n\nOPEN attendance",
+  "OPEN sec-hard-overtime",
+  "READ hard-overtime-legend-day\nREAD hard-overtime-legend-hours\nREAD hard-overtime-legend-place",
+  "READ hard-overtime-row-day-d3-hours-h3-place-p3",
+  "DONE"
+ ]
+}

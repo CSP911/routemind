@@ -400,7 +400,7 @@ def apply_proposal(p: dict, actor: str):
             # than drafting, and if the sentence moved in between this hands the current one back
             # rather than overwriting what someone else decided.
             n = store.node(p.get("entity") or "")
-            if not n: return {"ok": False, "error": f"entity {p.get('entity')} no longer exists"}
+            if not n: return {"ok": False, "error": f"{p.get('entity')} no longer exists", "reason": "target_missing", "code": 409}
             cur = n.get("one_liner") or ""
             if p.get("before") and cur != p["before"]:
                 return {"ok": False, "error": "conflict", "code": 409, "field": "one_liner",
@@ -415,7 +415,7 @@ def apply_proposal(p: dict, actor: str):
             # still queued has nothing to change.
             return {"ok": False, "error": "a `core` proposal changes a CORE.md row, which is no longer read — reject it"}
         r = next((x for x in store.regions() if x["dir"] == region or x["key"] == region.upper()), None)
-        if not r or not r.get("representative"): return {"ok": False, "error": f"region {region} has no representative"}
+        if not r or not r.get("representative"): return {"ok": False, "error": f"area {region} no longer exists", "reason": "target_missing", "code": 409}
         rep = store.node(r["representative"])
         # From the table, not from a two-way if. It read `"one_liner" if scope == "as" else "use_when"`,
         # which is correct for exactly the two scopes that existed and writes the wrong field for any
@@ -1114,8 +1114,20 @@ class Handler(BaseHTTPRequestHandler):
             # and showed "applied" over a queue item still sitting there. The same failure the
             # publish path had in the other direction: a status that disagrees with what happened.
             if isinstance(out, dict) and out.get("ok") is False:
-                code = (out.get("detail") or {}).get("code") if isinstance(out.get("detail"), dict) else None
-                return self._send(int(code or 409), out)
+                det = out.get("detail") if isinstance(out.get("detail"), dict) else {}
+                # Say what happened, as a refusal the screen can translate. It used to answer
+                # "apply failed" and nothing else through the web app: the current sentence a
+                # conflict had found, and "this entity no longer exists", were both dropped (2026-10-10).
+                if det.get("error") == "conflict":
+                    return self._err(409, f"the line changed since this was proposed — it now reads: {det.get('current')}",
+                                     reason="conflict", data={"id": det.get("field") or "", "current": det.get("current") or ""})
+                if out.get("error") == "no such proposal":
+                    return self._err(404, "no such proposal", reason="proposal_missing")
+                if str(out.get("error") or "").startswith("proposal is "):
+                    return self._err(409, out["error"], reason="already_decided", data={"status": out["error"][len("proposal is "):]})
+                if det.get("error"):
+                    return self._err(int(det.get("code") or 409), str(det["error"]), reason=det.get("reason"))
+                return self._err(409, str(out.get("error") or "the proposal could not be applied"))
             return self._send(200, out)
         if len(parts) == 3 and parts[0] == "nodes" and parts[2] == "one-liner-draft" and method == "POST":
             # Draft only — the line goes through the queue like an area's, never straight to disk.
@@ -1141,6 +1153,12 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, route_draft(str(body.get("region") or ""), str(body.get("scope") or ""), body.get("changed")))
         if parts == ["curator", "proposals"] and method == "POST":
             # A routing proposal raised by a person. There is no immediate-apply path — it always goes through the queue
+            # Its target must exist when it is filed: a proposal for a node or area that is not there
+            # was accepted, then hung in the queue for ever with nowhere on the map to show it.
+            ent, reg = str(body.get("entity") or "").strip(), str(body.get("region") or "").strip()
+            if ent and not store.node(ent): return self._err(404, f"there is no {ent} to propose a line for", reason="target_missing", data={"id": ent})
+            if not ent and reg and not any(r["dir"] == reg or r["key"] == reg.upper() for r in store.regions()):
+                return self._err(404, f"there is no area {reg}", reason="region_missing", data={"region": reg})
             try: return self._send(201, curator.submit_route(cstore(), body, actor))
             except ValueError as e: return self._err(422, str(e))
         if len(parts) == 2 and parts[0] == "regions" and method == "DELETE":

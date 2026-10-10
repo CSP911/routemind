@@ -1,0 +1,41 @@
+{
+ "id": "t-accrual-01",
+ "tree": "folded",
+ "q": "In March 2023, how much leave was accrued or granted for someone with two years of continuous service? Answer under the version of leave accrual that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "leave-accrual"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "accrual-rule"
+ ],
+ "precision": 0.5,
+ "turns": 8,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 1809,
+ "usage": {
+  "in": 16,
+  "out": 372,
+  "cache_write": 27519,
+  "cache_read": 0,
+  "cost_usd": 0.113828
+ },
+ "seconds": 28.8,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "BACK",
+  "March 2023 is before 2024-07-01, so the oldest version (`leave-accrual`) applies.\n\nOPEN attendance",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "DONE\n\nSomeone with two years of continuous service (1 year and over, under 3 years) is granted **15 days** per year, under the leave entitlement rule in force in March 2023 (`accrual-rule`)."
+ ]
+}

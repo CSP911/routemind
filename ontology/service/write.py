@@ -464,19 +464,21 @@ class Writer:
         the very state the validator calls an error."""
         if new_parent is None: return []
         tgt = self.store.node(new_parent)
-        if not tgt: raise WriteError(400, f"parent {new_parent} does not exist")
+        if not tgt: raise WriteError(400, f"parent {new_parent} does not exist", code="parent_missing", data={"id": new_parent})
         # A loop is checked before the area is, because it is not a fact about areas. Dropping an
         # entity onto its own child inside one area is the same mistake and has to be refused the
         # same way — `validate` would catch it, but only as "nothing was written", which tells the
         # person who just dragged something nothing about what they did.
         family = [n["id"], *self.descendants(n["id"])]
         if new_parent in family:
-            raise WriteError(409, f"parent {new_parent} is inside {n['id']} — an entity cannot hang under itself")
+            raise WriteError(409, f"parent {new_parent} is inside {n['id']} — an entity cannot hang under itself",
+                             code="move_into_itself", data={"id": n["id"]})
         if tgt["region"] == n["region"]: return []
         # An area's face cannot leave it — the area would have nothing speaking for it, and
         # `validate` refuses that state rather than inventing a new speaker.
         if n.get("role") == "representative" and not n.get("parent"):
-            raise WriteError(409, f"{n['id']} is what speaks for area {n['region']} — moving it would leave that area with no representative")
+            raise WriteError(409, f"{n['id']} is what speaks for area {n['region']} — moving it would leave that area with no representative",
+                             code="face_cannot_move", data={"id": n["id"], "region": n["region"]})
         by_id = {x["id"]: x for x in self.store.nodes()}
         out = []
         for eid in family:
@@ -533,11 +535,16 @@ class Writer:
             raise WriteError(400, f"file name: {why}", code="name_too_long",
                              data={"field": "file_name", "n": len(name.encode()), "max": NAME_MAX})
         if "content" not in body: raise WriteError(400, "content is required")
+        # A new document never replaces one silently. The screen's "new data" form and an upload use
+        # the same PUT as an edit, so a name already taken under this node overwrote that document
+        # with no warning (2026-10-10). `create_only` says "this is new": an existing one is refused.
+        if body.get("create_only") and any(f["name"] == name for f in n["files"]):
+            raise WriteError(409, f"{nid} already holds {name}", code="file_exists", data={"name": name[:-3]})
         desc = (body.get("description") or "").strip()
         existing = next((f["description"] for f in n["files"] if f["name"] == name), None)
         content = body["content"].rstrip("\n") + "\n"
         line = desc or existing or ""
-        if not line: raise WriteError(400, "description is required — it is the line an agent chooses this on")
+        if not line: raise WriteError(400, "description is required — it is the line an agent chooses this on", code="description_required")
         # A file is an entity that declares a `parent`. Writing one is writing an entity, so this is
         # `create_node`/`update_node` under an older name; the endpoint stays while the screen still
         # speaks in files.
@@ -562,7 +569,10 @@ class Writer:
                                           "body": (m.group(2) if m else text),
                                           "described_by": declared.get("described_by") or (cur or {}).get("described_by"),
                                           "path": str(cp.relative_to(self.root))})
-        return self.transact(f"node {nid}: file {name}", actor, mutate)
+        # The id it was written under, which is not always the name: a stem taken elsewhere gets the
+        # holder's prefix (`laptops-swelling`), and the screen had said `/v1/nodes/swelling`.
+        res = self.transact(f"node {nid}: file {cid}", actor, mutate)
+        return {**res, "id": cid}
 
     def delete_file(self, nid: str, name: str, actor: str) -> dict:
         n = self.store.node(nid)
@@ -583,11 +593,13 @@ class Writer:
         filled, so it is required. It is the one sentence: a CORE.md row was a second one, required
         here until 2026-10-07 though no agent was ever shown it."""
         src = str(body.get("source") or "").strip()
-        if not re.fullmatch(r"[a-z][a-z0-9-]*", src or ""): raise WriteError(400, "source must be lowercase ascii-kebab (it is the area directory name)")
+        # No trailing hyphen and no double one: `it-` and `it--support` were accepted (2026-10-10).
+        if not re.fullmatch(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*", src or ""):
+            raise WriteError(400, "source must be lowercase ascii-kebab (it is the area directory name)", code="bad_area_name", data={"region": src})
         if (why := name_too_long(src)):
             raise WriteError(400, f"source: {why}", code="name_too_long",
                              data={"field": "source", "n": len(src.encode()), "max": NAME_MAX})
-        if (self.root / "regions" / src).exists(): raise WriteError(409, f"region {src} exists")
+        if (self.root / "regions" / src).exists(): raise WriteError(409, f"region {src} exists", code="region_exists", data={"region": src})
         rep = body.get("representative") or {}
         for k in ("name", "one_liner", "use_when"):
             if not str(rep.get(k) or "").strip():
@@ -626,7 +638,8 @@ class Writer:
         if not d.is_dir(): raise WriteError(404, f"region {src} not found")
         mine = [n for n in self.store.nodes() if n["region"] == src]
         others = [n["id"] for n in mine if n.get("parent") or n.get("role") != "representative"]
-        if others: raise WriteError(409, f"region {src}: nodes remain {others} — delete them first")
+        if others: raise WriteError(409, f"region {src}: nodes remain {others} — delete them first",
+                                    code="region_not_empty", data={"region": src, "n": len(others)})
         ids = {n["id"] for n in mine}
 
         def mutate():

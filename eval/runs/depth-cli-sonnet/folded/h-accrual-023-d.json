@@ -1,0 +1,36 @@
+{
+ "id": "h-accrual-023-d",
+ "tree": "folded",
+ "q": "For type E1, tenure T3, site L4, how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "collected": [
+  "hard-accrual-row-type-e1-tenure-t3-site-l4"
+ ],
+ "precision": 1.0,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 978,
+ "usage": {
+  "in": 8,
+  "out": 58,
+  "cache_write": 18050,
+  "cache_read": 0,
+  "cost_usd": 0.072796
+ },
+ "seconds": 17.8,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-hard-accrual",
+  "READ hard-accrual-row-type-e1-tenure-t3-site-l4",
+  "DONE"
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "id": "h-overtime-000-i",
+ "tree": "folded",
+ "q": "An ordinary tuesday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "precision": 0.25,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2935,
+ "usage": {
+  "in": 10,
+  "out": 180,
+  "cache_write": 25976,
+  "cache_read": 0,
+  "cost_usd": 0.10572399999999998
+ },
+ "seconds": 18.2,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-hard-overtime",
+  "READ hard-overtime-legend-day\nREAD hard-overtime-legend-hours\nREAD hard-overtime-legend-place",
+  "READ hard-overtime-row-day-d1-hours-h1-place-p1",
+  "DONE"
+ ]
+}

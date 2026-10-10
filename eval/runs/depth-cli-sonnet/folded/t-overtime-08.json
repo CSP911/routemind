@@ -1,0 +1,40 @@
+{
+ "id": "t-overtime-08",
+ "tree": "folded",
+ "q": "I have a claim dated in 2025 and I am not sure which version of the overtime rate applies to it. Where is that written down?",
+ "needs": "any",
+ "lever": "changed",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-legend-revision"
+ ],
+ "collected": [
+  "hard-moved-overtime",
+  "hard-overtime-legend-revision",
+  "hard-overtime-v2"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 6,
+ "opens": 2,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 3532,
+ "usage": {
+  "in": 12,
+  "out": 85,
+  "cache_write": 16792,
+  "cache_read": 0,
+  "cost_usd": 0.068042
+ },
+ "seconds": 21.3,
+ "model": "sonnet",
+ "log": [
+  "Overtime rate relates to payroll likely.\n\nOPEN payroll",
+  "READ hard-moved-overtime",
+  "BACK",
+  "OPEN attendance",
+  "READ hard-overtime-legend-revision\nREAD hard-overtime-v2",
+  "DONE"
+ ]
+}

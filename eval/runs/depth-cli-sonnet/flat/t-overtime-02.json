@@ -1,0 +1,40 @@
+{
+ "id": "t-overtime-02",
+ "tree": "flat",
+ "q": "In September 2023, what multiplier was paid for ordinary overtime beyond the forty-hour week? Answer under the version of the overtime rate that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "overtime",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "hard-moved-overtime",
+  "payslip-overtime"
+ ],
+ "precision": 0.0,
+ "turns": 9,
+ "opens": 4,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 2216,
+ "usage": {
+  "in": 18,
+  "out": 468,
+  "cache_write": 125391,
+  "cache_read": 884,
+  "cost_usd": 0.5063683999999999
+ },
+ "seconds": 29.6,
+ "model": "sonnet",
+ "log": [
+  "OPEN payroll",
+  "READ hard-moved-overtime",
+  "BACK",
+  "OPEN attendance",
+  "BACK",
+  "OPEN payroll",
+  "OPEN payslip",
+  "READ payslip-overtime",
+  "DONE"
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "id": "h-overtime-120-i",
+ "tree": "flat",
+ "q": "A saturday, six hours, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d2-hours-h3-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-legend-revision",
+  "hard-overtime-row-day-d2-hours-h3-place-p1"
+ ],
+ "precision": 0.2,
+ "turns": 4,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4105,
+ "usage": {
+  "in": 8,
+  "out": 273,
+  "cache_write": 48159,
+  "cache_read": 869,
+  "cost_usd": 0.1954689
+ },
+ "seconds": 16.3,
+ "model": "sonnet",
+ "log": [
+  "Overtime on a Saturday is likely in attendance or payroll. I'll start with attendance.\n\nOPEN attendance",
+  "READ hard-overtime-legend-day\nREAD hard-overtime-legend-hours\nREAD hard-overtime-legend-place\nREAD hard-overtime-legend-revision",
+  "READ hard-overtime-row-day-d2-hours-h3-place-p1",
+  "DONE"
+ ]
+}

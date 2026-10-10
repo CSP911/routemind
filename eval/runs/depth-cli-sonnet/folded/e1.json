@@ -1,0 +1,42 @@
+{
+ "id": "e1",
+ "tree": "folded",
+ "q": "Which year-end deductions does the pre-filled data not show, and what conditions apply to them?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "year-end-manual-deduction-items"
+ ],
+ "collected": [
+  "year-end-steps",
+  "year-end-prefilled-scope",
+  "year-end-manual-deductions",
+  "year-end-manual-deduction-items",
+  "year-end-manual-deduction-rent-condition"
+ ],
+ "precision": 0.2,
+ "turns": 6,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5938,
+ "usage": {
+  "in": 12,
+  "out": 1210,
+  "cache_write": 14650,
+  "cache_read": 0,
+  "cost_usd": 0.07072400000000001
+ },
+ "seconds": 29.6,
+ "model": "sonnet",
+ "log": [
+  "OPEN payroll",
+  "OPEN year-end-tax",
+  "READ year-end-steps",
+  "OPEN sec-year-end-settlement",
+  "READ year-end-prefilled-scope\nREAD year-end-manual-deductions\nREAD year-end-manual-deduction-items\nREAD year-end-manual-deduction-rent-condition",
+  "DONE\n\nBased on the documents collected, here's the answer:\n\n## Deductions the pre-filled data does NOT show\n\nThe pre-fill only pulls data that third parties report to the NTS. It never sees:\n\n1. **Monthly rent (wolse)** — No third party reports private rent payments.\n2. **Cash donations** — Only shows up if the receiving organization is registered for the deduction.\n3. **Education fees paid directly** (to a tutor or unaffiliated institute) — Not reported unless the institute is affiliated.\n4. **Overseas medical expenses** — Foreign providers don't report to the NTS.\n5. **A dependant added mid-year** — Registration hasn't caught up with NTS records yet.\n\nAdditionally, even for items the pre-fill *does* pull in automatically (like card spending on medical expenses, or insurance premiums), it does **not** know which payments qualify as deductible or apply the relevant caps — that must be entered by hand.\n\n## Conditions that apply to each\n\n| Deduction | Evidence Needed | Key Condition / Cap |\n|---|---|---|\n| **Monthly rent** | Lease contract + resident registration matching the rented address | The employee must **not own a home anywhere in the country** — not the rented unit, not any other property. This includes an inherited-but-unsold home, a spouse's property (household assessed together), or a jeonse deposit held as an investment. Address mismatch between lease and registration also causes rejection. |\n| **Cash donations** | Receipt from the receiving organization | Organization must be a registered charity or religious body. Deduction rate: 15% of the donated amount up to 10,000,000 KRW, 30% above that. |\n| **Education fees (direct)** | Receipt from the institute/tutor | Only tuition and school fees count — **not private tutoring**. Cap: 3,000,000 KRW/child (school), 9,000,000 KRW/child (university). |\n| **Overseas medical expenses** | Invoice + proof of payment | Counts toward the medical expense category: no upper cap, but only the amount **over 3% of gross pay** qualifies — and that 3% floor is calculated against the employee's own gross pay, not the total pulled into the pre-fill. Receipts must be from a licensed medical institution or pharmacy. |\n| **Mid-year dependant** | Family register or equivalent proof | Needed because NTS records haven't caught up with the registration yet. |\n\n**General trap:** A pre-filled total is just a starting figure, not a completed return — anything not manually added is simply missing from the settlement, with no automatic retry (only a later correction/amendment)."
+ ]
+}

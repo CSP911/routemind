@@ -166,11 +166,14 @@ def validate(store: Store) -> dict:
                 errors.append(f"pointer node {n['id']}: {f} line {ref[:60]!r} is not a reference that resolves (node id or REGION/path.md)")
     # `aliases` are not checked since 2026-10-07: the resolver that read them is gone, and nothing
     # else routes on them. One still in a file is carried and ignored.
-    # spelling variants
+    # Spelling variants, among siblings. Two rows in one table that differ only by spacing or case read
+    # as one thing twice. Across the tree it is ordinary — every desk has an "Overview" — and checking
+    # it globally refused "Laptops" in a second area, and an area the screen named "Itsupport" because
+    # another was "It Support" (2026-10-10).
     norm = {}
-    for n in nodes: norm.setdefault(_norm(n["name"]), []).append(n["name"])
-    for v in norm.values():
-        if len(v) > 1: errors.append(f"node name spelling variants: {v}")
+    for n in nodes: norm.setdefault((n.get("parent") or f"@{n['region']}", _norm(n["name"])), []).append(n["name"])
+    for (par, _), v in norm.items():
+        if len(v) > 1: errors.append(f"two entries under {par.lstrip('@')} have the same name: {v}")
 
     # ---- scope ----
     # A rule that kept one game service's facts out of common files, against `known_services` in
@@ -281,8 +284,8 @@ def validate(store: Store) -> dict:
             seen.add(cur["id"]); cur = by_id.get(cur["parent"])
 
     # ---- budgets ----
-    def budget(label, n, cap):
-        if n > cap: errors.append(f"budget exceeded: {label} {n} > {cap}")
+    def budget(label, n, cap, hard=True):
+        if n > cap: (errors if hard else warnings).append(f"budget exceeded: {label} {n} > {cap}")
         elif n >= cap * 0.8: warnings.append(f"budget {label} at {n}/{cap}")
     budget("kinds", len(kinds), int(budgets.get("kinds", 12)))
     # `nodes: 70` counted the addressable things, and under two types a file was not one. Flattening
@@ -290,11 +293,17 @@ def validate(store: Store) -> dict:
     # has nothing to do with the ontology growing — the unit changed, and the cap is restated in the
     # new unit rather than raised in the old one. `nodes` is still read so an unconverted tree keeps
     # its cap.
-    budget("entities", len(nodes), int(budgets.get("entities", budgets.get("nodes", 70))))
+    # A warning, not a refusal (2026-10-10). As an error it stopped every write at the 121st entity —
+    # the shipped example uses 80 — with "budget exceeded: entities 121 > 120" in English and nothing a
+    # person could do on the screen. How big a team's map may grow is not this validator's to cap.
+    budget("entities", len(nodes), int(budgets.get("entities", budgets.get("nodes", 70))), hard=False)
     # What one person reads at once is one listing, not the whole map. The old budget could not see
     # this at all: a representative with 16 files counted as 1.
     for par, kids in Counter(n["parent"] for n in nodes if n.get("parent")).items():
-        budget(f"children of {par}", kids, int(budgets.get("children_per_entity", 25)))
+        # Also a warning: a wide table is a reason to fold it (knowledge_place says so past nine rows),
+        # not a reason to refuse the 26th document — measured, a wide table costs tokens, not accuracy
+        # (eval/depth).
+        budget(f"children of {par}", kids, int(budgets.get("children_per_entity", 25)), hard=False)
     used_kinds = {n["kind"] for n in nodes}
     for k in kinds - used_kinds: warnings.append(f"kind {k!r} is in vocab but unused")
 

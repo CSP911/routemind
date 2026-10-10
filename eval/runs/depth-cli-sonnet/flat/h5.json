@@ -1,0 +1,41 @@
+{
+ "id": "h5",
+ "tree": "flat",
+ "q": "What has to be cleared before I get on a plane for work?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "trip-extends-overseas-case",
+  "working-abroad-request",
+  "hard-moved-threshold",
+  "travel-insurance-restricted-country-exception-role",
+  "travel-insurance-restricted-country-list",
+  "travel-insurance-overview"
+ ],
+ "precision": 0.0,
+ "turns": 6,
+ "opens": 2,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 8037,
+ "usage": {
+  "in": 12,
+  "out": 825,
+  "cache_write": 53078,
+  "cache_read": 847,
+  "cost_usd": 0.2206707
+ },
+ "seconds": 24.3,
+ "model": "sonnet",
+ "log": [
+  "OPEN approval",
+  "READ trip-extends-overseas-case\nREAD working-abroad-request\nREAD hard-moved-threshold",
+  "BACK",
+  "OPEN expense",
+  "READ travel-insurance-restricted-country-exception-role\nREAD travel-insurance-restricted-country-list\nREAD travel-insurance-overview",
+  "DONE"
+ ]
+}

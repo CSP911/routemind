@@ -1,0 +1,39 @@
+{
+ "id": "h-overtime-023-d",
+ "tree": "folded",
+ "q": "For day D1, hours H3, place P4, what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "collected": [
+  "hard-moved-overtime",
+  "hard-overtime-row-day-d1-hours-h3-place-p4"
+ ],
+ "precision": 0.5,
+ "turns": 6,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 2217,
+ "usage": {
+  "in": 12,
+  "out": 254,
+  "cache_write": 26418,
+  "cache_read": 0,
+  "cost_usd": 0.108236
+ },
+ "seconds": 24.6,
+ "model": "sonnet",
+ "log": [
+  "OPEN payroll",
+  "The warning says the current table is in attendance. I'll read the warning, then go to attendance.\n\nREAD hard-moved-overtime\nBACK",
+  "OPEN attendance",
+  "OPEN sec-hard-overtime",
+  "READ hard-overtime-row-day-d1-hours-h3-place-p4",
+  "DONE"
+ ]
+}

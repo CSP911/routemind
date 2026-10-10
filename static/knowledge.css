@@ -615,4 +615,7 @@ body.kn-dragging { user-select: none; }
 .kn-hist-page:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .kn-hist-gap { color: var(--muted, #6b7684); }
 .kn-hist-range { margin-left: auto; font: 11.5px var(--kn-mono); color: var(--muted, #6b7684); }
-
+/* a queued change set, decision by decision */
+.kn-change-list { margin: 6px 0 8px 18px; padding: 0; font-size: 13px; display: grid; gap: 3px; }
+/* a move that would make something readable outside */
+.kn-fnote.is-warn:not(:empty) { color: var(--orange); font-weight: 600; }

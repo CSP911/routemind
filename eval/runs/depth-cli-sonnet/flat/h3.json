@@ -1,0 +1,40 @@
+{
+ "id": "h3",
+ "tree": "flat",
+ "q": "My day trip turned into an overnight because the meeting overran. How long do I have to tell anyone?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "trip-attendance-case-index",
+  "trip-attendance-outcomes-table",
+  "expense-trip-days-correction-deadline",
+  "expense-trip-days-scenario-table"
+ ],
+ "precision": 0.0,
+ "turns": 7,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 5153,
+ "usage": {
+  "in": 14,
+  "out": 1182,
+  "cache_write": 122004,
+  "cache_read": 861,
+  "cost_usd": 0.49995009999999995
+ },
+ "seconds": 34.0,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance",
+  "READ trip-attendance-case-index\nREAD trip-attendance-outcomes-table",
+  "BACK",
+  "OPEN expense",
+  "READ expense-trip-days-correction-deadline\nREAD expense-trip-days-scenario-table",
+  "DONE"
+ ]
+}

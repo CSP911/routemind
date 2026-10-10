@@ -1,0 +1,44 @@
+{
+ "id": "t-overtime-12",
+ "tree": "folded",
+ "q": "We are reconciling claims from 2023 and from 2025 against the overtime rate. Which two versions do I need, and what multiplier was paid under each?",
+ "needs": "all",
+ "lever": "both",
+ "family": "overtime",
+ "hit": false,
+ "found": [
+  "hard-overtime-v2"
+ ],
+ "collected": [
+  "hard-moved-overtime",
+  "hard-overtime-v2",
+  "payslip-overtime",
+  "hard-overtime-legend-revision"
+ ],
+ "precision": 0.25,
+ "turns": 9,
+ "opens": 7,
+ "returns": 3,
+ "exhausted": false,
+ "read_chars": 4511,
+ "usage": {
+  "in": 18,
+  "out": 970,
+  "cache_write": 38091,
+  "cache_read": 0,
+  "cost_usd": 0.1621
+ },
+ "seconds": 31.4,
+ "model": "sonnet",
+ "log": [
+  "OPEN payroll",
+  "READ hard-moved-overtime",
+  "OPEN payslip",
+  "BACK\n\nOPEN attendance",
+  "READ hard-overtime-v2",
+  "BACK\n\nOPEN payroll\n\nOPEN payslip\n\nOPEN sec-payslip-lines-in-detail",
+  "READ payslip-overtime",
+  "BACK\n\nOPEN attendance\n\nREAD hard-overtime-legend-revision",
+  "DONE"
+ ]
+}

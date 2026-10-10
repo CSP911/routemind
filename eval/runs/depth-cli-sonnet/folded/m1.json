@@ -1,0 +1,42 @@
+{
+ "id": "m1",
+ "tree": "folded",
+ "q": "What happens if my banked hours don't cover the shortfall at the end of the month?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexitime-shortfall-case"
+ ],
+ "collected": [
+  "overtime-compensatory-leave",
+  "flexitime-shortfall-case",
+  "flexitime-month-rule"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 8,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 3576,
+ "usage": {
+  "in": 16,
+  "out": 418,
+  "cache_write": 30368,
+  "cache_read": 0,
+  "cost_usd": 0.125684
+ },
+ "seconds": 32.1,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-overtime-and-hours",
+  "READ overtime-compensatory-leave",
+  "BACK",
+  "OPEN attendance",
+  "OPEN sec-flexible-and-remote-working",
+  "READ flexitime-shortfall-case\nREAD flexitime-month-rule",
+  "DONE"
+ ]
+}

@@ -146,6 +146,9 @@ else
   # A change set (docs/CHANGE.md): several decisions, one commit, the lines over them decided; the
   # preview is the write without the commit; through the API and through the MCP's `here`.
   run change      $HOSTPY check/change-check.py
+  # What a non-expert meets: size budgets as warnings, names among siblings, no silent overwrite, the
+  # review queue saying what happened, named refusals, stale sets (2026-10-10 B2C pass).
+  run b2c         $HOSTPY check/b2c-check.py
   # A hand-edited repository, served: a stale regions.json regenerated at startup when the tree is
   # clean, the files' truth served when it is not. Starts its own ontology twice.
   run drift       $HOSTPY check/drift-check.py

@@ -109,7 +109,7 @@ if (unknown.length) {
 //
 // The reverse is checked too. A `knowledge.err.*` string with no refusal behind it is one nobody will
 // ever be shown, which usually means the code was renamed on one side only.
-const py = ["ontology/service/write.py", "ontology/service/change.py", "web/app.py"]
+const py = ["ontology/service/write.py", "ontology/service/change.py", "ontology/service/server.py", "web/app.py"]
   .map((f) => readFileSync(new URL("../" + f, import.meta.url), "utf8")).join("\n");
 const reasons = new Set([...py.matchAll(/\b(?:code|reason)=\"([a-z_]+)\"/g)].map((m) => m[1]));
 const fields = new Set([...py.matchAll(/\"field\":\s*\"([a-z_]+)\"/g)].map((m) => m[1]));

@@ -1,0 +1,45 @@
+{
+ "id": "m7",
+ "tree": "folded",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "quote-swap-after-drafting",
+  "band-set-by-quote-at-drafting",
+  "purchase-draft-quote-correction",
+  "emergency-spend-ceiling",
+  "advance-reconciliation-deadline",
+  "advance-shortfall-case"
+ ],
+ "precision": 0.0,
+ "turns": 10,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 7811,
+ "usage": {
+  "in": 20,
+  "out": 1263,
+  "cache_write": 37337,
+  "cache_read": 0,
+  "cost_usd": 0.162018
+ },
+ "seconds": 40.4,
+ "model": "sonnet",
+ "log": [
+  "OPEN approval",
+  "OPEN sec-the-approval-behind-a-purchase",
+  "READ quote-swap-after-drafting\nREAD band-set-by-quote-at-drafting",
+  "READ purchase-draft-quote-correction\n```",
+  "BACK",
+  "OPEN approval",
+  "OPEN sec-approvals-that-move-money",
+  "READ emergency-spend-ceiling",
+  "READ advance-reconciliation-deadline\nREAD advance-shortfall-case",
+  "DONE"
+ ]
+}

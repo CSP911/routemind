@@ -1,0 +1,38 @@
+{
+ "id": "h-threshold-000-d",
+ "tree": "flat",
+ "q": "For category C1, amount V1, term M1, whose signature do I need, and do I have to get other prices first?",
+ "needs": "any",
+ "lever": "direct",
+ "family": "threshold",
+ "hit": true,
+ "found": [
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "collected": [
+  "hard-threshold-legend-revision",
+  "hard-threshold-row-category-c1-amount-v1-term-m1"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2202,
+ "usage": {
+  "in": 10,
+  "out": 1959,
+  "cache_write": 76546,
+  "cache_read": 0,
+  "cost_usd": 0.32579400000000003
+ },
+ "seconds": 35.1,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "OPEN procurement",
+  "READ hard-threshold-legend-revision",
+  "READ hard-threshold-row-category-c1-amount-v1-term-m1",
+  "DONE\n\nBased on the current approval-threshold table (in force 2026-01-01 onward, which applies to today's date of 2026-10-10), for **category C1, amount V1, term M1**:\n\n- **Signature required:** the team lead signs it off (delegation limit: 1,000 thousand KRW)\n- **Competing quotes needed:** none — you do not have to get other prices first\n- **Turnaround:** expect about 2 working days\n\nNote: if the actual amount ends up exceeding the V1 band, any unapproved excess is settled at this same figure (no recovery of the difference), while an unavoidable excess requires a short written statement with evidence, decided by the budget holder rather than this table."
+ ]
+}

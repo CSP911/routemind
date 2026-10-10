@@ -1,0 +1,47 @@
+{
+ "id": "t-diligence-09",
+ "tree": "folded",
+ "q": "For something dated 29 June 2024 — two days before the first change — what screening was required for a new supplier? Use the version in force on that day.",
+ "needs": "any",
+ "lever": "boundary",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "supplier-due-diligence"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "supplier-due-diligence",
+  "sanctions-ownership-checks",
+  "supplier-code-of-conduct",
+  "disqualification-triggers"
+ ],
+ "precision": 0.2,
+ "turns": 11,
+ "opens": 5,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 6459,
+ "usage": {
+  "in": 22,
+  "out": 1058,
+  "cache_write": 45426,
+  "cache_read": 0,
+  "cost_usd": 0.192328
+ },
+ "seconds": 41.9,
+ "model": "sonnet",
+ "log": [
+  "OPEN procurement",
+  "<invoke name=\"OPEN\">\n<parameter name=\"id\">sec-supplier-due-diligence</parameter>\n</invoke>",
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision",
+  "OPEN vendor",
+  "BACK",
+  "OPEN procurement",
+  "OPEN sec-supplier-due-diligence",
+  "READ supplier-due-diligence",
+  "READ sanctions-ownership-checks\nREAD supplier-code-of-conduct\nREAD disqualification-triggers",
+  "DONE"
+ ]
+}

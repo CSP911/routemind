@@ -201,6 +201,24 @@ def _ancestors(by_id: dict, eid: str) -> list[str]:
     return out
 
 
+def _rests_on(cs: dict, nodes: dict) -> set:
+    """The files a set's decisions rest on: what they touch, the parents they name, every line on the
+    way up from those — and, for a line it rewords or keeps, the table under that line. A sentence is
+    decided against what it summarises; when a child came or went since the base, the decision was
+    made about a table that is no longer there (found 2026-10-10: it applied anyway)."""
+    rest = set()
+    for d in cs["decisions"]:
+        for x in (d.get("id"), d.get("parent")):
+            if x and not str(x).startswith("$") and x in nodes:
+                rest.add(nodes[x]["path"])
+                rest.update(nodes[a]["path"] for a in _ancestors(nodes, x))
+        if d["op"] in ("reword", "keep") and d.get("id") in nodes:
+            tops = {n["region"]: n["id"] for n in nodes.values() if _top(n)}
+            rest.update(n["path"] for n in nodes.values()
+                        if (n.get("parent") or (tops.get(n["region"]) if not _top(n) else None)) == d["id"])
+    return rest
+
+
 def _area_export(nodes: list[dict]) -> dict[str, bool]:
     return {n["region"]: bool(n.get("export")) for n in nodes if _top(n)}
 
@@ -270,13 +288,7 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> d
     # moved on was refused for a name already taken — by the very document it would have created,
     # filed meanwhile another way — which told the reviewer to rename it (2026-10-10).
     if cs["base"]:
-        rest0 = set()
-        for d in cs["decisions"]:
-            for x in (d.get("id"), d.get("parent")):
-                if x and not str(x).startswith("$") and x in nodes0:
-                    rest0.add(nodes0[x]["path"])
-                    rest0.update(nodes0[a]["path"] for a in _ancestors(nodes0, x))
-        _check_base(writer.root, cs["base"], rest0)
+        _check_base(writer.root, cs["base"], _rests_on(cs, nodes0))
     # ids for what is created, before the lock (the id may come from a model), and checked again
     # inside it, as create_node does.
     ids: dict[str, str] = {}
@@ -298,14 +310,7 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> d
         if nid in taken: raise WriteError(409, f"{d['ref']}: id {nid} is taken (by another decision in this set, or the tree)", code="id_taken", data={"id": nid})
         taken.add(nid); ids[d["ref"]] = nid; kinds[d["ref"]] = kind
     rid = lambda x: ids[x] if isinstance(x, str) and x.startswith("$") else x
-    # The files the decisions rest on: what they touch, the parents they name, and every line on the
-    # way up from those — the tables the walk read.
-    rest = set()
-    for d in cs["decisions"]:
-        for x in (d.get("id"), d.get("parent")):
-            if x and not str(x).startswith("$") and x in nodes0:
-                rest.add(nodes0[x]["path"])
-                for a in _ancestors(nodes0, x): rest.add(nodes0[a]["path"])
+    rest = _rests_on(cs, nodes0)
     state: dict = {}
 
     def mutate():

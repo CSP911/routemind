@@ -1,0 +1,39 @@
+{
+ "id": "e1",
+ "tree": "flat",
+ "q": "Which year-end deductions does the pre-filled data not show, and what conditions apply to them?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "year-end-manual-deduction-items"
+ ],
+ "collected": [
+  "year-end-manual-deduction-items",
+  "year-end-manual-deductions",
+  "year-end-prefilled-scope",
+  "year-end-manual-deduction-rent-condition"
+ ],
+ "precision": 0.25,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5030,
+ "usage": {
+  "in": 8,
+  "out": 781,
+  "cache_write": 18072,
+  "cache_read": 0,
+  "cost_usd": 0.08011399999999999
+ },
+ "seconds": 20.3,
+ "model": "sonnet",
+ "log": [
+  "OPEN payroll",
+  "OPEN year-end-tax",
+  "READ year-end-manual-deduction-items\nREAD year-end-manual-deductions\nREAD year-end-prefilled-scope\nREAD year-end-manual-deduction-rent-condition",
+  "I have gathered sufficient information to answer the question.\n\nDONE\n\n**Summary:**\n\nThe pre-filled year-end settlement data does **not** show these deductions (since no third party reports them to the NTS):\n\n1. **Monthly rent (wolse)** — Requires lease contract and resident registration matching the rented address. **Condition:** the employee must not own a home anywhere in the country — not the rental, and not any other property (including an inherited-but-unsold home, a spouse's property, or a jeonse deposit held as investment). Owning a home anywhere disqualifies the claim regardless of the reason for renting elsewhere.\n\n2. **Cash donations** — Requires a receipt from the receiving organization. Only pulled in automatically if the organization is registered for reporting; otherwise must be entered manually. Deduction rate: 15% of the donated amount up to 10,000,000 KRW, 30% above that, and the body must be a registered charity or religious organization.\n\n3. **Education fees paid directly** (e.g., to a tutor or unaffiliated institute) — Requires a receipt from the institute or tutor. Cap: 3,000,000 KRW per child for school, 9,000,000 KRW per child for university — but only tuition/school fees count, not private tutoring.\n\n4. **Overseas medical expenses** — Requires an invoice and proof of payment, since foreign providers don't report to the NTS. Medical deductions overall have no upper cap, but only the amount exceeding 3% of gross pay counts, and receipts must be from a licensed medical institution or pharmacy.\n\n5. **A dependant added mid-year** — Requires a family register or equivalent proof, since registration hasn't caught up with NTS records.\n\n(Separately, housing loan interest is also a manual-only category: up to 18,000,000 KRW/year, limited to one home, and only if the loan was used to buy or build it.)\n\nThe general trap: a pre-filled total is just a starting figure — if these items aren't manually added with evidence, payroll settles on the incomplete pre-filled amount, and any missed deduction has to be fixed later via amendment rather than automatically retried."
+ ]
+}

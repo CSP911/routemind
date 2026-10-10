@@ -75,3 +75,31 @@ Against the predictions: (1) no hit-rate difference visible at n=35 — not enou
 none; (2) flat fewer opens, yes; (3) flat ~3.5× the input tokens, yes — and more than predicted;
 (4) returns equal overall, but not on the indirect questions. The cost result is already clear; the
 accuracy result needs the remaining 38 flat walks.
+
+## Result, complete (2026-10-10) — the claude -p walker, both trees, all 73 questions
+
+The API credit did not come back, so the whole comparison was walked again — both trees, every
+question — by `bench/agent.py` with `ROUTER_PROVIDER=claude-cli` (an isolated `claude -p` session per
+turn, `--model sonnet`; no tools, no MCP, no settings, the walker's own system prompt). One model and
+one day for both trees, so the pairing holds. Walks in `eval/runs/depth-cli-sonnet/`.
+
+| | hit | turns | opens | back | input tokens / walk | $ / walk (CLI-reported) |
+|---|---|---|---|---|---|---|
+| folded | **65/73 (89%)** | 5.8 | 2.9 | 0.4 | 23,800 | 0.099 |
+| flat | **65/73 (89%)** | 4.8 | 1.8 | 0.3 | 59,500 | 0.240 |
+
+By band: pilot 17/23 vs 16/23, direct 10/10 vs 10/10, indirect 20/20 vs 20/20, temporal 18/20 vs
+19/20. Discordant: one each way (h5 folded only, t-overtime-12 flat only) — exact McNemar p = 1.00.
+Nobody ran out of turns.
+
+Against the predictions: (1) **no accuracy difference** — not small, none, at this scale and with
+this model; a strong model scans a 244-row table as well as it walks three short ones. (2) flat
+takes fewer opens, yes. (3) flat costs **2.4× the input** — every view of a wide table is paid again
+on every turn after it. (4) returns to hop 0 equal.
+
+**What it means for change sets.** Folding a wide table does not buy accuracy here; it buys cost,
+by a factor of about two and a half, and it buys a table a person can read. That is enough to keep
+`knowledge_place` suggesting a fold past nine rows, and not enough to make it mandatory. What this
+run cannot say: whether a weaker model or a much larger map (thousands of rows in one table) loses
+accuracy on the flat tree — the two places the argument for folding would have to be made on
+accuracy rather than cost.

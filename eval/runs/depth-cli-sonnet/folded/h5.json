@@ -1,0 +1,38 @@
+{
+ "id": "h5",
+ "tree": "folded",
+ "q": "What has to be cleared before I get on a plane for work?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "trip-approval-overview"
+ ],
+ "collected": [
+  "trip-approval-overview",
+  "trip-approval-deadline",
+  "trip-approval-role"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3849,
+ "usage": {
+  "in": 8,
+  "out": 214,
+  "cache_write": 10627,
+  "cache_read": 0,
+  "cost_usd": 0.044663999999999995
+ },
+ "seconds": 16.7,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-trip-approval-before-the-trip",
+  "READ trip-approval-overview\nREAD trip-approval-deadline\nREAD trip-approval-role",
+  "DONE"
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "id": "s1",
+ "tree": "folded",
+ "q": "I want to work out of Portugal for a few months. Who has to say yes, and does anything change about what comes off my pay?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "working-abroad-request",
+  "insurance-rates",
+  "pay-change-decision-overview"
+ ],
+ "precision": 0.0,
+ "turns": 14,
+ "opens": 8,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 3923,
+ "usage": {
+  "in": 30,
+  "out": 6165,
+  "cache_write": 54092,
+  "cache_read": 0,
+  "cost_usd": 0.278078
+ },
+ "seconds": 107.8,
+ "model": "sonnet",
+ "log": [
+  "OPEN approval",
+  "OPEN sec-approvals-about-people",
+  "READ working-abroad-request",
+  "BACK",
+  "OPEN payroll",
+  "OPEN insurance",
+  "OPEN sec-social-insurance-movements",
+  "OPEN insurance-rates",
+  "READ insurance-rates",
+  "OPEN sec-pay-changes-that-need-a-decision",
+  "READ pay-change-decision-overview",
+  "OPEN year-end-tax",
+  "BACK",
+  "I have enough information to answer the question now.\n\nDONE"
+ ]
+}

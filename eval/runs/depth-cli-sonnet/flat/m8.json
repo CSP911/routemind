@@ -1,0 +1,36 @@
+{
+ "id": "m8",
+ "tree": "flat",
+ "q": "Someone paid for one client dinner in two taps on the card, both under the evidence threshold. What did the close cycle do with that?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "expense-audit-close-worked-case"
+ ],
+ "collected": [
+  "expense-audit-close-worked-case",
+  "expense-audit-common-findings-table"
+ ],
+ "precision": 0.5,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2500,
+ "usage": {
+  "in": 6,
+  "out": 46,
+  "cache_write": 27661,
+  "cache_read": 870,
+  "cost_usd": 0.111203
+ },
+ "seconds": 9.5,
+ "model": "sonnet",
+ "log": [
+  "OPEN expense",
+  "READ expense-audit-close-worked-case\nREAD expense-audit-common-findings-table",
+  "DONE"
+ ]
+}

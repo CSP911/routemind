@@ -1,0 +1,40 @@
+{
+ "id": "m5",
+ "tree": "flat",
+ "q": "A counterparty signed on a power of attorney that had already lapsed. What happens now?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "expired-poa-relied-upon"
+ ],
+ "collected": [
+  "standard-contract-clauses",
+  "expired-poa-relied-upon",
+  "power-of-attorney-scope"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 6,
+ "opens": 4,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 4219,
+ "usage": {
+  "in": 12,
+  "out": 512,
+  "cache_write": 97027,
+  "cache_read": 857,
+  "cost_usd": 0.3933377
+ },
+ "seconds": 23.5,
+ "model": "sonnet",
+ "log": [
+  "Contracts and signed contract storage fall under procurement most likely.\n\nOPEN procurement",
+  "OPEN contract-custody",
+  "BACK\nOPEN procurement\nREAD standard-contract-clauses",
+  "BACK\nOPEN approval",
+  "READ expired-poa-relied-upon\nREAD power-of-attorney-scope",
+  "DONE"
+ ]
+}

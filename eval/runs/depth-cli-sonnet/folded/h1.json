@@ -1,0 +1,38 @@
+{
+ "id": "h1",
+ "tree": "folded",
+ "q": "I stayed late three nights last week but never put anything in beforehand. Will that reach my pay?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "unrequested-overtime-case"
+ ],
+ "collected": [
+  "unrequested-overtime-case",
+  "overtime-overview",
+  "overtime-request-procedure"
+ ],
+ "precision": 0.3333333333333333,
+ "turns": 4,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3210,
+ "usage": {
+  "in": 8,
+  "out": 168,
+  "cache_write": 10671,
+  "cache_read": 0,
+  "cost_usd": 0.04438
+ },
+ "seconds": 12.9,
+ "model": "sonnet",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-overtime-and-hours",
+  "READ unrequested-overtime-case\nREAD overtime-overview\nREAD overtime-request-procedure",
+  "DONE"
+ ]
+}
