@@ -47,6 +47,7 @@ strangely the question is worded. A corpus built on that principle measures **hi
 | | **2 of the 5 families are not usable yet** — `accrual` and `overtime` are 96% and 81% incumbent documents in the top ten, so their misses are not evidence. See COLLAPSE.md §6 |
 | Routing on it | **run** (2026-09-20 census) — 700 questions × 2 arms on the frozen corpus, 699/700 each; `eval/runs/2026-09-20-census.json`. The README's table is this run |
 | Failure attribution | **done** (2026-10-10, issue #2) — `bench/attribution.py` reads which areas each walk entered: the one miss per arm is lost at the area (`t-overtime-08`, walked into payroll from a false relocation line), none inside it. It also recomputes the numbers quoted on issue #2 and fails if the files stop saying them; `eval/runs/2026-10-10-attribution.json` |
+| Behaviour claims | **run** (2026-10-10) — `eval/philosophy/`: hop 0 first and a `why` on every step 24/24; absent questions answered "not here" with no invented rule 8/8; false lines answered around 10/10 — but the map's errors went unreported until one instruction asked (1/4 → 4/4), and a false hop-0 sentence is still never reported (0/2) |
 
 ## Before anything runs
 

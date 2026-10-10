@@ -1,0 +1,63 @@
+{
+ "id": "w1",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "Above what amount do I need qualifying evidence for client entertainment?",
+ "answer": "**Over 30,000 KRW.** Above that amount, client entertainment needs qualifying evidence, and it also needs the attendee list. Up to 30,000 KRW, a simple receipt is enough.\n\nQualifying evidence means one of these four:\n- A tax invoice.\n- An invoice.\n- A card slip, corporate or personal.\n- A cash receipt issued for business expense. It must be issued against the company registration number, not a mobile number. A receipt taken against a mobile number counts as a personal deduction and can't be used as a company cost. Ask for \"사업자 지출증빙\" and give the company number before they ring it up.\n\nA simple receipt, a handwritten receipt, a statement of account, a deposit slip and a bank transfer record don't qualify.\n\nWithout qualifying evidence, the company pays a 2% penalty on the spend. You aren't billed personally, but the claim will be refused rather than absorbed.\n\nI didn't look up the separate entertainment cap, which is a spending limit and not an evidence threshold. It's in the corporate card section if you need it.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Above what amount do I need qualifying evidence for client entertainment?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Entertainment cap and evidence rules are under expense"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/evidence",
+    "why": "Evidence requirements for spends"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence",
+    "why": "Ceiling on simple receipt / qualifying evidence"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/evidence/body",
+    "why": "Evidence document itself"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-list/body",
+    "why": "Ceiling per kind; may differ for entertainment"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence/body",
+    "why": "Its own document"
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.04542789999999999,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

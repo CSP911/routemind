@@ -1,0 +1,77 @@
+{
+ "id": "w5",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "I joined in September. How many leave days do I get in my first grant?",
+ "answer": "You get **5 days**. That's the figure for a September joiner, and it's granted on **1 January** after you joined, so on **1 January 2027**.\n\n- **Before then:** you accrue one day per completed month from your joining date, so you'll have a small balance until January.\n- **On 1 January 2027:** the 5-day grant replaces that monthly accrual. The two are not added together.\n- **Lapse:** unused days lapse on 31 December, and the lapsed balance is paid out in the January pay run.\n\nSources: the mid-year joiner proration table (September → 5) and the leave entitlement page. The proration table's formula, 15 × (months from joining to 31 December ÷ 12), rounded up, gives 15 × 4/12 = 5, which matches. The document says partway-through-year cases are easy to get wrong, so confirm with the HR desk if your offer or records show something different.\n\n**Map issue for whoever maintains RouteMind:** the proration table is listed under \"Returning from parental leave — days restored by month,\" but the document itself is the mid-year joiner table. That label sends people looking for joiner figures to the parental-leave node. The line should be reworded to say something like \"Mid-year joiner proration — days granted on the first 1 January by joining month.\"",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I joined in September. How many leave days do I get in my first grant?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The row says it covers how much leave a mid-year joiner gets, which matches a September joiner."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "Annual leave entitlement is the node that says how many days you get, which covers the first grant."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual",
+    "why": "The leave entitlement row says it gives days granted by length of service, which is what the first grant depends on."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/accrual-rule/body",
+    "why": "This is the document on how many days are granted by length of service, which should give the first-grant count."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual/body",
+    "why": "The leave entitlement node's own document may state the mid-year joiner rule, which the first grant depends on."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear",
+    "why": "The leave entitlement document refers to a proration table for mid-year joiners, and this node is the one listed under leave entitlement."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/annual-leave/body",
+    "why": "The annual leave document covers how many days you get, and may hold the joiner proration figures."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/proration-table/body",
+    "why": "The leave entitlement document points to a proration table for partway-through-year joiners; this is the proration table listed, so I am checking whether it covers joiners."
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.0034735900000000004,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

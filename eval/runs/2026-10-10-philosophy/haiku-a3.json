@@ -1,0 +1,77 @@
+{
+ "id": "a3",
+ "kind": "absent",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Does the company reimburse a gym membership?",
+ "answer": "I couldn't find any gym membership reimbursement in RouteMind, so I can't confirm the company pays for one.\n\nI checked the expense area (corporate card limits, blocked merchant categories, evidence rules) and the payroll area (payslip lines and tax-free allowances). Neither mentions a gym or fitness benefit. The only payment lines on a payslip are base pay, meal allowance (200,000 KRW a month, tax free), own-car allowance, overtime, and trip allowance. The corporate card also blocks several merchant categories, but gyms aren't among them.\n\nThat is a gap in the documents, not a confirmed \"no.\" Ask HR or your manager whether a wellness or fitness benefit exists and how to claim it. If you pay for a gym yourself, the expense rules here don't cover personal memberships.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Does the company reimburse a gym membership?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Gym membership is a reimbursement question, and the expense area covers what the company pays back."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The corporate card row may list what spends are allowed, which could cover a gym membership."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/expense-overview/body",
+    "why": "The overview says what is in Expenses and where to start, so it may name a wellness or gym benefit."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "The card limits row lists the merchant categories blocked outright, which would show whether a gym or fitness merchant is covered."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "A gym subsidy paid through pay would be an allowance, so the payroll area may cover whether it exists and how it is taxed."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-limit-table/body",
+    "why": "This is the blocked-category list, which would show whether fitness or gym merchants are excluded from the card."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "The payslip row lists each payment line, so it would show if a fitness or wellness allowance is paid through pay."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payslip-items/body",
+    "why": "This lists every payment line on a payslip, so it is where a gym or fitness allowance would appear if one were paid."
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.0030130400000000007,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

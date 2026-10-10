@@ -1,0 +1,56 @@
+{
+ "id": "w2",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "Is the overseas daily allowance taxed?",
+ "answer": "**Generally no, the overseas daily allowance is tax free.** That holds as long as it stays within the policy rates (USD 50–80 a day overseas), which the company treats as reasonable actual cost. Only the part above the policy rates is taxed.\n\nTwo situations make it taxable:\n- **Attendance isn't confirmed for that day.** With no confirmed attendance behind it, the allowance counts as ordinary pay. The whole amount for that day is then taxed.\n- **You also claimed a meal receipt for a day you drew the allowance.** The allowance already covers meals, so the receipt is double counting. That amount moves back into taxable pay.\n\nNeither is a penalty. Both are the allowance being reclassified as what it actually was. You can avoid both when you claim: confirm attendance for every trip day, and don't claim meal receipts on days you take the allowance.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Is the overseas daily allowance taxed?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Tax-free allowance question"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip lines incl. allowances and tax-free status"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "Tax-free allowances incl. trip daily allowance"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "Caps per tax-free allowance"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "Overview of tax-free allowances"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0343696,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

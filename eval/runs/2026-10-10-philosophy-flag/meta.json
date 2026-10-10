@@ -1,0 +1,9 @@
+{
+ "api": "http://localhost:9431/api/knowledge",
+ "start": "67f83488c9114dfda3bb94694b2b07d6e327c1b0",
+ "models": [
+  "sonnet",
+  "haiku"
+ ],
+ "questions": "eval/philosophy/questions.yaml"
+}

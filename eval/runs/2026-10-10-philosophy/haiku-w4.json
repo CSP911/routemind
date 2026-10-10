@@ -1,0 +1,56 @@
+{
+ "id": "w4",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "I lost my corporate card. Who do I call first?",
+ "answer": "**Call the card issuer first, and stop the card before you tell anyone at the company.** The issuer is the first call, and the office & purchasing desk (ext. 2210) is the second.\n\nThe reason is timing. Every minute between the loss and the stop is the company's exposure, and the issuer's liability process is measured from the moment the card is stopped.\n\nAfter that:\n1. **Tell the office & purchasing desk (ext. 2210).**\n2. **File a statement of the circumstances as a draft.** A replacement card takes 3–5 working days.\n3. **Use a personal card for unavoidable spending** while the card is stopped, and claim it back on a disbursement form. Keep the receipts, since a personal card slip counts as evidence.\n\nIf fraudulent charges were made before you stopped the card, they go through the issuer's liability process. The company does not cover them up front.\n\nIf the card was lost with a bag or wallet, tell the desk what else was in it. Access cards and laptops have their own procedures and desks.\n\nOne thing to watch: the summary line for the lost-card page says to contact the office first. The detailed procedure says the issuer comes first, and I went with the detailed procedure. The line may need correcting.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I lost my corporate card. Who do I call first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The expense row names \"the card was lost\" in its condition, so it should hold the lost-card procedure."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Its line says it covers what to do when the card is lost or misused."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Its line describes the lost-card order: office and purchasing desk first, then the issuer."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "The ordered steps for a lost card, to confirm who to call first and second."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "The node's line says office first, but the ordered steps say issuer first; checking which the main document states."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.00275455,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

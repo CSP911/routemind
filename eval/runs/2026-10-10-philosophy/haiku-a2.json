@@ -1,0 +1,77 @@
+{
+ "id": "a2",
+ "kind": "absent",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Do I need a doctor's note when I take a sick day?",
+ "answer": "RouteMind doesn't say whether a doctor's note is required for a sick day. I checked the attendance area, the leave booking procedure, and the HR desk page, and none of them state the requirement.\n\nWhat it does cover:\n\n- **Recording a sick day:** Book it as a leave request in the attendance system, choosing full, half, or quarter day. Only approved leave counts as taken, and the team lead alone approves it. Three or more consecutive days also go to the division head.\n- **Booking after the fact:** A late request is accepted only for illness, accident, or bereavement. It has to be filed with evidence within three days of returning. The document asks for \"evidence\" but doesn't say what that means, so it could be a doctor's note or something else.\n- **Same-morning absence:** You need the team lead's verbal agreement first. An approval in the system alone doesn't undo an absence record.\n\nTo find out whether you need a doctor's note, ask the HR desk. Their page says to settle exceptions with them before entering anything in the system. You can reach them at ext. 2140, or by groupware message, which they say is usually faster. A message with the dates and what happened is enough to start.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Do I need a doctor's note when I take a sick day?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Sick day and doctor's note question; attendance covers leave booking and absence rules."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-overview/body",
+    "why": "Overview of Attendance & Leave, to find whether sick leave and doctor's notes are covered."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "Annual leave entitlement and booking; may cover sick-day handling."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-use",
+    "why": "Booking and cancelling leave; a sick day is likely recorded as leave, so this may cover the note requirement."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/annual-leave/body",
+    "why": "Full annual leave document, in case it mentions sick leave or medical certificates."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-apply/body",
+    "why": "Step-by-step booking and cancellation; checking whether sick days and medical documentation are covered here."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/hr-desk",
+    "why": "Checking whether the HR desk node covers medical evidence or doctor's notes for illness absence, since the booking procedure mentions evidence without defining it."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/hr-desk/body",
+    "why": "HR desk document, to see whether it defines what evidence is needed for illness leave."
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.0031804200000000006,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

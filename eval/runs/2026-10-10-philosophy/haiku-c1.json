@@ -1,0 +1,56 @@
+{
+ "id": "c1",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "I just lost my corporate card. What should I do first?",
+ "answer": "**First, call your card issuer and stop the card.** Do this before you tell anyone at the company. The issuer's liability process for fraudulent charges is measured from the moment you stop the card, so each minute before that is exposure for the company.\n\nThen:\n\n1. **Tell the office & purchasing desk (ext. 2210).**\n2. **File a statement of the circumstances as a draft.** A replacement card takes 3–5 working days.\n3. **Use a personal card for unavoidable spending** while the card is stopped, and claim it back on a disbursement form. Keep the receipts, since a personal card slip counts as evidence.\n\nIf a charge on your statement is not yours, raise it with the issuer within **7 days of the statement**. After that it's treated as your own spending. A charge you don't recognise is treated as unexplained until the issuer rules on it, and unexplained charges are deducted from pay at month end.\n\nIf a bag or wallet was lost with the card, tell the desk what else was in it. Access cards and laptops have their own procedures and different desks.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I just lost my corporate card. What should I do first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The row says it covers \"the card was lost\", which matches the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Its line covers what to do when the corporate card is lost."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Its line is \"Lost card and misuse — what to do, in order, when the card is lost\"."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "This is the ordered steps document for a lost card, which is what the user asked for."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "The parent node's own document may hold the general rule behind the ordered steps."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.00330939,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "id": "w1",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "Above what amount do I need qualifying evidence for client entertainment?",
+ "answer": "You need qualifying evidence for client entertainment above **30,000 KRW**. Up to that amount, a simple receipt is accepted. Over it, the spend needs a tax invoice, an invoice, a card slip, or a cash receipt issued for business expense. For entertainment over 30,000 KRW, you also need the attendee list.\n\nTwo points from the same source:\n- A cash receipt must be issued against the company registration number. One issued against a mobile number is recorded as a personal deduction and can't be used as a company cost. Say \"사업자 지출증빙\" and give the company number when you ask for it.\n- If the evidence is missing, the company pays a 2% penalty on the amount. You are not billed personally, but the desk can't approve the claim without the right paper.\n\nSources: RouteMind expense › Evidence › Qualifying evidence (the body and the qualified-list page, which agree on the threshold).",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Above what amount do I need qualifying evidence for client entertainment?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The entertainment cap question matches the expense row's \"the entertainment cap\" entry."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/evidence",
+    "why": "The question asks about the threshold for qualifying evidence, which this node defines."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The entertainment cap is listed among the card caps, so it may state the amount."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence",
+    "why": "The evidence node points to this table for which documents qualify and the ceiling on a simple receipt, which is the threshold asked about."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence/body",
+    "why": "This is the document that states which evidence qualifies and the amount threshold."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-list/body",
+    "why": "The qualified-evidence node lists this as the document with what qualifies and the simple-receipt ceiling by amount."
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.0035328700000000005,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

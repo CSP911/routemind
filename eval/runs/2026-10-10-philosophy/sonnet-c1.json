@@ -1,0 +1,56 @@
+{
+ "id": "c1",
+ "kind": "control",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "I just lost my corporate card. What should I do first?",
+ "answer": "**Call the card issuer and stop the card first.** Do this before you tell anyone at the company. The issuer's liability process is measured from the moment of the stop, so each minute you wait adds exposure.\n\nAfter that:\n\n1. **Tell the office & purchasing desk** on ext. 2210. If the card was lost with a bag or wallet, tell them what else was in it. Access cards and laptops go through different desks.\n2. **File a statement of the circumstances** as a draft.\n3. **Expect a replacement in 3–5 working days.** For unavoidable spending until then, use a personal card and claim it back on a disbursement form. Keep the slip, because a personal card slip counts as evidence.\n\n- **Fraudulent charges made before the stop:** these go through the issuer's liability process. The company doesn't absorb them up front.\n- **Charges you don't recognise:** check the statement and raise any within 7 days of it. After that they count as your own spending. A charge that was yours but was never explained isn't treated as fraud. It's deducted from your pay at month end.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I just lost my corporate card. What should I do first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Row mentions \"the card was lost\""
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Covers what to do when the card is lost"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Ordered steps for a lost card"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "Ordered steps"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "Its own document, may hold extra details"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.05530179999999999,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

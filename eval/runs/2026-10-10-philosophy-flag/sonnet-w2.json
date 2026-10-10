@@ -1,0 +1,56 @@
+{
+ "id": "w2",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "Is the overseas daily allowance taxed?",
+ "answer": "**Generally no. The overseas daily allowance is tax free, within limits.**\n\n- **Rate:** The policy rates are USD 50–80 a day overseas (20,000 KRW a day domestic). They are treated as reasonable actual cost, so no tax is charged on them.\n- **Excess:** Anything above the policy rates is taxed. Only the excess is taxed, not the whole allowance.\n\nTwo situations make the allowance taxable:\n1. **A day with no confirmed attendance.** If attendance for that day hasn't been confirmed, the allowance isn't a travel cost. It counts as ordinary pay and is fully taxed.\n2. **A meal receipt claimed on a day you also drew the allowance.** The allowance already covers meals, so the receipt is double counting. That amount is moved back into taxable pay.\n\nNeither is a penalty. The allowance is reclassified as what it actually was. You can avoid both when you claim: make sure attendance is confirmed for every trip day, and don't claim meal receipts on days you take the allowance.\n\nSource: the \"Tax-free allowances and their caps\" and \"Tax-free allowances\" documents in the Payroll area.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Is the overseas daily allowance taxed?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Question is whether an allowance is tax free; payroll row covers this."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip lines include allowances and tax-free status."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "Covers trip daily allowance tax-free caps."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "Caps table for tax-free allowances."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "Main document on tax-free allowances."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0359917,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

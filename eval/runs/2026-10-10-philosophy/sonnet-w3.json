@@ -1,0 +1,84 @@
+{
+ "id": "w3",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "How far in advance do I have to tell HR before my parental leave starts?",
+ "answer": "You have to agree the dates with the HR desk **at least 30 days before the leave starts**.\n\n- **Why 30 days:** The notice period is there so your team can arrange cover. It isn't a way to refuse the leave. Parental leave is an entitlement, but the dates are agreed with HR.\n- **Extensions:** If you extend the leave later, the same 30 days' notice applies.\n- **Your application:**\n  - File a draft document with the family relation certificate and the parental leave form attached.\n  - The approval chain is team lead → division head → HR desk.\n- **Payroll desk:** Tell them as soon as the leave is agreed, not when it starts. They file your health insurance deferral and pension suspension from the date the leave is confirmed. A late filing is corrected retroactively and lands as one large deduction.\n- **Returning:** Confirm your return date two weeks before you come back.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How far in advance do I have to tell HR before my parental leave starts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Row covers how to apply for parental leave"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/insurance",
+    "why": "Mentions leave of absence; likely parental leave"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/insurance/body",
+    "why": "Check for parental leave notice period"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payroll-overview/body",
+    "why": "Start doc may point to parental leave application"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payroll-desk",
+    "why": "Desk files leave; may hold parental leave application"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Leave rules may include parental leave notice"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "Parental leave: order to apply"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "Look for notice period"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "Look for notice period and application order"
+   }
+  }
+ ],
+ "turns": 11,
+ "cost_usd": 0.0506167,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

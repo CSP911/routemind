@@ -1,0 +1,105 @@
+{
+ "id": "a3",
+ "kind": "absent",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Does the company reimburse a gym membership?",
+ "answer": "I found nothing in RouteMind that says the company reimburses a gym membership.\n\n- **Expenses:** The corporate card is for work spending: travel, supplies, client meals and approved subscriptions. It excludes personal spending, \"even repaid later\". Gyms and fitness aren't listed anywhere as a reimbursable or blocked category.\n- **Payslip:** The payment lines are base pay, meal allowance (200,000 KRW a month), own-car allowance, overtime and trip allowance. There is no fitness or wellness benefit.\n\nSo there's no gym reimbursement policy in the knowledge base. A gym membership is personal spending, so putting it on the corporate card would count as an unexplained charge. Those are recovered from pay at month end.\n\nI only read the expense and payroll areas. I didn't check approval, attendance or procurement, because none of them looked likely to cover welfare benefits. If your company has a separate welfare or wellness benefit, it isn't documented here. HR or the office & purchasing desk could confirm.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Does the company reimburse a gym membership?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Reimbursement question; expense area covers what is claimable"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/expense-overview/body",
+    "why": "Overview of what expenses cover"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Card usage rules may list prohibited/allowed categories"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "Blocked merchant categories may include fitness/gym"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Card usage rules"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-limit-table/body",
+    "why": "Blocked categories list"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-limit/body",
+    "why": "Card limit rules"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Gym or wellness benefits might be a taxable allowance or welfare item"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip payment lines may include a welfare/wellness allowance"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payroll-overview/body",
+    "why": "Overview may mention allowances or welfare benefits"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payslip-items/body",
+    "why": "Check for any welfare/fitness allowance payment line"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "List of tax-free allowances; see if any covers fitness"
+   }
+  }
+ ],
+ "turns": 14,
+ "cost_usd": 0.06255250000000001,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

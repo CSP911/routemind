@@ -1,0 +1,56 @@
+{
+ "id": "w4",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "I lost my corporate card. Who do I call first?",
+ "answer": "**Call the card issuer first, to stop the card.** Then tell the office & purchasing desk (ext. 2210).\n\n1. **Call the card issuer and stop the card.** The company's liability process for fraudulent charges is measured from the moment the card is stopped, so every minute counts.\n2. **Tell the office & purchasing desk (ext. 2210).**\n3. **File a statement of the circumstances as a draft.** A replacement card takes 3–5 working days.\n\nUntil the replacement arrives, any spending you can't avoid goes on a personal card. Keep the receipts and claim them back on a disbursement form.\n\nFraudulent charges made before you stopped the card go through the issuer's liability process. The company does not cover them up front.\n\n**Map problem:** The RouteMind table lines for this topic say the opposite order. The \"Lost card and misuse\" row says \"Tell the office & purchasing desk first, then stop the card,\" and the \"in order\" row says the desk comes first and the issuer is the second call. Both lost-card documents say to call the issuer first, so the table lines need correcting.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I lost my corporate card. Who do I call first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The expense row lists \"the card was lost\" as its condition, which matches your question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The corporate card row says it covers what to do when the card is lost."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "The corp-card table names \"Lost card and misuse\" as the place for what to do when the card is lost."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "This document lists the lost-card steps in order, which answers who to call first."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "Checking the full lost-card document to confirm the steps and any details beyond the ordered list."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.00217328,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

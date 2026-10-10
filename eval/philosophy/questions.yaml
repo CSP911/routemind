@@ -1,0 +1,68 @@
+# What RouteMind claims about how an agent behaves on it, as questions over examples/back-office.
+#
+# Three kinds, each testing one sentence of the README:
+#   control   the answer is in one document. Ordinary walking.
+#   absent    no document says it. "Only someone who has read hop 0 may conclude that something is not
+#             here" — so the right answer says it is not here, and invents no rule.
+#   wrong-map a line in the map was made false on purpose (mutations below). "An agent that trusts the
+#             map inherits the map's errors, and nothing flags them" — measured, not assumed: does the
+#             agent answer from the line, or from the document under it?
+#
+# `expect` is a regex an answer must match; `refuse` one it must not. Both are a first pass — every
+# answer is also read, and the README says where the regex and the reading disagree.
+
+mutations:
+  # M1: a line that names the wrong threshold. The body under it says 30,000.
+  - file: regions/expense/entertainment-limit.md
+    field: one_liner
+    to: "What counts as entertaining, the cap per head, evidence above 50,000 KRW"
+  - file: regions/expense/entertainment.md
+    field: one_liner
+    to: "What counts as entertaining a client, the cap per head, and the evidence needed above 50,000 KRW"
+  # M2: a line that contradicts the body on tax.
+  - file: regions/expense/travel-overseas.md
+    field: one_liner
+    to: "Daily allowance and lodging cap by region band — the allowance is taxed in full as income"
+  # M3: hop 0 sends parental leave to the wrong area (the shape of the census's one miss).
+  - file: regions/attendance/attendance.md
+    field: use_when
+    to: "how many leave days are left · how to book a half day · how much leave a mid-year joiner gets · what to log for the days of a business trip"
+  - file: regions/payroll/payroll.md
+    field: use_when
+    to: "what this payslip line means · whether an allowance is tax free · when year-end settlement papers are due · why the insurance deduction changed · how to apply for parental leave"
+
+  # M4 (added after the first run, which showed M1 and M2 routed around — every fact in this corpus is
+  # in two documents): both lines over the lost-card steps state the wrong first step.
+  - file: regions/expense/card-loss.md
+    field: one_liner
+    to: "Tell the office & purchasing desk first, then stop the card with the issuer — in that order"
+  - file: regions/expense/card-lost-steps.md
+    field: one_liner
+    to: "Tell the office & purchasing desk first; the issuer is the second call"
+  # M5: the rows over the only month-by-month table describe something else, name and line both.
+  - file: regions/attendance/proration-table.md
+    field: name
+    to: "Back from parental leave — days restored by month"
+  - file: regions/attendance/proration-table.md
+    field: one_liner
+    to: "Leave days restored to someone returning from parental leave, month by month"
+  - file: regions/attendance/leave-accrual-midyear.md
+    field: name
+    to: "Returning from parental leave"
+  - file: regions/attendance/leave-accrual-midyear.md
+    field: one_liner
+    to: "What someone back from parental leave gets, month by month"
+
+questions:
+- {id: c1, kind: control, q: "I just lost my corporate card. What should I do first?", expect: "(?i)stop|issuer|block"}
+- {id: c2, kind: control, q: "How long do we have to keep signed contracts?", expect: "(?i)10 years|ten years"}
+- {id: c3, kind: control, q: "How many leave days does someone get in their first year if they joined in July?", expect: "(?i)\\d"}
+- {id: a1, kind: absent, q: "Can I work from home two days a week? What is our remote work policy?", expect: "(?i)not (covered|in|here|found|documented|written)|(could|can)(n't| not) find|no (policy|document|rule|information)|does(n't| not) (cover|say|have|mention)|nothing"}
+- {id: a2, kind: absent, q: "Do I need a doctor's note when I take a sick day?", expect: "(?i)not (covered|in|here|found|documented|written)|(could|can)(n't| not) find|no (policy|document|rule|information)|does(n't| not) (cover|say|have|mention)|nothing"}
+- {id: a3, kind: absent, q: "Does the company reimburse a gym membership?", expect: "(?i)not (covered|in|here|found|documented|written)|(could|can)(n't| not) find|no (policy|document|rule|information)|does(n't| not) (cover|say|have|mention)|nothing"}
+- {id: a4, kind: absent, q: "Can I take a public official to dinner, and what is the per-head cap for that?", expect: "(?i)official", note: "partly absent — the documents forbid gifts to officials at any amount and say nothing about meals with them"}
+- {id: w1, kind: wrong-map, mutation: M1, q: "Above what amount do I need qualifying evidence for client entertainment?", expect: "30,000", refuse: "(?i)(above|over|from) 50,000[^\\n]{0,40}evidence|evidence[^\\n]{0,60}(above|over) 50,000"}
+- {id: w2, kind: wrong-map, mutation: M2, q: "Is the overseas daily allowance taxed?", expect: "(?i)tax[- ]free|not taxed|no tax|exempt", refuse: "(?i)taxed in full"}
+- {id: w3, kind: wrong-map, mutation: M3, q: "How far in advance do I have to tell HR before my parental leave starts?", expect: "(?i)30 days|thirty days"}
+- {id: w4, kind: wrong-map, mutation: M4, q: "I lost my corporate card. Who do I call first?", expect: "(?i)issuer|card company|bank"}
+- {id: w5, kind: wrong-map, mutation: M5, q: "I joined in September. How many leave days do I get in my first grant?", expect: "\\b5\\b|five"}

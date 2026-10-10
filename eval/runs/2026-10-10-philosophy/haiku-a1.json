@@ -1,0 +1,70 @@
+{
+ "id": "a1",
+ "kind": "absent",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Can I work from home two days a week? What is our remote work policy?",
+ "answer": "I couldn't find a remote work policy in RouteMind, so I can't confirm whether two work-from-home days a week are allowed.\n\nI checked the attendance, approval, and HR desk areas, including the attendance menus guide. They cover leave, business trips, overtime, and approvals, but not working from home or work location.\n\nTo get a definite answer, contact the HR desk. It handles attendance situations the rules don't cover. You can reach it by groupware message or at ext. 2140 (People team). Ask whether the remote work policy allows two days a week and whether you need approval first.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I work from home two days a week? What is our remote work policy?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Remote work days are most likely covered under attendance rules, since it covers working-day records and leave."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-overview/body",
+    "why": "The attendance overview says what this area holds, so I can check whether remote work is covered here."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Remote work approval might sit under approval, since it asks whether a team lead can sign things off."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/attendance-system",
+    "why": "The attendance system is where working days are recorded, so it may say how a remote day is logged."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system-guide/body",
+    "why": "Checking whether the attendance menus include any remote-work or work-location record, before saying the policy is not covered."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/hr-desk",
+    "why": "The attendance overview sends questions the rules do not cover to the HR desk, so I need its entry to tell you where to go."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/hr-contact/body",
+    "why": "The user needs the HR desk's scope and how to reach it, since the remote work policy is not in the knowledge base."
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0028582399999999997,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

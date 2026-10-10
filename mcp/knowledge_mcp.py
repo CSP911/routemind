@@ -1227,6 +1227,13 @@ class Server:
                         "`why`. Only this list may tell you something is absent; a smaller table only "
                         "tells you it is not in there — and before saying a detail is not covered, read the "
                         "documents in the table you are in that could hold it.\n\n"
+                        # Measured 2026-10-10 (eval/philosophy): given lines made false on purpose, both
+                        # models answered from the document — and said nothing about the line in 5 of 6
+                        # walks that passed one. The answer was right and the map stayed wrong, with no
+                        # one told. A person keeps the map; the agent is the only reader who sees both.
+                        "If a line in a table, or an area's sentence, disagrees with the document under it "
+                        "or sent you to the wrong place, answer from the document — and say which line is "
+                        "wrong, so the person who keeps the map can fix it.\n\n"
                         # Without this a model asked to "add this to RouteMind" did not know the place
                         # tool existed — Claude Code loads tools lazily — and tried to write files into
                         # the repository by hand (2026-10-10).

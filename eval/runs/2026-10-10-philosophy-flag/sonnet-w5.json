@@ -1,0 +1,84 @@
+{
+ "id": "w5",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "I joined in September. How many leave days do I get in my first grant?",
+ "answer": "**You get 5 days in your first grant.** That's the figure for a September joiner, and it arrives on 1 January 2027.\n\n- **Calculation:** it comes to 15 × (4 months from September to December ÷ 12) = 5, and the proration table lists the same number.\n- **Until then:** you accrue 1 day for each completed month from your joining date, and you can book those days as they accrue. A month counts as completed on the day before the same date next month, so a 15 September start gets the first day on 14 October.\n- **The two aren't added:** the 5-day grant replaces the monthly accrual rather than topping it up. Any accrued days you haven't used by 31 December lapse, and the company pays out the lapsed balance.\n- **After that:** you get the ordinary 15 days on 1 January 2028.\n\nIf you transferred from a group company or were on a leave of absence, check with the HR desk, because those cases are decided individually.\n\nThe proration table sits under a node titled \"Returning from parental leave\", and its listing describes it that way. The document itself is the mid-year joiner table. Whoever maintains the map may want to fix that line.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I joined in September. How many leave days do I get in my first grant?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Mid-year joiner leave entitlement is listed in this row"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "Entitlement for annual leave, including mid-year joiners"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual",
+    "why": "Entitlement by length of service, likely covers mid-year joiners"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/annual-leave/body",
+    "why": "Annual leave overview may state first-grant rules"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/accrual-rule/body",
+    "why": "Days granted by length of service, including prorated first grant"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual/body",
+    "why": "Entitlement document may hold first-year proration"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear",
+    "why": "Possibly holds the proration table referenced for joiners"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/proration-table/body",
+    "why": "Check whether this table is the joiner proration or only parental-leave return"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear/body",
+    "why": "Read its own document for joiner proration"
+   }
+  }
+ ],
+ "turns": 11,
+ "cost_usd": 0.052714000000000004,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

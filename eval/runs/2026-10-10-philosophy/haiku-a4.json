@@ -1,0 +1,84 @@
+{
+ "id": "a4",
+ "kind": "absent",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Can I take a public official to dinner, and what is the per-head cap for that?",
+ "answer": "**Short answer:** The company's rules don't clearly allow a dinner with a public official, and I can't give you a cap for that case. The 50,000 KRW per-head meal cap is for customers and partners, not public officials.\n\n**What the rules do say:**\n- **Gifts to a public official are not permitted at any amount.** This is a flat prohibition, not a cap question.\n- **The meal cap is 50,000 KRW per head.** It applies to meals with customers and partners. I found nothing that extends it to public officials, and nothing that expressly allows or bans a meal with one.\n- **Any entertainment needs a written attendee list** with names and companies, recorded on the receipt at the time. Without it, the whole amount is disallowed.\n- **Receipts over 30,000 KRW need qualifying evidence**, and a card slip counts.\n- **Advance approval** is required for events with no cap.\n- **The card's per-transaction cap still applies**, and some merchant categories are blocked at the terminal.\n\n**What I'd do:** Ask compliance or your approver before booking anything. Since a public official is involved, they can confirm whether a meal is allowed at all. If it is, they can tell you the cap and approval route. Public-sector entertainment is often governed by separate anti-corruption law, which this knowledge base doesn't cover.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I take a public official to dinner, and what is the per-head cap for that?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The question is about entertainment with a public official and the per-head cap; the expense row lists the entertainment cap."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Corporate card row covers what the card may be used for and the caps, which may include entertainment."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Travel expense row may cover entertainment or meal caps tied to trips; checking it for the cap."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/expense-overview/body",
+    "why": "Overview of Expenses, to find where the entertainment cap is kept."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Corporate card document may state what the card may be used for, including entertainment and officials."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "Overview points to Card limits > Entertainment for the client-meal cap; reading the limit table."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/entertainment",
+    "why": "Entertainment row is the one stating the cap per head and what counts as entertaining a client."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment/body",
+    "why": "Entertainment document states what counts as entertaining a client and whether public officials are covered."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment-limit/body",
+    "why": "Entertainment caps and evidence document holds the per-head cap."
+   }
+  }
+ ],
+ "turns": 11,
+ "cost_usd": 0.00334998,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

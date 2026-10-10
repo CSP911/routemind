@@ -1,0 +1,70 @@
+{
+ "id": "c2",
+ "kind": "control",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "How long do we have to keep signed contracts?",
+ "answer": "Signed contracts are kept for **10 years** (Commercial Act).\n\n- **When the clock starts:** the 10 years run from the end of the contract, not from the signing date. A contract that ended in 2025 is kept until 2035.\n- **Early destruction:** don't destroy a contract when it ends if retention time is still left. The retention period decides, not the end date.\n- **Litigation or audit:** anything under litigation or audit is not destroyed, even after its period has run.\n- **Where it's kept:** one of the two signed originals goes to the records room, held by the office desk. The team that signed it keeps neither. The scan goes into the groupware document store under `contracts/<year>/<vendor>`, and you file the original and upload the scan on the same day.\n- **Electronic contracts:** there's no original. Keep the PDF together with the signing certificate.\n- **Destruction:** each January the records desk lists what has passed retention. The owning team checks the list, and the item is then logged and shredded.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How long do we have to keep signed contracts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Row mentions how many years a document is kept (retention)"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Row mentions where the signed contract is kept"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/contract-custody",
+    "why": "Signed original custody and duration"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "Retention years per document kind"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/custody-rule/body",
+    "why": "Signed original custody rule"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "Retention period by document"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/contract-custody/body",
+    "why": "Node's own document"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.039480100000000004,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

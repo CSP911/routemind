@@ -1,0 +1,70 @@
+{
+ "id": "c3",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How many leave days does someone get in their first year if they joined in July?",
+ "answer": "A July joiner gets **8 days**, granted on 1 January after they join.\n\nBefore that 1 January, they also accrue one day per completed month, so 5 days from August through December. Those 5 can be booked as they accrue, but any left unused on 31 December lapse. The 8-day grant replaces the monthly accrual rather than adding to it. The 15-day standard entitlement starts the following 1 January.\n\nSource: RouteMind, Mid-year joiner proration table and the Mid-year joiner worked example (joined 3 July). Unusual cases, such as a joiner who was on leave of absence or transferred from a group company, are decided case by case with the HR desk.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How many leave days does someone get in their first year if they joined in July?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The attendance row covers how much leave a mid-year joiner gets, which matches a July joiner's first-year leave."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "Annual leave entitlement is the node that says how many days you get, which should include the mid-year joiner rule."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/annual-leave/body",
+    "why": "Its own document states how many days are granted, which may include the rule for mid-year joiners."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual",
+    "why": "Leave entitlement by length of service is the table that should give the first-year grant and any mid-year joiner rule."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear",
+    "why": "This is the month-by-month mid-year joiner table, which should give the first-year days for a July joiner."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/proration-table/body",
+    "why": "This is the first-year days by joining month table, which should give the figure for a July joiner."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear/body",
+    "why": "The mid-year proration document may explain how the first-year grant is calculated, to confirm the July figure."
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0027716400000000006,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

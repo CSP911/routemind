@@ -1,0 +1,77 @@
+{
+ "id": "w5",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "I joined in September. How many leave days do I get in my first grant?",
+ "answer": "**Your first grant is 5 days.** That is the prorated grant for a September joiner. It arrives on 1 January 2027.\n\n- **Until then:** you accrue 1 day for each completed month from your joining date, and you can book those days as they accrue. Any of them left unused on 31 December lapse. The balance is paid out in January.\n- **How the 5 days are worked out:** the formula is 15 × (months from joining to 31 December ÷ 12), rounded up. The table gives 5 for September.\n- **The two are not added together.** The 1 January grant replaces the monthly accrual rather than topping it up.\n- **After that:** you get the ordinary 15 days on 1 January 2028.\n\nCases like a leave of absence or a transfer from a group company are decided case by case, so check those with the HR desk.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I joined in September. How many leave days do I get in my first grant?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "mid-year joiner leave entitlement"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "entitlement for mid-year joiner"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual",
+    "why": "entitlement by length of service"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/accrual-rule/body",
+    "why": "days granted by service length"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual/body",
+    "why": "node's own document"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear",
+    "why": "look for proration table by joining month"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/proration-table/body",
+    "why": "check whether it holds joiner proration"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear/body",
+    "why": "check for joiner proration"
+   }
+  }
+ ],
+ "turns": 10,
+ "cost_usd": 0.045593800000000004,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

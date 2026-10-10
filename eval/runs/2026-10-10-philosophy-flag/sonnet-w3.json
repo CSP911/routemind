@@ -1,0 +1,84 @@
+{
+ "id": "w3",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "How far in advance do I have to tell HR before my parental leave starts?",
+ "answer": "You have to agree the dates with the HR desk **at least 30 days before the leave starts**. This is in the Parental leave pages under Attendance & Leave.\n\n- **Why 30 days:** it gives the team time to arrange cover. The leave is an entitlement, so the notice isn't there so it can be refused. The dates are agreed with HR.\n- **Extending:** an extension needs the same 30 days' notice.\n- **Application:** file a draft document with the family relation certificate and the parental leave form. It goes team lead, then division head, then HR desk.\n- **Payroll desk:** tell them as soon as the leave is agreed, not when it starts. Health insurance payment can usually be deferred during leave, but a late filing is corrected retroactively as one large deduction.\n- **Coming back:** confirm your return two weeks before.\n\nYou need 6 months of service and a child aged 8 or under (or in the second year of primary school or below).",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How far in advance do I have to tell HR before my parental leave starts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Row mentions how to apply for parental leave"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/insurance",
+    "why": "Mentions leave of absence; likely parental leave"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/insurance/body",
+    "why": "Check for parental leave notice period"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payroll-overview/body",
+    "why": "Overview may point to parental leave application"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payroll-desk",
+    "why": "Desk may hold parental leave application"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Leave rules may cover parental leave notice"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "Parental leave: eligibility and order of application"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-leave/body",
+    "why": "Look for notice period"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "Look for application order and notice deadline"
+   }
+  }
+ ],
+ "turns": 11,
+ "cost_usd": 0.0514931,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

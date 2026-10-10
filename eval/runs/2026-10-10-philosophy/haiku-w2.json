@@ -1,0 +1,63 @@
+{
+ "id": "w2",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "Is the overseas daily allowance taxed?",
+ "answer": "**Generally no, as long as it stays within policy.** The overseas daily allowance is treated as a reasonable actual travel cost, so it is tax free. Three things make it taxable:\n\n1. **Amount above the policy rate:** The policy rates are treated as reasonable, and the overseas rate is USD 50–80 per day. Only the excess over the rate is taxed. The exemption is not lost entirely.\n2. **No confirmed attendance:** If the allowance is paid for a day whose business trip attendance has not been confirmed, it is treated as ordinary pay and fully taxed.\n3. **Meal receipts claimed on the same day:** The allowance already covers meals, so claiming a meal receipt for a day you also drew the allowance is double counting. That amount is moved back into taxable pay.\n\nSource: RouteMind, Tax-free allowances (`/v1/nodes/nontaxable`). The document doesn't say whether the USD 50–80 range applies to every overseas destination or how it is set, so check the travel policy if you need that detail.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Is the overseas daily allowance taxed?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "The overseas daily allowance is an allowance, and this row covers whether an allowance is tax free."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "The payslip row describes what each payment line is, which should cover whether the overseas daily allowance is taxed."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "A business-trip daily allowance is an expense-policy item, so I'm checking how much a business trip pays for any tax treatment noted there."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "It lists the tax-free allowances, including a trip's daily allowance and the cap on each."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "This is the table of tax-free allowances and their caps, which should state whether the overseas daily allowance is taxed and up to what amount."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "The full body may give the conditions for the trip daily allowance that the table does not show."
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.0025369900000000003,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

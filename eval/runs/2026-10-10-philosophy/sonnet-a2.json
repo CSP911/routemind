@@ -1,0 +1,105 @@
+{
+ "id": "a2",
+ "kind": "absent",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Do I need a doctor's note when I take a sick day?",
+ "answer": "The knowledge base doesn't give a doctor's-note rule for a sick day. It has no separate sick-leave policy, and no page sets a number of days after which a note is required. What it does say:\n\n- **A sick day is booked as leave.** File it in Attendance > Leave request. Your team lead approves it, and three or more consecutive days also need the division head. Until it's approved, the absence records as absence.\n- **If you can't book it beforehand,** you can file after the fact for illness, accident or bereavement. You need evidence, and you must file within three days of returning. Anything else filed late doesn't count as leave. The pages say \"evidence\" and don't say that means a doctor's note, though that's the likely form.\n- **Same-morning sick day:** get your team lead's verbal agreement first, then make the system entry. The entry alone doesn't undo the absence record.\n\nSo for a one-day sick absence that you book properly, I found nothing that requires a note. If you file late, bring evidence. For a longer illness, or if you're unsure what counts as evidence, ask the HR desk before you enter anything in the system. They're on ext. 2140 or by groupware message. A rejected entry leaves the period recorded as absence.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Do I need a doctor's note when I take a sick day?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Sick leave and doctor's note falls under attendance/leave"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-overview/body",
+    "why": "Overview may cover sick leave"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "Sick day may be taken as annual leave"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/annual-leave/body",
+    "why": "Check for sick day / doctor's note rule"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-use",
+    "why": "Booking and late requests may cover sick days"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-use/body",
+    "why": "Look for sick day / certificate rules"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-apply/body",
+    "why": "Late request rules may cover sick days"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/hr-desk",
+    "why": "Check whether HR desk page covers sick-day evidence"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/attendance-system",
+    "why": "Check whether leave types include sick leave or attachments"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/hr-desk/body",
+    "why": "Look for sick-day evidence rule"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/hr-contact/body",
+    "why": "Look for scope of HR decisions on illness"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system-guide/body",
+    "why": "Check for sick leave type or attachment menu"
+   }
+  }
+ ],
+ "turns": 14,
+ "cost_usd": 0.0614578,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

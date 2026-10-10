@@ -1,0 +1,70 @@
+{
+ "id": "a4",
+ "kind": "absent",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Can I take a public official to dinner, and what is the per-head cap for that?",
+ "answer": "I couldn't find a rule that answers this directly. The documents give a meal cap but say nothing specific about taking a public official to dinner.\n\n**What the documents say**\n- **Meal cap:** 50,000 KRW per head. This is for entertaining customers and partners.\n- **Gifts:** a gift to a public official is \"not permitted at any amount.\" That's a flat ban, not a cap question. The documents don't say whether it covers meals.\n- **Receipts:** above 30,000 KRW you need qualifying evidence, and a simple receipt isn't accepted.\n- **Attendee list:** write down who attended and which company on the receipt, at the time. Without it the expense is disallowed in full.\n- **Card cap:** your per-transaction card cap still applies. A dinner over it needs a purchase request.\n- **Card category:** entertainment venues are blocked on the card, so the restaurant needs to be an ordinary one.\n\n**What I couldn't confirm**\nI found nothing saying a meal with a public official is allowed, or that it has a different cap. The 50,000 KRW figure is written for customers and partners. I wouldn't assume it applies to officials. Because gifts to officials are banned outright, check before booking. I'd ask whoever owns the expense policy, such as Finance or Compliance.\n\nIf you tell me which grade or card limit applies to you, I can check whether a dinner at 50,000 KRW per head fits under your per-transaction cap.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I take a public official to dinner, and what is the per-head cap for that?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Entertainment cap question"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Caps for card use, likely entertainment"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Check for entertainment rules"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "Caps and blocked categories"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/entertainment",
+    "why": "Entertainment cap per head"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment/body",
+    "why": "Rules on who may be entertained"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment-limit/body",
+    "why": "Per-head cap and evidence"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0662397,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

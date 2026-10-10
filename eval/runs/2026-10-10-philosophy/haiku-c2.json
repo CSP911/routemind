@@ -1,0 +1,63 @@
+{
+ "id": "c2",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How long do we have to keep signed contracts?",
+ "answer": "Signed contracts are kept for **10 years**, under the Commercial Act. This comes from the company's retention schedule in RouteMind.\n\n- **When the clock starts:** at the end of the business, such as contract end, not the date it was signed.\n- **Litigation or audit:** anything under litigation or audit is not destroyed when its period runs out.\n- **Where the signed original goes:** one of the two originals goes to the records room, held by the office desk, not the signing team. The scan is uploaded to the groupware document store under `contracts/<year>/<vendor>` on the same day. Electronic contracts have no original, so keep the PDF with the signing certificate.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How long do we have to keep signed contracts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "The row says it covers how many years something is kept, which fits a retention question about signed contracts."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "The row says it covers where the signed contract is kept, which may also hold the retention period."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "The approval area lists a document retention node stating how many years each kind of document is kept."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/contract-custody",
+    "why": "The procurement area lists contract custody, which says who keeps the signed original and for how long."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "It gives the retention period by document, which should include signed contracts."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/custody-rule/body",
+    "why": "It states who keeps the signed original of a contract and until when."
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.0021416100000000004,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

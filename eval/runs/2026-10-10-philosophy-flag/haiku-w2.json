@@ -1,0 +1,56 @@
+{
+ "id": "w2",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "Is the overseas daily allowance taxed?",
+ "answer": "Generally no, as long as it stays within the policy rates and meets the conditions below. The overseas rate is USD 50–80 a day. Amounts above the policy rate are taxed.\n\n- **Within the policy rate:** treated as a reasonable actual travel cost, so it is tax free.\n- **Over the policy rate:** only the excess is taxed. The exemption is not lost on the whole amount.\n- **No confirmed attendance for the day:** the allowance is not a travel cost and is fully taxable as pay.\n- **A meal receipt claimed on a day you also drew the allowance:** the receipt counts as double claiming, and that amount moves back into taxable pay.\n\nThe knowledge base does not give a separate tax rule for overseas trips beyond the USD 50–80 rate. Confirm the exact overseas rate and how it applies to your trip with payroll before relying on it.\n\nSources: `/v1/nodes/nontaxable/body` and `/v1/nodes/nontaxable-table/body`.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Is the overseas daily allowance taxed?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "The row \"whether an allowance is tax free\" matches the tax question about the overseas daily allowance."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "The payslip node covers what each payment line is, which should say whether the overseas daily allowance is taxed."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "The Tax-free allowances row names a trip's daily allowance and its cap, which answers the question directly."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "The node's own document should state the tax treatment of the trip daily allowance, including overseas."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "The body names the trip daily allowance but not the overseas case; the caps table should show whether overseas is treated separately."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0023769000000000004,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

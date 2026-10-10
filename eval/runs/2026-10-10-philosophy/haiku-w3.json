@@ -1,0 +1,84 @@
+{
+ "id": "w3",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "How far in advance do I have to tell HR before my parental leave starts?",
+ "answer": "You need to agree the dates with the HR desk **at least 30 days before the leave starts**.\n\nThe parental leave procedure also has you file a draft document with the family relation certificate and the parental leave form. The approval chain is team lead, then division head, then HR desk.\n\nInsurance is a separate step. Tell the payroll desk as soon as the leave is confirmed, not on the start date. A late filing gets corrected later as one large deduction.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How far in advance do I have to tell HR before my parental leave starts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "The payroll row lists \"how to apply for parental leave\", the closest match to the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/insurance",
+    "why": "Its line covers leave of absence, which is where parental leave notice rules would sit."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/insurance/body",
+    "why": "Its own document is the social insurance and leave of absence entry; checking for the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/insurance-rates/body",
+    "why": "Its line says it covers what happens during leave, so it may state the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payroll-desk",
+    "why": "The payroll desk files the leave insurance changes, so its documents may give the notice period for parental leave."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payroll-desk/body",
+    "why": "Its own document says what the payroll desk runs, including leave-related filings."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Parental leave is a leave type, so the attendance area may hold the notice rule for leave requests."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/childcare-leave",
+    "why": "Its line says it covers who is eligible and in what order to apply, which should include the notice period."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/childcare-apply/body",
+    "why": "It covers applying and the order to apply in, which is where the notice period should be."
+   }
+  }
+ ],
+ "turns": 11,
+ "cost_usd": 0.0035415100000000003,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "id": "w1",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "Above what amount do I need qualifying evidence for client entertainment?",
+ "answer": "**Above 30,000 KRW.**\n\nClient entertainment over 30,000 KRW needs two things:\n- **Qualifying evidence:** a tax invoice, an invoice, a card slip (corporate or personal), or a cash receipt issued against the company registration number.\n- **The attendee list.**\n\nUp to 30,000 KRW, a simple receipt is enough. Without qualifying evidence above that amount, the company pays a 2% penalty. That is why the claim gets refused rather than absorbed.\n\nA cash receipt taken against a mobile number doesn't count. It becomes a personal deduction and can't be converted afterwards. Say \"사업자 지출증빙\" and give the company number before they ring it up.\n\nI didn't read the entertainment cap (a separate limit on how much can be spent), so I can't tell you what it is.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Above what amount do I need qualifying evidence for client entertainment?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Entertainment cap/evidence rules are under expense"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/evidence",
+    "why": "Evidence requirements for spends"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence",
+    "why": "Ceiling on simple receipt / qualifying evidence"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/evidence/body",
+    "why": "Check evidence rules for entertainment"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-list/body",
+    "why": "Ceiling on simple receipt, check entertainment-specific"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/qualified-evidence/body",
+    "why": "Check for entertainment-specific threshold"
+   }
+  }
+ ],
+ "turns": 8,
+ "cost_usd": 0.0604456,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "id": "w4",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "I lost my corporate card. Who do I call first?",
+ "answer": "I've read the lost-card procedure and have what I need.\n\n**Call the card issuer first and have the card stopped.** This comes before telling anyone at the company. The issuer's liability process is measured from the moment the card is stopped, so any delay adds to the company's exposure.\n\nAfter that:\n1. **Tell the office & purchasing desk on ext. 2210.** This is the second call, not the first.\n2. **File a statement of the circumstances as a draft.**\n3. **Expect a replacement in 3–5 working days.** If you have to spend in the meantime, use a personal card and claim it back on a disbursement form. Keep the slip, because a personal card slip counts as evidence.\n\n- **Fraudulent charges made before the stop:** these go through the issuer's liability process. The company doesn't absorb them up front.\n- **Charges you don't recognise:** raise them within 7 days of the statement. After that they're treated as your own spending. A charge that turns out to be yours but was never explained is deducted from your pay.\n- **Other items lost with the card:** if the card was in a bag or wallet, tell the desk what else was in it. Access cards and laptops have their own procedures and go through different desks.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I lost my corporate card. Who do I call first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Row mentions \"the card was lost\""
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Covers what to do when the card is lost"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "Lost card procedure"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "Ordered steps for lost card"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "Main lost card document"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0412236,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

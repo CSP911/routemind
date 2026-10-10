@@ -1,0 +1,56 @@
+{
+ "id": "a1",
+ "kind": "absent",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Can I work from home two days a week? What is our remote work policy?",
+ "answer": "I couldn't find a remote work policy in RouteMind, so I can't tell you whether two days a week is allowed.\n\nI checked the Attendance area, which is where I'd expect it. It covers annual leave, parental leave, business-trip attendance, the attendance system and the HR desk. None of those documents mention working from home, remote days, or hybrid arrangements. The other areas (approval, expense, payroll, procurement) don't list it either. I'm not going to guess at a policy from general knowledge, because it wouldn't reflect your company's rules.\n\nTwo things from the attendance documents may still matter:\n- **The HR desk is where situations the rules don't cover get settled.** Ask them whether a remote work policy exists and how to request two days a week.\n- **A verbal approval isn't a record.** The attendance system says an agreement with your team lead that isn't in the system has no effect on attendance or pay. If you do get approval, make sure it's recorded in Groupware > Attendance, or whatever channel HR names.\n\nIf you find the policy document or HR gives you the rules, I can add it to RouteMind so the next person gets an answer.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I work from home two days a week? What is our remote work policy?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Remote work/working from home is an attendance matter; checking for a policy"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-overview/body",
+    "why": "Overview may mention remote work"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/attendance-system",
+    "why": "May cover recording remote work hours"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system/body",
+    "why": "Check for remote work entry"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system-guide/body",
+    "why": "Check menus for remote work"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0338746,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

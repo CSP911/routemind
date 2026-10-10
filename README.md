@@ -100,11 +100,19 @@ agent per question:
   not a wrong document, and the agent followed it. An agent that trusts the map inherits the map's
   errors, and nothing flags them.
 
-**Flat or folded** ([eval/depth/](eval/depth/), 2026-10-09). This compared the same documents with the
-same agent on two trees: area tables of 15–23 rows behind holders, against the same documents with
-every holder removed (61–244 rows per area). On the 35 questions walked on both trees, accuracy was
-31 vs 30, so no difference can be claimed either way. The flat tree used about 3.5× the input tokens.
-The run stopped when the API credit ran out. **Unfinished.**
+**Flat or folded** ([eval/depth/](eval/depth/), 2026-10-09/10). The same 73 questions on two trees:
+area tables of 15–23 rows behind holders, against the same documents with every holder removed
+(61–244 rows per area). With a Sonnet-class walker both trees scored **65/73**; the flat tree cost
+**2.4×** the input. With a Haiku-class walker the flat tree scored *higher* — 66 vs 61 — because every
+holder is one more decision a weak model can get wrong. Folding buys tokens, not accuracy, and costs
+a weak model accuracy.
+
+**Behaviour** ([eval/philosophy/](eval/philosophy/), 2026-10-10). Twelve questions through the real
+MCP door, Sonnet and Haiku: every walk started at hop 0 with a reason on every step; every question
+with no answer in the documents was answered "not here", with no invented rule; deliberately false
+lines were answered around by reading the document. But the agents did not *report* the false lines
+until one instruction asked them to (1/4 → 4/4), and a false hop-0 sentence is still never reported.
+Twelve questions, one run each — read it as "did not fail", not as a rate.
 
 Everything is in the repository: the corpus generator (`bench/`), the gold sets (`eval/gold/`), and
 every run including the failures (`eval/runs/`). Re-running needs an API key —
@@ -126,7 +134,7 @@ every run including the failures (`eval/runs/`). Re-running needs an API key —
 |---|---|
 | **Evidence** | one synthetic corpus, one domain, model-written or templated questions; no real organisation's data |
 | **Scale** | measured at 5 areas and about 1,100 documents. Nothing larger has been tried |
-| **Models** | walks were measured with Sonnet- and Opus-class models; weaker models are untested |
+| **Models** | Sonnet- and Opus-class on the stress test; Haiku-class only on the depth and behaviour runs, where folded tables cost it accuracy |
 | **Staleness** | no mechanism decides which version is current. That is said by a person, in a line. Ages from git help someone ask; they do not decide ([docs/AGE.md](docs/AGE.md)) |
 | **Maintenance** | change sets keep the lines over a change in step, but they are days old and unproven in real use. The map has no editor for a multi-step change |
 | **Absence** | "not here" is only as good as hop 0's sentences. A missing sentence and a missing document look the same to the agent |
@@ -141,8 +149,8 @@ every run including the failures (`eval/runs/`). Re-running needs an API key —
 |---|---|---|
 | the collapse stress test above | any real organisation's documents | a corpus someone else wrote, with questions someone else wrote |
 | cost per walk | how much it costs to maintain the map over months | a maintenance log from a real install |
-| flat vs folded, half-run | scale: dozens of areas, 10k+ documents | finish the depth run; a larger synthetic map |
-| invariants: 12, each with a check ([docs/INVARIANTS.md](docs/INVARIANTS.md)) | weaker models | the same walks with a small model |
+| flat vs folded, both a strong and a weak walker | scale: dozens of areas, 10k+ documents | a larger synthetic map |
+| invariants: 12, each with a check ([docs/INVARIANTS.md](docs/INVARIANTS.md)) | a misroute into an area that holds a plausible wrong answer | a map whose facts each live once |
 
 Worth trying if your team keeps answering from the wrong revision, or retrieval keeps returning the
 neighbouring row. Reports of where it fails are the most useful thing you can send:
