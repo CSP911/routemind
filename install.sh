@@ -115,7 +115,11 @@ WANT="$(grep -E '^[[:space:]]*WEB_PORT=' .env | tail -n 1 | cut -d= -f2- | tr -d
 WANT="${WANT:-8080}"
 if command -v python3 >/dev/null 2>&1 && python3 -c "import socket,sys; s=socket.socket(); s.settimeout(0.5); sys.exit(0 if s.connect_ex(('127.0.0.1', $WANT)) == 0 else 1)" 2>/dev/null; then
   if ! docker ps --filter "label=com.docker.compose.project=$PROJECT" --filter "publish=$WANT" --format '{{.ID}}' 2>/dev/null | grep -q .; then
-    printf '\n  ! port %s is already in use by something else. Pick another:\n      ./install.sh --port %s\n' "$WANT" "$((WANT + 1))" >&2
+    FREE="$(python3 -c "import socket
+for p in range($WANT + 1, min($WANT + 200, 65536)):
+    s = socket.socket(); s.settimeout(0.2)
+    if s.connect_ex(('127.0.0.1', p)) != 0: print(p); break" 2>/dev/null)"
+    printf '\n  ! port %s is already in use by something else. Pick another:\n      ./install.sh --port %s\n' "$WANT" "${FREE:-$((WANT + 1))}" >&2
     exit 2
   fi
 fi
