@@ -2,6 +2,33 @@
 
 Open work that has been decided on but not done. Newest first. Each item says who it waits on.
 
+## A partial table that looks complete still traps the agent — *Knowledge, then measure*
+
+`eval/philosophy` (trap-pure, 2026-10-10): a false hop-0 sentence sends "what can a division head
+approve" to procurement, whose threshold table answers it for purchases only and does not say so. Both
+models answered with the purchase band. The narrower-answer instruction fixed the case where the
+narrowing was visible (a range for a figure) and not this one. The defences today are human
+(docs/WRITING.md rules 1–2). Open: whether anything on the agent's side helps without making every
+walk visit two areas — measure any idea against `questions-trap-pure.yaml` *and* the controls.
+
+## Agent notes about wrong lines go nowhere — *Web*
+
+Agents now say "the line … is wrong" at the end of an answer (eval/philosophy: 4/4 once asked), and the
+server notes a walk that switched areas. Both land in the answer the person reads, and nowhere else: the
+map does not collect them. A walk record could carry them (a `why` on close already exists), and the
+history could mark walks that switched areas. Not built — the first question is whether anyone acts on
+the note in the answer.
+
+## Han-character names need an LLM — *watch*
+
+Hangul and kana are romanised for an address; kanji and hanzi have no reading without a model, so a
+name in them is refused with "add a Latin letter or a digit". Known since 2026-10-10's QA.
+
+## The circuit key is in agent transcripts — *documented*
+
+The far end's key is passed in the `knowledge_circuit` call, so it is in the agent's transcript.
+docs/CIRCUIT.md says so; there is no environment-variable path for it yet.
+
 ## Snapshot isolation costs hop 0 twenty percent — *watch, then measure again*
 
 Every read now takes the writers' lock shared, loads the tree, and lets go (`Store.snapshot`), which
