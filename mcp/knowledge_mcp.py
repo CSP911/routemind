@@ -1439,7 +1439,17 @@ def _utf8_stdio() -> None:
 def serve(api: Api, stdin=sys.stdin, stdout=sys.stdout) -> None:
     """One JSON object per line, in and out. Anything this process writes to stdout that is not a
     response corrupts the stream, so every diagnostic goes to stderr."""
-    if stdin is sys.stdin and stdout is sys.stdout: _utf8_stdio()
+    if stdin is sys.stdin and stdout is sys.stdout:
+        _utf8_stdio()
+        # A client may end the server with a signal rather than by closing stdin — `claude -p` does —
+        # and then the close below never ran: those walks stayed "walking" in the history (newcomer QA,
+        # 2026-10-10). Same ending, either way.
+        import signal
+        def _gone(*_):
+            _end_session(api); os._exit(0)
+        for sig in (signal.SIGTERM, signal.SIGHUP, signal.SIGINT):
+            try: signal.signal(sig, _gone)
+            except (ValueError, OSError, AttributeError): pass
     server = Server(api)
     for line in stdin:
         line = line.strip()
@@ -1457,8 +1467,12 @@ def serve(api: Api, stdin=sys.stdin, stdout=sys.stdout) -> None:
         if reply is not None:
             stdout.write(json.dumps(reply, ensure_ascii=False) + "\n")
             stdout.flush()
-    # The client went away. A walk left open showed as "walking" on the map for an hour and then as
-    # abandoned, though the session had simply ended (2026-10-10).
+    _end_session(api)
+
+
+def _end_session(api: Api) -> None:
+    """The client went away. A walk left open showed as "walking" on the map for an hour and then as
+    abandoned, though the session had simply ended (2026-10-10)."""
     w = WALKS.get(CURRENT.get("walk") or "")
     if w and not w["ended"]:
         w["ended"] = "the session ended"

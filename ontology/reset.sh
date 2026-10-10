@@ -52,6 +52,12 @@ $G rm -rq --ignore-unmatch regions regions.json vocab.yaml REVISION >/dev/null
 rm -rf "$REPO/regions"
 cp -R "$FROM/." "$REPO/"
 $G add -A
+# Already that map: nothing to commit, so no commit — and no tag pointing at a reset that did not happen.
+if git -C "$REPO" diff --cached --quiet; then
+  git -C "$REPO" tag -d "$TAG" >/dev/null
+  printf 'The map in %s is already %s — nothing changed.\n' "$REPO" "$FROM"
+  exit 0
+fi
 $G commit -qm "reset: start over from $FROM
 
 The map as it was is tagged $TAG — git reset --hard $TAG brings it back."

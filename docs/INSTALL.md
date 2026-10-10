@@ -20,7 +20,7 @@ Already installed? The reset replaces the map in one commit and tags the one it 
 be brought back ([DATA-REPO.md](DATA-REPO.md#starting-over)):
 
 ```sh
-./ontology/reset.sh --example      # or --empty
+./ontology/reset.sh --example      # or --empty; add --yes where there is no terminal to ask on
 ```
 
 ## Without install.sh
@@ -69,16 +69,15 @@ another domain — one decision per kind rather than per document.
 
 ## Second — one area
 
-On the map, at the backbone: **`+ New AS`**. One sentence decides everything:
+On an empty map, **Create the first area**; later ones from the Back-Bone box → **New AS**. One sentence
+decides everything:
 
 | Field | What it is | Without it |
 |---|---|---|
 | **When to choose this area** (`use_when`) | why an agent picks this row out of the list | a row with a title and no reason — **nobody picks it** |
 
-Then, from that area's rack: `+ New node` → `+ New data` to attach documents.
-
----
-
+Then, on that area's rack: **+ New data** for a document. **+ New node** makes a holder — a heading
+documents sit under — when there are enough to group.
 
 ---
 

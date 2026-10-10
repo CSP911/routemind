@@ -53,7 +53,7 @@ be fetched, so an agent is told why rather than handed an empty table.
 
 ### Claude Code
 
-Nothing to configure. `./install.sh` has already written `.mcp.json` at the repository root, so:
+Nothing to configure. `.mcp.json` at the repository root is part of the checkout, so:
 
 ```sh
 cd routemind
@@ -63,9 +63,10 @@ claude
 Claude Code sees the file, offers the server, and one approval is the whole setup. `/mcp` inside the
 session lists the tools; `claude mcp list` shows whether it registered at all.
 
-**The port follows your install.** `install.sh --port 9000` rewrites `.mcp.json` to match. It used to
-ship with 8080 hard-coded, which on any other port gave Claude Code a server that registers, lists
-its tools and fails on every call — worse than no server, because the tools are visibly there.
+**The port follows your install.** `.mcp.json` names no port: the server reads `WEB_PORT` from `.env`
+itself, so `--port 9000` or a port changed by hand later is picked up at the next start. (It used to
+ship with 8080 hard-coded, and later to be rewritten by install.sh, which left a modified tracked
+file in every checkout on another port.)
 
 Ask it something your ontology covers, without naming RouteMind. The area list reaches the model
 through the server's `instructions`, so what decides whether it comes here is the `use_when` line on

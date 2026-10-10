@@ -10,6 +10,15 @@ set -e
 BASE="${1:-http://127.0.0.1:8080}"
 say() { printf '%s\n' "$*"; }
 
+# An install with its door closed (docs/AUTH.md) refused every write here — and with reads guarded,
+# every read — so re-running install.sh, the documented way to change a setting, failed on the
+# install's own checks (operator QA, 2026-10-10). The secret is read the way the MCP server reads it.
+TOK="${KNOWLEDGE_TOKEN:-$(grep -E '^KNOWLEDGE_TOKEN=' "$(dirname "$0")/../.env" 2>/dev/null | tail -n 1 | cut -d= -f2- | tr -d '"'"'"' \r')}"
+if [ -n "$TOK" ]; then
+  export KNOWLEDGE_TOKEN="$TOK"
+  curl() { command curl -H "Authorization: Bearer $TOK" "$@"; }
+fi
+
 # Every check below used to be run as `check | sed 's/^/  /'`, and `set -e` reads the exit status of
 # the *pipeline* — which is sed's, and sed always succeeds. So four of the seven parts of the one
 # command the README tells people to run could not fail it: smoke.sh printed FAIL lines from
@@ -17,7 +26,9 @@ say() { printf '%s\n' "$*"; }
 TMP=$(mktemp); trap 'rm -f "$TMP"' EXIT
 sub() {
   name="$1"; shift
-  "$@" >"$TMP" 2>&1; rc=$?
+  # `&& … ||` so that `set -e` does not end the script here, before the output is shown — a failing
+  # check used to end smoke.sh with nothing printed but the install's "something wrong".
+  "$@" >"$TMP" 2>&1 && rc=0 || rc=$?
   sed 's/^/  /' "$TMP"
   [ "$rc" = 0 ] || { say "FAIL $name exited $rc"; exit 1; }
 }
@@ -25,7 +36,9 @@ sub() {
 # by someone deciding whether their install works, and forty lines of "ok" is not that.
 subq() {
   name="$1"; shift
-  "$@" >"$TMP" 2>&1; rc=$?
+  # `&& … ||` so that `set -e` does not end the script here, before the output is shown — a failing
+  # check used to end smoke.sh with nothing printed but the install's "something wrong".
+  "$@" >"$TMP" 2>&1 && rc=0 || rc=$?
   tail -1 "$TMP" | sed 's/^/  /'
   [ "$rc" = 0 ] || { sed 's/^/  /' "$TMP"; say "FAIL $name exited $rc"; exit 1; }
 }

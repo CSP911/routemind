@@ -9,6 +9,12 @@ part walks the ontology the way an agent would — areas, then one area, then re
 using only addresses the tables printed.
 """
 import atexit, json, os, subprocess, sys, traceback
+# An install with its door closed: present the secret on this check's own requests, as the MCP server
+# does on its (KNOWLEDGE_TOKEN, from the environment; smoke.sh exports it from .env).
+import os as _os, urllib.request as _ur
+if _os.environ.get("KNOWLEDGE_TOKEN"):
+    _op = _ur.build_opener(); _op.addheaders = [("Authorization", "Bearer " + _os.environ["KNOWLEDGE_TOKEN"])]
+    _ur.install_opener(_op)
 
 API = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8080/api/knowledge"
 HERE = os.path.dirname(os.path.abspath(__file__))

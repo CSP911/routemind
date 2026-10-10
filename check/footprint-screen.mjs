@@ -220,7 +220,10 @@ fp.focus = w3.id;
 byId.knFpSpeed.value = "1"; let t0 = Date.now(); await kn.fpReplay(); const slow = Date.now() - t0;
 byId.knFpSpeed.value = "8"; t0 = Date.now(); await kn.fpReplay(); const fast = Date.now() - t0;
 check("replay: a 1.5 s pause takes about 1.5 s at 1×", slow >= 1300, `${slow} ms`);
-check("  and much less at 8×", fast < slow / 3, `${fast} ms against ${slow} ms`);
+// Half, not a third: at 8× the waits shrink to an eighth, but the fixed cost of drawing each step does
+// not, and on a loaded machine it was 475 ms against a 449 ms bar — failing a replay that was plainly
+// fast (2026-10-10). Half still tells 8× from 1×.
+check("  and much less at 8×", fast < slow / 2, `${fast} ms against ${slow} ms`);
 byId.knFpSpeed.value = "1";
 t0 = Date.now(); const running = kn.fpReplay(); await new Promise((r) => setTimeout(r, 250));
 await kn.fpReplay(); await running; const stopped = Date.now() - t0;

@@ -152,15 +152,21 @@ _FM_CACHE: dict = {}          # frontmatter text → its parse; see `_read_nodes
 # followed crashed in a loop (QA, 2026-10-10). Now that file is left out, everything else is served,
 # and the validator puts this list first — so writes are refused, and the reason names the file.
 _BROKEN: dict = {}
+TEXT_FIELDS = ("id", "name", "kind", "parent", "one_liner", "use_when", "role", "holds", "status", "injected_by")
 
 
 def _problem(e: Exception, offset: int = 0) -> str:
     """One line for a parse error: where, and what — not a traceback. `offset` turns a line within
     a file's frontmatter into the line an editor shows (the opening `---` is line 1)."""
-    mark = getattr(e, "problem_mark", None) or getattr(e, "context_mark", None)
+    # An unclosed quote is noticed lines after it was typed, so where the parser noticed is not where a
+    # person broke it. When it also says where the construct began, the broken line is between the two.
     what = getattr(e, "problem", None) or getattr(e, "msg", None) or str(e).splitlines()[0]
-    line = mark.line + 1 + offset if mark is not None else getattr(e, "lineno", None)
-    return f"line {line}: {what}" if line else str(what)
+    end, start = getattr(e, "problem_mark", None), getattr(e, "context_mark", None)
+    if end is None and start is None:
+        line = getattr(e, "lineno", None)
+        return f"line {line}: {what}" if line else str(what)
+    a = (start or end).line + 1 + offset; b = (end or start).line + 1 + offset
+    return f"line {a}: {what}" if a == b else f"between lines {a} and {b}: {what}"
 
 
 class Store:
@@ -344,6 +350,11 @@ class Store:
             # deletion that succeeded.
             try: text = f.read_text(encoding="utf-8")
             except FileNotFoundError: continue
+            except UnicodeDecodeError as e:
+                # One stray byte took every request down with a 502 that named no file (QA, 2026-10-10).
+                rel = str(f.relative_to(self.root)) if f.is_relative_to(self.root) else str(f)
+                bad[rel] = f"is not UTF-8 text (byte {e.start}: {e.object[e.start:e.start + 1]!r}) — save it as UTF-8"
+                continue
             m = FM_RE.match(text)
             rel = str(f.relative_to(self.root)) if f.is_relative_to(self.root) else str(f)
             if not m:
@@ -363,6 +374,16 @@ class Store:
                 if not isinstance(fm, dict):
                     bad[rel] = f"the frontmatter is a {type(fm).__name__}, not `key: value` lines"
                     continue
+                # The fields every rule reads as a line of text. A number is one (`id: 12345`); a list,
+                # a mapping or a yes/no is not, and `parent: [attendance]` took every request down with
+                # "unhashable type: 'list'" (QA, 2026-10-10).
+                wrong = [k for k in TEXT_FIELDS if isinstance(fm.get(k), (list, dict, bool))]
+                if wrong:
+                    bad[rel] = ", ".join(f"`{k}` is a {type(fm[k]).__name__}" for k in wrong) + \
+                               " — each of these is one line of text"
+                    continue
+                for k in TEXT_FIELDS:
+                    if isinstance(fm.get(k), (int, float)): fm[k] = str(fm[k])
                 if len(_FM_CACHE) > 50000: _FM_CACHE.clear()
                 _FM_CACHE[head_text] = fm
             import copy as _copy

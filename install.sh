@@ -47,6 +47,10 @@ done
 
 NEW_ENV=""
 [ -f .env ] || { cp .env.example .env; NEW_ENV=1; }
+# A first run refused before anything started (a bad or busy port, a name another checkout holds) takes
+# back the .env it just made. Left behind, the next run read it as an existing install's: it skipped
+# the port question and the path-suffixed name (operator QA, 2026-10-10).
+refuse() { [ -n "$NEW_ENV" ] && rm -f .env; exit 2; }
 grep -q '^KNOWLEDGE_UID=' .env || printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
 
 # Replace a key in .env rather than appending a second copy of it — compose reads the last one, so an
@@ -70,9 +74,9 @@ if [ -z "$PORT" ] && [ -t 0 ] && { [ -n "$NEW_ENV" ] || ! grep -q '^WEB_PORT=.\+
 fi
 if [ -n "$PORT" ]; then
   case "$PORT" in
-    ''|*[!0-9]*) printf '  ! --port takes a number\n' >&2; exit 2 ;;
+    ''|*[!0-9]*) printf '  ! --port takes a number\n' >&2; refuse ;;
     # 99999 was written to .env as it was, and from then on even `docker compose ps` failed on it.
-    *) [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ] || { printf '  ! a port is 1 to 65535, not %s\n' "$PORT" >&2; exit 2; }
+    *) [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ] || { printf '  ! a port is 1 to 65535, not %s\n' "$PORT" >&2; refuse; }
        setenv WEB_PORT "$PORT" ;;
   esac
 fi
@@ -105,7 +109,7 @@ if [ -n "$PROJECT" ]; then
     printf '\n  ! another RouteMind is running under the name "%s", from\n      %s\n' "$PROJECT" "$OTHER" >&2
     printf '    Starting here would replace its containers with this checkout'"'"'s. Give this one its own name:\n' >&2
     printf '      echo COMPOSE_PROJECT_NAME=%s-2 >> .env && echo IMAGE_TAG=%s-2 >> .env && ./install.sh\n' "$PROJECT" "$PROJECT" >&2
-    exit 2
+    refuse
   fi
 fi
 
@@ -120,7 +124,7 @@ for p in range($WANT + 1, min($WANT + 200, 65536)):
     s = socket.socket(); s.settimeout(0.2)
     if s.connect_ex(('127.0.0.1', p)) != 0: print(p); break" 2>/dev/null)"
     printf '\n  ! port %s is already in use by something else. Pick another:\n      ./install.sh --port %s\n' "$WANT" "${FREE:-$((WANT + 1))}" >&2
-    exit 2
+    refuse
   fi
 fi
 
@@ -142,7 +146,7 @@ add it later by editing .env and running this again.
 TXT
   printf 'Provider — openai, anthropic, litellm (Enter to skip): '; read -r LLM_PROVIDER || LLM_PROVIDER=""
   # Skipping is an answer, and it is kept: an update run must not ask it again every time.
-  [ -z "$LLM_PROVIDER" ] && printf '# llm: skipped at install — set ONTOLOGY_LLM_* below and run ./install.sh to add one\n' >> .env
+  [ -z "$LLM_PROVIDER" ] && printf '# llm: skipped at install — set the ONTOLOGY_LLM_* lines in this file and run ./install.sh to add one\n' >> .env
   if [ -n "$LLM_PROVIDER" ]; then
     # The two hosted providers have one address each; a gateway is wherever you put it.
     case "$LLM_PROVIDER" in
@@ -189,6 +193,10 @@ if [ -z "$(ls -A data/repo 2>/dev/null)" ]; then
   if [ "$EXAMPLE" = yes ]; then
     cp -R examples/back-office/. data/repo/
     printf '  data/repo starts from examples/back-office — yours to change or replace.\n'
+  elif [ -z "$EXAMPLE" ]; then
+    # No terminal to ask on, and no flag: an empty map, which used to happen without a word.
+    printf '\n  No terminal to ask on, so the map starts empty. For the example back office instead:\n'
+    printf '    ./install.sh --example      (now, before the first start)   or later: ./ontology/reset.sh --example --yes\n'
   fi
 fi
 
@@ -225,9 +233,9 @@ while [ $i -lt 60 ]; do
     prov=$(printf '%s' "$cfg" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("llm_provider") or "")' 2>/dev/null || echo "")
     known=$(printf '%s' "$cfg" | python3 -c 'import json,sys; print(" ".join(json.load(sys.stdin).get("llm_providers") or []))' 2>/dev/null || echo "")
     if [ "$derives" = "True" ]; then
-      printf 'RouteMind is at %s — with %s: it derives addresses and drafts conditions.\n\n' "$BASE" "$prov"
+      printf 'RouteMind is at %s — with %s: the ✨ Suggest buttons draft each line for you to edit.\n\n' "$BASE" "$prov"
     else
-      printf 'RouteMind is at %s — without an LLM: you type the address and the condition yourself.\n' "$BASE"
+      printf 'RouteMind is at %s — without an LLM: you write each line yourself, and the ✨ Suggest buttons stay off.\n' "$BASE"
       # A provider this build does not know turns the LLM off, and "off" alone reads as a forgotten
       # key. Say which it is, because the fix is different.
       want=$(grep -E '^ONTOLOGY_LLM_PROVIDER=' .env | cut -d= -f2)

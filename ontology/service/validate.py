@@ -80,8 +80,8 @@ def export_kinds(vocab: dict) -> set[str]:
     return {k for k in out if k}
 
 
-def _norm(name: str) -> str:
-    return re.sub(r"[\s·/()\-]", "", name or "").lower()
+def _norm(name) -> str:
+    return re.sub(r"[\s·/()\-]", "", str(name or "")).lower()
 
 
 def validate(store: Store) -> dict:
@@ -90,6 +90,7 @@ def validate(store: Store) -> dict:
     store._shared(); store.regions_json()     # each records what does not parse, so read them first
     # First, because everything after this is computed without them: a file left out looks like a
     # missing node to every rule below. Named by path, with how to undo a commit that broke it.
+    vocab_broken = any(b.startswith("vocab.yaml:") for b in store.broken())
     for b in store.broken():
         errors.append(f"{b} — fix it and commit, or `git -C data/repo revert HEAD` if the last commit broke it")
     kinds = {k["id"] for k in vocab.get("kinds", [])}
@@ -126,7 +127,9 @@ def validate(store: Store) -> dict:
             errors.append(f"node {nid}: {', '.join(state_fields)} — a document carries no state; which record "
                           f"governs is said in its parent's line, not in the document (docs/INVARIANTS.md, 9)")
         if not n["name"]: errors.append(f"node {nid}: no name")
-        if n["kind"] not in kinds: errors.append(f"node {nid}: kind {n['kind']!r} not in vocab")
+        # Not while vocab.yaml itself cannot be read: that is one error, already first in the list, and
+        # it used to arrive followed by one "not in vocab" per node (QA, 2026-10-10).
+        if n["kind"] not in kinds and not vocab_broken: errors.append(f"node {nid}: kind {n['kind']!r} not in vocab")
         if n["region"] is None: errors.append(f"node {nid}: every Data area lives in a Region — core-nodes/ was retired 2026-09-08")
         # expands_in — "below this point is outside the ontology". It lets a reader tell, from the
         # listing alone, whether a childless representative is **empty** or is a **boundary**. If that

@@ -2165,12 +2165,17 @@
     card.append(actions(
       button("common.cancel", "quiet", closeCard),
       button("knowledge.create", "primary", (b) => guarded(b, async () => {
-        const src = source.value.trim();
+        let src = source.value.trim();
+        // A name in Hangul or kana becomes its address the way a document's does (`suggest/id`), and
+        // stays the area's title. It was refused outright — a Korean team could name its documents in
+        // Korean but not its areas (newcomer QA, 2026-10-10).
+        const typed = src;
+        if (/[^\x00-\x7f]/.test(src)) src = String((await post("suggest/id", { name: src })).id || "");
         if (!NAME_ID.test(src)) throw new Error(t("knowledge.bb.badAsName"));
         if (!useWhen.value.trim()) throw new Error(tv("knowledge.fieldRequired", { field: t("knowledge.bb.useWhen") }));
         // Derived, not asked for. `name` is the area's name in display form; the API needs a
         // representative to have one and nothing an agent reads ever shows it.
-        const label = src.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+        const label = typed !== src ? typed : src.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
         const oneLine = label;
         const made = await post("regions", {
           source: src,
@@ -2344,9 +2349,15 @@
     card.append(el("h3", "kn-cf-title", entity ? t("knowledge.submit.titleEntity").replace("{id}", entity)
       : t(scope === "bb" ? "knowledge.submit.titleBb" : "knowledge.submit.titleAs")));
     card.append(el("p", "kn-cf-lead", t(SCOPE_KEY[scope] || scope)));
-    card.append(beforeAfter({ region: entity || region, field, before, after: null }));
+    const ba = beforeAfter({ region: entity || region, field, before, after: before });
+    card.append(ba);
 
     const after = area(before, 4);
+    // The "Proposed" box follows what is typed below it. It was built once, empty, and stayed "—"
+    // while the person wrote the sentence it is there to preview (newcomer QA, 2026-10-10).
+    const preview = ba.querySelector?.(".kn-ba-box.is-after p");
+    const sync = () => { if (preview) preview.textContent = after.value.trim() || "—"; };
+    after.addEventListener("input", sync);
     const why = input("", { maxlength: 600, placeholder: t("knowledge.submit.whyHint") });
     const notes = el("div", "kn-draft-notes");
     const chips = (labelKey, list) => {
@@ -2371,7 +2382,7 @@
         notes.append(el("p", "kn-fnote", draft.why ? `${t("knowledge.submit.nothing")} ${draft.why}` : t("knowledge.submit.nothing")));
         return;
       }
-      after.value = String(draft.after_draft || "");
+      after.value = String(draft.after_draft || ""); sync();
       if (!why.value.trim()) why.value = String(draft.why || "");
       chips("knowledge.submit.uncovered", (draft.uncovered || []).filter(Boolean));
       chips("knowledge.submit.apartFrom", (draft.distinguishes_from || []).filter(Boolean));
@@ -2930,6 +2941,9 @@
     const box = el("div", "kn-err-box");
     for (const line of String(text).split("\n")) box.append(el("p", null, line));
     form.append(box);
+    // At the foot of a long form — "+ New data" with its body field — the box landed below the
+    // dialog's visible edge, and Create looked as if it did nothing (newcomer QA, 2026-10-10).
+    box.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
   }
 
   // ── editing what the map shows ────────────────────────────────────────────
@@ -3380,6 +3394,7 @@
       if (!window.IRISI18N.setLanguage(sel.value)) return;
       langLabel();
       draw();
+      showDoor();             // the door chip ("open to the network") kept the old language (QA)
       // Built from strings at the time they were drawn, so they would keep the old language: the
       // footprint's step chips and card, the history table, the strip of stale lines.
       if (fp.on) { fpPanel(); histLoad().catch(() => {}); }

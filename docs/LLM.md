@@ -49,8 +49,8 @@ Because `install.sh` finishes by reading `/api/app-config`, a wrong key or a tra
 there and not later:
 
 ```
-RouteMind is at http://127.0.0.1:8080 — with openai: it derives addresses and drafts conditions.
-RouteMind is at http://127.0.0.1:8080 — without an LLM: you type the address and the condition yourself.
+RouteMind is at http://127.0.0.1:8080 — with openai: the ✨ Suggest buttons draft each line for you to edit.
+RouteMind is at http://127.0.0.1:8080 — without an LLM: you write each line yourself, and the ✨ Suggest buttons stay off.
 ```
 
 To add or change one afterwards, run `./install.sh` again with the flags, or edit the `ONTOLOGY_LLM_*`

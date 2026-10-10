@@ -124,7 +124,7 @@ try:
     check("one file whose frontmatter does not parse: the service starts and serves every other area",
           st == 200 and len(regs.get("regions", [])) == 5 and st2 == 200, f"{st} {st2}")
     check("  its health names the file and the line, and says how to undo the commit",
-          any("regions/expense/travel-expense.md" in e and "line " in e and "revert" in e for e in h.get("errors", [])), json.dumps(h)[:300])
+          any("regions/expense/travel-expense.md" in e and "line" in e and "revert" in e for e in h.get("errors", [])), json.dumps(h)[:300])
     req = urllib.request.Request(f"http://127.0.0.1:{PORT + 3}/v1/nodes/approval", method="PUT", data=b'{"one_liner": "x"}', headers={"Content-Type": "application/json"})
     try: urllib.request.urlopen(req, timeout=10); wst, wbody = 200, ""
     except urllib.error.HTTPError as e: wst, wbody = e.code, e.read().decode()
@@ -132,6 +132,20 @@ try:
     git(bk, "revert", "--no-edit", "HEAD")
     h = health(PORT + 3)
     check("  `git revert` of the commit that broke it is the whole recovery", h.get("valid") is True, json.dumps(h)[:300])
+    # Two shapes the first fix missed (operator QA, 2026-10-10): a byte that is not UTF-8, and a field
+    # that is a list. Both still took every request down.
+    for label, mangle in (("a byte that is not UTF-8", lambda b: b.replace(b"\nname: ", b"\nname: \xff\xfe", 1)),
+                          ("`parent` written as a list", lambda b: b.replace(b"\nparent: ", b"\nparent: [", 1).replace(b"\nkind:", b"\nkind:", 1))):
+        raw = open(f, "rb").read()
+        new = mangle(raw)
+        if b"parent: [" in new:      # close the list on the same line
+            i = new.index(b"parent: [") ; j = new.index(b"\n", i); new = new[:j] + b"]" + new[j:]
+        open(f, "wb").write(new); git(bk, "commit", "-qam", f"broken: {label}")
+        st, regs = get("/v1/regions"); h = health(PORT + 3)
+        check(f"  {label}: the rest is served, and the file is named",
+              st == 200 and len(regs.get("regions", [])) == 5 and any("travel-expense.md" in e for e in h.get("errors", [])),
+              f"{st} {json.dumps(h.get('errors'))[:200]}")
+        git(bk, "revert", "--no-edit", "HEAD")
     p.terminate(); p.wait(5)
     open(os.path.join(bk, "regions.json"), "w").write("{not json"); git(bk, "commit", "-qam", "regions.json broken by hand")
     p = start(bk, PORT + 3); h = health(PORT + 3)

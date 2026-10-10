@@ -1,4 +1,6 @@
-const realFetch = globalThis.fetch;
+// With the install's door closed, the check presents its secret, as the page does once it is given one.
+const _fetch = globalThis.fetch; const TOKEN = process.env.KNOWLEDGE_TOKEN || "";
+const realFetch = (u, o = {}) => _fetch(u, TOKEN ? { ...o, headers: { ...(o.headers || {}), Authorization: `Bearer ${TOKEN}` } } : o);
 import { readFileSync } from "node:fs";
 import { dict } from "./dict.mjs";
 const BASE = process.argv[2] || "http://127.0.0.1:8080";

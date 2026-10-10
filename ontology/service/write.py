@@ -367,6 +367,12 @@ class Writer:
         from .change import stale_lines
         with _lock, repo_lock(self.root):
             if not (self.root / ".git").exists(): raise WriteError(500, "data directory is not a git repository")
+            # Boot always leaves a commit. No HEAD means the directory was swapped under this process
+            # (a backup restored while running), and every write then failed as "node … not found" or
+            # "region … does not exist" — true of the dead mount, and no help (operator QA, 2026-10-10).
+            if head(self.root) is None:
+                raise WriteError(503, "the data directory has no git history — if it was replaced while this was "
+                                      "running, restart it: docker compose restart ontology", code="repo_replaced")
             if (dirty := _dirty(self.root)):
                 raise WriteError(409, "working tree is dirty — someone edited the repository by hand; commit or revert it first",
                                  code="tree_dirty", data={"files": dirty})

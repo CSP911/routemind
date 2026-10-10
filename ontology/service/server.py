@@ -1043,6 +1043,11 @@ class Handler(BaseHTTPRequestHandler):
     # ---- writes ----
     def _write(self, method, parts):
         actor = self._actor(); body = self._body()
+        # Before any lookup: a write into a directory swapped under this process failed as "node … not
+        # found" — true of the dead mount, and no help. Boot always leaves a commit (operator QA).
+        if parts[:1] in (["nodes"], ["regions"], ["changes"]) and head(DATA) is None:
+            raise WriteError(503, "the data directory has no git history — if it was replaced while this was "
+                                  "running, restart it: docker compose restart ontology", code="repo_replaced")
         if parts == ["place"] and method == "POST":
             # One hop of the placement walk, stateless: the table at `at`, and where the document would
             # land if the walk stopped here. A POST that writes nothing; the walk's state is the

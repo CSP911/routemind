@@ -81,6 +81,8 @@ docker compose start ontology
 ./ontology/reset.sh --example    # the example back office
 ```
 
+It asks before replacing anything; with no terminal to ask on (a script, CI), pass `--yes`.
+
 One commit in the repository's own history, made only on a clean tree. The map as it was is tagged
 first (`before-reset-<time>`) and the script prints how to bring it back:
 `git -C data/repo reset --hard before-reset-…`. The running service picks it up without a restart.
