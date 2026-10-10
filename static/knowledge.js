@@ -445,6 +445,14 @@
     canvas.setAttribute("viewBox", `0 0 ${width} ${height}`);
     canvas.setAttribute("width", Math.round(width * state.zoom));
     canvas.setAttribute("height", Math.round(height * state.zoom));
+    // Once, on the first drawing wider than its box: open on the Back-Bone, which sits in the middle.
+    // On a phone the box opened at the left edge and showed nothing but empty canvas (2026-10-10).
+    // Only once, so a person who has scrolled is never moved back.
+    const wrap = canvas.parentElement;
+    if (!state.centered && wrap && wrap.scrollWidth > wrap.clientWidth + 8 && state.regions.length) {
+      state.centered = true;
+      wrap.scrollLeft = (wrap.scrollWidth - wrap.clientWidth) / 2;
+    }
   }
 
   /** One cable in the tree the trace runs along. The first cable drawn to a thing is its own. */

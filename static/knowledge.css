@@ -627,3 +627,13 @@ body.kn-dragging { user-select: none; }
 .kn-empty-lead { margin: 0; max-width: 46ch; color: var(--kn-text); background: var(--kn-surface, transparent);
   padding: 6px 10px; border-radius: 6px; }
 .kn-empty .kn-btn { pointer-events: auto; }
+
+/* A phone: the map's header wraps instead of pushing the page sideways. At 400px the title broke one
+   character per line, the legend squeezed to a column of letters, and the zoom buttons sat off the
+   right edge (2026-10-10). The drawing itself still scrolls inside its own box. */
+@media (max-width: 720px) {
+  .kn-panel-head { flex-wrap: wrap; gap: 10px 14px; }
+  .kn-panel-head h2 { white-space: nowrap; }
+  .kn-legend { flex-wrap: wrap; gap: 6px 12px; }
+  .kn-zoom { margin-left: 0; }
+}
