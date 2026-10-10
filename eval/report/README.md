@@ -41,7 +41,9 @@ Chapter 1 carries the two ways the intervention fails:
 
 Chapter 3 has to establish, and must not quietly restate Chapter 1's caveats as solved:
 
-- `rag` 0.516 · `rag+rerank` 0.541 · `routing` 0.999 · `routing+overlay` 0.999, over 700 questions
+- `rag` 0.507 · `rag+rerank` 0.531 · `routing` 0.999 · `routing+overlay` 0.999, over 700 questions, all on
+  one scoring contract (first reported as 0.516 / 0.541 with retrieval scored as "any one document";
+  corrected 2026-10-10 after an outside audit, issue #2, F-RM-01)
 - the lever breakdown, and `indirect` at 0.028 against 1.000 in particular
 - that all four arms are now a census, not a sample
 - that 320 of the 700 are questions retrieval already answers first time, and this study does not

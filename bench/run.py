@@ -134,7 +134,14 @@ def score(q, ranked, area, picked, k):
     looked = set(picked) if picked is not None else {area[i] for i in top}
     f1 = bool(a_true & looked) if q["needs"] == "any" else a_true <= looked
     hit = [n for n, i in enumerate(top, 1) if i in d_true]
-    return {"routing_hit": f1,
+    # The walk scorer's contract (bench/walkscore.py): `needs: all` wants every D_true, and a D_alt
+    # stands in for its entry. `retrieval_hit` is "any D_true in the top k", kept as it was so earlier
+    # runs stay comparable — but on its own it scored retrieval more leniently than the walks it was
+    # compared with. Found by an outside audit (issue #2, devBorgesr, F-RM-01), 2026-10-10.
+    alt = q.get("D_alt") or {}
+    got = lambda d: d in top or any(x in top for x in (alt.get(d) or []))
+    complete = all(map(got, q["D_true"])) if q.get("needs") == "all" else any(map(got, q["D_true"]))
+    return {"routing_hit": f1, "retrieval_complete": complete,
             "areas_looked": sorted(looked),
             "area_precision": (len(a_true & looked) / len(looked)) if looked else 0.0,
             "retrieval_hit": bool(hit), "rank": hit[0] if hit else None,

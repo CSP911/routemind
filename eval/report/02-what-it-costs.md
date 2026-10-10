@@ -1,8 +1,10 @@
 # Chapter 2 — What it costs
 
 *Chapter 1 established where retrieval breaks: on 700 questions over one frozen corpus, fusion
-retrieval scores 0.516 overall and 0.028 on questions written in a person's words against documents
-indexed by codes. A reranker takes that to 0.541 and 0.069. Walking the routing table scores 0.999.
+retrieval scores 0.507 overall and 0.028 on questions written in a person's words against documents
+indexed by codes. A reranker takes that to 0.531 and 0.069. Walking the routing table scores 0.999.
+(Retrieval scored on the walks' own contract — both documents where two are needed; 0.516 / 0.541
+under the looser "any one" reading the study first reported. Issue #2, F-RM-01.)
 This chapter is the other column, and it is the reason that comparison is not yet an argument.*
 
 ---

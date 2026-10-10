@@ -89,6 +89,7 @@ unscheduled because A1's `scoped` score is the same control on a tighter scope (
 | | | primary? |
 |---|---|---|
 | `hit@10` | is a `D_true` document among the ten returned | **yes** |
+| `complete@10` | the walk scorer's contract on the same ten: every `D_true` when `needs: all`, a `D_alt` standing in for its entry. Added 2026-10-10 after an outside audit (issue #2, F-RM-01) found `hit@10` more lenient than how the walks are scored; the README compares arms on this | added |
 | `recall@20` | is it among the twenty candidates, before reranking | bound on the above, free to compute |
 | `rank` | where the first `D_true` sits; 999 for outside the top 50 | secondary |
 | `routing_hit` | did the arm end up in an area that holds an answer | diagnostic (F1) |

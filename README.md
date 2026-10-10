@@ -81,8 +81,15 @@ agent per question:
 |---|---|---|---|
 | question in the documents' own codes | 0.991 | 1.000 | 1.000 |
 | question in a person's words | 0.028 | 0.069 | 1.000 |
-| a rule two revisions back | 0.133 | 0.200 | 1.000 |
-| overall | 0.516 | 0.541 | 0.999 |
+| a rule two revisions back | 0.200 | 0.200 | 1.000 |
+| overall | 0.507 | 0.531 | 0.999 |
+
+All three columns are scored the same way: a question that needs two documents counts only when both
+are found, and an accepted alternative document counts for the one it stands in for. Until 2026-10-10
+the retrieval columns counted any one of the documents, which was more lenient than the walk's
+scoring (0.516 / 0.541 overall). An independent audit found the difference (15 of 1,400 rows;
+[issue #2](https://github.com/CSP911/routemind/issues/2), finding F-RM-01), and `bench/attribution.py`
+re-derives these numbers from the saved results.
 
 **Read it as a stress test, not a benchmark.**
 

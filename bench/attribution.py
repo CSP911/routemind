@@ -67,6 +67,23 @@ def claims(census):
     out.append(("census walks", 1400, len(census["walks"])))
     out.append(("census fingerprint", "a84ac6cf463a1a6d", census["meta"]["fingerprint"]))
     out.append(("retrieval fingerprint", "a84ac6cf463a1a6d", hard["fingerprint"]))
+    # Retrieval under the walks' own contract (needs: all, D_alt) — the numbers the README's table shows
+    # since an outside audit found the two were scored differently (issue #2, F-RM-01, 2026-10-10).
+    gold_q = gold()
+    def complete(r):
+        q = gold_q[r["id"]]; ids = [t["id"] if isinstance(t, dict) else t for t in r["top"][:10]]
+        alt = q.get("D_alt") or {}
+        got = lambda d: d in ids or any(x in ids for x in (alt.get(d) or []))
+        return all(map(got, q["D_true"])) if q.get("needs") == "all" else any(map(got, q["D_true"]))
+    every = hard["results"] + temp["results"]
+    out.append(("rows where the two contracts disagree (audit F-RM-01)", 15,
+                sum(1 for r in every if complete(r) != r["retrieval_hit"])))
+    for arm, want in (("rag", 0.507), ("rag+rerank", 0.531)):
+        mine = [r for r in every if r["arm"] == arm]
+        out.append((f"README overall, {arm}, same contract as the walks", want, round(sum(map(complete, mine)) / len(mine), 3)))
+    for arm, want in (("rag", 0.200), ("rag+rerank", 0.200)):
+        mine = [r for r in every if r["arm"] == arm and gold_q[r["id"]].get("lever") == "stale-old"]
+        out.append((f"README two-revisions-back row, {arm}, same contract", want, round(sum(map(complete, mine)) / len(mine), 3)))
     s = json.loads((RUNS / "2026-10-01-scoped-ceiling.json").read_text())["table"]["indirect"]
     out.append(("indirect recall@20, whole corpus", 0.103, round(s["full@20"], 3)))
     out.append(("indirect recall@20, gold area handed over", 0.134, round(s["scoped@20"], 3)))
