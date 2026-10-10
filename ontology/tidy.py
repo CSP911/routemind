@@ -25,6 +25,14 @@ import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+try:
+    import yaml  # noqa: F401
+except ModuleNotFoundError:
+    # A traceback was all this said, and `pip install pyyaml` is refused by many system Pythons (PEP
+    # 668). The container has it, and the data directory is mounted there.
+    sys.exit("tidy.py needs PyYAML, which this python3 does not have. Run it inside the container instead:\n"
+             "  docker compose exec ontology python3 /app/tidy.py /data/repo [--fix]\n"
+             "or install it for this Python: python3 -m pip install --user pyyaml")
 from service.store import Store                                           # noqa: E402
 from service import derive                                               # noqa: E402
 from service.write import Writer                                         # noqa: E402

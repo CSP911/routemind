@@ -445,6 +445,8 @@ def api_knowledge_state(request: Request) -> dict[str, Any]:
         "core_revision": str(health.get("head") or ""),
         "writable": bool(health.get("writable", True)),
         "uncommitted": str(health.get("uncommitted") or ""),
+        # Why it cannot write when it is not hand edits: the uid, or a directory swapped underneath it.
+        "unwritable": str(health.get("unwritable") or ""),
         # Whether the repository validates. It used to come from a second call the screen made to
         # `publish-state`, retired with the publish step on 2026-10-07; /healthz already carries it.
         "valid": bool(health.get("valid", True)),
@@ -678,7 +680,16 @@ def api_knowledge_node_file(node_id: str, filename: str, request: Request) -> di
 @_iris_route("POST", "/api/knowledge/validate")
 def api_knowledge_validate(payload: dict, request: Request) -> dict[str, Any]:
     # Validation is read-only and free — the editor runs it before and after every write.
-    return _ontology_proxy("POST", "/v1/validate", _knowledge_actor(request), {})
+    # A tree that fails is an *answer* — {"ok": false, "errors": [...]} — so it comes back 200 from
+    # the ontology's GET. The POST answers 422, and the screen's "Show what fails" turned that into a
+    # toast reading "HTTP 422" with the list nowhere (QA, 2026-10-10).
+    return _ontology_proxy("GET", "/v1/validate", _knowledge_actor(request))
+
+
+@_iris_route("GET", "/api/knowledge/validate")
+def api_knowledge_validate_get(request: Request) -> dict[str, Any]:
+    # The form docs/DATA-REPO.md gives — `curl -s …/api/knowledge/validate` — answered 405.
+    return _ontology_proxy("GET", "/v1/validate", _knowledge_actor(request))
 
 
 # ---- ontology writing: nodes and their data files ----

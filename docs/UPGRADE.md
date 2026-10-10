@@ -9,6 +9,33 @@ Nothing on this page touches your documents. `data/` is bind-mounted into the co
 on disk across a rebuild; the only file an update may rewrite there is `data/repo/regions.json`,
 which is generated, and it does so in a commit that says why.
 
+## 2026-10-10 (later) — a second full pass: recovery, starting over, the agent's secret
+
+Nothing to do beyond the usual `git pull && ./install.sh`. What changes on its own:
+
+- **A file that does not parse no longer takes the service down.** It is left out, everything else is
+  served, and `/healthz`, **Show what fails** and `validate` name it with its line. A broken
+  `regions.json` is rewritten at start. A service that cannot validate at start still starts.
+- **A write interrupted by a kill or a restart is rolled back at the next start** (a marker under
+  `.git` says it was the service's own), and stopping the container waits for a write in progress.
+- **Starting over:** `./ontology/reset.sh --empty | --example` — one commit, the old map tagged first
+  ([DATA-REPO.md](DATA-REPO.md)). Restoring a backup is *stop, copy, start*; a directory swapped under a
+  running service now reads as not writable instead of writable.
+- **Install:** a new install names its containers and images after its directory *and* path, so a
+  second clone with the same directory name no longer replaces the first; and install.sh refuses to
+  take over another checkout's containers. It asks for the port on a first install, refuses an
+  invalid or occupied one before building, and keeps the checks' ninety lines in
+  `data/install-checks.log`. An existing install keeps its names.
+- **Agents in token mode** send `KNOWLEDGE_TOKEN` from `.env`, so they can place, not only read.
+  The screen asks for the token when a write is refused for want of it.
+- **The review queue** also holds change sets that create an area or reword a hop-0 sentence, with
+  `Proposed-by:` in the commit when accepted. Every refusal on the screen has a named reason in four
+  languages.
+- **Files the service writes** keep their mode, or get 0644, instead of 0600.
+- **An empty map** shows a "Create the first area" button; the starter vocabulary's default kind is
+  `document`, not `system`.
+- **Large maps:** a 200-row table on a few thousand entities went from 20 s to under 0.2 s.
+
 ## 2026-10-09 — `knowledge_place` writes a change set
 
 `here` no longer puts a page in and leaves the line above untouched. It is one commit of several
@@ -26,7 +53,8 @@ quoted from now on; files written earlier read as before.
   says ` M .mcp.json` — any install on a port other than 8080), run `git checkout -- .mcp.json` before
   `git pull`, or the pull stops on it.
 - **`install.sh`** asks once whether to start from the example back office (first install only),
-  gives each checkout its own image tag (`IMAGE_TAG` in `.env`), runs compose with
+  gives each checkout its own image tag (`IMAGE_TAG` in `.env` — and since the later pass its own
+  container names too), runs compose with
   `--remove-orphans`, asks about an LLM only once, and ends with what to do next.
 - **Export says what it shares:** the card is called **Export**, and saying yes lets any circuit
   holding your key read the area's sentence *and every document in it* — the old wording said "the

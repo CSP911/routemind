@@ -619,3 +619,11 @@ body.kn-dragging { user-select: none; }
 .kn-change-list { margin: 6px 0 8px 18px; padding: 0; font-size: 13px; display: grid; gap: 3px; }
 /* a move that would make something readable outside */
 .kn-fnote.is-warn:not(:empty) { color: var(--orange); font-weight: 600; }
+
+/* The empty map's one next step, centred over the backbone line. */
+.kn-empty { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px;
+  padding: 16px; text-align: center; pointer-events: none; }
+.kn-empty[hidden] { display: none; }
+.kn-empty-lead { margin: 0; max-width: 46ch; color: var(--kn-text); background: var(--kn-surface, transparent);
+  padding: 6px 10px; border-radius: 6px; }
+.kn-empty .kn-btn { pointer-events: auto; }

@@ -11,10 +11,14 @@
                 ten seconds; idle, it now exits at once
   a wide table  on a map of a few thousand entities, a 200-row table took 20 seconds — the whole node
                 list deep-copied once per row; it must stay well under two
+  broken file   one hand edit that does not parse used to take every request down and crash-loop the
+                restart; it is now left out, named with its line, and writes wait for the fix
+  starting over ontology/reset.sh empties the map or puts the example back in one commit, tagging what
+                was there; before it, starting over was 79 deletes or a hand edit that left it read-only
   the agent     in token mode the MCP server sent no secret, so an agent could read but not place, and
                 its walks went unrecorded; it sends KNOWLEDGE_TOKEN now
 """
-import http.server, json, os, shutil, signal, subprocess, sys, tempfile, threading, time, urllib.request
+import http.server, json, os, urllib.error, shutil, signal, subprocess, sys, tempfile, threading, time, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PORT = 18280
@@ -38,6 +42,12 @@ def repo_from(src, name):
 
 
 def start(repo, port):
+    # A server left over from an interrupted run answers on the port and the checks then read *its*
+    # repository — which is how this check once failed four times for the wrong reason.
+    try:
+        urllib.request.urlopen(f"http://127.0.0.1:{port}/healthz", timeout=1)
+        sys.exit(f"  port {port} already answers — a server from an earlier run? lsof -ti tcp:{port} | xargs kill")
+    except urllib.error.URLError: pass
     p = subprocess.Popen([sys.executable, os.path.join(ROOT, "ontology", "service", "server.py")],
                          env={**env0, "ONTOLOGY_DATA": repo, "PORT": str(port)},
                          stdout=open(os.path.join(T, f"svc-{port}.log"), "w"), stderr=subprocess.STDOUT)
@@ -95,6 +105,70 @@ try:
     urllib.request.urlopen(f"http://127.0.0.1:{PORT + 2}/v1/nodes/wide", timeout=60).read()       # warm
     t0 = time.time(); body = urllib.request.urlopen(f"http://127.0.0.1:{PORT + 2}/v1/nodes/wide", timeout=60).read(); took = time.time() - t0
     check("a 200-row table on a map of ~1,800 entities answers well under two seconds", took < 2 and len(json.loads(body)["entries"]) == 200, f"{took:.2f}s")
+    p.terminate(); p.wait(5)
+
+    # ── one file that does not parse ──────────────────────────────────────────
+    # A hand edit with an unclosed quote took every request down (502, no file named) and the restart
+    # after it crash-looped. Now: the service starts, serves the rest, names the file, refuses writes
+    # until it is fixed, and a revert is all it takes. A broken regions.json is derived: regenerated.
+    bk = repo_from(ex, "broken")
+    f = os.path.join(bk, "regions", "expense", "travel-expense.md"); good = open(f).read()
+    open(f, "w").write(good.replace("\nname: ", '\nname: "Broken: [unclosed\n#', 1)); git(bk, "commit", "-qam", "broken by hand")
+    p = start(bk, PORT + 3)
+    def get(path, port=PORT + 3):
+        try: rr = urllib.request.urlopen(f"http://127.0.0.1:{port}{path}", timeout=10); return rr.status, json.loads(rr.read())
+        except urllib.error.HTTPError as e: return e.code, json.loads(e.read() or b"{}")
+    h = health(PORT + 3)
+    st, regs = get("/v1/regions"); st2, appr = get("/v1/regions/approval")
+    check("one file whose frontmatter does not parse: the service starts and serves every other area",
+          st == 200 and len(regs.get("regions", [])) == 5 and st2 == 200, f"{st} {st2}")
+    check("  its health names the file and the line, and says how to undo the commit",
+          any("regions/expense/travel-expense.md" in e and "line " in e and "revert" in e for e in h.get("errors", [])), json.dumps(h)[:300])
+    req = urllib.request.Request(f"http://127.0.0.1:{PORT + 3}/v1/nodes/approval", method="PUT", data=b'{"one_liner": "x"}', headers={"Content-Type": "application/json"})
+    try: urllib.request.urlopen(req, timeout=10); wst, wbody = 200, ""
+    except urllib.error.HTTPError as e: wst, wbody = e.code, e.read().decode()
+    check("  a write is refused while it is broken, and the refusal names the file", wst in (409, 422) and "travel-expense.md" in wbody, f"{wst} {wbody[:200]}")
+    git(bk, "revert", "--no-edit", "HEAD")
+    h = health(PORT + 3)
+    check("  `git revert` of the commit that broke it is the whole recovery", h.get("valid") is True, json.dumps(h)[:300])
+    p.terminate(); p.wait(5)
+    open(os.path.join(bk, "regions.json"), "w").write("{not json"); git(bk, "commit", "-qam", "regions.json broken by hand")
+    p = start(bk, PORT + 3); h = health(PORT + 3)
+    check("  a regions.json broken by hand is regenerated at boot, like any stale derived table",
+          h.get("valid") is True and json.load(open(os.path.join(bk, "regions.json"))).get("regions"), json.dumps(h.get("errors"))[:300])
+    p.terminate(); p.wait(5)
+
+    # ── an area deleted or added by hand ──────────────────────────────────────
+    ha = repo_from(ex, "handarea")
+    shutil.rmtree(os.path.join(ha, "regions", "payroll")); git(ha, "add", "-A"); git(ha, "commit", "-qm", "payroll removed by hand")
+    p = start(ha, PORT + 5); h = health(PORT + 5)
+    left = [r["source"] for r in json.load(open(os.path.join(ha, "regions.json")))["regions"]]
+    check("an area deleted by hand and committed: the next start regenerates regions.json and is valid",
+          h.get("valid") is True and "payroll" not in left and len(left) == 4, json.dumps(h.get("errors"))[:300])
+    p.terminate(); p.wait(5)
+
+    # ── starting over ─────────────────────────────────────────────────────────
+    rs = repo_from(ex, "reset")
+    p = start(rs, PORT + 4)
+    def settle(want, tries=40):
+        for _ in range(tries):
+            if regions_n() == want and health(PORT + 4).get("valid"): return
+            time.sleep(0.25)
+    def regions_n():
+        return len(json.loads(urllib.request.urlopen(f"http://127.0.0.1:{PORT + 4}/v1/regions", timeout=10).read()).get("regions", []))
+    def reset(*a): return subprocess.run([os.path.join(ROOT, "ontology", "reset.sh"), "--repo", rs, *a], capture_output=True, text=True)
+    open(os.path.join(rs, "regions", "expense", "scratch.md"), "w").write("x")
+    out = reset("--empty", "--yes")
+    check("reset refuses a tree with uncommitted changes and touches nothing", out.returncode != 0 and regions_n() == 5, out.stderr[-200:])
+    os.remove(os.path.join(rs, "regions", "expense", "scratch.md"))
+    out = reset("--empty", "--yes"); settle(0); h = health(PORT + 4)
+    tag = next((l.split()[-1] for l in out.stdout.splitlines() if "reset --hard" in l), "")
+    check("reset --empty: one commit, no areas, valid and writable while the service runs",
+          out.returncode == 0 and regions_n() == 0 and h.get("valid") and h.get("writable"), out.stderr[-200:] + json.dumps(h)[:200])
+    out = reset("--example", "--yes"); settle(5); h = health(PORT + 4)
+    check("  reset --example on top of it replaces, not merges: five areas, valid", out.returncode == 0 and regions_n() == 5 and h.get("valid"), json.dumps(h)[:200])
+    git(rs, "reset", "-q", "--hard", tag); settle(5)
+    check("  and the tag it printed brings the map before it back", tag.startswith("before-reset-") and regions_n() == 5 and health(PORT + 4).get("valid"), tag)
     p.terminate(); p.wait(5)
 
     # ── the MCP server sends the write secret ─────────────────────────────────

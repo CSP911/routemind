@@ -35,7 +35,7 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
     regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpSpeed","knFpPlay","knFpTrail","knFpSteps","knFpCard","knHist","knHistBody","knHistPages"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpSpeed","knFpPlay","knFpTrail","knFpSteps","knFpCard","knHist","knHistBody","knHistPages","knEmpty","knEmptyNew"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
 byId.knFp.hidden = true; byId.knHist.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };

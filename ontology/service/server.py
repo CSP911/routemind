@@ -721,7 +721,16 @@ class Handler(BaseHTTPRequestHandler):
                     writing = True
                 # A data directory this process cannot write is not writable, whatever git says.
                 can_write = os.access(DATA, os.W_OK) and os.access(DATA / "regions", os.W_OK)
-                return self._send(200, {"ok": True, "data": str(DATA), "head": head(DATA),
+                why_not = "the data directory cannot be written by this container — check KNOWLEDGE_UID and the mount"
+                # Boot always leaves a commit, so no HEAD means the directory was swapped underneath a
+                # running service — a backup restored with `rm -rf data/repo; cp -a …` — and the mount
+                # still points at the deleted one. That answered `writable: true` (QA, 2026-10-10).
+                hd = head(DATA)
+                if hd is None:
+                    can_write = False
+                    why_not = ("the data directory has no git history — if it was replaced while this was running, "
+                               "restart it: docker compose restart ontology")
+                return self._send(200, {"ok": True, "data": str(DATA), "head": hd,
                                         # `llm` said only "something is configured". With three
                                         # providers that is not enough: a build that does not know
                                         # the provider a person set would ignore it silently, and
@@ -733,7 +742,7 @@ class Handler(BaseHTTPRequestHandler):
                                         "llm_providers": list(curator.PROVIDERS),
                                         "llm_max_tokens": LLM_MAX_TOKENS, "llm_temperature": LLM_TEMPERATURE,
                                         "writable": (not dirty) and can_write, "uncommitted": dirty, "writing": writing,
-                                        **({} if can_write else {"unwritable": "the data directory cannot be written by this container — check KNOWLEDGE_UID and the mount"}),
+                                        **({} if can_write else {"unwritable": why_not}),
                                         # Whether the repository validates, and the first reasons it
                                         # does not. Before this the only place that fact existed was
                                         # one line in the startup log, and a server that had just
@@ -1398,7 +1407,12 @@ def main():
             with _write_lock: os._exit(0)
         threading.Thread(target=stop, daemon=True).start()
     signal.signal(signal.SIGTERM, _term)
-    res = validate(store)
+    # Never a reason not to start: a service that exits here restarts in a loop, and then nothing —
+    # not /healthz, not the regeneration in DATA-REPO.md — can even reach it to say what is wrong.
+    try: res = validate(store)
+    except Exception as e:
+        traceback.print_exc()
+        res = {"ok": False, "errors": [f"validation could not run: {type(e).__name__}: {e}"], "warnings": [], "stats": {"nodes": 0}}
     # A derived file committed stale is the one invalid state the server can mend on its own, and
     # through the same transaction every write uses: nothing to mutate, regenerate, validate, commit.
     # Only when every error is that one — anything else is somebody's decision — and only on a
@@ -1412,7 +1426,9 @@ def main():
              # Areas written as files with no regions.json yet, or one deleted by hand: the table is
              # missing rows, or has a row with no directory — derived, so regenerated (2026-10-10).
              or "regions.json: missing entry for" in e or "has no directory" in e
-             or ("regions.json " in e and "differ from directory" in e)]
+             or ("regions.json " in e and "differ from directory" in e)
+             # Broken by hand: it is derived, so it is written again rather than mended.
+             or e.startswith("regions.json: does not parse")]
     if drift and len(drift) == len(res["errors"]) and head(DATA):
         try:
             out = writer.transact("regions.json: regenerated — it was committed stale", "ontology", lambda: None)

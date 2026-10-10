@@ -45,7 +45,8 @@ strangely the question is worded. A corpus built on that principle measures **hi
 | Band cuts | threshold fixed at **B1 hit@10 < 0.50**. The calibration set is cancelled — the five-factor sum does not predict B1 |
 | Collapse dataset | **built and measured** — 340 documents in 5 qualifier families, 640 questions. B1 **0.03** indirect against **1.00** direct. Replicated across 5 families, 5 corpus sizes and 2 embedding models |
 | | **2 of the 5 families are not usable yet** — `accrual` and `overtime` are 96% and 81% incumbent documents in the top ten, so their misses are not evidence. See COLLAPSE.md §6 |
-| Routing on it | **not yet run.** Checking the harness found three defects that would have voided the result — `READ` returned no text to the agent, its OpenAI path could not make a request, and child order came from the filesystem. All fixed; a 3-question walk now works end to end |
+| Routing on it | **run** (2026-09-20 census) — 700 questions × 2 arms on the frozen corpus, 699/700 each; `eval/runs/2026-09-20-census.json`. The README's table is this run |
+| Failure attribution | **done** (2026-10-10, issue #2) — `bench/attribution.py` reads which areas each walk entered: the one miss per arm is lost at the area (`t-overtime-08`, walked into payroll from a false relocation line), none inside it. It also recomputes the numbers quoted on issue #2 and fails if the files stop saying them; `eval/runs/2026-10-10-attribution.json` |
 
 ## Before anything runs
 

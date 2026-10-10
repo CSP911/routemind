@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /
  && pip install --no-cache-dir pyyaml==6.0.2
 WORKDIR /app
 COPY ontology/service/ /app/service/
+# So the repair a person is told about works where PyYAML is guaranteed: docs/DATA-REPO.md.
+COPY ontology/tidy.py /app/tidy.py
 COPY ontology/entrypoint.sh /app/entrypoint.sh
 COPY seed/ /app/seed/
 # The container does not run as root, and COPY carries the host's modes — a checkout made under

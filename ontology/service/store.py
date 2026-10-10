@@ -48,6 +48,10 @@ def file_lock(root: Path, *, exclusive: bool, wait: float, on_timeout):
         finally: fcntl.flock(f, fcntl.LOCK_UN)
 
 
+# Read once, at import: asking means setting it, and setting it per write would race other threads.
+_UMASK = os.umask(0o022); os.umask(_UMASK)
+
+
 def write(path: Path, text: str) -> None:
     """Replace a file's contents so that a concurrent reader never sees them half-written.
 
@@ -82,6 +86,12 @@ def write(path: Path, text: str) -> None:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(text)
             f.flush(); os.fsync(f.fileno())   # the rename is atomic; the contents being there is not
+        # mkstemp makes the file 0600, and the rename kept it: every file the service wrote was
+        # unreadable to a backup running as another account, while files copied in were 0644 (QA,
+        # 2026-10-10). The mode it had, or what an ordinary new file gets under this umask.
+        try: mode = path.stat().st_mode & 0o777
+        except FileNotFoundError: mode = 0o666 & ~_UMASK
+        os.chmod(tmp, mode)
         os.replace(tmp, path)
     except BaseException:
         try: os.unlink(tmp)
@@ -137,6 +147,20 @@ def _names(value) -> list[str]:
 
 
 _FM_CACHE: dict = {}          # frontmatter text → its parse; see `_read_nodes`
+# Files that do not parse, per repository: {root: {relative path: what is wrong}}. One hand edit with an
+# unclosed quote used to take every request down with a 502 that named no file, and the restart that
+# followed crashed in a loop (QA, 2026-10-10). Now that file is left out, everything else is served,
+# and the validator puts this list first — so writes are refused, and the reason names the file.
+_BROKEN: dict = {}
+
+
+def _problem(e: Exception, offset: int = 0) -> str:
+    """One line for a parse error: where, and what — not a traceback. `offset` turns a line within
+    a file's frontmatter into the line an editor shows (the opening `---` is line 1)."""
+    mark = getattr(e, "problem_mark", None) or getattr(e, "context_mark", None)
+    what = getattr(e, "problem", None) or getattr(e, "msg", None) or str(e).splitlines()[0]
+    line = mark.line + 1 + offset if mark is not None else getattr(e, "lineno", None)
+    return f"line {line}: {what}" if line else str(what)
 
 
 class Store:
@@ -208,23 +232,46 @@ class Store:
         return v if ok else self._revision()
 
     def vocab(self) -> dict:
-        v, ok = self._lazy("vocab.yaml", lambda t: yaml.safe_load(t) or {}, {})
+        v, ok = self._lazy("vocab.yaml", lambda t: self._parse("vocab.yaml", t, yaml.safe_load, dict, {}), {})
         return v if ok else self._vocab()
 
     def regions_json(self) -> dict:
-        v, ok = self._lazy("regions.json", json.loads, {"regions": []})
+        empty = {"regions": []}
+        v, ok = self._lazy("regions.json", lambda t: self._parse("regions.json", t, json.loads, dict, empty), empty)
         return v if ok else self._regions_json()
+
+    def _parse(self, name, text, load, shape, fallback):
+        """`load(text)`, or `fallback` with the reason kept in `broken()`. vocab.yaml broken by hand
+        used to stop the service starting at all; regions.json is derived, so the validator's drift
+        rule regenerates it once this has said why."""
+        bad = _BROKEN.setdefault(str(self.root), {})
+        try:
+            v = load(text)
+            if v is None: v = fallback
+            if not isinstance(v, shape):
+                raise ValueError(f"is a {type(v).__name__}, not a mapping")
+        except Exception as e:
+            bad[name] = f"does not parse ({_problem(e)})"
+            return fallback
+        bad.pop(name, None)
+        return v
+
+    def broken(self) -> list[str]:
+        """Every file this repository holds that could not be read, as `path: what is wrong`."""
+        return [f"{k}: {v}" for k, v in sorted(_BROKEN.get(str(self.root), {}).items())]
 
     def _revision(self) -> str | None:
         p = self.root / "REVISION"
         return p.read_text(encoding="utf-8").strip() if p.exists() else None
 
     def _vocab(self) -> dict:
-        return yaml.safe_load((self.root / "vocab.yaml").read_text(encoding="utf-8")) or {}
+        return self._parse("vocab.yaml", (self.root / "vocab.yaml").read_text(encoding="utf-8"),
+                           yaml.safe_load, dict, {})
 
     def _regions_json(self) -> dict:
         p = self.root / "regions.json"
-        return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"regions": []}
+        if not p.exists(): return {"regions": []}
+        return self._parse("regions.json", p.read_text(encoding="utf-8"), json.loads, dict, {"regions": []})
 
     # ---- nodes ----
     def entity_files(self):
@@ -283,6 +330,8 @@ class Store:
 
     def _read_nodes(self) -> list[dict]:
         out = []
+        bad = _BROKEN.setdefault(str(self.root), {})
+        for k in [k for k in bad if k.startswith("regions/")]: del bad[k]
         for order, (region, f) in enumerate(self.entity_files()):
             # Not a `## Files` list read out of the body (the old fragment format): an entity's body
             # is a document, which may legitimately have a heading by that name.
@@ -296,7 +345,10 @@ class Store:
             try: text = f.read_text(encoding="utf-8")
             except FileNotFoundError: continue
             m = FM_RE.match(text)
-            if not m: raise ValueError(f"{f} has no frontmatter — an entity declares its id there")
+            rel = str(f.relative_to(self.root)) if f.is_relative_to(self.root) else str(f)
+            if not m:
+                bad[rel] = "has no frontmatter — an entity declares its id there, between two --- lines"
+                continue
             # Parsed once per content: a write touches one file, and every other file's frontmatter
             # was parsed again — on a map of 3,500 entities that was most of a write's time
             # (2026-10-10). Keyed on the frontmatter text itself, so a changed file is always reparsed
@@ -304,7 +356,13 @@ class Store:
             head_text = m.group(1)
             fm = _FM_CACHE.get(head_text)
             if fm is None:
-                fm = yaml.safe_load(head_text) or {}
+                try: fm = yaml.safe_load(head_text) or {}
+                except yaml.YAMLError as e:
+                    bad[rel] = f"the frontmatter does not parse ({_problem(e, 1)})"
+                    continue
+                if not isinstance(fm, dict):
+                    bad[rel] = f"the frontmatter is a {type(fm).__name__}, not `key: value` lines"
+                    continue
                 if len(_FM_CACHE) > 50000: _FM_CACHE.clear()
                 _FM_CACHE[head_text] = fm
             import copy as _copy

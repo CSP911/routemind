@@ -64,7 +64,9 @@ else:
     port_reader = [] if _got == "8480" else [
         f"install.sh reads WEB_PORT as {_got!r}, docker compose reads '8480'"]
 
-dead = sorted(documented - passed)
+# Read by docker compose itself, not passed to a container: compose takes the project name from .env.
+COMPOSE_OWN = {"COMPOSE_PROJECT_NAME"}
+dead = sorted(documented - passed - COMPOSE_OWN)
 hidden = sorted(v for v in passed - documented if v not in UNDOCUMENTED)
 stale = sorted(v for v in UNDOCUMENTED if v in documented or v not in passed)
 

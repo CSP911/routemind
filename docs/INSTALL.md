@@ -50,7 +50,7 @@ container that never becomes healthy.
 | Every write is refused **read-only** | `data/repo` has uncommitted changes | Commit or revert them |
 | A save fails with `git add -A failed: … index.lock` | Something else is running git in `data/repo` — your own shell, an editor's git integration, a second ontology on the same mount | Wait and retry; the service's own polling no longer does this. If it persists, `docker compose logs ontology` and look for a second writer |
 | A change to `static/` or `ontology/` does nothing | Both are `COPY`ed into the image | `docker compose up -d --build` |
-| Your first node is refused | Its `kind` is not in `vocab.yaml` — the point of that file | Below |
+| A node is refused with "kind … not in vocab" | Its `kind` is not in `vocab.yaml` — the point of that file | Below |
 | `regions.json <area>: … no longer matches the files it is derived from` | Someone edited an area's `.md` by hand and did not regenerate | **[docs/DATA-REPO.md](DATA-REPO.md)** |
 | Anything else | | `docker compose logs -f ontology web` |
 
@@ -58,9 +58,10 @@ container that never becomes healthy.
 
 ## First — `vocab.yaml` is your domain
 
-A node's `kind` and an edge's `rel` **must appear in the vocabulary**, so until you edit this file
-your first node is refused. The starter set (`system` · `tool` · `store` · `host` · `channel` ·
-`task` · `party`) is a starting point, not a schema. Edit `data/repo/vocab.yaml` and commit — there is
+A node's `kind` **must appear in the vocabulary**. Anything added without one gets `default_kind` —
+`document` in the starter set — so nothing is refused at first. The starter set (`document` · `topic`
+· `system` · `tool` · `store` · `host` · `channel` · `task` · `party`) is a starting point, not a
+schema: replace it with the words your domain uses. Edit `data/repo/vocab.yaml` and commit — there is
 no vocabulary editor on screen yet.
 
 It is also where you say what may leave. `export: no` on a kind stops that sort of thing crossing to

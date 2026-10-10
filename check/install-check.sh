@@ -87,8 +87,10 @@ mkdir -p data/repo && cp -r examples/back-office/. data/repo/
 say ""
 say "== install.sh, as a first user runs it =="
 if sh ./install.sh --no-llm > install.log 2>&1; then
-  ok "it comes up and its own smoke passes ($(grep -c '^ok ' install.log) assertions, $(grep -c '^FAIL' install.log) failed)"
-  grep -q '^FAIL' install.log && bad "install.sh's smoke reported failures — see $DIR/install.log"
+  # The smoke's own lines go to data/install-checks.log since 2026-10-10; install.log has the summary.
+  ok "it comes up and its own smoke passes ($(grep -c '^ok ' data/install-checks.log) assertions, $(grep -c '^FAIL' data/install-checks.log) failed)"
+  grep -q '^FAIL' data/install-checks.log && bad "install.sh's smoke reported failures — see $DIR/data/install-checks.log"
+  grep -q 'install checks passed' install.log || bad "install.sh did not say its checks passed — see $DIR/install.log"
 else
   bad "install.sh exited non-zero — see $DIR/install.log"
   tail -20 install.log

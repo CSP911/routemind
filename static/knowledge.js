@@ -1834,6 +1834,9 @@
     } catch { /* quota or private mode: the cache is a convenience, the fetch path still works */ }
   }
 
+  /** The empty map's next step, shown only once the map has loaded and holds no area. */
+  function showEmpty() { $("knEmpty").hidden = (state.regions || []).length > 0; }
+
   async function loadMap() {
     // One cheap question first: which revision is this? It decides whether the cache is usable, and it
     // seeds the watcher so its first tick is quiet.
@@ -1845,7 +1848,7 @@
       state.nodes = cached.nodes || [];
       state.entries = new Map(cached.entries || []);
       drawnRevision = headRev;
-      draw();
+      showEmpty(); draw();
       // Flags are never cached: a request that arrived while this tab was closed is exactly the one
       // worth seeing, and they cost one call.
       loadFlags().then(draw);
@@ -1859,7 +1862,7 @@
     state.entries = new Map();
     staleRefresh();
     if (headRev) drawnRevision = headRev;
-    draw();                                   // first paint: two calls in
+    showEmpty(); draw();                                   // first paint: two calls in
     loadFlags().then(draw);                   // notifications arrive after the map, never gating it
     loadOverlays().then(draw);                // so do overlays, and an install without them answers 404
     warmEntries();
@@ -1921,7 +1924,12 @@
     let invalid = false;
     try {
       const s = await request("state");
-      if (s.writable === false) problems.push([t("knowledge.state.readOnly"), String(s.uncommitted || "")]);
+      // Two different stops. Uncommitted hand edits name their files; a directory this container
+      // cannot write (wrong uid, or swapped underneath it) names its own reason — it used to read
+      // "uncommitted changes; commit or revert them:" followed by nothing (QA, 2026-10-10).
+      if (s.writable === false) problems.push(s.unwritable && !s.uncommitted
+        ? [t("knowledge.state.unwritable"), String(s.unwritable)]
+        : [t("knowledge.state.readOnly"), String(s.uncommitted || "")]);
       invalid = s.valid === false;
       if (invalid) problems.push([t("knowledge.validBad"), ""]);
     } catch (error) {
@@ -3415,6 +3423,7 @@
     // its record, a Region offers the node it cannot otherwise get.
     // Validation is read-only and free, so it is a button rather than something that happens silently:
     // a person looking at a repository that fails should be able to ask, and get the errors verbatim.
+    $("knEmptyNew").addEventListener("click", () => newRegionForm());
     $("knValidate").addEventListener("click", (e) => guarded(e.currentTarget, async () => {
       const r = await send("validate", "POST", {});
       showValidation(r);

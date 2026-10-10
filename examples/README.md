@@ -37,14 +37,13 @@ docker compose up -d          # the entrypoint git-inits and commits it on first
 ./check/smoke.sh
 ```
 
-Over an install that has already booted (and whose ontology you do not mind losing), the first boot
-is past, so commit it yourself — an uncommitted tree refuses every write:
+Over an install that has already booted, use the reset — it replaces the map rather than copying
+over it (a copy *merges*: your own areas stay beside the example's, with the example's `vocab.yaml`),
+and tags the map it replaces so it can be brought back:
 
 ```sh
-cp -r examples/back-office/. data/repo/
-git -C data/repo add -A && git -C data/repo commit -m "start from examples/back-office"
-docker compose restart ontology
+./ontology/reset.sh --example      # or --empty for a map with no areas
 ```
 
 It is a starting point to edit or delete, not a schema. The first thing to change is `vocab.yaml`:
-until it says the words your domain uses, your first node is refused.
+its kinds are a back office's, and yours are probably different.

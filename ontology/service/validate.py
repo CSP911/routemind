@@ -87,6 +87,11 @@ def _norm(name: str) -> str:
 def validate(store: Store) -> dict:
     errors, warnings = [], []
     vocab = store.vocab(); budgets = vocab.get("budgets", {})
+    store._shared(); store.regions_json()     # each records what does not parse, so read them first
+    # First, because everything after this is computed without them: a file left out looks like a
+    # missing node to every rule below. Named by path, with how to undo a commit that broke it.
+    for b in store.broken():
+        errors.append(f"{b} — fix it and commit, or `git -C data/repo revert HEAD` if the last commit broke it")
     kinds = {k["id"] for k in vocab.get("kinds", [])}
     # `export` on a kind decides whether that sort of thing crosses a link. Anything but a plain no
     # is refused rather than read as one: a policy that silently means the opposite of what somebody

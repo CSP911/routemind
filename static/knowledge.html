@@ -87,6 +87,12 @@
         <svg id="knTopo" class="kn-topo" role="img" data-i18n-label="knowledge.mapLabel" aria-label="RouteMind map"></svg>
         <!-- How a walk went, once it has stopped. Over the map's corner, out of the way of the trace. -->
         <div class="kn-fp-card" id="knFpCard" role="status" aria-live="polite" hidden></div>
+        <!-- An empty map had no next step: the hint below says to click an area that does not exist,
+             and "New AS" appears only once the Back-Bone box is clicked (QA, 2026-10-10). -->
+        <div class="kn-empty" id="knEmpty" hidden>
+          <p class="kn-empty-lead" data-i18n="knowledge.empty.lead">This map has no areas yet. An area is a body of documents with one sentence saying when an agent should come to it.</p>
+          <button type="button" class="kn-btn" id="knEmptyNew" data-i18n="knowledge.empty.cta">Create the first area</button>
+        </div>
       </div>
       <p class="kn-hint" data-i18n="knowledge.mapHint2">Click a Region or node to open what hangs off it. The routing table the agent is handed is the ▤ button on that rack; a DATA tile opens the file it would read.</p>
     </section>

@@ -349,7 +349,7 @@ try:
     g = _suggestion_matches_the_write()
     eq("the suggested id is the one the write uses", g["the draft"], g["what the write used"])
     eq("and an ASCII name needed no model", g["it did not need a model"], False)
-    eq("no kind and no LLM takes the vocabulary's default", g["kind came from the vocabulary"], ("system", True))
+    eq("no kind and no LLM takes the vocabulary's default", g["kind came from the vocabulary"], ("document", True))
     eq("a taken name is refused as a collision", g["a name whose id is taken"][0], 409)
     eq("and it says so, not 'no LLM'", "taken" in g["a name whose id is taken"][1], True)
     eq("a name needing translation still asks for an LLM", g["a name a regex cannot take"][0], 503)

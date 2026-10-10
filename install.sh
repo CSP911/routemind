@@ -5,6 +5,7 @@
 #   ./install.sh --port 9000
 #   ./install.sh --no-llm               do not ask about the LLM; run without one
 #   ./install.sh --example              start from the example back office (asked on a first install)
+#   ./install.sh --no-example           start from an empty map, without asking
 #   ./install.sh --llm-provider openai|anthropic|litellm --llm-url URL --llm-key KEY --llm-model MODEL
 #   KNOWLEDGE_LLM_PROVIDER=... KNOWLEDGE_LLM_URL=... KNOWLEDGE_LLM_KEY=... KNOWLEDGE_LLM_MODEL=... ./install.sh
 #
@@ -29,7 +30,7 @@ while [ $# -gt 0 ]; do
     # Named the exchange this install met other backbones at; there is no exchange since 2026-10-08.
     # Still accepted, so a command copied from an older page does not stop at an unknown option.
     --name)       printf '  --name is no longer used (there is no exchange to name) — ignored\n'; shift ;;
-    --port)       PORT="$2"; shift ;;
+    --port)       PORT="${2:-}"; [ -n "$PORT" ] || { printf '  ! --port takes a number\n' >&2; exit 2; }; shift ;;
     --no-llm)     ASK=0 ;;
     --example)    EXAMPLE=yes ;;
     --no-example) EXAMPLE=no ;;
@@ -44,7 +45,8 @@ while [ $# -gt 0 ]; do
 done
 [ -n "$LLM_URL" ] && ASK=0
 
-[ -f .env ] || cp .env.example .env
+NEW_ENV=""
+[ -f .env ] || { cp .env.example .env; NEW_ENV=1; }
 grep -q '^KNOWLEDGE_UID=' .env || printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
 
 # Replace a key in .env rather than appending a second copy of it — compose reads the last one, so an
@@ -60,14 +62,18 @@ setenv() {
 # Asked only where there is a terminal and the answer is not already in .env, the same rule the LLM
 # question follows: a re-run or a scripted install must not stop and wait for somebody who is not
 # there. It has a working default, so pressing Enter is a complete answer.
-if [ -z "$PORT" ] && [ -t 0 ] && ! grep -q '^WEB_PORT=.\+' .env; then
+# A new .env already holds WEB_PORT=8080 from .env.example, so "not in .env" was never true and the
+# question was never asked (QA, 2026-10-10). A new .env is the first install, and that is when to ask.
+if [ -z "$PORT" ] && [ -t 0 ] && { [ -n "$NEW_ENV" ] || ! grep -q '^WEB_PORT=.\+' .env; }; then
   printf '\nWhich port should the map answer on?\n  [8080] > '
   read -r PORT || PORT=""
 fi
 if [ -n "$PORT" ]; then
   case "$PORT" in
     ''|*[!0-9]*) printf '  ! --port takes a number\n' >&2; exit 2 ;;
-    *) setenv WEB_PORT "$PORT" ;;
+    # 99999 was written to .env as it was, and from then on even `docker compose ps` failed on it.
+    *) [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ] || { printf '  ! a port is 1 to 65535, not %s\n' "$PORT" >&2; exit 2; }
+       setenv WEB_PORT "$PORT" ;;
   esac
 fi
 
@@ -77,7 +83,42 @@ fi
 
 # Each checkout builds its own images. The tag was shared, so a second install on the same machine
 # retagged the first one's images, and the first picked up the second's code at its next recreate.
-grep -q '^IMAGE_TAG=.\+' .env || setenv IMAGE_TAG "$(basename "$PWD" | tr 'A-Z' 'a-z' | tr -c 'a-z0-9.\n-' '-' | cut -c1-40)"
+#
+# The directory name alone was not enough: compose names the *containers* after it too, so a second
+# clone called `routemind` somewhere else recreated the first one's containers from its own code and
+# the first install went dark without a word (QA, 2026-10-10). A new install takes the name plus a few
+# digits of its path, for the images and the containers both. An existing one keeps what it has —
+# renaming its project would orphan the containers it is running.
+SLUG="$(basename "$PWD" | tr 'A-Z' 'a-z' | tr -c 'a-z0-9.\n-' '-' | cut -c1-32)"
+if [ -n "$NEW_ENV" ]; then
+  PATHSUM="$(printf '%s' "$(pwd -P)" | cksum | cut -d' ' -f1 | cut -c1-6)"
+  setenv COMPOSE_PROJECT_NAME "$SLUG-$PATHSUM"
+  setenv IMAGE_TAG "$SLUG-$PATHSUM"
+fi
+grep -q '^IMAGE_TAG=.\+' .env || setenv IMAGE_TAG "$SLUG"
+
+# Whatever the name, never take over containers another checkout started.
+PROJECT="$(docker compose config 2>/dev/null | sed -n 's/^name: //p' | head -1)"
+if [ -n "$PROJECT" ]; then
+  OTHER="$(docker ps -a --filter "label=com.docker.compose.project=$PROJECT" --format '{{.Label "com.docker.compose.project.working_dir"}}' 2>/dev/null | sort -u | grep -vxF "$PWD" | grep -vxF "$(pwd -P)" | head -1)"
+  if [ -n "$OTHER" ]; then
+    printf '\n  ! another RouteMind is running under the name "%s", from\n      %s\n' "$PROJECT" "$OTHER" >&2
+    printf '    Starting here would replace its containers with this checkout'"'"'s. Give this one its own name:\n' >&2
+    printf '      echo COMPOSE_PROJECT_NAME=%s-2 >> .env && echo IMAGE_TAG=%s-2 >> .env && ./install.sh\n' "$PROJECT" "$PROJECT" >&2
+    exit 2
+  fi
+fi
+
+# A port something else holds used to surface after the build, as Docker's own message, with half the
+# install started. Asked first, and the one exception is our own web container already on it.
+WANT="$(grep -E '^[[:space:]]*WEB_PORT=' .env | tail -n 1 | cut -d= -f2- | tr -d '"'"'"' \r' | tr -d '[:space:]')"
+WANT="${WANT:-8080}"
+if command -v python3 >/dev/null 2>&1 && python3 -c "import socket,sys; s=socket.socket(); s.settimeout(0.5); sys.exit(0 if s.connect_ex(('127.0.0.1', $WANT)) == 0 else 1)" 2>/dev/null; then
+  if ! docker ps --filter "label=com.docker.compose.project=$PROJECT" --filter "publish=$WANT" --format '{{.ID}}' 2>/dev/null | grep -q .; then
+    printf '\n  ! port %s is already in use by something else. Pick another:\n      ./install.sh --port %s\n' "$WANT" "$((WANT + 1))" >&2
+    exit 2
+  fi
+fi
 
 # Only when there is a terminal AND the .env has no answer yet. A re-run, or a scripted one, must not
 # stop and wait for somebody who is not there.
@@ -193,13 +234,26 @@ while [ $i -lt 60 ]; do
       fi
       printf '\n'
     fi
-    ./check/smoke.sh "$BASE" || { printf '\nThe install is up, and the checks above found something wrong.\n' >&2; exit 1; }
+    # The checks are for this install, not for reading: ninety lines of them ("kn-file has no rule, on
+    # purpose") ended every install. Kept in a file; shown only when one fails.
+    SMOKE_LOG="data/install-checks.log"
+    if ./check/smoke.sh "$BASE" > "$SMOKE_LOG" 2>&1; then
+      printf 'The install checks passed (full output: %s).\n\n' "$SMOKE_LOG"
+    else
+      cat "$SMOKE_LOG"
+      printf '\nThe install is up, and the checks above found something wrong (also in %s).\n' "$SMOKE_LOG" >&2; exit 1
+    fi
     # What to do next, last, where a person looks — the checks above are long and end on detail.
     printf '\n────────────────────────────────────────────────────────────\n'
     printf 'RouteMind is ready:  %s\n\n' "$BASE"
     printf '  Claude Code:  run `claude` in this directory and approve the "knowledge" server\n'
     printf '                (it asks once); /mcp then lists four tools.\n'
     printf '  Another agent: python3 mcp/knowledge_mcp.py   (reads the port from .env)\n'
+    # An empty map had no next step anywhere: the screen said to click an area that did not exist.
+    if [ "$(curl -fsS "$BASE/api/knowledge/regions" 2>/dev/null | python3 -c 'import json,sys; print(len(json.load(sys.stdin).get("regions") or []))' 2>/dev/null)" = 0 ]; then
+      printf '\n  The map is empty. Open it, click the Back-Bone box, and choose "New AS" for your first\n'
+      printf '  area — or start from the example: docs/DATA-REPO.md, "Starting over".\n'
+    fi
     if grep -q '^KNOWLEDGE_AUTH=.\+' .env && ! grep -q '^KNOWLEDGE_AUTH=open' .env; then :; else
       printf '\n  Anyone who can reach this port can write to it (no login). docs/AUTH.md closes it.\n'
     fi

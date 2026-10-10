@@ -14,9 +14,15 @@ budgets:
 
 # What a node's kind is when nobody chose one and there is no LLM to. A kind is read only by
 # `export: no`, so this keeps the screen from asking for a value with no effect.
-default_kind: system
+# `document` rather than `system` since 2026-10-10: on an empty install the first thing anyone adds
+# is a document, and it was being filed as "a service, a daemon".
+default_kind: document
 
 kinds:
+- id: document
+  desc: something to read — a policy, a procedure, a note. Rename or split it once your domain has its words
+- id: topic
+  desc: a place that only groups what is under it — nothing to read in itself
 - id: system
   desc: something we build and run — a service, a daemon, an application
 - id: tool

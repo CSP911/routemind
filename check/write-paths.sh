@@ -91,7 +91,7 @@ say "a han name with no LLM refuses"       "$(code -X POST "$U/nodes" -d '{"name
 # A kind is different: nothing reads one until a domain declares edge_rules, so vocab.yaml supplies
 # a default and the screen never asks. It is still recorded as not chosen by anyone.
 say "no kind takes the default"           "$(code -X POST "$U/nodes" -d '{"id":"no-kind","name":"No Kind","region":"alpha","one_liner":"x"}')" 201
-say "  and says nobody chose it"          "$(python3 -c 'import json; d=json.load(open("'"$T"'/out")); print(d["kind"], d["kind_generated"])')" "system True"
+say "  and says nobody chose it"          "$(python3 -c 'import json; d=json.load(open("'"$T"'/out")); print(d["kind"], d["kind_generated"])')" "document True"
 # And with no default declared, it refuses rather than inventing one. Done by editing the throwaway
 # repository the way a person would — including the commit, without which every write is blocked.
 # `sed -i` without an argument is GNU-only: BSD sed reads the next word as the backup suffix and the
@@ -106,10 +106,10 @@ assert old in s, f"{old!r} not in vocab.yaml"
 open(p, "w", encoding="utf-8").write(s.replace(old, new, 1))
 EOF
 }
-edit_vocab "default_kind: system" "# no default"
+edit_vocab "default_kind: document" "# no default"
 git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qam "drop default_kind"
 say "  with no default_kind it refuses"   "$(code -X POST "$U/nodes" -d '{"id":"no-default","name":"X","region":"alpha","one_liner":"x"}')" 503
-edit_vocab "# no default" "default_kind: system"
+edit_vocab "# no default" "default_kind: document"
 git -C "$T/repo" -c user.name=seed -c user.email=seed@local commit -qam "restore default_kind"
 
 # The ordinary path, end to end.

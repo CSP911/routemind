@@ -6,11 +6,8 @@ It is also the only directory here worth backing up: `data/overlays` and `data/w
 evidence that expires.
 
 That makes editing it by hand not merely allowed but the point. A pull request against an ontology is
-a pull request. One file in it is the exception.
-
-`data/repo` is meant to be edited by hand — it is the reviewed artefact, and a pull request against it
-is the point. One file in it is not: `regions.json` is **derived** from the areas' own `.md` files,
-and it is also committed, which is the combination that lets it go stale.
+a pull request. One file in it is the exception: `regions.json` is **derived** from the areas' own
+`.md` files, and it is also committed, which is the combination that lets it go stale.
 Every write through the API regenerates it; an edit made in an editor does not.
 
 Stale, it is not inert. `regions.json` is what hop 0 advertises, and `use_when` is the sentence an
@@ -18,22 +15,20 @@ agent reads to decide which area answers a question. A stale one routes on wordi
 in the repository, and until 2026-09-13 nothing said so: `validate` compared which areas and which
 nodes were listed, never the text. It does now, and it names the fields.
 
-To regenerate after editing by hand, from the checkout:
+The service regenerates it at startup when that is the only thing wrong and the tree is clean, and
+every write through the screen or the API regenerates it in the same transaction. To do it on demand:
 
 ```sh
-docker compose exec ontology python3 -c \
-  "import pathlib; from service.store import Store; from service.derive import regenerate; \
-   print(regenerate(Store(pathlib.Path('/data/repo'))) or 'already in sync')"
+docker compose exec ontology python3 /app/tidy.py /data/repo --fix   # regenerates, validates, commits
 ```
-
-then commit what it changed. Or make any write through the screen — that regenerates, validates,
-commits in one transaction, which is what the API is for.
 
 ### Deleting an area by hand
 
-`rm -rf regions/payroll` leaves one thing behind: `regions.json` still listing the area. The
-validator names it, so every write is refused until it is regenerated — which the service does at
-startup on a clean tree, and tidy does on demand:
+`rm -rf regions/payroll` and a commit leave one thing behind: `regions.json` still listing the area.
+The validator names it; the next write through the screen or the API regenerates it along with
+whatever it writes, and so does the next start of the service. Adding an area directory by hand is the
+same in reverse. Or on demand — `tidy.py` runs on the host if your Python has PyYAML, and in the
+container always:
 
 ```sh
 ./ontology/tidy.py data/repo          # what is out of step. Changes nothing
@@ -51,6 +46,45 @@ API* has always done all of this in one transaction — this is for the times yo
 which is the workflow this file is about.
 
 
+### A file that does not parse
+
+An unclosed quote in a frontmatter, a `vocab.yaml` that is not YAML, a `regions.json` that is not
+JSON. The file is left out and everything else is served; `/healthz`, the screen's **Show what
+fails** and `validate` name it with its line:
+
+```
+regions/expense/travel-expense.md: the frontmatter does not parse (line 3: …) — fix it and commit,
+or `git -C data/repo revert HEAD` if the last commit broke it
+```
+
+Writes are refused until it is fixed, because a document left out looks to every other rule like a
+missing one. If the last commit broke it, `git -C data/repo revert HEAD` is the whole repair — the
+service notices on its own. A broken `regions.json` is derived, so the service writes it again at its
+next start.
+
+## Backing up and restoring
+
+`data/repo` is a git repository, so a backup is a clone or a copy of the directory. **Restore with the
+service stopped**: the container holds the directory it was started with, and a directory swapped
+underneath it is not seen (`/healthz` says `writable: false` with the reason).
+
+```sh
+docker compose stop ontology
+rm -rf data/repo && cp -a /path/to/backup data/repo
+docker compose start ontology
+```
+
+## Starting over
+
+```sh
+./ontology/reset.sh --empty      # no areas, the starter vocabulary
+./ontology/reset.sh --example    # the example back office
+```
+
+One commit in the repository's own history, made only on a clean tree. The map as it was is tagged
+first (`before-reset-<time>`) and the script prints how to bring it back:
+`git -C data/repo reset --hard before-reset-…`. The running service picks it up without a restart.
+
 ---
 
 ## What validates it
@@ -60,7 +94,7 @@ checked. One that came in through an editor is checked at the next write, at boo
 ask:
 
 ```sh
-curl -s localhost:8080/api/knowledge/validate | python3 -m json.tool
+curl -s localhost:8080/api/knowledge/validate | python3 -m json.tool    # your port, from .env
 ```
 
 `ok: false` names every rule that was broken, with the file and the field. The drift above is one of
