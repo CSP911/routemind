@@ -145,5 +145,20 @@ if hidden:
     bad = True
     print("FAIL a compose file reads settings .env.example never mentions:\n  " +
           "\n  ".join(hidden) + "\n  Either document them, or add them to UNDOCUMENTED here with the reason.")
+# ── a first run refused before anything starts takes its .env back ─────────
+# Left behind, the next run read it as an existing install's .env: no port question, and no
+# path-suffixed name, so a clone called `routemind` collided with another (operator QA, 2026-10-10).
+# A bad port is refused before docker is touched, so this runs anywhere.
+import shutil as _sh
+with tempfile.TemporaryDirectory() as _d:
+    for f in ("install.sh", ".env.example"): _sh.copy(ROOT / f, Path(_d) / f)
+    _r = subprocess.run(["sh", "./install.sh", "--port", "99999", "--no-llm"], cwd=_d, capture_output=True, text=True,
+                        stdin=subprocess.DEVNULL)
+    if _r.returncode == 2 and not (Path(_d) / ".env").exists():
+        print("ok   a first install refused for its port leaves no .env behind")
+    else:
+        bad = True
+        print(f"FAIL a first install refused for its port left a .env (rc {_r.returncode}) — the next run would skip "
+              f"the port question and the unique name")
 if bad: sys.exit(1)
 print(f"ok   {len(documented)} settings documented, every one reaching a container ({len(COMPOSE)} compose files)")
