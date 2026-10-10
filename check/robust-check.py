@@ -182,6 +182,10 @@ try:
           out.returncode == 0 and regions_n() == 0 and h.get("valid") and h.get("writable"), out.stderr[-200:] + json.dumps(h)[:200])
     out = reset("--example", "--yes"); settle(5); h = health(PORT + 4)
     check("  reset --example on top of it replaces, not merges: five areas, valid", out.returncode == 0 and regions_n() == 5 and h.get("valid"), json.dumps(h)[:200])
+    tags = git(rs, "tag")
+    out = reset("--example", "--yes")
+    check("  reset to the map it already is: nothing changes, and no tag is left for it",
+          out.returncode == 0 and "nothing changed" in out.stdout and git(rs, "tag") == tags, out.stdout[-200:] + out.stderr[-200:])
     git(rs, "reset", "-q", "--hard", tag); settle(5)
     check("  and the tag it printed brings the map before it back", tag.startswith("before-reset-") and regions_n() == 5 and health(PORT + 4).get("valid"), tag)
     p.terminate(); p.wait(5)
