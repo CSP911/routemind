@@ -202,6 +202,7 @@ the question. [docs/AGENTS.md](docs/AGENTS.md).
 | [AGE.md](docs/AGE.md) | the two ages on each routing row |
 | [CIRCUIT.md](docs/CIRCUIT.md) | reading another RouteMind for one session |
 | [DATA-REPO.md](docs/DATA-REPO.md) | your map as a git repository, and editing it by hand |
+| [WRITING.md](docs/WRITING.md) | five rules for sentences and pages an agent stays right on, each from a measurement |
 | [AGENTS.md](docs/AGENTS.md) · [LLM.md](docs/LLM.md) · [AUTH.md](docs/AUTH.md) | agents, the optional LLM, who may write |
 | [CHECKS.md](docs/CHECKS.md) · [PLATFORMS.md](docs/PLATFORMS.md) · [I18N.md](docs/I18N.md) | checks, platforms, languages |
 | [TODO.md](docs/TODO.md) | known gaps |
