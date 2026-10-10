@@ -1,0 +1,40 @@
+{
+ "id": "m5",
+ "tree": "flat",
+ "q": "A counterparty signed on a power of attorney that had already lapsed. What happens now?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "expired-poa-relied-upon"
+ ],
+ "collected": [
+  "expired-poa-relied-upon",
+  "power-of-attorney-issuance"
+ ],
+ "precision": 0.5,
+ "turns": 7,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 2554,
+ "usage": {
+  "in": 14,
+  "out": 1576,
+  "cache_write": 90494,
+  "cache_read": 857,
+  "cost_usd": 0.01889677
+ },
+ "seconds": 22.0,
+ "model": "haiku",
+ "log": [
+  "OPEN procurement",
+  "BACK",
+  "OPEN approval",
+  "OPEN approval",
+  "READ expired-poa-relied-upon",
+  "READ power-of-attorney-issuance",
+  "DONE"
+ ]
+}

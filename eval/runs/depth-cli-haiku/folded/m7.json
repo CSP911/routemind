@@ -1,0 +1,39 @@
+{
+ "id": "m7",
+ "tree": "folded",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "hard-moved-threshold",
+  "line-rule",
+  "consent-chain-separation"
+ ],
+ "precision": 0.0,
+ "turns": 7,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3889,
+ "usage": {
+  "in": 14,
+  "out": 2322,
+  "cache_write": 17771,
+  "cache_read": 0,
+  "cost_usd": 0.0047166
+ },
+ "seconds": 24.1,
+ "model": "haiku",
+ "log": [
+  "OPEN approval",
+  "READ hard-moved-threshold",
+  "OPEN approval-line",
+  "READ line-rule",
+  "OPEN sec-chains-and-consent",
+  "READ consent-chain-separation",
+  "DONE"
+ ]
+}

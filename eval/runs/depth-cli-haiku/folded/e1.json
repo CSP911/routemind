@@ -1,0 +1,33 @@
+{
+ "id": "e1",
+ "tree": "folded",
+ "q": "Which year-end deductions does the pre-filled data not show, and what conditions apply to them?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "year-end-tax"
+ ],
+ "precision": 0.0,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1724,
+ "usage": {
+  "in": 6,
+  "out": 410,
+  "cache_write": 5453,
+  "cache_read": 0,
+  "cost_usd": 0.0012962000000000002
+ },
+ "seconds": 8.6,
+ "model": "haiku",
+ "log": [
+  "OPEN payroll",
+  "READ year-end-tax",
+  "DONE"
+ ]
+}

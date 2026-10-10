@@ -23,8 +23,21 @@ anybody can send one, and the record then names a person who was not there. So t
 to start** in that mode without it, and likewise in `token` mode with no secret: an operator who set a
 mode decided this was meant to be closed, and coming up open instead turns a decision into a surprise.
 
-The gate is on writes. `KNOWLEDGE_AUTH_READS=1` extends it to reads, which also means giving the
-agent the secret — reads are what the MCP does, and it has no session.
+The gate is on writes. `KNOWLEDGE_AUTH_READS=1` extends it to reads. The map page itself is a static
+shell and always loads; the data behind it is what the gate guards.
+
+**On the screen, in token mode**, the chip at the top right says a secret is needed; clicking it, or
+the first refused save, asks for `KNOWLEDGE_TOKEN` and keeps it in that browser. Until 2026-10-10 the
+page itself was refused (a bare 401 in JSON) and the screen had no way to send a secret at all.
+
+**The agent** gets the secret from the MCP server, which sends `KNOWLEDGE_TOKEN` as a bearer secret —
+from its environment, or from the `.env` of the checkout it runs from. Claude Code started in this
+directory therefore needs nothing more; an agent elsewhere sets `KNOWLEDGE_TOKEN` in the server's
+environment. Without it an agent reads (unless reads are guarded too) but cannot place, and its walks
+are not recorded.
+
+A proxy's identity header may carry a non-ASCII name; it is read as UTF-8, so a commit is signed
+"김철수", not mojibake.
 
 Another backbone reading this one through a circuit does not come through this door: it presents
 the circuit key (`KNOWLEDGE_CIRCUIT_TOKEN`) at `/v1/peers/token` and `/v1/export/…`, which the

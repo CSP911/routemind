@@ -29,8 +29,8 @@ that — it is a different desk and a different question. → Attendance & Leave
 ## Domestic and overseas differ in three ways
 1. **Currency and rate.** Overseas is banded in USD and converted at the departure-day rate.
 2. **The first and last days.** Overseas counts both departure and arrival as full days.
-3. **Tax.** More of the overseas allowance sits above the tax-free cap, so more of it is taxed on the
-   payslip. That is not a deduction from the claim; it is how the allowance rides on pay.
+3. **Tax.** At the policy rates the allowance is tax free in both cases (reasonable actual cost). Only an
+   approved amount above the policy rate is taxed, on the payslip — not a deduction from the claim.
    → Tax-free allowances.
 
 Using your own car is paid per kilometre rather than by fuel receipts, on either kind of trip.

@@ -279,7 +279,7 @@ def _check_base(root: Path, base: str, paths: set[str]) -> None:
                          hit, code="stale", data={"base": base, "files": hit})
 
 
-def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> dict:
+def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False, proposed_by: str = "") -> dict:
     """One set, one commit — or, dry, the same transaction with the commit left out."""
     store = writer.store
     cs = parse(body, store)
@@ -303,7 +303,11 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> d
             # is a holder's ("a place that only groups") in the shipped vocabulary, and every document an
             # agent filed came out as one (2026-10-10).
             sib = [n["kind"] for n in nodes0.values() if n.get("parent") == d["parent"] and (n.get("body") or "").strip() and n.get("kind")]
-            if sib: given = max(set(sib), key=sib.count)
+            # A clear majority only: on a tie the siblings say nothing, and guessing put a table down
+            # as a case (2026-10-10).
+            if sib:
+                ranked = sorted(set(sib), key=sib.count, reverse=True)
+                if len(ranked) == 1 or sib.count(ranked[0]) > sib.count(ranked[1]): given = ranked[0]
         kind, _ = writer._resolve_kind(given, name=d["name"], one_liner=d["one_liner"], region=region,
                                        content=str(d.get("content") or "")[:3000])
         nid, _ = writer._resolve_id(d.get("id"), name=d["name"], kind=kind, one_liner=d["one_liner"], region=region)
@@ -389,6 +393,9 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False) -> d
         for e in imp.get("exposure", []):
             trail.append(f"{'Expose' if e['to'] else 'Withdraw'}: {e['id']}")
         if cs["base"]: trail.append(f"Base: {cs['base']}")
+        # Who proposed it, when a reviewer accepted it from the queue: the commit is the reviewer's,
+        # and the agent that wrote the set vanished from the history (2026-10-10).
+        if proposed_by: trail.append(f"Proposed-by: {proposed_by}")
         return head + "\n\n" + "\n".join(trail) + "\n"
 
     return writer.transact(message, actor, mutate, dry_run=dry_run, after=after)

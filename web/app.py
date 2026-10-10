@@ -117,9 +117,16 @@ def _authenticated(request: Request) -> str | None:
         return "" if (given and AUTH_TOKEN and hmac.compare_digest(given, AUTH_TOKEN)) else None
     if not _trusted_source(request.client.host if request.client else None): return None
     who = str(request.headers.get(AUTH_HEADER) or "").strip()
+    # Header values arrive as latin-1. A proxy that puts a Korean name or address there sends UTF-8
+    # bytes, which landed in commits as mojibake ("ê¹ì² ì") (2026-10-10); read them back as UTF-8.
+    try: who = who.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError): pass
     return who[:128] if who else None
 
 app = FastAPI(title="RouteMind", docs_url=None, redoc_url=None, openapi_url=None)
+# Compressed answers: a large map's graph is over a megabyte and the screen loads it on every visit.
+from fastapi.middleware.gzip import GZipMiddleware                                    # noqa: E402
+app.add_middleware(GZipMiddleware, minimum_size=2048)
 
 _MCP = None
 
@@ -214,6 +221,10 @@ def _request_user(request: Request) -> dict[str, Any]:
 # The actor recorded there is the signed-in username, never a client-supplied value.
 ONTOLOGY_URL = _iris_playbook_os.environ.get("KNOWLEDGE_API_URL", "http://ontology:8100").rstrip("/")
 
+import http.client as _http_client
+from socket import timeout as _socket_timeout
+
+
 def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = None) -> dict:
     body = _iris_playbook_json.dumps(payload).encode("utf-8") if payload is not None else None
     proxy_request = _IrisPlaybookURLRequest(
@@ -239,6 +250,10 @@ def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = N
             # reasons are worth forwarding is how the screen ends up unable to translate one.
             reason = answer.get("reason") or None
             if isinstance(answer.get("values"), dict): values = answer["values"]
+            # `/v1/validate` answers a failing tree with {"ok": false, "errors": [...]} — the list the
+            # screen's Validate button exists to show, and it arrived as "HTTP 422" alone (2026-10-10).
+            if not details and isinstance(answer.get("errors"), list): details = [str(e) for e in answer["errors"]]
+            if not detail and answer.get("ok") is False and details: detail = "validation fails"
         except Exception: pass
         # The API's own 4xx are answers, not transport failures: "no such fragment" is a 404 and "already
         # exists" is a 409. Collapsing them into 502 makes the status line lie while the sentence tells the
@@ -252,8 +267,17 @@ def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = N
         status = exc.code if (400 <= exc.code < 500 or exc.code in (501, 503)) else 502
         raise KnowledgeError(status, detail or f"RouteMind API returned HTTP {exc.code}.", details,
                              reason=reason, values=values) from exc
-    except (_IrisPlaybookURLError, TimeoutError) as exc:
-        raise _IrisPlaybookHTTPException(status_code=503, detail=f"RouteMind API unavailable: {exc}") from exc
+    except (TimeoutError, _socket_timeout) as exc:
+        # The ontology took longer than the proxy waits. A write may still be queued behind another
+        # and commit after this answer — so this says "not known", not "failed": retrying blind made
+        # duplicates, and a 2xx never came for writes that did land (2026-10-10).
+        raise KnowledgeError(504, "RouteMind did not answer in time. A write may still complete — reload "
+                                  "before trying it again.", reason="outcome_unknown") from exc
+    except (_IrisPlaybookURLError, ConnectionError, _http_client.HTTPException) as exc:
+        # Includes the ontology dropping the connection mid-request (a restart): that was a plain-text
+        # 500 from this app (2026-10-10).
+        raise KnowledgeError(503, f"RouteMind's service is not answering right now ({type(exc).__name__}). "
+                                  "If you were saving, reload to see whether it was saved.", reason="service_down") from exc
     try: data = _iris_playbook_json.loads(raw.decode("utf-8"))
     except Exception as exc: raise _IrisPlaybookHTTPException(status_code=502, detail="Knowledge API returned an invalid response.") from exc
     if not isinstance(data, dict): raise _IrisPlaybookHTTPException(status_code=502, detail="Knowledge API response must be an object.")
@@ -290,7 +314,9 @@ def _knowledge_actor(request: Request) -> str:
 
 @_iris_route("GET", "/knowledge")
 def knowledge_review_page(request: Request) -> FileResponse:
-    _require_admin(request)
+    # The page is a static shell with no data in it; the API behind it is what the gate guards. In
+    # token mode a browser cannot send the secret on a navigation, so gating the page made the screen
+    # unreachable — a bare 401 in JSON — however the secret was configured (2026-10-10).
     return FileResponse(STATIC_DIR / "knowledge.html")
 
 
@@ -943,7 +969,7 @@ async def _the_door(request: Request, call_next):
     """
     if AUTH == "open": return await call_next(request)
     path = request.url.path
-    guarded = path.startswith("/api/knowledge") or path in ("/", "/knowledge")
+    guarded = path.startswith("/api/knowledge")
     if guarded and path != "/healthz" and (request.method in WRITE_METHODS or AUTH_READS):
         if _authenticated(request) is None:
             return JSONResponse(

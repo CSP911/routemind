@@ -1,0 +1,48 @@
+{
+ "id": "h-perdiem-222-i",
+ "tree": "folded",
+ "q": "I'm a department head — Jakarta, eight nights — what can I put on a hotel each night, and above what amount do I have to keep the receipt?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "perdiem",
+ "hit": true,
+ "found": [
+  "hard-perdiem-row-grade-g3-band-b3-stay-s3"
+ ],
+ "collected": [
+  "hard-perdiem-legend-revision",
+  "hard-perdiem-legend-band",
+  "hard-perdiem-legend-grade",
+  "hard-perdiem-row-grade-g3-band-b3-stay-s1",
+  "hard-perdiem-row-grade-g3-band-b3-stay-s2",
+  "hard-perdiem-row-grade-g3-band-b3-stay-s3",
+  "hard-perdiem-row-grade-g3-band-b3-stay-s4",
+  "hard-perdiem-legend-stay"
+ ],
+ "precision": 0.125,
+ "turns": 9,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 7041,
+ "usage": {
+  "in": 18,
+  "out": 2123,
+  "cache_write": 60031,
+  "cache_read": 0,
+  "cost_usd": 0.013069500000000001
+ },
+ "seconds": 29.8,
+ "model": "haiku",
+ "log": [
+  "OPEN expense",
+  "READ hard-perdiem-legend-revision",
+  "OPEN sec-hard-perdiem",
+  "READ hard-perdiem-legend-band",
+  "READ hard-perdiem-legend-grade",
+  "OPEN hard-perdiem-legend-stay",
+  "READ hard-perdiem-row-grade-g3-band-b3-stay-s1\nREAD hard-perdiem-row-grade-g3-band-b3-stay-s2\nREAD hard-perdiem-row-grade-g3-band-b3-stay-s3\nREAD hard-perdiem-row-grade-g3-band-b3-stay-s4",
+  "READ hard-perdiem-legend-stay\nOPEN sec-trip-days-versus-allowance-days",
+  "DONE"
+ ]
+}

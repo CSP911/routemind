@@ -68,6 +68,11 @@ class Api:
             # The same name, for an ontology reached directly rather than through the web proxy.
             "X-Actor": urllib.parse.quote(self.actor[:64], safe=""),
         }
+        # An install in token mode (docs/AUTH.md) refuses writes without its secret, and the server had
+        # no way to send one: an agent could read but not place, and every walk went unrecorded
+        # (2026-10-10). KNOWLEDGE_TOKEN from the environment, or from the .env of this checkout.
+        tok = _env_value("KNOWLEDGE_TOKEN")
+        if tok: headers["Authorization"] = f"Bearer {tok}"
         data = None
         if body is not None:
             data = json.dumps(body).encode("utf-8")
@@ -243,9 +248,12 @@ def area(api: Api, path: str) -> str:
         rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
     head = f"{d.get('key') or path} — {d.get('advertises') or ''}".strip(" —")
     lead = (f"When to be here: {d['use_when']}" if d.get("use_when") else "") or "What this area holds:"
+    # Whole rows, never clipped (2026-10-10): a row cut at 100 characters lost the clause that said
+    # what the document held, and the agent concluded "not in RouteMind" without opening it.
     return _table(rows, head, lead,
                   "This lists what this area holds. It is not a claim about the rest of RouteMind —\n"
-                  "if what you need is not here, go back to /v1/regions.")
+                  "if what you need is not here, go back to /v1/regions. Before saying a detail is not\n"
+                  "covered, read the documents in this table that could hold it.", clip=None)
 
 
 def node(api: Api, path: str) -> str:
@@ -268,7 +276,8 @@ def node(api: Api, path: str) -> str:
         rows.append({"kind": kind, "address": e.get("fetch") or "", "why": why, "age": _age(e)})
     head = f"{d.get('name') or path}"
     return _table(rows, head, str(d.get("one_liner") or ""),
-                  "This lists what this node holds. If what you need is not here, go back to /v1/regions.")
+                  "This lists what this node holds. If what you need is not here, go back to /v1/regions.\n"
+                  "Before saying a detail is not covered, read the documents in this table that could hold it.", clip=None)
 
 
 def _row(e: dict) -> dict:
@@ -299,7 +308,7 @@ def overlay_text(d: dict) -> str:
         sec_rows = [_row(e) for e in (sec.get("rows") or [])]
         if not sec_rows: out.append("     (nothing here)")
         for r in sec_rows:
-            out.append(f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  {_clip(r['why'], 110)}")
+            out.append(f"  {r['kind'].ljust(kind_w)}  {r['address'].ljust(addr_w)}  {r['why']}")
     out.append("")
     out.append("  table → knowledge_table({ path })    ·    file → knowledge_read({ path })")
     out.append("  narrow or widen → knowledge_overlay({ op: add | remove, id, address, why })")
@@ -735,7 +744,16 @@ PLACE_TOOL = {
                    "make a holder (`create` with a `ref` like $h, and `parent` $h on the document or on "
                    "siblings you `move` under it — how a wide table is folded), `move` a sibling, "
                    "`write` a body, `delete` a leaf. The order of decisions does not matter. "
-                   "`dry_run` shows all of this without writing.",
+                   "`dry_run` shows all of this without writing. "
+                   "Keep a line when its topic still covers what is under it — an area's sentence says when to come "
+                   "there, not a list of every document, so do not append a clause for each new one. "
+                   "A new version of a rule: create it, and move the old one under a holder named for the old "
+                   "versions — {op: create, ref: $prev, name: 'Earlier versions', one_liner: …, parent: <holder>}, "
+                   "{op: move, id: <old>, parent: $prev}. Two or more related documents in a wide table: fold them "
+                   "under a holder the same way — and give the holder a line that names what is under it, not a "
+                   "section label: a weaker model choosing by a holder's line stops short when the line says little "
+                   "(eval/depth). `content` is what the person gave you, as they gave it — never add "
+                   "rules, numbers or conditions they did not state; ask if it is unclear.",
     "inputSchema": {"type": "object", "required": ["op"], "properties": {
         "op": {"type": "string", "enum": ["open", "step", "here", "list", "close"]},
         "name": {"type": "string", "description": "open: the document's name"},
@@ -894,6 +912,10 @@ def place_call(api: Api, args: dict) -> str:
         if pick not in p["printed"]:
             raise ApiError(f"{pick} is not an address the last table printed. Pick one of: {', '.join(p['printed'])} — or `none`.")
         p["path"].append(pick); p["at"] = pick
+        # Each hop of a placement is a step of its walk, like a question's — the record showed hop 0
+        # and nothing after it (2026-10-10).
+        w = CURRENT.get("walk")
+        if w: report(api, w, "table", pick, f"placing “{p['doc']['name']}” — chose this row")
         return _place_hop(api, pid)
     if op == "here":
         if p["at"] == "/v1/regions" and not isinstance(args.get("area"), dict):
@@ -915,7 +937,7 @@ def _place_hop(api: Api, pid: str) -> str:
         w = max(len(r["address"]) for r in rows)
         out.append(f"  {'ADDRESS':<{w}}  LINE")
         for r in rows:
-            out.append(f"  {r['address']:<{w}}  {(r.get('line') or '')[:110]}")
+            out.append(f"  {r['address']:<{w}}  {r.get('line') or ''}")
     else:
         out.append("  (no rows — this node has no children yet)")
     out.append("")
@@ -993,6 +1015,10 @@ def _place_here(api: Api, pid: str, args: dict) -> str:
     del PLACEMENTS[pid]
     ids = res.get("ids") or {}
     imp = res.get("impact") or {}
+    w = CURRENT.get("walk")
+    if w and WALKS.get(w) and not WALKS[w]["ended"]:
+        WALKS[w]["ended"] = "placed"
+        close_walk(api, w, "answered", f"placed as {ids.get('$doc', '?')}, commit {str(res.get('revision') or '')[:10]}")
     out = [f"PLACED {doc['name']!r} as {ids.get('$doc', '?')} — commit {str(res.get('revision') or '')[:10]}",
            f"  walked  : {' → '.join(p['path']) or '(hop 0)'}"]
     for k, v in ids.items():
@@ -1026,9 +1052,9 @@ def _impact_lines(imp: dict, ids: dict) -> list[str]:
 
 TOOLS = [
     {"name": "knowledge_table",
-     "description": "Fetch a routing table from Knowledge: a list of what is there and where to go "
-                    "next. Call it with no arguments to get the list of areas — that is where every "
-                    "search starts. Each row prints the exact address that fetches it; use those "
+     "description": "Fetch a routing table from RouteMind: a list of what is there and where to go "
+                    "next. Call it with no path (and `question`) to get the list of areas — that is where every "
+                    "question starts. With a path, `why` is required. Each row prints the exact address that fetches it; use those "
                     "verbatim and never construct one.",
      "inputSchema": {"type": "object", "properties": {
          "path": {"type": "string",
@@ -1039,7 +1065,7 @@ TOOLS = [
                  "description": "Below hop 0, required: one line on why you are opening this row — what in "
                                 "its line made you choose it. Recorded on the walk (docs/FOOTPRINT.md)."},
          "question": {"type": "string",
-                      "description": "At hop 0 (no path): the question you are answering, in one line. Recorded "
+                      "description": "At hop 0 (no path): the person's question, verbatim, in their language. Recorded "
                                      "on the walk, so a person replaying it can see what was asked."}}}},
     {"name": "knowledge_read",
      "description": "Read one document from Knowledge, by the address a table printed for it. "
@@ -1190,10 +1216,18 @@ class Server:
         return intro + ("Every question starts at hop 0: call knowledge_table with no path — with "
                         "`question` set to what you are answering — even though the list is below: this "
                         "list is a preview, and the server refuses any table under it until that call is "
-                        "made. Then pick the row whose sentence matches, and follow the addresses the tables print — "
+                        "made. Every new question starts at hop 0 again, even in the same conversation. "
+                        "Then pick the row whose sentence matches, and follow the addresses the tables print — "
                         "knowledge_table for a table, knowledge_read for a document, each with a one-line "
                         "`why`. Only this list may tell you something is absent; a smaller table only "
-                        "tells you it is not in there.\n\n" + areas)
+                        "tells you it is not in there — and before saying a detail is not covered, read the "
+                        "documents in the table you are in that could hold it.\n\n"
+                        # Without this a model asked to "add this to RouteMind" did not know the place
+                        # tool existed — Claude Code loads tools lazily — and tried to write files into
+                        # the repository by hand (2026-10-10).
+                        "To add, update or replace a document in RouteMind, use knowledge_place — never edit "
+                        "files in the repository directly. Write what the person gave you, as they gave it; "
+                        "do not add rules, numbers or conditions they did not state.\n\n" + areas)
 
     def tools(self) -> list[dict]:
         """The tool list, with the areas of this domain written into the first description.
@@ -1209,7 +1243,17 @@ class Server:
             tools[0]["description"] += "\n\n" + hop0(self.api)
         except ApiError as e:
             tools[0]["description"] += f"\n\n(The area list could not be fetched: {e})"
-        tools.append(dict(PLACE_TOOL))
+        place = dict(PLACE_TOOL)
+        try:
+            # The kinds this backbone's vocabulary has, so the agent can choose one: left to a default,
+            # documents came out as "topic" — a holder's kind — four times in nine (2026-10-10).
+            kinds = [k for k in (self.api.json("/v1/vocab").get("kinds") or []) if isinstance(k, dict) and k.get("id")]
+            if kinds:
+                place["description"] += (" Kinds in this backbone (pass `kind` on open): " +
+                                         "; ".join(f"{k['id']} — {str(k.get('desc') or '').strip()}" for k in kinds) + ".")
+        except ApiError:
+            pass
+        tools.append(place)
         tools.append(dict(CIRCUIT_TOOL))
         # Off unless switched on (operator, 2026-10-07: "Simple is best"). The code stays; an agent
         # sees four tools — table, read, place, circuit — unless the install asks for more.
@@ -1370,6 +1414,27 @@ def serve(api: Api, stdin=sys.stdin, stdout=sys.stdout) -> None:
         if reply is not None:
             stdout.write(json.dumps(reply, ensure_ascii=False) + "\n")
             stdout.flush()
+    # The client went away. A walk left open showed as "walking" on the map for an hour and then as
+    # abandoned, though the session had simply ended (2026-10-10).
+    w = WALKS.get(CURRENT.get("walk") or "")
+    if w and not w["ended"]:
+        w["ended"] = "the session ended"
+        close_walk(api, w["id"], "ended", "the session ended")
+
+
+def _env_value(key: str) -> str:
+    """A setting from the environment, else from the `.env` beside this repository (the last line
+    wins, as compose reads it)."""
+    if os.environ.get(key): return os.environ[key].strip()
+    val = ""
+    env = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+    try:
+        for line in open(env, encoding="utf-8"):
+            k, _, v = line.strip().partition("=")
+            if k.strip() == key: val = v.strip().strip("'\"")
+    except OSError:
+        pass
+    return val
 
 
 def _default_api() -> str:

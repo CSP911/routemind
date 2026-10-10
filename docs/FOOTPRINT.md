@@ -99,6 +99,14 @@ walks opened in the same second came back in an order that changed between pages
 follows the record as steps arrive; another page stays put while somebody reads it. The result card
 steps aside while the history is in view, since it would sit on its last rows and page buttons.
 
+**How a walk ends** (2026-10-10). `answered` when the agent's placement lands or an overlay is closed
+answered; `not_found` from an overlay; `abandoned` when the next question started (a new hop 0) or an
+hour passed; and `ended` when the agent's session closed with the walk still open — the MCP server
+says so when its client goes away. With overlays off (the default) a question an agent answered from
+what it read is closed `ended` or `abandoned`, not `answered`: the server cannot know an answer was
+given, and does not claim one. A placement records each table it stepped through, and closes
+`answered` with the document and the commit.
+
 ## What is not here
 
 - Pushing from the server. A one-second GET of a small JSON is cheaper than a socket and has no

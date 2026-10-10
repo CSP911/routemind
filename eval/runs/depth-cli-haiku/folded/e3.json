@@ -1,0 +1,48 @@
+{
+ "id": "e3",
+ "tree": "folded",
+ "q": "What counts as flexible working here, and where does each specific rule live?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "flexwork-overview"
+ ],
+ "collected": [
+  "flexwork-overview",
+  "core-hours-table",
+  "flexitime-month-rule",
+  "flexitime-carryover-table",
+  "hybrid-week-pattern",
+  "wfh-recording-procedure",
+  "flexwork-approval-role",
+  "hybrid-week-swap-procedure",
+  "flexitime-shortfall-case",
+  "flexwork-system-entry"
+ ],
+ "precision": 0.1,
+ "turns": 7,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 11471,
+ "usage": {
+  "in": 14,
+  "out": 2103,
+  "cache_write": 25710,
+  "cache_read": 0,
+  "cost_usd": 0.0061949
+ },
+ "seconds": 24.0,
+ "model": "haiku",
+ "log": [
+  "OPEN attendance",
+  "OPEN sec-flexible-and-remote-working",
+  "READ flexwork-overview",
+  "READ core-hours-table",
+  "READ flexitime-month-rule\nREAD flexitime-carryover-table\nREAD hybrid-week-pattern\nREAD wfh-recording-procedure",
+  "READ flexwork-approval-role\nREAD hybrid-week-swap-procedure\nREAD flexitime-shortfall-case\nREAD flexwork-system-entry",
+  "DONE"
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "id": "h-overtime-000-i",
+ "tree": "flat",
+ "q": "An ordinary tuesday, about ninety minutes, at my desk: what multiplier applies to that time, and to what rounding are the minutes taken?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "collected": [
+  "hard-overtime-legend-revision",
+  "hard-overtime-legend-day",
+  "hard-overtime-legend-hours",
+  "hard-overtime-legend-place",
+  "hard-overtime-row-day-d1-hours-h1-place-p1"
+ ],
+ "precision": 0.2,
+ "turns": 8,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4102,
+ "usage": {
+  "in": 16,
+  "out": 2822,
+  "cache_write": 189214,
+  "cache_read": 878,
+  "cost_usd": 0.03926418
+ },
+ "seconds": 30.0,
+ "model": "haiku",
+ "log": [
+  "OPEN payroll",
+  "OPEN attendance",
+  "OPEN attendance is already done, so I'll start with the overtime revision legend, since the current rate depends on the date.\n\nREAD hard-overtime-legend-revision",
+  "READ hard-overtime-legend-day",
+  "READ hard-overtime-legend-hours",
+  "READ hard-overtime-legend-place",
+  "READ hard-overtime-row-day-d1-hours-h1-place-p1",
+  "DONE"
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "id": "h-accrual-120-i",
+ "tree": "folded",
+ "q": "On a two-year contract, been here five years, at the Seoul office: how much time off am I building up each month, and how much can I still be holding in January?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-row-type-e2-tenure-t3-site-l1"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-legend-type",
+  "hard-accrual-legend-tenure",
+  "hard-accrual-legend-site",
+  "hard-accrual-row-type-e2-tenure-t3-site-l1"
+ ],
+ "precision": 0.2,
+ "turns": 8,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4263,
+ "usage": {
+  "in": 16,
+  "out": 1518,
+  "cache_write": 46648,
+  "cache_read": 0,
+  "cost_usd": 0.0100902
+ },
+ "seconds": 24.8,
+ "model": "haiku",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN sec-hard-accrual",
+  "READ hard-accrual-legend-type",
+  "READ hard-accrual-legend-tenure",
+  "READ hard-accrual-legend-site",
+  "READ hard-accrual-row-type-e2-tenure-t3-site-l1",
+  "DONE"
+ ]
+}

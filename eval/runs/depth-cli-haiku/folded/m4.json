@@ -1,0 +1,59 @@
+{
+ "id": "m4",
+ "tree": "folded",
+ "q": "Is unpaid leave taken out of my pay on working days or on calendar days?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "unpaid-leave-deduction-calculation"
+ ],
+ "collected": [
+  "insurance-rates",
+  "payslip-items",
+  "loa-pay-and-insurance-status",
+  "loa-category-table",
+  "attendance-overview",
+  "days-that-decide-money-overview",
+  "unpaid-leave-deduction-calculation",
+  "unpaid-leave-overview"
+ ],
+ "precision": 0.125,
+ "turns": 20,
+ "opens": 10,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 9072,
+ "usage": {
+  "in": 40,
+  "out": 4721,
+  "cache_write": 128644,
+  "cache_read": 0,
+  "cost_usd": 0.0280933
+ },
+ "seconds": 65.8,
+ "model": "haiku",
+ "log": [
+  "OPEN payroll",
+  "OPEN insurance",
+  "READ insurance-rates",
+  "OPEN payslip",
+  "READ payslip-items",
+  "OPEN attendance",
+  "OPEN attendance",
+  "OPEN sec-leave-of-absence-other-than-parental",
+  "READ loa-pay-and-insurance-status",
+  "OPEN attendance",
+  "OPEN sec-days-that-decide-money",
+  "READ loa-category-table",
+  "READ attendance-overview",
+  "READ days-that-decide-money-overview",
+  "BACK",
+  "OPEN payroll",
+  "OPEN sec-days-into-money",
+  "READ unpaid-leave-deduction-calculation",
+  "READ unpaid-leave-overview",
+  "DONE"
+ ]
+}

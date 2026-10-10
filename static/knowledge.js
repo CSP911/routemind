@@ -120,10 +120,22 @@
     return error;
   }
 
+  /** The write secret for an install in token mode (docs/AUTH.md), kept in this browser. The screen
+   *  had no way to send one: in token mode nothing could be written from it at all (2026-10-10). */
+  const TOKEN_KEY = "routemind.token";
+  const savedToken = () => { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch { return ""; } };
+
   async function request(path, options) {
     const o = { credentials: "same-origin", ...(options || {}) };
+    const tok = savedToken();
+    if (tok) o.headers = { ...(o.headers || {}), Authorization: `Bearer ${tok}` };
     const res = await fetch("/api/knowledge/" + path, o);
     const data = await res.json().catch(() => ({}));
+    if (res.status === 401 && data.auth === "token") {
+      try { localStorage.removeItem(TOKEN_KEY); } catch { /* nothing kept */ }
+      tokenCard();
+      throw refusal({ error: t("knowledge.auth.needToken") }, 401);
+    }
     if (!res.ok) throw refusal(data, res.status);
     // Every write answers with the lines whose tables it changed (docs/CHANGE.md). A person at the
     // map is shown them and not stopped: they can see the map, and an agent's door is the one that
@@ -1208,6 +1220,7 @@
     const outcome = w.outcome === "answered" ? t("knowledge.fp.out.answered")
       : w.outcome === "not_found" ? t("knowledge.fp.out.notFound")
       : w.outcome === "abandoned" ? t("knowledge.fp.out.ended")
+      : w.outcome === "ended" ? t("knowledge.fp.out.session")
       : t("knowledge.fp.out.paused");
     const close = el("button", "kn-fp-card-x", "×");
     close.type = "button";
@@ -1445,6 +1458,7 @@
     if (w.outcome === "answered") return [t("knowledge.fp.out.answered"), "is-answered"];
     if (w.outcome === "not_found") return [t("knowledge.fp.out.notFound"), "is-missing"];
     if (w.outcome === "abandoned") return [t("knowledge.fp.out.ended"), "is-ended"];
+    if (w.outcome === "ended") return [t("knowledge.fp.out.session"), "is-ended"];
     return [t("knowledge.fp.out.paused"), "is-ended"];
   }
 
@@ -3485,6 +3499,43 @@
     chip.className = "kn-door" + (loud ? " is-open" : "");
     chip.title = why;
     chip.hidden = !label;
+    // In token mode the chip is where the secret is given; it says whether this browser holds one.
+    if (state.cfg.auth === "token") {
+      if (savedToken()) chip.textContent = t("knowledge.auth.tokenSaved");
+      chip.setAttribute("role", "button"); chip.tabIndex = 0;
+      chip.onclick = () => tokenCard();
+      chip.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tokenCard(); } };
+    }
+  }
+
+  /** Ask for the write secret, keep it in this browser, and carry on. */
+  function tokenCard() {
+    const dialog = $("knRawDialog");
+    state.selected = null;
+    $("knRawKind").textContent = "AUTH"; $("knRawKind").className = "kn-chip-kind is-backbone";
+    $("knRawTitle").textContent = t("knowledge.auth.tokenTitle");
+    $("knRawAddr").textContent = ""; $("knRawPath").textContent = ""; $("knRawMeta").textContent = "";
+    banner("");
+    const card = el("form", "kn-card-form");
+    card.addEventListener("submit", (e) => e.preventDefault());
+    card.append(el("p", "kn-cf-lead", t("knowledge.auth.tokenLead")));
+    const box = input("", { class: "kn-input", autocomplete: "current-password" });
+    box.type = "password";
+    card.append(labelled("knowledge.auth.tokenField", box));
+    card.append(actions(
+      button("common.cancel", "quiet", () => dialog.close()),
+      button("knowledge.auth.tokenSave", "primary", (b) => guarded(b, async () => {
+        const v = box.value.trim();
+        if (!v) throw new Error(t("knowledge.auth.tokenLead"));
+        try { localStorage.setItem(TOKEN_KEY, v); } catch { /* private mode: kept for this page only */ }
+        dialog.close();
+        showDoor();
+      })),
+    ));
+    $("knEdit").replaceChildren(card);
+    showEditor(true);
+    if (!dialog.open) dialog.showModal();
+    box.focus();
   }
 
   /** What this install can do. Failure is not fatal and not silent-by-omission either: the defaults

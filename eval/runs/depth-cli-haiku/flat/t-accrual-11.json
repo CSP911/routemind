@@ -1,0 +1,44 @@
+{
+ "id": "t-accrual-11",
+ "tree": "flat",
+ "q": "How much leave was accrued or granted for someone with two years of continuous service in 2023, and what had it become by 2025? I need both versions of leave accrual, not just the current one.",
+ "needs": "all",
+ "lever": "both",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "leave-accrual",
+  "hard-accrual-v2"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "hard-accrual-legend-tenure",
+  "hard-accrual-v2",
+  "leave-accrual",
+  "hard-accrual-legend-type"
+ ],
+ "precision": 0.4,
+ "turns": 7,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 5337,
+ "usage": {
+  "in": 14,
+  "out": 2725,
+  "cache_write": 83144,
+  "cache_read": 2111,
+  "cost_usd": 0.01801381
+ },
+ "seconds": 28.0,
+ "model": "haiku",
+ "log": [
+  "attendance",
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN annual-leave\nREAD hard-accrual-legend-tenure\nREAD hard-accrual-v2",
+  "READ leave-accrual",
+  "READ hard-accrual-legend-type",
+  "DONE"
+ ]
+}

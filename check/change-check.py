@@ -172,9 +172,16 @@ try:
         {"op": "create", "ref": "$area", "name": "Travel", "one_liner": "travel: booking, per-diems, what to keep", "parent": None, "area": "travel",
          "use_when": "when the question is about a trip — booking it, what it pays, what to keep from it"},
         {"op": "create", "ref": "$doc", "name": "Booking a flight", "one_liner": "how a flight is booked and by whom", "parent": "$area", "content": "# Booking\n\nThrough the desk.\n"}]})
+    # A new area is a hop-0 change: with a review queue it waits there, and accepting it applies the
+    # area and its first document as one commit (2026-10-10).
+    qid = d.get("queued")
+    check("a new area from hop 0 waits in the review queue, like a reworded sentence", st == 202 and bool(qid) and commits_since(h0) == 0, f"{st} {json.dumps(d)[:160]}")
+    st, acc = call("POST", f"/v1/curator/proposals/{qid}/accept", {"why": "yes"})
+    d = acc.get("result") or {}
     st2, regs = call("GET", "/v1/regions")
-    check("a new area from hop 0, with its first document, in one commit; hop 0 lists it", st == 201 and commits_since(h0) == 1
-          and any(r.get("source") == "travel" or r.get("dir") == "travel" for r in regs.get("regions", [])), f"{st} {json.dumps(d)[:160]}")
+    check("  accepted: the area and its first document land in one commit, and hop 0 lists it", 200 <= st < 300 and commits_since(h0) == 1
+          and any(r.get("source") == "travel" or r.get("dir") == "travel" for r in regs.get("regions", [])) and "Proposed-by: " in trailer(),
+          f"{st} {json.dumps(acc)[:160]}")
     st, v = call("GET", "/v1/validate")
     check("  and the repository validates — regions.json was regenerated with it", v.get("ok") is True, (v.get("errors") or [])[:2])
     st, d = change({"why": "drop the holder", "decisions": [{"op": "delete", "id": d["ids"]["$area"]}]})
@@ -280,7 +287,8 @@ try:
     h0 = head()
     t, err = tool("knowledge_place", {"op": "here", "id": pid, "why": "nothing covers the office itself",
                                       "area": {"source": "office", "name": "Office", "one_liner": "the office itself — plants, keys, the kitchen", "use_when": "when the question is about the office as a place: plants, keys, the kitchen"}})
-    check("  `here` with `area` makes the area, its sentence and the document in one commit", not err and t.startswith("PLACED") and "$area = office" in t and commits_since(h0) == 1, t[:300])
+    check("  `here` with `area` files the area, its sentence and the document as one set — queued for review", not err and t.startswith("QUEUED")
+          and "office" in t and commits_since(h0) == 0, t[:300])
     # a set the queue takes ends the placement: the agent is not invited to file it again another way
     t, err = tool("knowledge_place", {"op": "open", "name": "Queue probe", "one_liner": "a document whose area sentence is reworded"})
     pid = t.split("[", 1)[1].split("]", 1)[0]

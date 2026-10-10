@@ -1,0 +1,45 @@
+{
+ "id": "m7",
+ "tree": "flat",
+ "q": "Action was taken before the draft was written. What still has to match afterwards?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "emergency-spend-ceiling",
+  "hard-moved-threshold",
+  "hard-threshold-legend-revision",
+  "hard-threshold-legend-amount",
+  "sec-hard-threshold"
+ ],
+ "precision": 0.0,
+ "turns": 11,
+ "opens": 6,
+ "returns": 2,
+ "exhausted": false,
+ "read_chars": 4406,
+ "usage": {
+  "in": 22,
+  "out": 13137,
+  "cache_write": 148333,
+  "cache_read": 852,
+  "cost_usd": 0.03624582
+ },
+ "seconds": 79.4,
+ "model": "haiku",
+ "log": [
+  "OPEN approval",
+  "READ emergency-spend-ceiling\nREAD hard-moved-threshold",
+  "BACK\nOPEN procurement",
+  "READ hard-threshold-legend-revision",
+  "OPEN purchase-request",
+  "OPEN approval-threshold",
+  "OPEN purchase-request",
+  "BACK\nOPEN approval",
+  "READ hard-threshold-legend-amount",
+  "READ sec-hard-threshold",
+  "DONE"
+ ]
+}

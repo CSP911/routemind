@@ -30,7 +30,9 @@ import json, re, threading, time, uuid
 from pathlib import Path
 
 OPEN, CLOSED = "open", "closed"
-OUTCOMES = ("answered", "not_found", "abandoned")
+# `ended`: the agent's session closed with the walk open (the MCP server says so when its client goes
+# away) — not abandoned for a next question, and not known to be answered.
+OUTCOMES = ("answered", "not_found", "abandoned", "ended")
 ID_RE = re.compile(r"^wk_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9a-f]{6}$")
 OPS = ("open", "resolve", "table", "read", "close")
 

@@ -31,7 +31,8 @@ inside the daily allowance** — the allowance needs no evidence at all, so anyt
 already settled.
 
 ## Tax
-More of an overseas allowance sits above the tax-free cap than a domestic one, so a visible part of it
-is taxed on the payslip. The claim is not reduced; the tax appears separately. → Tax-free allowances.
+Paid at the policy rates, an overseas allowance counts as reasonable actual cost and is tax free, the
+same as a domestic one. Only an amount above the policy rate — an exception approved for a dear city —
+is taxed, on the payslip; the claim is not reduced and the tax appears separately. → Tax-free allowances.
 
 Where receipts were lost, the case page below shows what was accepted and why.

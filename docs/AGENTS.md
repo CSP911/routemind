@@ -229,10 +229,17 @@ it is still a map of where to ask a person to look.
 
 ## Writing, not just reading
 
-The MCP server is **read-only on purpose**. Writes commit into a git repository and carry an actor,
-and an agent writing unattended into the thing that steers it is a loop worth being deliberate about
-rather than getting by default. The HTTP API is open if you decide otherwise: `web/app.py` lists
-every route, and `check/write-paths.sh` exercises them.
+An agent writes through **`knowledge_place`**, and only through it: a walk from hop 0 to where a
+document belongs, then one commit of decisions — the document, a holder if it needs one, siblings
+moved under it, and every line over a changed table kept or reworded (docs/CHANGE.md). A change to
+hop 0 itself — an area's sentence, or a new area — waits in the review queue where one is configured.
+The server's instructions tell the model to use it rather than edit files, and to write what the
+person gave it without adding rules of its own.
+
+**On an install with a write secret** (`KNOWLEDGE_AUTH=token`, docs/AUTH.md) the MCP server sends
+`KNOWLEDGE_TOKEN` as a bearer secret — from its environment, or from the `.env` of the checkout it
+runs from, so Claude Code in this directory needs nothing more. Without it an agent can read but not
+place, and its walks are not recorded.
 
 ---
 

@@ -1,0 +1,34 @@
+{
+ "id": "h4",
+ "tree": "folded",
+ "q": "Somebody put a purchase through as an ordinary memo instead. Does that change anything?",
+ "needs": "any",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "hard-threshold-legend-revision",
+  "purchase-request"
+ ],
+ "precision": 0.0,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 3043,
+ "usage": {
+  "in": 6,
+  "out": 920,
+  "cache_write": 6490,
+  "cache_read": 0,
+  "cost_usd": 0.0017586000000000001
+ },
+ "seconds": 12.0,
+ "model": "haiku",
+ "log": [
+  "OPEN procurement",
+  "READ hard-threshold-legend-revision\nREAD purchase-request",
+  "DONE"
+ ]
+}

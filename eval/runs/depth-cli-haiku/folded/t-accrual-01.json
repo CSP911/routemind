@@ -1,0 +1,40 @@
+{
+ "id": "t-accrual-01",
+ "tree": "folded",
+ "q": "In March 2023, how much leave was accrued or granted for someone with two years of continuous service? Answer under the version of leave accrual that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-old",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "leave-accrual"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision",
+  "accrual-rule"
+ ],
+ "precision": 0.5,
+ "turns": 7,
+ "opens": 4,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1809,
+ "usage": {
+  "in": 14,
+  "out": 1189,
+  "cache_write": 24382,
+  "cache_read": 0,
+  "cost_usd": 0.0054723
+ },
+ "seconds": 20.7,
+ "model": "haiku",
+ "log": [
+  "OPEN attendance",
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ accrual-rule",
+  "DONE"
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "id": "s3",
+ "tree": "folded",
+ "q": "Nobody did any work on the Sunday while we were abroad. Who decides whether it counts, and does it still pay?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "weekend-trip-case",
+  "trip-attendance-rule",
+  "trip-attendance-outcomes-table",
+  "hard-overtime-legend-revision",
+  "trip-request-form",
+  "trip-attendance-case-index"
+ ],
+ "precision": 0.0,
+ "turns": 10,
+ "opens": 3,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 6969,
+ "usage": {
+  "in": 20,
+  "out": 3860,
+  "cache_write": 36008,
+  "cache_read": 0,
+  "cost_usd": 0.0091336
+ },
+ "seconds": 37.2,
+ "model": "haiku",
+ "log": [
+  "OPEN attendance",
+  "OPEN biz-trip-attendance",
+  "OPEN sec-trip-attendance-cases",
+  "READ weekend-trip-case",
+  "READ trip-attendance-rule",
+  "READ trip-attendance-outcomes-table",
+  "READ hard-overtime-legend-revision",
+  "READ trip-request-form",
+  "READ trip-attendance-case-index",
+  "DONE"
+ ]
+}

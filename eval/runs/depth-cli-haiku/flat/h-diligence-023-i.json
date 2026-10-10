@@ -1,0 +1,41 @@
+{
+ "id": "h-diligence-023-i",
+ "tree": "flat",
+ "q": "A company in daejeon, three hundred million won, a licence: do we have to go and see their premises, and how often does their file get looked at again?",
+ "needs": "any",
+ "lever": "indirect",
+ "family": "diligence",
+ "hit": true,
+ "found": [
+  "hard-diligence-row-origin-o1-value-w3-goods-k4"
+ ],
+ "collected": [
+  "hard-diligence-legend-revision",
+  "hard-diligence-legend-origin",
+  "hard-diligence-legend-value",
+  "hard-diligence-legend-goods",
+  "hard-diligence-row-origin-o1-value-w3-goods-k4"
+ ],
+ "precision": 0.2,
+ "turns": 5,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 4405,
+ "usage": {
+  "in": 10,
+  "out": 1699,
+  "cache_write": 48492,
+  "cache_read": 872,
+  "cost_usd": 0.01055762
+ },
+ "seconds": 17.5,
+ "model": "haiku",
+ "log": [
+  "OPEN procurement",
+  "READ hard-diligence-legend-revision",
+  "READ hard-diligence-legend-origin\nREAD hard-diligence-legend-value\nREAD hard-diligence-legend-goods",
+  "<invoke:\nREAD hard-diligence-row-origin-o1-value-w3-goods-k4",
+  "DONE"
+ ]
+}

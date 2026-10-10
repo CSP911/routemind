@@ -388,7 +388,7 @@ def apply_proposal(p: dict, actor: str):
     if p["type"] == "change":
         # A change set queued whole (docs/CHANGE.md). Its `base` check still holds at accept: what
         # moved under it since is handed back as stale, not overwritten.
-        return change.apply(writer, p.get("set") or {}, actor)
+        return change.apply(writer, p.get("set") or {}, actor, proposed_by=p.get("submitted_by") or "")
     if p["type"] != "route":
         return {"ok": False, "error": f"a {p['type']!r} proposal came from the retired curator sleep and is no longer applied — reject it"}
     if p["type"] == "route":
@@ -708,9 +708,19 @@ class Handler(BaseHTTPRequestHandler):
                 # data repository has uncommitted changes, so every write is refused to avoid committing
                 # someone's half-finished hand edit along with it. That is correct and it is invisible —
                 # a person meets it as one failed save, with a sentence about git. The screen shows it.
-                dirty = ""
-                try: dirty = _dirty(DATA)
-                except Exception: dirty = ""
+                # While a write holds the repository its files are mid-change by design: that is not
+                # "uncommitted changes, commit or revert them", which the screen said during every write
+                # on a large map (2026-10-10). Busy is reported as busy, and the tree is judged after.
+                dirty, writing = "", False
+                from service.write import _lock as _wlock
+                if _wlock.acquire(blocking=False):
+                    try: dirty = _dirty(DATA)
+                    except Exception: dirty = ""
+                    finally: _wlock.release()
+                else:
+                    writing = True
+                # A data directory this process cannot write is not writable, whatever git says.
+                can_write = os.access(DATA, os.W_OK) and os.access(DATA / "regions", os.W_OK)
                 return self._send(200, {"ok": True, "data": str(DATA), "head": head(DATA),
                                         # `llm` said only "something is configured". With three
                                         # providers that is not enough: a build that does not know
@@ -722,7 +732,8 @@ class Handler(BaseHTTPRequestHandler):
                                         "llm_provider": LLM_PROVIDER if LLM_PROVIDER in curator.PROVIDERS else None,
                                         "llm_providers": list(curator.PROVIDERS),
                                         "llm_max_tokens": LLM_MAX_TOKENS, "llm_temperature": LLM_TEMPERATURE,
-                                        "writable": not dirty, "uncommitted": dirty,
+                                        "writable": (not dirty) and can_write, "uncommitted": dirty, "writing": writing,
+                                        **({} if can_write else {"unwritable": "the data directory cannot be written by this container — check KNOWLEDGE_UID and the mount"}),
                                         # Whether the repository validates, and the first reasons it
                                         # does not. Before this the only place that fact existed was
                                         # one line in the startup log, and a server that had just
@@ -1172,7 +1183,11 @@ class Handler(BaseHTTPRequestHandler):
             # configured, a set that rewords an area's sentence — the line hop 0 prints, a person's —
             # is queued whole after a dry run proves it applies; accepting it applies it.
             dry = bool(body.get("dry_run"))
-            rewords_hop0 = any(isinstance(d, dict) and d.get("op") == "reword" and d.get("field") == "use_when"
+            # Rewording an area's sentence, or making a new area: either way hop 0 changes, and hop 0's
+            # sentences are a person's. A new area slipped past the queue while a reworded one waited
+            # in it (found 2026-10-10).
+            rewords_hop0 = any(isinstance(d, dict) and ((d.get("op") == "reword" and d.get("field") == "use_when")
+                                                        or (d.get("op") == "create" and d.get("parent") is None))
                                for d in (body.get("decisions") or []) if isinstance(body.get("decisions"), list))
             if HARNESS and rewords_hop0 and not dry:
                 # The set is proved against the tree as it is now, and queued with that revision as its
@@ -1186,7 +1201,7 @@ class Handler(BaseHTTPRequestHandler):
                                  "submitted_by": actor, "impact": res.get("impact"), "ids": res.get("ids"),
                                  "evidence": [f"node:{d.get('id')}" for d in body.get("decisions") if isinstance(d, dict) and d.get("id")]})
                 return self._send(202, {"ok": True, "queued": pid, "status": "pending", "impact": res.get("impact"), "ids": res.get("ids"),
-                                        "message": "the set rewords an area's sentence, so it waits in the review queue; accepting it applies it whole"})
+                                        "message": "the set changes hop 0 — an area's sentence, or a new area — so it waits in the review queue; accepting it applies it whole"})
             return self._send(200 if dry else 201, change.apply(writer, body, actor, dry_run=dry))
         if parts == ["nodes"] and method == "POST": return self._send(201, writer.create_node(body, actor))
         if len(parts) == 2 and parts[0] == "nodes":
@@ -1231,7 +1246,10 @@ _HEALTH_VALID: dict = {}
 def _health_valid() -> dict:
     """`valid` and the first reasons it is not, for /healthz — computed once per commit, because the
     health check is polled and validation reads every entity."""
-    rev = head(DATA) or ""
+    # Keyed on the commit *and* the files as they are: a hand edit, or the leftovers of a killed write,
+    # changes the files without moving HEAD, and the cached answer said valid when validate said
+    # otherwise — and the other way round (2026-10-10).
+    rev = (head(DATA) or "") + ":" + str(hash(store._nodes_key()))
     if rev not in _HEALTH_VALID:
         try:
             res = validate(store)
@@ -1366,6 +1384,20 @@ def _kind_denied_anywhere(node: dict, denied: set[str]) -> bool:
 
 def main():
     if not DATA.is_dir(): sys.exit(f"ONTOLOGY_DATA {DATA} is not a directory")
+    # A write the last process did not finish is rolled back before anything reads the tree.
+    from service.write import recover_interrupted, _lock as _write_lock
+    undone = recover_interrupted(DATA)
+    if undone:
+        sys.stderr.write(f"iris-ontology: a write was interrupted by the last shutdown ({undone}); rolled back to the last commit\n")
+    # SIGTERM finishes the write in progress, then exits. As PID 1 with no handler the signal was
+    # ignored, so every `docker compose restart` waited ten seconds and ended in a SIGKILL — mid-write
+    # if one was running (2026-10-10).
+    import signal, threading
+    def _term(*_):
+        def stop():
+            with _write_lock: os._exit(0)
+        threading.Thread(target=stop, daemon=True).start()
+    signal.signal(signal.SIGTERM, _term)
     res = validate(store)
     # A derived file committed stale is the one invalid state the server can mend on its own, and
     # through the same transaction every write uses: nothing to mutate, regenerate, validate, commit.
@@ -1376,7 +1408,11 @@ def main():
     # Both are "the derived table is not what the files say" — the second is a table written before
     # 2026-10-07, when `source` spelled a hyphenated directory with underscores. Regenerating fixes both.
     drift = [e for e in res["errors"] if "no longer matches the files it is derived from" in e
-             or "source must be the directory name" in e]
+             or "source must be the directory name" in e
+             # Areas written as files with no regions.json yet, or one deleted by hand: the table is
+             # missing rows, or has a row with no directory — derived, so regenerated (2026-10-10).
+             or "regions.json: missing entry for" in e or "has no directory" in e
+             or ("regions.json " in e and "differ from directory" in e)]
     if drift and len(drift) == len(res["errors"]) and head(DATA):
         try:
             out = writer.transact("regions.json: regenerated — it was committed stale", "ontology", lambda: None)

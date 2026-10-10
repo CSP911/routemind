@@ -10,6 +10,9 @@ services:
       context: .
       dockerfile: ontology/Dockerfile
     image: knowledge-ontology:${IMAGE_TAG:-0.1.0}
+    # Time for a write in progress to finish when the container is stopped: the service traps SIGTERM
+    # and exits once the transaction is done (a large map's write takes seconds, not ten).
+    stop_grace_period: 30s
     # The data directory is a git repository on the host and writes commit into it, so this must be
     # the uid that owns it. Wrong uid = every write fails at the commit, after the file was written.
     # `UID` is readonly in bash and is not exported to compose, so it silently stays 1000 and every

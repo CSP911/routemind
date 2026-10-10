@@ -103,3 +103,29 @@ by a factor of about two and a half, and it buys a table a person can read. That
 run cannot say: whether a weaker model or a much larger map (thousands of rows in one table) loses
 accuracy on the flat tree — the two places the argument for folding would have to be made on
 accuracy rather than cost.
+
+### And with a weaker model (claude -p haiku), 2026-10-10
+
+Same 73 questions, same trees, `ROUTER_MODEL=haiku`. Walks in `eval/runs/depth-cli-haiku/`.
+
+| | hit | turns | opens | $ / walk |
+|---|---|---|---|---|
+| folded | 61/73 (84%) | 7.0 | 3.1 | 0.008 |
+| flat | **66/73 (90%)** | 5.5 | 2.0 | 0.014 |
+
+Discordant: **folded only 0, flat only 5** — exact McNemar p = 0.06. All five on the hard end: the
+pilot set's e1, h4, s2, s5, and one temporal question. On the folded tree the weak model chose a holder
+by its line and stopped short (e1: read the year-end overview, never opened the section with the
+manual deductions — 1 open, 3 turns) or wandered between sections (s2, s5: 8 opens, 15–16 turns, and
+read the legend documents of the qualifier families instead). With every row in one table it saw the
+right document's own line and read it.
+
+**This is the case against folding, measured.** Folding costs a strong model nothing in accuracy and
+saves it 2.4× the tokens. It costs a weak model accuracy, because every holder is one more decision
+made on one line — and a holder's line ("Year-end settlement in detail") says less about what is
+under it than the documents' own lines do. Two consequences, both taken:
+
+- `knowledge_place` keeps suggesting a fold past nine rows, never requiring one; and a holder's line
+  has to name what is under it, not label a section — the tool description now says to.
+- The study's claim is model-dependent and is written as such: with a strong router, fold for cost;
+  with a weak one, prefer wider tables with good document lines. Neither is settled beyond n=73.

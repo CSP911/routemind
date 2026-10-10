@@ -136,6 +136,9 @@ def _names(value) -> list[str]:
     return sorted({str(v).strip() for v in value if str(v).strip()})
 
 
+_FM_CACHE: dict = {}          # frontmatter text → its parse; see `_read_nodes`
+
+
 class Store:
     _snap = threading.local()
 
@@ -248,6 +251,22 @@ class Store:
             except FileNotFoundError: pass
         return tuple(out)
 
+    def _shared(self) -> list[dict]:
+        """The node list itself, not a copy — for reads in this module that only look. Everything that
+        hands nodes to a caller still copies, because callers annotate what they are handed; what
+        changed (2026-10-10) is that finding one node no longer copies all of them. On a map of 3,500
+        entities a 200-row table took 20 seconds, almost all of it deep-copying the whole list once per
+        row."""
+        d = getattr(Store._snap, "data", None)
+        if d is not None: return d["nodes"]
+        key = self._nodes_key()
+        with self._nodes_lock:
+            if self._nodes_cache and self._nodes_cache[0] == key: return self._nodes_cache[1]
+        import copy
+        out = self._read_nodes()
+        with self._nodes_lock: self._nodes_cache = (key, copy.deepcopy(out))
+        return self._nodes_cache[1]
+
     def nodes(self) -> list[dict]:
         import copy
         d = getattr(Store._snap, "data", None)
@@ -278,7 +297,18 @@ class Store:
             except FileNotFoundError: continue
             m = FM_RE.match(text)
             if not m: raise ValueError(f"{f} has no frontmatter — an entity declares its id there")
-            fm = yaml.safe_load(m.group(1)) or {}
+            # Parsed once per content: a write touches one file, and every other file's frontmatter
+            # was parsed again — on a map of 3,500 entities that was most of a write's time
+            # (2026-10-10). Keyed on the frontmatter text itself, so a changed file is always reparsed
+            # and nothing is ever served from a stale parse.
+            head_text = m.group(1)
+            fm = _FM_CACHE.get(head_text)
+            if fm is None:
+                fm = yaml.safe_load(head_text) or {}
+                if len(_FM_CACHE) > 50000: _FM_CACHE.clear()
+                _FM_CACHE[head_text] = fm
+            import copy as _copy
+            fm = _copy.deepcopy(fm)
             # The routing line is `one_liner:` in the frontmatter, because the body is the entity's
             # own content rather than a list of what sits under it. Children are not listed here —
             # each declares its own `parent`, so a list and the tree cannot disagree.
@@ -311,24 +341,27 @@ class Store:
         # children are the entities that name it as `parent`, and a child's file is `<id>.md` —
         # one identity, one name. Callers that still speak in files keep working through the
         # conversion without a stored list that can disagree with the tree.
+        by_parent: dict = {}
+        for k in out: by_parent.setdefault(k.get("parent"), []).append(k)      # once, not once per node
         for n in out:
-            kids = [k for k in out if k.get("parent") == n["id"]]
+            kids = by_parent.get(n["id"], [])
             n["files"] = [{"name": f"{k['id']}.md", "description": k["one_liner"]} for k in kids]
             n["present_files"] = sorted(f["name"] for f in n["files"])
         return out
 
     def node(self, node_id: str) -> dict | None:
-        for n in self.nodes():
-            if n["id"] == node_id: return n
+        import copy
+        for n in self._shared():
+            if n["id"] == node_id: return copy.deepcopy(n)
         return None
 
     def node_file(self, node_id: str, name: str) -> str | None:
-        n = self.node(node_id)
+        n = next((x for x in self._shared() if x["id"] == node_id), None)
         if not n or name not in [f["name"] for f in n["files"]]: return None    # not listed → does not exist for the API
         # A file is a child entity, and its document is that entity's own file — the address
         # `nodes/<parent>/files/<name>.md` is the old spelling of `nodes/<name>`, kept while the
         # screen and the agent prompt still use it.
-        kid = next((k for k in self.nodes() if k.get("parent") == node_id and f"{k['id']}.md" == name), None)
+        kid = next((k for k in self._shared() if k.get("parent") == node_id and f"{k['id']}.md" == name), None)
         if not kid: return None
         p = self.root / kid["path"]
         return p.read_text(encoding="utf-8") if p.exists() else None
@@ -338,7 +371,7 @@ class Store:
         """SPEC-v2 §1.1 — **an area is a namespace.** It has no entry document; what it is, its
         representative advertises. It exists because `nodes/` exists, and its face is the
         representative with no `parent`."""
-        nodes = self.nodes()
+        nodes = self._shared()
         out = []
         for d in sorted((self.root / "regions").iterdir()):
             if not d.is_dir(): continue
@@ -363,11 +396,15 @@ class Store:
     def children_of(self, node_id: str) -> list[dict]:
         """The nodes this representative carries. An empty `parent` means the area's top
         representative (SPEC-v2 §1.1)."""
-        nodes = self.nodes()
+        import copy
+        nodes = self._shared()
         me = next((n for n in nodes if n["id"] == node_id), None)
         if not me: return []
-        tops = {r["dir"]: r["representative"] for r in self.regions()}
-        return [n for n in nodes if n["id"] != node_id and
+        # The faces from the node list itself, not from `regions()`, which walks the directory and
+        # rescans every node per area — called once per row of a table, it was most of a wide table's
+        # time on a large map (2026-10-10).
+        tops = {n["region"]: n["id"] for n in nodes if n.get("role") == "representative" and not n.get("parent")}
+        return [copy.deepcopy(n) for n in nodes if n["id"] != node_id and
                 (n.get("parent") or (tops.get(n["region"]) if n["region"] != n["id"] else None)) == node_id]
 
     # ---- graph for the 2D/3D pages (same shape the pages already consume) ----

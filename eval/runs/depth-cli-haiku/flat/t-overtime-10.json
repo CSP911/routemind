@@ -1,0 +1,38 @@
+{
+ "id": "t-overtime-10",
+ "tree": "flat",
+ "q": "For something dated 3 July 2024 — two days after the first change — what multiplier was paid for day D2 work in hour band H2? Use the version in force on that day.",
+ "needs": "any",
+ "lever": "boundary",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-v2"
+ ],
+ "collected": [
+  "hard-moved-overtime",
+  "hard-overtime-v2"
+ ],
+ "precision": 0.5,
+ "turns": 5,
+ "opens": 2,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 2365,
+ "usage": {
+  "in": 10,
+  "out": 1187,
+  "cache_write": 48553,
+  "cache_read": 881,
+  "cost_usd": 0.01031391
+ },
+ "seconds": 16.3,
+ "model": "haiku",
+ "log": [
+  "OPEN payroll",
+  "READ hard-moved-overtime",
+  "OPEN attendance",
+  "READ hard-overtime-v2",
+  "DONE"
+ ]
+}

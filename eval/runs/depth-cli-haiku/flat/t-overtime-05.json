@@ -1,0 +1,40 @@
+{
+ "id": "t-overtime-05",
+ "tree": "flat",
+ "q": "In March 2025, what multiplier was paid for day D2 work in hour band H2? Answer under the version of the overtime rate that was in force on that date.",
+ "needs": "any",
+ "lever": "stale-mid",
+ "family": "overtime",
+ "hit": true,
+ "found": [
+  "hard-overtime-v2"
+ ],
+ "collected": [
+  "hard-moved-overtime",
+  "hard-overtime-v2"
+ ],
+ "precision": 0.5,
+ "turns": 7,
+ "opens": 3,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 2365,
+ "usage": {
+  "in": 14,
+  "out": 1097,
+  "cache_write": 101277,
+  "cache_read": 878,
+  "cost_usd": 0.02081408
+ },
+ "seconds": 19.6,
+ "model": "haiku",
+ "log": [
+  "OPEN payroll",
+  "READ hard-moved-overtime",
+  "BACK",
+  "OPEN attendance",
+  "OPEN attendance",
+  "READ hard-overtime-v2",
+  "DONE"
+ ]
+}

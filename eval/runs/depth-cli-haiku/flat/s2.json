@@ -1,0 +1,54 @@
+{
+ "id": "s2",
+ "tree": "flat",
+ "q": "Our whole team was moved across to the subsidiary. Does my start date reset, and what does that do to what I'd be owed on the way out?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": true,
+ "found": [
+  "group-transfer-case"
+ ],
+ "collected": [
+  "group-transfer-entitlement",
+  "entitlement-case-transfer-vs-rehire",
+  "final-leave-settlement",
+  "group-transfer-case",
+  "service-start-date-record",
+  "combined-transfer-milestone-case",
+  "entitlement-case-matrix",
+  "entitlement-case-default-outcome",
+  "entitlement-case-evidence-checklist",
+  "unused-leave-payout-rate-table",
+  "unused-leave-payout-timing"
+ ],
+ "precision": 0.09090909090909091,
+ "turns": 12,
+ "opens": 4,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 13354,
+ "usage": {
+  "in": 24,
+  "out": 7069,
+  "cache_write": 229724,
+  "cache_read": 873,
+  "cost_usd": 0.04949043000000001
+ },
+ "seconds": 57.2,
+ "model": "haiku",
+ "log": [
+  "OPEN attendance",
+  "OPEN annual-leave",
+  "OPEN leave-accrual",
+  "READ group-transfer-entitlement",
+  "READ entitlement-case-transfer-vs-rehire\nREAD final-leave-settlement\nREAD group-transfer-case",
+  "READ service-start-date-record\nREAD combined-transfer-milestone-case",
+  "READ entitlement-case-matrix\nREAD entitlement-case-default-outcome",
+  "READ entitlement-case-evidence-checklist",
+  "BACK",
+  "OPEN attendance",
+  "READ unused-leave-payout-rate-table\nREAD unused-leave-payout-timing",
+  "DONE"
+ ]
+}

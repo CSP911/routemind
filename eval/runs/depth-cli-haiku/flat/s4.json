@@ -1,0 +1,40 @@
+{
+ "id": "s4",
+ "tree": "flat",
+ "q": "We settled on a supplier in a room. Is what we wrote down enough to place the order, or is something else needed?",
+ "needs": "all",
+ "lever": "pilot",
+ "family": "",
+ "hit": false,
+ "found": [],
+ "collected": [
+  "purchase-steps",
+  "vendor-steps",
+  "vendor-form"
+ ],
+ "precision": 0.0,
+ "turns": 8,
+ "opens": 5,
+ "returns": 1,
+ "exhausted": false,
+ "read_chars": 3372,
+ "usage": {
+  "in": 16,
+  "out": 3683,
+  "cache_write": 114921,
+  "cache_read": 864,
+  "cost_usd": 0.02483594
+ },
+ "seconds": 34.2,
+ "model": "haiku",
+ "log": [
+  "OPEN procurement",
+  "OPEN purchase-request",
+  "READ purchase-steps",
+  "OPEN approval-threshold",
+  "BACK\nOPEN procurement\nOPEN vendor",
+  "READ vendor-steps",
+  "READ vendor-form",
+  "DONE"
+ ]
+}

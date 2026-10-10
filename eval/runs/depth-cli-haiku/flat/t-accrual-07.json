@@ -1,0 +1,35 @@
+{
+ "id": "t-accrual-07",
+ "tree": "flat",
+ "q": "How many times has leave accrual been rewritten, and from what date does each version apply?",
+ "needs": "any",
+ "lever": "changed",
+ "family": "accrual",
+ "hit": true,
+ "found": [
+  "hard-accrual-legend-revision"
+ ],
+ "collected": [
+  "hard-accrual-legend-revision"
+ ],
+ "precision": 1.0,
+ "turns": 3,
+ "opens": 1,
+ "returns": 0,
+ "exhausted": false,
+ "read_chars": 1162,
+ "usage": {
+  "in": 6,
+  "out": 588,
+  "cache_write": 30697,
+  "cache_read": 855,
+  "cost_usd": 0.00644255
+ },
+ "seconds": 8.9,
+ "model": "haiku",
+ "log": [
+  "OPEN attendance",
+  "READ hard-accrual-legend-revision",
+  "DONE"
+ ]
+}

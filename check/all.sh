@@ -149,6 +149,9 @@ else
   # What a non-expert meets: size budgets as warnings, names among siblings, no silent overwrite, the
   # review queue saying what happened, named refusals, stale sets (2026-10-10 B2C pass).
   run b2c         $HOSTPY check/b2c-check.py
+  # When things go wrong or get big: an interrupted write rolled back at boot (a hand edit never is),
+  # SIGTERM handled, a wide table on a large map fast, the agent sending the write secret.
+  run robust      $HOSTPY check/robust-check.py
   # A hand-edited repository, served: a stale regions.json regenerated at startup when the tree is
   # clean, the files' truth served when it is not. Starts its own ontology twice.
   run drift       $HOSTPY check/drift-check.py

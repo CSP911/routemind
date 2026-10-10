@@ -136,8 +136,26 @@ def _git(root: Path, *args, check=True) -> str:
 
 
 def head(root: Path) -> str | None:
-    try: return _git(root, "rev-parse", "HEAD")
-    except WriteError: return None
+    """HEAD's commit. Read from the files git keeps it in when they are plain — HEAD naming a branch,
+    the branch a loose ref or a line in packed-refs — because this is asked once per row of a table,
+    and a `git rev-parse` per row was a second of a 200-row table (2026-10-10). Anything unusual (a
+    detached HEAD is fine; a worktree or an odd ref is not) goes to git itself."""
+    try:
+        g = Path(root) / ".git"
+        ref = (g / "HEAD").read_text(encoding="utf-8").strip()
+        if not ref.startswith("ref: "):
+            return ref if len(ref) == 40 else _git(root, "rev-parse", "HEAD")
+        name = ref[5:].strip()
+        loose = g / name
+        if loose.exists(): return loose.read_text(encoding="utf-8").strip()
+        packed = g / "packed-refs"
+        if packed.exists():
+            for line in packed.read_text(encoding="utf-8").splitlines():
+                if line.endswith(" " + name): return line.split(" ", 1)[0]
+        return _git(root, "rev-parse", "HEAD")
+    except (OSError, WriteError):
+        try: return _git(root, "rev-parse", "HEAD")
+        except WriteError: return None
 
 
 def _dirty(root) -> str:
@@ -178,6 +196,30 @@ def _dirty(root) -> str:
     names = [l[3:].strip() for l in out.splitlines() if len(l) > 3]
     head = ", ".join(names[:3])
     return head + (f" and {len(names) - 3} more" if len(names) > 3 else "")
+
+
+TXN_MARKER = "routemind-transaction"
+
+
+def recover_interrupted(root: Path) -> str:
+    """At boot: roll back a transaction the last process did not finish, and nothing else.
+
+    Only when the marker is there — a dirty tree without it is somebody's hand edit and stays
+    exactly as it is, refused for writes until it is committed. With it, the dirt is ours: a stale
+    index lock is removed and the tree goes back to its last commit. Returns what was done, or ""."""
+    marker = root / ".git" / TXN_MARKER
+    if not marker.exists(): return ""
+    what = ""
+    try: what = marker.read_text(encoding="utf-8")[:120]
+    except OSError: pass
+    lock = root / ".git" / "index.lock"
+    if lock.exists():
+        try: lock.unlink()
+        except OSError: pass
+    _restore(root)
+    try: marker.unlink()
+    except OSError: pass
+    return what or "a write"
 
 
 def _restore(root: Path):
@@ -329,6 +371,14 @@ class Writer:
                 raise WriteError(409, "working tree is dirty — someone edited the repository by hand; commit or revert it first",
                                  code="tree_dirty", data={"files": dirty})
             before = self.store.nodes()
+            # A marker for the length of the transaction, under .git where it is never part of the
+            # tree. A process killed between `mutate` and the commit left a dirty tree and an index
+            # lock, and every write after it was refused as "someone edited the repository by hand"
+            # (2026-10-10). The marker is what tells the next boot that the dirt is an interrupted
+            # write of its own — safe to roll back — and not a person's edit, which is never touched.
+            marker = self.root / ".git" / TXN_MARKER
+            try: marker.write_text(str(message) if not callable(message) else "change set", encoding="utf-8")
+            except OSError: pass
             try:
                 mutate()
                 sync_region_node_lists(self.store); regenerate(self.store)
@@ -351,8 +401,17 @@ class Writer:
                 _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@routemind.local", "commit", "-q", "-m", msg)
             except WriteError:
                 _restore(self.root); raise
+            except PermissionError as e:
+                # The data directory is not this container's to write: the uid, or a read-only mount.
+                # It surfaced as "502 PermissionError: …" with a temp file's path in it (2026-10-10).
+                _restore(self.root)
+                raise WriteError(503, f"cannot write to the data directory — check that data/repo is owned by KNOWLEDGE_UID "
+                                      f"and not read-only ({e.filename})", code="repo_unwritable")
             except Exception as e:
                 _restore(self.root); raise WriteError(500, f"{type(e).__name__}: {e}")
+            finally:
+                try: marker.unlink()
+                except OSError: pass
             sha = head(self.root)
             warnings = list(res["warnings"])
             return {"ok": True, "revision": sha, "message": msg, "warnings": warnings, "stats": res["stats"],
