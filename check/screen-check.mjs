@@ -10,7 +10,7 @@ const collection = (arr) => { const c = Object.create(null); arr.forEach((x,i)=>
 class N { static __all=[]; constructor(t){ N.__all.push(this);this.tag=t;this.attrs={};this.dataset={};this.__kids=[];this.textContent="";this.className="";this.hidden=false;this.value="";this.listeners={};}
   setAttribute(k,v){this.attrs[k]=String(v);} append(...n){this.__kids.push(...n);} replaceChildren(...n){this.__kids=n;}
   addEventListener(t,f){(this.listeners[t]||=[]).push(f);} click(){for(const f of this.listeners.click||[]) f({stopPropagation(){},preventDefault(){}});}
-  focus(){} get children(){return collection(this.__kids);} get firstElementChild(){return this.__kids[0]||null;} querySelector(sel){ const m=/^:scope > \.([\w-]+)$/.exec(sel||""); if(!m) return null; return this.__kids.find((c)=>new RegExp("(^| )"+m[1]+"( |$)").test(c.className||""))||null; } remove(){ for(const p of N.__all) { const i=p.__kids.indexOf(this); if(i>=0) p.__kids.splice(i,1); } }
+  focus(){} get children(){return collection(this.__kids);} get firstElementChild(){return this.__kids[0]||null;} get childNodes(){return [...this.__kids];} querySelector(sel){ const m=/^:scope > \.([\w-]+)$/.exec(sel||""); if(!m) return null; return this.__kids.find((c)=>new RegExp("(^| )"+m[1]+"( |$)").test(c.className||""))||null; } remove(){ for(const p of N.__all) { const i=p.__kids.indexOf(this); if(i>=0) p.__kids.splice(i,1); } }
   // A real `classList`. It used to be `add` and a `remove` that did nothing, with no `contains` and no
   // `toggle` — and `actions()` calls `contains` while `showEditor()` calls `toggle`, so every form on
   // this screen threw before it rendered. Node creation, file creation, delete, move, propose and Draw
@@ -288,6 +288,43 @@ else {
     const own = globalThis.window.IRISI18N.t("knowledge.err.id_taken", body.values || {});
     check("  and the screen has its own sentence for it", own.includes(taken) && own !== body.detail);
   }
+}
+
+// Two forms fixed on 2026-10-10, held here. Requests that would write are answered by the harness,
+// so nothing reaches the install; the romanisation itself is the install's own (`suggest/id`).
+{
+  const inputs = () => find(byId.knEdit, (n) => n.tag === "input" || n.tag === "textarea");
+  const primary = () => find(byId.knEdit, (n) => n.tag === "button").find((b) => /kn-primary/.test(b.className || "")) ;
+  const passOn = globalThis.fetch;
+  let posted = null, refuseOnce = false;
+  globalThis.fetch = async (url, opts = {}) => {
+    if (String(url).endsWith("/api/knowledge/regions") && opts.method === "POST") {
+      if (refuseOnce) { refuseOnce = false; return { ok: false, status: 401, json: async () => ({ detail: "Not authenticated.", auth: "token" }), text: async () => "" }; }
+      posted = JSON.parse(opts.body || "{}");
+      return { ok: true, status: 201, json: async () => ({ ok: true, representative: posted.source }), text: async () => "" };
+    }
+    return passOn(url, opts);
+  };
+  // An area named in Hangul gets a romanised address and keeps the name as its title.
+  byId.knEdit.replaceChildren(); await kn.newRegionForm(); await settle();
+  let [nameIn, whenIn] = inputs(); nameIn.value = "인사 규정"; whenIn.value = "how hiring is handled";
+  primary()?.click(); for (let i = 0; i < 30 && !posted; i++) await settle();
+  check("an area named in Hangul gets a romanised address and keeps its name",
+        posted && posted.source === "insa-gyujeong" && posted.representative?.name === "인사 규정", JSON.stringify(posted));
+  // A save refused for want of the secret: the secret card covers the form, and Save puts it back as it was.
+  posted = null; refuseOnce = true;
+  byId.knEdit.replaceChildren(); byId.knRawDialog.open = true; await kn.newRegionForm(); await settle();
+  const form = byId.knEdit.firstElementChild;
+  [nameIn, whenIn] = inputs(); nameIn.value = "hiring"; whenIn.value = "how hiring is handled";
+  primary()?.click(); for (let i = 0; i < 30 && byId.knEdit.firstElementChild === form; i++) await settle();
+  const pw = inputs().find((n) => n.type === "password");
+  check("a save refused for want of the secret asks for it", Boolean(pw));
+  if (pw) {
+    pw.value = "s3cret"; primary()?.click(); await settle();
+    check("  and Save puts back the form it covered, with what was typed",
+          byId.knEdit.firstElementChild === form && inputs()[0]?.value === "hiring");
+  }
+  globalThis.fetch = passOn; byId.knEdit.replaceChildren();
 }
 
 console.log(results.join("\n"));
