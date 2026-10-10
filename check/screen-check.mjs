@@ -290,6 +290,20 @@ else {
   }
 }
 
+// An exported area carries a mark on the map; one that is not exported does not.
+{
+  const r0 = state.regions[0];
+  if (r0) {
+    // Relative to what this install already exports, which is whatever it is.
+    const count = () => find(byId.knTopo, (n) => /kn-export-mark/.test(n.attrs?.class || "")).length;
+    const was = r0.export;
+    r0.export = false; kn.draw(); const off = count();
+    r0.export = true; kn.draw(); const on = count();
+    r0.export = was; kn.draw();
+    check("an exported area is marked on the map, and only while it is exported", on === off + 1, `${off} → ${on}`);
+  }
+}
+
 // Two forms fixed on 2026-10-10, held here. Requests that would write are answered by the harness,
 // so nothing reaches the install; the romanisation itself is the install's own (`suggest/id`).
 {

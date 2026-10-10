@@ -129,6 +129,7 @@ window.IRISI18N_DICTS.ko = {
   "knowledge.export.crossYes": "예 — 이 설치본의 회선 키를 가진 누구나 이 영역의 문장과 그 안의 모든 문서를 읽을 수 있습니다",
   "knowledge.export.crosses": "다른 RouteMind가 이 영역을 읽을 수 있게 할까요?",
   "knowledge.export.needsLine": "다른 RouteMind가 이 영역을 고를 때 볼 문장을 쓰세요 — 내보내려면 이 문장이 있어야 합니다.",
+  "knowledge.export.onMap": "내보냄 — 이 설치본의 회선 키를 가진 누구나 circuit으로 읽을 수 있습니다",
   "knowledge.export.withWhat": "어떤 문장으로 고르게 할까요?",
   "knowledge.export.withWhatHint": "이 영역의 문장입니다 — 이 설치본도 라우팅에 쓰는 바로 그 문장입니다. 영역의 문장이지 안에 든 문서의 것이 아닙니다.",
   "knowledge.field.coreRevision": "core_revision",

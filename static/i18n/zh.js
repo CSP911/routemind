@@ -132,6 +132,7 @@ window.IRISI18N_DICTS.zh = {
   "knowledge.export.crossYes": "是 — 持有本实例线路密钥的任何人都可以读取这个区域的句子及其中的全部文档",
   "knowledge.export.crosses": "是否允许其他 RouteMind 读取这个区域？",
   "knowledge.export.needsLine": "请写下其他 RouteMind 选择这个区域时依据的句子 — 导出需要这句话。",
+  "knowledge.export.onMap": "已导出 — 持有本安装线路密钥的任何人都能通过线路读取",
   "knowledge.export.withWhat": "用哪句话让对方选择它？",
   "knowledge.export.withWhatHint": "这是区域自己的句子 — 本实例做路由时用的也是这一句。它属于区域，而不属于其中的任何文档。",
   "knowledge.field.coreRevision": "core_revision",

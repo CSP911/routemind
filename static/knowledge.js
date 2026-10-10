@@ -755,6 +755,14 @@
       n.textContent = String(pending);
       g.append(n);
     }
+    // Whether this area can be read through a circuit. Nothing on the map said so — an operator had to
+    // open each area's Export card to know what left (QA, 2026-10-10).
+    if (shape === "as" && row.region && row.region.export) {
+      const mark = svgEl("text", { x: x - w / 2 + 8, y: y - h / 2 + 13, class: "kn-export-mark" });
+      mark.textContent = "↗";
+      const tip = svgEl("title", {}); tip.textContent = t("knowledge.export.onMap");
+      mark.append(tip); g.append(mark);
+    }
     const label = svgEl("text", { x: shape === "host" ? x + 6 : x, y: shape === "core" ? y - 4 : (shape === "as" || shape === "sw" || shape === "leaf") ? y - 1 : y + 4, class: "kn-dev-title", "text-anchor": "middle" });
     // The title's own font: 12.5 px on the core, weight 500 on a host (knowledge.css). A host's title
     // is centred 6 px right of the tile's centre, past the dot, and the pick box sits in its top-right

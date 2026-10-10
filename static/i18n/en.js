@@ -129,6 +129,7 @@ window.IRISI18N_DICTS.en = {
   "knowledge.export.crossYes": "Yes — anyone holding this install's circuit key can read this area's sentence and every document in it",
   "knowledge.export.crosses": "Can another RouteMind read this area?",
   "knowledge.export.needsLine": "Write the sentence another RouteMind will choose this area by — an export needs one.",
+  "knowledge.export.onMap": "Exported — readable through a circuit by anyone holding this install's key",
   "knowledge.export.withWhat": "Which sentence will it be chosen by?",
   "knowledge.export.withWhatHint": "The area's own sentence — the one this install routes on too. It belongs to the area, not to any document in it.",
   "knowledge.field.coreRevision": "core_revision",

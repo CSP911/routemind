@@ -637,3 +637,6 @@ body.kn-dragging { user-select: none; }
   .kn-legend { flex-wrap: wrap; gap: 6px 12px; }
   .kn-zoom { margin-left: 0; }
 }
+
+/* An exported area: readable through a circuit. A mark, not a colour — it has to read in both themes. */
+.kn-export-mark { font: 700 12px var(--kn-mono); fill: var(--cyan); }

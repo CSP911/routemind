@@ -128,6 +128,7 @@ window.IRISI18N_DICTS.ja = {
   "knowledge.export.crossYes": "はい — このインストールの回線キーを持つ人は誰でも、この領域の文とその中のすべての文書を読めます",
   "knowledge.export.crosses": "他の RouteMind からこの領域を読めるようにしますか？",
   "knowledge.export.needsLine": "他の RouteMind がこの領域を選ぶときに読む文を書いてください — エクスポートにはこの文が必要です。",
+  "knowledge.export.onMap": "エクスポート中 — この設置の回線キーを持つ誰でも回線経由で読めます",
   "knowledge.export.withWhat": "どの文で選ばれるようにしますか？",
   "knowledge.export.withWhatHint": "この領域自身の文です — このインストールがルーティングに使う文と同じものです。領域の文であり、中の文書のものではありません。",
   "knowledge.field.coreRevision": "core_revision",

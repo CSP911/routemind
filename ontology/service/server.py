@@ -917,6 +917,8 @@ class Handler(BaseHTTPRequestHandler):
                 {"id": r["id"], "source": r["source"], "title": r["title"],
                  "use_when": r.get("use_when", ""), "representative": r.get("representative"),
                  **_area_age(r.get("representative")),
+                 # Present only when true, so the map can mark what crosses a circuit (2026-10-10).
+                 **({"export": True} if r.get("export") else {}),
                  "fetch": f"/v1/regions/{r['source'].replace('_', '-')}"}
                 for r in rj.get("regions", [])]
             return self._send(200, {"revision": head(DATA), "schema": rj.get("schema"), "regions": mine})
