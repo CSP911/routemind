@@ -1,0 +1,65 @@
+  784 documents (5 from 1 fixture(s)) · k=10
+  baseline: NO — ontology/service/ has changed since baseline-pre-continuity:
+ontology/service/ages.py     |  92 +++++++++++++++
+ ontology/service/curator.py  |  38 +++---
+ ontology/service/derive.py   |  34 +++---
+ ontology/service/peers.py    | 221 ++++++++++++++++++++++++++++++++---
+ ontology/service/place.py    | 121 +++++++++++++++++++
+ ontology/service/resolve.py  | 209 +++++++++++++++++++++++++++++++++
+ ontology/service/server.py   | 271 ++++++++++++++++++++++++++++++++++++-------
+ ontology/service/store.py    |  30 ++++-
+ ontology/service/validate.py | 161 ++++++++++++++++---------
+ ontology/service/write.py    |  54 ++++++---
+ 10 files changed, 1050 insertions(+), 181 deletions(-)
+      embedded 96/784
+      embedded 192/784
+      embedded 288/784
+      embedded 384/784
+      embedded 480/784
+      embedded 576/784
+      embedded 672/784
+      embedded 768/784
+      embedded 784/784
+      embedded 1/1
+      embedded 1/1
+      embedded 1/1
+      embedded 1/1
+  routing: claude-cli claude -p --model opus (isolated) · steps=30 · use_when=frozen
+    routing  Which supplier is currently approved for the Z com read ['z-supplier-f-approved']  hops 8
+    routing  Can I place a new order for Z with Supplier E?     read ['ending-a-vendor-relationship', 'renewal-decision', 'vendor-performance-review', 'purchase-steps', 'disqualification-triggers', 'supplier-code-of-conduct', 'sanctions-ownership-checks', 'vendor-steps', 'z-supplier-f-approved', 'z-supplier-e-approved', 'z-supplier-e-performance-review']  hops 7
+    routing  What delivery window applies to a Z order placed t read ['purchase-steps', 'receiving-overview', 'procurement-overview', 'ga-contact', 'threshold-table']  hops 12
+    routing  How did Supplier E perform on delivery while it wa read ['missed-delivery-dates', 'vendor-performance-review', 'z-supplier-e-performance-review', 'z-supplier-e-approved']  hops 7
+    discov.  Which supplier is currently approved for the Z com read ['z-supplier-f-approved']  hops 4
+    discov.  Can I place a new order for Z with Supplier E?     read ['z-supplier-e-approved', 'z-supplier-f-approved']  hops 4
+    discov.  What delivery window applies to a Z order placed t read ['purchase-steps', 'receiving-overview', 'procurement-overview', 'ga-contact', 'threshold-table', 'missed-delivery-dates', 'standard-contract-clauses', 'short-delivery-handling']  hops 12
+    discov.  How did Supplier E perform on delivery while it wa read ['z-supplier-e-performance-review', 'z-supplier-e-approved']  hops 4
+
+  rag          found 1.000   operative 0.250   n=4
+  rag+rerank   found 1.000   operative 0.250   n=4
+  routing      found 0.750   operative 0.750   n=4
+  routing+discovery found 0.750   operative 0.500   n=4
+
+  ORDER rag          rank    2   Which supplier is currently approved for the Z component?
+         outranked by z-supplier-e-approved at 1
+  ORDER rag+rerank   rank    2   Which supplier is currently approved for the Z component?
+         outranked by z-supplier-e-approved at 1
+  ORDER rag          rank    8   Can I place a new order for Z with Supplier E?
+         outranked by z-supplier-e-approved at 2
+  ORDER rag+rerank   rank    2   Can I place a new order for Z with Supplier E?
+         outranked by z-supplier-e-approved at 1
+  ORDER rag          rank    2   What delivery window applies to a Z order placed today?
+         outranked by z-supplier-e-approved at 1
+  ORDER rag+rerank   rank    2   What delivery window applies to a Z order placed today?
+         outranked by z-supplier-e-approved at 1
+  ok   rag          rank    1   How did Supplier E perform on delivery while it was the so
+  ok   rag+rerank   rank    1   How did Supplier E perform on delivery while it was the so
+  ok   routing      rank    1   Which supplier is currently approved for the Z component?
+  ok   routing      rank    9   Can I place a new order for Z with Supplier E?
+  MISS  routing      rank None   What delivery window applies to a Z order placed today?
+  ok   routing      rank    3   How did Supplier E perform on delivery while it was the so
+  ok   routing+discovery rank    1   Which supplier is currently approved for the Z component?
+  ORDER routing+discovery rank    2   Can I place a new order for Z with Supplier E?
+         outranked by z-supplier-e-approved at 1
+  MISS  routing+discovery rank None   What delivery window applies to a Z order placed today?
+  ok   routing+discovery rank    1   How did Supplier E perform on delivery while it was the so
+  -> eval/runs/2026-10-10-q5a-discovery-claude-cli.json
