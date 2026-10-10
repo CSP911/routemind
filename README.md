@@ -113,7 +113,10 @@ MCP door, Sonnet and Haiku: every walk started at hop 0 with a reason on every s
 with no answer in the documents was answered "not here", with no invented rule; deliberately false
 lines were answered around by reading the document. But the agents did not *report* the false lines
 until one instruction asked them to (1/4 → 4/4), nor a false hop-0 sentence until the server pointed out
-that the walk had switched areas (0/2 → 2/2).
+that the walk had switched areas (0/2 → 2/2). The census-style miss was reproduced on purpose: a false
+hop-0 sentence into an area whose plausible page does not point onward trapped 3 of 4 walks; one more
+instruction brought that to 2 of 4, and the remaining case — a partial table that looks complete — is
+not fixed.
 Twelve questions, one run each — read it as "did not fail", not as a rate.
 
 Everything is in the repository: the corpus generator (`bench/`), the gold sets (`eval/gold/`), and

@@ -1,0 +1,70 @@
+{
+ "id": "a4",
+ "kind": "absent",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Can I take a public official to dinner, and what is the per-head cap for that?",
+ "answer": "**Short answer:** Yes, you can take a public official to dinner, but the rules are not clear on that point, and the per-head cap I found is for customers and partners, not officials.\n\n- **Gifts to a public official are not permitted at any amount.** The entertainment document says this is not a cap question. This covers gifts only, not meals.\n- **The meal cap is 50,000 KRW per head.** This is in the entertainment caps document, which applies to meals with customers and partners. The documents I read don't say whether it applies to a public official.\n- **Evidence:** Any spend over 30,000 KRW needs qualifying evidence, not a simple receipt. Write the attendees and their company on the receipt at the time. Entertainment with no attendee list is disallowed in full.\n- **Advance approval:** Events with no cap need approval beforehand.\n- **Card:** The corporate card is not for entertainment venues, which are declined at the terminal. Dinners over the per-transaction card cap need a purchase request. I didn't find the cap figure itself; it is in the card limits table.\n\nBefore you book, check with whoever keeps the expense policy whether a meal with a public official is allowed and under which cap. The documents in RouteMind don't settle it.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I take a public official to dinner, and what is the per-head cap for that?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Entertainment cap row matches a dinner with a public official and its per-head limit."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Corporate card caps row covers what the card may be used for, including entertainment caps."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Corporate card document may state whether the card can be used for entertaining officials and the cap."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "Card limits row may list merchant categories blocked outright, such as restaurants or entertainment."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/entertainment",
+    "why": "Entertainment row covers what counts as entertaining a client and the cap per head."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment/body",
+    "why": "Entertainment document should say whether public officials can be entertained and the per-head cap."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment-limit/body",
+    "why": "Entertainment caps and evidence document holds the per-head cap and evidence rules."
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.00288245,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

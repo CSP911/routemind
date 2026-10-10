@@ -1,0 +1,56 @@
+{
+ "id": "p1",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "What can a division head approve on their own, without going to the CEO?",
+ "answer": "I've found the thresholds in the purchasing approval table, so here's the answer.\n\nA division head can approve purchases of **500,000 KRW up to 3,000,000 KRW** (net of VAT) on their own. This authority is delegated, and these purchases need **2 quotes**.\n\n- **Below that:** under 500,000 KRW, a team lead approves (delegated) and 1 quote is needed.\n- **Above that:** 3,000,000 to 10,000,000 KRW goes to the CEO and needs 3 quotes. At 10,000,000 KRW and over, the CEO approves on a separate proposal, with 3 quotes plus a comparison.\n\nA few rules affect which band a purchase falls in:\n- **Net of VAT:** the band is set by the amount before VAT.\n- **No splitting:** orders to the same vendor for the same item within three months are added together.\n- **Annual agreements:** the band is set by the annual total, not the monthly rate. A 400,000 KRW monthly service counts as 4,800,000 KRW, so it needs the CEO.\n- **Sole quote:** with a written reason (sole supplier, or continuity with an existing system), one approval step can be dropped. \"They replied fastest\" doesn't count as a reason.\n\nThis covers purchasing only. I didn't check whether other areas, such as expenses or contracts, give division heads different limits. Do you want me to look at those?",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve on their own, without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Row mentions what a division head may approve alone"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/purchase-request",
+    "why": "Approval thresholds likely here"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-threshold",
+    "why": "Amount bands and who approves"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/threshold-table/body",
+    "why": "Bands and approvers"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/approval-threshold/body",
+    "why": "Node's own document"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0423333,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

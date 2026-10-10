@@ -103,6 +103,32 @@ this does not test it. What it does say: in a map that is wrong at hop 0, cross-
 documents are what stand between the agent and a confident wrong answer — which makes "say where the
 authority is" a writing rule for whoever keeps the documents, not a nicety.
 
+### With the pointers removed ([questions-trap-pure.yaml](questions-trap-pure.yaml))
+
+So the same two falsehoods were run again with every sentence in the wrong areas that points to the
+right one deleted (the "What this area does not answer" lines, the "authority comes from" paragraph,
+the cross-reference in the area page). This is the census miss:
+
+| `…-trap-pure/` | sonnet | haiku |
+|---|---|---|
+| p1 — division head (procurement's purchase band is the trap) | **trapped**: the purchase band only, with "I didn't check whether a division head has separate limits for other approvals" | **trapped**: purchase band only, "the procurement row's routing was correct" |
+| p2 — Japan allowance (payroll's "USD 50–80 overseas" is the trap) | right: went back to the area list on its own, USD 80 | **trapped**: the range, "the documents don't say which figure applies to Japan" |
+
+Three of four walks noticed their answer was narrower than the question — and answered anyway. So one
+sentence was added to the server's instructions: *if what you found answers a narrower question than
+the one asked — one kind of case only, a range where a figure was asked for — look at the area list
+again before you answer* (`…-trap-pure-narrow/`):
+
+| | before | after |
+|---|---|---|
+| trapped, of four | 3 | **2** — haiku p2 now looks again and finds USD 80; p1 stays trapped for both |
+| controls and absences, unchanged questions (`…-narrow-controls/`) | 10/10 | 10/10, calls per walk about the same |
+
+p1 is the hard one and it is not fixed: a purchase-threshold table *looks* like a complete answer to
+"what can a division head approve", and nothing in it says it is only purchases. Against that, the
+defences are the map's sentence being right and the page saying what it does not cover — both a
+person's work. This is the README's "an agent that trusts the map inherits the map's errors", measured.
+
 ## What this does not show
 
 - **Twelve questions, one corpus, one run each.** A rate from n=1 per cell is an anecdote; read the

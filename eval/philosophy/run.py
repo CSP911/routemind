@@ -97,7 +97,14 @@ def main():
     if wrong:
         repo = pathlib.Path(a.repo)
         for m in spec["mutations"]:
-            set_field(repo / m["file"], m["field"], m["to"])
+            if "replace" in m:
+                # A change to the text itself: a regex over the whole file, which must match.
+                f = repo / m["file"]; t = f.read_text(encoding="utf-8")
+                new, n = re.subn(m["replace"], m.get("with", ""), t, flags=re.S)
+                if not n: raise SystemExit(f"{m['file']}: {m['replace']!r} matched nothing")
+                f.write_text(new, encoding="utf-8")
+            else:
+                set_field(repo / m["file"], m["field"], m["to"])
         git(a.repo, "commit", "-qam", "philosophy eval: deliberate falsehoods in the map (reverted after)")
         regenerate(a.compose_dir)
         try:

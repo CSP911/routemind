@@ -1254,6 +1254,12 @@ class Server:
                         # models answered from the document — and said nothing about the line in 5 of 6
                         # walks that passed one. The answer was right and the map stayed wrong, with no
                         # one told. A person keeps the map; the agent is the only reader who sees both.
+                        # Measured 2026-10-10 (eval/philosophy, trap-pure): sent by a false hop-0
+                        # sentence into an area with a narrower answer — purchases only, a range with
+                        # no figure — three of four walks noticed it was narrower and answered anyway.
+                        "If what you found answers a narrower question than the one asked — one kind of "
+                        "case only, a range where a figure was asked for — look at the area list again for "
+                        "another area the question belongs to before you answer.\n\n"
                         "If a line in a table, or an area's sentence, disagrees with the document under it "
                         "or sent you to the wrong place, answer from the document — and say which line is "
                         "wrong, so the person who keeps the map can fix it.\n\n"

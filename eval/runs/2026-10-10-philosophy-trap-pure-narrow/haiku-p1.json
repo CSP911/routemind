@@ -1,0 +1,56 @@
+{
+ "id": "p1",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "What can a division head approve on their own, without going to the CEO?",
+ "answer": "A division head can approve a purchase alone when the net amount (excluding VAT) is **500,000 KRW to 3,000,000 KRW**. The purchase needs **two quotes**.\n\nAmounts above that go to the CEO: 3,000,000 to 10,000,000 KRW needs three quotes, and 10,000,000 KRW and over needs three quotes plus a comparison, with a separate proposal.\n\nThree rules apply to the band:\n\n- **Net of VAT.** A 480,000 KRW item plus VAT still falls in the team lead band.\n- **Splitting doesn't lower the band.** Orders to the same vendor for the same item within three months are added together.\n- **Annual agreements are banded on the annual total.** A 400,000 KRW monthly service is a 4,800,000 KRW decision, which goes to the CEO.\n\nA sole-quote purchase with a written reason (such as sole supplier or continuity with an existing system) may drop one approval step. The document doesn't say what that means for a division head's band, so check that case with procurement before relying on it.\n\nSources: RouteMind, procurement → purchase request → approval thresholds by amount.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve on their own, without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "The procurement row names division head approval authority alone, which matches the question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/purchase-request",
+    "why": "The purchase request row covers the approval step, which holds the approval thresholds for a division head."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-threshold",
+    "why": "The approval-threshold row holds the amount bands and who approves each, which answers what a division head may approve alone."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/approval-threshold/body",
+    "why": "Its own document states how far up each amount has to be approved, which is the basis for the division head answer."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/threshold-table/body",
+    "why": "The band-by-band table lists the approval steps and quote counts, so I can see the division head's limit."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0026777,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

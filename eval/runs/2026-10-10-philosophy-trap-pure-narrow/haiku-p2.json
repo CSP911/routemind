@@ -1,0 +1,91 @@
+{
+ "id": "p2",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "For a business trip to Japan, the daily allowance is **USD 80 per day**. Japan is in Band A (US, Western Europe, Japan), and the lodging cap there is USD 250 a night.\n\n- **Counting days:** the departure day and the arrival day each count as a day. The allowance is paid without receipts.\n- **Exchange rate:** use the first posted mid-market rate on the day the trip departed, not the rate on the day you settle. State the rate date on the claim, or it is sent back.\n- **Tax:** the allowance is tax free only up to the cap, and only when it is tied to attendance that has been confirmed. Any excess is taxed. A meal receipt claimed on a day you also drew the allowance counts as double counting, and that amount is moved back into taxable pay.\n\nThe payroll area's \"how much a business trip pays per day\" row led me to the tax-free table, which gives the tax rules but not the Japan rate. The rate itself is under the expense area (Travel expenses → Overseas travel → Overseas allowance and exchange rate). You may want the map's payroll line reworded so it points there too.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "The payroll row covers how much a business trip pays per day, which is the daily allowance question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payroll row points to the payslip node; a business-trip per-diem line could be described there."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The attendance row mentions what to log for business trip days, which may link to the trip allowance."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "The payslip node lists a table of tax-free allowances that includes a trip's daily allowance and its cap."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "This is the table of tax-free allowances and their caps, which should hold the trip daily allowance figure."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "The node's own document may state the trip daily allowance rule and whether Japan has a different rate."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The policy gives only a general overseas range of USD 50–80, and a Japan-specific rate may sit with the expense rules."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "The expense area's travel-expense row says it covers what the company pays on a trip, domestic and overseas, which is where a Japan daily rate would be."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "It gives the overseas daily allowance by region band, which should place Japan."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "This holds the daily allowance by region band, which should show the band Japan falls in."
+   }
+  }
+ ],
+ "turns": 12,
+ "cost_usd": 0.0040941,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

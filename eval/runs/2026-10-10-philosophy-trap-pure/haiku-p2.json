@@ -1,0 +1,56 @@
+{
+ "id": "p2",
+ "kind": "wrong-map",
+ "model": "haiku",
+ "phase": "mutated",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "The documents I found give an overseas range, not a Japan-specific rate.\n\n**Overseas business trips: USD 50–80 per day.** The policy rates are 20,000 KRW for domestic trips and USD 50–80 for overseas trips. The payroll documents treat these rates as reasonable actual cost, so they are tax free. Any excess over the reasonable rate is taxed.\n\nThe documents don't say which figure in the USD 50–80 range applies to Japan, or whether Japan has its own tier. The payroll area doesn't cover that. For the exact Japan rate, check the travel policy itself or ask the payroll desk.\n\nTwo conditions can make the allowance taxable:\n- **No attendance record for the day.** Without a confirmed attendance entry, the allowance is treated as pay and fully taxed.\n- **Claiming a meal receipt on a day you also drew the allowance.** The allowance already covers meals, so the receipt counts as double-counted and that amount is taxed.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "The payroll row lists \"how much a business trip pays per day\", which matches the daily allowance question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "The business-trip per-day pay may be a payment line on the payslip; this node covers each payment line."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "The tax-free allowances table names a trip's daily allowance and the cap on each."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "This is the table of tax-free allowances and their caps, which should include the trip daily allowance."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "The table gives an overseas range of USD 50–80 per day without saying which rate applies to Japan; the body may say how the rate is set by destination."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.0025014,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "api": "http://localhost:9431/api/knowledge",
+ "start": "ea423d5de228e7721af6deb9e141e59daf1cc3c1",
+ "models": [
+  "sonnet",
+  "haiku"
+ ],
+ "questions": "eval/philosophy/questions-trap-pure.yaml"
+}

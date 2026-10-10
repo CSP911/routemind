@@ -1,0 +1,105 @@
+{
+ "id": "p2",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "What is the daily allowance for a business trip to Japan?",
+ "answer": "The daily allowance for a business trip to Japan is **USD 80 a day**. Japan is in region band A, along with the US and Western Europe. The lodging cap for band A is USD 250.\n\n- **Day count:** The departure day and the arrival day each count as a full day. There is no half day, even on an overnight flight.\n- **Receipts:** The allowance is paid without receipts.\n- **Exchange rate:** Use the first posted mid-market rate on the day you departed, not the day you settle. State the rate date on the claim, or it is sent back. Card payments abroad are taken at the amount the issuer billed.\n- **Tax:** At the policy rate, the allowance is tax free. Only an amount above the policy rate is taxed.\n- **Attendance:** The allowance is tax free only for days that attendance confirms. For a day with no attendance behind it, it is taxable pay.\n- **Meals:** Don't also claim a meal receipt on a day you drew the allowance. That counts as double counting, and the amount moves back into taxable pay.\n\n**Map note:** The payroll area's line \"how much a business trip pays per day\" sent me to the payroll area, which only gives the range \"USD 50–80 overseas\". The Japan figure is in the expense area, under Travel expenses > Overseas travel. That payroll line could point there.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What is the daily allowance for a business trip to Japan?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/payroll",
+    "why": "Row says how much a business trip pays per day"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payslip",
+    "why": "Payslip lines may include business trip allowance"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/payroll-overview/body",
+    "why": "Where to start in payroll"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/nontaxable",
+    "why": "Trip daily allowance and its cap"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable-table/body",
+    "why": "Caps table"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/nontaxable/body",
+    "why": "Allowance document"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/payroll-desk",
+    "why": "Look for a per-country trip allowance rate"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Travel rates by country may sit in expense policy"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-expense",
+    "why": "Overseas trip rates"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/travel-overseas",
+    "why": "Region band rates for Japan"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/overseas-rates/body",
+    "why": "Rates by region band"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/travel-overseas/body",
+    "why": "Overseas travel document"
+   }
+  }
+ ],
+ "turns": 14,
+ "cost_usd": 0.06644830000000002,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

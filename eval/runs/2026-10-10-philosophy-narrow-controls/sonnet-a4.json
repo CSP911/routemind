@@ -1,0 +1,70 @@
+{
+ "id": "a4",
+ "kind": "absent",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Can I take a public official to dinner, and what is the per-head cap for that?",
+ "answer": "**The documents don't answer the first part directly, so check with Compliance or Finance before booking.**\n\n- **Public officials:** The entertainment rules only prohibit one thing for public officials: \"A gift to a public official → not permitted at any amount. This is not a cap question.\" They don't say whether a dinner with a public official is allowed, or whether it counts as entertainment. Entertainment is defined as meals, gifts and events for \"customers and partners\". I wouldn't assume a dinner is fine just because the gift rule doesn't mention meals.\n- **Per-head cap:** The cap for an entertainment meal is **50,000 KRW per head**. That is the general figure for customers and partners, and nothing in the documents sets a different one for public officials.\n\nIf the dinner does go ahead as entertainment, these rules apply:\n- Above 30,000 KRW, you need qualifying evidence. A simple receipt isn't accepted.\n- Write down who attended and which company on the receipt, at the time. With no attendee list, the whole expense is disallowed.\n- Your card's per-transaction cap still applies. A dinner over that cap needs a purchase request.\n- Entertainment venues are a blocked card category, so the card may be declined at some venues.\n\nSources: `/v1/nodes/entertainment/body` and `/v1/nodes/entertainment-limit/body`.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I take a public official to dinner, and what is the per-head cap for that?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "Entertainment cap is listed in the expense area"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "Caps for card use, likely includes entertainment"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/corp-card/body",
+    "why": "Main card document, may cover entertainment"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-limit",
+    "why": "Caps and blocked categories"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/entertainment",
+    "why": "Entertainment cap per head"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment/body",
+    "why": "Rules on what counts as entertaining, may cover public officials"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/entertainment-limit/body",
+    "why": "Per-head cap and evidence threshold"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.045562700000000005,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

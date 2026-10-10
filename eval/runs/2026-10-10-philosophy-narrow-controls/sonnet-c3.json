@@ -1,0 +1,70 @@
+{
+ "id": "c3",
+ "kind": "control",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "How many leave days does someone get in their first year if they joined in July?",
+ "answer": "A July joiner gets **8 days** in the prorated grant on the first 1 January after joining. That follows the formula 15 × (months from joining to 31 December ÷ 12), rounded up.\n\nBefore that grant arrives, they accrue **1 day per completed month** from their joining date. By 31 December that is about 5 days (August through December), and those days can be booked as soon as they accrue.\n\nThe 8 days **replace** the monthly accrual and are not added to it. Any accrued days left unused on 31 December lapse, though the company pays out the lapsed balance. From the second 1 January the person gets the ordinary 15 days.\n\nCases such as a leave of absence or a transfer from a group company are decided case by case by the HR desk.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How many leave days does someone get in their first year if they joined in July?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Row mentions how much leave a mid-year joiner gets"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "Entitlement for annual leave, likely includes mid-year joiners"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual",
+    "why": "Entitlement by length of service; likely mid-year joiner rule"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/annual-leave/body",
+    "why": "Overview document for annual leave"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear",
+    "why": "Month-by-month first-year table for mid-year joiners"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/proration-table/body",
+    "why": "First-year days by joining month"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear/body",
+    "why": "Mid-year proration explanation"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0424393,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

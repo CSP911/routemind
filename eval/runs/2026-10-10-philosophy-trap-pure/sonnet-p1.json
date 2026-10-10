@@ -1,0 +1,56 @@
+{
+ "id": "p1",
+ "kind": "wrong-map",
+ "model": "sonnet",
+ "phase": "mutated",
+ "q": "What can a division head approve on their own, without going to the CEO?",
+ "answer": "A division head can approve purchases of **500,000 to 3,000,000 KRW** (net of VAT) on their own. That authority is delegated, and the purchase needs **2 quotes**. Anything above that goes to the CEO.\n\n| Amount (net of VAT) | Approver | Quotes |\n|---|---|---|\n| Under 500,000 KRW | Team lead, delegated | 1 |\n| **500,000 – 3,000,000 KRW** | **Division head, delegated** | **2** |\n| 3,000,000 – 10,000,000 KRW | CEO | 3 |\n| 10,000,000 KRW and over | CEO, with a separate proposal | 3 plus a comparison |\n\n- **Splitting:** Orders to the same vendor for the same item within three months are added together. You can't split a purchase to stay in a lower band.\n- **Annual agreements:** These are banded on the annual total. A 400,000 KRW monthly service counts as 4,800,000 KRW, so it needs the CEO.\n- **Sole quote:** A written reason, such as a sole supplier or continuity with an existing system, can drop one approval step. \"They replied fastest\" doesn't count.\n- **Boundary:** The table lists exactly 3,000,000 KRW in both the division head band and the CEO band. I'd treat it as a CEO matter, but the table doesn't say. Check with the purchasing desk if you're right at that amount.\n\nThis covers purchasing only. I didn't check whether a division head has separate limits for other approvals, such as expenses.\n\nSource: Approval steps and quotes by band (`/v1/nodes/threshold-table/body`).",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "What can a division head approve on their own, without going to the CEO?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/procurement",
+    "why": "Row covers what a division head may approve alone"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/purchase-request",
+    "why": "Approval thresholds are likely under purchase request"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/approval-threshold",
+    "why": "Amount bands and who approves each"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/threshold-table/body",
+    "why": "Bands with approval steps"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/approval-threshold/body",
+    "why": "Node's own document may state division head limit"
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.04339010000000001,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

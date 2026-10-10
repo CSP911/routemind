@@ -1,0 +1,70 @@
+{
+ "id": "a1",
+ "kind": "absent",
+ "model": "sonnet",
+ "phase": "clean",
+ "q": "Can I work from home two days a week? What is our remote work policy?",
+ "answer": "I couldn't find a remote work or work-from-home policy in RouteMind, so I can't tell you whether two days a week is allowed.\n\nI read the Attendance area, which is where such a rule would most likely be. It covers annual leave, parental leave, business-trip attendance, the attendance system menus and the HR desk. None of those mention remote work, work-from-home days, or a hybrid schedule. The groupware attendance menus are leave request, my attendance, trip request and overtime. None of them is for logging remote days. The other areas (approval, expense, payroll, procurement) don't look like places for this, so I didn't open them.\n\n- **Ask the HR desk:** The People team is on ext. 2140 or by groupware message. They decide attendance situations the written rules don't cover.\n- **Settle it before you record anything:** The docs say to settle an exception with HR before putting it in the system. If you file first and it's rejected, that period is recorded as absence.\n- **Get it in writing:** A record not in the system doesn't exist, and a verbal OK from your team lead doesn't count. Keep any approval you get in the system or in writing.\n\nIf you have the policy document, I can add it to RouteMind so the next person gets an answer.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I work from home two days a week? What is our remote work policy?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Remote work/work-from-home is an attendance matter"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-overview/body",
+    "why": "Overview may mention remote work"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/attendance-system",
+    "why": "Groupware attendance menus might include remote work"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system-guide/body",
+    "why": "Check whether a remote work menu exists"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-system/body",
+    "why": "Check for remote work mention"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/hr-desk",
+    "why": "Last attendance candidate that might hold a remote work rule or contact"
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/hr-contact/body",
+    "why": "See whether HR desk scope covers remote work and how to reach it"
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0432924,
+ "models": [
+  "claude-sonnet-5-5"
+ ]
+}

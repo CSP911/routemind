@@ -1,0 +1,49 @@
+{
+ "id": "c2",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How long do we have to keep signed contracts?",
+ "answer": "Signed contracts are kept **10 years**, under the Commercial Act.\n\nThe clock starts at the end of the business (contract end), not the date the contract was signed. A three-year contract signed in 2024 and running to 2027 is kept until 2037. Anything under litigation or audit is not destroyed when its period runs out, even if the period has passed.\n\nSource: RouteMind, Document retention (`/v1/nodes/retention-table/body` and `/v1/nodes/retention/body`). The approval area's line \"how many years this is kept\" pointed to the right place.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How long do we have to keep signed contracts?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/approval",
+    "why": "Row says it covers how many years a document is kept, which matches the retention question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/retention",
+    "why": "Row is \"Document retention — how many years each kind of document is kept\", which is the direct answer."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention-table/body",
+    "why": "Holds the retention period by document kind, which should include signed contracts."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/retention/body",
+    "why": "Node's own document on document retention, to check for any contract-specific rule."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.00182308,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

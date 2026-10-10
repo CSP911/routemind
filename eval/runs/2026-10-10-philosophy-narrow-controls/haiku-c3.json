@@ -1,0 +1,70 @@
+{
+ "id": "c3",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "How many leave days does someone get in their first year if they joined in July?",
+ "answer": "A July joiner gets **8 days**, granted on the first 1 January after joining. That is a prorated grant, calculated as 15 × (6 ÷ 12) = 7.5, rounded up to 8.\n\nBefore that grant arrives, they also accrue one day per completed month, so about 5 days (August through December) can be booked during the rest of the year. The monthly days are replaced by the 8-day grant, not added to it, and any unused monthly days lapse on 1 January. From the second 1 January on, they get the standard 15 days.\n\nSources: the annual leave document (`/v1/nodes/annual-leave/body`) and the mid-year joiner proration table (`/v1/nodes/proration-table/body`). I didn't find a conflict between them.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "How many leave days does someone get in their first year if they joined in July?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "The attendance row covers how much leave a mid-year joiner gets, which matches a July joiner's first-year leave."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/annual-leave",
+    "why": "Annual leave entitlement is the document on how many days are granted, including mid-year joiners."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/annual-leave/body",
+    "why": "Its own document states how many days are granted, which may cover mid-year joiners."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual",
+    "why": "The entitlement-by-length-of-service table is where the grant schedule for a first year would be."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear",
+    "why": "The mid-year joiner proration table is the month-by-month first-year figure for a July joiner."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/proration-table/body",
+    "why": "This is the first-year days by joining month table, which should give the July figure directly."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/leave-accrual-midyear/body",
+    "why": "The mid-year proration document explains how the first-year grant is prorated, to check the July figure."
+   }
+  }
+ ],
+ "turns": 9,
+ "cost_usd": 0.0027427199999999997,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

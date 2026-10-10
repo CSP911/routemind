@@ -1,0 +1,56 @@
+{
+ "id": "c1",
+ "kind": "control",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "I just lost my corporate card. What should I do first?",
+ "answer": "**First, call the card issuer and stop the card.** Do this before you tell anyone at the company. The issuer's liability process for fraudulent charges is measured from the moment the card is stopped, so each minute before that is exposure for the company.\n\nThen, in order:\n\n1. **Tell the office & purchasing desk (ext. 2210).**\n2. **File a statement of the circumstances as a draft.** A replacement card takes 3–5 working days.\n3. **Use a personal card for anything unavoidable while the card is stopped.** Claim it back on a disbursement form and keep the receipts as you normally would.\n\nFraudulent charges made before the stop go through the issuer's liability process, not the company's. If the card was lost with a bag or wallet, tell the desk what else was in it. The notes say access cards and laptops have their own procedures and different desks, but I didn't look those up, so ask the desk where to go for them.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "I just lost my corporate card. What should I do first?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/expense",
+    "why": "The expense row's line includes \"the card was lost\", which matches your question."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/corp-card",
+    "why": "The corp-card row says it covers what to do when the card is lost or misused."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/card-loss",
+    "why": "The card-loss row is the one that says what to do, in order, when the card is lost."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-lost-steps/body",
+    "why": "This is the ordered steps document for a lost card, which answers what to do first."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/card-loss/body",
+    "why": "The parent document may add context or conditions to the ordered steps."
+   }
+  }
+ ],
+ "turns": 7,
+ "cost_usd": 0.00259133,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}

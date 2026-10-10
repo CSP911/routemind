@@ -1,0 +1,49 @@
+{
+ "id": "a1",
+ "kind": "absent",
+ "model": "haiku",
+ "phase": "clean",
+ "q": "Can I work from home two days a week? What is our remote work policy?",
+ "answer": "I couldn't find a remote work policy in RouteMind, so I can't tell you whether two days a week is allowed.\n\nI checked the attendance area, the attendance overview, and the HR desk pages. None of them covers working from home or work location. The closest is the HR desk, which decides attendance situations that the written rules don't cover.\n\nTo get an answer, contact the HR desk through a groupware message or at ext. 2140 (People team). Ask whether two home-working days a week are permitted and how to request them. The HR desk page also says to settle an attendance exception with HR before recording it in the attendance system, so it's worth doing that first.",
+ "calls": [
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "question": "Can I work from home two days a week? What is our remote work policy?"
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/regions/attendance",
+    "why": "Remote work days are a working-time/attendance question, and this is the attendance area."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/attendance-overview/body",
+    "why": "No remote-work row in the attendance table; the overview says what this area holds, so I'm checking whether remote work is covered there."
+   }
+  },
+  {
+   "tool": "knowledge_table",
+   "input": {
+    "path": "/v1/nodes/hr-desk",
+    "why": "The overview sends unclear rules to the HR desk, and it is the one place in this area that might hold a work-location rule."
+   }
+  },
+  {
+   "tool": "knowledge_read",
+   "input": {
+    "path": "/v1/nodes/hr-contact/body",
+    "why": "Last document in the HR desk table that could hold a work-location rule; checking its scope before concluding the policy is absent."
+   }
+  }
+ ],
+ "turns": 6,
+ "cost_usd": 0.0021075900000000003,
+ "models": [
+  "claude-haiku-5-5"
+ ]
+}
