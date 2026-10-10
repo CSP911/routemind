@@ -1,7 +1,7 @@
 # The vocabulary of back-office (corporate support) work — this file IS the domain.
 #
 # A node's `kind` must appear here; anything else is refused at the write. A kind marked
-# `export: no` never crosses a link, whatever its area says — that is the one thing a kind does.
+# `export: no` is never readable through a circuit, whatever its area says — that is the one thing a kind does.
 
 budgets:
   kinds: 12

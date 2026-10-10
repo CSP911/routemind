@@ -531,6 +531,10 @@ def circuit_call(args: dict) -> str:
         return "op must be open, list or close."
 
     url = str(args.get("url") or "").strip().rstrip("/")
+    # The address a person sees in the browser is the map page — `http://host:9470/knowledge` — and
+    # CIRCUIT.md tells them to use the address their map answers on. Take the page, or the API path,
+    # back to the install's own address rather than refusing it (QA, 2026-10-10).
+    url = re.sub(r"/(api/knowledge|knowledge)/?$", "", url)
     token = str(args.get("token") or "").strip()
     # From the address when none is given: `127.0.0.1:9330` and `kb.example.com` have dots, and a dot
     # is not allowed in a name, so the bare host refused every address but `localhost` (2026-10-10).

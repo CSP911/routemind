@@ -11,7 +11,7 @@ This is everything that did not fit beside it.
 ## Start from the worked example, not an empty map
 
 An empty install is a backbone with no areas: correct, and hard to read.
-[`examples/back-office`](../examples/) is five areas, 79 entities, five levels deep. On a first install
+[`examples/back-office`](../examples/) is five areas and 74 documents (79 entities with the areas' own pages), five levels deep. On a first install
 `install.sh` asks whether to start from it (Enter says yes); `--example` answers yes without asking,
 `--no-example` no. It has to go in **before** the first boot — that boot is what makes `data/repo` a git
 repository and commits what is there.

@@ -80,7 +80,8 @@ POST /v1/peers/token      X-Peer-Token: <key>
   → { "token": "...", "expires_in": 21600 }
 ```
 
-and every read carries that six-hour session instead. The long-lived secret is then used about four
+and every read carries that six-hour session instead — in the same header, `X-Peer-Token: <session>`.
+One key reads everything this install exports; there is no per-reader scope. The long-lived secret is then used about four
 times a day per reader rather than on every request, and anything that leaks off the read path stops
 being worth something by the end of the shift (operator, 2026-09-29).
 

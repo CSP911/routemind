@@ -176,7 +176,7 @@
       pane.className = `kn-raw is-${view.status === "ok" ? "ok" : "bad"}`;
       pane.textContent = view.text || "";
       $("knRawMeta").textContent =
-        `${view.status} · ${(view.text || "").length} chars · ${String(view.ontology_revision || "").slice(0, 8)}`;
+        `${view.status} · ${tv("knowledge.metaChars", { n: (view.text || "").length })} · ${String(view.ontology_revision || "").slice(0, 8)}`;
     } catch (error) {
       pane.className = "kn-raw is-bad";
       pane.textContent = `${t("knowledge.loadFailed")} — ${error.message}`;
@@ -1395,12 +1395,14 @@
     if (!id) return;
     let w;
     try { w = await request("walks/" + encodeURIComponent(id)); } catch { toast(t("knowledge.fp.gone")); return; }
-    dialogFor({ chip: "WALK", title: w.question || w.id, address: `/v1/walks/${w.id}`,
-                meta: [(w.by || {}).name, w.state, w.outcome].filter(Boolean).join(" · ") });
+    // The legend's word, and how it ended in the reader's language — it read "WALK", "closed · ended".
+    dialogFor({ chip: t("knowledge.legend.fp"), title: w.question || w.id, address: `/v1/walks/${w.id}`,
+                meta: [(w.by || {}).name, histOutcome(w)[0]].filter(Boolean).join(" · ") });
     const card = el("div", "kn-card-form");
     card.append(el("h3", "kn-cf-title", t("knowledge.fp.trailTitle")));
     const pre = el("pre", "kn-upload-preview");
-    pre.textContent = (w.steps || []).map((x) => `${String(x.n).padStart(5)}  ${when(x.at)}  ${String(x.op || "").padEnd(7)}  ${x.address || ""}  — ${x.why || ""}`).join("\n");
+    // Numbered within the walk. `n` is the backbone's running count, so a walk's steps read 7–12.
+    pre.textContent = (w.steps || []).map((x, i) => `${String(i + 1).padStart(3)}  ${when(x.at)}  ${String(x.op || "").padEnd(7)}  ${x.address || ""}  — ${x.why || ""}`).join("\n");
     card.append(pre);
     card.append(actions(button("common.close", "primary", () => $("knRawDialog").close())));
     $("knEdit").replaceChildren(card);
@@ -2666,7 +2668,8 @@
     node:     { label: "AS",       actions: [] },
     // One act (operator, 2026-09-11). Promotion went: "+ New node" and a drag onto it do the same
     // job in two steps a person can see. Editing went with it.
-    file:     { label: "DATA",     actions: ["deleteData"] },
+    // The same word as the legend, in the reader's language (it stayed "DATA" on the Korean screen).
+    file:     { get label() { return t("knowledge.legend.data"); }, actions: ["deleteData"] },
   };
   /** Ticking is how a person draws a VRF, so it exists only where an overlay can be created. Without
    *  one, the boxes would be controls that do nothing. */
@@ -3232,6 +3235,8 @@
       button("common.cancel", "quiet", closeCard),
       button("knowledge.create", "primary", (b) => guarded(b, async () => {
         if (upload.checked && !loaded) throw new Error(t("knowledge.chooseFileFirst"));
+        // Empty is "write a name", not "no address can be made from this name" (QA, 2026-10-10).
+        if (!name.value.trim()) throw new Error(tv("knowledge.fieldRequired", { field: t("knowledge.field.name") }));
         const r = await resolve(name.value);
         const fname = r.file;
         if (!fname || !NODE_FILE.test(fname)) throw new Error(r.error || t("knowledge.noAddressIn"));

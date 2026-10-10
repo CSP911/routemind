@@ -1,7 +1,7 @@
 # Your domain's vocabulary — this file IS your domain.
 #
 # The kinds below are a starting point, not a schema. Replace them with the words your domain
-# actually uses. A node's `kind` must appear here. A kind marked `export: no` never crosses a link,
+# actually uses. A node's `kind` must appear here. A kind marked `export: no` is never readable through a circuit,
 # whatever its area says (docs/CIRCUIT.md) — that is the one thing a kind does.
 
 budgets:

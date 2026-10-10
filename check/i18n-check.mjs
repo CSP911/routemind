@@ -194,6 +194,8 @@ if (loose.length) {
 // belongs to that element, and one the script builds belongs to the script.
 const SHARED_ON_PURPOSE = new Set([
   "common.cancel",            // one word, and every form that has a Cancel means the same by it
+  "knowledge.legend.data",    // the legend's word for a document, and the dialog chip on one — the same thing
+  "knowledge.legend.fp",      // the legend's word for a walk, and the chip on a walk's dialog — the same thing
   "knowledge.fp.replay",      // the button's label, put back when it stops being "Stop" mid-replay
   "knowledge.fp.trail",       // "Reasons" — the footprint bar's button and each history row's, the same act
   "common.close",             // the dialog's × and the result card's ×: one word, one act
