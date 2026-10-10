@@ -198,6 +198,32 @@ try:
                           f"http://127.0.0.1:{srv.server_address[1]}"], cwd=ROOT, env={**env0, "KNOWLEDGE_TOKEN": "s3cret"}, capture_output=True, text=True)
     check("the MCP server sends KNOWLEDGE_TOKEN as a bearer secret", seen and seen[-1] == "Bearer s3cret", f"{seen} {out.stderr[-200:]}")
 
+    # ── a client that ends the server with a signal ───────────────────────────
+    # `claude -p` stops its MCP servers with a signal, not by closing stdin, and those walks stayed
+    # "walking" in the history (newcomer QA, 2026-10-10). The walk must be closed as ended either way.
+    closes = []
+    class W(http.server.BaseHTTPRequestHandler):
+        def log_message(self, *a): pass
+        def _ok(self, body):
+            self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(json.dumps(body).encode())
+        def do_GET(self): self._ok({"regions": [], "kinds": []})
+        def do_POST(self):
+            n = int(self.headers.get("Content-Length") or 0); body = json.loads(self.rfile.read(n) or b"{}")
+            if self.path.rstrip("/").endswith("/close"): closes.append((self.path, body.get("outcome")))
+            self._ok({"id": "wk_test"} if self.path.rstrip("/").endswith("/walks") else {"ok": True})
+    ws = http.server.ThreadingHTTPServer(("127.0.0.1", 0), W); threading.Thread(target=ws.serve_forever, daemon=True).start()
+    mcp = subprocess.Popen([sys.executable, os.path.join(ROOT, "mcp", "knowledge_mcp.py"), "--api", f"http://127.0.0.1:{ws.server_address[1]}"],
+                           stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env0, text=True)
+    for msg in ({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "robust", "version": "0"}}},
+                {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "knowledge_table", "arguments": {"question": "q"}}}):
+        mcp.stdin.write(json.dumps(msg) + "\n"); mcp.stdin.flush(); mcp.stdout.readline()
+    mcp.send_signal(signal.SIGTERM)
+    try: mcp.wait(5)
+    except subprocess.TimeoutExpired: mcp.kill()
+    check("a client that ends the MCP server with a signal still has its walk closed as ended",
+          any(o == "ended" for _, o in closes), closes)
+    ws.shutdown()
+
     # ── the walk names an area switch ─────────────────────────────────────────
     # eval/philosophy M3: sent into the wrong area by a false hop-0 sentence, neither model reported it
     # until the server pointed out the switch. No note on the first area, nor on going back to it.
