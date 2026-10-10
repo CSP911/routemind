@@ -3423,7 +3423,12 @@
     // its record, a Region offers the node it cannot otherwise get.
     // Validation is read-only and free, so it is a button rather than something that happens silently:
     // a person looking at a repository that fails should be able to ask, and get the errors verbatim.
-    $("knEmptyNew").addEventListener("click", () => newRegionForm());
+    // The form lives in the transcript dialog, which the Back-Bone's menu has already opened by the
+    // time "New AS" is chosen there. From here nothing has, so open it the same way first.
+    $("knEmptyNew").addEventListener("click", async () => {
+      await showRaw({ kind: "bb", title: "RouteMind Back-Bone", address: "" });
+      newRegionForm();
+    });
     $("knValidate").addEventListener("click", (e) => guarded(e.currentTarget, async () => {
       const r = await send("validate", "POST", {});
       showValidation(r);
@@ -3520,6 +3525,12 @@
   /** Ask for the write secret, keep it in this browser, and carry on. */
   function tokenCard() {
     const dialog = $("knRawDialog");
+    // What it covers is usually the form whose save was refused. Kept as it is — the nodes
+    // themselves, with what was typed in them — and put back on Save, so "save again" has something
+    // to press. Before, the form was replaced and everything typed into it was gone (QA, 2026-10-10).
+    const head = ["knRawKind", "knRawTitle", "knRawAddr", "knRawPath", "knRawMeta"].map((id) => [id, $(id).textContent, $(id).className]);
+    const covered = dialog.open ? [...$("knEdit").childNodes] : [];
+    const editing = !$("knEdit").hidden;
     state.selected = null;
     $("knRawKind").textContent = "AUTH"; $("knRawKind").className = "kn-chip-kind is-backbone";
     $("knRawTitle").textContent = t("knowledge.auth.tokenTitle");
@@ -3537,8 +3548,13 @@
         const v = box.value.trim();
         if (!v) throw new Error(t("knowledge.auth.tokenLead"));
         try { localStorage.setItem(TOKEN_KEY, v); } catch { /* private mode: kept for this page only */ }
-        dialog.close();
         showDoor();
+        if (covered.length) {
+          for (const [id, text, cls] of head) { $(id).textContent = text; $(id).className = cls; }
+          $("knEdit").replaceChildren(...covered);
+          showEditor(editing);
+          toast(t("knowledge.auth.tokenSaved"));
+        } else dialog.close();
       })),
     ));
     $("knEdit").replaceChildren(card);
