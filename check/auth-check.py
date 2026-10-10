@@ -168,6 +168,26 @@ check("    while the secret still opens them", hit(port, READ, token=SECRET)[0] 
 check("    and the health endpoint is never behind it", hit(port, "/api/app-config")[0] == 200)
 p.terminate(); time.sleep(0.3)
 
+# /healthz on the web port is never behind the door either — but with reads guarded, an anonymous
+# caller gets the state without the detail: the full answer names the data path, uncommitted files
+# and validation errors that quote the map's own sentences (2026-10-10).
+import http.server, threading                                            # noqa: E402
+class _Fake(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *a): pass
+    def do_GET(self):
+        body = json.dumps({"ok": True, "valid": False, "writable": True, "writing": False, "data": "/data/repo",
+                           "uncommitted": "regions/hr/secret-plan.md", "errors": ["use_when no longer matches: 'the merger'"]}).encode()
+        self.send_response(200); self.send_header("Content-Type", "application/json"); self.end_headers(); self.wfile.write(body)
+_srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _Fake); threading.Thread(target=_srv.serve_forever, daemon=True).start()
+p, port, _ = start(KNOWLEDGE_AUTH="token", KNOWLEDGE_TOKEN=SECRET, KNOWLEDGE_AUTH_READS="1",
+                   KNOWLEDGE_API_URL=f"http://127.0.0.1:{_srv.server_address[1]}")
+st, _, b = hit(port, "/healthz"); anon = json.loads(b or b"{}")
+check("  /healthz answers without the secret, and says only whether it is well",
+      st == 200 and anon.get("valid") is False and "errors" not in anon and "uncommitted" not in anon and "data" not in anon, anon)
+st, _, b = hit(port, "/healthz", token=SECRET)
+check("    and in full to whoever holds it", st == 200 and "errors" in json.loads(b or b"{}"))
+p.terminate(); time.sleep(0.3); _srv.shutdown()
+
 # ── proxy: the only mode that produces an actor worth the name ───────────────
 HEAD = "X-Forwarded-Email"
 p, port, _ = start(KNOWLEDGE_AUTH="proxy", KNOWLEDGE_AUTH_TRUSTED_PROXY="any")

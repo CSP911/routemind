@@ -944,7 +944,14 @@ def web_healthz(request: Request) -> Response:
     # The install's health on the port people actually reach. The docs and the door both named
     # `/healthz`, and it answered 404 here — it existed only inside the ontology's container (2026-10-10).
     try:
-        return JSONResponse(_ontology_proxy("GET", "/healthz", "web"))
+        health = _ontology_proxy("GET", "/healthz", "web")
+        # Never behind the door — a health check that needs a credential is one nobody wires up — but
+        # with reads guarded, an anonymous caller gets the state and not the detail: the full answer
+        # names the data path, uncommitted files, and validation errors that quote the map's own
+        # sentences (s4, 2026-10-10). Whoever holds the secret, and every open install, gets it all.
+        if AUTH != "open" and AUTH_READS and _authenticated(request) is None:
+            health = {k: health.get(k) for k in ("ok", "valid", "writable", "writing")}
+        return JSONResponse(health)
     except HTTPException as exc:
         return JSONResponse({"ok": False, "error": str(exc.detail)}, status_code=503)
 
