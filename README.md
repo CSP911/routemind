@@ -97,8 +97,8 @@ re-derives these numbers from the saved results.
   rivals: other revisions, neighbouring codes. [eval/COLLAPSE.md](eval/COLLAPSE.md) describes how
   that was constructed. On questions phrased in the documents' own words, retrieval scores 0.99 and
   the walk adds nothing.
-- **One domain, one map, one author side.** The corpus is a fictional back office. The questions are
-  templated or written by a model. The map's sentences were written by people who knew the corpus. No
+- **One domain, one map, one author side.** The corpus is a fictional back office. The 700 questions
+  are templated by the project (`bench/crowd.py`, `bench/temporal.py`), not written by outsiders. The map's sentences were written by people who knew the corpus. No
   real organisation's documents have been measured. The question of who labels the ground truth is
   still open ([eval/PREREGISTRATION.md](eval/PREREGISTRATION.md)).
 - **It costs far more.** A walk takes 6.7 tool calls, 23–111 seconds and $0.12–$0.28 per question,
