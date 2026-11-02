@@ -201,9 +201,17 @@ class _Far(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
     def do_GET(self):
         SEEN[self.path] = dict(self.headers)
+        if self.path == "/v1/nodes/doc/body":
+            body = b"the document\n"
+            self.send_response(200); self.send_header("Content-Type", "text/markdown; charset=utf-8")
+            self.send_header("Content-Length", str(len(body))); self.send_header("X-Revision", "a" * 40)
+            self.send_header("X-Source", "regions/hr/doc.md"); self.end_headers(); self.wfile.write(body); return
         if self.path.endswith("/body"):
             return self._answer(404, {"error": "node shelf has no document yet — it is listed as `type: empty`"})
-        return self._answer(200, {"regions": []})
+        body = json.dumps({"regions": []}).encode()
+        self.send_response(200); self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body))); self.send_header("X-Revision", "b" * 40)
+        self.end_headers(); self.wfile.write(body)
     def do_POST(self):
         # The connection dropped mid-answer, as a paused or restarting ontology does.
         self.close_connection = True; self.connection.close()
@@ -230,6 +238,16 @@ check("  a token request the ontology drops is a JSON 502", st == 502 and "json"
 # yet" and "no such address" are different answers, as the route's docstring says (web audit WB-5).
 st, _, b = hit(port, "/api/knowledge/nodes/shelf/body")
 check("  a document's 404 carries the API's reason", st == 404 and b"no document yet" in b, f"{st} {b[:120]!r}")
+
+# Which commit, and which file, a read was served from. The relay rebuilt every answer and dropped
+# both, so an agent behind the web port recorded walks that said where it went and not what it read
+# (2026-11-02).
+for path in ("/api/knowledge/nodes/doc/body", "/api/knowledge/v1/nodes/doc/body"):
+    st, h, b = hit(port, path)
+    check(f"  {path} carries the revision and the file it was read from",
+          st == 200 and h.get("x-revision") == "a" * 40 and h.get("x-source") == "regions/hr/doc.md", f"{st} {h}")
+st, h, b = hit(port, "/api/knowledge/regions")
+check("  and a table carries its revision", st == 200 and h.get("x-revision") == "b" * 40, f"{st} {h}")
 
 # A document is bounded. 50 MB went through and was committed, and the popup then served all of it
 # (web audit WB-7, 2026-11-02). Refused here, before it is sent, with a sentence and the setting.

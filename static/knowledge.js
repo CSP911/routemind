@@ -1413,7 +1413,10 @@
     card.append(el("h3", "kn-cf-title", t("knowledge.fp.trailTitle")));
     const pre = el("pre", "kn-upload-preview");
     // Numbered within the walk. `n` is the backbone's running count, so a walk's steps read 7–12.
-    pre.textContent = (w.steps || []).map((x, i) => `${String(i + 1).padStart(3)}  ${when(x.at)}  ${String(x.op || "").padEnd(7)}  ${x.address || ""}  — ${x.why || ""}`).join("\n");
+    // And, where the step records it, the commit it was read at — `@1a2b3c4` — so "what did it read"
+    // has an answer a person can check with `git show` after the document has changed (2026-11-02).
+    const at = (x) => (x.read && x.read.revision ? `  @${x.read.revision.slice(0, 7)}` : "");
+    pre.textContent = (w.steps || []).map((x, i) => `${String(i + 1).padStart(3)}  ${when(x.at)}  ${String(x.op || "").padEnd(7)}  ${x.address || ""}${at(x)}  — ${x.why || ""}`).join("\n");
     card.append(pre);
     card.append(actions(button("common.close", "primary", () => $("knRawDialog").close())));
     $("knEdit").replaceChildren(card);

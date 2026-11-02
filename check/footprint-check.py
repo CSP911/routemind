@@ -165,8 +165,22 @@ try:
         check("  a table without why is refused, and says why it wants one", err and "why" in t, t[:140])
         m.call("knowledge_table", {"path": "/v1/regions/procurement", "why": "approval bands are in its sentence"})
         m.call("knowledge_table", {"path": "/v1/nodes/approval-threshold", "why": "the band table"})
-        m.call("knowledge_read", {"path": "/v1/nodes/threshold-table/body", "why": "the numbers themselves"})
+        shown, _ = m.call("knowledge_read", {"path": "/v1/nodes/threshold-table/body", "why": "the numbers themselves"})
         code, after = call("GET", f"/v1/walks?since={cursor}")
+        # What was read, not only where: a replay after the document changed showed today's text
+        # under yesterday's step, and nothing said they differed (2026-11-02).
+        import hashlib
+        rd = [x for x in after.get("steps", []) if x["walk"] == w1 and x["op"] == "read"]
+        got = (rd[-1].get("read") or {}) if rd else {}
+        at = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+        check("  a read step names the commit it was served at", got.get("revision") == at, f"{got} vs {at}")
+        check("    and the file", got.get("source") == "regions/procurement/threshold-table.md", str(got))
+        check("    and a hash of exactly what the agent was shown",
+              got.get("sha256") == hashlib.sha256(shown.encode("utf-8")).hexdigest(), str(got))
+        tb = [x for x in after.get("steps", []) if x["walk"] == w1 and x["op"] == "table"]
+        check("  a table step names its commit too", bool(tb) and (tb[-1].get("read") or {}).get("revision") == at, json.dumps(tb[-1:])[:200])
+        code, bad = call("POST", f"/v1/walks/{w1}/steps", {"op": "read", "address": "/v1/x", "why": "w", "read": {"source": "../../etc/passwd"}})
+        check("  and a step's record of what it read takes only that", code == 400, f"{code} {bad}")
         mine = [(x["op"], x["address"], x["why"]) for x in after.get("steps", []) if x["walk"] == w1]
         check("  every step it made is on the record, in order, with its reason",
               [x[0] for x in mine] == ["open", "table", "table", "read"] and mine[1][2] == "approval bands are in its sentence", json.dumps(mine)[:300])

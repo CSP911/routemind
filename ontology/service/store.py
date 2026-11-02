@@ -208,13 +208,25 @@ class Store:
         # the lock covers a few small reads and a stat of each entity, and a parse happens on first
         # use, once, if it happens at all.
         with file_lock(self.root, exclusive=False, wait=READ_LOCK_WAIT, on_timeout=_late):
-            data = {"raw": {n: self._read(n) for n in ("vocab.yaml", "regions.json", "REVISION")},
+            # The commit these bytes are, read at the same instant: a walk step records it, so "what
+            # the agent read" names a revision and not merely a time (2026-11-02). A write commits under
+            # the exclusive lock, so no commit lands between this and the reads beside it.
+            from .write import head as _head
+            try: at = _head(self.root)
+            except Exception: at = None
+            data = {"head": at, "raw": {n: self._read(n) for n in ("vocab.yaml", "regions.json", "REVISION")},
                     # The node cache is keyed on every entity's mtime, so a hit here is not a guess:
                     # it is the same content, and the stat that proved it happened under this lock.
                     "nodes": self.nodes(), "parsed": {}}
         Store._snap.data = data
         try: yield
         finally: Store._snap.data = None
+
+    @classmethod
+    def snapshot_head(cls) -> str | None:
+        """The commit the open snapshot was read at, or None outside one."""
+        d = getattr(cls._snap, "data", None)
+        return d.get("head") if d else None
 
     def _read(self, name: str) -> str | None:
         try: return (self.root / name).read_text(encoding="utf-8")

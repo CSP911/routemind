@@ -28,6 +28,7 @@ gets. There is one advertisement, and every engine reads it.
 from __future__ import annotations
 
 import argparse, time
+import hashlib
 import http.client
 import datetime as _dt
 import ipaddress
@@ -53,6 +54,19 @@ KIND = {"table": "table", "file": "file", "empty": "empty", "outside": "outside"
 
 
 # ── the API ───────────────────────────────────────────────────────────────────
+
+# The revision and file the last read was served from (X-Revision / X-Source), for the walk step
+# that reports it. One stdio session answers one call at a time, so "last" is this call's (2026-11-02).
+LAST_READ: dict = {}
+
+
+def _note_read(headers, *, source: bool = True) -> None:
+    LAST_READ.clear()
+    rev = headers.get("X-Revision") if headers is not None else None
+    if rev: LAST_READ["revision"] = rev
+    src = headers.get("X-Source") if (headers is not None and source) else None
+    if src: LAST_READ["source"] = src
+
 
 class Api:
     def __init__(self, base: str, actor: str, timeout: float = 30.0, unusable: str = ""):
@@ -97,6 +111,7 @@ class Api:
         req = urllib.request.Request(url, method=method, data=data, headers=headers)
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                if method == "GET": _note_read(r.headers)
                 return r.read().decode("utf-8", "replace")
         except urllib.error.HTTPError as e:
             body = e.read().decode("utf-8", "replace")
@@ -496,6 +511,8 @@ def circuit_fetch(name: str, path: str, accept: str) -> str:
     def go(tok):
         req = urllib.request.Request(url, headers={"Accept": accept, "X-Peer-Token": tok})
         with _CIRCUIT_OPENER.open(req, timeout=30) as r:
+            # The far end's revision; its file layout is its own and is not sent.
+            _note_read(r.headers, source=False)
             return r.read().decode("utf-8")
     try:
         return go(circuit_session(name))
@@ -993,12 +1010,21 @@ def _text(s: str) -> str:
     return str(s).encode("utf-8", "replace").decode("utf-8")
 
 
-def report(api: Api, wid: str, op: str, address: str, why: str) -> None:
+def report(api: Api, wid: str, op: str, address: str, why: str, shown: str | None = None) -> None:
     """One step onto the record. A step that cannot be recorded does not fail the read — but it is
-    said, because a footprint with a hole in it is worse than none when somebody replays it."""
+    said, because a footprint with a hole in it is worse than none when somebody replays it.
+
+    `shown` is the text the agent was given back. With it the step carries what was read: the commit
+    and file it was served from, and a hash of exactly those characters — so a replay can tell
+    whether the document it shows today is the one the agent quoted (docs/FOOTPRINT.md, 2026-11-02).
+    Without it (the read failed) the step is recorded as an attempt, which is what it was."""
     w = WALKS.get(wid)
     if not w or not w.get("remote"): return
-    try: api.send("POST", f"/v1/walks/{wid}/steps", {"op": op, "address": _text(address), "why": _text(why)})
+    body = {"op": op, "address": _text(address), "why": _text(why)}
+    if shown is not None:
+        body["read"] = {**{k: v for k, v in LAST_READ.items() if k in ("revision", "source")},
+                        "sha256": hashlib.sha256(_text(shown).encode("utf-8")).hexdigest()}
+    try: api.send("POST", f"/v1/walks/{wid}/steps", body)
     except ApiError as e:
         sys.stderr.write(f"knowledge-mcp: step not recorded on {wid} — {e}\n")
 
@@ -1476,6 +1502,26 @@ class Server:
             sys.stderr.write(f"knowledge-mcp: {name}: {type(e).__name__}: {e}\n")
             return f"{name} failed: {type(e).__name__}: {e}", True
 
+
+    def _walk_read(self, name: str, path: str, w: dict) -> str:
+        """What knowledge_table or knowledge_read gives the agent for `path`."""
+        # An address into an open circuit is answered by the circuit, not this backbone. The
+        # agent never composes one: it follows what a circuit's own tables printed, the same
+        # discipline as every other address here.
+        if path.startswith("/v1/circuits/"):
+            rest = path[len("/v1/circuits/"):]
+            cname, _, tail = rest.partition("/")
+            doc = name == "knowledge_read"
+            # The same two rules as a local address: a document is read at a document address
+            # (above), a table at a table's. Read skipped them, and returned a circuit's raw JSON
+            # with the far end's own `/v1/export/…` addresses in it (audit, 2026-11-02).
+            if not doc and not any(rx.match("/v1/" + tail) for rx in TABLE_SHAPES[:3]):
+                raise ApiError(f"{path} is not a table address. Through a circuit, tables are "
+                               f"/v1/circuits/{cname}/regions, …/regions/<area> and …/nodes/<id>, as its tables print them.")
+            body = circuit_fetch(cname, "/v1/" + tail, "text/markdown" if doc else "application/json")
+            return body if doc else circuit_table(cname, body)
+        if name == "knowledge_table": return second_area_note(w, path) + table_for(self.api, path)
+        return read_for(self.api, path)
     def _call(self, name: str, args) -> tuple[str, bool]:
         if not isinstance(args, dict):
             raise ApiError(f"{name}: arguments must be an object, e.g. {{\"path\": …, \"why\": …}}")
@@ -1504,27 +1550,16 @@ class Server:
             # back as "did not return JSON — is … a RouteMind?", blaming the install (2026-11-02).
             elif DOCUMENT.match((path or "").strip()):
                 raise ApiError(f"{path} is a document, not a table — call knowledge_read with it.")
-            report(self.api, w["id"], "table" if name == "knowledge_table" else "read", path, why)
-        # An address into an open circuit is answered by the circuit, not this backbone. The
-        # agent never composes one: it follows what a circuit's own tables printed, the same
-        # discipline as every other address here.
-        if name in ("knowledge_table", "knowledge_read") and path.startswith("/v1/circuits/"):
-            rest = path[len("/v1/circuits/"):]
-            cname, _, tail = rest.partition("/")
-            doc = name == "knowledge_read"
-            # The same two rules as a local address: a document is read at a document address
-            # (above), a table at a table's. Read skipped them, and returned a circuit's raw JSON
-            # with the far end's own `/v1/export/…` addresses in it (audit, 2026-11-02).
-            if not doc and not any(rx.match("/v1/" + tail) for rx in TABLE_SHAPES[:3]):
-                raise ApiError(f"{path} is not a table address. Through a circuit, tables are "
-                               f"/v1/circuits/{cname}/regions, …/regions/<area> and …/nodes/<id>, as its tables print them.")
-            body = circuit_fetch(cname, "/v1/" + tail,
-                                 "text/markdown" if doc else "application/json")
-            return (body if doc else circuit_table(cname, body)), False
-        if name == "knowledge_table":
-            out = table_for(self.api, path)
-            return second_area_note(w, path) + out, False
-        if name == "knowledge_read":  return read_for(self.api, path), False
+            # Recorded after the read, not before: the step carries what was served — the commit, the
+            # file, a hash of what the agent was shown — and those exist only once it has been
+            # (2026-11-02). A read that fails is still recorded, as an attempt.
+            op = "table" if name == "knowledge_table" else "read"
+            LAST_READ.clear()
+            try: out = self._walk_read(name, path, w)
+            except Exception:
+                report(self.api, w["id"], op, path, why); raise
+            report(self.api, w["id"], op, path, why, shown=out)
+            return out, False
         if name == "knowledge_overlay" and OPTIONAL["overlay"] and self.overlays():
             out = overlay_call(self.api, args)
             if str(args.get("op") or "") == "close":

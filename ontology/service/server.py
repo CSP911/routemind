@@ -650,7 +650,7 @@ class Handler(BaseHTTPRequestHandler):
     # instead of the ordinary one behind a check.
     _access = None
 
-    def _send(self, code: int, payload, ctype="application/json; charset=utf-8"):
+    def _send(self, code: int, payload, ctype="application/json; charset=utf-8", headers=None):
         if self._access is not None:
             a, self._access = self._access, None
             why = None
@@ -669,6 +669,11 @@ class Handler(BaseHTTPRequestHandler):
             payload = _to_export(payload)
         body = payload.encode("utf-8") if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False, indent=1).encode("utf-8")
         self.send_response(code); self.send_header("Content-Type", ctype); self.send_header("Content-Length", str(len(body)))
+        # Which commit this answer was read at, on every read served from a snapshot: a walk step
+        # records it beside a hash of what the agent was shown (docs/FOOTPRINT.md, 2026-11-02).
+        if 200 <= code < 300 and (at := Store.snapshot_head()): self.send_header("X-Revision", at)
+        for k, v in (headers or {}).items(): self.send_header(k, v)
+        self.send_header("Access-Control-Expose-Headers", "X-Revision, X-Source")
         self.send_header("Access-Control-Allow-Origin", "*"); self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Actor"); self.end_headers(); self.wfile.write(body)
 
@@ -1014,7 +1019,10 @@ class Handler(BaseHTTPRequestHandler):
                 # Not the same as "it does not exist". A caller has to be able to tell an entity
                 # nobody has written yet from an address that is wrong.
                 return self._err(404, f"node {parts[1]} has no document yet — it is listed as `type: empty`")
-            return self._send(200, body + "\n", "text/markdown; charset=utf-8")
+            # And which file, so a revision and a path name the exact bytes in git
+            # (`git show <rev>:<path>`). Not to a circuit's reader: the path is this backbone's layout.
+            return self._send(200, body + "\n", "text/markdown; charset=utf-8",
+                              headers=None if self._as_peer else {"X-Source": n.get("path") or ""})
         if len(parts) == 4 and parts[0] == "nodes" and parts[2] == "files":
             t = store.node_file(parts[1], parts[3])
             return self._send(200, t, "text/markdown; charset=utf-8") if t is not None else self._err(404, "file not listed in the node's `## Files`")
@@ -1121,7 +1129,8 @@ class Handler(BaseHTTPRequestHandler):
                                       {"kind": "agent", "name": actor}, check=bool(body.get("check")))
                     return self._send(201, {"id": w["id"], "seq": w["steps"][-1]["n"], "at": w["at"]})
                 if len(parts) == 3 and parts[2] == "steps":
-                    s = wstore().step(parts[1], str(body.get("op") or ""), str(body.get("address") or ""), str(body.get("why") or ""))
+                    s = wstore().step(parts[1], str(body.get("op") or ""), str(body.get("address") or ""), str(body.get("why") or ""),
+                                      body.get("read"))
                     return self._send(201, {"ok": True, **s})
                 if len(parts) == 3 and parts[2] == "close":
                     w = wstore().close(parts[1], str(body.get("outcome") or ""), str(body.get("why") or ""))

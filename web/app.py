@@ -253,6 +253,23 @@ def _largest_text(value: Any) -> int:
     return 0
 
 
+# Which commit an answer was read at, and from which file (ontology/service/server.py `_send`): a walk
+# step records them beside a hash of what the agent was shown (docs/FOOTPRINT.md, 2026-11-02). The
+# routes return dicts and strings, so the headers are carried past them in a box the middleware below
+# hands each request — a dict, because a sync route runs in a worker thread with a copy of the context,
+# and a copy of a reference is the same box.
+import contextvars as _contextvars                                                    # noqa: E402
+_PROVENANCE: _contextvars.ContextVar = _contextvars.ContextVar("routemind_provenance", default=None)
+_PROVENANCE_HEADERS = ("X-Revision", "X-Source")
+
+
+def _keep_provenance(headers) -> None:
+    box = _PROVENANCE.get()
+    if box is None or headers is None: return
+    for k in _PROVENANCE_HEADERS:
+        if (v := headers.get(k)): box[k] = v
+
+
 def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = None) -> dict:
     if method in WRITE_METHODS and payload is not None and _largest_text(payload) > MAX_DOCUMENT_BYTES:
         raise KnowledgeError(413, f"A document here is {_largest_text(payload):,} bytes, and this install takes "
@@ -269,7 +286,9 @@ def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = N
         headers={"Content-Type": "application/json", "Accept": "application/json", "X-Actor": quote((actor or "web")[:64], safe="")},
     )
     try:
-        with _iris_playbook_urlopen(proxy_request, timeout=180) as response: raw = response.read()
+        with _iris_playbook_urlopen(proxy_request, timeout=180) as response:
+            raw = response.read()
+            if method == "GET": _keep_provenance(response.headers)
     except _IrisPlaybookHTTPError as exc:
         detail, details, reason, values = None, [], None, None
         try:
@@ -324,6 +343,7 @@ def _ontology_text(pathname: str, actor: str) -> str:
     )
     try:
         with _iris_playbook_urlopen(proxy_request, timeout=60) as response:
+            _keep_provenance(response.headers)
             return response.read().decode("utf-8", "replace")
     except _IrisPlaybookHTTPError as exc:
         # The API's own sentence, and its own status where it meant one — the same rule as
@@ -1005,7 +1025,8 @@ def _relay(method: str, path: str, headers: dict[str, str], timeout: float) -> R
     try:
         with _iris_playbook_urlopen(req, timeout=timeout) as r:
             return Response(r.read(), status_code=r.status,
-                            media_type=r.headers.get("Content-Type") or "application/json")
+                            media_type=r.headers.get("Content-Type") or "application/json",
+                            headers={k: r.headers[k] for k in _PROVENANCE_HEADERS if r.headers.get(k)})
     except _IrisPlaybookHTTPError as exc:
         return Response(exc.read(), status_code=exc.code,
                         media_type=exc.headers.get("Content-Type") or "application/json")
@@ -1046,6 +1067,20 @@ def circuit_export(rest: str, request: Request) -> Response:
     if not parts or not all(_EXPORT_SEG.match(p) for p in parts):
         return JSONResponse({"error": "unknown export path"}, status_code=404)
     return _circuit_relay("GET", "/v1/export/" + "/".join(quote(p, safe="") for p in parts), request)
+
+
+@app.middleware("http")
+async def _provenance(request: Request, call_next):
+    """The read's revision and source, onto the answer — see `_keep_provenance`."""
+    if request.method not in ("GET", "HEAD") or not request.url.path.startswith("/api/knowledge"):
+        return await call_next(request)
+    box: dict = {}
+    token = _PROVENANCE.set(box)
+    try: response = await call_next(request)
+    finally: _PROVENANCE.reset(token)
+    if 200 <= response.status_code < 300:
+        for k, v in box.items(): response.headers[k] = v
+    return response
 
 
 @app.middleware("http")

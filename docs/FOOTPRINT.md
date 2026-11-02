@@ -21,12 +21,31 @@ home: invariant 11.
 
 ```
 agent ──MCP──▶ POST /v1/walks            opens                           (hop 0)
-          ──▶ POST /v1/walks/{id}/steps {op: table|read, address, why}
+          ──▶ POST /v1/walks/{id}/steps {op: table|read, address, why, read?}
           ──▶ POST /v1/walks/{id}/close {outcome: answered|not_found}
 screen ◀──    GET  /v1/walks?since=N    every step after N, oldest first — the live footprint
 screen ◀──    GET  /v1/walks/{id}       one walk, whole — the replay
 screen ◀──    GET  /v1/walks?limit=10&offset=20   a page of the history, newest first, with the total
 ```
+
+## What a step read, not only where it went
+
+A step is recorded **after** the read, and carries what was served:
+
+```
+"read": {"revision": "<the commit it was served at>",
+         "source":   "regions/expense/corp-card.md",      a document read only
+         "sha256":   "<hash of exactly the text the agent was given back>"}
+```
+
+The service sends the commit on every read it serves from one snapshot (`X-Revision`) and, for a
+document, the file (`X-Source`); the web port passes both through, and the MCP server hashes what it
+hands the agent. So "which version did it read" has an answer after the document has changed:
+`git show <revision>:<source>` is the text, and the hash says whether that is exactly what the agent
+saw. A replay used to show today's text under yesterday's step, and nothing said they differed
+(2026-11-02). Reasons on the map shows the commit as `@1a2b3c4`. A read that failed is still
+recorded, without `read`, as the attempt it was; a step from an older MCP server has none. Through
+a circuit the step carries the far end's commit, never its file layout.
 
 ## Decisions, and why
 

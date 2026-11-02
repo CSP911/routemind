@@ -65,7 +65,7 @@ globalThis.fetch = async (url, opts) => {
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text(), headers: res.headers };
 };
 new Function(src.replace('if (document.readyState === "loading")',
-  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw, hist, histLoad, fpRestore, staleShow };\n  if (document.readyState === "loading")'))();
+  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw, hist, histLoad, fpRestore, staleShow, fpTrail };\n  if (document.readyState === "loading")'))();
 const kn = globalThis.__kn; const { state, fp } = kn;
 const settle = async (n = 40) => { for (let i = 0; i < n; i++) await new Promise((r) => setTimeout(r, 5)); };
 const results = []; const check = (name, cond, extra = "") => results.push(`${cond ? "ok  " : "FAIL"} ${name}${cond || !extra ? "" : "   — " + extra}`);
@@ -288,6 +288,16 @@ for (const x of fp.walks.values()) { x.state = "closed"; if (x.now) x.now = { ..
 state.open = [];
 await kn.fpRestore(); await settle();
 check("  and not a walk that ended long ago", state.open.length === 0, String(state.open));
+
+// ── the reasons list says which commit each read was served at ───────────────
+{
+  const w5 = await post("walks", { question: "which version", how: "screen-check" });
+  await post(`walks/${w5.id}/steps`, { op: "read", address: "/v1/nodes/corp-card/body", why: "the rule",
+                                       read: { revision: "1a2b3c4d".padEnd(40, "0"), source: "regions/expense/corp-card.md" } });
+  await kn.fpTrail(w5.id); await settle();
+  const pre = find(byId.knEdit, (n) => n.tag === "pre")[0];
+  check("Reasons names the commit a read was served at", !!pre && pre.textContent.includes("@1a2b3c4"), pre ? pre.textContent : "no list");
+}
 
 // ── "Still right" is recorded ─────────────────────────────────────────────────
 // It only removed the strip's row in the browser; nothing said the line had been checked (2026-11-02).

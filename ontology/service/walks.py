@@ -37,6 +37,31 @@ ID_RE = re.compile(r"^wk_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9a-f]{6}$")
 OPS = ("open", "resolve", "table", "read", "close")
 
 
+
+_HEX = re.compile(r"[0-9a-f]{40}|[0-9a-f]{64}")
+
+
+def _read_record(read) -> dict | None:
+    """What a step actually read: the commit it was served at, the file, and a hash of what the
+    reader was shown. A walk said *where* an agent went and why, never *which version* it saw — so a
+    replay after the document changed showed today's text under yesterday's step (2026-11-02).
+    Optional, so an older MCP server still records its steps; checked, so it cannot become a place to
+    put anything else."""
+    if read is None: return None
+    if not isinstance(read, dict): raise WalkError(400, "read must be an object: revision, source, sha256")
+    out = {}
+    rev, sha, src = read.get("revision"), read.get("sha256"), read.get("source")
+    if rev is not None:
+        if not (isinstance(rev, str) and len(rev) in (40, 64) and _HEX.fullmatch(rev)): raise WalkError(400, "read.revision must be a full commit id")
+        out["revision"] = rev
+    if sha is not None:
+        if not (isinstance(sha, str) and len(sha) == 64 and _HEX.fullmatch(sha)): raise WalkError(400, "read.sha256 must be 64 hex characters")
+        out["sha256"] = sha
+    if src is not None:
+        if not (isinstance(src, str) and 0 < len(src) <= 300 and ".." not in src.split("/")): raise WalkError(400, "read.source must be a repository path")
+        out["source"] = src
+    return out or None
+
 class WalkError(Exception):
     def __init__(self, status: int, message: str):
         super().__init__(message); self.status = status
@@ -129,8 +154,8 @@ class WalkStore:
         return w
 
     # ---- writes ----
-    def _step(self, w: dict, op: str, address: str, why: str) -> dict:
-        s = {"n": self._next_seq(), "op": op, "address": address, "why": why, "at": _now()}
+    def _step(self, w: dict, op: str, address: str, why: str, read: dict | None = None) -> dict:
+        s = {"n": self._next_seq(), "op": op, "address": address, "why": why, "at": _now(), **({"read": read} if read else {})}
         w["steps"].append(s); w["touched_at"] = s["at"]
         return s
 
@@ -147,15 +172,16 @@ class WalkStore:
             self._write(w)
         return w
 
-    def step(self, wid: str, op: str, address: str, why: str) -> dict:
+    def step(self, wid: str, op: str, address: str, why: str, read=None) -> dict:
         if op not in ("resolve", "table", "read"): raise WalkError(400, f"op must be resolve, table or read (got {op!r})")
+        read = _read_record(read)
         why = str(why or "").strip()
         if not why: raise WalkError(400, "why is required — a step with no reason is the access log, which already exists")
         with self._lock:
             w = self.get(wid)
             if w["state"] != OPEN: raise WalkError(409, f"walk {wid} is {w['state']} — a step cannot be added to it")
             if len(w["steps"]) >= self.steps_max: raise WalkError(409, f"walk {wid} has {self.steps_max} steps already — it is looping")
-            s = self._step(w, op, str(address or ""), why[:200])
+            s = self._step(w, op, str(address or ""), why[:200], read)
             self._write(w)
         return s
 
