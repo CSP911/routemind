@@ -85,6 +85,7 @@ Each starts the service itself on a throwaway repository, except where it says o
 | `check/robust-check.py` | 16 | What an operator meets: a write killed mid-way, SIGTERM, a hand edit, a 200-row table on a large map, a file that does not parse, an area deleted by hand, `reset.sh`, the agent's secret, the area-switch note |
 | `check/drift-check.py` | 17 | A hand-edited repository served while `regions.json` is stale |
 | `check/walk-check.py` | — | Invariant 1 at the agent's door: every walk starts at hop 0 |
+| `check/mcp-edge-check.py` | 60 | The MCP server against what a client, a `.env` and a far end that is not RouteMind can hand it — a batch on the stream, a BOM, an SSH banner at `--api`, a circuit to an HTML page |
 | `check/same-answer-check.py` | — | Invariant 4: every reader of one fact gets the same answer |
 | `check/transact-check.py` | — | Invariants 5 and 7: a routing change is a commit, and nothing is reported done that did not happen |
 | `check/follow-check.py` | — | Invariant 3: what a reader holds follows its source |
