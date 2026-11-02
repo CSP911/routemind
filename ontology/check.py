@@ -733,6 +733,52 @@ if (pathlib.Path("data/repo") / "regions").is_dir():
     for _cid in _ids: (_chain / f"{_cid}.md").unlink()
     shutil.rmtree(_T, ignore_errors=True)
 
+# ── the footprint and overlays, read and written from many threads ───────────
+# The service is a ThreadingHTTPServer. A walk past its open hours is closed on the way past by
+# whatever reads it, and that close wrote outside the store's lock with fixed temporary names: twelve
+# parallel polls of /v1/walks?since=0 answered 404 "walks/_seq.tmp" six times, and a step number could
+# be handed out twice (audit SV-13, 2026-11-02). Overlays: six parallel `add`s stored two (SV-14).
+def _parallel(fn, n):
+    import threading as _t
+    errs, gate = [], _t.Barrier(n)
+    def run(i):
+        gate.wait()
+        try: fn(i)
+        except Exception as e: errs.append(f"{type(e).__name__}: {e}")
+    ts = [_t.Thread(target=run, args=(i,)) for i in range(n)]
+    for x in ts: x.start()
+    for x in ts: x.join()
+    return errs
+
+
+def _footprint_and_overlays():
+    import tempfile as _t2, time as _tm
+    from service.walks import WalkStore
+    from service.overlays import OverlayStore
+    out = {}
+    ws = WalkStore(pathlib.Path(_t2.mkdtemp(prefix="check-walks-")), keep_hours=6, open_hours=0.0003)
+    for i in range(10): ws.open(f"question {i}", "check", {})
+    _tm.sleep(1.3)                                   # every walk now past its open hours
+    errs = []
+    for _ in range(5): errs += _parallel(lambda i: ws.since(0), 12)
+    out["walks errors"] = errs[:2]
+    ns = [s["n"] for w in ws.all() for s in w["steps"]]
+    out["walks steps"] = (len(ns), len(set(ns)), sorted(w["state"] for w in ws.all()).count("closed"))
+    os_ = OverlayStore(pathlib.Path(_t2.mkdtemp(prefix="check-overlays-")), members_max=20)
+    ok = lambda a: True
+    ov = os_.create("q", [{"address": "/v1/regions/a", "why": "w"}], {"kind": "agent"}, ok)
+    out["overlay errors"] = _parallel(lambda i: os_.amend(ov["id"], f"/v1/nodes/n{i}", None, "w", ok), 6)[:2]
+    out["overlay members"] = len(os_.get(ov["id"])["members"])
+    return out
+
+
+try: _fo = _footprint_and_overlays()
+except Exception as _e: _fo = {"raised": f"{type(_e).__name__}: {_e}"}
+eq("twelve parallel reads past a walk's open hours raise nothing", _fo.get("walks errors"), [])
+eq("  every step has its own number, and each walk closed once", _fo.get("walks steps"), (20, 20, 10))
+eq("six parallel adds to one overlay raise nothing", _fo.get("overlay errors"), [])
+eq("  and all six are stored", _fo.get("overlay members"), 7)
+
 # ── does the kind prompt describe what a kind does now ───────────────────────
 # Relations and edge rules were retired 2026-10-07; the model choosing a kind was still told a kind
 # "decides which relations the node may take part in" until 2026-11-02. Read from the source, so no

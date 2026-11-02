@@ -14,7 +14,7 @@ asks about costs nothing by being stale, and the one moment staleness matters is
 read. If this ever seems to need a background job, something above it went wrong.
 """
 from __future__ import annotations
-import calendar, json, re, time
+import calendar, json, re, threading, time
 from pathlib import Path
 
 ID_RE = re.compile(r"^ov_\d{4}-\d{2}-\d{2}_[0-9a-f]{4,8}$")
@@ -74,6 +74,11 @@ class OverlayStore:
         self.members_max, self.rows_max = members_max, rows_max
         self.open_hours, self.keep_days = open_hours, keep_days
         self.root.mkdir(parents=True, exist_ok=True)
+        # Every change is read-modify-write of one file. Without this, six parallel `add`s to one
+        # overlay stored two — each read the record before the others wrote — and the losers raced on
+        # the one `.tmp` name (audit SV-14, 2026-11-02). Re-entrant because a change reads, and a read
+        # may settle expiry, which writes.
+        self._lock = threading.RLock()
 
     # ---- files ----
     def path(self, oid: str) -> Path:
@@ -96,7 +101,18 @@ class OverlayStore:
 
     # ---- expiry, evaluated on the way past ----
     def _settle(self, ov: dict) -> dict | None:
-        """Apply expiry to one record. Returns None when it should no longer exist."""
+        """Apply expiry to one record. Returns None when it should no longer exist.
+
+        Only a record that is due takes the lock, and it is settled as it is on disk by then — the copy
+        a reader holds may be older than an `add` that finished meanwhile."""
+        due = ((ov.get("state") == OPEN and _age_hours(ov.get("touched_at") or ov.get("at", "")) >= self.open_hours)
+               or (ov.get("state") != OPEN and _age_hours(ov.get("closed_at") or ov.get("at", "")) >= self.keep_days * 24))
+        if not due: return ov
+        with self._lock:
+            ov = self._read(self.path(ov["id"]))
+            return self._settle_locked(ov) if ov else None
+
+    def _settle_locked(self, ov: dict) -> dict | None:
         if ov.get("state") == OPEN and _age_hours(ov.get("touched_at") or ov.get("at", "")) >= self.open_hours:
             ov["state"], ov["outcome"] = ABANDONED, None
             ov["closed_at"] = _now()
@@ -164,6 +180,10 @@ class OverlayStore:
         return ov
 
     def amend(self, oid: str, add: str | None, remove: str | None, why: str, resolve, rows_of=None) -> dict:
+        with self._lock:
+            return self._amend(oid, add, remove, why, resolve, rows_of)
+
+    def _amend(self, oid: str, add: str | None, remove: str | None, why: str, resolve, rows_of=None) -> dict:
         ov = self.get(oid)
         if ov["state"] != OPEN:
             raise OverlayError(409, f"overlay {oid} is {ov['state']} — a closed record does not change")
@@ -188,6 +208,10 @@ class OverlayStore:
         return ov
 
     def close(self, oid: str, outcome: str, used: list[str], resolve) -> dict:
+        with self._lock:
+            return self._close(oid, outcome, used, resolve)
+
+    def _close(self, oid: str, outcome: str, used: list[str], resolve) -> dict:
         ov = self.get(oid)
         if ov["state"] != OPEN:
             raise OverlayError(409, f"overlay {oid} is already {ov['state']}")

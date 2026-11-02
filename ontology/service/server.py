@@ -14,7 +14,7 @@ mounted it; agents here read this API), service fragments (`ONTOLOGY_SERVICES`, 
 legacy fragment directory, and the curator's sleep and observations (no caller anywhere).
 """
 from __future__ import annotations
-import datetime, json, os, re, sys, time, traceback, uuid
+import datetime, json, os, re, sys, threading, time, traceback, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, unquote
@@ -474,28 +474,34 @@ _overlay_store = None
 
 
 _walk_store = None
+# One store each, made once. A store's lock is what serialises its writes (audit SV-13/SV-14,
+# 2026-11-02), and two first requests at once could otherwise each make a store, and a lock, of
+# their own.
+_stores_lock = threading.Lock()
 
 
 def wstore():
     """The walk record, when `ONTOLOGY_WALKS` is set. Settings mirror the overlay store's."""
     global _walk_store
     if not WALKS: raise WriteError(501, "ONTOLOGY_WALKS is not configured — the footprint is off")
-    if _walk_store is None:
-        _walk_store = walks.WalkStore(WALKS,
-                                      keep_hours=float(os.environ.get("ONTOLOGY_WALK_KEEP_HOURS", "6")),
-                                      open_hours=float(os.environ.get("ONTOLOGY_WALK_OPEN_HOURS", "1")))
+    with _stores_lock:
+        if _walk_store is None:
+            _walk_store = walks.WalkStore(WALKS,
+                                          keep_hours=float(os.environ.get("ONTOLOGY_WALK_KEEP_HOURS", "6")),
+                                          open_hours=float(os.environ.get("ONTOLOGY_WALK_OPEN_HOURS", "1")))
     return _walk_store
 
 
 def ostore():
     global _overlay_store
-    if _overlay_store is None:
-        _overlay_store = overlays.OverlayStore(
-            OVERLAYS,
-            members_max=int(os.environ.get("ONTOLOGY_OVERLAY_MEMBERS", "8")),
-            rows_max=int(os.environ.get("ONTOLOGY_OVERLAY_ROWS", "120")),
-            open_hours=float(os.environ.get("ONTOLOGY_OVERLAY_OPEN_HOURS", "24")),
-            keep_days=float(os.environ.get("ONTOLOGY_OVERLAY_KEEP_DAYS", "30")))
+    with _stores_lock:
+        if _overlay_store is None:
+            _overlay_store = overlays.OverlayStore(
+                OVERLAYS,
+                members_max=int(os.environ.get("ONTOLOGY_OVERLAY_MEMBERS", "8")),
+                rows_max=int(os.environ.get("ONTOLOGY_OVERLAY_ROWS", "120")),
+                open_hours=float(os.environ.get("ONTOLOGY_OVERLAY_OPEN_HOURS", "24")),
+                keep_days=float(os.environ.get("ONTOLOGY_OVERLAY_KEEP_DAYS", "30")))
     return _overlay_store
 
 
