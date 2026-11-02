@@ -177,6 +177,11 @@ try:
     check("  nor any other part of /v1 that is not a document", err is True and "/v1/nodes/<id>/body" in t, t)
     t, err = m.call("knowledge_read", {"path": "/v1/nodes/qualified-list/body", "why": "the evidence list"})
     check("  and still reads a document", err is False and "Qualifying evidence" in t, t[:120])
+    # The mirror case: a document handed to the table tool was fetched, and its markdown answered
+    # "did not return JSON — is … a RouteMind?", blaming the install for the wrong tool (verify, 2026-11-02).
+    t, err = m.call("knowledge_table", {"path": "/v1/nodes/qualified-list/body", "why": "the evidence list"})
+    check("knowledge_table on a document says to read it, not that the install is wrong",
+          err is True and "knowledge_read" in t and "a RouteMind?" not in t, t)
 
     # ── a step whose reason cannot be encoded is still recorded (MC-18) ───────
     m.call("knowledge_table", {"question": "surrogate-probe"})

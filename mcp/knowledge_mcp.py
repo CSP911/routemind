@@ -1500,6 +1500,10 @@ class Server:
             # Refused before it is recorded, so a replay does not show the agent "reading" an
             # address that is not a document (2026-11-02).
             if name == "knowledge_read": document_address(path)
+            # And the mirror: a document handed to the table tool was fetched, and its markdown came
+            # back as "did not return JSON — is … a RouteMind?", blaming the install (2026-11-02).
+            elif DOCUMENT.match((path or "").strip()):
+                raise ApiError(f"{path} is a document, not a table — call knowledge_read with it.")
             report(self.api, w["id"], "table" if name == "knowledge_table" else "read", path, why)
         # An address into an open circuit is answered by the circuit, not this backbone. The
         # agent never composes one: it follows what a circuit's own tables printed, the same
