@@ -60,7 +60,9 @@ class WalkStore:
         self.root = Path(root)
         self.keep_hours, self.open_hours, self.steps_max = keep_hours, open_hours, steps_max
         self.root.mkdir(parents=True, exist_ok=True)
-        self._lock = threading.Lock()
+        # Re-entrant: a step takes it and then reads the walk, and reading may settle it, which takes
+        # it again.
+        self._lock = threading.RLock()
 
     # ---- files ----
     def path(self, wid: str) -> Path:
@@ -90,13 +92,25 @@ class WalkStore:
         except Exception: return 0
 
     # ---- expiry, on the way past ----
+    def _due(self, w: dict) -> bool:
+        return ((w.get("state") == OPEN and _age_hours(w.get("touched_at") or w.get("at", "")) >= self.open_hours)
+                or (w.get("state") != OPEN and _age_hours(w.get("closed_at") or w.get("at", "")) >= self.keep_hours))
+
     def _settle(self, w: dict) -> dict | None:
-        if w.get("state") == OPEN and _age_hours(w.get("touched_at") or w.get("at", "")) >= self.open_hours:
-            self._close(w, "abandoned", f"untouched for {self.open_hours:g}h")
-        if w.get("state") != OPEN and _age_hours(w.get("closed_at") or w.get("at", "")) >= self.keep_hours:
-            self.path(w["id"]).unlink(missing_ok=True)
-            return None
-        return w
+        # Settling writes — a close takes a step number — so it happens under the lock, on the walk as
+        # it is on disk by then. A read settled outside it: twelve parallel polls past the open hours
+        # raced on `_seq.tmp` (404 "[Errno 2]" six times) and handed one number to two steps (audit
+        # SV-13, 2026-11-02). Only a walk that is due pays for the lock; an ordinary read does not.
+        if not self._due(w): return w
+        with self._lock:
+            w = self._read(self.path(w["id"]))
+            if not w: return None
+            if w.get("state") == OPEN and _age_hours(w.get("touched_at") or w.get("at", "")) >= self.open_hours:
+                self._close(w, "abandoned", f"untouched for {self.open_hours:g}h")
+            if w.get("state") != OPEN and _age_hours(w.get("closed_at") or w.get("at", "")) >= self.keep_hours:
+                self.path(w["id"]).unlink(missing_ok=True)
+                return None
+            return w
 
     def all(self, state: str | None = None) -> list[dict]:
         out = []

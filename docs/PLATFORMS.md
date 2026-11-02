@@ -1,14 +1,11 @@
 # Where it runs
 
-The service is three Linux containers, so it is identical on every host Docker runs on. What differs
-is the handful of pieces that run on your own machine instead — and on Windows, three of them do.
-
-macOS, Linux and Windows. The service is three Linux containers, so it is identical on every host
+macOS, Linux and Windows. The service is two Linux containers, so it is identical on every host
 Docker runs on; what differs is the handful of pieces that run on your own machine instead.
 
 | | macOS | Linux | Windows |
 |---|---|---|---|
-| The three containers | yes | yes | yes — Docker Desktop, WSL2 backend |
+| The two containers | yes | yes | yes — Docker Desktop, WSL2 backend |
 | The map, in a browser | yes | yes | yes |
 | `mcp/knowledge_mcp.py` | yes | yes | yes, natively — no WSL needed |
 | `install.sh`, `check/*` | yes | yes | from WSL or Git Bash |
@@ -18,7 +15,8 @@ The MCP server is one file, stdlib only, and runs on **any python 3.7 or newer**
 
 Three things differ, and only the first one bites during normal use.
 
-1. **Write `python`, not `python3`,** in every MCP config below. On Windows `python3` is usually not
+1. **Write `python`, not `python3`,** in your MCP client's config (`.mcp.json`, or wherever your
+   client keeps its servers — [AGENTS.md](AGENTS.md)). On Windows `python3` is usually not
    a program at all: it is an alias that opens the Microsoft Store. Give the script an absolute path
    too, unless your client lets you set a working directory.
 2. **Run `install.sh` and anything in `check/` from WSL or Git Bash.** They are POSIX shell and there

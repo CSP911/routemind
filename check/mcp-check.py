@@ -16,12 +16,16 @@ if _os.environ.get("KNOWLEDGE_TOKEN"):
     _op = _ur.build_opener(); _op.addheaders = [("Authorization", "Bearer " + _os.environ["KNOWLEDGE_TOKEN"])]
     _ur.install_opener(_op)
 
-# No address given: this checkout's install, read by the MCP server's own reader (WEB_PORT in .env) —
-# it was :8080, whichever RouteMind that was (2026-11-02).
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mcp"))
-from knowledge_mcp import _default_api                                    # noqa: E402
-API = sys.argv[1] if len(sys.argv) > 1 else _default_api()
 HERE = os.path.dirname(os.path.abspath(__file__))
+# With no argument, the address the MCP server itself would use — WEB_PORT from this checkout's .env.
+# It was 8080 whatever .env said, so on a `--port` install it checked whatever else answered on 8080,
+# while docs/AGENTS.md called it the check of this one (audit, 2026-11-02).
+if len(sys.argv) > 1: API = sys.argv[1]
+else:
+    sys.path.insert(0, os.path.join(os.path.dirname(HERE), "mcp"))
+    import knowledge_mcp as _k
+    API, _why = _k._default_api()
+    if _why: sys.exit(f"FAIL no address to check — {_why}")
 results = []
 
 
@@ -228,9 +232,11 @@ pr = c.call("prompts/list")["result"]["prompts"]
 names = {x["name"] for x in pr}
 check("the prompts a client can offer", {"knowledge_start", "circuit"} <= names, json.dumps(sorted(names)))
 circuit = next((x for x in pr if x["name"] == "circuit"), {})
-check("  circuit asks for an address and a token",
+# The token is optional: KNOWLEDGE_CIRCUIT_KEYS can hold it, which keeps it out of the transcript
+# (docs/CIRCUIT.md) — a prompt that required one never looked there (audit, 2026-11-02).
+check("  circuit asks for an address, and a token unless KNOWLEDGE_CIRCUIT_KEYS holds it",
       {(a["name"], bool(a.get("required"))) for a in (circuit.get("arguments") or [])}
-      >= {("url", True), ("token", True)},
+      >= {("url", True), ("token", False)},
       json.dumps(circuit.get("arguments")))
 
 # Each prompt answers as itself. `prompts/get` ignored the name it was given and returned hop 0 for

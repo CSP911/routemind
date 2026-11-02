@@ -19,7 +19,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # :8080 — whichever RouteMind that was, with this checkout's key presented to it (2026-11-02).
 sys.path.insert(0, os.path.join(ROOT, "mcp"))
 from knowledge_mcp import _default_api                                    # noqa: E402
-BASE = (sys.argv[1] if len(sys.argv) > 1 else _default_api().rsplit("/api/knowledge", 1)[0]).rstrip("/")
+if len(sys.argv) > 1: BASE = sys.argv[1].rstrip("/")
+else:
+    _api, _why = _default_api()
+    if _why: sys.exit(f"FAIL no address to check — {_why}")
+    BASE = _api.rsplit("/api/knowledge", 1)[0].rstrip("/")
 KEY = os.environ.get("ROUTEMIND_TOKEN", "")
 results = []
 

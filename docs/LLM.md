@@ -61,12 +61,14 @@ lines in `.env` and re-run it.
 **You write every routing line yourself**, with a model or without: when an agent should choose an
 area, what a node holds, what a document is for. Each field shows how to write it, and **Suggest fills
 the box — it does not save.** Nothing is written until you press the form's own button. The address a
-name gives is filled in as you type the name, and you can change it before saving. The one thing only
-a model can do is give an address to a name that is not in Latin letters; without one, you type that
-address.
+name gives is filled in as you type the name, and you can change it before saving. A name in Latin
+letters, Hangul or kana gets its address mechanically (`출장비 기준` → `chuljangbi-gijun`); the one
+thing only a model can do is give an address to a name in Chinese characters, which need a dictionary
+of readings — without one, you type that address.
 
-**A kind is never asked for.** Its one reader is `export: no` on a kind in `vocab.yaml`, so RouteMind
-picks it with an LLM where there is one and takes `default_kind` from `vocab.yaml` where there is not.
+**A kind is never asked for on the screen.** What reads it is `export: no` on a kind in `vocab.yaml`,
+and an agent placing a document, which is shown the kinds and may pass one. So RouteMind picks it with
+an LLM where there is one and takes `default_kind` from `vocab.yaml` where there is not.
 The response says `kind_generated` either way, so a domain that relies on `export: no` can find the
 ones nobody actually chose.
 

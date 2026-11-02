@@ -22,7 +22,8 @@ Dropped on the way: `docker/ontology/web/` (2D/3D graph viewers, referenced by n
 1. **A fresh ontology could not create its first area** (`ontology/service/write.py`).
    The `CORE.md` row is inserted after the last existing row, and an empty table has none, so no row
    could ever be first — a 500. It now falls back to the separator line. **Every new IRIS install
-   has this defect; only an install that already has data hides it.**
+   has this defect; only an install that already has data hides it.** (`CORE.md` has since been
+   retired here; the defect is still IRIS's.)
 
 2. **A non-ASCII name on a commit silently became `web`** (`ontology/service/server.py`,
    `web/app.py`). HTTP headers are latin-1 and the actor crosses two of them. `X-Actor` is
@@ -34,12 +35,14 @@ Dropped on the way: `docker/ontology/web/` (2D/3D graph viewers, referenced by n
 
 ## Removed here
 
-- **All authentication.** IRIS backs it with PostgreSQL; this build has none (operator decision).
-  The seam is `_require_admin` in `web/app.py` — putting a gate back is that one function.
+- **IRIS's authentication.** IRIS backs it with PostgreSQL; this build does not. It consumes an
+  identity instead of keeping one: `KNOWLEDGE_AUTH` is `open` (the default), `token` or `proxy` —
+  [AUTH.md](AUTH.md).
 - **The Pi coupling.** `▶ Start` and `KNOWLEDGE_AGENT_URL`, the publish step that copied a checkout
   for Pi to mount, the service fragments, and the curator's sleep and observations — all retired on
   2026-10-07, none of them with anything behind it here.
-- **i18n keys 602 → English only.**
+- **IRIS's 602 i18n keys.** The screen has its own dictionaries now — English, Korean, Japanese and
+  Simplified Chinese ([I18N.md](I18N.md)).
 
 ## Added here
 
@@ -49,6 +52,6 @@ Dropped on the way: `docker/ontology/web/` (2D/3D graph viewers, referenced by n
 
 ## Not done
 
-`docs/DOMAIN-NEUTRALITY.md`: three area-name constants, the `learned` rules, Korean kind names used
-as semantic constants in edge rules that consequently never fire, and — the real gap — **no editor
-for `vocab.yaml`, which is the domain**.
+**No editor for `vocab.yaml`, which is the domain** — and why, on the evidence, day one does not
+need one: `docs/DOMAIN-NEUTRALITY.md`, which also records the domain constants that were taken out
+of the code.

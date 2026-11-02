@@ -10,7 +10,15 @@ backbones over time and that room crossed with the rest; they were retired with 
 exchange on 2026-10-08.)
 
 ```sh
-docker compose exec ontology python3 /tmp/check/scenarios.py     # see the header of the file
+python3 check/scenarios.py          # on the host, with pyyaml; needs no install
+```
+
+Or in the ontology container, which has pyyaml — what `check/all.sh` does
+([CHECKS.md](CHECKS.md#where-each-one-can-run)):
+
+```sh
+docker cp check $(docker compose ps -q ontology):/tmp/check
+docker compose exec ontology python3 /tmp/check/scenarios.py
 ```
 
 ## Why these and not others

@@ -1,7 +1,7 @@
 # Installing, and applying an update to an install you already have
 
 Two routes. A new install is one command. An install that is already running — with your own
-areas and documents in `data/repo` — takes four steps (1–4 below; 5 is a list of what went away),
+areas and documents in `data/repo` — takes three steps (1–3 below; 4 is a list of what went away),
 and the rest of this page is what each one does, what it changes on its own, and how to see that it
 worked.
 
@@ -45,16 +45,6 @@ Nothing to do beyond the usual `git pull && ./install.sh`. What changes on its o
 - **On a phone** the map no longer scrolls the page sideways and opens on the Back-Bone.
 - **New doc:** [WRITING.md](WRITING.md) — five rules for sentences and pages an agent stays right on.
 
-## 2026-10-09 — `knowledge_place` writes a change set
-
-`here` no longer puts a page in and leaves the line above untouched. It is one commit of several
-decisions — the page, a holder if it needs one, siblings moved under it — and the line over every
-table it changes has to be kept or reworded in the same call, or it writes nothing and prints the
-lines (docs/CHANGE.md). An agent that calls `here` the old way gets that refusal and the way to answer
-it; nothing to configure. Every write's answer now also carries `impacted`, the lines a write may
-have left stale, and the map shows them in a strip. `use_when` in an entity's frontmatter is written
-quoted from now on; files written earlier read as before.
-
 ## 2026-10-10 — install, circuits and the agent, after a full pass as a new and an updating user
 
 - **`.mcp.json` names no port any more.** The MCP server reads `WEB_PORT` from `.env` itself, so
@@ -79,6 +69,16 @@ quoted from now on; files written earlier read as before.
   `chuljangbi-gijun` and keeps its name), a document added to an area shows at once, and the strip of
   stale lines drops a line once it has been rewritten. `/healthz` answers on the web port.
 
+## 2026-10-09 — `knowledge_place` writes a change set
+
+`here` no longer puts a page in and leaves the line above untouched. It is one commit of several
+decisions — the page, a holder if it needs one, siblings moved under it — and the line over every
+table it changes has to be kept or reworded in the same call, or it writes nothing and prints the
+lines (docs/CHANGE.md). An agent that calls `here` the old way gets that refusal and the way to answer
+it; nothing to configure. Every write's answer now also carries `impacted`, the lines a write may
+have left stale, and the map shows them in a strip. `use_when` in an entity's frontmatter is written
+quoted from now on; files written earlier read as before.
+
 ## A new install
 
 ```sh
@@ -100,7 +100,7 @@ git -C data/repo status --short
 
 Empty is what you want. If you edited areas or documents in an editor, commit them in `data/repo`
 first (`git -C data/repo add -A && git -C data/repo commit -m "…"`). The service refuses every write
-on a dirty tree, and the startup step in 4 only repairs a clean one — it will not commit your
+on a dirty tree, and the startup step in 3 only repairs a clean one — it will not commit your
 half-finished edit along with its own.
 
 ### 2. Get the new code
@@ -113,24 +113,15 @@ git pull
 An install made before 2026-10-10 on a port other than 8080 has a `.mcp.json` that `install.sh`
 rewrote; the file no longer names a port, so put it back before pulling and the pull goes through.
 
-### 3. Make the directories a newer version needs
-
-```sh
-mkdir -p data/walks
-```
-
-`install.sh` makes these on a new install; an existing one has to make the ones added since. As of
-2026-10-07 that is `data/walks`, where the footprint keeps every walk for six hours
-([FOOTPRINT.md](FOOTPRINT.md)). Without it Docker creates the directory as root and the ontology
-cannot write there.
-
-### 4. Rebuild and restart
+### 3. Rebuild and restart
 
 ```sh
 ./install.sh --no-llm   # or plain ./install.sh if you want to add an LLM now
 ```
 
-That is the whole step: it carries the circuit key across under its new name, builds, and restarts
+That is the whole step: it makes every directory under `data/` a newer version needs (as of
+2026-10-07 that includes `data/walks`, where the footprint keeps every walk for six hours —
+[FOOTPRINT.md](FOOTPRINT.md)), carries the circuit key across under its new name, builds, and restarts
 with `--remove-orphans`, which takes down the `exchange` container an install made before 2026-10-08
 is still running. Safe to re-run.
 
@@ -147,7 +138,7 @@ If the tree was not clean, nothing is committed: the log says so, and readers ar
 the files say. Commit or discard, then restart. The repair commit is easiest to see in the repository
 itself — `git -C data/repo log -3 --oneline` — since the log line goes with the container it came from.
 
-### 5. What went away, and what you can delete
+### 4. What went away, and what you can delete
 
 Retired on 2026-10-07, because nothing read them:
 
@@ -166,7 +157,7 @@ Retired on 2026-10-07, because nothing read them:
 - **`edges.yaml` and `CORE.md`** are no longer read: no agent was ever shown either, and the map drew
   no edge. Yours stay in `data/repo` untouched and can be deleted. `relations` and `edge_rules` in
   `vocab.yaml` are ignored; `kinds` stay, because `export: no` on a kind still keeps that sort of
-  thing from crossing a link. A new area needs one sentence (`use_when`), not a CORE.md row as well.
+  thing from crossing a circuit. A new area needs one sentence (`use_when`), not a CORE.md row as well.
   On the first start `regions.json` is regenerated without its `description` column, in one commit.
 - **`aliases`** are not checked or served. A file that has them keeps them across an edit.
 - **`knowledge_place`** shows each row's line and nothing else — no column of shared words — and no
@@ -178,7 +169,8 @@ Retired on 2026-10-07, because nothing read them:
 Retired on 2026-10-08 — **a circuit is the one way left to read another backbone** ([CIRCUIT.md](CIRCUIT.md)):
 
 - **Standing links** (`peers.yaml`), the **exchange** and its **operator screen** (`admin/`), and
-  **encrypted export bundles** (`transfer/`, the map's **Export** button). Another backbone's areas no
+  **encrypted export bundles** (`transfer/`, and the map's old bundle-download button — the
+  **Export** card on an area today is the circuit export decision, not that). Another backbone's areas no
   longer appear in your hop 0, and the map draws no domain wall. `data/repo/peers.yaml` and
   `data/exchange` are inert; delete them when you like, and the image with them:
   `docker image ls | grep exchange`, then `docker image rm` it.
@@ -230,8 +222,9 @@ file up. What an agent now does differently:
 The shipped `.mcp.json` runs the server with no address, and it finds this install's web app from
 `.env`; every path it calls is routed there, and `check/mcp-routes-check.py` keeps the two lists
 together. With overlays off (the default) a walk is not closed "answered" by the agent: it stays open
-until the next question or an hour passes, and is then closed `abandoned` — which says the next
-question started, not that this one failed.
+until the next question starts, which closes it `abandoned` — the next question started, not that
+this one failed; or until the client stops the MCP server, which closes it `ended`. One left open
+an hour untouched is closed `abandoned` too ([FOOTPRINT.md](FOOTPRINT.md)).
 
 **A change set the agent's `here` reports as `QUEUED`** waits in the review queue for a person; the
 placement ends there. Accept or reject it on the map (the Back-Bone's ⚑, for an area's sentence). If
@@ -240,10 +233,10 @@ the tree moved on before it is accepted, accepting it says it is stale rather th
 ## If something is wrong
 
 - `"valid": false` from `/healthz`: `docker compose logs ontology | grep -A40 valid=False` prints each
-  error with what to do. `./ontology/tidy.py data/repo` lists leftovers from hand-deleted areas and
-  `--fix` removes them; it needs Python with PyYAML on the host (`pip install pyyaml`). Without that,
+  error with what to do. `./ontology/tidy.py data/repo` says what a hand edit left out of step, and
+  `--fix` regenerates `regions.json`; it needs Python with PyYAML on the host (`pip install pyyaml`). Without that,
   the regeneration in [DATA-REPO.md](DATA-REPO.md) runs inside the container.
 - The ontology will not stay up: `docker compose logs ontology` from the first line.
-- To go back: `git checkout <the commit you were on>` and step 4 again. `data/` is untouched by
+- To go back: `git checkout <the commit you were on>` and step 3 again. `data/` is untouched by
   either direction, except the regenerated `regions.json` commit, which `git -C data/repo revert`
   undoes.

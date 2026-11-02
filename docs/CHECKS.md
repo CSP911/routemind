@@ -1,8 +1,8 @@
 # The checks
 
 ```sh
-./check/all.sh              # everything, ~22 suites
-./check/all.sh --quick      # skip the slow ones
+./check/all.sh              # every suite but install-check
+./check/all.sh --quick      # skip concurrency and the slow block that starts its own services
 ./check/all.sh --only walk  # the ones whose name contains "walk"
 ```
 
@@ -15,6 +15,12 @@ install is a check nobody runs on a different one.
 of them can run — this machine, the ontology container, the web container — which is the part that
 is not obvious and was carried around in somebody's head until 2026-09-14. A suite it cannot run
 fails the run and says why, rather than being quietly skipped.
+
+The suites that use an install — `smoke.sh`, `mcp-check.py`, `circuit-check.py`, and in a full run
+`llm-paths.sh` — go to `$BASE`, which is `http://127.0.0.1:8080` unless you set it
+(`BASE=http://127.0.0.1:9000 ./check/all.sh`). The container suites go to this checkout's own
+compose project. If your install is not on 8080, set `BASE`: otherwise those suites test — and
+`llm-paths.sh` writes into — whatever answers on 8080.
 
 Two rules the whole set is written against, and they are worth knowing before adding one:
 
@@ -44,79 +50,87 @@ differently, a status code believed over a body, an `IndexError` where a sentenc
 
 ## Everything there is
 
-Counts are what each one asserted on 2026-09-14. A count that has gone **down** is worth looking at —
-and this table is not checked against anything, so if you are reading it a long time from now, the
-number to trust is the one the check itself prints.
+The middle column is how many assertions each one made on 2026-11-02, for the checks that start what
+they need and so could be counted on any machine; a count that has gone **down** since is worth
+looking at. The ones that run against an install, and the ones whose number is the size of the tree
+rather than a count of assertions, have a dash: the number to trust is the one the check itself
+prints. Nothing checks this table against the checks.
 
 ### The install, from outside
 
+These take the install's address as their first argument, and default to `http://127.0.0.1:8080`.
+
 | | | |
 |---|---|---|
-| `check/smoke.sh` | 6 + the static checks it runs | Does this install work — API, an agent's walk, the map screen. What `install.sh` finishes with |
-| `check/install-check.sh` + `install-walk.py` | 24 | A clean clone, installed in its own directory and walked. Above |
-| `check/mcp-check.py` | 19 | The MCP protocol over stdio, and an agent's whole walk from the area list to a document |
-| `check/write-paths.sh` | 66 | Every write path, against a throwaway ontology |
-| `check/llm-paths.sh` | 12 | Both LLM modes, so a change to one does not quietly break the other |
-| `check/circuit-check.py` | 8 | Another backbone's circuit into this install, through the web port: what it may mint, what it may read, and an agent's walk through it — [CIRCUIT.md](CIRCUIT.md) |
-| `check/session-check.py` | 12 | The six-hour session tokens. Mostly about what must **not** work: an enrolment key that still reads, or a session that can mint another |
-| `check/age-check.py` | 13 | The two times on a routing row, built from a repository it commits into itself. Mostly about *not known* staying not known |
-| `check/tidy-check.py` | 11 | What `rm -rf regions/<area>` leaves, and that tidy mends exactly that. Half of it is that a healthy repository is left alone |
+| `check/smoke.sh` | — | Does this install work — API, an agent's walk, the map screen. What `install.sh` finishes with. It also runs `mcp-check.py`, `screen-check.mjs` and the static checks |
+| `check/install-check.sh` + `install-walk.py` | — | A clean clone, installed in its own directory and walked. Above. Not run by `all.sh` |
+| `check/mcp-check.py` | — | The MCP protocol over stdio, and an agent's whole walk from the area list to a document |
+| `check/llm-paths.sh` | — | Creating a node with an LLM and without one. **Writes into the install** (and removes what it wrote), and tests the one mode that install is in — the other needs an install configured the other way |
+| `check/circuit-check.py` | — | Another backbone's circuit into this install, through the web port: what it may mint, what it may read, and an agent's walk through it — [CIRCUIT.md](CIRCUIT.md). On an install with no area set to export, the walk into one is reported as not tried |
+| `check/session-check.py` | — | The six-hour session tokens. Mostly about what must **not** work: an enrolment key that still reads, or a session that can mint another. Runs in the ontology container |
 | `check/llm-probe.py` | — | Not a check: asks a real provider what a real key can use. Needs both, so nothing runs it for you |
 
 ### The data model
 
 | | | |
 |---|---|---|
-| `ontology/check.py` | 106 | The invariants, each stated as an **absence** — the body that must still be there, the old scope spelling that must not be filed. It is not in `check/`, and it is the one people forget |
+| `ontology/check.py` | 131 | The invariants, each stated as an **absence** — the body that must still be there, the old scope spelling that must not be filed. It is not in `check/`, and it is the one people forget |
 | `check/scenarios.py` | 56 | The routing table over a whole lifetime: areas created, advertised, emptied, deleted, created again. [SCENARIOS.md](SCENARIOS.md) is the contract |
 | `check/overlay-check.py` | 17 | Overlays end to end, through the MCP server, the way an agent uses them |
 | `check/romanize-check.py` | 38 | A name in another script, as an address — and the names that must not become one |
 | `check/concurrency-check.py` | 5 | Reads happening while writes happen, through HTTP, on one server. Probabilistic by nature — the deterministic half of the same question is in `ontology/check.py` |
+| `check/age-check.py` | 14 | The two times on a routing row, built from a repository it commits into itself. Mostly about *not known* staying not known |
+| `check/tidy-check.py` | 11 | What `rm -rf regions/<area>` leaves, and that tidy mends exactly that. Half of it is that a healthy repository is left alone |
 
 ### Agents writing, invariants on a live service, and what goes wrong
 
-Each starts the service itself on a throwaway repository, except where it says otherwise.
+Each starts the service itself on a throwaway repository.
 
 | | | |
 |---|---|---|
+| `check/write-paths.sh` | 63 | Every write path, against a throwaway ontology |
 | `check/place-check.py` | 21 | Placing a document the way an agent does, through the MCP — [CHANGE.md](CHANGE.md) |
 | `check/change-check.py` | 42 | Change sets: one commit or none, the cascade of lines over a change, the queue for hop-0 sentences |
 | `check/b2c-check.py` | 17 | What a non-expert meets on the screen's own flows: names in any script, refusals that say why, the review queue |
-| `check/robust-check.py` | 16 | What an operator meets: a write killed mid-way, SIGTERM, a hand edit, a 200-row table on a large map, a file that does not parse, an area deleted by hand, `reset.sh`, the agent's secret, the area-switch note |
+| `check/robust-check.py` | 20 | What an operator meets: a write killed mid-way, SIGTERM, a hand edit, a 200-row table on a large map, a file that does not parse, an area deleted by hand, `reset.sh`, the agent's secret, the area-switch note |
 | `check/drift-check.py` | 17 | A hand-edited repository served while `regions.json` is stale |
-| `check/walk-check.py` | — | Invariant 1 at the agent's door: every walk starts at hop 0 |
-| `check/same-answer-check.py` | — | Invariant 4: every reader of one fact gets the same answer |
-| `check/transact-check.py` | — | Invariants 5 and 7: a routing change is a commit, and nothing is reported done that did not happen |
-| `check/follow-check.py` | — | Invariant 3: what a reader holds follows its source |
-| `check/hyphen-check.py` | — | An area whose directory has a hyphen, on every path that used to spell it two ways |
+| `check/walk-check.py` | 17 | Invariant 1 at the agent's door: every walk starts at hop 0 |
+| `check/same-answer-check.py` | 2 | Invariant 4: every reader of one fact gets the same answer — each of the two a sweep of every fact × every path, which prints how many cells it read |
+| `check/transact-check.py` | 75 | Invariants 5 and 7: a routing change is a commit, and nothing is reported done that did not happen |
+| `check/follow-check.py` | 15 | Invariant 3: what a reader holds follows its source |
+| `check/hyphen-check.py` | 10 | An area whose directory has a hyphen, on every path that used to spell it two ways |
+| `check/footprint-check.py` | 23 | Invariant 11: every walk recorded — the store, the service, and an agent through the MCP |
+| `check/export-check.py` | 20 | The export surface: a denied kind and a draft refused at every address it answers, and a 401 that names the configured session lifetime — [CIRCUIT.md](CIRCUIT.md) |
+| `check/mcp-edge-check.py` | 60 | The MCP server against what a client, a `.env` and a far end that is not RouteMind can hand it — a batch on the stream, a BOM, an SSH banner at `--api`, a circuit to an HTML page |
 | `check/footprint-screen-check.py` | 52 | The footprint on the screen — the real `static/knowledge.js`, a stub DOM, against a fresh service it starts. Not `footprint-screen.mjs` against a live install: that one's map holds every walk of the last six hours |
-| `check/secrets-check.py` | — | Invariant 10: nothing secret-shaped in a tracked file. Run before every push |
-| `check/mcp-routes-check.py` | — | Every path the MCP server calls exists on the web app |
-| `check/circuit-client-check.py` | — | The circuit's client against far ends that misbehave |
+| `check/circuit-client-check.py` | 7 | The circuit's client against far ends that misbehave |
 
 ### The screen, and the shape of the tree
 
 | | | |
 |---|---|---|
-| `check/screen-check.mjs` | — | The map, drawn against a fake DOM. No browser |
-| `check/css-check.mjs` | 147 classes | Every class the screen puts on an element, against every class the stylesheets define |
-| `check/i18n-check.mjs` | 382 keys × 4 | The dictionaries, against each other and against the screen |
-| `check/auth-check.py` | 32 | The door on the screen's side — [AUTH.md](AUTH.md) |
-| `check/env-check.py` | 3 | Every setting `.env.example` documents reaches a container, every `mkdir` recipe covers every bind mount, and the installer reads `.env` the way docker does |
-| `check/eol-check.py` | 190 files | What a checkout on another operating system has to survive — line endings and exec bits |
-| `check/all.sh` | — | Runs all of the above, each where it can run |
+| `check/screen-check.mjs` | — | The map, drawn against a fake DOM. No browser. Run by `smoke.sh`, against the install |
+| `check/css-check.mjs` | — | Every class the screen puts on an element, against every class the stylesheets define |
+| `check/i18n-check.mjs` | — | The four dictionaries, against each other and against the screen |
+| `check/auth-check.py` | 34 | The door on the screen's side — [AUTH.md](AUTH.md) |
+| `check/env-check.py` | 4 | Every setting `.env.example` documents reaches a container, every `mkdir` recipe covers every bind mount, and the installer reads `.env` the way docker does |
+| `check/eol-check.py` | — | What a checkout on another operating system has to survive — line endings and exec bits, over every tracked file |
+| `check/secrets-check.py` | — | Invariant 10: nothing secret-shaped in a tracked file. Run before every push |
+| `check/mcp-routes-check.py` | — | Every path the MCP server calls exists on the web app |
+| `check/all.sh` | — | Runs all of the above except `install-check.sh` and `llm-probe.py`, each where it can run |
 
 ## Where each one can run
 
 Neither environment satisfies all of them, and the split is not arbitrary.
 
-**On the host.** `smoke.sh` and `mcp-check.py` need `curl` and to see the web proxy at :8080, which
-the containers cannot. `write-paths.sh` and `llm-paths.sh` start the service themselves. Everything
-static — `css-check.mjs`, `i18n-check.mjs`, `screen-check.mjs`, `env-check.py`, `eol-check.py` — runs
-anywhere.
+**On the host.** `smoke.sh`, `mcp-check.py` and `llm-paths.sh` need `curl` and to see the install's
+web port, which the containers cannot. `write-paths.sh` and every check in the third table start the
+service themselves. Everything static — `css-check.mjs`, `i18n-check.mjs`, `screen-check.mjs`,
+`env-check.py`, `eol-check.py` — runs anywhere.
 
-**In the ontology container**, because they import the service and need pyyaml, which the image has
-and a host usually does not:
+**In the ontology container**, or on any host python with pyyaml: the checks that import the
+service. `all.sh` runs `scenarios.py` in the container, because the image has pyyaml and a host
+often does not; with pyyaml it passes on the host just the same (`python3 check/scenarios.py`):
 
 ```sh
 docker cp check $(docker compose ps -q ontology):/tmp/check
@@ -127,8 +141,8 @@ docker compose exec ontology python3 /tmp/check/scenarios.py
 `rm -rf /tmp/check` in the container **first** if you have copied before: `docker cp` copies *into*
 an existing directory, and you end up running a stale file and disbelieving the result.
 
-**In the web container**, for `auth-check.py`, which needs fastapi and uvicorn. Same shape, `web`
-instead of `ontology`. `circuit-check.py` runs on the host against the install and needs the circuit
+**In the web container**, for `auth-check.py`, which needs fastapi and uvicorn — `all.sh` runs it
+there; any python with those two runs it as well. Same shape, `web` instead of `ontology`. `circuit-check.py` runs on the host against the install and needs the circuit
 key, from `ROUTEMIND_TOKEN` or `KNOWLEDGE_CIRCUIT_TOKEN` in `.env`, and fails rather than skipping
 without one — a check whose subject is that an export stays narrow is the last one that should
 quietly not run.
@@ -144,7 +158,9 @@ PYTHONPATH=./pylib python3 check/follow-check.py
 
 ## Reading a result
 
-Every check prints one line per assertion and a count at the end. Two things that line can say:
+Every check prints one line per assertion, and most end with a count; a few end with a sentence
+instead (`all pass`, `all write paths ok`), and for those the exit code is the verdict. Two things a
+count line can say:
 
 ```
 0 failed of 62

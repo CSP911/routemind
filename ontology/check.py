@@ -194,6 +194,8 @@ def _entity_line_through_queue():
     class Fake:                       # the queue, reduced to what submit_route touches
         def __init__(self): self.rows = []
         def append(self, row): self.rows.append(row)
+        # Read since 2026-11-02, for a copy of a proposal already pending; nothing is pending here.
+        def proposals(self, status=None): return []
 
     q = Fake()
     r = submit_route(q, {"scope": "entity", "entity": "mover", "after": "what a reader comes here for",
@@ -685,7 +687,108 @@ if (pathlib.Path("data/repo") / "regions").is_dir():
     # must not fail. A drift check that fires on a clean repository would be turned off within a day.
     _md.write_text(_before, encoding="utf-8"); _regen(_st)
     eq("an untouched tree still passes", _validate(_st)["ok"], True)
+
+    # A page added by hand and committed. regions.json's per-area node list then lags the directory —
+    # bookkeeping nobody is served — and that alone made /healthz say valid: false until a write or a
+    # restart, although DATA-REPO.md says only an area added or deleted leaves the table stale (audit
+    # SC-1, 2026-11-02).
+    _page = _repo / "regions" / _area / "hand-written-page.md"
+    _page.write_text(f"---\nid: hand-written-page\nname: \"Hand-written page\"\nkind: topic\n"
+                     f"one_liner: \"A page written in an editor\"\nparent: {_area}\n---\n# Hand\n\nWritten by hand.\n", encoding="utf-8")
+    _v = _validate(_st)
+    eq("a page added by hand leaves the repository valid", (_v["ok"], [e for e in _v["errors"] if "regions.json" in e]), (True, []))
+    eq("  and the lagging node list is a warning that says how it heals",
+       any("regions.json" in w and "hand-written-page" in w and "tidy.py" in w for w in _v["warnings"]), True)
+    _page.unlink()
+
+    # vocab.yaml in shapes that parse but are not a vocabulary. Each was a bare Python error from the
+    # validator — so every write answered 500 with nothing naming the file (audit SV-12, 2026-11-02).
+    _voc = _repo / "vocab.yaml"
+    _vtext = _voc.read_text(encoding="utf-8")
+    for _label, _bad in (("kinds as plain strings", "kinds:\n- topic\n- rule\n"),
+                         ("kinds: twelve", "kinds: twelve\n"),
+                         ("kinds: empty", "kinds:\n"),
+                         ("budgets: empty", __import__("re").sub(r"budgets:\n(  .*\n)+", "budgets:\n", _vtext, count=1)),
+                         ("a budget that is not a number", _vtext.replace("kinds: 12", "kinds: twelve", 1))):
+        _voc.write_text(_bad, encoding="utf-8")
+        try:
+            _v = _validate(_st); _got = (_v["ok"], any(e.startswith("vocab.yaml") for e in _v["errors"]))
+        except Exception as _e:
+            _got = f"raised {type(_e).__name__}: {_e}"
+        eq(f"vocab.yaml with {_label}: refused, naming the file", _got, (False, True))
+    _voc.write_text(_vtext, encoding="utf-8")
+    eq("  and restored, the tree validates again", _validate(_st)["ok"], True)
+
+    # A long chain of documents each naming the next. The cycle search recursed once per link, and
+    # 1,200 links was a RecursionError — every write refused by a warning's bookkeeping (audit SV-21).
+    _chain = _repo / "regions" / _area
+    _ids = [f"chain-{i:04d}" for i in range(1200)]
+    for _i, _cid in enumerate(_ids):
+        _nxt = f"see `{_ids[_i + 1]}`" if _i + 1 < len(_ids) else "the end"
+        (_chain / f"{_cid}.md").write_text(f"---\nid: {_cid}\nname: \"Chain {_i}\"\nkind: topic\none_liner: \"link {_i}\"\n"
+                                           f"parent: {_area}\n---\n# Link\n\n{_nxt}\n", encoding="utf-8")
+    try: _got = type(_validate(_st)["ok"]).__name__
+    except RecursionError: _got = "RecursionError"
+    eq("a 1,200-document chain of references validates without recursing", _got, "bool")
+    for _cid in _ids: (_chain / f"{_cid}.md").unlink()
     shutil.rmtree(_T, ignore_errors=True)
+
+# ── the footprint and overlays, read and written from many threads ───────────
+# The service is a ThreadingHTTPServer. A walk past its open hours is closed on the way past by
+# whatever reads it, and that close wrote outside the store's lock with fixed temporary names: twelve
+# parallel polls of /v1/walks?since=0 answered 404 "walks/_seq.tmp" six times, and a step number could
+# be handed out twice (audit SV-13, 2026-11-02). Overlays: six parallel `add`s stored two (SV-14).
+def _parallel(fn, n):
+    import threading as _t
+    errs, gate = [], _t.Barrier(n)
+    def run(i):
+        gate.wait()
+        try: fn(i)
+        except Exception as e: errs.append(f"{type(e).__name__}: {e}")
+    ts = [_t.Thread(target=run, args=(i,)) for i in range(n)]
+    for x in ts: x.start()
+    for x in ts: x.join()
+    return errs
+
+
+def _footprint_and_overlays():
+    import tempfile as _t2, time as _tm
+    from service.walks import WalkStore
+    from service.overlays import OverlayStore
+    out = {}
+    ws = WalkStore(pathlib.Path(_t2.mkdtemp(prefix="check-walks-")), keep_hours=6, open_hours=0.0003)
+    for i in range(10): ws.open(f"question {i}", "check", {})
+    _tm.sleep(1.3)                                   # every walk now past its open hours
+    errs = []
+    for _ in range(5): errs += _parallel(lambda i: ws.since(0), 12)
+    out["walks errors"] = errs[:2]
+    ns = [s["n"] for w in ws.all() for s in w["steps"]]
+    out["walks steps"] = (len(ns), len(set(ns)), sorted(w["state"] for w in ws.all()).count("closed"))
+    os_ = OverlayStore(pathlib.Path(_t2.mkdtemp(prefix="check-overlays-")), members_max=20)
+    ok = lambda a: True
+    ov = os_.create("q", [{"address": "/v1/regions/a", "why": "w"}], {"kind": "agent"}, ok)
+    out["overlay errors"] = _parallel(lambda i: os_.amend(ov["id"], f"/v1/nodes/n{i}", None, "w", ok), 6)[:2]
+    out["overlay members"] = len(os_.get(ov["id"])["members"])
+    return out
+
+
+try: _fo = _footprint_and_overlays()
+except Exception as _e: _fo = {"raised": f"{type(_e).__name__}: {_e}"}
+eq("twelve parallel reads past a walk's open hours raise nothing", _fo.get("walks errors"), [])
+eq("  every step has its own number, and each walk closed once", _fo.get("walks steps"), (20, 20, 10))
+eq("six parallel adds to one overlay raise nothing", _fo.get("overlay errors"), [])
+eq("  and all six are stored", _fo.get("overlay members"), 7)
+
+# ── does the kind prompt describe what a kind does now ───────────────────────
+# Relations and edge rules were retired 2026-10-07; the model choosing a kind was still told a kind
+# "decides which relations the node may take part in" until 2026-11-02. Read from the source, so no
+# server and no model is needed.
+import ast as _ast
+_srv = _ast.parse((pathlib.Path(__file__).resolve().parent / "service" / "server.py").read_text(encoding="utf-8"))
+_fn = next(f for f in _ast.walk(_srv) if isinstance(f, _ast.FunctionDef) and f.name == "suggest_node_kind")
+_said = " ".join(c.value for c in _ast.walk(_fn) if isinstance(c, _ast.Constant) and isinstance(c.value, str)
+                 and c is not _fn.body[0].value)
+eq("the kind prompt says nothing of relations", "relation" in _said.lower(), False)
 
 # ── if a tree is there, does every entity read ───────────────────────────────
 root = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path("data/repo")

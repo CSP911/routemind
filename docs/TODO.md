@@ -77,11 +77,11 @@ work without overlays, and through them — counting calls to an answer and how 
 - Run it against a **copy** of the data, the way the 2026-09-11 trial was run, never the live install.
 - Read `used` in the closed records: rows marked `reached` say the overlay was drawn a level too coarse.
 
-## Overlay: the curator reads closed records — *Knowledge*
+## Overlay: something reads closed records — *Knowledge*
 
 The record is shaped for it (`why`, `used` with `member` / `removed` / `reached`, `outcome`). Nothing
-reads it yet. Closed records are kept 30 days (`ONTOLOGY_OVERLAY_KEEP_DAYS`); the curator will want
-longer once it does.
+reads it: the curator's sleep that was meant to was retired on 2026-10-07. Closed records are kept 30
+days (`ONTOLOGY_OVERLAY_KEEP_DAYS`); a reader will want longer once there is one.
 
 ## Checks that write into the live install — *Web*
 

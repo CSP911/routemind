@@ -103,6 +103,44 @@ try:
     check("  a rejection keeps the proposer's reason and records the reviewer's beside it", got.get("why") == "the proposer's reason"
           and got.get("decided_why") == "the reviewer's reason", json.dumps(got)[:200])
 
+    # The same proposal twice. The screen's Export card stayed open after a success and a second
+    # click filed a copy; accepting the first worked and the copy then sat there refusing (audit WB-4,
+    # 2026-11-02). One pending at a time per target and value: the second is refused, naming the first.
+    st, e1 = call("POST", "/v1/curator/proposals", {"scope": "export", "region": "payroll", "before": "no", "after": "yes", "why": "share it"})
+    st2, e2 = call("POST", "/v1/curator/proposals", {"scope": "export", "region": "payroll", "before": "no", "after": "yes", "why": "share it"})
+    check("  the same proposal filed twice is refused the second time, naming the one pending", st == 201 and st2 == 409
+          and e2.get("reason") == "duplicate_pending" and e1.get("id") in json.dumps(e2), f"{st} {st2} {json.dumps(e2)[:200]}")
+    call("POST", f"/v1/curator/proposals/{e1.get('id')}/reject", {"why": "not now"})
+    st3, _ = call("POST", "/v1/curator/proposals", {"scope": "export", "region": "payroll", "before": "no", "after": "yes", "why": "again, later"})
+    check("    and once that one is decided, it may be filed again", st3 == 201, f"{st3}")
+
+    # Accepting a proposal whose change is already there answered 200 "no change" and left it pending
+    # for ever — the write's "nothing to do" escaped before the decision was recorded (audit SV-15).
+    same = call("GET", "/v1/nodes/ovw-b")[1].get("one_liner")
+    st, p5 = call("POST", "/v1/curator/proposals", {"scope": "entity", "entity": "ovw-b", "after": same, "why": "already so"})
+    st, d = call("POST", f"/v1/curator/proposals/{p5.get('id')}/accept", {"why": "fine"})
+    got = next((x for x in call("GET", "/v1/curator/proposals")[1]["proposals"] if x["id"] == p5.get("id")), {})
+    check("  accepting a proposal that changes nothing records it as accepted", st == 200 and got.get("status") == "accepted", f"{st} {got.get('status')} {json.dumps(d)[:160]}")
+
+    # Two reviewers on one proposal at once. Both were told 200: the change was committed, the
+    # status read accepted, and the one who rejected it was told it was rejected (audit SV-9).
+    import threading
+    races = []
+    for i in range(4):
+        st, pr = call("POST", "/v1/curator/proposals", {"scope": "entity", "entity": "ovw-b", "after": f"raced wording {i}", "why": "race"})
+        gate, out = threading.Barrier(2), {}
+        def go(verb):
+            gate.wait(); out[verb] = call("POST", f"/v1/curator/proposals/{pr['id']}/{verb}", {"why": f"{verb} it"})[0]
+        ts = [threading.Thread(target=go, args=(v,)) for v in ("accept", "reject")]
+        for x in ts: x.start()
+        for x in ts: x.join()
+        final = next((x for x in call("GET", "/v1/curator/proposals")[1]["proposals"] if x["id"] == pr["id"]), {}).get("status")
+        line = call("GET", "/v1/nodes/ovw-b")[1].get("one_liner")
+        races.append((out, final, line == f"raced wording {i}"))
+    check("  accept and reject at once: one wins, the other is told it was already decided, and the line agrees",
+          all(sum(s == 200 for s in o.values()) == 1 and f == ("accepted" if o.get("accept") == 200 else "rejected") and applied == (f == "accepted")
+              for o, f, applied in races), races)
+
     # ── refusals carry a reason the screen translates ─────────────────────────
     named = {
         "region_exists": call("POST", "/v1/regions", {"source": "expense", "representative": {"name": "E", "one_liner": "e", "use_when": "e"}}),

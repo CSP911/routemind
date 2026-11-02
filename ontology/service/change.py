@@ -2,7 +2,7 @@
 routing lines above them computed rather than guessed (docs/CHANGE.md).
 
 A set is **decisions, not a script**: at most one decision per (entity, aspect), and the order of
-application is fixed here — creates, moves, rewordings and body edits, deletes — so the same set in
+application is fixed here — creates, moves, rewordings and body edits, deletes deepest first — so the same set in
 any order makes the same tree. What a set does to the lines above it is the **impact**: an entity is
 impacted when its table (its children's ids and lines) differs before and after, and every impacted
 line must be decided in the set, `reword` or `keep`. The cascade climbs exactly as far as the
@@ -175,6 +175,19 @@ def _order(decs: list[dict]) -> list[dict]:
     return out
 
 
+def _deepest_first(deletes: list[dict], nodes: list[dict]) -> list[dict]:
+    """Deletes ordered by how deep their entity sits, deepest first; ties by id, so the order never
+    depends on how the set was written."""
+    by_id = {n["id"]: n for n in nodes}
+
+    def depth(eid):
+        k, cur, seen = 0, by_id.get(eid), set()
+        while cur and cur.get("parent") and cur["parent"] not in seen:
+            seen.add(cur["parent"]); cur = by_id.get(cur["parent"]); k += 1
+        return k
+    return sorted(deletes, key=lambda d: (-depth(d["id"]), d["id"]))
+
+
 def _region_of(d: dict, refs: dict, nodes: dict) -> str:
     if d["parent"] is None: return d["area"]
     p = d["parent"]
@@ -319,7 +332,8 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False, prop
 
     def mutate():
         if cs["base"]: _check_base(writer.root, cs["base"], rest)
-        for d in _order(cs["decisions"]):
+        seq = _order(cs["decisions"])
+        for d in seq:
             op = d["op"]
             if op == "create":
                 nid, region = ids[d["ref"]], _region_of(d, cs["refs"], nodes0)
@@ -354,17 +368,22 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False, prop
                 n[f] = str(d["after"]).strip(); write_node_index(store, n)
             elif op == "write":
                 n = store.node(d["id"]); n["body"] = str(d["content"] or ""); write_node_index(store, n)
-            elif op == "delete":
-                all_nodes = store.nodes(); n = next(x for x in all_nodes if x["id"] == d["id"])
-                holds = {x["parent"] for x in all_nodes if x.get("parent")}
-                blockers = sorted(x["id"] for x in all_nodes if x.get("parent") == n["id"] and (x["id"] in holds or not (x.get("body") or "").strip()))
-                if blockers:
-                    raise WriteError(409, f"{n['id']} holds {', '.join(blockers)} — nodes, not documents; move or delete them in the set first",
-                                     code="holds_children", data={"id": n["id"], "n": len(blockers), "held": ", ".join(blockers)})
-                by_id = {x["id"]: x for x in all_nodes}
-                for eid in [n["id"], *_descendants(all_nodes, n["id"])]:
-                    t = writer.root / by_id[eid]["path"]
-                    shutil.rmtree(t) if t.is_dir() else t.unlink(missing_ok=True)
+        # Deletes last, and deepest first. In the order they were written, deleting a holder took the
+        # document under it along, and a later delete of that document was a 500 StopIteration — while
+        # the same two in the other order applied (audit SV-11, 2026-11-02). Deepest first, a holder's
+        # contents are gone by the time it is reached whatever order the set was written in, which is
+        # also what makes the holder rule ("delete them in the set first") mean the set, not its order.
+        for d in _deepest_first([d for d in seq if d["op"] == "delete"], store.nodes()):
+            all_nodes = store.nodes(); n = next(x for x in all_nodes if x["id"] == d["id"])
+            holds = {x["parent"] for x in all_nodes if x.get("parent")}
+            blockers = sorted(x["id"] for x in all_nodes if x.get("parent") == n["id"] and (x["id"] in holds or not (x.get("body") or "").strip()))
+            if blockers:
+                raise WriteError(409, f"{n['id']} holds {', '.join(blockers)} — nodes, not documents; move or delete them in the set first",
+                                 code="holds_children", data={"id": n["id"], "n": len(blockers), "held": ", ".join(blockers)})
+            by_id = {x["id"]: x for x in all_nodes}
+            for eid in [n["id"], *_descendants(all_nodes, n["id"])]:
+                t = writer.root / by_id[eid]["path"]
+                shutil.rmtree(t) if t.is_dir() else t.unlink(missing_ok=True)
 
     def after(before, now):
         imp = impact(before, now, cs, ids)

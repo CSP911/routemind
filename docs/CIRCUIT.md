@@ -7,7 +7,7 @@ read, and the reader's own walk record shows the walk — neither is part of any
 and encrypted export bundles were retired that day; this page is what remains of docs/PEERING.md.
 
 ```
-/circuit http://their-host:8080 <their key>              a person, in Claude Code
+/circuit http://their-host:8080 [their key]              a person, in Claude Code
 knowledge_circuit { op: open, url, token, name }           an agent, through the MCP server
 
 Their areas appear under /v1/circuits/<name>/… , beside yours, never in it.
@@ -20,7 +20,9 @@ open in the session, and a walk starts there as always: open hop 0, then the cir
 **A key typed into the conversation ends up in the agent's transcript.** To keep it out, put it in
 `KNOWLEDGE_CIRCUIT_KEYS` on the machine the agent runs on — `<address>=<key>` pairs, in the environment
 or in `.env` beside the MCP server — and ask the agent to open the circuit by address alone; the server
-fills the key in. A key that did reach a transcript is shared with whoever can read it; rotating it is
+fills the key in. `/circuit <address>` and the `circuit` prompt with only `url` do the same. The address
+is matched as written there (`localhost` and `127.0.0.1` are two addresses), and a miss names the
+addresses it does hold keys for, never the keys. A key that did reach a transcript is shared with whoever can read it; rotating it is
 changing `KNOWLEDGE_CIRCUIT_TOKEN` on the far end and restarting, which also ends every session already
 minted.
 
@@ -125,6 +127,9 @@ circuit's table says so under every listing.
 * `check/follow-check.py` — two backbones: exporting, rewording and withdrawing on one is in the other's
   next read through a circuit, and a restart at the far end costs a re-mint, not the walk.
 * `check/session-check.py` — the six-hour sessions, mostly what must **not** work.
+* `check/export-check.py` — a denied kind and a draft, asked for at every address the surface has —
+  by their own, and by the old `nodes/<parent>/files/<child>.md` spelling, which the surface no longer
+  answers (it served both, raw, until 2026-11-02).
 * `check/drift-check.py` and `check/hyphen-check.py` — the export surface against the files' truth, and
   a hyphenated area on every path a reader takes.
 * `check/install-check.sh` — a clean clone, then the export decision as another backbone's circuit

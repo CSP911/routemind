@@ -54,8 +54,11 @@ def main() -> int:
     ap.add_argument("--actor", default="tidy", help="the name on the commit this makes")
     a = ap.parse_args()
     repo = pathlib.Path(a.repo)
-    if not (repo / "regions.json").is_file():
-        print(f"  {a.repo} is not a RouteMind repository — no regions.json in it", file=sys.stderr)
+    # The areas make a repository; regions.json is derived from them. Deleted by hand it is the same
+    # staleness as any other — `stale()` reads a missing file as empty — and the service heals it at
+    # startup. tidy refused it as "not a RouteMind repository" until 2026-11-02.
+    if not (repo / "regions").is_dir():
+        print(f"  {a.repo} is not a RouteMind repository — no regions/ in it", file=sys.stderr)
         return 2
 
     for name in RETIRED:
