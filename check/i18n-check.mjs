@@ -227,5 +227,19 @@ if (stale.length) {
   console.log(`ok   no string names a retired step (${RETIRED.length} checked)`);
 }
 
+// The installer's last words on an empty map name the button that map shows, in every language the
+// map can be in. They said "click the Back-Bone box, and choose New AS" while the screen offered
+// "Create the first area" (quickstart audit, 2026-11-02); a relabel here would do that again.
+const installer = readFileSync(new URL("../install.sh", import.meta.url), "utf8");
+const unnamed = Object.entries(dictionaries).map(([lang, d]) => [lang, d["knowledge.empty.cta"]])
+  .filter(([, label]) => label && !installer.includes(label));
+if (unnamed.length) {
+  bad = true;
+  console.log(`FAIL install.sh's empty-map hint does not name the button: ` +
+    unnamed.map(([l, s]) => `${l} "${s}"`).join(", "));
+} else {
+  console.log(`ok   install.sh names the empty map's button as the map shows it (${Object.keys(dictionaries).length} languages)`);
+}
+
 if (bad) process.exit(1);
 console.log(`ok   ${base.size} keys in English, ${asked.size} of them reached from the screen, no duplicates`);

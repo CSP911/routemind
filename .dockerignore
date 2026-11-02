@@ -1,0 +1,15 @@
+# What the images are built without. The install's own checks import ontology/service on the host and
+# leave __pycache__ beside it; COPY carried that in, so the second ./install.sh rebuilt the ontology and
+# recreated its container (quickstart QS-3, 2026-11-02). check/env-check.py holds the first four.
+**/__pycache__
+**/*.pyc
+data
+.git
+# Nothing below is copied into an image either; leaving it out keeps the context small and the build's
+# cache from depending on it.
+data-*
+.env
+.claude
+pylib
+eval
+bench
