@@ -320,6 +320,20 @@ try:
     check("boot recovery rolls back the file the interrupted write had touched", "half a transaction" not in open(mine, encoding="utf-8").read())
     check("  and leaves a hand edit it never touched as it is", "a person's edit" in open(theirs, encoding="utf-8").read())
     stop(svc)
+    # ── what an operating system leaves behind is nobody's edit ───────────────
+    # Opening data/repo in Finder leaves .DS_Store; every write was then refused as "edited by hand",
+    # and the map stopped saving (verification pass, 2026-11-02). Never committed either.
+    repo = repo_from("litter")
+    for f in (".DS_Store", "regions/expense/.DS_Store", "regions/._corp-card.md", "Thumbs.db"):
+        open(os.path.join(repo, f), "w").write("x")
+    svc = start(repo, P + 4)
+    st, b = call(P + 4, "PUT", "/v1/nodes/corp-card", {"one_liner": "Corporate card rules, with Finder open"})
+    check("a .DS_Store, an AppleDouble file or a Thumbs.db does not refuse a write", st == 200, f"{st} {b}")
+    check("  and none of them is committed", not any(f in tracked(repo) for f in (".DS_Store", "regions/expense/.DS_Store", "Thumbs.db")))
+    open(os.path.join(repo, "regions", "expense", "notes.txt"), "w").write("a person's file")
+    st, b = call(P + 4, "PUT", "/v1/nodes/corp-card", {"one_liner": "Corporate card rules, again"})
+    check("  while a real stray file still does", st == 409 and b.get("reason") == "tree_dirty", f"{st} {b}")
+    stop(svc)
 finally:
     for p in procs:
         if p.poll() is None: stop(p)

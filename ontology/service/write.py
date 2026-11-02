@@ -165,6 +165,17 @@ def head(root: Path) -> str | None:
         except WriteError: return None
 
 
+# What an operating system leaves in any folder a person opens: Finder's `.DS_Store` and `._*`
+# AppleDouble files, Explorer's `Thumbs.db` and `desktop.ini`. Untracked, they are nobody's edit — and
+# each refused every write as "edited by hand": opening data/repo in Finder once stopped the map saving
+# (verification pass, 2026-11-02). Never staged either, since a write stages only its own paths.
+_LITTER = re.compile(r"(?:^|/)(?:\.DS_Store|\._[^/]*|Thumbs\.db|desktop\.ini)$", re.I)
+
+
+def _litter(status: str, path: str) -> bool:
+    return status == "??" and bool(_LITTER.search(path))
+
+
 def _dirty(root) -> str:
     """The uncommitted paths in the data repository, as one short line, or "" when it is clean.
 
@@ -194,13 +205,14 @@ def _dirty(root) -> str:
     a hand-edited tree would have quietly allowed them.
     """
     r = subprocess.run(["git", "--no-optional-locks", "-c", "safe.directory=*", "-C", str(root),
-                        "status", "--porcelain"], capture_output=True, text=True, timeout=10)
+                        "status", "--porcelain", "--untracked-files=all"], capture_output=True, text=True, timeout=10)
     if r.returncode != 0:
         raise WriteError(500, f"cannot tell whether {root} has uncommitted changes: "
                               f"{r.stderr.strip() or 'git status failed'}")
     out = r.stdout
     if not out.strip(): return ""
-    names = [l[3:].strip() for l in out.splitlines() if len(l) > 3]
+    names = [l[3:].strip() for l in out.splitlines() if len(l) > 3 and not _litter(l[:2], l[3:].strip())]
+    if not names: return ""
     head = ", ".join(names[:3])
     return head + (f" and {len(names) - 3} more" if len(names) > 3 else "")
 
@@ -253,7 +265,7 @@ def _status(root: Path) -> list[tuple[str, str]]:
     while i < len(parts):
         e = parts[i]; i += 1
         if len(e) < 4: continue
-        items.append((e[:2], e[3:]))
+        if not _litter(e[:2], e[3:]): items.append((e[:2], e[3:]))
         if e[0] in "RC": i += 1          # a rename carries its old name next; the index is clean at open, so this is not expected
     return items
 
