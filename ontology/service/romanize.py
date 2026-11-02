@@ -27,7 +27,7 @@ What is not, and is therefore refused:
   * Anything else with letters in it that is none of the above.
 
 **This is transliteration, not orthography.** Hangul is romanised from the letters, not from the
-sound: the Revised Romanization of 학년 is `hangnyeon` and this gives `haknyeon`, because assimilation
+sound: the Revised Romanization of 학년 is `hangnyeon` and this gives `hagnyeon`, because assimilation
 cannot be derived from the syllable and needs a pronunciation dictionary. For an address, being
 deterministic and legible beats being orthographically perfect — and the person naming the thing sees
 the result before it is written, on the screen that says an address can never change.

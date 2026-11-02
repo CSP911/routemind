@@ -6,7 +6,7 @@ runtime that mounted it read-only; agents here read the repository through the A
 no reader, and the screen's "agents are reading an older tree" warning built on it was not true.
 """
 from __future__ import annotations
-import contextlib, os, re, shutil, subprocess, threading, time
+import contextlib, os, re, shutil, subprocess, sys, threading, time
 from pathlib import Path
 import yaml
 from .store import Store, FM_RE
@@ -129,10 +129,17 @@ class WriteError(Exception):
         self.code, self.data = code, data or {}
 
 
-def _git(root: Path, *args, check=True) -> str:
-    r = subprocess.run(["git", "-c", "safe.directory=*", "-C", str(root), *args], capture_output=True, text=True)   # bind-mounted repo, arbitrary uid
+def _git(root: Path, *args, check=True, paths=None, strip=True) -> str:
+    """`paths`, when given, go to git on stdin as literal NUL-separated pathspecs — a transaction can
+    touch thousands of files (a move takes its whole subtree), more than one command line holds, and
+    a file name is never read as pathspec magic. `strip=False` for porcelain output, whose first
+    column may be a space (see `_dirty`)."""
+    if paths is not None:
+        args = (*args, "--pathspec-from-file=-", "--pathspec-file-nul")
+    r = subprocess.run(["git", "-c", "safe.directory=*", "-C", str(root), "--literal-pathspecs", *args], capture_output=True, text=True,   # bind-mounted repo, arbitrary uid
+                       input=("\0".join(paths) if paths is not None else None))
     if check and r.returncode != 0: raise WriteError(500, f"git {' '.join(args)} failed: {r.stderr.strip()}")
-    return r.stdout.strip()
+    return r.stdout.strip() if strip else r.stdout
 
 
 def head(root: Path) -> str | None:
@@ -199,35 +206,197 @@ def _dirty(root) -> str:
 
 
 TXN_MARKER = "routemind-transaction"
+# The marker's first line, when the lines after the message are the paths the transaction touched.
+# A marker without it was left by a build from before 2026-11-02 and lists nothing.
+TXN_JOURNAL = "routemind-transaction v2"
 
 
 def recover_interrupted(root: Path) -> str:
-    """At boot: roll back a transaction the last process did not finish, and nothing else.
+    """At boot: roll back a transaction the last process did not finish.
 
     Only when the marker is there — a dirty tree without it is somebody's hand edit and stays
-    exactly as it is, refused for writes until it is committed. With it, the dirt is ours: a stale
-    index lock is removed and the tree goes back to its last commit. Returns what was done, or ""."""
+    exactly as it is, refused for writes until it is committed. With it, a stale index lock is
+    removed and **the paths the marker lists** go back to their last commit: every file the
+    interrupted write created, replaced or removed is journalled there before it is touched. A hand
+    edit to any other file is left as it is, and the tree stays refused for writes until it is
+    committed. A hand edit to one of those same files, made while the write was running, is rolled
+    back with it — the file was the transaction's at the time.
+
+    This said "nothing else" while it ran `reset --hard` and `clean -fd` over the whole tree (audit,
+    2026-11-02): a hand edit anywhere was wiped by the first boot after a crash. A marker left by a
+    build from before then lists no paths, and only for that one is the whole tree reset — that is
+    what the process which wrote it would have done. Returns what was done, or ""."""
     marker = root / ".git" / TXN_MARKER
     if not marker.exists(): return ""
-    what = ""
-    try: what = marker.read_text(encoding="utf-8")[:120]
+    lines = []
+    try: lines = marker.read_text(encoding="utf-8").split("\n")
     except OSError: pass
+    journal = lines[:1] == [TXN_JOURNAL]
+    what = (lines[1] if journal and len(lines) > 1 else "\n".join(lines))[:120]
     lock = root / ".git" / "index.lock"
     if lock.exists():
         try: lock.unlink()
         except OSError: pass
-    _restore(root)
+    _restore(root, {p for p in lines[2:] if p} if journal else None)
     try: marker.unlink()
     except OSError: pass
     return what or "a write"
 
 
-def _restore(root: Path):
-    """Back to HEAD, whatever the transaction did — including what it had already staged. A dry run
-    restores after `git add`, and `checkout -- .` restores the *index*, which by then holds the
-    change; `reset --hard` restores the commit. The tree was clean when the transaction opened (it
-    refuses otherwise), so there is nothing of anybody's to lose."""
-    _git(root, "reset", "-q", "--hard", check=False); _git(root, "clean", "-fdq", check=False)
+def _status(root: Path) -> list[tuple[str, str]]:
+    """Every uncommitted path as (two-letter status, path), one file per entry. `-z`, so a name with
+    a space, a quote or a newline arrives as written; `-uall`, so a new file inside a new directory is
+    that file and not the directory."""
+    out = _git(root, "--no-optional-locks", "status", "--porcelain", "-z", "--untracked-files=all", strip=False)
+    items, parts = [], out.split("\0")
+    i = 0
+    while i < len(parts):
+        e = parts[i]; i += 1
+        if len(e) < 4: continue
+        items.append((e[:2], e[3:]))
+        if e[0] in "RC": i += 1          # a rename carries its old name next; the index is clean at open, so this is not expected
+    return items
+
+
+def _covers(ours: set, path: str) -> bool:
+    """Whether `path` is one the transaction touched, or lies under a directory it touched."""
+    if path in ours: return True
+    while "/" in path:
+        path = path.rsplit("/", 1)[0]
+        if path in ours: return True
+    return False
+
+
+def _restore(root: Path, ours: set | None = None):
+    """Back to HEAD — **for the paths this transaction touched, and only those.**
+
+    It used to be `reset --hard` and `clean -fd` over the whole tree, on the reasoning that the tree
+    was clean when the transaction opened, so there was nothing of anybody's to lose. That holds for
+    the instant it opens and not after: a person saving a file by hand while a write ran — a second
+    on a large map — had it destroyed by the write's rollback, new files and edits alike (audit,
+    2026-11-02, 3 of 3). Now: what the transaction staged or changed comes back from HEAD, index and
+    working tree both (a dry run restores after `git add`); what it created and nobody committed is
+    removed; a directory it made and left empty goes too, since an empty directory under regions/ is
+    an area. `ours=None` is the old whole-tree reset, kept for a marker from an older build."""
+    if ours is None:
+        _git(root, "reset", "-q", "--hard", check=False); _git(root, "clean", "-fdq", check=False); return
+    if not ours: return
+    paths = sorted(ours)
+    # Named file by file, from what git knows: a pathspec that matches nothing fails the whole
+    # command, and a journalled path can be a temp file that is already gone.
+    in_head = set(_git(root, "ls-tree", "-r", "-z", "--name-only", "HEAD", check=False, strip=False).split("\0")) - {""}
+    in_index = set(_git(root, "ls-files", "-z", check=False, strip=False).split("\0")) - {""}
+    known = sorted(p for p in in_head | in_index if _covers(ours, p))
+    if known:
+        _git(root, "reset", "-q", "HEAD", check=False, paths=known)
+        back = [p for p in known if p in in_head]
+        if back: _git(root, "checkout", "HEAD", check=False, paths=back)
+    for st, p in _status(root):
+        if st == "??" and _covers(ours, p):
+            t = root / p
+            try: shutil.rmtree(t) if t.is_dir() and not t.is_symlink() else t.unlink()
+            except FileNotFoundError: pass
+    for p in sorted(paths, key=lambda x: -x.count("/")):
+        t = root / p
+        if t.is_dir() and not t.is_symlink():
+            try: t.rmdir()                     # only when empty; one holding a file it did not make stays
+            except OSError: pass
+
+
+# ---- the transaction's journal ----
+# Which files a transaction touched, recorded as it touches them. Every write in a transaction goes
+# through `store.write` (a rename into place), `unlink`, `rmtree` or `mkdir` — in this module, in
+# derive.py and in change.py alike — and each of those raises a Python audit event before it acts. So
+# the journal is kept by one hook rather than by every call site remembering to report, which is how
+# the list of what to stage and what to roll back stays right when a write path is added. The hook
+# does nothing outside a transaction, and nothing on any thread but the one running it.
+_journal = threading.local()
+_EVENTS = {"os.rename": 1, "os.remove": 0, "os.rmdir": 0, "os.mkdir": 0, "shutil.rmtree": 0, "open": 0}
+
+
+def _audit(event, args):
+    j = getattr(_journal, "state", None)
+    if j is None or event not in _EVENTS: return
+    try:
+        if event == "open":
+            # Only a file opened to write: the temp file `store.write` renames into place, which a
+            # crash between the two leaves behind. Reads are not the transaction's doing.
+            mode, flags = args[1], args[2]
+            if not ((isinstance(mode, str) and any(c in mode for c in "wax+")) or
+                    (isinstance(flags, int) and flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT))): return
+        elif event in ("os.remove", "os.rmdir") and len(args) > 1 and args[1] not in (None, -1):
+            return                             # relative to a directory fd: inside an rmtree already journalled
+        p = args[_EVENTS[event]]
+        if isinstance(p, int): return
+        # `mkdir(exist_ok=True)` on an area that is already there still asks; journalling it would
+        # claim the whole area, and with it any file a person saved there meanwhile.
+        if event == "os.mkdir" and os.path.isdir(p): return
+        rel = os.path.relpath(os.path.abspath(os.fsdecode(p)), j["root"]).replace(os.sep, "/")
+        if rel == "." or rel.startswith("../") or rel == ".." or rel.split("/", 1)[0] == ".git": return
+        if rel in j["paths"]: return
+        j["paths"].add(rel)
+        # Written before the operation happens (the hook runs first), so a crash at any point leaves a
+        # marker naming at least everything that was touched — `recover_interrupted` reads it.
+        if j["fh"] is not None:
+            j["fh"].write(rel + "\n"); j["fh"].flush()
+    except Exception:
+        pass
+
+
+sys.addaudithook(_audit)
+
+
+def _ident(actor) -> str:
+    """The name a commit is made under, as git will take it.
+
+    The actor is whatever the caller's X-Actor header said, percent-decoded — a proxy's identity is
+    forwarded into it. git refuses a name with `<` or `>` in it, a NUL ends the argument, and a name
+    made only of the punctuation git trims (`,` `.` `;` …) is "only disallowed characters": each was a
+    500 "git commit failed" on a write that had validated (audit, 2026-11-02). Those characters are
+    dropped, not refused — it is a label on the commit, and the write itself was fine."""
+    name = re.sub(r"[\x00-\x1f\x7f<>]", "", str(actor or "")).strip(" .,:;\"'\\")
+    return name[:64] or "web"
+
+
+# A new area's directory name. create_region has refused `it-` and `it--support` since 2026-10-10; the
+# same rule is the floor under every write that makes a directory now, so a change set cannot make one
+# create_region would refuse (audit, 2026-11-02).
+AREA_RE = re.compile(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*")
+# A document's file name on the API: put_file's rule, and since 2026-11-02 that of `files[]` on a create.
+FILE_RE = re.compile(r"[a-z0-9][a-z0-9._-]*\.md")
+
+
+def _text(body: dict, key: str, *, where: str = "", required: str | None = None) -> str | None:
+    """A field that is a line of text, or None when it is absent — and a refusal when it is anything
+    else. A list, a number or an object in a text field reached `.strip()` or the serialiser and came
+    back as a 500 (audit, 2026-11-02). `required` is the sentence for an absent or blank one."""
+    v = body.get(key)
+    if v is None or (isinstance(v, str) and not v.strip()):
+        if required is not None: raise WriteError(400, f"{where}{key} is required{required}")
+        return v
+    if not isinstance(v, str): raise WriteError(400, f"{where}{key} must be text, not {type(v).__name__}")
+    return v
+
+
+def _same(a: dict, b: dict) -> bool:
+    """Whether two readings of an entity say the same thing in every field an edit can change. Blank,
+    absent and `published` are one status; a line is compared without the whitespace the file drops."""
+    def norm(k, v):
+        if k == "status": v = None if v in (None, "", "published") else v
+        if k == "export": return _yesno(v)
+        return (v.strip() if isinstance(v, str) else v) or None
+    return all(norm(k, a.get(k)) == norm(k, b.get(k)) for k in (*EDITABLE, "export", "body"))
+
+
+STATUSES = ("published", "draft")
+
+
+def _status_of(body: dict):
+    """`status`, which is `draft` or `published`. Anything else was stored as published with a 201
+    (audit, 2026-11-02): a word the caller meant as something is silently not that."""
+    s = _text(body, "status")
+    if s and s.strip() not in STATUSES: raise WriteError(400, f"status must be one of {', '.join(STATUSES)} (got {s!r})")
+    return s.strip() if s else s
 
 
 def _yesno(value) -> bool:
@@ -252,7 +421,7 @@ class Writer:
     def _resolve_id(self, given: str | None, *, name: str, kind: str, one_liner: str, region: str) -> tuple[str, bool]:
         """Make an id when none was given. **Never auto-increments** — something like `x-2` is a
         permanent address that means nothing."""
-        nid = (given or "").strip()
+        nid = (_text({"id": given}, "id") or "").strip()
         if nid:
             if not ID_RE.match(nid): raise WriteError(400, "id must be ASCII kebab-case")
             if (why := name_too_long(nid, suffix=".md")):
@@ -299,15 +468,16 @@ class Writer:
     def _resolve_kind(self, given: str | None, *, name: str, one_liner: str, region: str, content: str = "") -> tuple[str, bool]:
         """Decide a kind when none was given. **Never invents one outside the vocabulary** — if it
         is not in the list, this fails."""
-        k = (given or "").strip()
+        k = (_text({"kind": given}, "kind") or "").strip()
         if k: return k, False
         if self.suggest_id_configured and self.suggest_id_configured():
             k = (self.suggest_kind(name=name, one_liner=one_liner, region=region, content=content) or "").strip()
             if k: return k, True
-        # `default_kind` in vocab.yaml, when there is no LLM to choose. A kind is in no prompt and in
-        # no table an agent receives; its one reader is `export: no` on a kind in vocab.yaml, which
-        # keeps that sort of thing from crossing a link. Requiring a person to pick one was a field
-        # with no effect but a refusal. The response still reports `kind_generated`, so a domain that
+        # `default_kind` in vocab.yaml, when there is no LLM to choose. A kind is in no table an agent
+        # reads to route; the agent meets the list once, in knowledge_place's description, so it can
+        # pass one when it files a document. Its one reader is `export: no` on a kind in vocab.yaml,
+        # which keeps that sort of thing from crossing a link. Requiring a person to pick one was a
+        # field with no effect but a refusal. The response still reports `kind_generated`, so a domain that
         # relies on that rule can see which kinds were never actually chosen.
         fallback = str((self.store.vocab().get("default_kind") or "")).strip()
         if fallback: return fallback, True
@@ -323,8 +493,45 @@ class Writer:
         the floor under all of them, because `child_id` composes `<parent>-<stem>` and a route that
         never asked a person for the id can still arrive with one too long to write. A crash inside
         the transaction is the one outcome this must not have."""
+        d = self.area_dir(region, new=not (self.root / "regions" / str(region)).is_dir())
+        # The id is half the path. Every caller checks it, except where a route made it — `files[]`
+        # on a create made one from the file name, and `../../evil.md` was written and committed at
+        # the repository's root (audit, 2026-11-02).
+        if not isinstance(eid, str) or not ID_RE.fullmatch(eid): raise WriteError(400, f"id {str(eid)[:40]!r} is not ASCII kebab-case")
         if (why := name_too_long(eid, suffix=".md")): raise WriteError(400, f"id {eid[:24]}…: {why}")
-        return self.root / "regions" / region / f"{eid}.md"
+        p = d / f"{eid}.md"
+        if p.parent != d or p.is_symlink(): raise WriteError(400, f"id {eid[:40]!r} does not name a file in area {d.name}")
+        return p
+
+    def area_dir(self, region, *, new: bool = False) -> Path:
+        """`regions/<region>` — **the one place a name a caller sent becomes an area's directory.**
+
+        Every write that names an area came through `self.root / "regions" / region` unchecked, and
+        the HTTP layer percent-decodes before it splits: `DELETE /v1/regions/%2E%2E` passed the
+        "only when empty" guard (nothing lives in an area called `..`) and `rmtree`'d the data
+        repository, `.git` included; `%2E` removed regions/ (audit, 2026-11-02). A node's `region` of
+        `..` or `../.git` committed files outside regions/.
+
+        So: one path component, not hidden, not `.` or `..`, no separator; and resolved, a direct child
+        of regions/ that is not a symlink — a link under regions/ leads somewhere this was never meant
+        to write or delete. `new` is an area about to be made, which must also have the shape
+        create_region gives one; an existing area keeps whatever name it already has. Whether it
+        exists is the caller's question, because what that refusal says differs by caller."""
+        name = region if isinstance(region, str) else ""
+        regions = self.root / "regions"
+        if new:
+            if not AREA_RE.fullmatch(name):
+                raise WriteError(400, f"area {name[:64]!r}: an area name must be lowercase ascii-kebab (it is the area directory name)",
+                                 code="bad_area_name", data={"region": name[:64]})
+            if (why := name_too_long(name)):
+                raise WriteError(400, f"area: {why}", code="name_too_long", data={"field": "source", "n": len(name.encode()), "max": NAME_MAX})
+        elif (not name or name in (".", "..") or name.startswith(".") or name != name.strip()
+              or any(c in name for c in "/\\") or any(ord(c) < 32 or ord(c) == 127 for c in name) or name_too_long(name)):
+            raise WriteError(400, f"{name[:64]!r} is not an area name", code="bad_area_name", data={"region": name[:64]})
+        d = regions / name
+        if d.parent != regions or d.is_symlink() or d.resolve().parent != regions.resolve():
+            raise WriteError(400, f"{name[:64]!r} is not an area under regions/", code="bad_area_name", data={"region": name[:64]})
+        return d
 
     def child_id(self, parent: str, stem: str) -> str:
         """An id for a child named `<stem>.md`. Ids are global, so a stem already taken elsewhere is
@@ -383,8 +590,15 @@ class Writer:
             # (2026-10-10). The marker is what tells the next boot that the dirt is an interrupted
             # write of its own — safe to roll back — and not a person's edit, which is never touched.
             marker = self.root / ".git" / TXN_MARKER
-            try: marker.write_text(str(message) if not callable(message) else "change set", encoding="utf-8")
-            except OSError: pass
+            # The marker is also the journal: the message, then every path the transaction touches,
+            # one per line, appended by `_audit` before each is touched.
+            fh = None
+            try:
+                fh = open(marker, "w", encoding="utf-8")
+                fh.write(f"{TXN_JOURNAL}\n{(str(message) if not callable(message) else 'change set').splitlines()[0][:200]}\n"); fh.flush()
+            except (OSError, IndexError): pass
+            ours: set = set()
+            _journal.state = {"root": os.path.abspath(self.root), "paths": ours, "fh": fh}
             try:
                 mutate()
                 sync_region_node_lists(self.store); regenerate(self.store)
@@ -394,28 +608,48 @@ class Writer:
                     # data, and a dictionary of those is one nobody would read or keep current.
                     raise WriteError(422, "validation failed — nothing was written", res["errors"],
                                      code="validation_failed", data={"n": len(res["errors"])})
-                _git(self.root, "add", "-A")
-                if not _git(self.root, "status", "--porcelain"): raise WriteError(200, "no change")
+                _journal.state = None
+                # **Only what this transaction wrote is staged.** It was `git add -A`, and a file a
+                # person saved by hand while the write ran — about a second on a large map — went
+                # into the API's commit under the API's message, never validated (audit, 2026-11-02,
+                # 3 of 3). Anything changed that the journal does not cover is somebody else's, and
+                # the validation just run may have read it, so the write is refused rather than
+                # committed beside it; the person's file is left exactly as they saved it.
+                changed = _status(self.root)
+                stray = sorted(p for _, p in changed if not _covers(ours, p))
+                if stray:
+                    raise WriteError(409, "the repository was edited by hand while this write was running "
+                                          f"({', '.join(stray[:3])}{f' and {len(stray) - 3} more' if len(stray) > 3 else ''}) — "
+                                          "nothing was written; commit or revert that edit, then write again",
+                                     code="tree_dirty", data={"files": ", ".join(stray[:3])})
+                if changed: _git(self.root, "add", "-A", paths=[p for _, p in changed])
+                if not _git(self.root, "diff", "--cached", "--name-only"): raise WriteError(200, "no change")
                 now = self.store.nodes()
                 extra = after(before, now) if after else {}
                 impacted = stale_lines(before, now)
                 msg = message() if callable(message) else message
                 if dry_run:
-                    _restore(self.root)
+                    _restore(self.root, ours)
                     return {"ok": True, "dry_run": True, "revision": None, "message": msg, "warnings": list(res["warnings"]),
                             "stats": res["stats"], "impacted": impacted, **extra}
-                _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@routemind.local", "commit", "-q", "-m", msg)
+                who = _ident(actor)
+                # A commit of the index: an edit saved after the `add` above is not in it.
+                _git(self.root, "-c", f"user.name={who}", "-c", f"user.email={who}@routemind.local", "commit", "-q", "-m", msg)
             except WriteError:
-                _restore(self.root); raise
+                _journal.state = None; _restore(self.root, ours); raise
             except PermissionError as e:
                 # The data directory is not this container's to write: the uid, or a read-only mount.
                 # It surfaced as "502 PermissionError: …" with a temp file's path in it (2026-10-10).
-                _restore(self.root)
+                _journal.state = None; _restore(self.root, ours)
                 raise WriteError(503, f"cannot write to the data directory — check that data/repo is owned by KNOWLEDGE_UID "
                                       f"and not read-only ({e.filename})", code="repo_unwritable")
             except Exception as e:
-                _restore(self.root); raise WriteError(500, f"{type(e).__name__}: {e}")
+                _journal.state = None; _restore(self.root, ours); raise WriteError(500, f"{type(e).__name__}: {e}")
             finally:
+                _journal.state = None
+                if fh is not None:
+                    try: fh.close()
+                    except OSError: pass
                 try: marker.unlink()
                 except OSError: pass
             sha = head(self.root)
@@ -425,18 +659,24 @@ class Writer:
 
     # ---- nodes ----
     def create_node(self, body: dict, actor: str) -> dict:
-        region = body.get("region")
-        if not region: raise WriteError(400, "region is required — every Data area lives in a Region (core-nodes/ was retired 2026-09-08)")
-        if not (self.root / "regions" / region).is_dir():   # SPEC-v2 §1.1 — an area exists because nodes/ does
+        region = _text(body, "region", required=" — every Data area lives in a Region (core-nodes/ was retired 2026-09-08)")
+        if not self.area_dir(region).is_dir():   # SPEC-v2 §1.1 — an area exists because nodes/ does
             raise WriteError(400, f"region {region} does not exist", code="region_missing", data={"region": region})
-        holds = body.get("holds") or "content"
+        holds = _text(body, "holds") or "content"
         if holds not in ("content", "pointers"): raise WriteError(400, "holds must be content | pointers")
         files = body.get("files") or []                      # [{name, description, content}] — pointer files for a pointer node
+        if not isinstance(files, list): raise WriteError(400, "files must be a list of {name, description, content}")
         for f in files:
-            for k in ("name", "description", "content"):
-                if not f.get(k): raise WriteError(400, f"files[]: {k} is required")
-        for k in ("name", "one_liner"):
-            if not body.get(k): raise WriteError(400, f"{k} is required")
+            if not isinstance(f, dict): raise WriteError(400, "files[]: each is an object {name, description, content}")
+            for k in ("name", "description", "content"): _text(f, k, where="files[]: ", required="")
+            # The rule put_file has always had: a file's name is the child's id, and the id is its
+            # path. `../../evil.md` was written and committed at the repository root (audit, 2026-11-02).
+            fname = f["name"] if f["name"].endswith(".md") else f["name"] + ".md"
+            if not FILE_RE.fullmatch(fname) or fname == "INDEX.md":
+                raise WriteError(400, f"files[]: name {f['name'][:60]!r} must be <ascii-kebab>.md and not INDEX.md")
+        for k in ("name", "one_liner"): _text(body, k, required="")
+        for k in ("kind", "id", "content", "injected_by", "parent"): _text(body, k)
+        status = _status_of(body)
         kind, kind_generated = self._resolve_kind(body.get("kind"), name=body["name"],
                                                   one_liner=body["one_liner"], region=region,
                                                   content="\n\n".join(f.get("content", "") for f in files)[:3000])
@@ -452,7 +692,7 @@ class Writer:
             # transaction, where the answer cannot change under it.
             if base.exists(): raise WriteError(409, f"entity {nid} exists", code="id_taken", data={"id": nid})
             base.parent.mkdir(parents=True, exist_ok=True)
-            write_node_index(self.store, {"id": nid, "name": body["name"], "kind": kind, "region": region, "holds": holds, "injected_by": body.get("injected_by"), "status": body.get("status"),
+            write_node_index(self.store, {"id": nid, "name": body["name"], "kind": kind, "region": region, "holds": holds, "injected_by": body.get("injected_by"), "status": status,
                                           "parent": body.get("parent"),
                                           "one_liner": body["one_liner"], "body": body.get("content") or "",
                                           "path": str(base.relative_to(self.root))})
@@ -485,6 +725,10 @@ class Writer:
         n = self.store.node(nid)
         if not n: raise WriteError(404, f"node {nid} not found")
         if "id" in body and body["id"] != nid: raise WriteError(400, "renaming a node is not supported — create the new one, delete the old")
+        for k in ("name", "kind", "one_liner", "holds", "use_when", "expands_in", "parent", "content", "region"): _text(body, k)
+        if "status" in body: _status_of(body)
+        if "export" in body and not isinstance(body["export"], (bool, str, type(None))):
+            raise WriteError(400, f"export is yes or no, not {type(body['export']).__name__}")
         moves: list[tuple[str, Path, Path]] = []
         if "parent" in body and (body.get("parent") or None) != (n.get("parent") or None):
             moves = self._plan_move(n, body.get("parent") or None)
@@ -503,6 +747,10 @@ class Writer:
             # One type: an entity's content is its own field, not a file underneath it. Editing the
             # body and editing the routing line are the same call on the same thing.
             if "content" in body: n["body"] = body["content"]
+            # Nothing it says differs from what the file says: no write. Rewriting the file anyway
+            # turned `{"parent": null}` on a hand-formatted face into a reformat commit, and the
+            # area's age with it (audit, 2026-11-02).
+            if not moves and _same(n, self.store.node(nid) or {}): raise WriteError(200, "no change")
             by_id = {x["id"]: x for x in self.store.nodes()}
             for eid, src, dst in moves:
                 # The moved entity is `n` itself, already carrying this call's edits; the rest are
@@ -600,30 +848,42 @@ class Writer:
             raise WriteError(400, f"file name: {why}", code="name_too_long",
                              data={"field": "file_name", "n": len(name.encode()), "max": NAME_MAX})
         if "content" not in body: raise WriteError(400, "content is required")
-        # A new document never replaces one silently. The screen's "new data" form and an upload use
-        # the same PUT as an edit, so a name already taken under this node overwrote that document
-        # with no warning (2026-10-10). `create_only` says "this is new": an existing one is refused.
-        if body.get("create_only") and any(f["name"] == name for f in n["files"]):
-            raise WriteError(409, f"{nid} already holds {name}", code="file_exists", data={"name": name[:-3]})
-        desc = (body.get("description") or "").strip()
-        existing = next((f["description"] for f in n["files"] if f["name"] == name), None)
-        content = body["content"].rstrip("\n") + "\n"
-        line = desc or existing or ""
-        if not line: raise WriteError(400, "description is required — it is the line an agent chooses this on", code="description_required")
+        _text(body, "content"); _text(body, "description"); _text(body, "name")
         # A file is an entity that declares a `parent`. Writing one is writing an entity, so this is
         # `create_node`/`update_node` under an older name; the endpoint stays while the screen still
         # speaks in files.
-        cur = next((x for x in self.store.nodes() if x.get("parent") == nid and f"{x['id']}.md" == name), None)
+        cur = self._child(nid, name)
+        # A new document never replaces one silently. The screen's "new data" form and an upload use
+        # the same PUT as an edit, so a name already taken under this node overwrote that document
+        # with no warning (2026-10-10). `create_only` says "this is new": an existing one is refused.
+        # Asked of the document itself, not of the listing's `<id>.md`: a stem taken elsewhere is
+        # stored under the holder's prefix, the listing called it `corp-card-evidence.md`, and a second
+        # create_only of `evidence.md` replaced it with a 200 (audit, 2026-11-02).
+        if body.get("create_only") and cur:
+            raise WriteError(409, f"{nid} already holds {name}", code="file_exists", data={"name": name[:-3]})
+        desc = (body.get("description") or "").strip()
+        existing = cur["one_liner"] if cur else None
+        content = body["content"].rstrip("\n") + "\n"
+        line = desc or existing or ""
+        if not line: raise WriteError(400, "description is required — it is the line an agent chooses this on", code="description_required")
         cid = cur["id"] if cur else self.child_id(nid, name[:-3])
+        # The prefixed id can itself be somebody else's; writing it would replace an entity that is
+        # not this node's document at all.
+        if not cur and self.store.node(cid):
+            raise WriteError(409, f"{name} on {nid} would be stored as {cid}, which is another entity — choose another name",
+                             code="id_taken", data={"id": cid})
         cp = self.entity_path(n["region"], cid)
+        m = FM_RE.match(content)
+        # The supplied content may declare things **about itself** — `scope` says which service's
+        # facts it states, and the validator refuses a common file that names one. Writing the
+        # entity replaces the frontmatter wholesale, so anything the author declared has to be
+        # carried across or it disappears with no error and no sign on the screen.
+        try: declared = (yaml.safe_load(m.group(1)) or {}) if m else {}
+        except yaml.YAMLError as e:
+            raise WriteError(400, f"the content's frontmatter does not parse — {str(e).splitlines()[0]}")
+        if not isinstance(declared, dict): raise WriteError(400, "the content's frontmatter is not `key: value` lines")
         def mutate():
             text = content
-            m = FM_RE.match(text)
-            # The supplied content may declare things **about itself** — `scope` says which service's
-            # facts it states, and the validator refuses a common file that names one. Writing the
-            # entity replaces the frontmatter wholesale, so anything the author declared has to be
-            # carried across or it disappears with no error and no sign on the screen.
-            declared = (yaml.safe_load(m.group(1)) or {}) if m else {}
             write_node_index(self.store, {**(cur or {}), **{k: declared[k] for k in CONTENT_DECLARED if k in declared},
                                           # The name the person typed, when they typed one: a document
                                           # filed as "출장비 기준" is called that on the map, not by the
@@ -640,11 +900,20 @@ class Writer:
         return {**res, "id": cid}
 
     def delete_file(self, nid: str, name: str, actor: str) -> dict:
-        n = self.store.node(nid)
-        if not n or name not in [f["name"] for f in n["files"]]: raise WriteError(404, "file not listed on this node")
-        child = next((x for x in self.store.nodes() if x.get("parent") == nid and f"{x['id']}.md" == name), None)
+        child = self._child(nid, name)
         if not child: raise WriteError(404, "file not listed on this node")
         return self.delete_node(child["id"], actor)
+
+    def _child(self, nid: str, name: str) -> dict | None:
+        """The document `<name>` under `nid`: the child whose id is the stem, or — when the stem was
+        taken elsewhere and `child_id` prefixed it — `<nid>-<stem>`. Both spellings name one document,
+        and put_file writes the second one; looking up only the first made the document it had just
+        written a 404 to GET and DELETE, and invisible to create_only (audit, 2026-11-02)."""
+        if not name.endswith(".md"): return None
+        stem = name[:-3]
+        kids = [x for x in self.store.nodes() if x.get("parent") == nid]
+        return (next((x for x in kids if x["id"] == stem), None)
+                or next((x for x in kids if x["id"] == f"{nid}-{stem}"), None))
 
     def create_region(self, body: dict, actor: str) -> dict:
         """Create a new area — **in one transaction, carrying everything hop 0 needs.**
@@ -657,18 +926,20 @@ class Writer:
         else**, which an agent will never choose. An empty slot left to be filled later does not get
         filled, so it is required. It is the one sentence: a CORE.md row was a second one, required
         here until 2026-10-07 though no agent was ever shown it."""
-        src = str(body.get("source") or "").strip()
+        src = (_text(body, "source") or "").strip()
         # No trailing hyphen and no double one: `it-` and `it--support` were accepted (2026-10-10).
-        if not re.fullmatch(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*", src or ""):
+        if not AREA_RE.fullmatch(src):
             raise WriteError(400, "source must be lowercase ascii-kebab (it is the area directory name)", code="bad_area_name", data={"region": src})
         if (why := name_too_long(src)):
             raise WriteError(400, f"source: {why}", code="name_too_long",
                              data={"field": "source", "n": len(src.encode()), "max": NAME_MAX})
-        if (self.root / "regions" / src).exists(): raise WriteError(409, f"region {src} exists", code="region_exists", data={"region": src})
+        if self.area_dir(src, new=True).exists(): raise WriteError(409, f"region {src} exists", code="region_exists", data={"region": src})
         rep = body.get("representative") or {}
+        if not isinstance(rep, dict): raise WriteError(400, "representative must be an object {name, one_liner, use_when}")
+        for k in ("kind", "id"): _text(rep, k, where="representative.")
         for k in ("name", "one_liner", "use_when"):
-            if not str(rep.get(k) or "").strip():
-                raise WriteError(400, f"representative.{k} is required — {'it is the condition for choosing this area at hop 0' if k == 'use_when' else 'it is how the representative describes itself'}")
+            _text(rep, k, where="representative.",
+                  required=f" — {'it is the condition for choosing this area at hop 0' if k == 'use_when' else 'it is how the representative describes itself'}")
         label = src.replace("-", "_").upper()
         kind, kind_generated = self._resolve_kind(rep.get("kind"), name=rep["name"], one_liner=rep["one_liner"], region=src)
         nid, id_generated = self._resolve_id(rep.get("id"), name=rep["name"], kind=kind, one_liner=rep["one_liner"], region=src)
@@ -699,7 +970,9 @@ class Writer:
 
         **Only when empty.** Any node besides the representative and this refuses — a person has to
         know what they are about to lose."""
-        d = self.root / "regions" / src
+        # `area_dir` before anything: `..` passed this guard as an area with nothing in it, and the
+        # rmtree below took the whole data repository (audit, 2026-11-02).
+        d = self.area_dir(src)
         if not d.is_dir(): raise WriteError(404, f"region {src} not found")
         mine = [n for n in self.store.nodes() if n["region"] == src]
         others = [n["id"] for n in mine if n.get("parent") or n.get("role") != "representative"]
@@ -736,8 +1009,9 @@ class Writer:
         stranded state the old version's transaction existed to prevent."""
         parent = self.store.node(nid)
         if not parent: raise WriteError(404, f"node {nid} not found")
-        child = next((x for x in self.store.nodes() if x.get("parent") == nid and f"{x['id']}.md" == name), None)
+        child = self._child(nid, name)
         if not child: raise WriteError(404, "file not listed on this node")
+        for k in ("name", "one_liner", "kind", "id", "region"): _text(body, k)
         if body.get("region") and body["region"] != child["region"]:
             raise WriteError(400, "moving an entity between Regions is not supported")
         for k in ("name", "one_liner"):

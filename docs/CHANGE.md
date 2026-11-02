@@ -81,7 +81,8 @@ named). Unrelated movement is fine; it is not a whole-repository lock. A `reword
 
 A set that applies is one commit; one refused anywhere — a late conflict, a stale base, the validator
 — is no commit and a clean tree, even when earlier decisions in it had already written files
-(`transact` rolls back with `reset --hard`, since a dry run restores after `git add`). `keep` is not
+(`transact` puts back, index and tree, every file the set touched and no other — a dry run restores
+after `git add`, and a file somebody saved by hand meanwhile is theirs). `keep` is not
 visible in a diff, so the decisions are the commit's trailers, where `git log` and the ages read them:
 
 ```

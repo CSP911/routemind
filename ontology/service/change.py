@@ -110,6 +110,7 @@ def parse(body: dict, store) -> dict:
             if ref in refs: problems.append(f"decision {i}: ref {ref} is used twice"); continue
             for k in ("name", "one_liner"):
                 if not str(d.get(k) or "").strip(): problems.append(f"decision {i} ({ref}): {k} is required")
+            if not isinstance(d.get("content"), (str, type(None))): problems.append(f"decision {i} ({ref}): content must be text, not {type(d['content']).__name__}")
             parent = d.get("parent")
             if parent is None:
                 src = str(d.get("area") or "").strip()
@@ -145,6 +146,8 @@ def parse(body: dict, store) -> dict:
             d["field"] = f; aspect((tid, f), i)
         elif op == "write":
             if "content" not in d: problems.append(f"decision {i}: write {tid} needs content")
+            # Text, or it was stored as Python's spelling of whatever it was — `{'a': 1}` (audit, 2026-11-02).
+            elif not isinstance(d["content"], (str, type(None))): problems.append(f"decision {i}: write {tid} — content must be text, not {type(d['content']).__name__}")
             aspect((tid, "body"), i)
         elif op == "delete":
             if _top(n): problems.append(f"decision {i}: {tid} is what speaks for area {n['region']} — delete the area instead, once it is empty")
