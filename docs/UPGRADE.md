@@ -9,6 +9,42 @@ Nothing on this page touches your documents. `data/` is bind-mounted into the co
 on disk across a rebuild; the only file an update may rewrite there is `data/repo/regions.json`,
 which is generated, and it does so in a commit that says why.
 
+## 2026-11-02 — a full audit: every path a new user, an agent and a second install take
+
+Nothing to do beyond the usual `git pull && ./install.sh`. What changes on its own:
+
+- **Writes that could reach outside an area are refused.** An area name or a document file name is
+  one plain directory entry under `regions/` or it is a 400 — before, `DELETE /v1/regions/..` on the
+  ontology's own port removed the whole data repository, `.git` included, and a create could commit a
+  file at the repository root.
+- **The export surface answers two addresses per node,** `nodes/<id>` and `nodes/<id>/body`. A child
+  is read at its own address; `nodes/<parent>/files/<child>.md` is a 404 there now, because it served
+  drafts and kinds marked `export: no`.
+- **A hand edit made while a write runs is never swept into it.** A write commits only the files it
+  wrote; if anything else in the tree changed meanwhile it is refused with `409 tree_dirty` and you
+  save again. A rollback restores only the write's own files, so a hand edit survives it. What
+  Finder or Explorer leaves in a folder (`.DS_Store`, `._*`, `Thumbs.db`, `desktop.ini`) does not
+  count — opening `data/repo` in Finder used to stop the map saving.
+- **Names YAML would misread** (`on`, `no`, `017`, a date) are written quoted, and a hand-written date
+  is read as its text. Existing files read as before.
+- **The review queue** refuses a proposal identical to a pending one (`duplicate_pending`), refuses a
+  change set its own dry run says cannot apply, and decides one proposal at a time.
+- **The web port:** a document over 1 MB is refused with 413 (`KNOWLEDGE_MAX_DOCUMENT_BYTES` to change
+  it); in proxy mode the trusted proxy is the socket's address, never `X-Forwarded-For`; an identity over
+  64 characters is refused for writes instead of cut; "Copy for an agent" prints addresses that answer (they were
+  404); `HEAD` works wherever `GET` does.
+- **The agent:** one malformed line, a non-UTF-8 byte or a circuit to something that is not RouteMind no
+  longer ends the session; `knowledge_read` reads document bodies only; a walk expires ten minutes after
+  its last step, not after hop 0; a `.env` saved with a BOM or in another encoding is read, and a
+  `WEB_PORT` that cannot be read is named instead of falling back to 8080.
+- **The checks** (`check/smoke.sh`, `mcp-check.py`, `all.sh` …) default to this checkout's `WEB_PORT`,
+  not 8080, so they test the install you are in and never another one on the machine.
+- **Many clients at once:** the service listens with a backlog of 128, not 5 — on Linux, a map, a
+  few agents and a health check together could have a write reset mid-connection.
+- **install.sh** says plainly when Docker, `docker compose` or the daemon is missing, accepts
+  `--port=N`, and a re-run no longer rebuilds the service (a `.dockerignore` keeps `__pycache__` out of
+  the image).
+
 ## 2026-10-10 (later) — a second full pass: recovery, starting over, the agent's secret
 
 Nothing to do beyond the usual `git pull && ./install.sh`. What changes on its own:
