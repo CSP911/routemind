@@ -1521,7 +1521,12 @@ def main():
         missing = sorted(k for k, v in LLM.items() if not v)
         sys.stderr.write(f"iris-ontology: no LLM — ONTOLOGY_LLM_{', ONTOLOGY_LLM_'.join(missing)} unset\n")
     for e in res["errors"]: sys.stderr.write(f"  ERROR {e}\n")
-    ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
+    # socketserver's listen backlog is 5. Eighteen clients at once — a map, a few agents, the health
+    # check — and Linux reset the overflow: 2 of 96 writes came back "Connection reset by peer", in 7
+    # of 18 runs of concurrency-check in a Linux container; 0 of 12 with a real backlog (2026-11-02).
+    class Server(ThreadingHTTPServer):
+        request_queue_size = 128
+    Server(("0.0.0.0", PORT), Handler).serve_forever()
 
 
 if __name__ == "__main__":

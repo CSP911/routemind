@@ -505,7 +505,12 @@ class Writer:
         the floor under all of them, because `child_id` composes `<parent>-<stem>` and a route that
         never asked a person for the id can still arrive with one too long to write. A crash inside
         the transaction is the one outcome this must not have."""
-        d = self.area_dir(region, new=not (self.root / "regions" / str(region)).is_dir())
+        # Whether the area exists, asked before area_dir has bounded the name. Python 3.12 — the
+        # image's — raises ENAMETOOLONG from is_dir() for a component over 255 bytes where 3.14 says
+        # False, so a 300-character area in a change set was a 500 on Linux only (CI replica, 2026-11-02).
+        try: exists = (self.root / "regions" / str(region)).is_dir()
+        except OSError: exists = False
+        d = self.area_dir(region, new=not exists)
         # The id is half the path. Every caller checks it, except where a route made it — `files[]`
         # on a create made one from the file name, and `../../evil.md` was written and committed at
         # the repository's root (audit, 2026-11-02).
