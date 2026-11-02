@@ -84,21 +84,56 @@ def _norm(name) -> str:
     return re.sub(r"[\s·/()\-]", "", str(name or "")).lower()
 
 
+def _vocab_shape(vocab: dict) -> tuple[list[dict], dict, list[str]]:
+    """The kinds and budgets of a vocab.yaml that parsed, and what is wrong with its shape.
+
+    YAML that parses is not yet a vocabulary. `kinds: twelve`, `kinds:` with nothing under it, kinds
+    written as plain strings, `budgets:` emptied, a budget that is a word — each was a bare TypeError
+    or ValueError from the rules below, so every write answered 500 and nothing named the file (audit
+    SV-12, 2026-11-02). Each is refused here by name; what is usable is kept, so one bad entry does
+    not also turn every node's kind into "not in vocab"."""
+    problems = []
+    raw = vocab.get("kinds")
+    if not isinstance(raw, list) or not raw:
+        problems.append(f"vocab.yaml: kinds must be a list of kinds, each with an id — got {raw!r}")
+        raw = []
+    kinds = []
+    for i, k in enumerate(raw):
+        if isinstance(k, dict) and isinstance(k.get("id"), str) and k["id"].strip():
+            kinds.append(k)
+        else:
+            problems.append(f"vocab.yaml: kinds[{i}] is {k!r} — a kind is a mapping with an id and a desc, "
+                            f"like `- id: rule` / `  desc: what is allowed`")
+    budgets = vocab.get("budgets", {})
+    if not isinstance(budgets, dict):
+        problems.append(f"vocab.yaml: budgets must be a mapping of numbers, or left out for the defaults — got {budgets!r}")
+        budgets = {}
+    out = {}
+    for key, cap in budgets.items():
+        try: out[key] = int(cap)
+        except (TypeError, ValueError):
+            problems.append(f"vocab.yaml: budgets.{key} must be a whole number, got {cap!r}")
+    return kinds, out, problems
+
+
 def validate(store: Store) -> dict:
     errors, warnings = [], []
-    vocab = store.vocab(); budgets = vocab.get("budgets", {})
+    vocab = store.vocab()
     store._shared(); store.regions_json()     # each records what does not parse, so read them first
     # First, because everything after this is computed without them: a file left out looks like a
     # missing node to every rule below. Named by path, with how to undo a commit that broke it.
     vocab_broken = any(b.startswith("vocab.yaml:") for b in store.broken())
     for b in store.broken():
         errors.append(f"{b} — fix it and commit, or `git -C data/repo revert HEAD` if the last commit broke it")
-    kinds = {k["id"] for k in vocab.get("kinds", [])}
+    kind_list, budgets, shape = _vocab_shape(vocab)
+    errors += shape
+    vocab_broken = vocab_broken or bool(shape)
+    kinds = {k["id"] for k in kind_list}
     # `export` on a kind decides whether that sort of thing crosses a link. Anything but a plain no
     # is refused rather than read as one: a policy that silently means the opposite of what somebody
     # typed is the worst shape this file can take, and `export: maybe` would read as caution.
-    for k in (vocab.get("kinds") or []):
-        v = k.get("export") if isinstance(k, dict) else None
+    for k in kind_list:
+        v = k.get("export")
         if v is None: continue
         if not (v is False or v is True or (isinstance(v, str) and v.strip().lower()
                                             in ("no", "false", "never", "yes", "true"))):
@@ -295,7 +330,7 @@ def validate(store: Store) -> dict:
     def budget(label, n, cap, hard=True):
         if n > cap: (errors if hard else warnings).append(f"budget exceeded: {label} {n} > {cap}")
         elif n >= cap * 0.8: warnings.append(f"budget {label} at {n}/{cap}")
-    budget("kinds", len(kinds), int(budgets.get("kinds", 12)))
+    budget("kinds", len(kinds), budgets.get("kinds", 12))
     # `nodes: 70` counted the addressable things, and under two types a file was not one. Flattening
     # made 32 files addressable without adding any knowledge, so the count moved for a reason that
     # has nothing to do with the ontology growing — the unit changed, and the cap is restated in the
@@ -304,14 +339,14 @@ def validate(store: Store) -> dict:
     # A warning, not a refusal (2026-10-10). As an error it stopped every write at the 121st entity —
     # the shipped example uses 80 — with "budget exceeded: entities 121 > 120" in English and nothing a
     # person could do on the screen. How big a team's map may grow is not this validator's to cap.
-    budget("entities", len(nodes), int(budgets.get("entities", budgets.get("nodes", 70))), hard=False)
+    budget("entities", len(nodes), budgets.get("entities", budgets.get("nodes", 70)), hard=False)
     # What one person reads at once is one listing, not the whole map. The old budget could not see
     # this at all: a representative with 16 files counted as 1.
     for par, kids in Counter(n["parent"] for n in nodes if n.get("parent")).items():
         # Also a warning: a wide table is a reason to fold it (knowledge_place says so past nine rows),
         # not a reason to refuse the 26th document — measured, a wide table costs tokens, not accuracy
         # (eval/depth).
-        budget(f"children of {par}", kids, int(budgets.get("children_per_entity", 25)), hard=False)
+        budget(f"children of {par}", kids, budgets.get("children_per_entity", 25), hard=False)
     used_kinds = {n["kind"] for n in nodes}
     for k in kinds - used_kinds: warnings.append(f"kind {k!r} is in vocab but unused")
 
@@ -353,8 +388,14 @@ def validate(store: Store) -> dict:
     for d in regions:
         if d not in rj: errors.append(f"regions.json: missing entry for regions/{d}")
         else:
+            # A warning, not an error (audit SC-1, 2026-11-02). `nodes` is bookkeeping no reader is
+            # served, so a page added or removed by hand and committed left the install `valid:
+            # false` until a write or a restart, while every reader already saw the page as it is.
+            # Which areas exist, and what their rows say, are still errors — those are served.
             declared = set(rj[d].get("nodes", [])); actual = {n["id"] for n in nodes if n["region"] == d and n["status"] != "draft"}
-            if declared != actual: errors.append(f"regions.json {d}: nodes {sorted(declared ^ actual)} differ from directory")
+            if declared != actual:
+                warnings.append(f"regions.json {d}: its node list lags the directory ({', '.join(sorted(declared ^ actual)[:6])}) — "
+                                f"bookkeeping no reader is served; the next write, or `./ontology/tidy.py <repo> --fix`, regenerates it")
             if rj[d].get("source") != d: errors.append(f"regions.json {d}: source must be the directory name {d!r}")
     for d in rj:
         if d not in regions: errors.append(f"regions.json: entry {d} has no directory")
@@ -409,16 +450,21 @@ def validate(store: Store) -> dict:
     for n in nodes:
         refs[n["id"]] = {m for m in re.findall(r"`([a-z0-9][a-z0-9-]{3,})`", n.get("body") or "")
                          if m in known and m != n["id"]}
+    # Depth-first with an explicit stack, not recursion: a chain of 1,200 documents each naming the
+    # next was a RecursionError here, and since validation runs inside every write, every write was
+    # refused (audit SV-21, 2026-11-02). Same visiting order, same cycles reported.
     colour, seen = {}, []
-    def _visit(node, stack):
-        if colour.get(node) == 1:
-            if node in stack: seen.append(stack[stack.index(node):] + [node])
-            return
-        if colour.get(node) == 2: return
-        colour[node] = 1; stack.append(node)
-        for m in sorted(refs.get(node, ())): _visit(m, stack)
-        stack.pop(); colour[node] = 2
-    for n in sorted(refs): _visit(n, [])
+    for root in sorted(refs):
+        if colour.get(root): continue
+        colour[root] = 1; path = [root]; todo = [iter(sorted(refs.get(root, ())))]
+        while todo:
+            m = next(todo[-1], None)
+            if m is None:
+                colour[path.pop()] = 2; todo.pop(); continue
+            if colour.get(m) == 1:
+                seen.append(path[path.index(m):] + [m]); continue
+            if colour.get(m) == 2: continue
+            colour[m] = 1; path.append(m); todo.append(iter(sorted(refs.get(m, ()))))
     for cyc in seen[:5]:
         warnings.append("cross-references form a cycle: " + " -> ".join(cyc)
                         + " — each line may be true on its own; together they can send a walk "

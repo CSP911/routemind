@@ -145,6 +145,30 @@ try:
     log = open(os.path.join(T, "svc.log"), encoding="utf-8", errors="replace").read()
     check("  and the log says so, and how to fix it", "could not be regenerated" in log and "tidy.py" in log)
     stop(p)
+
+    # ── a page by hand, and a vocabulary broken by hand, on a running server (2026-11-02) ──
+    git(repo, "checkout", "-q", "--", ".")
+    p = start(repo)
+    parent = next(f[:-3] for f in sorted(os.listdir(os.path.dirname(md))) if f.endswith(".md") and f[:-3] != area)
+    page = os.path.join(os.path.dirname(md), "hand-written-page.md")
+    open(page, "w", encoding="utf-8").write(f"---\nid: hand-written-page\nname: \"Hand-written page\"\nkind: topic\n"
+                                            f"one_liner: \"A page written in an editor\"\nparent: {parent}\n---\n# Hand\n\nby hand\n")
+    git(repo, "add", "-A"); git(repo, "commit", "-qm", "a page by hand")
+    st, h = get("/healthz")
+    # Audit SC-1: valid: false over regions.json's node list, which no reader is served.
+    check("a page added by hand and committed leaves /healthz valid", h.get("valid") is True, json.dumps({k: h.get(k) for k in ("valid", "errors")})[:300])
+    voc = os.path.join(repo, "vocab.yaml")
+    keep = open(voc, encoding="utf-8").read()
+    open(voc, "w", encoding="utf-8").write("kinds: [unclosed\n")
+    st, h = get("/healthz"); st2, v = get("/v1/validate")
+    # Audit SV-17: /healthz cached its answer on HEAD and the entities' mtimes, so a vocabulary broken
+    # without a commit read valid there and invalid at /v1/validate.
+    check("an uncommitted broken vocab.yaml: /healthz agrees with /v1/validate", h.get("valid") is False and v.get("ok") is False
+          and any("vocab.yaml" in e for e in h.get("errors", [])), json.dumps({k: h.get(k) for k in ("valid", "errors")})[:300])
+    open(voc, "w", encoding="utf-8").write(keep)
+    st, h = get("/healthz")
+    check("  and mended, it is valid again", h.get("valid") is True, json.dumps({k: h.get(k) for k in ("valid", "errors")})[:300])
+    stop(p)
 finally:
     shutil.rmtree(T, ignore_errors=True)
 

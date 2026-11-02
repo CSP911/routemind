@@ -161,6 +161,21 @@ check("`none` at hop 0 asks for a new area and writes nothing",
 check("  and offers to make it with `here` and `area`, in the document's commit", "area:" in text and "here {" in text, text[:300])
 check("  offering the document's own line as the sentence", "Who feeds the pigeons" in text)
 
+# A draft is in no table an agent is handed (invariant 4), and the placement walk's tables are among
+# them. An area's table used `advertised`; a node's used `children_of` and listed drafts (audit SV-16,
+# 2026-11-02).
+def post(path, body):
+    r = urllib.request.Request(f"http://127.0.0.1:{PORT}{path}", data=json.dumps(body).encode(), method="POST",
+                               headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(r, timeout=20) as x: return x.status, json.loads(x.read())
+    except urllib.error.HTTPError as e: return e.code, {"error": e.read().decode("utf-8", "replace")[:200]}
+st, _ = post("/v1/nodes", {"id": "draft-under-request", "name": "Draft under request", "one_liner": "not accepted yet",
+                           "region": "procurement", "parent": "purchase-request", "status": "draft"})
+st2, tb = post("/v1/place", {"at": "/v1/nodes/purchase-request"})
+check("a node's placement table leaves its drafts out, as its area's does", st == 201 and st2 == 200 and tb.get("rows")
+      and "draft-under-request" not in [r["id"] for r in tb["rows"]], f"{st} {st2} {[r['id'] for r in tb.get('rows', [])]}")
+
 sys._place_check_done = True
 print("\n".join(results))
 n = sum(r.startswith("FAIL") for r in results)

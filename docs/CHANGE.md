@@ -37,7 +37,8 @@ delete  { id }
 **A set is decisions, not a script.** At most one decision per (entity, aspect) — the aspects are
 existence, parent, one_liner, use_when, name, body — and two on one aspect are refused by name. The
 order of application is fixed by the server: creates (new areas first, then by parent reference),
-moves, rewordings and bodies, deletes. So the same set in any order makes the same tree, the same
+moves, rewordings and bodies, deletes — deepest first, so a holder and what it holds can be deleted
+together in either order. So the same set in any order makes the same tree, the same
 impact and the same ids, and `check/change-check.py` holds that. A `$ref` is the set's own name for
 something it creates; the id comes from the same rule as any create, and the answer maps refs to ids.
 A `create` with no parent is a new area's face: `area` is its directory, `use_when` the sentence hop 0
@@ -100,7 +101,8 @@ who can see the map. An agent's omission is silent, so `/v1/changes` refuses an 
 
 **With a review queue, a set that rewords an area's sentence waits there whole.** `use_when` is the
 line hop 0 prints and is a person's (2026-09-11). Where `ONTOLOGY_HARNESS` is configured, such a set
-is dry-run to prove it applies, then queued as one proposal of type `change`; accepting it applies it
+is dry-run to prove it applies — one that does not is refused with the refusal the direct write would
+give, and nothing is queued — then queued as one proposal of type `change`; accepting it applies it
 with the same base check, so what moved under it since is handed back, not overwritten. Every other
 set applies directly — place writes (operator, 2026-10-08).
 

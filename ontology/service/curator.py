@@ -10,7 +10,7 @@ promotion wrote. They served an agent runtime that reported its runs back, which
 have.
 """
 from __future__ import annotations
-import json, os, re, uuid
+import json, os, re, threading, uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -40,8 +40,27 @@ class CuratorStore:
         with self.log.open("a", encoding="utf-8") as f: f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
 
+# One decision at a time, and one filing against the queue as it stands. `decide` reads the status,
+# applies, then appends — and an accept and a reject sent together both read `pending`: both were
+# told 200, the change was committed, and the rejecter was told it was rejected (audit SV-9,
+# 2026-11-02). Module-wide because the server builds a CuratorStore per request; the service is one
+# process, so a lock is enough.
+_decide_lock = threading.Lock()
+
+
+class Duplicate(ValueError):
+    """The same proposal is already waiting. Carries the pending one's id, so the refusal can name it."""
+    def __init__(self, msg: str, pending: str):
+        super().__init__(msg); self.pending = pending
+
+
 # ── accept / reject ────────────────────────────────────────────────────────────────────────
 def decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply) -> dict:
+    with _decide_lock:
+        return _decide(cstore, pid, status, why, apply)
+
+
+def _decide(cstore: CuratorStore, pid: str, status: str, why: str | None, apply) -> dict:
     p = next((x for x in cstore.proposals() if x["id"] == pid), None)
     if not p: return {"ok": False, "error": "no such proposal"}
     if p["status"] != "pending": return {"ok": False, "error": f"proposal is {p['status']}"}
@@ -126,6 +145,20 @@ def submit_route(cstore: CuratorStore, body: dict, actor: str) -> dict:
     unknown = sorted(set(body) - {"scope", "field", "region", "entity", "after", "before", "why",
                                   "target", "peer"})
     if unknown: raise ValueError(f"unknown field(s) {unknown}")
+    with _decide_lock:
+        # The same target and the same value already waiting is a second click, not a second
+        # opinion: accepting one leaves the other refusing for ever, to be rejected by hand (audit
+        # WB-4, 2026-11-02). `why` and `before` do not make it different — the change is the same.
+        same = next((x for x in cstore.proposals("pending")
+                     if x.get("type") == "route" and x.get("scope") == scope and x.get("field") == field
+                     and (x.get("region") or "") == region and (x.get("entity") or "") == entity
+                     and (x.get("peer") or "") == peer and (x.get("after") or "") == after), None)
+        if same:
+            raise Duplicate(f"the same change is already waiting for review as {same['id']} — accept or reject that one", same["id"])
+        return _file_route(cstore, body, actor, scope, field, region, entity, peer, after)
+
+
+def _file_route(cstore, body, actor, scope, field, region, entity, peer, after) -> dict:
     pid = f"cp_{uuid.uuid4().hex[:10]}"
     cstore.append({"event": "proposal", "id": pid, "at": _now(), "type": "route",
                    "scope": scope, "field": field, "region": region, "entity": entity or None,

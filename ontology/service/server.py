@@ -14,7 +14,7 @@ mounted it; agents here read this API), service fragments (`ONTOLOGY_SERVICES`, 
 legacy fragment directory, and the curator's sleep and observations (no caller anywhere).
 """
 from __future__ import annotations
-import datetime, json, os, re, sys, time, traceback, uuid
+import datetime, json, os, re, sys, threading, time, traceback, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, unquote
@@ -289,24 +289,27 @@ def one_liner_draft(nid: str) -> dict:
 
 
 def suggest_node_kind(name: str, one_liner: str, region: str, content: str = "") -> str | None:
-    """Decide a node's `kind` (operator, 2026-09-10: "what relations may hold is the curator's job").
+    """Decide a node's `kind`, from the list in vocab.yaml.
 
-    `kind` is **never seen by an agent** — it does not go into a prompt. What uses it is **the
-    validator's edge rules** (`edge_rules` in vocab.yaml). So what a kind decides is "which relations
-    this node may take part in", and relations are the curator's territory.
+    `kind` is **never seen by an agent** — it does not go into a prompt, and the KIND column an agent
+    reads is table/document, not this. What a kind decides is one thing: whether that sort of entity
+    crosses a circuit (`export: no` on the kind in vocab.yaml — docs/CIRCUIT.md). It used to decide
+    which relations a node could take part in, through `edge_rules`; relations and edge rules were
+    retired on 2026-10-07, and this docstring and the prompt below said so until 2026-11-02.
 
     Unlike `id` it **can be corrected later** (it is in update_node's allow list). But getting it
-    wrong is quiet: someone drawing a relation months later is refused, and nothing at that moment
-    points back at this node's kind. So the response carries `kind_generated` — **a chance to fix it
-    right after it was made**."""
+    wrong is quiet: a kind marked `export: no` keeps an entity in, or lets it out, and nothing at the
+    moment it crosses points back at this guess. So the response carries `kind_generated` — **a
+    chance to fix it right after it was made**."""
     c = llm_client()
     if not c: return None
     kinds = store.vocab().get("kinds") or []
+    if not isinstance(kinds, list): return None          # a malformed vocab.yaml is validate's to name
     table = "\n".join(f"- {k['id'] if isinstance(k, dict) else k}: "
                       f"{(k.get('desc', '') if isinstance(k, dict) else '')}" for k in kinds)
     SYSTEM = (
         "You pick one **kind** for an ontology node, from the list below.\n"
-        "A kind decides which relations the node may take part in — it is a **classification**, not a\n"
+        "A kind says what sort of thing the node is — it is a **classification**, not a\n"
         "description.\n\n"
         f"These are the only choices:\n{table}\n\n"
         "Rules:\n"
@@ -471,28 +474,34 @@ _overlay_store = None
 
 
 _walk_store = None
+# One store each, made once. A store's lock is what serialises its writes (audit SV-13/SV-14,
+# 2026-11-02), and two first requests at once could otherwise each make a store, and a lock, of
+# their own.
+_stores_lock = threading.Lock()
 
 
 def wstore():
     """The walk record, when `ONTOLOGY_WALKS` is set. Settings mirror the overlay store's."""
     global _walk_store
     if not WALKS: raise WriteError(501, "ONTOLOGY_WALKS is not configured — the footprint is off")
-    if _walk_store is None:
-        _walk_store = walks.WalkStore(WALKS,
-                                      keep_hours=float(os.environ.get("ONTOLOGY_WALK_KEEP_HOURS", "6")),
-                                      open_hours=float(os.environ.get("ONTOLOGY_WALK_OPEN_HOURS", "1")))
+    with _stores_lock:
+        if _walk_store is None:
+            _walk_store = walks.WalkStore(WALKS,
+                                          keep_hours=float(os.environ.get("ONTOLOGY_WALK_KEEP_HOURS", "6")),
+                                          open_hours=float(os.environ.get("ONTOLOGY_WALK_OPEN_HOURS", "1")))
     return _walk_store
 
 
 def ostore():
     global _overlay_store
-    if _overlay_store is None:
-        _overlay_store = overlays.OverlayStore(
-            OVERLAYS,
-            members_max=int(os.environ.get("ONTOLOGY_OVERLAY_MEMBERS", "8")),
-            rows_max=int(os.environ.get("ONTOLOGY_OVERLAY_ROWS", "120")),
-            open_hours=float(os.environ.get("ONTOLOGY_OVERLAY_OPEN_HOURS", "24")),
-            keep_days=float(os.environ.get("ONTOLOGY_OVERLAY_KEEP_DAYS", "30")))
+    with _stores_lock:
+        if _overlay_store is None:
+            _overlay_store = overlays.OverlayStore(
+                OVERLAYS,
+                members_max=int(os.environ.get("ONTOLOGY_OVERLAY_MEMBERS", "8")),
+                rows_max=int(os.environ.get("ONTOLOGY_OVERLAY_ROWS", "120")),
+                open_hours=float(os.environ.get("ONTOLOGY_OVERLAY_OPEN_HOURS", "24")),
+                keep_days=float(os.environ.get("ONTOLOGY_OVERLAY_KEEP_DAYS", "30")))
     return _overlay_store
 
 
@@ -845,8 +854,10 @@ class Handler(BaseHTTPRequestHandler):
         # nothing else — if it still worked here, the read path would still carry a secret that never
         # expires and the six hours would be decoration.
         if not sessions.valid(self.headers.get("X-Peer-Token") or ""):
+            # The lifetime this process was configured with. "six hours" was a literal here, and
+            # with ONTOLOGY_PEER_SESSION_TTL=3 a reader was told six hours (audit, 2026-11-02).
             return self._err(401, "session token missing, wrong or expired — POST /v1/peers/token "
-                                  "with the enrolment key to get one (they last six hours)")
+                                  f"with the enrolment key to get one (they last {_duration(sessions.SESSION_TTL)})")
 
         rj = _regions_live()
         shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", []) if r.get("export")}
@@ -876,7 +887,13 @@ class Handler(BaseHTTPRequestHandler):
             self._as_peer = True
             return self._get(["regions", parts[1]])
 
-        if len(parts) >= 2 and parts[0] == "nodes":
+        # Two shapes of node address, and no others: the entity and its document — the two addresses
+        # a row's `fetch` prints. `nodes/<parent>/files/<child>.md` reached the ordinary reader too,
+        # which checked nothing below `<parent>` and served the child's file raw, so a draft or a kind
+        # that does not cross was one segment away from anyone holding a session (audit SV-2,
+        # 2026-11-02). The old spelling is a local convenience; across a circuit the child is read
+        # at its own address, where it is checked like everything else.
+        if parts[:1] == ["nodes"] and (len(parts) == 2 or (len(parts) == 3 and parts[2] == "body")):
             n = store.node(parts[1])
             # 404 and not 403: whether this backbone holds a thing it has not shared is itself
             # something the reader has no business learning. The two answers must be indistinguishable.
@@ -1078,7 +1095,9 @@ class Handler(BaseHTTPRequestHandler):
                 n = store.node(at[len("/v1/nodes/"):])
                 if not n: return self._err(404, f"node {at[len('/v1/nodes/'):]} not found")
                 here = {"parent": n["id"], "region": n["region"]}
-                for c in store.children_of(n["id"]):
+                # `advertised`, as the area's table above: `children_of` filters nothing, and a node's
+                # table listed its drafts (audit SV-16, 2026-11-02).
+                for c in advertised(n["id"]):
                     rows.append({"address": f"/v1/nodes/{c['id']}", "kind": "node", "id": c["id"], "name": c["name"],
                                  "line": c.get("one_liner") or ""})
             else:
@@ -1134,7 +1153,15 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[0] == "curator" and parts[1] == "proposals" and method == "POST":
             status = {"accept": "accepted", "reject": "rejected"}.get(parts[3])
             if not status: return self._err(404, "accept | reject")
-            out = curator.decide(cstore(), parts[2], status, body.get("why"), lambda p: apply_proposal(p, actor))
+            def _apply(p):
+                # A change already in place is the proposal done, not a refusal. The write says "no
+                # change" by raising WriteError(200), which left `decide` before it recorded the
+                # decision — answered 200 and stayed pending for ever (audit SV-15, 2026-11-02).
+                try: return apply_proposal(p, actor)
+                except WriteError as e:
+                    if e.status == 200: return {"ok": True, "message": str(e)}
+                    raise
+            out = curator.decide(cstore(), parts[2], status, body.get("why"), _apply)
             # A decision that did not happen must not answer 200. `decide` says so in the body and
             # leaves the proposal pending, which is right, and every caller that reads the status
             # line — a script, a curl, the screen's own `request()` — was told the accept had worked
@@ -1187,6 +1214,7 @@ class Handler(BaseHTTPRequestHandler):
             if not ent and reg and not any(r["dir"] == reg or r["key"] == reg.upper() for r in store.regions()):
                 return self._err(404, f"there is no area {reg}", reason="region_missing", data={"region": reg})
             try: return self._send(201, curator.submit_route(cstore(), body, actor))
+            except curator.Duplicate as e: return self._err(409, str(e), reason="duplicate_pending", data={"id": e.pending})
             except ValueError as e: return self._err(422, str(e))
         if len(parts) == 2 and parts[0] == "regions" and method == "DELETE":
             return self._send(200, writer.delete_region(parts[1], actor))
@@ -1211,6 +1239,18 @@ class Handler(BaseHTTPRequestHandler):
                 # rather than doing whatever the decisions mean against a tree they were not made on.
                 if not body.get("base"): body = {**body, "base": head(DATA)}
                 res = change.apply(writer, body, actor, dry_run=True)
+                # "Dry-run to prove it applies" (CHANGE.md) — so a set that does not is refused here,
+                # with the same refusal the direct write gives. `applies: false` was ignored and the
+                # set queued: 202, every accept 409, pending for ever (audit SV-10, 2026-11-02).
+                imp = res.get("impact") or {}
+                if imp.get("undecided"):
+                    return self._err(409, f"{len(imp['undecided'])} line(s) over the change are not decided — reword or keep each: "
+                                          f"{', '.join(imp['undecided'])}. Nothing was queued.",
+                                     imp["undecided"], reason="undecided", data={"impact": imp, "ids": res.get("ids")})
+                if imp.get("unacknowledged"):
+                    return self._err(409, f"this would make {', '.join(imp['unacknowledged'])} readable through a circuit (an exported area) "
+                                          f"— say so with `expose`. Nothing was queued.",
+                                     imp["unacknowledged"], reason="exposure", data={"impact": imp, "ids": res.get("ids")})
                 pid = f"cp_{uuid.uuid4().hex[:10]}"
                 cstore().append({"event": "proposal", "id": pid, "at": curator._now(), "type": "change",
                                  "set": {k: v for k, v in body.items() if k != "dry_run"}, "why": str(body.get("why") or ""),
@@ -1230,6 +1270,15 @@ class Handler(BaseHTTPRequestHandler):
             if method == "PUT": return self._send(200, writer.put_file(parts[1], parts[3], body, actor))
             if method == "DELETE": return self._send(200, writer.delete_file(parts[1], parts[3], actor))
         return self._err(405, "method not allowed for this path")
+
+
+def _duration(seconds: float) -> str:
+    """A session lifetime as a reader is told it: "6 hours", "2 minutes", "3 seconds"."""
+    s = int(seconds)
+    for unit, size in (("hour", 3600), ("minute", 60)):
+        if s >= size and s % size == 0:
+            return f"{s // size} {unit}{'' if s == size else 's'}"
+    return f"{s} second{'' if s == 1 else 's'}"
 
 
 def _to_export(payload):
@@ -1265,7 +1314,12 @@ def _health_valid() -> dict:
     # Keyed on the commit *and* the files as they are: a hand edit, or the leftovers of a killed write,
     # changes the files without moving HEAD, and the cached answer said valid when validate said
     # otherwise — and the other way round (2026-10-10).
-    rev = (head(DATA) or "") + ":" + str(hash(store._nodes_key()))
+    # And the two files that are not entities. A vocab.yaml broken by hand and not committed moved
+    # neither, so /healthz said valid while /v1/validate said otherwise (audit SV-17, 2026-11-02).
+    def _stat(name):
+        try: s = (DATA / name).stat(); return (s.st_mtime_ns, s.st_size)
+        except OSError: return None
+    rev = (head(DATA) or "") + ":" + str(hash((store._nodes_key(), _stat("vocab.yaml"), _stat("regions.json"))))
     if rev not in _HEALTH_VALID:
         try:
             res = validate(store)
@@ -1433,7 +1487,8 @@ def main():
              # Areas written as files with no regions.json yet, or one deleted by hand: the table is
              # missing rows, or has a row with no directory — derived, so regenerated (2026-10-10).
              or "regions.json: missing entry for" in e or "has no directory" in e
-             or ("regions.json " in e and "differ from directory" in e)
+             # (A per-area node list that lags the directory is a warning since 2026-11-02, not an
+             # error, so it never holds a start back and nothing here needs to mend it.)
              # Broken by hand: it is derived, so it is written again rather than mended.
              or e.startswith("regions.json: does not parse")]
     if drift and len(drift) == len(res["errors"]) and head(DATA):
