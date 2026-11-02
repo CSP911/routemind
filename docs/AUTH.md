@@ -63,7 +63,7 @@ refused rather than cut. An identity that is already an address is the commit's 
 
 ## Checking it
 
-`./check/auth-check.py` — 43 assertions, run in the web container because it needs fastapi and
+`./check/auth-check.py` — it prints how many assertions it ran; run in the web container because it needs fastapi and
 uvicorn:
 
 ```sh
