@@ -1086,7 +1086,9 @@ class Handler(BaseHTTPRequestHandler):
                 n = store.node(at[len("/v1/nodes/"):])
                 if not n: return self._err(404, f"node {at[len('/v1/nodes/'):]} not found")
                 here = {"parent": n["id"], "region": n["region"]}
-                for c in store.children_of(n["id"]):
+                # `advertised`, as the area's table above: `children_of` filters nothing, and a node's
+                # table listed its drafts (audit SV-16, 2026-11-02).
+                for c in advertised(n["id"]):
                     rows.append({"address": f"/v1/nodes/{c['id']}", "kind": "node", "id": c["id"], "name": c["name"],
                                  "line": c.get("one_liner") or ""})
             else:
