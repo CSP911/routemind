@@ -1064,7 +1064,9 @@ async def _the_door(request: Request, call_next):
     if AUTH == "open": return await call_next(request)
     path = request.url.path
     guarded = path.startswith("/api/knowledge")
-    if guarded and AUTH == "proxy":
+    # Only where a name is signed: on every request it locked a long address out of the map itself,
+    # reads included, with reads not guarded (verification pass, 2026-11-02).
+    if guarded and AUTH == "proxy" and (request.method in WRITE_METHODS or AUTH_READS):
         who = _authenticated(request)
         if who and len(who) > ACTOR_MAX:
             return JSONResponse({"detail": f"The identity in {AUTH_HEADER} is {len(who)} characters long, and a "

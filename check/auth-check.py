@@ -295,6 +295,10 @@ p, port, _ = start(KNOWLEDGE_AUTH="proxy", KNOWLEDGE_AUTH_TRUSTED_PROXY="any")
 st, _, b = hit(port, WRITE, "POST", header=HEAD, value="x" * 70 + "@example.com")
 check("  an identity too long to sign with is refused, with the reason",
       st == 401 and b"64" in b, f"{st} {b[:160]!r}")
+# Only where something is signed: the same check on every request locked that person out of the map
+# itself, reads included, with reads not guarded at all (verification pass, 2026-11-02).
+st, _, b = hit(port, READ, "GET", header=HEAD, value="x" * 70 + "@example.com")
+check("  but may still read when reads are not guarded", st != 401, f"{st} {b[:160]!r}")
 p.terminate(); time.sleep(0.3)
 
 # ── and the actor itself ─────────────────────────────────────────────────────
