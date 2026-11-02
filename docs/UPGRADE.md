@@ -9,6 +9,19 @@ Nothing on this page touches your documents. `data/` is bind-mounted into the co
 on disk across a rebuild; the only file an update may rewrite there is `data/repo/regions.json`,
 which is generated, and it does so in a commit that says why.
 
+## 2026-11-02 (later) — what was checked, and what was read, are on the record
+
+Nothing to do beyond the usual `git pull && ./install.sh`. What changes on its own:
+
+- **"Still right" is recorded.** On the strip of lines that may be stale, it now asks why the line
+  still holds and commits that as a keep — an empty commit carrying `Keep: <id>.<field> — <why>`. It
+  used to dismiss the row in your browser and nothing else. When a line was last checked:
+  `git -C data/repo log --grep 'Keep: <id>.<field>'`. Refused if the line changed since the strip showed it.
+- **A walk step says which version it read.** Each table and document an agent reads records the
+  commit it was served at; a document also its file and a hash of exactly what the agent was given.
+  Reasons on the map shows the commit as `@1a2b3c4`; `git show <commit>:<file>` is the text it read.
+  An MCP server from before this keeps working, without the record — update the checkout it runs from.
+
 ## 2026-11-02 — a full audit: every path a new user, an agent and a second install take
 
 Nothing to do beyond the usual `git pull && ./install.sh`. What changes on its own:
