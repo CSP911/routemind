@@ -31,7 +31,9 @@ def check(name, cond, extra=""):
 PORT = int(os.environ.get("PLACE_CHECK_PORT") or 18120)
 tmp = tempfile.mkdtemp(prefix="place-check-")
 repo = os.path.join(tmp, "repo")
-shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, symlinks=True)
+shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
+for _c in (["init", "-q"], ["add", "-A"], ["-c", "user.name=check", "-c", "user.email=check@routemind", "commit", "-qm", "the example"]):
+    subprocess.run(["git", "-C", repo, *_c], check=True, capture_output=True)
 subprocess.run(["git", "-C", repo, "config", "user.email", "check@routemind"], check=True)
 subprocess.run(["git", "-C", repo, "config", "user.name", "place-check"], check=True)
 # The proposal queue lives in the harness store; without it the queue answers 501 and `here` can

@@ -85,7 +85,7 @@ def within(seconds, cond):
 T = tempfile.mkdtemp(prefix="follow-check-")
 repo_a, repo_b = os.path.join(T, "ay"), os.path.join(T, "bee")
 for repo in (repo_a, repo_b):
-    shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
+    shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
     git(repo, "init", "-q"); git(repo, "config", "user.email", "f@r"); git(repo, "config", "user.name", "follow")
 for repo in (repo_a, repo_b): git(repo, "add", "-A"); git(repo, "commit", "-qm", "as shipped")
 # bee's first area, so that exporting and withdrawing it are both visible through the circuit

@@ -67,7 +67,7 @@ def session():
 
 T = tempfile.mkdtemp(prefix="drift-check-")
 repo = os.path.join(T, "repo")
-shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
+shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
 git(repo, "init", "-q"); git(repo, "config", "user.email", "drift@routemind"); git(repo, "config", "user.name", "drift-check")
 # In sync to begin with, whatever the copied install's own table says.
 sys.path.insert(0, os.path.join(ROOT, "ontology"))

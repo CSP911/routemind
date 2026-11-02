@@ -198,7 +198,7 @@ def compare(repo, label):
 
 T = tempfile.mkdtemp(prefix="same-answer-")
 repo = os.path.join(T, "repo")
-shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
+shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
 for cmd in (["init", "-q"], ["config", "user.email", "same@routemind"], ["config", "user.name", "same-answer"], ["add", "-A"], ["commit", "-qm", "as shipped"]):
     subprocess.run(["git", "-C", repo, *cmd], check=True, capture_output=True)
 env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(PORT), "ONTOLOGY_PEER_TOKEN": TOKEN,

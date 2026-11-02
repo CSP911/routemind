@@ -64,7 +64,7 @@ for f in ("ontology/tidy.py",):
 # ── dynamic ───────────────────────────────────────────────────────────────────
 T = tempfile.mkdtemp(prefix="transact-check-")
 repo = os.path.join(T, "repo")
-shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
+shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
 def git(*a, cwd=repo): return subprocess.run(["git", "-C", cwd, *a], capture_output=True, text=True, check=True).stdout.strip()
 for cmd in (["init", "-q"], ["config", "user.email", "tx@routemind"], ["config", "user.name", "transact-check"], ["add", "-A"], ["commit", "-qm", "as shipped"]):
     git(*cmd)

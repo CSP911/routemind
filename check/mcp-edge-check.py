@@ -113,7 +113,7 @@ def instructions(m):
 # ── an ontology with `expense` exported and a circuit key ──────────────────────
 T = tempfile.mkdtemp(prefix="mcp-edge-check-")
 repo = os.path.join(T, "repo")
-shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
+shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
 face = os.path.join(repo, "regions", "expense", "expense.md")
 src = open(face, encoding="utf-8").read()
 open(face, "w", encoding="utf-8").write(src.replace("\nrole: representative\n", "\nrole: representative\nexport: yes\n", 1))

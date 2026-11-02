@@ -39,7 +39,7 @@ def git(repo, *a):
 
 T = tempfile.mkdtemp(prefix="export-check-")
 repo = os.path.join(T, "repo")
-shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
+shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
 git(repo, "init", "-q"); git(repo, "config", "user.email", "export@routemind"); git(repo, "config", "user.name", "export-check")
 
 

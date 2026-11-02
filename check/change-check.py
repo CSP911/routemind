@@ -36,7 +36,7 @@ def check(name, cond, extra=""):
 
 T = tempfile.mkdtemp(prefix="change-check-")
 repo = os.path.join(T, "repo")
-shutil.copytree(os.path.join(ROOT, "data", "repo"), repo, ignore=shutil.ignore_patterns(".git"))
+shutil.copytree(os.path.join(ROOT, "examples", "back-office"), repo)
 def git(*a): return subprocess.run(["git", "-C", repo, *a], capture_output=True, text=True, check=True).stdout.strip()
 for cmd in (["init", "-q"], ["config", "user.email", "c@r"], ["config", "user.name", "change-check"], ["add", "-A"], ["commit", "-qm", "as shipped"]):
     git(*cmd)
