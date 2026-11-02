@@ -289,24 +289,27 @@ def one_liner_draft(nid: str) -> dict:
 
 
 def suggest_node_kind(name: str, one_liner: str, region: str, content: str = "") -> str | None:
-    """Decide a node's `kind` (operator, 2026-09-10: "what relations may hold is the curator's job").
+    """Decide a node's `kind`, from the list in vocab.yaml.
 
-    `kind` is **never seen by an agent** — it does not go into a prompt. What uses it is **the
-    validator's edge rules** (`edge_rules` in vocab.yaml). So what a kind decides is "which relations
-    this node may take part in", and relations are the curator's territory.
+    `kind` is **never seen by an agent** — it does not go into a prompt, and the KIND column an agent
+    reads is table/document, not this. What a kind decides is one thing: whether that sort of entity
+    crosses a circuit (`export: no` on the kind in vocab.yaml — docs/CIRCUIT.md). It used to decide
+    which relations a node could take part in, through `edge_rules`; relations and edge rules were
+    retired on 2026-10-07, and this docstring and the prompt below said so until 2026-11-02.
 
     Unlike `id` it **can be corrected later** (it is in update_node's allow list). But getting it
-    wrong is quiet: someone drawing a relation months later is refused, and nothing at that moment
-    points back at this node's kind. So the response carries `kind_generated` — **a chance to fix it
-    right after it was made**."""
+    wrong is quiet: a kind marked `export: no` keeps an entity in, or lets it out, and nothing at the
+    moment it crosses points back at this guess. So the response carries `kind_generated` — **a
+    chance to fix it right after it was made**."""
     c = llm_client()
     if not c: return None
     kinds = store.vocab().get("kinds") or []
+    if not isinstance(kinds, list): return None          # a malformed vocab.yaml is validate's to name
     table = "\n".join(f"- {k['id'] if isinstance(k, dict) else k}: "
                       f"{(k.get('desc', '') if isinstance(k, dict) else '')}" for k in kinds)
     SYSTEM = (
         "You pick one **kind** for an ontology node, from the list below.\n"
-        "A kind decides which relations the node may take part in — it is a **classification**, not a\n"
+        "A kind says what sort of thing the node is — it is a **classification**, not a\n"
         "description.\n\n"
         f"These are the only choices:\n{table}\n\n"
         "Rules:\n"

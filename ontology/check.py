@@ -733,6 +733,17 @@ if (pathlib.Path("data/repo") / "regions").is_dir():
     for _cid in _ids: (_chain / f"{_cid}.md").unlink()
     shutil.rmtree(_T, ignore_errors=True)
 
+# ── does the kind prompt describe what a kind does now ───────────────────────
+# Relations and edge rules were retired 2026-10-07; the model choosing a kind was still told a kind
+# "decides which relations the node may take part in" until 2026-11-02. Read from the source, so no
+# server and no model is needed.
+import ast as _ast
+_srv = _ast.parse((pathlib.Path(__file__).resolve().parent / "service" / "server.py").read_text(encoding="utf-8"))
+_fn = next(f for f in _ast.walk(_srv) if isinstance(f, _ast.FunctionDef) and f.name == "suggest_node_kind")
+_said = " ".join(c.value for c in _ast.walk(_fn) if isinstance(c, _ast.Constant) and isinstance(c.value, str)
+                 and c is not _fn.body[0].value)
+eq("the kind prompt says nothing of relations", "relation" in _said.lower(), False)
+
 # ── if a tree is there, does every entity read ───────────────────────────────
 root = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path("data/repo")
 if (root / "regions").is_dir():
