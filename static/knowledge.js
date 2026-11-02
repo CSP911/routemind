@@ -2325,14 +2325,23 @@
                  const why = lineWhy.value.trim();
                  // The sentence first. If both go and only one is accepted, the area is better left
                  // advertising the old line than advertising a line nobody approved.
-                 if (changedLine) await post("proposals", { scope: "bb", region, before: line, after: text, why });
+                 const sends = [];
+                 if (changedLine) sends.push({ scope: "bb", region, before: line, after: text, why });
                  if (now !== exported) {
                    // Turning it off is the withdrawal, and it is reviewed like everything else
                    // because it takes knowledge away from another organisation.
-                   await post("proposals", { scope: "export", region, before: exported ? "yes" : "no",
-                                             after: now ? "yes" : "no", why });
+                   sends.push({ scope: "export", region, before: exported ? "yes" : "no", after: now ? "yes" : "no", why });
                  }
+                 // One already waiting is not sent again (WB-4, 2026-11-02): the queue took identical
+                 // proposals, and accepting the second copy then failed with a 409.
+                 const fresh = [];
+                 for (const s of sends) if (!(await alreadyPending(s))) fresh.push(s);
+                 if (!fresh.length) throw new Error(t("knowledge.submit.alreadyPending"));
+                 for (const s of fresh) await post("proposals", s);
                  await loadFlags(); draw();
+                 // Done is a different card. This one stayed open with Propose live, and a second
+                 // click filed the same request again.
+                 pane.replaceChildren(sentCard(region, fresh.some((s) => s.scope === "bb") ? "bb" : "export"));
                }, "knowledge.submit.sent"))));
 
     card.append(actions(button("common.cancel", "quiet", closeCard)));
@@ -2413,6 +2422,7 @@
         const text = after.value.trim();
         if (!text) throw new Error(t("knowledge.submit.needsText"));
         if (text === before.trim()) throw new Error(t("knowledge.submit.unchanged"));
+        if (await alreadyPending({ scope, entity, region, after: text })) throw new Error(t("knowledge.submit.alreadyPending"));
         await post("proposals", {
           scope, ...(entity ? { entity } : { region }), before, after: text,
           why: why.value.trim(), ...(opts.target ? { target: opts.target } : {}),
@@ -2429,6 +2439,16 @@
   /** After submitting: what happens next, and — for an AS change — the one follow-up question worth
    *  asking, with the sentence it is about in view. A person cannot judge "did the reason to choose
    *  this Region change?" without seeing what that reason currently says. */
+  /** Is the same request — same scope, same target, same proposed value — already waiting? Asked of
+   *  the queue at the moment of sending, not of the flags drawn on the map, which can be minutes old. */
+  async function alreadyPending({ scope, entity, region, after }) {
+    // A queue that cannot be read answers the send itself, with its own reason; not asked twice.
+    let rows = [];
+    try { rows = (await request("proposals?status=pending")).proposals || []; } catch { return false; }
+    return rows.some((p) => p.scope === scope && String(p.after) === String(after)
+      && (entity ? p.entity === entity : norm(p.region || "") === norm(region || "")));
+  }
+
   function sentCard(region, scope) {
     const card = el("form", "kn-card-form");
     card.addEventListener("submit", (e) => e.preventDefault());
@@ -2584,7 +2604,7 @@
     }, decision === "accept" ? "knowledge.applied" : "knowledge.recorded");
     box.append(why);
     box.append(actions(
-      button("knowledge.acceptPublish", "primary", decide("accept")),
+      button("knowledge.acceptApply", "primary", decide("accept")),
       button("knowledge.reject", "danger", decide("reject")),
     ));
     return box;

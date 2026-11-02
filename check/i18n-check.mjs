@@ -214,5 +214,18 @@ if (shared.length) {
   console.log(`ok   ${markup.size} keys label the page, none of them also built in the script`);
 }
 
+// A step the product no longer has, still named on the screen. Publishing went on 2026-10-07 — a
+// commit is what an agent reads — and the review queue's button went on saying "Accept · publish"
+// (docs audit, 2026-11-02): a person was told a second thing would happen that does not exist.
+const RETIRED = [[/\bpublish/i, "publish (retired 2026-10-07: a commit is what an agent reads)"]];
+const stale = Object.entries(dictionaries.en).flatMap(([k, v]) =>
+  RETIRED.filter(([rx]) => rx.test(String(v)) || rx.test(k)).map(([, why]) => `${k}: "${v}" names ${why}`));
+if (stale.length) {
+  bad = true;
+  console.log(`FAIL ${stale.length} string(s) name a step that no longer exists:\n  ` + stale.join("\n  "));
+} else {
+  console.log(`ok   no string names a retired step (${RETIRED.length} checked)`);
+}
+
 if (bad) process.exit(1);
 console.log(`ok   ${base.size} keys in English, ${asked.size} of them reached from the screen, no duplicates`);

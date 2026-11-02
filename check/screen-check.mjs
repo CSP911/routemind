@@ -38,10 +38,13 @@ globalThis.fetch = async (url, opts) => {
   // The map, not the footprint (that is footprint-screen's): with walks still going on the install,
   // a load opens their areas, and this check needs the map as a person who walks up to it finds it.
   if (/walks\?since=/.test(String(url))) return { ok: true, status: 200, json: async () => ({ seq: 0, steps: [] }), text: async () => "" };
+  // A part of the screen that would write into the install answers from here instead, while one is set.
+  const faked = globalThis.__fake?.(String(url), opts || {});
+  if (faked) return { ok: true, status: 200, json: async () => faked, text: async () => JSON.stringify(faked) };
   const res = await realFetch(BASE + String(url), opts);
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text() };
 };
-new Function(src.replace('if (document.readyState === "loading")','globalThis.__kn = { state, loadEntries, loadFiles, draw, agentContext, newRegionForm, newNodeForm, newFileForm, submitCard, drawVrfCard, deleteNodeCard, reviewFlags };\n  if (document.readyState === "loading")'))();
+new Function(src.replace('if (document.readyState === "loading")','globalThis.__kn = { state, loadEntries, loadFiles, draw, agentContext, newRegionForm, newNodeForm, newFileForm, submitCard, drawVrfCard, deleteNodeCard, reviewFlags, exportCard };\n  if (document.readyState === "loading")'))();
 const kn = globalThis.__kn; const { state, loadEntries, loadFiles, draw } = kn;
 const settle = async () => { for (let i = 0; i < 40; i++) await new Promise((r) => setTimeout(r, 5)); };
 
@@ -325,6 +328,47 @@ else {
     r0.export = true; kn.draw(); const on = count();
     r0.export = was; kn.draw();
     check("an exported area is marked on the map, and only while it is exported", on === off + 1, `${off} → ${on}`);
+  }
+}
+
+// The Export card, sent twice. It stayed open with Propose live after a success, and a second click
+// filed the same proposal again; accepting the copy then failed with a 409 (web audit WB-4,
+// 2026-11-02). The queue is faked for this one, so nothing reaches the install's review queue.
+{
+  const area = areas[0];
+  if (!area) results.push("--   no areas yet; the Export card needs one");
+  else {
+    const pending = [], posted = [];
+    globalThis.__fake = (url, opts) => {
+      if (/\/api\/knowledge\/proposals\?status=pending$/.test(url)) return { proposals: pending.slice() };
+      if (/\/api\/knowledge\/proposals$/.test(url) && opts.method === "POST") {
+        const p = JSON.parse(opts.body || "{}"); posted.push(p);
+        pending.push({ ...p, id: "cp_00000" + posted.length, type: "route", status: "pending" });
+        return { ok: true, id: "cp_00000" + posted.length };
+      }
+      return null;
+    };
+    const propose = dict["knowledge.export.propose"];
+    const send = async () => {
+      byId.knEdit.replaceChildren();
+      await kn.exportCard(area); await settle();
+      const sel = find(byId.knEdit, (n) => n.tag === "select")[0];
+      if (sel) sel.value = sel.value === "yes" ? "no" : "yes";     // a decision that differs from now
+      const b = find(byId.knEdit, (n) => n.tag === "button" && n.textContent === propose)[0];
+      if (!b) return false;
+      b.click(); await settle(); await settle();
+      return true;
+    };
+    try {
+      check("the Export card sends a proposal", await send() && posted.length >= 1, `${posted.length} sent`);
+      check("  and is not left open with Propose live",
+        !find(byId.knEdit, (n) => n.tag === "button" && n.textContent === propose).length);
+      const sent = posted.length;
+      await send();
+      check("  and the same request again is refused, with nothing sent",
+        posted.length === sent && find(byId.knEdit, (n) => cls(n).includes("kn-err-box")).length > 0,
+        `${posted.length - sent} more sent`);
+    } finally { globalThis.__fake = null; byId.knEdit.replaceChildren(); }
   }
 }
 
