@@ -84,6 +84,7 @@ Each starts the service itself on a throwaway repository, except where it says o
 | `check/b2c-check.py` | 17 | What a non-expert meets on the screen's own flows: names in any script, refusals that say why, the review queue |
 | `check/robust-check.py` | 16 | What an operator meets: a write killed mid-way, SIGTERM, a hand edit, a 200-row table on a large map, a file that does not parse, an area deleted by hand, `reset.sh`, the agent's secret, the area-switch note |
 | `check/drift-check.py` | 17 | A hand-edited repository served while `regions.json` is stale |
+| `check/export-check.py` | 20 | The export surface: a denied kind and a draft refused at every address it answers, and a 401 that names the configured session lifetime — [CIRCUIT.md](CIRCUIT.md) |
 | `check/walk-check.py` | — | Invariant 1 at the agent's door: every walk starts at hop 0 |
 | `check/same-answer-check.py` | — | Invariant 4: every reader of one fact gets the same answer |
 | `check/transact-check.py` | — | Invariants 5 and 7: a routing change is a commit, and nothing is reported done that did not happen |

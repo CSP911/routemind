@@ -845,8 +845,10 @@ class Handler(BaseHTTPRequestHandler):
         # nothing else — if it still worked here, the read path would still carry a secret that never
         # expires and the six hours would be decoration.
         if not sessions.valid(self.headers.get("X-Peer-Token") or ""):
+            # The lifetime this process was configured with. "six hours" was a literal here, and
+            # with ONTOLOGY_PEER_SESSION_TTL=3 a reader was told six hours (audit, 2026-11-02).
             return self._err(401, "session token missing, wrong or expired — POST /v1/peers/token "
-                                  "with the enrolment key to get one (they last six hours)")
+                                  f"with the enrolment key to get one (they last {_duration(sessions.SESSION_TTL)})")
 
         rj = _regions_live()
         shared = {r["source"].replace("_", "-"): r for r in rj.get("regions", []) if r.get("export")}
@@ -876,7 +878,13 @@ class Handler(BaseHTTPRequestHandler):
             self._as_peer = True
             return self._get(["regions", parts[1]])
 
-        if len(parts) >= 2 and parts[0] == "nodes":
+        # Two shapes of node address, and no others: the entity and its document — the two addresses
+        # a row's `fetch` prints. `nodes/<parent>/files/<child>.md` reached the ordinary reader too,
+        # which checked nothing below `<parent>` and served the child's file raw, so a draft or a kind
+        # that does not cross was one segment away from anyone holding a session (audit SV-2,
+        # 2026-11-02). The old spelling is a local convenience; across a circuit the child is read
+        # at its own address, where it is checked like everything else.
+        if parts[:1] == ["nodes"] and (len(parts) == 2 or (len(parts) == 3 and parts[2] == "body")):
             n = store.node(parts[1])
             # 404 and not 403: whether this backbone holds a thing it has not shared is itself
             # something the reader has no business learning. The two answers must be indistinguishable.
@@ -1230,6 +1238,15 @@ class Handler(BaseHTTPRequestHandler):
             if method == "PUT": return self._send(200, writer.put_file(parts[1], parts[3], body, actor))
             if method == "DELETE": return self._send(200, writer.delete_file(parts[1], parts[3], actor))
         return self._err(405, "method not allowed for this path")
+
+
+def _duration(seconds: float) -> str:
+    """A session lifetime as a reader is told it: "6 hours", "2 minutes", "3 seconds"."""
+    s = int(seconds)
+    for unit, size in (("hour", 3600), ("minute", 60)):
+        if s >= size and s % size == 0:
+            return f"{s // size} {unit}{'' if s == size else 's'}"
+    return f"{s} second{'' if s == 1 else 's'}"
 
 
 def _to_export(payload):

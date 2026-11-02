@@ -125,6 +125,9 @@ circuit's table says so under every listing.
 * `check/follow-check.py` — two backbones: exporting, rewording and withdrawing on one is in the other's
   next read through a circuit, and a restart at the far end costs a re-mint, not the walk.
 * `check/session-check.py` — the six-hour sessions, mostly what must **not** work.
+* `check/export-check.py` — a denied kind and a draft, asked for at every address the surface has —
+  by their own, and by the old `nodes/<parent>/files/<child>.md` spelling, which the surface no longer
+  answers (it served both, raw, until 2026-11-02).
 * `check/drift-check.py` and `check/hyphen-check.py` — the export surface against the files' truth, and
   a hyphenated area on every path a reader takes.
 * `check/install-check.sh` — a clean clone, then the export decision as another backbone's circuit

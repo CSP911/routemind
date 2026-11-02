@@ -155,6 +155,9 @@ else
   # A hand-edited repository, served: a stale regions.json regenerated at startup when the tree is
   # clean, the files' truth served when it is not. Starts its own ontology twice.
   run drift       $HOSTPY check/drift-check.py
+  # The export surface: what does not cross is refused at every address it answers, not only the
+  # listed ones (audit SV-2, 2026-11-02). Starts its own ontology.
+  run export      $HOSTPY check/export-check.py
   # Invariants 1 and 2 at the agent's door: every walk starts at hop 0, "not here" only with the
   # whole list seen. Drives the MCP server over stdio against an ontology it starts.
   run walk        $HOSTPY check/walk-check.py
