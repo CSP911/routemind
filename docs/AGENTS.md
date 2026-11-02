@@ -42,14 +42,17 @@ you actually run RouteMind.
 
 ```sh
 docker build -t routemind-mcp .
-docker run -i --rm routemind-mcp                       # introspection only
+docker run -i --rm -e KNOWLEDGE_API=http://127.0.0.1:9/api/knowledge routemind-mcp   # introspection only
 docker run -i --rm -e KNOWLEDGE_API=http://host.docker.internal:8080/api/knowledge routemind-mcp
 ```
 
 `-i` and no `-t`: the protocol is JSON-RPC on stdin and stdout, and a tty in the middle of that is a
-tty in the middle of the protocol. With nothing at `--api`, `initialize` and `tools/list` still
-answer — the area list a tool description would have carried is replaced by the reason it could not
-be fetched, so an agent is told why rather than handed an empty table.
+tty in the middle of the protocol. The image's own default is the second line's address, so run with
+nothing set on a host that has an install on 8080 and it reads that install — the first line points it
+at an address where nothing answers inside the container. With nothing at `--api`, or something there
+that is not RouteMind, `initialize` and `tools/list` still answer, within a few seconds — the area list
+a tool description would have carried is replaced by the reason it could not be fetched, so an agent is
+told why rather than handed an empty table.
 
 ### Claude Code
 
@@ -64,7 +67,9 @@ Claude Code sees the file, offers the server, and one approval is the whole setu
 session lists the tools; `claude mcp list` shows whether it registered at all.
 
 **The port follows your install.** `.mcp.json` names no port: the server reads `WEB_PORT` from `.env`
-itself, so `--port 9000` or a port changed by hand later is picked up at the next start. (It used to
+itself, so `--port 9000` or a port changed by hand later is picked up at the next start. A `WEB_PORT`
+line it cannot read as a port is not guessed at: the server starts with no address, and every answer
+says which line to fix — falling back to 8080 there would read whatever else answers on 8080. (It used to
 ship with 8080 hard-coded, and later to be rewritten by install.sh, which left a modified tracked
 file in every checkout on another port.)
 
@@ -73,7 +78,7 @@ through the server's `instructions`, so what decides whether it comes here is th
 each area, not the word "RouteMind" in your question. If it answers from its own knowledge instead,
 that is the finding: some area's `use_when` does not say when to come to it.
 
-`/circuit <url> <token>` is also registered, as a project command — it reads another backbone for the
+`/circuit <url> [token]` is also registered, as a project command — it reads another backbone for the
 length of the session. **[CIRCUIT.md](CIRCUIT.md)**.
 
 #### Somewhere else, or another project
@@ -155,7 +160,9 @@ knowledge_circuit(op)    read another backbone for the length of this connection
 
 The agent carries no id. The MCP server remembers, for the session it serves, whether hop 0 has been
 opened and which walk on the record the steps belong to; a new hop 0 closes the walk before it, and a
-walk left alone for ten minutes expires (`KNOWLEDGE_WALK_TTL`). There is no alias resolver and no hint
+walk left alone for ten minutes — no step taken — expires (`KNOWLEDGE_WALK_TTL`, in seconds). A walk
+still stepping is not cut off. `knowledge_read` reads documents — the `file` addresses tables print,
+`/v1/nodes/<id>/body` — and nothing else under `/v1`. There is no alias resolver and no hint
 of where earlier walks went — the agent reads the lines and follows the addresses.
 
 `knowledge_overlay` and `knowledge_write` are still in the server, off by default:
@@ -170,10 +177,11 @@ an agent reaching for it:
 ```
 knowledge_start          the list of areas — the same text as `instructions`.
 circuit                  open a circuit. Arguments: url, token, name — so a client can show
-                         fields instead of asking somebody to compose a tool call.
+                         fields instead of asking somebody to compose a tool call. Only url is
+                         required: the token can come from KNOWLEDGE_CIRCUIT_KEYS, as for the tool.
 ```
 
-In Claude Code this repository also carries `/circuit <url> <token> [name]` as a project command.
+In Claude Code this repository also carries `/circuit <url> [token] [name]` as a project command.
 
 Where overlays exist, the `instructions` describe the flow in docs/OVERLAY.md: pick every row the
 question belongs to, create the overlay with a reason for each, work from its one table, come back to
@@ -258,7 +266,11 @@ place, and its walks are not recorded.
 
 ```sh
 ./check/mcp-check.py          # the protocol, and an agent's walk from the areas to a document
+./check/mcp-edge-check.py     # what a client, a .env and a far end can hand it; no install needed
 ```
+
+With no argument `mcp-check.py` checks the address the MCP server itself would use — `WEB_PORT` from
+`.env` — and with one (`http://localhost:9000/api/knowledge`) that address.
 
 The last part of that check is the one that matters: it navigates using nothing but addresses the
 tables printed, which is exactly what an agent can do and no more.

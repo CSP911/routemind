@@ -101,6 +101,7 @@ Each starts the service itself on a throwaway repository.
 | `check/hyphen-check.py` | 10 | An area whose directory has a hyphen, on every path that used to spell it two ways |
 | `check/footprint-check.py` | 23 | Invariant 11: every walk recorded — the store, the service, and an agent through the MCP |
 | `check/export-check.py` | 20 | The export surface: a denied kind and a draft refused at every address it answers, and a 401 that names the configured session lifetime — [CIRCUIT.md](CIRCUIT.md) |
+| `check/mcp-edge-check.py` | 60 | The MCP server against what a client, a `.env` and a far end that is not RouteMind can hand it — a batch on the stream, a BOM, an SSH banner at `--api`, a circuit to an HTML page |
 | `check/footprint-screen-check.py` | 52 | The footprint on the screen — the real `static/knowledge.js`, a stub DOM, against a fresh service it starts. Not `footprint-screen.mjs` against a live install: that one's map holds every walk of the last six hours |
 | `check/circuit-client-check.py` | 7 | The circuit's client against far ends that misbehave |
 

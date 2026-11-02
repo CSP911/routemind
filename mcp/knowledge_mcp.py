@@ -28,6 +28,7 @@ gets. There is one advertisement, and every engine reads it.
 from __future__ import annotations
 
 import argparse, time
+import http.client
 import datetime as _dt
 import ipaddress
 import json
@@ -39,7 +40,12 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-PROTOCOL_FALLBACK = "2024-11-05"
+# The MCP revisions this server speaks. `initialize` echoed whatever it was sent — `2099-12-31`,
+# `garbage` — so a client could not tell it had connected to something that does not speak its
+# revision (audit, 2026-11-02). The spec: answer the version asked for if it is supported, otherwise
+# the latest one that is, and let the client decide whether to stay. Nothing here differs between
+# these three: tools and prompts over stdio, no batches (2025-06-18 removed them).
+PROTOCOL_VERSIONS = ("2024-11-05", "2025-03-26", "2025-06-18")
 # What each row is, which is the same thing as which tool answers it. `empty` is the third state: an
 # entity nobody has written into yet — neither a table nor a document. Calling it a table sends an
 # agent a hop to find nothing, which is the mistake this column exists to prevent.
@@ -49,12 +55,23 @@ KIND = {"table": "table", "file": "file", "empty": "empty", "outside": "outside"
 # ── the API ───────────────────────────────────────────────────────────────────
 
 class Api:
-    def __init__(self, base: str, actor: str, timeout: float = 30.0):
+    def __init__(self, base: str, actor: str, timeout: float = 30.0, unusable: str = ""):
         self.base = base.rstrip("/")
         self.actor = actor
         self.timeout = timeout
+        # Why there is no address to use, when there is none (a WEB_PORT in .env that is not a port).
+        # Every call then says so, rather than the server guessing one — main().
+        self.unusable = unusable
+
+    def quick(self) -> "Api":
+        """The same backbone with a short timeout, for what a client waits on before it shows any
+        tool: `initialize` and `tools/list`. A host that accepted and never answered held each fetch
+        for 30 s — `initialize` 30 s, `tools/list` 60 — and many clients give a server less than that
+        to start, then show only "failed" (audit, 2026-11-02)."""
+        return Api(self.base, self.actor, timeout=min(self.timeout, 5.0), unusable=self.unusable)
 
     def _get(self, path: str, accept: str, method: str = "GET", body: dict | None = None):
+        if self.unusable: raise ApiError(self.unusable)
         # `base` is the v1 root — the web proxy at /api/knowledge, or an ontology at .../v1 — and
         # every address in this system is written as the tables print it, beginning `/v1/`. Stripping
         # that prefix happens here and nowhere else: it used to happen in each caller, and the one
@@ -87,24 +104,43 @@ class Api:
             try:
                 payload = json.loads(body)
                 detail = (payload.get("detail") or payload.get("error") or "")
+                # The reasons themselves. "validation failed — nothing was written" with the service's
+                # own `details` dropped — "kind 'nonexistent-kind' not in vocab", "`area` … lowercase
+                # kebab is required" — left the agent nothing to correct (audit, 2026-11-02).
+                more = payload.get("details")
+                if isinstance(more, list) and more:
+                    detail = f"{detail}: " + "; ".join(str(x) for x in more[:8]) if detail else "; ".join(str(x) for x in more[:8])
             except Exception: detail = body[:400]
             raise ApiError(f"HTTP {e.code} from {path}" + (f" — {detail}" if detail else ""), e.code,
                            payload if isinstance(payload, dict) else None)
         except (urllib.error.URLError, TimeoutError) as e:
             raise ApiError(f"RouteMind is unreachable at {self.base} ({e})")
+        # Something answered that is not an HTTP server — an SSH banner — or the connection was cut
+        # mid-reply, or the address is not one urllib can open. These escaped as a JSON-RPC internal
+        # error, and from `initialize` that is a server the client lists as failed, with no tools at
+        # all (audit, 2026-11-02). Said the same way as nothing being there.
+        except (OSError, http.client.HTTPException, ValueError) as e:
+            raise ApiError(f"RouteMind is unreachable at {self.base} — what answered there is not RouteMind "
+                           f"({type(e).__name__}: {str(e).strip()[:120]})")
 
     def json(self, path: str) -> dict:
         raw = self._get(path, "application/json")
-        try: return json.loads(raw)
-        except Exception: raise ApiError(f"{path} did not return JSON")
+        try: d = json.loads(raw)
+        except Exception: raise ApiError(f"{path} did not return JSON — is {self.base} a RouteMind?")
+        # Every answer this server reads is an object; a JSON array from something else was an
+        # AttributeError three calls later.
+        if not isinstance(d, dict): raise ApiError(f"{path} did not return a JSON object — is {self.base} a RouteMind?")
+        return d
 
     def text(self, path: str) -> str:
         return self._get(path, "text/markdown, text/plain, */*")
 
     def send(self, method: str, path: str, body: dict) -> dict:
         raw = self._get(path, "application/json", method, body)
-        try: return json.loads(raw)
+        try: d = json.loads(raw)
         except Exception: raise ApiError(f"{path} did not return JSON")
+        if not isinstance(d, dict): raise ApiError(f"{path} did not return a JSON object")
+        return d
 
 
 class ApiError(Exception):
@@ -408,6 +444,16 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
 
 _CIRCUIT_OPENER = urllib.request.build_opener(_NoRedirect)
 
+# What else a far end that is not RouteMind raises on the way: an SSH banner is a BadStatusLine, a cut
+# connection a ConnectionResetError, an address urllib cannot open a ValueError. Each escaped
+# `except URLError` as a JSON-RPC internal error, with the circuit left listed (audit, 2026-11-02).
+_NOT_HTTP = (OSError, http.client.HTTPException, ValueError)
+
+
+def _not_routemind(name: str, url: str, what: str) -> "ApiError":
+    return ApiError(f"circuit {name}: {url} did not answer like a RouteMind ({what}) — give the address "
+                    "its map answers on, e.g. http://host:8080", 502)
+
 
 def circuit_session(name: str) -> str:
     """The circuit's six-hour session, minted from the token the person gave, and held on it."""
@@ -417,7 +463,9 @@ def circuit_session(name: str) -> str:
                                  headers={"X-Peer-Token": c["token"], "Accept": "application/json"})
     try:
         with _CIRCUIT_OPENER.open(req, timeout=30) as r:
-            tok = str(json.loads(r.read().decode("utf-8")).get("token") or "")
+            minted = json.loads(r.read().decode("utf-8", "replace"))
+        if not isinstance(minted, dict): raise ValueError("not a JSON object")
+        tok = str(minted.get("token") or "")
     except urllib.error.HTTPError as e:
         # What each refusal means for the person who has to fix it, rather than "refused the token"
         # for all of them — a 501 is the far end having no key at all, a 404 is the wrong address.
@@ -429,6 +477,8 @@ def circuit_session(name: str) -> str:
         raise ApiError(f"circuit {name}: {c['url']} {why}", e.code)
     except urllib.error.URLError as e:
         raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e.reason})")
+    except _NOT_HTTP as e:
+        raise _not_routemind(name, c["url"], f"{type(e).__name__}: {str(e).strip()[:100]}")
     if not tok: raise ApiError(f"circuit {name}: no token came back from {c['url']}", 502)
     c["session"] = tok
     return tok
@@ -462,6 +512,8 @@ def circuit_fetch(name: str, path: str, accept: str) -> str:
                                + (f" — {detail}" if detail else ""), e2.code)
             except urllib.error.URLError as e2:
                 raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e2.reason})")
+            except _NOT_HTTP as e2:
+                raise _not_routemind(name, c["url"], f"{type(e2).__name__}: {str(e2).strip()[:100]}")
         if 300 <= e.code < 400:
             raise ApiError(f"circuit {name}: {c['url']} answered with a redirect, which a circuit does not follow (HTTP {e.code})", e.code)
         detail = (e.read().decode("utf-8", "replace") or "").strip()[:200]
@@ -469,6 +521,8 @@ def circuit_fetch(name: str, path: str, accept: str) -> str:
                        + (f" — {detail}" if detail else ""), e.code)
     except urllib.error.URLError as e:
         raise ApiError(f"circuit {name} is unreachable at {c['url']} ({e.reason})")
+    except _NOT_HTTP as e:
+        raise _not_routemind(name, c["url"], f"{type(e).__name__}: {str(e).strip()[:100]}")
 
 
 def circuit_table(name: str, payload: str) -> str:
@@ -480,9 +534,18 @@ def circuit_table(name: str, payload: str) -> str:
     `/v1/circuits/<name>/…`, so "use the address exactly as printed" stays true across a circuit.
     """
     try: d = json.loads(payload)
-    except json.JSONDecodeError: return payload
+    except json.JSONDecodeError: d = None
+    # A table address that came back as anything but a JSON object is not a table. It was handed to
+    # the agent raw — or, as a list, was an AttributeError (audit, 2026-11-02).
+    if not isinstance(d, dict):
+        raise ApiError(f"circuit {name}: that address did not answer with a table. Use an address its tables printed.")
     pre = f"/v1/circuits/{name}"
     rows = []
+    # A node's own document is its first row, as on a local table — node() above. Without it a
+    # document that also has children was printed by no address at all: ten exported bodies on the
+    # audit's map (2026-11-02), each reachable only by building the address by hand.
+    if str(d.get("body") or "").strip() and d.get("id"):
+        rows.append({"kind": KIND["file"], "address": f"{pre}/nodes/{d['id']}/body", "why": "its own document"})
     for r in (d.get("regions") or []):
         # Its own `fetch` first; the source only as a fallback, in either spelling.
         src = (str(r.get("fetch") or "").rsplit("/", 1)[-1] if r.get("fetch") else "") or str(r.get("source") or r.get("id") or "").replace("_", "-")
@@ -510,12 +573,17 @@ def circuit_table(name: str, payload: str) -> str:
     lead = ("Read-only, and only what its owner chose to let cross. The line on each row is the one "
             "they route on themselves — there is one sentence per area, not a separate one for "
             "outsiders.")
+    # Whole, as hop 0 is (operator, 2026-10-08): through a circuit the area sentences were still cut
+    # at 100 characters, and lost the clause a question matched — "the card was lost" (2026-11-02).
     return _table(rows, title, lead,
                   "Not finding something here does not mean they do not have it — it means they "
-                  "did not export it. Ask them, do not conclude.")
+                  "did not export it. Ask them, do not conclude.", clip=None)
 
 
 def circuit_call(args: dict) -> str:
+    """open · list · close. Every refusal is raised, so it reaches the client as a tool error: they all
+    came back as ordinary results — a wrong key, an unreachable host, "No circuit named" — and a
+    client or a model telling a failure from an answer by `isError` saw none (audit, 2026-11-02)."""
     op = str(args.get("op") or "").strip()
     if op == "list":
         if not CIRCUITS: return "No circuits are open."
@@ -526,39 +594,67 @@ def circuit_call(args: dict) -> str:
                                  "Nothing is written anywhere.")
     if op == "close":
         n = str(args.get("name") or "").strip()
-        return f"Circuit {n} closed." if CIRCUITS.pop(n, None) else f"No circuit named {n}."
+        if CIRCUITS.pop(n, None): return f"Circuit {n} closed."
+        raise ApiError(f"No circuit named {n!r} is open — `list` shows the ones that are.")
     if op != "open":
-        return "op must be open, list or close."
+        raise ApiError(f"op must be open, list or close (got {op!r}).")
 
     url = str(args.get("url") or "").strip().rstrip("/")
     # The address a person sees in the browser is the map page — `http://host:9470/knowledge` — and
     # CIRCUIT.md tells them to use the address their map answers on. Take the page, or the API path,
     # back to the install's own address rather than refusing it (QA, 2026-10-10).
     url = re.sub(r"/(api/knowledge|knowledge)/?$", "", url)
-    token = str(args.get("token") or "").strip() or _circuit_key_for(url)
     # From the address when none is given: `127.0.0.1:9330` and `kb.example.com` have dots, and a dot
     # is not allowed in a name, so the bare host refused every address but `localhost` (2026-10-10).
     parts = urllib.parse.urlsplit(url)
-    auto = re.sub(r"[^a-z0-9]+", "-", f"{parts.hostname or 'remote'}{'-' + str(parts.port) if parts.port else ''}".lower()).strip("-")
+    if not url:
+        raise ApiError("url is required — the address the other RouteMind's map answers on, e.g. https://kb.example.com")
+    # http or https and a host, nothing else. `not a url` was a ValueError out of urllib, and
+    # `ftp://` was accepted and waited 30 s for an ftp server (audit, 2026-11-02).
+    if parts.scheme not in ("http", "https") or not parts.hostname:
+        raise ApiError(f"{url!r} is not an address a circuit can open — it takes an http:// or https:// address, "
+                       "the one the other RouteMind's map answers on.")
+    try: port = parts.port
+    except ValueError: raise ApiError(f"{url!r} has a port that is not a number.")
+    token = str(args.get("token") or "").strip() or _circuit_key_for(url)
+    auto = re.sub(r"[^a-z0-9]+", "-", f"{parts.hostname or 'remote'}{'-' + str(port) if port else ''}".lower()).strip("-")
     name = str(args.get("name") or "").strip() or (auto[:40].strip("-") or "remote")
-    if not url or not token:
-        return ("url and token are both required — a circuit is a read into somebody else's ontology. To keep the "
-                "key out of this conversation, the person can put `<address>=<key>` in KNOWLEDGE_CIRCUIT_KEYS "
-                "(environment or .env) and you open it with the address alone.")
-    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
-        return f"name must be ascii kebab-case, got {name!r}"
+    if not token:
+        kept = _circuit_key_addresses()
+        if kept:
+            # Named, because "url and token are both required" sent somebody who had set the key
+            # looking for a typo in the key rather than in the address (2026-11-02). Addresses only.
+            raise ApiError(f"no key for {_circuit_norm(url)} in KNOWLEDGE_CIRCUIT_KEYS — it holds keys for "
+                           f"{', '.join(kept)}. The address must be written the same way there "
+                           "(localhost and 127.0.0.1 are different), or the person gives you the token.")
+        raise ApiError("url and token are both required — a circuit is a read into somebody else's ontology. To keep the "
+                       "key out of this conversation, the person can put `<address>=<key>` in KNOWLEDGE_CIRCUIT_KEYS "
+                       "(environment or .env) and you open it with the address alone.")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,39}", name):
+        raise ApiError(f"name must be ascii kebab-case, at most 40 characters, got {name!r}")
+    if name in CIRCUITS:
+        # A re-open under a name in use replaced the working circuit, and a failed one then removed
+        # it — one typo in a key and the circuit the walk was using was gone (audit, 2026-11-02).
+        raise ApiError(f"a circuit named {name} is already open, to {CIRCUITS[name]['url']}. `close` it first, "
+                       "or open this one under another name.")
     if _public_address(url):
-        return (f"refusing to send a token to {url} — that is a public address over plain http, so "
-                "the token would cross the wire in clear text. Use https, or a private address.")
+        raise ApiError(f"refusing to send a token to {url} — that is a public address over plain http, so "
+                       "the token would cross the wire in clear text. Use https, or a private address.")
 
     CIRCUITS[name] = {"url": url, "token": token}
     try:
-        circuit_fetch(name, "/v1/regions", "application/json")
-    except ApiError as e:
+        regions = json.loads(circuit_fetch(name, "/v1/regions", "application/json"))
+        if not isinstance(regions, dict) or not isinstance(regions.get("regions"), list):
+            raise _not_routemind(name, url, "its area list is not one")
+    except ValueError:
+        CIRCUITS.pop(name, None)
+        raise ApiError(f"Could not open circuit {name} — {_not_routemind(name, url, 'its area list is not JSON')}\n\nNothing was kept.")
+    except Exception as e:
         CIRCUITS.pop(name, None)
         # Opened and immediately closed. A circuit that is listed but does not answer is worse than
-        # none: the agent spends its hops discovering that, and the table said it was there.
-        return f"Could not open circuit {name} — {e}\n\nNothing was kept."
+        # none: the agent spends its hops discovering that, and the table said it was there. Any
+        # failure, not only the ones expected — an unexpected one left it listed (2026-11-02).
+        raise ApiError(f"Could not open circuit {name} — {e}\n\nNothing was kept.")
     return (f"CIRCUIT {name} open  \u2192  {url}\n\n"
             f"  Read it at /v1/circuits/{name}/regions, then follow the addresses it prints — after your own\n"
             "  hop 0 (knowledge_table, no path), which now lists this circuit; every walk starts there.\n"
@@ -722,13 +818,29 @@ TABLE_SHAPES = (
 )
 
 
-def read_for(api: Api, path: str) -> str:
+# What knowledge_read reads: a document, at the one address shape tables print for one. It was "any
+# address that is not a table", which made it a GET over all of /v1 — `/v1/walks` handed the agent
+# other walks' questions and paths, which docs/FOOTPRINT.md says an agent is never shown, and
+# `/v1/circuits/<name>/regions` handed it a circuit's raw JSON with the far end's own addresses, which
+# used as printed read this backbone instead (audit, 2026-11-02). Now refused, with a sentence.
+DOCUMENT = re.compile(r"^/v1/(circuits/[a-z0-9][a-z0-9-]*/)?nodes/[A-Za-z0-9][A-Za-z0-9_-]*/body$")
+
+
+def document_address(path: str) -> str:
+    """`path` if it is an address knowledge_read reads, else the refusal that says what is."""
     p = (path or "").strip()
     if not p.startswith("/v1/"):
         raise ApiError(f"{p!r} is not an address from Knowledge. Use one a table printed.")
     if any(rx.match(p) for rx in TABLE_SHAPES):
         raise ApiError(f"{p} is a table, not a document — call knowledge_table with it.")
-    return api.text(p)
+    if not DOCUMENT.match(p):
+        raise ApiError(f"{p} is not a document address. knowledge_read reads the documents tables print, "
+                       "at /v1/nodes/<id>/body — use the `file` address a table printed.")
+    return p
+
+
+def read_for(api: Api, path: str) -> str:
+    return api.text(document_address(path))
 
 
 # ── MCP ───────────────────────────────────────────────────────────────────────
@@ -786,6 +898,10 @@ PLACE_TOOL = {
 }
 
 PLACEMENTS: dict[str, dict] = {}
+# Counted, never derived from how many are open: `p{len+1}` gave a new placement the id of one still
+# open after an earlier one closed, and overwrote it — its document and its walk gone, no message
+# (audit, 2026-11-02).
+_place_n = [0]
 
 # ── the walk: invariant 1, in code ────────────────────────────────────────────
 # Every walk starts at hop 0. Until 2026-10-06 that was a sentence in a tool description, and an agent
@@ -797,15 +913,29 @@ PLACEMENTS: dict[str, dict] = {}
 # current one: the agent opens hop 0, walks, and opens hop 0 again for its next question, which ends
 # the walk before it. A version that issued a walk id the agent had to pass on every call enforced
 # exactly this and no more — it could not stop an agent answering from memory either — and cost every
-# call an argument nobody could explain (operator, 2026-10-07). A walk also ends after
-# `KNOWLEDGE_WALK_TTL` seconds (600).
+# call an argument nobody could explain (operator, 2026-10-07). A walk also ends when it is left alone
+# for `KNOWLEDGE_WALK_TTL` seconds (600) — counted from its last step, not from hop 0: counted from
+# hop 0, an agent still walking was cut off mid-walk at ten minutes, which is not what docs/AGENTS.md
+# promised ("a walk left alone for ten minutes expires"; audit, 2026-11-02).
 #
 # Enforced here and not in the service: this is the agent's only door, and the rule is about agents —
 # a screen or a curl reads tables freely. The footprint (docs/FOOTPRINT.md) records every walk under
 # the id the backbone gives it, out of the agent's sight.
 WALKS: dict[str, dict] = {}
 CURRENT: dict = {"walk": None}
-WALK_TTL = float(os.environ.get("KNOWLEDGE_WALK_TTL") or 600)
+def _walk_ttl() -> float:
+    """KNOWLEDGE_WALK_TTL in seconds. `10m` raised at import, and the server answered nothing at all."""
+    raw = str(os.environ.get("KNOWLEDGE_WALK_TTL") or "").strip()
+    if not raw: return 600.0
+    try:
+        v = float(raw)
+        if v > 0: return v
+    except ValueError: pass
+    sys.stderr.write(f"knowledge-mcp: KNOWLEDGE_WALK_TTL={raw!r} is not a number of seconds — using 600\n")
+    return 600.0
+
+
+WALK_TTL = _walk_ttl()
 _walk_n = [0]
 
 
@@ -842,7 +972,7 @@ def open_walk(api: Api, how: str, question: str = "") -> str:
     try:
         # A check walking a real install marks its walks, so the map and its history show the walks
         # agents took rather than forty "the check walks here" (2026-10-10). Still recorded.
-        d = api.send("POST", "/v1/walks", {"question": str(question or "").strip()[:300], "how": how,
+        d = api.send("POST", "/v1/walks", {"question": _text(str(question or "").strip()[:300]), "how": how,
                                            **({"check": True} if os.environ.get("KNOWLEDGE_WALK_CHECK") else {})})
         wid, remote = str(d.get("id") or ""), bool(d.get("id"))
     except ApiError as e:
@@ -850,10 +980,17 @@ def open_walk(api: Api, how: str, question: str = "") -> str:
             sys.stderr.write(f"knowledge-mcp: footprint not recorded — {e}\n")
     if not wid:
         _walk_n[0] += 1; wid = f"w{_walk_n[0]}"
-    WALKS[wid] = {"id": wid, "how": how, "opened": time.time(), "ended": None, "calls": 0, "remote": remote,
-                  "areas": []}
+    WALKS[wid] = {"id": wid, "how": how, "opened": time.time(), "last": time.time(), "ended": None, "calls": 0,
+                  "remote": remote, "areas": []}
     CURRENT["walk"] = wid
     return wid
+
+
+def _text(s: str) -> str:
+    """A string that encodes. A lone surrogate — `\\ud800` is valid JSON — was sent on to the walk
+    record, which failed with a 502, and the step went unrecorded while the read itself answered: a
+    hole in the footprint that its replay does not show (audit, 2026-11-02)."""
+    return str(s).encode("utf-8", "replace").decode("utf-8")
 
 
 def report(api: Api, wid: str, op: str, address: str, why: str) -> None:
@@ -861,7 +998,7 @@ def report(api: Api, wid: str, op: str, address: str, why: str) -> None:
     said, because a footprint with a hole in it is worse than none when somebody replays it."""
     w = WALKS.get(wid)
     if not w or not w.get("remote"): return
-    try: api.send("POST", f"/v1/walks/{wid}/steps", {"op": op, "address": address, "why": why})
+    try: api.send("POST", f"/v1/walks/{wid}/steps", {"op": op, "address": _text(address), "why": _text(why)})
     except ApiError as e:
         sys.stderr.write(f"knowledge-mcp: step not recorded on {wid} — {e}\n")
 
@@ -893,11 +1030,12 @@ def require_walk(what: str) -> dict:
     w = WALKS.get(CURRENT["walk"] or "")
     if not w or w["ended"]:
         raise ApiError(f"{what}: hop 0 has not been opened for this question. {BACK_TO_HOP0}")
-    if time.time() - w["opened"] > WALK_TTL:
-        w["ended"] = f"it is older than {int(WALK_TTL)}s"
+    if time.time() - w.get("last", w["opened"]) > WALK_TTL:
+        w["ended"] = f"nothing was asked of it for {int(WALK_TTL)}s"
         close_walk(api_for_close[0], w["id"], "abandoned", w["ended"]) if api_for_close[0] else None
         raise ApiError(f"{what}: the walk has expired ({w['ended']}). {BACK_TO_HOP0}")
     w["calls"] += 1
+    w["last"] = time.time()
     return w
 
 
@@ -912,6 +1050,9 @@ def place_call(api: Api, args: dict) -> str:
     """The placement walk, one op at a time. State is the walk's path and the addresses the last
     table printed — a pick that was not printed is refused, the same discipline every table asks."""
     op = str(args.get("op") or "").strip()
+    # The op first: `bogus` answered "no placement '' is open" (2026-11-02).
+    if op not in ("open", "step", "here", "list", "close"):
+        raise ApiError(f"op must be open · step · here · list · close (got {op!r})")
     if op == "list":
         if not PLACEMENTS: return "No placement is open."
         return "\n".join(f"  {k}  {p['doc']['name']}  at {p['at']}  path {' → '.join(p['path']) or '(hop 0)'}"
@@ -921,7 +1062,16 @@ def place_call(api: Api, args: dict) -> str:
                "content": str(args.get("content") or ""), "kind": str(args.get("kind") or "").strip()}
         if not doc["name"] or not doc["one_liner"]:
             raise ApiError("open needs `name` and `one_liner` — the line is what every table will print for it")
-        pid = f"p{len(PLACEMENTS) + 1}"
+        if doc["kind"]:
+            # Asked at `open`, where it can still be chosen again: it was accepted here and refused only
+            # at `here`, as "validation failed", after the whole walk (audit, 2026-11-02).
+            try: kinds = [k.get("id") for k in (api.json("/v1/vocab").get("kinds") or []) if isinstance(k, dict)]
+            except ApiError: kinds = []
+            if kinds and doc["kind"] not in kinds:
+                raise ApiError(f"kind {doc['kind']!r} is not in this backbone's vocabulary — it has: {', '.join(kinds)}. "
+                               "Or leave `kind` out, and the document takes the kind its siblings mostly have.")
+        _place_n[0] += 1
+        pid = f"p{_place_n[0]}"
         PLACEMENTS[pid] = {"doc": doc, "path": [], "at": "/v1/regions", "printed": []}
         # Its first table is hop 0, so it opens a walk like hop 0 does: reading a document while
         # placing was refused with "hop 0 has not been opened" while hop 0 was on screen (2026-10-10).
@@ -999,6 +1149,11 @@ def _place_here(api: Api, pid: str, args: dict) -> str:
     p = PLACEMENTS[pid]
     doc = p["doc"]
     why = str(args.get("why") or "").strip() or f"place {doc['name']}"
+    for k in ("decisions", "expose"):
+        if args.get(k) is not None and not isinstance(args.get(k), list):
+            raise ApiError(f"`{k}` is a list" + (" of objects: {op: keep|reword|create|move|write|delete, …}" if k == "decisions" else " of ids"))
+    if args.get("area") is not None and not isinstance(args.get("area"), dict):
+        raise ApiError("`area` is an object: {source, name, one_liner, use_when}")
     decisions = list(args.get("decisions") or [])
     for d in decisions:
         if not isinstance(d, dict): raise ApiError("every decision is an object: {op: keep|reword|create|move|write|delete, …}")
@@ -1127,10 +1282,9 @@ OVERLAY_TOOL = {
         "id": {"type": "string", "description": "get / add / remove / close: the overlay's id"},
         "address": {"type": "string", "description": "add / remove: an address a table printed"},
         "why": {"type": "string", "description": "add / remove: the reason"},
+        # No `walk`: it asked for "the walk id hop 0 printed", hop 0 prints none since 2026-10-07, and
+        # nothing read it — not_found closed without it (audit, 2026-11-02).
         "outcome": {"type": "string", "enum": ["answered", "not_found"], "description": "close"},
-        "walk": {"type": "string", "description": "close: the walk id hop 0 printed for this question. "
-                                                  "Required to close as not_found — only someone who has "
-                                                  "seen the whole list may say something is not here."},
         "used": {"type": "array", "items": {"type": "string"},
                  "description": "close: every address you actually took the answer from, member or not"}}}}
 
@@ -1222,7 +1376,7 @@ class Server:
         model that a question belongs to this domain at all, which a tool name cannot.
         """
         try:
-            areas = hop0(self.api)
+            areas = hop0(self.api.quick())
         except ApiError as e:
             return ("RouteMind is this team's domain knowledge base, and it is not reachable right now "
                     f"({e}). Questions about the domain it covers will need it.")
@@ -1287,15 +1441,16 @@ class Server:
         for them, and the error it gets back says what is wrong.
         """
         tools = [dict(t) for t in TOOLS]
+        quick = self.api.quick()
         try:
-            tools[0]["description"] += "\n\n" + hop0(self.api)
+            tools[0]["description"] += "\n\n" + hop0(quick)
         except ApiError as e:
             tools[0]["description"] += f"\n\n(The area list could not be fetched: {e})"
         place = dict(PLACE_TOOL)
         try:
             # The kinds this backbone's vocabulary has, so the agent can choose one: left to a default,
             # documents came out as "topic" — a holder's kind — four times in nine (2026-10-10).
-            kinds = [k for k in (self.api.json("/v1/vocab").get("kinds") or []) if isinstance(k, dict) and k.get("id")]
+            kinds = [k for k in (quick.json("/v1/vocab").get("kinds") or []) if isinstance(k, dict) and k.get("id")]
             if kinds:
                 place["description"] += (" Kinds in this backbone (pass `kind` on open): " +
                                          "; ".join(f"{k['id']} — {str(k.get('desc') or '').strip()}" for k in kinds) + ".")
@@ -1311,57 +1466,85 @@ class Server:
 
     def call(self, name: str, args: dict) -> tuple[str, bool]:
         try:
-            if name == "knowledge_place": return place_call(self.api, args), False
-            if name == "knowledge_circuit": return circuit_call(args), False
-            path = str(args.get("path") or "").strip()
-            # Hop 0 itself: the one table that needs no walk, because it is where one begins.
-            if name == "knowledge_table" and path.rstrip("/") in ("", "/", "/v1/regions"):
-                open_walk(self.api, "knowledge_table", str(args.get("question") or ""))
-                return hop0(self.api), False
-            # Everything below hop 0 belongs to the walk hop 0 opened — invariant 1 — and every step
-            # is recorded with the reason the agent gave — invariant 11.
-            if name in ("knowledge_table", "knowledge_read"):
-                w = require_walk(f"{name} {path}")
-                why = need_why(args, f"{name} {path}")
-                report(self.api, w["id"], "table" if name == "knowledge_table" else "read", path, why)
-            # An address into an open circuit is answered by the circuit, not this backbone. The
-            # agent never composes one: it follows what a circuit's own tables printed, the same
-            # discipline as every other address here.
-            if name in ("knowledge_table", "knowledge_read") and path.startswith("/v1/circuits/"):
-                rest = path[len("/v1/circuits/"):]
-                cname, _, tail = rest.partition("/")
-                doc = name == "knowledge_read"
-                body = circuit_fetch(cname, "/v1/" + tail,
-                                     "text/markdown" if doc else "application/json")
-                return (body if doc else circuit_table(cname, body)), False
-            if name == "knowledge_table":
-                out = table_for(self.api, path)
-                return second_area_note(w, path) + out, False
-            if name == "knowledge_read":  return read_for(self.api, path), False
-            if name == "knowledge_overlay" and OPTIONAL["overlay"] and self.overlays():
-                out = overlay_call(self.api, args)
-                if str(args.get("op") or "") == "close":
-                    w = WALKS.get(CURRENT["walk"] or "")
-                    outcome = str(args.get("outcome") or "")
-                    if w and not w["ended"]:
-                        close_walk(self.api, w["id"], outcome if outcome in ("answered", "not_found") else "answered",
-                                   f"overlay closed {outcome or 'answered'}")
-                        w["ended"] = "its overlay was closed"
-                return out, False
-            if name == "knowledge_write" and OPTIONAL["write"] and self.workspace(): return write_call(self.api, args), False
-            return f"No such tool: {name}", True
+            return self._call(name, args)
         except ApiError as e:
             return str(e), True
+        except Exception as e:
+            # A tool's failure is the tool's answer, not the protocol's: wrong-typed arguments came
+            # back as JSON-RPC internal errors, which a client shows as the server failing rather than
+            # the call (audit, 2026-11-02). Said, and the session goes on.
+            sys.stderr.write(f"knowledge-mcp: {name}: {type(e).__name__}: {e}\n")
+            return f"{name} failed: {type(e).__name__}: {e}", True
+
+    def _call(self, name: str, args) -> tuple[str, bool]:
+        if not isinstance(args, dict):
+            raise ApiError(f"{name}: arguments must be an object, e.g. {{\"path\": …, \"why\": …}}")
+        if name == "knowledge_place": return place_call(self.api, args), False
+        if name == "knowledge_circuit": return circuit_call(args), False
+        path = str(args.get("path") or "").strip()
+        # Every address is printable ASCII without spaces — ids are lowercase kebab
+        # (validate.py). One that is not was an InvalidURL or UnicodeEncodeError from urllib,
+        # as an internal error; it is simply not an address any table printed.
+        if path and not re.fullmatch(r"[!-~]+", path):
+            raise ApiError(f"{path!r} is not an address a table printed — addresses are ASCII, with no spaces. "
+                           "Use one exactly as a table printed it.")
+        # Hop 0 itself: the one table that needs no walk, because it is where one begins.
+        if name == "knowledge_table" and path.rstrip("/") in ("", "/", "/v1/regions"):
+            open_walk(self.api, "knowledge_table", str(args.get("question") or ""))
+            return hop0(self.api), False
+        # Everything below hop 0 belongs to the walk hop 0 opened — invariant 1 — and every step
+        # is recorded with the reason the agent gave — invariant 11.
+        if name in ("knowledge_table", "knowledge_read"):
+            w = require_walk(f"{name} {path}")
+            why = need_why(args, f"{name} {path}")
+            # Refused before it is recorded, so a replay does not show the agent "reading" an
+            # address that is not a document (2026-11-02).
+            if name == "knowledge_read": document_address(path)
+            report(self.api, w["id"], "table" if name == "knowledge_table" else "read", path, why)
+        # An address into an open circuit is answered by the circuit, not this backbone. The
+        # agent never composes one: it follows what a circuit's own tables printed, the same
+        # discipline as every other address here.
+        if name in ("knowledge_table", "knowledge_read") and path.startswith("/v1/circuits/"):
+            rest = path[len("/v1/circuits/"):]
+            cname, _, tail = rest.partition("/")
+            doc = name == "knowledge_read"
+            # The same two rules as a local address: a document is read at a document address
+            # (above), a table at a table's. Read skipped them, and returned a circuit's raw JSON
+            # with the far end's own `/v1/export/…` addresses in it (audit, 2026-11-02).
+            if not doc and not any(rx.match("/v1/" + tail) for rx in TABLE_SHAPES[:3]):
+                raise ApiError(f"{path} is not a table address. Through a circuit, tables are "
+                               f"/v1/circuits/{cname}/regions, …/regions/<area> and …/nodes/<id>, as its tables print them.")
+            body = circuit_fetch(cname, "/v1/" + tail,
+                                 "text/markdown" if doc else "application/json")
+            return (body if doc else circuit_table(cname, body)), False
+        if name == "knowledge_table":
+            out = table_for(self.api, path)
+            return second_area_note(w, path) + out, False
+        if name == "knowledge_read":  return read_for(self.api, path), False
+        if name == "knowledge_overlay" and OPTIONAL["overlay"] and self.overlays():
+            out = overlay_call(self.api, args)
+            if str(args.get("op") or "") == "close":
+                w = WALKS.get(CURRENT["walk"] or "")
+                outcome = str(args.get("outcome") or "")
+                if w and not w["ended"]:
+                    close_walk(self.api, w["id"], outcome if outcome in ("answered", "not_found") else "answered",
+                               f"overlay closed {outcome or 'answered'}")
+                    w["ended"] = "its overlay was closed"
+            return out, False
+        if name == "knowledge_write" and OPTIONAL["write"] and self.workspace(): return write_call(self.api, args), False
+        return f"No such tool: {name}", True
 
     def handle(self, msg: dict) -> dict | None:
         method, mid = msg.get("method"), msg.get("id")
         params = msg.get("params") or {}
+        if not isinstance(params, dict):
+            return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32602, "message": "params must be an object"}}
 
         def ok(result): return {"jsonrpc": "2.0", "id": mid, "result": result}
 
         if method == "initialize":
             asked = str(params.get("protocolVersion") or "")
-            return ok({"protocolVersion": asked or PROTOCOL_FALLBACK,
+            return ok({"protocolVersion": asked if asked in PROTOCOL_VERSIONS else PROTOCOL_VERSIONS[-1],
                        "capabilities": {"tools": {}, "prompts": {}},
                        "serverInfo": {"name": "knowledge", "version": "0.1.0"},
                        "instructions": self.instructions()})
@@ -1386,7 +1569,11 @@ class Server:
                  "arguments": [
                      {"name": "url", "description": "the remote RouteMind's address, "
                                                     "e.g. https://kb.example.com", "required": True},
-                     {"name": "token", "description": "the token its owner gave you", "required": True},
+                     # Not required: KNOWLEDGE_CIRCUIT_KEYS can hold it, which is how a key stays
+                     # out of the transcript (docs/CIRCUIT.md). The prompt demanded one anyway and never
+                     # looked there, while the tool did (audit, 2026-11-02).
+                     {"name": "token", "description": "the token its owner gave you — leave it out when "
+                                                      "KNOWLEDGE_CIRCUIT_KEYS holds it", "required": False},
                      {"name": "name", "description": "what to call it here — ascii kebab-case; "
                                                      "defaults to the host", "required": False}]}]})
         if method == "prompts/get":
@@ -1396,16 +1583,20 @@ class Server:
             args = params.get("arguments") or {}
             if which == "circuit":
                 url, token = str(args.get("url") or "").strip(), str(args.get("token") or "").strip()
-                if not url or not token:
-                    body = ("A circuit needs the remote's address and a token its owner gave you.\n\n"
+                if not url:
+                    body = ("A circuit needs the remote's address, and a token its owner gave you unless\n"
+                            "KNOWLEDGE_CIRCUIT_KEYS on this machine holds it.\n\n"
                             "  url:    https://kb.example.com   ·   token: the one you were handed\n"
                             "  name:   optional — what to call it here")
                 else:
                     # Opened here rather than handed to the model as an instruction to open: the
                     # person typed the address and the token, and a prompt that asks an agent to
                     # please make a tool call is one more place the two can disagree.
-                    body = circuit_call({"op": "open", "url": url, "token": token,
-                                         "name": str(args.get("name") or "").strip()})
+                    try:
+                        body = circuit_call({"op": "open", "url": url, "token": token,
+                                             "name": str(args.get("name") or "").strip()})
+                    except ApiError as e:
+                        body = str(e)
                 return ok({"description": "A circuit to another RouteMind",
                            "messages": [{"role": "user", "content": {"type": "text", "text": body}}]})
             if which != "knowledge_start":
@@ -1438,7 +1629,10 @@ def _utf8_stdio() -> None:
 
     Wrapped, because a caller may hand `serve()` its own streams — the checks do — and those are not
     required to be reconfigurable."""
-    for stream, kw in ((sys.stdin, {}), (sys.stdout, {"newline": "\n"})):
+    # `errors="replace"` on the way in: one byte that is not UTF-8 raised inside `for line in stdin`,
+    # outside every handler, and ended the process (audit, 2026-11-02). Replaced, the line is still
+    # parsed — and answered, or refused as JSON-RPC.
+    for stream, kw in ((sys.stdin, {"errors": "replace"}), (sys.stdout, {"newline": "\n"})):
         try: stream.reconfigure(encoding="utf-8", **kw)
         except Exception: pass
 
@@ -1466,13 +1660,24 @@ def serve(api: Api, stdin=sys.stdin, stdout=sys.stdout) -> None:
             stdout.write(json.dumps({"jsonrpc": "2.0", "id": None,
                                      "error": {"code": -32700, "message": "Parse error"}}) + "\n")
             stdout.flush(); continue
-        try: reply = server.handle(msg)
-        except Exception as e:                             # a crash must not take the session down
-            sys.stderr.write(f"knowledge-mcp: {type(e).__name__}: {e}\n")
-            reply = {"jsonrpc": "2.0", "id": msg.get("id"),
-                     "error": {"code": -32603, "message": f"{type(e).__name__}: {e}"}}
+        # Valid JSON that is not a request object — a batch `[…]`, `42`, `null` — reached the handler
+        # below, whose own `msg.get` then raised outside it and ended the process: every tool of the
+        # session gone on one line from a proxy (audit, 2026-11-02). Batches are not part of MCP
+        # since 2025-06-18; one is refused like anything else that is not a request.
+        if not isinstance(msg, dict):
+            reply = {"jsonrpc": "2.0", "id": None,
+                     "error": {"code": -32600, "message": "Invalid Request: one JSON-RPC object per line (no batches)"}}
+        else:
+            try: reply = server.handle(msg)
+            except Exception as e:                         # a crash must not take the session down
+                sys.stderr.write(f"knowledge-mcp: {type(e).__name__}: {e}\n")
+                reply = {"jsonrpc": "2.0", "id": msg.get("id"),
+                         "error": {"code": -32603, "message": f"{type(e).__name__}: {e}"}}
         if reply is not None:
-            stdout.write(json.dumps(reply, ensure_ascii=False) + "\n")
+            # A lone surrogate echoed back in a reply cannot be encoded as UTF-8; escaped, it can.
+            try: line_out = json.dumps(reply, ensure_ascii=False); line_out.encode("utf-8")
+            except UnicodeEncodeError: line_out = json.dumps(reply)
+            stdout.write(line_out + "\n")
             stdout.flush()
     _end_session(api)
 
@@ -1486,16 +1691,66 @@ def _end_session(api: Api) -> None:
         close_walk(api, w["id"], "ended", "the session ended")
 
 
+def _circuit_norm(u: str) -> str:
+    return re.sub(r"/(api/knowledge|knowledge)/?$", "", str(u or "").strip().rstrip("/")).lower()
+
+
+def _circuit_key_pairs() -> list[tuple[str, str]]:
+    """KNOWLEDGE_CIRCUIT_KEYS as (address, key) pairs. Split at the first `=` after the address: a key
+    is often base64, `…==`, and split at the last `=` it never matched anything (audit, 2026-11-02)."""
+    out = []
+    for pair in re.split(r"[\s,]+", _env_value("KNOWLEDGE_CIRCUIT_KEYS")):
+        m = re.match(r"^([a-z][a-z0-9+.-]*://[^=]+)=(.+)$", pair, re.I)
+        if m: out.append((m.group(1), m.group(2)))
+    return out
+
+
 def _circuit_key_for(url: str) -> str:
     """The key for a circuit address from KNOWLEDGE_CIRCUIT_KEYS — `address=key` pairs separated by
     spaces or commas, in the environment or .env. Typed into the conversation, a key ends up in the
     agent's transcript (docs/CIRCUIT.md); kept here, the agent opens the circuit with the address alone."""
-    def norm(u):
-        return re.sub(r"/(api/knowledge|knowledge)/?$", "", u.strip().rstrip("/")).lower()
-    for pair in re.split(r"[\s,]+", _env_value("KNOWLEDGE_CIRCUIT_KEYS")):
-        addr, _, key = pair.rpartition("=")
-        if addr and key and norm(addr) == norm(url): return key
+    for addr, key in _circuit_key_pairs():
+        if _circuit_norm(addr) == _circuit_norm(url): return key
     return ""
+
+
+def _circuit_key_addresses() -> list[str]:
+    """The addresses KNOWLEDGE_CIRCUIT_KEYS holds keys for — never the keys."""
+    return [_circuit_norm(a) for a, _ in _circuit_key_pairs()]
+
+
+def _env_file() -> str:
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+
+
+def _env_lines() -> list[str] | None:
+    """The `.env` beside this repository, as lines; None when there is none.
+
+    Whatever it was saved as. It was read as strict UTF-8: a `.env` from Windows Notepad in the ANSI
+    code page with one accented letter in a comment stopped the server at start — and, read again on
+    every request for KNOWLEDGE_TOKEN, failed every call after it; one with a byte-order mark read its
+    first key as `\ufeffWEB_PORT` and never matched it (audit, 2026-11-02). UTF-16 is Notepad's
+    "Unicode"; anything else is UTF-8 with what does not decode replaced, which no key or port uses.
+    """
+    try:
+        with open(_env_file(), "rb") as f: raw = f.read()
+    except FileNotFoundError:
+        return None
+    except OSError as e:
+        sys.stderr.write(f"knowledge-mcp: .env could not be read ({e})\n")
+        return []
+    if raw[:2] in (b"\xff\xfe", b"\xfe\xff"): text = raw.decode("utf-16", "replace")
+    else: text = raw.decode("utf-8-sig", "replace")
+    return text.splitlines()
+
+
+def _env_pair(line: str) -> tuple[str, str]:
+    """`KEY=value` as compose reads it: quotes taken off, and an unquoted value ends at ` #`."""
+    k, _, v = line.strip().partition("=")
+    v = v.strip()
+    if v[:1] in ("'", '"') and v[-1:] == v[:1] and len(v) > 1: v = v[1:-1]
+    else: v = re.sub(r"\s+#.*$", "", v).strip("'\"")
+    return k.strip(), v
 
 
 def _env_value(key: str) -> str:
@@ -1503,43 +1758,57 @@ def _env_value(key: str) -> str:
     wins, as compose reads it)."""
     if os.environ.get(key): return os.environ[key].strip()
     val = ""
-    env = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
-    try:
-        for line in open(env, encoding="utf-8"):
-            k, _, v = line.strip().partition("=")
-            if k.strip() == key: val = v.strip().strip("'\"")
-    except OSError:
-        pass
+    for line in _env_lines() or []:
+        k, v = _env_pair(line)
+        if k == key: val = v
     return val
 
 
-def _default_api() -> str:
-    """Where this checkout's install answers: `KNOWLEDGE_API` if set, else the port in the `.env` beside
-    this repository, else 8080. `.mcp.json` no longer names a port, so install.sh does not rewrite a
-    tracked file — that left every checkout on another port dirty, a `git pull` that could refuse, and
-    a port changed in `.env` by hand (as docs/INSTALL.md says to) pointing Claude Code at the old one."""
-    if os.environ.get("KNOWLEDGE_API"): return os.environ["KNOWLEDGE_API"]
-    port = ""
-    env = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
-    try:
-        for line in open(env, encoding="utf-8"):
-            k, _, v = line.strip().partition("=")
-            if k.strip() == "WEB_PORT" and v.strip().strip("'\""): port = v.strip().strip("'\"")   # the last one wins, as compose reads it
-    except OSError:
-        pass
-    return f"http://localhost:{port if port.isdigit() else '8080'}/api/knowledge"
+def _default_api() -> tuple[str, str]:
+    """Where this checkout's install answers, and — when it cannot be said — why: `KNOWLEDGE_API` if
+    set, else the port in the `.env` beside this repository, else 8080. `.mcp.json` no longer names a
+    port, so install.sh does not rewrite a tracked file — that left every checkout on another port
+    dirty, a `git pull` that could refuse, and a port changed in `.env` by hand (as docs/INSTALL.md
+    says to) pointing Claude Code at the old one.
+
+    8080 only when `.env` says nothing about WEB_PORT, which is what compose itself does. A WEB_PORT
+    this cannot read is not a reason to guess: the guess was 8080, and on a machine with a second
+    install that is another backbone — the agent answered from the wrong ontology with no error at
+    all (audit, 2026-11-02). Then there is no address, and every call says why."""
+    if os.environ.get("KNOWLEDGE_API"): return os.environ["KNOWLEDGE_API"], ""
+    lines = _env_lines()
+    if lines is None: return "http://localhost:8080/api/knowledge", ""
+    port, seen = "", ""
+    for line in lines:
+        if line.lstrip().startswith("#"): continue
+        k, v = _env_pair(line)
+        if k == "WEB_PORT": port, seen = v, line.strip()          # the last one wins, as compose reads it
+        # A line that sets WEB_PORT under some other spelling (`export WEB_PORT=…`, a stray byte
+        # before it) is WEB_PORT that could not be read — not WEB_PORT absent.
+        elif re.search(r"(^|[^A-Za-z0-9_])WEB_PORT\s*=", line): seen = seen or line.strip()
+    if port.isdigit(): return f"http://localhost:{port}/api/knowledge", ""
+    if not seen or (not port and seen.startswith("WEB_PORT")):
+        return "http://localhost:8080/api/knowledge", ""      # absent or empty: compose's own default
+    return "", (f"the WEB_PORT line in {_env_file()} could not be read as a port ({seen[:60]!r}). Not guessing "
+                "8080, which may be another install: fix that line, or give the address with --api or KNOWLEDGE_API")
 
 
 def main() -> None:
     p = argparse.ArgumentParser(description="RouteMind over MCP (stdio).")
-    p.add_argument("--api", default=_default_api(),
+    # Not `default=_default_api()`: argparse evaluates a default whether or not --api is given, so a
+    # .env it could not read stopped the server even with the address on the command line (2026-11-02).
+    p.add_argument("--api", default=None,
                    help="The v1 root: the web app's Knowledge API (http://localhost:8080/api/knowledge), "
                         "or an ontology directly (http://localhost:8100/v1)")
     p.add_argument("--actor", default=os.environ.get("KNOWLEDGE_ACTOR", "mcp"),
                    help="The name recorded on anything this connection causes to be written.")
     a = p.parse_args()
-    sys.stderr.write(f"knowledge-mcp: api={a.api} actor={a.actor}\n")
-    serve(Api(a.api, a.actor))
+    api, why = (a.api, "") if a.api else _default_api()
+    if why:
+        sys.stderr.write(f"knowledge-mcp: no address — {why}\n")
+    else:
+        sys.stderr.write(f"knowledge-mcp: api={api} actor={a.actor}\n")
+    serve(Api(api, a.actor, unusable=f"RouteMind has no address to use: {why}" if why else ""))
 
 
 if __name__ == "__main__":

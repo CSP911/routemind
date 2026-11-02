@@ -65,27 +65,42 @@ def status(code):
     return H
 
 
+def opened(args):
+    """What the agent is shown. A refusal is an MCP tool error since 2026-11-02 (it came back as an
+    ordinary result, so a client could not tell a failure from an answer) — raised, not returned."""
+    try: return M.circuit_call(args)
+    except M.ApiError as e: return str(e)
+
+
 _, RED = serve(Redirect)
 _, NOKEY = serve(status(501))
 _, WRONG = serve(status(404))
 
-out = M.circuit_call({"op": "open", "url": f"http://127.0.0.1:{RED}", "token": "enrol"})
+out = opened({"op": "open", "url": f"http://127.0.0.1:{RED}", "token": "enrol"})
 check("a far end that redirects: the circuit does not open", "Could not open circuit" in out and "redirect" in out, out)
 check("  and the session it minted never reaches the host it was redirected to", "SESSION-MUST-NOT-LEAK" not in seen, seen)
 check("  the name was made from the address, dots and port and all", f"127-0-0-1-{RED}" in out, out)
 
-out = M.circuit_call({"op": "open", "url": f"http://127.0.0.1:{NOKEY}", "token": "enrol", "name": "nokey"})
+out = opened({"op": "open", "url": f"http://127.0.0.1:{NOKEY}", "token": "enrol", "name": "nokey"})
 check("a far end with no circuit key says so, and names the setting", "KNOWLEDGE_CIRCUIT_TOKEN" in out and "refused the token" not in out, out)
 
-out = M.circuit_call({"op": "open", "url": f"http://127.0.0.1:{WRONG}", "token": "enrol", "name": "wrong"})
+out = opened({"op": "open", "url": f"http://127.0.0.1:{WRONG}", "token": "enrol", "name": "wrong"})
 check("a wrong address says to give the install's own address", "without /api/knowledge" in out, out)
 
 # A key kept out of the conversation: KNOWLEDGE_CIRCUIT_KEYS fills it in for an address opened alone.
 os.environ["KNOWLEDGE_CIRCUIT_KEYS"] = f"http://127.0.0.1:{WRONG}/knowledge=from-env"
 check("a key in KNOWLEDGE_CIRCUIT_KEYS is found for the address, page path and all",
       M._circuit_key_for(f"http://127.0.0.1:{WRONG}") == "from-env" and M._circuit_key_for("http://elsewhere") == "")
-out = M.circuit_call({"op": "open", "url": "http://elsewhere.invalid"})
+out = opened({"op": "open", "url": "http://elsewhere.invalid"})
 check("  and an address with no key anywhere says how to keep one out of the conversation", "KNOWLEDGE_CIRCUIT_KEYS" in out, out)
+
+# A key that ends in `=` (base64 padding) was split at its last `=` and never matched; and a miss
+# said "url and token are both required" though the person had set KNOWLEDGE_CIRCUIT_KEYS (2026-11-02).
+os.environ["KNOWLEDGE_CIRCUIT_KEYS"] = "http://10.0.0.5:9000=abc== http://localhost:9352=k3"
+check("a key ending in `=` is kept whole", M._circuit_key_for("http://10.0.0.5:9000") == "abc==", M._circuit_key_for("http://10.0.0.5:9000"))
+out = opened({"op": "open", "url": "http://127.0.0.1:9352"})
+check("  and an address with no key there names the address it looked for, and the ones it has",
+      "http://127.0.0.1:9352" in out and "KNOWLEDGE_CIRCUIT_KEYS" in out and "http://localhost:9352" in out and "k3" not in out, out)
 
 print("\n".join(results))
 n = sum(r.startswith("FAIL") for r in results)
