@@ -3,7 +3,13 @@ const _fetch = globalThis.fetch; const TOKEN = process.env.KNOWLEDGE_TOKEN || ""
 const realFetch = (u, o = {}) => _fetch(u, TOKEN ? { ...o, headers: { ...(o.headers || {}), Authorization: `Bearer ${TOKEN}` } } : o);
 import { readFileSync } from "node:fs";
 import { dict } from "./dict.mjs";
-const BASE = process.argv[2] || "http://127.0.0.1:8080";
+// No address given: this checkout's install — the last WEB_PORT in .env, as check/base.sh reads it.
+// It was :8080, whichever RouteMind that was (2026-11-02).
+const envPort = (() => { try {
+  const m = [...readFileSync(new URL("../.env", import.meta.url), "utf8").matchAll(/^\s*WEB_PORT=(.*)$/gm)].pop();
+  return m ? m[1].replace(/["'\s\r]/g, "") : "";
+} catch { return ""; } })();
+const BASE = process.argv[2] || `http://127.0.0.1:${envPort || "8080"}`;
 const src = readFileSync("static/knowledge.js", "utf8");
 const collection = (arr) => { const c = Object.create(null); arr.forEach((x,i)=>{c[i]=x;}); c.length=arr.length;
   c[Symbol.iterator]=function*(){ yield* arr; }; return c; };

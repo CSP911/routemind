@@ -1,8 +1,8 @@
 #!/bin/sh
 # Every check in the tree, each in the environment it needs.
 #
-#   ./check/all.sh              against the install running at :8080
-#   ./check/all.sh --quick      skip the slow ones (install-check, concurrency, llm-paths)
+#   ./check/all.sh              against this checkout's install (WEB_PORT in .env); BASE=… for another
+#   ./check/all.sh --quick      skip concurrency and every one that starts services of its own
 #   ./check/all.sh --only walk  just the ones whose name contains "walk"
 #
 # There is no framework here and each check runs on its own; this only knows **where** each one can
@@ -18,7 +18,8 @@
 # than one that is not there. docs/CHECKS.md says what each of them proves.
 set -u
 cd "$(dirname "$0")/.."
-BASE="${BASE:-http://127.0.0.1:8080}"
+. check/base.sh
+BASE="${BASE:-$(checkout_base .)}"
 QUICK=0; ONLY=""
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -40,7 +41,7 @@ run() {   # run <name> <command...>
   printf '  %-22s' "$name"
   if "$@" >"$OUT/$name.log" 2>&1; then
     # Each check ends with its own count; show whatever it chose to say rather than inventing one.
-    printf 'ok    %s\n' "$(grep -oE '[0-9]+ failed of [0-9]+|[0-9]+/[0-9]+|ok +[0-9]+ [a-z]+' "$OUT/$name.log" | tail -1)"
+    printf 'ok    %s\n' "$(grep -oE '[0-9]+ failed of [0-9]+( \([0-9]+ not run[^)]*\))?|[0-9]+/[0-9]+|ok +[0-9]+ [a-z]+' "$OUT/$name.log" | tail -1)"
     PASS=$((PASS + 1))
   else
     printf 'FAIL\n'
@@ -76,7 +77,7 @@ if command -v node >/dev/null 2>&1; then
   run css-check  node check/css-check.mjs
   run i18n-check node check/i18n-check.mjs
 else
-  printf '  %-22sFAIL  node is not installed, so three checks cannot run\n' "css/i18n/screen"
+  printf '  %-22sFAIL  node is not installed, so two checks cannot run (and smoke skips its screen half)\n' "css/i18n"
   FAIL=$((FAIL + 1)); FAILED="$FAILED node-missing"
 fi
 run env-check  $HOSTPY check/env-check.py
@@ -136,10 +137,12 @@ fi
 
 printf '\n== the slow ones, which start services of their own ==\n'
 if [ "$QUICK" = 1 ]; then
-  printf '  (skipped by --quick: write-paths, llm-paths, place, install-check)\n'
+  printf '  (skipped by --quick: concurrency and the 14 below — write-paths, llm-paths, place, change, b2c,\n'
+  printf '   robust, drift, walk, same-answer, transact, follow, hyphen, footprint, footprint-screen)\n'
 else
   run write-paths sh check/write-paths.sh
-  run llm-paths   sh check/llm-paths.sh
+  # Given $BASE like the others above: without it, it wrote into whatever held :8080 (DC-2).
+  run llm-paths   sh check/llm-paths.sh "$BASE"
   # Placing a document by walking the table, through the MCP, with the write and the queued
   # proposal read back. Starts an ontology on a copy of the shipped corpus, so it sits here.
   run place       $HOSTPY check/place-check.py

@@ -1,13 +1,14 @@
 #!/bin/sh
 # Does this install work? Run it after `docker compose up -d`.
 #
-#   ./check/smoke.sh [base-url]
+#   ./check/smoke.sh [base-url]        (default: this checkout's install, WEB_PORT in .env)
 #
 # Two halves, and the second is the one that matters: the API half proves the ontology accepts and
 # publishes a write, the screen half proves the map draws what the API holds. An install where the
 # API is perfect and the screen is blank is an install nobody can use.
 set -e
-BASE="${1:-http://127.0.0.1:8080}"
+. "$(dirname "$0")/base.sh"
+BASE="${1:-$(checkout_base "$(dirname "$0")/..")}"
 say() { printf '%s\n' "$*"; }
 
 # An install with its door closed (docs/AUTH.md) refused every write here — and with reads guarded,

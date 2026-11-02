@@ -16,7 +16,11 @@ if _os.environ.get("KNOWLEDGE_TOKEN"):
     _op = _ur.build_opener(); _op.addheaders = [("Authorization", "Bearer " + _os.environ["KNOWLEDGE_TOKEN"])]
     _ur.install_opener(_op)
 
-API = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8080/api/knowledge"
+# No address given: this checkout's install, read by the MCP server's own reader (WEB_PORT in .env) —
+# it was :8080, whichever RouteMind that was (2026-11-02).
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mcp"))
+from knowledge_mcp import _default_api                                    # noqa: E402
+API = sys.argv[1] if len(sys.argv) > 1 else _default_api()
 HERE = os.path.dirname(os.path.abspath(__file__))
 results = []
 

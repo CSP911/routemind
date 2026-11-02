@@ -162,5 +162,30 @@ with tempfile.TemporaryDirectory() as _d:
         bad = True
         print(f"FAIL a first install refused for its port left a .env (rc {_r.returncode}) — the next run would skip "
               f"the port question and the unique name")
+# ── a check aimed at "the install" aims at this checkout's ───────────────────
+# smoke.sh, all.sh, llm-paths.sh, mcp-check, circuit-check and screen-check all defaulted to :8080.
+# From a checkout installed on another port they tested — and llm-paths wrote two commits into —
+# whatever RouteMind held 8080, and passed (quickstart QS-1, suite CS-1, docs DC-2, 2026-11-02). The
+# reader is check/base.sh, run here against a .env naming the port twice; each check must use it, or
+# the MCP server's own reader, which mcp-check and circuit-check share.
+_base = ROOT / "check" / "base.sh"
+with tempfile.TemporaryDirectory() as _d:
+    (Path(_d) / ".env").write_text("WEB_PORT=8080\nWEB_PORT_B=8081\nWEB_PORT='9471'\n", encoding="utf-8")
+    _got = subprocess.run(["sh", "-c", '. "$1"; checkout_base "$2"', "sh", str(_base), _d],
+                          capture_output=True, text=True).stdout.strip() if _base.exists() else "(no check/base.sh)"
+    (Path(_d) / ".env").write_text("# no port here\n", encoding="utf-8")
+    _none = subprocess.run(["sh", "-c", '. "$1"; checkout_base "$2"', "sh", str(_base), _d],
+                           capture_output=True, text=True).stdout.strip() if _base.exists() else ""
+USES = {"check/smoke.sh": "checkout_base", "check/all.sh": "checkout_base", "check/llm-paths.sh": "checkout_base",
+        "check/mcp-check.py": "_default_api", "check/circuit-check.py": "_default_api",
+        "check/screen-check.mjs": "WEB_PORT"}
+_off = [f for f, needle in USES.items() if needle not in (ROOT / f).read_text(encoding="utf-8")]
+if _got != "http://127.0.0.1:9471" or _none != "http://127.0.0.1:8080" or _off:
+    bad = True
+    print(f"FAIL a check's default install is not this checkout's: base.sh gives {_got!r} for WEB_PORT=9471 "
+          f"(last line) and {_none!r} with none" + (f"; not reading it: {', '.join(_off)}" if _off else ""))
+else:
+    print(f"ok   every check aimed at the install defaults to this checkout's WEB_PORT ({len(USES)} checks)")
+
 if bad: sys.exit(1)
 print(f"ok   {len(documented)} settings documented, every one reaching a container ({len(COMPOSE)} compose files)")
