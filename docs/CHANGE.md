@@ -24,6 +24,8 @@ POST /v1/changes          (dry_run: true for the preview; the same transaction, 
   "expose": [ "<id or $ref>" ]                        what this knowingly makes readable through a circuit
 }
 
+Each decision is an object whose "op" names what it does — {"op": "keep", "id": …, "field": …}:
+
 create  { ref: "$h", name, one_liner, content?, kind?, parent: <id> | "$ref" | null, area?, use_when? }
 move    { id, parent: <id> | "$ref" }
 reword  { id, field: one_liner | use_when | name, after, before? }

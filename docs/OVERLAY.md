@@ -2,7 +2,7 @@
 
 Status: **built** 2026-09-11 — direction approved by the operator, reviewed and implemented by the
 Knowledge session (`/v1/overlays`, 0fda554), consumed by the proxy, the map and the MCP server. Not yet
-done: the ten-question comparison at the bottom, and the curator reading closed records.
+done: the ten-question comparison at the bottom.
 
 **Off by default since 2026-10-08** (operator). With `ONTOLOGY_OVERLAYS` unset the store answers 501,
 the map draws no VRFs and offers no tick boxes, and the agent has no overlay tool. To turn it on, set
@@ -16,9 +16,8 @@ came from. RouteMind serves and checks; it never chooses.](img/overlay-flow.svg)
 
 ## Why
 
-Today an overlay exists only when a person ticks areas on the map, and only reaches an agent through
-a launch URL (`?root=…`). An agent that finds its own way through the ontology leaves no trace of
-*which* areas it chose or *why* — the choice is buried in tool calls inside one conversation.
+Without an overlay, an agent that finds its own way through the ontology leaves no record of *which*
+areas it chose for a question or *why* — the choice is buried in tool calls inside one conversation.
 
 The operator's flow makes that choice an object:
 
@@ -154,7 +153,7 @@ marked when someone next looks, which is when it matters. All four numbers are s
 | Part | Owner | What |
 |---|---|---|
 | `/v1/overlays`, the store, address checks, the merged rows, the record | **Knowledge** | `ontology/service/`, storing under `ONTOLOGY_OVERLAYS` — its own path, not inside `data/repo` (structure). Unset → `501` |
-| proxy `/api/knowledge/overlays*` | Web | same shapes, same refusals passed through |
+| proxy `/api/knowledge/overlays*` | Web | same shapes, and refusals passed through with their status; a create answers `200` rather than `201`, and `by.name` is the caller's actor, not what the body said |
 | MCP | Web | a tool `knowledge_overlay {op: create\|get\|add\|remove\|close, …}`; the `instructions` on connect describe the flow above |
 | map | Web | open overlays drawn on the areas and tiles they hold, with who made it; the tick boxes create a person's overlay through the same `POST` |
 | compose / install | Platform | the store's volume and the two settings |
@@ -164,8 +163,8 @@ marked when someone next looks, which is when it matters. All four numbers are s
 
 - **Approval between drawing and working.** The overlay is shown, not gated. A person can edit it on
   the map while it is open; the agent reads the new table on its next call.
-- **The curator learning from closed overlays.** The record is shaped for it (`why`, `used`,
-  `outcome`), but reading it is a later step.
+- **Learning from closed overlays.** The record is shaped for it (`why`, `used`, `outcome`), but
+  nothing reads it: the curator's sleep that was meant to was retired on 2026-10-07.
 
 ## How we will know it helped
 

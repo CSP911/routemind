@@ -1,4 +1,4 @@
-<title>Knowledge 라우팅 구조</title>
+<title>RouteMind 라우팅 구조</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
   :root{
@@ -118,14 +118,14 @@
 <div class="wrap">
 
 <header class="top col">
-  <div class="eyebrow">Knowledge</div>
+  <div class="eyebrow">RouteMind</div>
   <h1>라우팅되는 온톨로지</h1>
   <p class="lede">지식을 검색하지 않습니다. <strong>광고하고, 고르게 하고, 그다음에 읽힙니다.</strong>
   네트워크 라우팅에서 빌려온 구조이고, 빌려온 것은 은유가 아니라 규칙입니다.</p>
 </header>
 
 <section>
-  <div class="head"><span class="num">1</span><h2>Knowledge 자체의 작동 방식</h2></div>
+  <div class="head"><span class="num">1</span><h2>RouteMind 자체의 작동 방식</h2></div>
   <div class="col">
     <p>에이전트에게 지식 전체를 주면 못 씁니다. 그래서 라우터가 하는 일을 그대로 합니다 —
     <strong>목적지 전부를 싣지 않고, 어디로 가면 되는지를 한 줄로 광고</strong>합니다.</p>
@@ -136,23 +136,27 @@
 
     <div class="col"><p>모든 런은 같은 한 장에서 시작합니다. 이것이 <strong>hop 0</strong> 입니다.</p></div>
 
-<div class="wire"><span class="c">KNOWLEDGE — the areas of this domain
+<div class="wire"><span class="c">ROUTEMIND — the areas of this domain
 Pick the row whose condition matches the question, then fetch it. One step, then read.</span>
 
-  <span class="k">KIND   ADDRESS              WHY YOU WOULD PICK THIS ROW</span>
-  table  /v1/regions/clinic   booking · check-in · who saw whom when
-  table  /v1/regions/library  어떤 책이 있나 · 어디 꽂혀 있나 · 분류가 어떻게 되나
+  <span class="k">KIND   ADDRESS              AGE        WHY YOU WOULD PICK THIS ROW</span>
+  table  /v1/regions/clinic   45d / 3d   booking · check-in · who saw whom when
+  table  /v1/regions/library  45d / 45d  어떤 책이 있나 · 어디 꽂혀 있나 · 분류가 어떻게 되나
 
-  <span class="c">table → knowledge_table({ path })   ·   file → knowledge_read({ path })
+  <span class="c">AGE is how long this route has been here / when its document last changed.
+  An old route over a recently changed document is current. An old route over a
+  document that has not moved is the one to ask about before quoting it.
+  table → knowledge_table({ path })    ·    file → knowledge_read({ path })
   Use the address exactly as printed above. Never build one.</span>
 
-<span class="w">Nothing outside this list exists in Knowledge. This list is the grounds on which you may
-say something is absent — no smaller table is.</span></div>
+<span class="w">Nothing outside this list exists in RouteMind. This list is the grounds on which you may say
+something is absent — no smaller table is.</span></div>
 <p class="cap">실제 출력입니다. 그림이 아니라 에이전트가 받는 문자열 그 자체입니다.</p>
 
     <div class="col">
-      <p>한 줄에 세 가지가 있습니다. <strong>KIND</strong> 는 어느 도구를 부를지, <strong>ADDRESS</strong> 는
-      정확히 무엇을 부를지, <strong>USE_WHEN</strong> 은 이 줄을 고를 이유입니다. 에이전트는 이 세 칸만 보고
+      <p>한 줄에 네 가지가 있습니다. <strong>KIND</strong> 는 어느 도구를 부를지, <strong>ADDRESS</strong> 는
+      정확히 무엇을 부를지, <strong>AGE</strong> 는 이 길이 놓인 지 얼마나 됐고 그 문서가 언제 마지막으로
+      바뀌었는지, 마지막 칸(영역의 <code>use_when</code>)은 이 줄을 고를 이유입니다. 에이전트는 이 줄들만 보고
       하나를 고릅니다.</p>
     </div>
 
@@ -288,8 +292,9 @@ flowchart TB
 
     <div class="col">
       <p>고른 것은 전부 <strong>온톨로지가 인쇄한 주소</strong>입니다. 영역이든 개체든 섞을 수 있습니다.
-      overlay 는 기본으로 꺼져 있습니다(2026-10-07) — <span class="m">KNOWLEDGE_TOOLS_EXTRA=overlay</span>
-      로 켭니다.</p>
+      overlay 는 기본으로 꺼져 있습니다. 켜려면 둘 다 필요합니다 —
+      <span class="m">.env</span> 의 <span class="m">ONTOLOGY_OVERLAYS=/data/overlays</span>(저장소와 지도),
+      그리고 MCP 서버가 도는 곳의 <span class="m">KNOWLEDGE_TOOLS_EXTRA=overlay</span>(에이전트의 도구).</p>
     </div>
 
     <div class="note q">
@@ -304,12 +309,15 @@ flowchart TB
 
   <div class="col">
     <p>이 온톨로지를 걷는 것은 <strong>두 동작이고 그 외엔 없습니다.</strong> 표를 가져오거나, 문서를 읽거나.
+    (쓰기와 다른 백본 읽기는 아래에 따로 있습니다.)
     엔진마다 다른 것은 그 두 동작이 <em>어떻게 도착하는가</em>뿐이라, 붙이는 길이 둘이고 <b>뒤에 광고는
     하나</b>입니다.</p>
   </div>
 
   <div class="pair">
-    <div><h4>MCP</h4><p>Claude Code · Codex 등. 도구 둘, stdio, 설치 없음.
+    <div><h4>MCP</h4><p>Claude Code · Codex 등. 도구 넷(<span class="m">knowledge_table</span>,
+      <span class="m">knowledge_read</span>, <span class="m">knowledge_place</span>,
+      <span class="m">knowledge_circuit</span>), stdio, 설치 없음.
       <span class="m">.mcp.json</span> 이 저장소에 있어 클론 + 승인 한 번이면 붙습니다.</p></div>
     <div><h4>붙여넣기</h4><p>MCP 없는 아무 에이전트. 지도의 <b>Copy for an agent</b> 가
       같은 시작 블록을 <span class="m">GET</span> URL 형태로 줍니다.</p></div>
@@ -318,7 +326,7 @@ flowchart TB
 <pre class="mermaid">
 sequenceDiagram
   participant A as 에이전트
-  participant K as Knowledge
+  participant K as RouteMind
   A->>K: knowledge_table()  — 인자 없음
   K-->>A: hop 0 — 영역 목록 + use_when
   Note over A: 조건이 맞는 한 줄을 고른다
@@ -354,14 +362,18 @@ sequenceDiagram
       <li><strong>“없다”고 말할 수 있는 건 hop 0 뿐입니다.</strong> 개별 영역 표에서 못 찾았으면
       돌아가는 것이지 없는 것이 아닙니다.</li>
     </ol>
-    <p>그리고 <strong>읽기 전용</strong>입니다. 쓰기는 git 에 커밋되고 작성자가 남는데, 에이전트가 자기를
-    조종하는 것에 무인으로 쓰는 건 선택해서 켜는 일이지 기본으로 얻을 일이 아닙니다.</p>
+    <p>에이전트의 <strong>쓰기는 <code>knowledge_place</code> 하나</strong>입니다. 질문과 같은 걷기로 hop 0 부터
+    자리를 찾아 내려가고, 바뀌는 표 위의 줄마다 그대로 둘지(<span class="m">keep</span>) 고쳐 쓸지(<span class="m">reword</span>)
+    정해야 받아들여집니다(<span class="m">docs/CHANGE.md</span>). 결과는 git 커밋 하나이고 작성자가 남습니다.
+    <code>knowledge_circuit</code> 은 다른 백본이 내보낸 영역을 이 연결 동안만 읽습니다 — 읽기 전용이고
+    어느 쪽에도 아무것도 쓰지 않습니다.</p>
   </div>
 
   <div class="note">
-    <p><strong>MCP 에는 시스템 프롬프트가 없습니다.</strong> 그런데 이 구조는 에이전트가 결정하기 <em>전에</em>
-    영역 목록을 보는 것에 전부 걸려 있습니다. 그래서 <b>영역 목록을 <code>knowledge_table</code> 의 설명문에
-    실어</b> 보냅니다 — 모든 MCP 클라이언트가 모델에게 보여주는 유일한 텍스트라서요.
+    <p>이 구조는 에이전트가 결정하기 <em>전에</em> 영역 목록을 보는 것에 전부 걸려 있습니다. 그래서
+    <b>영역 목록을 MCP 서버의 <span class="m">instructions</span> 에 실어</b> 보냅니다 — 연결할 때 한 번
+    보내고, 클라이언트가 모델의 시스템 프롬프트에 넣는 텍스트입니다. instructions 를 보여주지 않는
+    클라이언트를 위해 같은 목록이 <code>knowledge_table</code> 의 설명문에도 실리고, 이쪽은
     <span class="m">tools/list</span> 할 때마다 갱신됩니다.</p>
   </div>
 </section>

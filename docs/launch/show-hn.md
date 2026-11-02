@@ -31,8 +31,8 @@ Show HN: An ontology you can see the agent reading
 > So I stopped trying to fix the search and changed what the agent reads first. Each area of the
 > domain carries one sentence saying *when you would come here*. The agent reads that list — one line
 > per area, nothing else — picks, and only then opens documents. It is BGP's shape: advertise where
-> you are relevant rather than export everything you hold. An exchange between backbones is a route
-> reflector, and it declines transit for the same reason a route server does.
+> you are relevant rather than export everything you hold. Another team's backbone is read through a
+> circuit, and only the areas its owner set to export cross it.
 >
 > **The numbers, with the part that costs me.** 700 questions over one frozen corpus of 1,126
 > documents, four arms, every one a census:
@@ -40,7 +40,8 @@ Show HN: An ontology you can see the agent reading
 >     | question type                 | RAG   | +rerank | RouteMind |
 >     | a question in the rows' codes | 0.991 | 1.000   | 1.000     |
 >     | a question in a person's words| 0.028 | 0.069   | 1.000     |
->     | a rule two revisions back     | 0.133 | 0.200   | 1.000     |
+>     | a rule two revisions back     | 0.200 | 0.200   | 1.000     |
+>     | overall                       | 0.507 | 0.531   | 0.999     |
 >
 > And what it costs: 6.7 tool calls, 23–111 seconds, $0.12–$0.28 a question, against one sub-second
 > embedding call. **320 of those 700 are questions retrieval already answers first time** — nothing
@@ -59,7 +60,7 @@ Show HN: An ontology you can see the agent reading
 > I do not know whether a **correct** map has a size at which this stops working — one corpus size is
 > one point, and you cannot see a limit from one point.
 >
-> MIT. `./install.sh --name acme --port 9000`, then `claude` in the same directory — it registers
+> MIT. `./install.sh --port 9000`, then `claude` in the same directory — it registers
 > itself over MCP, and you can click any area on the map to see the exact text an agent is handed.
 >
 > What I would most like torn apart: the ergonomics of maintaining the map, and whether the corpus is
@@ -125,7 +126,7 @@ Verified:
 ```
 docker run -i --rm routemind-mcp
   initialize: knowledge · protocol 2024-11-05
-  tools/list: knowledge_table, knowledge_read, knowledge_circuit
+  tools/list: knowledge_table, knowledge_read, knowledge_place, knowledge_circuit
 ```
 
 There is no form: the submission never asked for one and the listing has no edit UI, so the root

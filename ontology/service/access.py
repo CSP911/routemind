@@ -1,29 +1,26 @@
-"""Who read what across a link, and whether they were allowed to.
+"""Who read what through a circuit, and whether they were allowed to.
 
-**This exists because nothing else remembers.** A relayed document is held in memory for the length
-of one request and discarded — no cache, no copy, which is the whole point of a link rather than a
-merge. The cost of that is accountability: with a physical copy there is at least an artefact at the
-other end, and with this there is nothing anywhere unless the owner writes a line. "What did the
-other domain read from us last month" is usually the first question anybody asks, and until
-2026-09-13 the only answer available was an HTTP access line reading
+**This exists because nothing else remembers.** A document read through a circuit is held in memory
+for the length of one request and discarded — no cache, no copy, which is the whole point of a
+circuit rather than a merge. The cost of that is accountability: with a physical copy there is at
+least an artefact at the other end, and with this there is nothing anywhere unless the owner writes
+a line. "What did the other domain read from us last month" is usually the first question anybody
+asks, and until 2026-09-13 the only answer available was an HTTP access line reading
 
     172.20.0.2 "GET /v1/export/nodes/payroll-overview HTTP/1.1" 200
 
-which does not say who. Every read that comes through an exchange arrives from the same container, so
-they were all identically anonymous.
+which does not say who. Every read of the export surface arrives through the web container's proxy,
+so they were all identically anonymous.
 
-**It is written by the owner, not by the reader**, and the owner already knows the name: the link a
-request came in on identifies the peer, and an exchange says which of its members it is fetching for.
-Two names, and both are recorded, because they answer different questions — *which link carried this*
-and *who was at the far end of it*.
-
-Behind two exchanges the second name is the neighbouring room, not the backbone inside it. That is
-not a gap in the record; it is what no-transit means. A room's members are its own business, and a
-backbone two rooms away has no relationship with this one to be recorded.
+**It is written by the owner, not by the reader**, and the owner already knows enough to tell
+readers apart: `peer` is the session the read was made with (a short hash of its token, never the
+token — sessions.tag), and `reader` is the address the web proxy forwarded the request from. Two
+names, because they answer different questions — *which session carried this* and *where was the
+far end of it*.
 
 **Refusals are recorded too, and matter more.** A served read is the ordinary case. A refused one is
 somebody holding an address they should not be following, and a run of them is the only signal there
-is that a link is being probed rather than used.
+is that a circuit is being probed rather than used.
 
 One line per read, as JSON, appended. To stderr always, so a default install has the record without
 configuring anything, and to `ONTOLOGY_ACCESS` as well when it is set — stderr rotates away and an

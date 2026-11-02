@@ -22,28 +22,27 @@ every write through the screen or the API regenerates it in the same transaction
 docker compose exec ontology python3 /app/tidy.py /data/repo --fix   # regenerates, validates, commits
 ```
 
-### Deleting an area by hand
+### Adding or deleting by hand
 
 `rm -rf regions/payroll` and a commit leave one thing behind: `regions.json` still listing the area.
 The validator names it; the next write through the screen or the API regenerates it along with
 whatever it writes, and so does the next start of the service. Adding an area directory by hand is the
-same in reverse. Or on demand — `tidy.py` runs on the host if your Python has PyYAML, and in the
-container always:
+same in reverse — and so is adding or removing a single document in an editor, because
+`regions.json` also lists each area's documents: until it is regenerated, `/healthz` says
+`valid: false` with `regions.json <area>: nodes [...] differ from directory`. Or on demand —
+`tidy.py` runs on the host if your Python has PyYAML, and in the container always:
 
 ```sh
 ./ontology/tidy.py data/repo          # what is out of step. Changes nothing
 ./ontology/tidy.py data/repo --fix    # regenerates regions.json, validates, commits
 ```
 
-(It used to leave dangling edges and a `CORE.md` row too. Neither file is read since 2026-10-07; one
-still in an older repository is inert and can be deleted.)
-
-`--fix` touches only those two, and goes through the same transaction as any other write — a dirty
-tree is refused, the result is validated, anything that fails rolls the repository back, and what
-succeeds is committed under its own message. An edge between two documents that both exist is
-somebody's statement and is never removed, nor is a CORE row whose area is there. Deleting an area *through the
-API* has always done all of this in one transaction — this is for the times you did it in an editor,
-which is the workflow this file is about.
+`--fix` touches only `regions.json`, and goes through the same transaction as any other write — a
+dirty tree is refused, the result is validated, anything that fails rolls the repository back, and
+what succeeds is committed under its own message. An old `CORE.md` or `edges.yaml` in an older
+repository is retired: nothing reads it, `tidy.py` reports it as inert and never touches it, and you
+can delete it. Deleting an area *through the API* does all of this in one transaction — this is for
+the times you did it in an editor, which is the workflow this file is about.
 
 
 ### A file that does not parse

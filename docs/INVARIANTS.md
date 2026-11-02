@@ -4,7 +4,7 @@ Sentences that are true on every path or the system refuses — not descriptions
 one names where it is enforced and how it is checked. A feature with no invariant behind it is a
 feature nobody can tell is broken.
 
-Written 2026-10-06, after two weeks in which every real use found a seam the 28 suites had not:
+Written 2026-10-06, after two weeks in which every real use found a seam the 28 suites of the time had not:
 the first real question (one area read, absence claimed), the first hand edit (a flag the
 validator caught and the server served stale anyway), the first stranger's fixture (the map
 reached and obeyed, or not reached at all). The common cause, almost every time, was one fact with
@@ -51,7 +51,7 @@ the area listing and the area detail, the owner's view and the export surface, `
 and `store.regions_json()`. Checked by `check/same-answer-check.py`: every area's routing sentence,
 export flag, representative and title; a spread of nodes' name, line, kind, parent and body — each
 read from the file and from every API path, the export surface, the placement walk and what the MCP
-prints, 380 cells, on a clean tree and again with
+prints — some four hundred cells, the check prints how many — on a clean tree and again with
 an uncommitted hand edit. Verified to fire: with the pre-2026-10-05 stale-table behaviour put back,
 the listing and hop 0 disagree with the file and the check says which cells.
 
@@ -80,9 +80,11 @@ whose id the response names, and a non-2xx with none — the response and the re
 together, so a success printed over a refusal, or a refusal printed over a commit, is a failing
 cell.
 
-**8. An advertised row has something behind it.** An area with no representative, a CORE row with
-no area, an edge to nothing, a node with neither body nor children: errors, not warnings, because a
-reader cannot tell such a row from a real one. Enforced by the validator and `tidy`.
+**8. An advertised row has something behind it.** An area with no representative, or a node whose
+parent does not exist: errors, not warnings, because a reader cannot tell such a row from a real
+one. A node with neither a document nor anything under it is a warning: it advertises as `empty`,
+which a reader can tell apart, and the warning is how it gets finished. Enforced by the validator
+and `tidy`.
 
 **9. Documents carry no state.** Which record governs is written in the map's lines and nowhere
 else; a document's frontmatter has no `state`, `supersedes`, `superseded_by`, `operative`,
