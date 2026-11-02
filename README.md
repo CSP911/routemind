@@ -202,7 +202,7 @@ the question. [docs/AGENTS.md](docs/AGENTS.md).
 
 | | |
 |---|---|
-| [ROUTING.html](docs/ROUTING.html) | the whole structure, in a browser |
+| [ROUTING.html](docs/ROUTING.html) | the whole structure, in a browser (in Korean) |
 | [INVARIANTS.md](docs/INVARIANTS.md) | the twelve rules that are true on every path, and the check behind each |
 | [CHANGE.md](docs/CHANGE.md) | change sets: several decisions, one commit, the lines above them decided |
 | [FOOTPRINT.md](docs/FOOTPRINT.md) | watching and replaying a walk |

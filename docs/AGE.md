@@ -6,7 +6,7 @@ Every routing row an agent reads carries two times:
   KIND   ADDRESS                          AGE          WHY YOU WOULD PICK THIS ROW
   table  /v1/nodes/corp-card              18d / today  Corporate card — the caps, and what to do …
   file   /v1/nodes/qualified-list/body    18d / 18d    What qualifies as evidence, and the ceiling …
-  table  /v1/peers/ix/…/regions/payroll   —            what this payslip line means · whether an …
+  table  /v1/circuits/hq/regions/payroll  —            what this payslip line means · whether an …
 ```
 
     route      how long this path has been here
@@ -39,16 +39,16 @@ the other, written by whoever knows. That is not this.
 file, and the most recent that touched it. A field carrying them would be a second copy that drifts,
 and a wrong date here is worse than no date: it is a reason to trust the wrong row.
 
-**`—` is not "new".** It is *not known*, and the row it most often appears on is one that came across
-a link, where the history belongs to the backbone that owns it. A blank cell would have read as a row
-somehow outside time; the em dash is there so that a reader does not quietly prefer the row the
-system knows least about.
+**`—` is not "new".** It is *not known*, and the row it most often appears on is one read through a
+circuit (`docs/CIRCUIT.md`), where the history belongs to the backbone that owns it. A blank cell
+would have read as a row somehow outside time; the em dash is there so that a reader does not
+quietly prefer the row the system knows least about.
 
 ## Cost
 
 One pass over the log per commit, cached on the revision the store already tracks. Measured on the
-shipped repository: 677 commits, 82 documents, 0.34s — fine once, far too slow per request, which is
-why it is keyed on the revision and not computed per call.
+shipped repository on 2026-09-30: 677 commits, 82 documents, 0.34s — fine once, far too slow per
+request, which is why it is keyed on the revision and not computed per call.
 
 A repository with no git history answers nothing rather than failing. A backbone whose ages are
 unknown still routes correctly, and making git a dependency of reading a document would be the wrong
