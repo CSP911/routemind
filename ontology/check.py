@@ -194,6 +194,8 @@ def _entity_line_through_queue():
     class Fake:                       # the queue, reduced to what submit_route touches
         def __init__(self): self.rows = []
         def append(self, row): self.rows.append(row)
+        # Read since 2026-11-02, for a copy of a proposal already pending; nothing is pending here.
+        def proposals(self, status=None): return []
 
     q = Fake()
     r = submit_route(q, {"scope": "entity", "entity": "mover", "after": "what a reader comes here for",

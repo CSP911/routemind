@@ -1142,7 +1142,15 @@ class Handler(BaseHTTPRequestHandler):
         if len(parts) == 4 and parts[0] == "curator" and parts[1] == "proposals" and method == "POST":
             status = {"accept": "accepted", "reject": "rejected"}.get(parts[3])
             if not status: return self._err(404, "accept | reject")
-            out = curator.decide(cstore(), parts[2], status, body.get("why"), lambda p: apply_proposal(p, actor))
+            def _apply(p):
+                # A change already in place is the proposal done, not a refusal. The write says "no
+                # change" by raising WriteError(200), which left `decide` before it recorded the
+                # decision — answered 200 and stayed pending for ever (audit SV-15, 2026-11-02).
+                try: return apply_proposal(p, actor)
+                except WriteError as e:
+                    if e.status == 200: return {"ok": True, "message": str(e)}
+                    raise
+            out = curator.decide(cstore(), parts[2], status, body.get("why"), _apply)
             # A decision that did not happen must not answer 200. `decide` says so in the body and
             # leaves the proposal pending, which is right, and every caller that reads the status
             # line — a script, a curl, the screen's own `request()` — was told the accept had worked
@@ -1195,6 +1203,7 @@ class Handler(BaseHTTPRequestHandler):
             if not ent and reg and not any(r["dir"] == reg or r["key"] == reg.upper() for r in store.regions()):
                 return self._err(404, f"there is no area {reg}", reason="region_missing", data={"region": reg})
             try: return self._send(201, curator.submit_route(cstore(), body, actor))
+            except curator.Duplicate as e: return self._err(409, str(e), reason="duplicate_pending", data={"id": e.pending})
             except ValueError as e: return self._err(422, str(e))
         if len(parts) == 2 and parts[0] == "regions" and method == "DELETE":
             return self._send(200, writer.delete_region(parts[1], actor))
@@ -1219,6 +1228,18 @@ class Handler(BaseHTTPRequestHandler):
                 # rather than doing whatever the decisions mean against a tree they were not made on.
                 if not body.get("base"): body = {**body, "base": head(DATA)}
                 res = change.apply(writer, body, actor, dry_run=True)
+                # "Dry-run to prove it applies" (CHANGE.md) — so a set that does not is refused here,
+                # with the same refusal the direct write gives. `applies: false` was ignored and the
+                # set queued: 202, every accept 409, pending for ever (audit SV-10, 2026-11-02).
+                imp = res.get("impact") or {}
+                if imp.get("undecided"):
+                    return self._err(409, f"{len(imp['undecided'])} line(s) over the change are not decided — reword or keep each: "
+                                          f"{', '.join(imp['undecided'])}. Nothing was queued.",
+                                     imp["undecided"], reason="undecided", data={"impact": imp, "ids": res.get("ids")})
+                if imp.get("unacknowledged"):
+                    return self._err(409, f"this would make {', '.join(imp['unacknowledged'])} readable through a circuit (an exported area) "
+                                          f"— say so with `expose`. Nothing was queued.",
+                                     imp["unacknowledged"], reason="exposure", data={"impact": imp, "ids": res.get("ids")})
                 pid = f"cp_{uuid.uuid4().hex[:10]}"
                 cstore().append({"event": "proposal", "id": pid, "at": curator._now(), "type": "change",
                                  "set": {k: v for k, v in body.items() if k != "dry_run"}, "why": str(body.get("why") or ""),

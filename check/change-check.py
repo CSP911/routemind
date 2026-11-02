@@ -208,6 +208,37 @@ try:
     st, d = call("PUT", "/v1/nodes/plain-create", {"content": "# Plain\n\nA body only.\n"})
     check("  a body-only edit changes no table, so it nudges nothing", st == 200 and d.get("impacted") == [], d.get("impacted"))
 
+    # ── deletes in any order (audit SV-11, 2026-11-02) ───────────────────────
+    # A holder and the document under it, deleted in one set. Holder first was a 500 StopIteration —
+    # the holder's delete had taken the document with it, and the second delete looked for it — while
+    # the other order applied; "the same set in any order makes the same tree" was not true.
+    st, d = change({"why": "a holder to delete", "decisions": [
+        {"op": "create", "ref": "$h", "name": "Holder to go", "one_liner": "holds one document, then goes", "parent": "purchase-request"},
+        {"op": "create", "ref": "$k", "name": "Document to go", "one_liner": "the one document under it", "parent": "$h", "content": "# Go\n\nbody\n"},
+        {"op": "keep", "id": "purchase-request", "field": "one_liner"}]})
+    hid, kid = (d.get("ids") or {}).get("$h"), (d.get("ids") or {}).get("$k")
+    both = [{"op": "delete", "id": hid}, {"op": "delete", "id": kid}, {"op": "keep", "id": "purchase-request", "field": "one_liner"}]
+    st1, d1 = change({"why": "holder first", "decisions": both, "dry_run": True})
+    st2, d2 = change({"why": "document first", "decisions": [both[1], both[0], both[2]], "dry_run": True})
+    check("a holder and its document deleted in one set: either order previews the same", st == 201 and st1 == st2 == 200
+          and d1.get("impact") == d2.get("impact"), f"{st} {st1} {st2} {json.dumps(d1)[:160]}")
+    h0 = head()
+    st, d = change({"why": "holder first", "decisions": both})
+    check("  and holder first applies, as one commit, with both gone", st == 201 and commits_since(h0) == 1
+          and call("GET", f"/v1/nodes/{hid}")[0] == 404 and call("GET", f"/v1/nodes/{kid}")[0] == 404, f"{st} {json.dumps(d)[:160]}")
+
+    # ── a set that does not apply is not queued (audit SV-10, 2026-11-02) ─────
+    # CHANGE.md: a hop-0 set is "dry-run to prove it applies, then queued". The dry run's `applies:
+    # false` was ignored — 202 queued, every accept 409, pending for ever.
+    pend0 = len(call("GET", "/v1/curator/proposals?status=pending")[1].get("proposals") or [])
+    h0 = head()
+    st, d = change({"why": "a hop-0 set with a line left undecided", "decisions": [
+        {"op": "reword", "id": "procurement", "field": "use_when", "after": "purchases and approval bands — and an undecided line under them"},
+        {"op": "create", "ref": "$u", "name": "Undecided probe", "one_liner": "added without deciding the line over it", "parent": "purchase-request"}]})
+    pend1 = len(call("GET", "/v1/curator/proposals?status=pending")[1].get("proposals") or [])
+    check("a hop-0 set whose dry run says it does not apply is refused, not queued", st == 409 and d.get("reason") == "undecided"
+          and "purchase-request.one_liner" in json.dumps(d) and pend1 == pend0 and commits_since(h0) == 0, f"{st} {pend0}->{pend1} {json.dumps(d)[:200]}")
+
     # ── the review queue takes a set whole ────────────────────────────────────
     h0 = head()
     st, d = change({"why": "hop 0 should say receipts", "decisions": [
@@ -222,7 +253,10 @@ try:
     st, d = change({"why": "a reword that waits", "decisions": [
         {"op": "create", "ref": "$q", "name": "Queued note", "one_liner": "filed while the sentence waits for review", "parent": "expense",
          "content": "# Queued\n\nbody\n"},
-        {"op": "reword", "id": "expense", "field": "use_when", "after": "expenses, receipts, per-diems — and notes filed while a sentence waits"}]})
+        {"op": "reword", "id": "expense", "field": "use_when", "after": "expenses, receipts, per-diems — and notes filed while a sentence waits"}],
+        # Expenses is exported by now (the move above), so the note crosses and has to be said to.
+        # Without it the set never applied, and it was queued only because the queue did not ask.
+        "expose": ["$q"]})
     qid = d.get("queued")
     call("PUT", "/v1/nodes/expense", {"one_liner": "the expense area, moved on while the set waited"})
     st, d = call("POST", f"/v1/curator/proposals/{qid}/accept", {"why": "late"})
