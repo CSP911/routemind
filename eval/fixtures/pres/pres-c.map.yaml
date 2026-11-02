@@ -1,0 +1,25 @@
+fixture: pres-c
+area: procurement
+area_use_when: how far up this amount has to be approved · how to register a new vendor · how many quotes
+  are needed · where the signed contract is kept
+node:
+  id: sec-y-component-sourcing
+  name: Sourcing the Y component
+  kind: topic
+  parent: sec-vendor-registration-cases
+  one_liner: The registrations and records for the Y component's supplier
+  children:
+  - id: y-supplier-d-approved
+    advertise: current
+    one_liner: 'The registration in force for Y: Supplier D since 1 September 2025 — the terms any order
+      placed now is under'
+  - id: y-supplier-c-approved
+    advertise: replaced
+    one_liner: The earlier registration for Y, Supplier C from 17 February 2025 — replaced on 1 September
+      2025 and not the source for a new order
+  - id: y-inspection-rejects-batch
+    advertise: history
+    one_liner: What happened when a delivered batch of Y failed inspection, and how it was settled
+  - id: y-annual-sourcing-note-2025
+    advertise: history
+    one_liner: What the year's Y sourcing looked like, written up for the next procurement review
