@@ -574,7 +574,7 @@ class Writer:
             out += kids; frontier += kids
         return out
 
-    def transact(self, message, actor: str, mutate, *, dry_run: bool = False, after=None) -> dict:
+    def transact(self, message, actor: str, mutate, *, dry_run: bool = False, after=None, allow_empty: bool = False) -> dict:
         """mutate → regenerate → validate → commit, or nothing.
 
         `after(before, now)` runs once the tree validates and before the commit, with the tree as it
@@ -640,7 +640,10 @@ class Writer:
                                           "nothing was written; commit or revert that edit, then write again",
                                      code="tree_dirty", data={"files": ", ".join(stray[:3])})
                 if changed: _git(self.root, "add", "-A", paths=[p for _, p in changed])
-                if not _git(self.root, "diff", "--cached", "--name-only"): raise WriteError(200, "no change")
+                # `allow_empty`: a decision that changes no file and is still worth a commit — a line
+                # checked and kept. Without it a keep was "no change" and nothing said it had happened.
+                empty = not _git(self.root, "diff", "--cached", "--name-only")
+                if empty and not allow_empty: raise WriteError(200, "no change")
                 now = self.store.nodes()
                 extra = after(before, now) if after else {}
                 impacted = stale_lines(before, now)
@@ -654,7 +657,8 @@ class Writer:
                 # email; suffixing it built `boss@corp.com@routemind.local` (web audit WB-6, 2026-11-02).
                 email = who if "@" in who else f"{who}@routemind.local"
                 # A commit of the index: an edit saved after the `add` above is not in it.
-                _git(self.root, "-c", f"user.name={who}", "-c", f"user.email={email}", "commit", "-q", "-m", msg)
+                _git(self.root, "-c", f"user.name={who}", "-c", f"user.email={email}", "commit", "-q",
+                     *(["--allow-empty"] if empty else []), "-m", msg)
             except WriteError:
                 _journal.state = None; _restore(self.root, ours); raise
             except PermissionError as e:

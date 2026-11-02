@@ -164,7 +164,7 @@ def parse(body: dict, store) -> dict:
 
 def _order(decs: list[dict]) -> list[dict]:
     """Creates first — new areas, then by parent reference so a holder is written before what hangs
-    under it — then moves, then rewordings and bodies, then deletes."""
+    under it — then moves, then rewordings, keeps and bodies, then deletes."""
     creates = [d for d in decs if d["op"] == "create"]
     done, out = set(), []
     while creates:
@@ -173,7 +173,8 @@ def _order(decs: list[dict]) -> list[dict]:
         for d in ready: out.append(d); done.add(d["ref"])
         creates = [d for d in creates if d not in ready]
     out += [d for d in decs if d["op"] == "move"]
-    out += [d for d in decs if d["op"] in ("reword", "write")]
+    # Keeps too: each checks its `before` against the line as it is (2026-11-02).
+    out += [d for d in decs if d["op"] in ("reword", "keep", "write")]
     out += [d for d in decs if d["op"] == "delete"]
     return out
 
@@ -362,13 +363,15 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False, prop
                     write_node_index(store, ent)
                     if src != dst: src.unlink(missing_ok=True)
                 if not moves: write_node_index(store, n)
-            elif op == "reword":
+            elif op in ("reword", "keep"):
                 n = store.node(d["id"]); f = d["field"]
                 cur = (n.get(f) or "").strip()
+                # A keep says "this line, as I read it, still holds" — so it is checked against what
+                # it read like a reword is, or it would date a sentence the person never saw.
                 if d.get("before") is not None and str(d["before"]).strip() != cur:
                     raise WriteError(409, f"{d['id']}.{f} is not what the decision says it was — it reads {cur!r} now",
                                      code="conflict", data={"id": d["id"], "field": f, "current": cur})
-                n[f] = str(d["after"]).strip(); write_node_index(store, n)
+                if op == "reword": n[f] = str(d["after"]).strip(); write_node_index(store, n)
             elif op == "write":
                 n = store.node(d["id"]); n["body"] = str(d["content"] or ""); write_node_index(store, n)
         # Deletes last, and deepest first. In the order they were written, deleting a holder took the
@@ -420,4 +423,7 @@ def apply(writer: Writer, body: dict, actor: str, *, dry_run: bool = False, prop
         if proposed_by: trail.append(f"Proposed-by: {proposed_by}")
         return head + "\n\n" + "\n".join(trail) + "\n"
 
-    return writer.transact(message, actor, mutate, dry_run=dry_run, after=after)
+    # A set of keeps alone changes no file and is still a decision someone made on a date: it is
+    # committed empty, with its `Keep:` trailers, rather than answered "no change" and lost (2026-11-02).
+    keeps_only = all(d["op"] == "keep" for d in cs["decisions"])
+    return writer.transact(message, actor, mutate, dry_run=dry_run, after=after, allow_empty=keeps_only)

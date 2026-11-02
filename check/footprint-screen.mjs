@@ -33,6 +33,7 @@ class N { static __all = []; constructor(t) { N.__all.push(this); this.tag = t; 
   addEventListener(t, f) { (this.listeners[t] ||= []).push(f); } click() { for (const f of this.listeners.click || []) f({ stopPropagation() {}, preventDefault() {}, currentTarget: this }); }
   focus() {} get children() { return collection(this.__kids); } get firstElementChild() { return this.__kids[0] || null; }
   querySelector() { return null; } remove() {}
+  replaceWith(...n) { for (const p of N.__all) { const i = p.__kids.indexOf(this); if (i >= 0) { p.__kids.splice(i, 1, ...n); return; } } }
   get classList() { const s = this; const list = () => String(s.className || "").split(/\s+/).filter(Boolean); const set = (a) => { s.className = [...new Set(a)].join(" "); };
     return { add(...c) { set([...list(), ...c]); }, remove(...c) { set(list().filter((x) => !c.includes(x))); }, contains(c) { return list().includes(c); },
       toggle(c, f) { const on = f === undefined ? !list().includes(c) : !!f; on ? this.add(c) : this.remove(c); return on; } }; } }
@@ -47,7 +48,7 @@ globalThis.localStorage = { getItem: (k) => (ls.has(k) ? ls.get(k) : null), setI
   ls.set("iris.knowledge.map", JSON.stringify({ revision: rev.head, savedAt: Date.now(),
     regions: regions.regions, nodes: graph.nodes.map(({ parent, ...n }) => n), edges: graph.edges, entries: [] }));
 }
-const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpSpeed","knFpPlay","knFpTrail","knFpSteps","knFpCard","knHist","knHistBody","knHistPages","knEmpty","knEmptyNew"];
+const ids = ["knTopo","knState","knRawDialog","knRawKind","knRawTitle","knRawAddr","knRawMeta","knRaw","knEdit","knCopy","knRawClose","knRawWrap","knBar","knReview","knViewReview","knCloseReview","knTabs","knList","knValidate","toast","knRawPath","knBanner","knActions","knFp","knFpLive","knFpSpeed","knFpPlay","knFpTrail","knFpSteps","knFpCard","knHist","knHistBody","knHistPages","knEmpty","knEmptyNew","knStale"];
 const byId = {}; for (const id of ids) byId[id] = new N(id);
 byId.knFp.hidden = true; byId.knHist.hidden = true;
 byId.knRawDialog.open = false; byId.knRawDialog.showModal = function () { this.open = true; }; byId.knRawDialog.close = function () { this.open = false; };
@@ -64,7 +65,7 @@ globalThis.fetch = async (url, opts) => {
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text(), headers: res.headers };
 };
 new Function(src.replace('if (document.readyState === "loading")',
-  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw, hist, histLoad, fpRestore };\n  if (document.readyState === "loading")'))();
+  'globalThis.__kn = { state, fp, fpPoll, fpReplay, fpTarget, draw, hist, histLoad, fpRestore, staleShow };\n  if (document.readyState === "loading")'))();
 const kn = globalThis.__kn; const { state, fp } = kn;
 const settle = async (n = 40) => { for (let i = 0; i < n; i++) await new Promise((r) => setTimeout(r, 5)); };
 const results = []; const check = (name, cond, extra = "") => results.push(`${cond ? "ok  " : "FAIL"} ${name}${cond || !extra ? "" : "   — " + extra}`);
@@ -287,6 +288,23 @@ for (const x of fp.walks.values()) { x.state = "closed"; if (x.now) x.now = { ..
 state.open = [];
 await kn.fpRestore(); await settle();
 check("  and not a walk that ended long ago", state.open.length === 0, String(state.open));
+
+// ── "Still right" is recorded ─────────────────────────────────────────────────
+// It only removed the strip's row in the browser; nothing said the line had been checked (2026-11-02).
+{
+  const rev0 = (await (await realFetch(`${BASE}/api/knowledge/revision`)).json()).head;
+  const card = await (await realFetch(`${BASE}/api/knowledge/nodes/corp-card`)).json();
+  kn.staleShow([{ id: "corp-card", field: "one_liner", text: card.one_liner, because: ["card-limit"], base: rev0 }]);
+  const byText = (k) => find(byId.knStale, (n) => n.textContent === dict[k])[0];
+  byText("knowledge.stale.ok").click();
+  const reason = find(byId.knStale, (n) => cls(n).includes("kn-stale-reason"))[0];
+  check("Still right asks why the line still holds", !!reason, "no reason field");
+  if (reason) reason.value = "the card policy did not change";
+  byText("knowledge.stale.okSave")?.click(); await settle();
+  const rev1 = (await (await realFetch(`${BASE}/api/knowledge/revision`)).json()).head;
+  check("  and records it: the revision moves", rev1 && rev1 !== rev0, `${rev0} → ${rev1}`);
+  check("  and the row is gone from the strip", byId.knStale.hidden === true, String(byId.knStale.hidden));
+}
 
 await closeMine();
 console.log(results.join("\n"));

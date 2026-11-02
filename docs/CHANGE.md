@@ -30,7 +30,7 @@ create  { ref: "$h", name, one_liner, content?, kind?, parent: <id> | "$ref" | n
 move    { id, parent: <id> | "$ref" }
 reword  { id, field: one_liner | use_when | name, after, before? }
 write   { id, content }
-keep    { id, field, why? }
+keep    { id, field, why?, before? }
 delete  { id }
 ```
 
@@ -93,11 +93,18 @@ Keep: purchase-request.one_liner — its line already covers evidence
 Base: 4ce2bba…
 ```
 
+**A set of keeps alone is still a commit** — an empty one, carrying only its trailers. A keep is a
+person or an agent saying, on a date, that a line was checked and holds; until 2026-11-02 such a set
+answered `200 no change` and the statement was lost. Give `before` (the line as you read it) and
+`base` (the revision you read it at) and a keep is refused if the line, or the table under it, moved
+since. When a line was last checked: `git log --format='%ad %an %s%n%b' --grep 'Keep: corp-card.one_liner'`.
+
 ## Three decisions, 2026-10-09
 
 **A person at the map is shown, an agent is refused.** Every write's answer — the ordinary create,
 the drag that moves a tile, a delete — carries `impacted`: the lines whose tables it changed. The
-screen shows them in a strip over the map with *Rewrite* and *Still right*; nothing stops the person,
+screen shows them in a strip over the map with *Rewrite* and *Still right* (which asks why and files
+the keep above, so the check is on the record); nothing stops the person,
 who can see the map. An agent's omission is silent, so `/v1/changes` refuses an undecided line.
 
 **With a review queue, a set that rewords an area's sentence waits there whole.** `use_when` is the

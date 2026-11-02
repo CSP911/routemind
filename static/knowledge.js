@@ -141,7 +141,10 @@
     // map is shown them and not stopped: they can see the map, and an agent's door is the one that
     // refuses an undecided line. Here, under every write there is, rather than in each form.
     const impacted = (data && (Array.isArray(data.impacted) ? data.impacted : data.result && data.result.impacted)) || [];
-    if (impacted.length) staleShow(impacted);
+    // Each line carries the revision it was raised at: a "still right" is a statement about the line
+    // as it read then, and the set it files is refused if the table moved again meanwhile.
+    const rev = data && (data.revision || (data.result && data.result.revision));
+    if (impacted.length) staleShow(impacted.map((l) => ({ ...l, base: l.base || rev || "" })));
     return data;
   }
   const post = (path, body) => request(path, {
@@ -2811,9 +2814,25 @@
           await submitCard(region, "entity", { entity: l.id });
         }
       }));
-      const ok = button("knowledge.stale.ok", "quiet small", () => {
+      const gone = () => {
         row.remove(); state.staleLines = (state.staleLines || []).filter((x) => x !== l);
         if (!box.querySelector(".kn-stale-row")) { box.hidden = true; state.staleLines = null; }
+      };
+      // "Still right" is a decision with a date, so it is recorded: a keep in a change set, one empty
+      // commit carrying `Keep: <id>.<field> — <why>`. It only dismissed the row in this browser, and
+      // nothing anywhere said the line had been checked (2026-11-02). Asked for a reason, as every
+      // change set is; refused if the line no longer reads as shown.
+      const ok = button("knowledge.stale.ok", "quiet small", () => {
+        const why = input("", { class: "kn-input kn-stale-reason", placeholder: t("knowledge.stale.okWhy") });
+        const save = button("knowledge.stale.okSave", "small", (b) => guarded(b, async () => {
+          const reason = why.value.trim();
+          if (!reason) { why.focus(); throw new Error(t("knowledge.stale.okWhy")); }
+          await post("changes", { why: reason, ...(l.base ? { base: l.base } : {}),
+            decisions: [{ op: "keep", id: l.id, field: l.field, before: l.text, why: reason }] });
+          gone();
+        }, "knowledge.stale.kept"));
+        why.addEventListener("keydown", (e) => { if (e.key === "Enter") save.click(); });
+        ok.replaceWith(why, save); why.focus();
       });
       row.append(fix, ok);
       box.append(row);

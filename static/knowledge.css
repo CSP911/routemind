@@ -475,6 +475,7 @@ body.kn-dragging { user-select: none; }
 .kn-stale-id { font: 500 11.5px var(--kn-mono); color: var(--text, #1c2530); }
 .kn-stale-text { flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; }
 .kn-stale-why { font: 11px var(--kn-mono); color: var(--muted, #6b7684); }
+.kn-stale-reason { flex: 1 1 220px; min-width: 0; max-width: 100%; }
 .kn-fp-card-x { position: absolute; top: 6px; right: 8px; border: 0; background: none; cursor: pointer;
   font-size: 16px; color: var(--muted, #6b7684); }
 .kn-fp-card-out { font: 700 11px var(--kn-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--fp, var(--orange)); }

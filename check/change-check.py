@@ -333,6 +333,26 @@ try:
     check("  a set the review queue takes ends the placement and says not to file it again", t.startswith("QUEUED") and "do not file the document again" in t
           and "No placement is open" in t2, t[:300])
     m.stdin.close(); m.wait(5)
+
+    # ── "still right" is a dated decision, not a dismissal ────────────────────
+    # The map's Still right only removed the strip's row in the browser, and a keep-only set
+    # answered 200 "no change" and committed nothing, so the one statement that a line was checked
+    # and holds — the freshness signal a reader most needs — was never recorded (2026-11-02).
+    cur = call("GET", "/v1/nodes/corp-card")[1]["one_liner"]
+    h0 = head()
+    st, d = change({"why": "checked against the card policy", "base": h0,
+                    "decisions": [{"op": "keep", "id": "corp-card", "field": "one_liner", "before": cur, "why": "policy unchanged"}]})
+    check("a keep-only set is recorded: one commit", st in (200, 201) and commits_since(h0) == 1, f"{st} {d}")
+    check("  that changes no file", git("diff", "--name-only", h0, "HEAD") == "" and clean())
+    check("  and says what was kept, why and against which revision",
+          "Keep: corp-card.one_liner — policy unchanged" in trailer() and f"Base: {h0}" in trailer(), trailer())
+    h1 = head()
+    st, d = change({"why": "checked", "decisions": [{"op": "keep", "id": "corp-card", "field": "one_liner",
+                                                     "before": "a sentence it no longer reads", "why": "x"}]})
+    check("  a keep of a line that has changed since is refused, and records nothing",
+          st == 409 and d.get("reason") == "conflict" and commits_since(h1) == 0, f"{st} {d}")
+    st, d = change({"why": "checked", "decisions": [{"op": "keep", "id": "corp-card", "field": "one_liner", "before": cur}]}, dry_run=True)
+    check("  a dry run of a keep says it applies, and commits nothing", st == 200 and d.get("applies") is True and commits_since(h1) == 0, f"{st} {d}")
 finally:
     svc.terminate()
     try: svc.wait(5)
