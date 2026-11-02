@@ -304,10 +304,11 @@ class Writer:
         if self.suggest_id_configured and self.suggest_id_configured():
             k = (self.suggest_kind(name=name, one_liner=one_liner, region=region, content=content) or "").strip()
             if k: return k, True
-        # `default_kind` in vocab.yaml, when there is no LLM to choose. A kind is in no prompt and in
-        # no table an agent receives; its one reader is `export: no` on a kind in vocab.yaml, which
-        # keeps that sort of thing from crossing a link. Requiring a person to pick one was a field
-        # with no effect but a refusal. The response still reports `kind_generated`, so a domain that
+        # `default_kind` in vocab.yaml, when there is no LLM to choose. A kind is in no table an agent
+        # reads to route; the agent meets the list once, in knowledge_place's description, so it can
+        # pass one when it files a document. Its one reader is `export: no` on a kind in vocab.yaml,
+        # which keeps that sort of thing from crossing a link. Requiring a person to pick one was a
+        # field with no effect but a refusal. The response still reports `kind_generated`, so a domain that
         # relies on that rule can see which kinds were never actually chosen.
         fallback = str((self.store.vocab().get("default_kind") or "")).strip()
         if fallback: return fallback, True
