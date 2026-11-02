@@ -1303,7 +1303,12 @@ def _health_valid() -> dict:
     # Keyed on the commit *and* the files as they are: a hand edit, or the leftovers of a killed write,
     # changes the files without moving HEAD, and the cached answer said valid when validate said
     # otherwise — and the other way round (2026-10-10).
-    rev = (head(DATA) or "") + ":" + str(hash(store._nodes_key()))
+    # And the two files that are not entities. A vocab.yaml broken by hand and not committed moved
+    # neither, so /healthz said valid while /v1/validate said otherwise (audit SV-17, 2026-11-02).
+    def _stat(name):
+        try: s = (DATA / name).stat(); return (s.st_mtime_ns, s.st_size)
+        except OSError: return None
+    rev = (head(DATA) or "") + ":" + str(hash((store._nodes_key(), _stat("vocab.yaml"), _stat("regions.json"))))
     if rev not in _HEALTH_VALID:
         try:
             res = validate(store)
@@ -1471,7 +1476,8 @@ def main():
              # Areas written as files with no regions.json yet, or one deleted by hand: the table is
              # missing rows, or has a row with no directory — derived, so regenerated (2026-10-10).
              or "regions.json: missing entry for" in e or "has no directory" in e
-             or ("regions.json " in e and "differ from directory" in e)
+             # (A per-area node list that lags the directory is a warning since 2026-11-02, not an
+             # error, so it never holds a start back and nothing here needs to mend it.)
              # Broken by hand: it is derived, so it is written again rather than mended.
              or e.startswith("regions.json: does not parse")]
     if drift and len(drift) == len(res["errors"]) and head(DATA):

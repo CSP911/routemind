@@ -107,6 +107,25 @@ after = hashes(hurt)
 changed = sorted(k for k in set(after) | set(snap) if after.get(k) != snap.get(k))
 check("  and the only file it changed is regions.json", changed == ["regions.json"], str(changed))
 
+# ---- regions.json deleted by hand ---------------------------------------------------------------
+# DATA-REPO.md says tidy regenerates it, and the service heals it at startup; tidy itself exited 2,
+# "not a RouteMind repository" (audit, 2026-11-02). The areas are the repository; the table is derived.
+gone = os.path.join(T, "gone")
+shutil.copytree(src, gone)
+as_repo(gone)
+subprocess.run(["git", "-C", gone, "rm", "-q", "regions.json"], check=True, capture_output=True)
+subprocess.run(["git", "-C", gone, "-c", "user.name=t", "-c", "user.email=t@l", "commit", "-qm", "rm regions.json"],
+               check=True, capture_output=True)
+r = subprocess.run([sys.executable, os.path.join(ROOT, "ontology", "tidy.py"), gone], capture_output=True, text=True)
+check("with regions.json deleted, tidy says it is out of step (exit 1), not that this is no repository",
+      r.returncode == 1 and "regions.json" in (r.stdout + r.stderr), f"{r.returncode} {(r.stdout + r.stderr)[:160]}")
+r = subprocess.run([sys.executable, os.path.join(ROOT, "ontology", "tidy.py"), gone, "--fix"], capture_output=True, text=True)
+check("  and --fix writes it again, valid and committed", r.returncode == 0 and os.path.isfile(os.path.join(gone, "regions.json"))
+      and not (validate(Store(gone)).get("errors") or []), f"{r.returncode} {(r.stdout + r.stderr)[-160:]}")
+nothing = os.path.join(T, "nothing"); os.makedirs(nothing)
+r = subprocess.run([sys.executable, os.path.join(ROOT, "ontology", "tidy.py"), nothing], capture_output=True, text=True)
+check("a directory with no areas at all is still not a repository (exit 2)", r.returncode == 2, str(r.returncode))
+
 shutil.rmtree(T, ignore_errors=True)
 print("\n".join(results))
 sys.exit(1 if any(x.startswith("FAIL") for x in results) else 0)

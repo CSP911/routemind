@@ -687,6 +687,50 @@ if (pathlib.Path("data/repo") / "regions").is_dir():
     # must not fail. A drift check that fires on a clean repository would be turned off within a day.
     _md.write_text(_before, encoding="utf-8"); _regen(_st)
     eq("an untouched tree still passes", _validate(_st)["ok"], True)
+
+    # A page added by hand and committed. regions.json's per-area node list then lags the directory —
+    # bookkeeping nobody is served — and that alone made /healthz say valid: false until a write or a
+    # restart, although DATA-REPO.md says only an area added or deleted leaves the table stale (audit
+    # SC-1, 2026-11-02).
+    _page = _repo / "regions" / _area / "hand-written-page.md"
+    _page.write_text(f"---\nid: hand-written-page\nname: \"Hand-written page\"\nkind: topic\n"
+                     f"one_liner: \"A page written in an editor\"\nparent: {_area}\n---\n# Hand\n\nWritten by hand.\n", encoding="utf-8")
+    _v = _validate(_st)
+    eq("a page added by hand leaves the repository valid", (_v["ok"], [e for e in _v["errors"] if "regions.json" in e]), (True, []))
+    eq("  and the lagging node list is a warning that says how it heals",
+       any("regions.json" in w and "hand-written-page" in w and "tidy.py" in w for w in _v["warnings"]), True)
+    _page.unlink()
+
+    # vocab.yaml in shapes that parse but are not a vocabulary. Each was a bare Python error from the
+    # validator — so every write answered 500 with nothing naming the file (audit SV-12, 2026-11-02).
+    _voc = _repo / "vocab.yaml"
+    _vtext = _voc.read_text(encoding="utf-8")
+    for _label, _bad in (("kinds as plain strings", "kinds:\n- topic\n- rule\n"),
+                         ("kinds: twelve", "kinds: twelve\n"),
+                         ("kinds: empty", "kinds:\n"),
+                         ("budgets: empty", __import__("re").sub(r"budgets:\n(  .*\n)+", "budgets:\n", _vtext, count=1)),
+                         ("a budget that is not a number", _vtext.replace("kinds: 12", "kinds: twelve", 1))):
+        _voc.write_text(_bad, encoding="utf-8")
+        try:
+            _v = _validate(_st); _got = (_v["ok"], any(e.startswith("vocab.yaml") for e in _v["errors"]))
+        except Exception as _e:
+            _got = f"raised {type(_e).__name__}: {_e}"
+        eq(f"vocab.yaml with {_label}: refused, naming the file", _got, (False, True))
+    _voc.write_text(_vtext, encoding="utf-8")
+    eq("  and restored, the tree validates again", _validate(_st)["ok"], True)
+
+    # A long chain of documents each naming the next. The cycle search recursed once per link, and
+    # 1,200 links was a RecursionError — every write refused by a warning's bookkeeping (audit SV-21).
+    _chain = _repo / "regions" / _area
+    _ids = [f"chain-{i:04d}" for i in range(1200)]
+    for _i, _cid in enumerate(_ids):
+        _nxt = f"see `{_ids[_i + 1]}`" if _i + 1 < len(_ids) else "the end"
+        (_chain / f"{_cid}.md").write_text(f"---\nid: {_cid}\nname: \"Chain {_i}\"\nkind: topic\none_liner: \"link {_i}\"\n"
+                                           f"parent: {_area}\n---\n# Link\n\n{_nxt}\n", encoding="utf-8")
+    try: _got = type(_validate(_st)["ok"]).__name__
+    except RecursionError: _got = "RecursionError"
+    eq("a 1,200-document chain of references validates without recursing", _got, "bool")
+    for _cid in _ids: (_chain / f"{_cid}.md").unlink()
     shutil.rmtree(_T, ignore_errors=True)
 
 # ── if a tree is there, does every entity read ───────────────────────────────
