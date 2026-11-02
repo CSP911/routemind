@@ -162,5 +162,76 @@ with tempfile.TemporaryDirectory() as _d:
         bad = True
         print(f"FAIL a first install refused for its port left a .env (rc {_r.returncode}) — the next run would skip "
               f"the port question and the unique name")
+# ── a check aimed at "the install" aims at this checkout's ───────────────────
+# smoke.sh, all.sh, llm-paths.sh, mcp-check, circuit-check and screen-check all defaulted to :8080.
+# From a checkout installed on another port they tested — and llm-paths wrote two commits into —
+# whatever RouteMind held 8080, and passed (quickstart QS-1, suite CS-1, docs DC-2, 2026-11-02). The
+# reader is check/base.sh, run here against a .env naming the port twice; each check must use it, or
+# the MCP server's own reader, which mcp-check and circuit-check share.
+_base = ROOT / "check" / "base.sh"
+with tempfile.TemporaryDirectory() as _d:
+    (Path(_d) / ".env").write_text("WEB_PORT=8080\nWEB_PORT_B=8081\nWEB_PORT='9471'\n", encoding="utf-8")
+    _got = subprocess.run(["sh", "-c", '. "$1"; checkout_base "$2"', "sh", str(_base), _d],
+                          capture_output=True, text=True).stdout.strip() if _base.exists() else "(no check/base.sh)"
+    (Path(_d) / ".env").write_text("# no port here\n", encoding="utf-8")
+    _none = subprocess.run(["sh", "-c", '. "$1"; checkout_base "$2"', "sh", str(_base), _d],
+                           capture_output=True, text=True).stdout.strip() if _base.exists() else ""
+USES = {"check/smoke.sh": "checkout_base", "check/all.sh": "checkout_base", "check/llm-paths.sh": "checkout_base",
+        "check/mcp-check.py": "_default_api", "check/circuit-check.py": "_default_api",
+        "check/screen-check.mjs": "WEB_PORT"}
+_off = [f for f, needle in USES.items() if needle not in (ROOT / f).read_text(encoding="utf-8")]
+if _got != "http://127.0.0.1:9471" or _none != "http://127.0.0.1:8080" or _off:
+    bad = True
+    print(f"FAIL a check's default install is not this checkout's: base.sh gives {_got!r} for WEB_PORT=9471 "
+          f"(last line) and {_none!r} with none" + (f"; not reading it: {', '.join(_off)}" if _off else ""))
+else:
+    print(f"ok   every check aimed at the install defaults to this checkout's WEB_PORT ({len(USES)} checks)")
+
+# ── no docker, or no compose plugin, is said in a sentence, before anything starts ──
+# It was "docker: command not found" at the first compose call, or "'compose' is not a docker
+# command", with a fresh .env left behind (scenarios audit, 2026-11-02). A fake docker on PATH stands in
+# for a missing plugin; a PATH holding only the tools install.sh uses before it stands in for no docker.
+# `--port=N` is read as `--port N`; it was "unknown option" (quickstart, 2026-11-02).
+import os as _os, stat as _stat
+def _run_install(args, path):
+    with tempfile.TemporaryDirectory() as _d:
+        for f in ("install.sh", ".env.example"): _sh.copy(ROOT / f, Path(_d) / f)
+        r = subprocess.run(["/bin/sh", "./install.sh", *args], cwd=_d, capture_output=True, text=True,
+                           stdin=subprocess.DEVNULL, env={**_os.environ, "PATH": path})
+        return r.returncode, r.stderr, (Path(_d) / ".env").exists()
+with tempfile.TemporaryDirectory() as _bin:
+    for tool in ("dirname", "basename", "cp", "rm", "grep", "id", "mktemp", "mv", "cat", "tr", "cut", "sed", "head",
+                 "tail", "cksum", "mkdir", "ls", "od", "sort", "pwd"):
+        if _sh.which(tool): _os.symlink(_sh.which(tool), Path(_bin) / tool)
+    rc, err, left = _run_install(["--port", "9479", "--no-llm"], _bin)
+    no_docker = rc == 2 and "docker" in err.lower() and "not found" not in err and not left
+    _fake = Path(_bin) / "docker"
+    _fake.write_text("#!/bin/sh\n[ \"$1\" = compose ] && { echo \"docker: 'compose' is not a docker command.\" >&2; exit 1; }\nexit 0\n")
+    _fake.chmod(_fake.stat().st_mode | _stat.S_IEXEC)
+    rc2, err2, left2 = _run_install(["--port", "9479", "--no-llm"], _bin)
+    no_compose = rc2 == 2 and "compose plugin" in err2 and not left2
+    rc3, err3, _ = _run_install(["--port=99999", "--no-llm"], _bin + ":" + _os.environ.get("PATH", ""))
+    eq_form = rc3 == 2 and "65535" in err3
+for ok, what, why in ((no_docker, "no docker on PATH is refused in a sentence, leaving no .env", f"rc {rc}: {err.strip()[:160]!r}"),
+                      (no_compose, "docker without the compose plugin is refused in a sentence, leaving no .env", f"rc {rc2}: {err2.strip()[:160]!r}"),
+                      (eq_form, "--port=N is read as --port N", f"rc {rc3}: {err3.strip()[:120]!r}")):
+    if ok: print(f"ok   {what}")
+    else: bad = True; print(f"FAIL {what} — {why}")
+
+# ── the build leaves out what the host writes ─────────────────────────────────
+# The install's own checks import ontology/service on the host and leave __pycache__ there; with no
+# .dockerignore, COPY carried it into the image, so the second ./install.sh rebuilt the ontology and
+# recreated its container — 15 s of refused requests on a run the README calls safe to repeat
+# (quickstart QS-3, 2026-11-02). data/ and .git are the operator's and the repository's, not the image's.
+_ign = (ROOT / ".dockerignore").read_text(encoding="utf-8").split() if (ROOT / ".dockerignore").exists() else []
+_want = {"**/__pycache__", "**/*.pyc", "data", ".git"}
+_miss = sorted(_want - set(_ign))
+if _miss:
+    bad = True
+    print(f"FAIL .dockerignore does not leave out {', '.join(_miss)} — a host-side run changes the build "
+          f"context, and the next install rebuilds and restarts the service")
+else:
+    print(f"ok   the build context leaves out what the host writes ({', '.join(sorted(_want))})")
+
 if bad: sys.exit(1)
 print(f"ok   {len(documented)} settings documented, every one reaching a container ({len(COMPOSE)} compose files)")

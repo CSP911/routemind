@@ -100,7 +100,17 @@ for rnd in range(ROUNDS):
     for a in (["init", "-q"], ["add", "-A"],
               ["-c", "user.name=s", "-c", "user.email=s@l", "commit", "-qm", "seed"]):
         subprocess.run(["git", "-C", repo, *a], check=True)
-    port = random.randint(9000, 30000)
+    # A port nothing answers on. A random one was taken as it came: with another RouteMind on it, this
+    # one failed to bind, the other answered /healthz, and the rounds ran against somebody's install
+    # (suite audit CS-4, 2026-11-02 — reproduced with the port pinned to a live install's).
+    import socket
+    for _ in range(50):
+        port = random.randint(9000, 30000)
+        with socket.socket() as s:
+            s.settimeout(0.2)
+            if s.connect_ex(("127.0.0.1", port)) != 0: break
+    else:
+        check(f"round {rnd}: a free port to start the ontology on", False); break
     env = {**os.environ, "ONTOLOGY_DATA": repo, "PORT": str(port),
            "ONTOLOGY_OVERLAYS": os.path.join(T, "ov"),
            "ONTOLOGY_HARNESS": os.path.join(T, "h")}
@@ -113,6 +123,9 @@ for rnd in range(ROUNDS):
         except Exception: time.sleep(0.25)
     else:
         check(f"round {rnd}: the ontology on {port} started", False); break
+    # And what answered is the one started here: a process that lost the port has exited by now.
+    if p.poll() is not None:
+        check(f"round {rnd}: the ontology answering on {port} is the one this check started", False); break
 
     area = json.loads(call(port, "/v1/regions")[1])["regions"][0]["source"].replace("_", "-")
     stop = []

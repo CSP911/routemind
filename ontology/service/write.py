@@ -633,8 +633,11 @@ class Writer:
                     return {"ok": True, "dry_run": True, "revision": None, "message": msg, "warnings": list(res["warnings"]),
                             "stats": res["stats"], "impacted": impacted, **extra}
                 who = _ident(actor)
+                # An actor that is already an address — what an authenticating proxy names — is the
+                # email; suffixing it built `boss@corp.com@routemind.local` (web audit WB-6, 2026-11-02).
+                email = who if "@" in who else f"{who}@routemind.local"
                 # A commit of the index: an edit saved after the `add` above is not in it.
-                _git(self.root, "-c", f"user.name={who}", "-c", f"user.email={who}@routemind.local", "commit", "-q", "-m", msg)
+                _git(self.root, "-c", f"user.name={who}", "-c", f"user.email={email}", "commit", "-q", "-m", msg)
             except WriteError:
                 _journal.state = None; _restore(self.root, ours); raise
             except PermissionError as e:

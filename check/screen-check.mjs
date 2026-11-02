@@ -3,7 +3,13 @@ const _fetch = globalThis.fetch; const TOKEN = process.env.KNOWLEDGE_TOKEN || ""
 const realFetch = (u, o = {}) => _fetch(u, TOKEN ? { ...o, headers: { ...(o.headers || {}), Authorization: `Bearer ${TOKEN}` } } : o);
 import { readFileSync } from "node:fs";
 import { dict } from "./dict.mjs";
-const BASE = process.argv[2] || "http://127.0.0.1:8080";
+// No address given: this checkout's install — the last WEB_PORT in .env, as check/base.sh reads it.
+// It was :8080, whichever RouteMind that was (2026-11-02).
+const envPort = (() => { try {
+  const m = [...readFileSync(new URL("../.env", import.meta.url), "utf8").matchAll(/^\s*WEB_PORT=(.*)$/gm)].pop();
+  return m ? m[1].replace(/["'\s\r]/g, "") : "";
+} catch { return ""; } })();
+const BASE = process.argv[2] || `http://127.0.0.1:${envPort || "8080"}`;
 const src = readFileSync("static/knowledge.js", "utf8");
 const collection = (arr) => { const c = Object.create(null); arr.forEach((x,i)=>{c[i]=x;}); c.length=arr.length;
   c[Symbol.iterator]=function*(){ yield* arr; }; return c; };
@@ -38,10 +44,13 @@ globalThis.fetch = async (url, opts) => {
   // The map, not the footprint (that is footprint-screen's): with walks still going on the install,
   // a load opens their areas, and this check needs the map as a person who walks up to it finds it.
   if (/walks\?since=/.test(String(url))) return { ok: true, status: 200, json: async () => ({ seq: 0, steps: [] }), text: async () => "" };
+  // A part of the screen that would write into the install answers from here instead, while one is set.
+  const faked = globalThis.__fake?.(String(url), opts || {});
+  if (faked) return { ok: true, status: 200, json: async () => faked, text: async () => JSON.stringify(faked) };
   const res = await realFetch(BASE + String(url), opts);
   return { ok: res.ok, status: res.status, json: () => res.json(), text: () => res.text() };
 };
-new Function(src.replace('if (document.readyState === "loading")','globalThis.__kn = { state, loadEntries, loadFiles, draw, agentContext, newRegionForm, newNodeForm, newFileForm, submitCard, drawVrfCard, deleteNodeCard, reviewFlags };\n  if (document.readyState === "loading")'))();
+new Function(src.replace('if (document.readyState === "loading")','globalThis.__kn = { state, loadEntries, loadFiles, draw, agentContext, newRegionForm, newNodeForm, newFileForm, submitCard, drawVrfCard, deleteNodeCard, reviewFlags, exportCard };\n  if (document.readyState === "loading")'))();
 const kn = globalThis.__kn; const { state, loadEntries, loadFiles, draw } = kn;
 const settle = async () => { for (let i = 0; i < 40; i++) await new Promise((r) => setTimeout(r, 5)); };
 
@@ -127,6 +136,30 @@ if (ctx === null) check("agentContext is exported for checking", false);
 else {
   check("the pasted block names every area", areas.every((a) => ctx.includes(a)));
   check("it carries a fetchable base URL", /\/api\/knowledge/.test(ctx));
+  // Fetched, not only matched. The block said `GET <origin>/api/knowledge<address>` with /v1/…
+  // addresses, the web app served none of them, and every URL it printed answered 404 while this
+  // check passed on the substring (docs audit DC-1, 2026-11-02). One printed row, then one address
+  // that row's answer prints — the block promises both work.
+  const printed = /^Fetch with: GET (\S+)<address>/m.exec(ctx);
+  const row = /^  (\/v1\/\S+)/m.exec(ctx);
+  if (!printed || (areas.length && !row)) {
+    check("the block prints a base and an address per area", false);
+  } else if (row) {
+    const base = printed[1].replace(BASE, "");
+    const a = await realFetch(BASE + base + row[1]);
+    check(`a printed address answers (${row[1]} → ${a.status})`, a.status === 200);
+    const inner = a.status === 200 ? (((await a.json()).entries || [])[0] || {}).fetch : null;
+    if (inner) {
+      const b = await realFetch(BASE + base + inner);
+      check(`  and so does an address its answer prints (${inner} → ${b.status})`, b.status === 200);
+    }
+    // A reader's door, and only that: a write verb is refused at it, and another backbone's export
+    // surface is not reachable through it (that one has its own key and its own path).
+    const w = await realFetch(BASE + base + "/v1/nodes/screen-check-no-such-entity", { method: "DELETE" });
+    check(`  and it takes no writes (DELETE → ${w.status})`, w.status === 405);
+    const x = await realFetch(BASE + base + "/v1/export/regions");
+    check(`  and it is not the export surface (→ ${x.status})`, x.status === 404);
+  }
   check("it repeats the absence rule, and only for the whole list",
     /grounds on which you may say/.test(ctx) && /no smaller table/.test(ctx));
   check("it tells the agent not to build addresses", /Never build one/.test(ctx));
@@ -301,6 +334,47 @@ else {
     r0.export = true; kn.draw(); const on = count();
     r0.export = was; kn.draw();
     check("an exported area is marked on the map, and only while it is exported", on === off + 1, `${off} → ${on}`);
+  }
+}
+
+// The Export card, sent twice. It stayed open with Propose live after a success, and a second click
+// filed the same proposal again; accepting the copy then failed with a 409 (web audit WB-4,
+// 2026-11-02). The queue is faked for this one, so nothing reaches the install's review queue.
+{
+  const area = areas[0];
+  if (!area) results.push("--   no areas yet; the Export card needs one");
+  else {
+    const pending = [], posted = [];
+    globalThis.__fake = (url, opts) => {
+      if (/\/api\/knowledge\/proposals\?status=pending$/.test(url)) return { proposals: pending.slice() };
+      if (/\/api\/knowledge\/proposals$/.test(url) && opts.method === "POST") {
+        const p = JSON.parse(opts.body || "{}"); posted.push(p);
+        pending.push({ ...p, id: "cp_00000" + posted.length, type: "route", status: "pending" });
+        return { ok: true, id: "cp_00000" + posted.length };
+      }
+      return null;
+    };
+    const propose = dict["knowledge.export.propose"];
+    const send = async () => {
+      byId.knEdit.replaceChildren();
+      await kn.exportCard(area); await settle();
+      const sel = find(byId.knEdit, (n) => n.tag === "select")[0];
+      if (sel) sel.value = sel.value === "yes" ? "no" : "yes";     // a decision that differs from now
+      const b = find(byId.knEdit, (n) => n.tag === "button" && n.textContent === propose)[0];
+      if (!b) return false;
+      b.click(); await settle(); await settle();
+      return true;
+    };
+    try {
+      check("the Export card sends a proposal", await send() && posted.length >= 1, `${posted.length} sent`);
+      check("  and is not left open with Propose live",
+        !find(byId.knEdit, (n) => n.tag === "button" && n.textContent === propose).length);
+      const sent = posted.length;
+      await send();
+      check("  and the same request again is refused, with nothing sent",
+        posted.length === sent && find(byId.knEdit, (n) => cls(n).includes("kn-err-box")).length > 0,
+        `${posted.length - sent} more sent`);
+    } finally { globalThis.__fake = null; byId.knEdit.replaceChildren(); }
   }
 }
 

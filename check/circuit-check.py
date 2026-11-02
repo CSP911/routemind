@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A circuit into this install, the way another backbone opens one — at the address people use.
 
-    ROUTEMIND_TOKEN=<KNOWLEDGE_CIRCUIT_TOKEN> ./check/circuit-check.py [base]     (base: http://127.0.0.1:8080)
+    ROUTEMIND_TOKEN=<KNOWLEDGE_CIRCUIT_TOKEN> ./check/circuit-check.py [base]     (base: this checkout's install)
 
 Circuits are the one way left to read another RouteMind (operator, 2026-10-08), and until then the
 surface they read lived only on the ontology's own port, which the shipped compose does not publish —
@@ -15,7 +15,15 @@ session does), and the export surface offers no area the owner did not set `expo
 import json, os, subprocess, sys, urllib.error, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE = (sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8080").rstrip("/")
+# No address given: this checkout's install, by the MCP server's own reader (WEB_PORT in .env). It was
+# :8080 — whichever RouteMind that was, with this checkout's key presented to it (2026-11-02).
+sys.path.insert(0, os.path.join(ROOT, "mcp"))
+from knowledge_mcp import _default_api                                    # noqa: E402
+if len(sys.argv) > 1: BASE = sys.argv[1].rstrip("/")
+else:
+    _api, _why = _default_api()
+    if _why: sys.exit(f"FAIL no address to check — {_why}")
+    BASE = _api.rsplit("/api/knowledge", 1)[0].rstrip("/")
 KEY = os.environ.get("ROUTEMIND_TOKEN", "")
 results = []
 
@@ -84,10 +92,17 @@ if crossing:
     t, err = tool("knowledge_table", {"path": f"/v1/circuits/self/regions/{a}", "why": "inside one area"})
     check(f"  and walks into {a}", not err and "/v1/circuits/self/" in t, t[:200])
 else:
-    results.append("--   no area here is set to export, so the walk into one was not tried")
+    # Not run, and said so in the count. It was a "--" line counted as one of the results, so an
+    # install exporting nothing read "0 failed of 8" with the walk never tried (suite audit CS-2,
+    # 2026-11-02). Exporting an area here to have something to walk would make another backbone able
+    # to read it for the length of the run, which is not a check's decision to take; install-check's
+    # walk exports one on its own throwaway install.
+    results.append("SKIP the walk into an exported area — no area here is set to export")
 m.stdin.close(); m.wait(5)
 
 print("\n".join(results))
 n = sum(r.startswith("FAIL") for r in results)
-print(f"\n{n} failed of {len(results)}")
+ran = [r for r in results if not r.startswith("SKIP")]
+skipped = len(results) - len(ran)
+print(f"\n{n} failed of {len(ran)}" + (f" ({skipped} not run: nothing here is exported)" if skipped else ""))
 sys.exit(1 if n else 0)

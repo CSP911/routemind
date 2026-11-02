@@ -1,13 +1,14 @@
 #!/bin/sh
 # Does this install work? Run it after `docker compose up -d`.
 #
-#   ./check/smoke.sh [base-url]
+#   ./check/smoke.sh [base-url]        (default: this checkout's install, WEB_PORT in .env)
 #
 # Two halves, and the second is the one that matters: the API half proves the ontology accepts and
 # publishes a write, the screen half proves the map draws what the API holds. An install where the
 # API is perfect and the screen is blank is an install nobody can use.
 set -e
-BASE="${1:-http://127.0.0.1:8080}"
+. "$(dirname "$0")/base.sh"
+BASE="${1:-$(checkout_base "$(dirname "$0")/..")}"
 say() { printf '%s\n' "$*"; }
 
 # An install with its door closed (docs/AUTH.md) refused every write here — and with reads guarded,
@@ -50,6 +51,12 @@ curl -fsS "$BASE/api/app-config" >/dev/null && say "ok   config"
 curl -fsS "$BASE/healthz" | grep -q '"valid"' && say "ok   /healthz on the web port" || { say "FAIL /healthz on the web port"; exit 1; }
 curl -fsS "$BASE/api/knowledge/regions" >/dev/null && say "ok   hop 0"
 curl -fsS "$BASE/knowledge" >/dev/null && say "ok   the map page"
+# HEAD where GET works: uptime monitors probe with it, and `/` and `/healthz` answered 405 (2026-11-02).
+for u in / /healthz /knowledge; do
+  h=$(curl -s -o /dev/null -w '%{http_code}' -I "$BASE$u")
+  case "$h" in 2??|3??) ;; *) say "FAIL HEAD $u answered $h"; exit 1 ;; esac
+done
+say "ok   HEAD answers where GET does"
 for f in knowledge.js knowledge.css i18n.js theme.css theme.js iris_ui.css; do
   curl -fsS -o /dev/null "$BASE/static/$f" || { say "FAIL static/$f"; exit 1; }
 done

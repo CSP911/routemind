@@ -214,5 +214,32 @@ if (shared.length) {
   console.log(`ok   ${markup.size} keys label the page, none of them also built in the script`);
 }
 
+// A step the product no longer has, still named on the screen. Publishing went on 2026-10-07 — a
+// commit is what an agent reads — and the review queue's button went on saying "Accept · publish"
+// (docs audit, 2026-11-02): a person was told a second thing would happen that does not exist.
+const RETIRED = [[/\bpublish/i, "publish (retired 2026-10-07: a commit is what an agent reads)"]];
+const stale = Object.entries(dictionaries.en).flatMap(([k, v]) =>
+  RETIRED.filter(([rx]) => rx.test(String(v)) || rx.test(k)).map(([, why]) => `${k}: "${v}" names ${why}`));
+if (stale.length) {
+  bad = true;
+  console.log(`FAIL ${stale.length} string(s) name a step that no longer exists:\n  ` + stale.join("\n  "));
+} else {
+  console.log(`ok   no string names a retired step (${RETIRED.length} checked)`);
+}
+
+// The installer's last words on an empty map name the button that map shows, in every language the
+// map can be in. They said "click the Back-Bone box, and choose New AS" while the screen offered
+// "Create the first area" (quickstart audit, 2026-11-02); a relabel here would do that again.
+const installer = readFileSync(new URL("../install.sh", import.meta.url), "utf8");
+const unnamed = Object.entries(dictionaries).map(([lang, d]) => [lang, d["knowledge.empty.cta"]])
+  .filter(([, label]) => label && !installer.includes(label));
+if (unnamed.length) {
+  bad = true;
+  console.log(`FAIL install.sh's empty-map hint does not name the button: ` +
+    unnamed.map(([l, s]) => `${l} "${s}"`).join(", "));
+} else {
+  console.log(`ok   install.sh names the empty map's button as the map shows it (${Object.keys(dictionaries).length} languages)`);
+}
+
 if (bad) process.exit(1);
 console.log(`ok   ${base.size} keys in English, ${asked.size} of them reached from the screen, no duplicates`);

@@ -2,7 +2,7 @@
 # Start the map over — empty, or from the example back office — without losing the one you have.
 #
 #   ./ontology/reset.sh --empty            an empty map: no areas, the starting vocabulary
-#   ./ontology/reset.sh --example          the example back office (five areas, 79 documents)
+#   ./ontology/reset.sh --example          the example back office (five areas, 74 documents)
 #   ./ontology/reset.sh --example --yes    without asking (no terminal, or a script)
 #   ./ontology/reset.sh --repo PATH ...    another data repository than ./data/repo
 #

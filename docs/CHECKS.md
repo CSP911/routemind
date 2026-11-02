@@ -17,10 +17,11 @@ is not obvious and was carried around in somebody's head until 2026-09-14. A sui
 fails the run and says why, rather than being quietly skipped.
 
 The suites that use an install — `smoke.sh`, `mcp-check.py`, `circuit-check.py`, and in a full run
-`llm-paths.sh` — go to `$BASE`, which is `http://127.0.0.1:8080` unless you set it
-(`BASE=http://127.0.0.1:9000 ./check/all.sh`). The container suites go to this checkout's own
-compose project. If your install is not on 8080, set `BASE`: otherwise those suites test — and
-`llm-paths.sh` writes into — whatever answers on 8080.
+`llm-paths.sh` — go to `$BASE`, which is this checkout's install unless you set it: the last
+`WEB_PORT` in `.env`, read by `check/base.sh` (8080 only when `.env` names none). Set it to check
+another install (`BASE=http://127.0.0.1:9000 ./check/all.sh`). The container suites go to this
+checkout's own compose project. Until 2026-11-02 the default was 8080 whatever `.env` said, so from a
+checkout on another port those suites tested — and `llm-paths.sh` wrote into — whatever answered there.
 
 Two rules the whole set is written against, and they are worth knowing before adding one:
 
@@ -58,15 +59,15 @@ prints. Nothing checks this table against the checks.
 
 ### The install, from outside
 
-These take the install's address as their first argument, and default to `http://127.0.0.1:8080`.
+These take the install's address as their first argument, and default to this checkout's install (`WEB_PORT` in `.env`).
 
 | | | |
 |---|---|---|
 | `check/smoke.sh` | — | Does this install work — API, an agent's walk, the map screen. What `install.sh` finishes with. It also runs `mcp-check.py`, `screen-check.mjs` and the static checks |
 | `check/install-check.sh` + `install-walk.py` | — | A clean clone, installed in its own directory and walked. Above. Not run by `all.sh` |
 | `check/mcp-check.py` | — | The MCP protocol over stdio, and an agent's whole walk from the area list to a document |
-| `check/llm-paths.sh` | — | Creating a node with an LLM and without one. **Writes into the install** (and removes what it wrote), and tests the one mode that install is in — the other needs an install configured the other way |
-| `check/circuit-check.py` | — | Another backbone's circuit into this install, through the web port: what it may mint, what it may read, and an agent's walk through it — [CIRCUIT.md](CIRCUIT.md). On an install with no area set to export, the walk into one is reported as not tried |
+| `check/llm-paths.sh` | — | Creating a node with an LLM and without one. **Writes into the install** — removes what it wrote, asserts the map's content is as it found it, and names the commits it added to the history — and tests the one mode that install is in — the other needs an install configured the other way |
+| `check/circuit-check.py` | — | Another backbone's circuit into this install, through the web port: what it may mint, what it may read, and an agent's walk through it — [CIRCUIT.md](CIRCUIT.md). On an install with no area set to export, the walk into one is reported as not run, in its count too (`0 failed of 7 (1 not run …)`) |
 | `check/session-check.py` | — | The six-hour session tokens. Mostly about what must **not** work: an enrolment key that still reads, or a session that can mint another. Runs in the ontology container |
 | `check/llm-probe.py` | — | Not a check: asks a real provider what a real key can use. Needs both, so nothing runs it for you |
 

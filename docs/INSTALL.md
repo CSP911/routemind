@@ -25,13 +25,27 @@ be brought back ([DATA-REPO.md](DATA-REPO.md#starting-over)):
 
 ## Without install.sh
 
+If another RouteMind already runs on this machine, use `./install.sh`: it refuses rather than take
+that one's containers over. By hand, the steps are the ones it takes:
+
 ```sh
 cp .env.example .env
 printf 'KNOWLEDGE_UID=%s\nKNOWLEDGE_GID=%s\n' "$(id -u)" "$(id -g)" >> .env
+# This checkout's own name — the one install.sh gives a new install: the directory plus six digits of its path
+NAME="$(basename "$PWD" | tr 'A-Z' 'a-z' | tr -c 'a-z0-9.\n-' '-' | cut -c1-32)-$(printf '%s' "$(pwd -P)" | cksum | cut -d' ' -f1 | cut -c1-6)"
+printf 'COMPOSE_PROJECT_NAME=%s\nIMAGE_TAG=%s\n' "$NAME" "$NAME" >> .env
+# The key another backbone's circuit presents (docs/CIRCUIT.md); nothing crosses until an area is exported
+printf 'KNOWLEDGE_CIRCUIT_TOKEN=%s\n' "$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')" >> .env
+# The port is WEB_PORT in .env, 8080 as copied — edit that line if 8080 is taken
 mkdir -p data/repo data/overlays data/walks data/harness data/access
 docker compose up -d --build
-./check/smoke.sh
+./check/smoke.sh                  # checks the install on .env's WEB_PORT
 ```
+
+The name is not decoration. Without it compose names the containers after the directory and tags the
+images `0.1.0` — and a second checkout called `routemind` (the README's own clone target) gets the
+same names as the first, so `up` rebuilds the first one's images and recreates its containers from
+this checkout's code.
 
 The `mkdir` is not tidiness. Docker creates a missing bind-mount path as **root**, and this container
 is not root, because it commits into a repository you own. A list short by one directory is a
@@ -78,6 +92,22 @@ decides everything:
 
 Then, on that area's rack: **+ New data** for a document. **+ New node** makes a holder — a heading
 documents sit under — when there are enough to group.
+
+## Uninstall
+
+From inside the checkout. `data/repo` is your ontology, with its whole history — copy it out first if
+you want it:
+
+```sh
+cp -a data/repo ~/routemind-backup            # optional
+docker compose down --rmi all --remove-orphans  # this install's containers, network and images
+cd .. && rm -rf <the checkout>
+```
+
+Then remove the `knowledge` server from any MCP client config you added it to by hand (Claude Code's
+comes from `.mcp.json` in the checkout, and goes with it). An install made before each checkout had
+its own `IMAGE_TAG` (2026-10-10) has images tagged `0.1.0`, which another checkout may share: there,
+use `docker compose down --remove-orphans` and delete the images by hand once nothing uses them.
 
 ---
 

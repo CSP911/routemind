@@ -102,6 +102,8 @@ services:
       KNOWLEDGE_AUTH_HEADER: "${KNOWLEDGE_AUTH_HEADER:-X-Forwarded-Email}"
       KNOWLEDGE_AUTH_TRUSTED_PROXY: "${KNOWLEDGE_AUTH_TRUSTED_PROXY:-}"
       KNOWLEDGE_AUTH_READS: "${KNOWLEDGE_AUTH_READS:-}"
+      # The largest one document may be, in bytes (web/app.py MAX_DOCUMENT_BYTES).
+      KNOWLEDGE_MAX_DOCUMENT_BYTES: "${KNOWLEDGE_MAX_DOCUMENT_BYTES:-1000000}"
     ports:
       - "${WEB_PORT:-8080}:8080"
     restart: unless-stopped

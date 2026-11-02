@@ -31,6 +31,8 @@ while [ $# -gt 0 ]; do
     # Still accepted, so a command copied from an older page does not stop at an unknown option.
     --name)       printf '  --name is no longer used (there is no exchange to name) — ignored\n'; shift ;;
     --port)       PORT="${2:-}"; [ -n "$PORT" ] || { printf '  ! --port takes a number\n' >&2; exit 2; }; shift ;;
+    # The `=` form too: it was "unknown option", for the spelling most tools accept (2026-11-02).
+    --port=*)     PORT="${1#--port=}"; [ -n "$PORT" ] || { printf '  ! --port takes a number\n' >&2; exit 2; } ;;
     --no-llm)     ASK=0 ;;
     --example)    EXAMPLE=yes ;;
     --no-example) EXAMPLE=no ;;
@@ -79,6 +81,25 @@ if [ -n "$PORT" ]; then
     *) [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ] || { printf '  ! a port is 1 to 65535, not %s\n' "$PORT" >&2; refuse; }
        setenv WEB_PORT "$PORT" ;;
   esac
+fi
+
+# Docker, its compose plugin, and a daemon that answers — asked before anything needs them. Without
+# this the first sign was "docker: command not found" or "'compose' is not a docker command" from the
+# middle of the script, with a fresh .env left behind (scenarios audit, 2026-11-02).
+if ! command -v docker >/dev/null 2>&1; then
+  printf '\n  ! Docker is not installed, or not on PATH. RouteMind runs as two containers: install Docker\n' >&2
+  printf '    Desktop (macOS, Windows) or Docker Engine with the compose plugin (Linux), then run this again.\n' >&2
+  refuse
+fi
+if ! docker compose version >/dev/null 2>&1; then
+  printf '\n  ! Docker is here, but `docker compose` is not: the compose plugin is missing (the separate\n' >&2
+  printf '    `docker-compose` program is not what this uses). Install the plugin, then run this again.\n' >&2
+  refuse
+fi
+if ! docker info >/dev/null 2>&1; then
+  printf '\n  ! Docker is installed but not answering. Start Docker Desktop (or the docker service), and on\n' >&2
+  printf '    Linux check that this user may use it (`docker info`); then run this again.\n' >&2
+  refuse
 fi
 
 # `.mcp.json` names no port: the MCP server reads WEB_PORT from this .env itself (mcp/knowledge_mcp.py).
@@ -263,8 +284,10 @@ while [ $i -lt 60 ]; do
     printf '  Another agent: python3 mcp/knowledge_mcp.py   (reads the port from .env)\n'
     # An empty map had no next step anywhere: the screen said to click an area that did not exist.
     if [ "$(curl -fsS "$BASE/api/knowledge/regions" 2>/dev/null | python3 -c 'import json,sys; print(len(json.load(sys.stdin).get("regions") or []))' 2>/dev/null)" = 0 ]; then
-      printf '\n  The map is empty. Open it, click the Back-Bone box, and choose "New AS" for your first\n'
-      printf '  area — or start from the example: docs/DATA-REPO.md, "Starting over".\n'
+      # The button the empty map shows, by name (static/i18n, knowledge.empty.cta). This said to click
+      # the Back-Bone box and choose "New AS", which exists but is not what is on the screen (2026-11-02).
+      printf '\n  The map is empty. Open it and press "Create the first area" (첫 영역 만들기 · 最初の領域を作る ·\n'
+      printf '  创建第一个区域) — or start from the example: docs/DATA-REPO.md, "Starting over".\n'
     fi
     if grep -q '^KNOWLEDGE_AUTH=.\+' .env && ! grep -q '^KNOWLEDGE_AUTH=open' .env; then :; else
       printf '\n  Anyone who can reach this port can write to it (no login). docs/AUTH.md closes it.\n'
