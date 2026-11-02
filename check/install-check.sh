@@ -27,9 +27,10 @@ ROOT="$(pwd)"
 KEEP=0
 [ "$1" = "--keep" ] && KEEP=1
 
-PROJECT=routemind-install-check
-TAG=install-check
-WEB=8480
+# Overridable, so two runs — or a run beside another install on 8480 — do not collide (2026-11-02).
+PROJECT="${INSTALL_CHECK_PROJECT:-routemind-install-check}"
+TAG="${INSTALL_CHECK_TAG:-install-check}"
+WEB="${INSTALL_CHECK_PORT:-8480}"
 DIR="${TMPDIR:-/tmp}/$PROJECT.$$"
 COMPOSE="-f docker-compose.yml"
 

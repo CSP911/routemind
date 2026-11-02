@@ -570,6 +570,9 @@ body.kn-dragging { user-select: none; }
 /* The yes/no on the export card. The page styles its own controls under its own names — the sheets
    it inherits restyle bare `select` with `!important`, the same trap `.kn-btn` was written to avoid. */
 .kn-select {
+  /* Bounded by its card: its widest option ("Yes — anyone holding this install's circuit key…") made
+     the select 715px in a 452px card, and the whole card scrolled sideways at 500px (2026-11-02). */
+  max-width: 100%; min-width: 0; box-sizing: border-box;
   font: inherit; padding: .45rem .6rem; border-radius: 7px;
   border: 1px solid var(--kn-line); background: var(--kn-surface); color: var(--kn-text);
 }

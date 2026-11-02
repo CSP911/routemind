@@ -35,6 +35,7 @@ Two rules the whole set is written against, and they are worth knowing before ad
 ```sh
 ./check/install-check.sh          # a few minutes; it builds
 ./check/install-check.sh --keep   # leave it running to poke at
+INSTALL_CHECK_PORT=8490 INSTALL_CHECK_PROJECT=ic2 INSTALL_CHECK_TAG=ic2 ./check/install-check.sh   # beside another run
 ```
 
 Clones the **committed** tree into a temporary directory and installs it there, then walks the export
@@ -137,6 +138,9 @@ often does not; with pyyaml it passes on the host just the same (`python3 check/
 docker cp check $(docker compose ps -q ontology):/tmp/check
 docker cp mcp   $(docker compose ps -q ontology):/tmp/mcp
 docker compose exec ontology python3 /tmp/check/scenarios.py
+# session-check needs the circuit key it tests — the one in .env:
+docker compose exec -e ROUTEMIND_TOKEN="$(sed -n 's/^KNOWLEDGE_CIRCUIT_TOKEN=//p' .env | tail -1)" \
+    -e ROUTEMIND_API=http://127.0.0.1:8100 ontology python3 /tmp/check/session-check.py
 ```
 
 `rm -rf /tmp/check` in the container **first** if you have copied before: `docker cp` copies *into*
