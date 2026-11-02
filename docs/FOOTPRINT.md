@@ -8,7 +8,8 @@ gave is recorded. The reasons may arrive late; the opening must be watched as it
 
 **2. History and replay.** Every walk is kept for six hours. A replay button opens the map again in
 the same order. The history is for people. An agent is shown nothing from it: a hot path for
-agents was built on 2026-10-07 and taken out the same day — where others went is not routing.
+agents was built on 2026-10-07 and taken out the same day — where others went is not routing. Nor can
+it read it: `knowledge_read` reads documents only, and refuses `/v1/walks` (until 2026-11-02 it did not).
 
 ## One record
 

@@ -10,13 +10,18 @@
 # thing it is scoring.
 #
 # This image exists for directories and harnesses that want to start a server and introspect it
-# without standing up a backbone first. That works: with nothing at `--api`, `initialize` and
-# `tools/list` still answer, and the area list a tool description would have carried is replaced by
-# the reason it could not be fetched. An agent is told why rather than handed an empty table.
+# without standing up a backbone first. That works: with nothing at `--api`, or something that is not
+# RouteMind, `initialize` and `tools/list` still answer, and the area list a tool description would have
+# carried is replaced by the reason it could not be fetched. An agent is told why rather than handed an
+# empty table.
 #
 #   docker build -t routemind-mcp .
-#   docker run -i --rm routemind-mcp                       # introspection only
+#   docker run -i --rm -e KNOWLEDGE_API=http://127.0.0.1:9/api/knowledge routemind-mcp   # introspection only
 #   docker run -i --rm -e KNOWLEDGE_API=http://host.docker.internal:8080/api/knowledge routemind-mcp
+#
+# The default below is the second line's address: run with nothing set on a host with an install on
+# 8080, the image reads that install's area list (audit, 2026-11-02). The first line points it where
+# nothing answers inside the container.
 #
 # stdio, so `-i` and no `-t`: the protocol is JSON-RPC on stdin and stdout, and a tty would put a
 # terminal in the middle of it.
