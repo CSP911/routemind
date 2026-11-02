@@ -9,8 +9,8 @@ thing that knew was this file, which is the one place a running system cannot be
 
 | | who may write | the name on a change |
 |---|---|---|
-| `open` *(default)* | anyone who can reach the port | whatever the browser typed — a signature |
-| `token` | whoever holds `KNOWLEDGE_TOKEN`, as `Authorization: Bearer …` | still a signature |
+| `open` *(default)* | anyone who can reach the port | `KNOWLEDGE_ACTOR` (`web`) for the screen; what the client sent in `X-Knowledge-Actor` otherwise — a signature |
+| `token` | whoever holds `KNOWLEDGE_TOKEN`, as `Authorization: Bearer …` | the same — still a signature |
 | `proxy` | whoever your reverse proxy authenticated | **the proxy's**, and the browser gets no vote |
 
 `open` is what every install has been and is legitimate on a network where it is acceptable. The
@@ -22,6 +22,11 @@ change is that it is now a state something states rather than a fact somebody ha
 anybody can send one, and the record then names a person who was not there. So the service **refuses
 to start** in that mode without it, and likewise in `token` mode with no secret: an operator who set a
 mode decided this was meant to be closed, and coming up open instead turns a decision into a surprise.
+The address judged is the connection's own: `X-Forwarded-For` is never read for it, so declare the
+address your proxy connects *from*, as the web container sees it (through Docker's published port
+that is usually the bridge's gateway, not `127.0.0.1`). Until 2026-11-02 the
+server rewrote the address from that header, and any local process could name a declared address in
+it and sign as anyone.
 
 The gate is on writes. `KNOWLEDGE_AUTH_READS=1` extends it to reads. The map page itself is a static
 shell and always loads; the data behind it is what the gate guards.
@@ -44,14 +49,21 @@ the circuit key (`KNOWLEDGE_CIRCUIT_TOKEN`) at `/v1/peers/token` and `/v1/export
 ontology checks in constant time, and a circuit refuses to send a key over plain `http` to a public
 address. See **[CIRCUIT.md](CIRCUIT.md)**.
 
-The **name** field at the top right is a signature that goes on commits and proposals, kept in that
-person's own browser. **It is not a permission.**
+**The name on a change, in `open` and `token` mode**, is not anyone's identity. The screen sends no
+name, so everything saved from it is signed `KNOWLEDGE_ACTOR` (`web` unless .env says otherwise) —
+the person who proposed a change and the person who accepted it both read `web`. Any other client
+may send `X-Knowledge-Actor` (percent-encoded UTF-8, up to 64 characters of letters, digits, space,
+`.`, `@`, `-`, `_`), and the MCP server sends its `--actor`; that name goes on the commit as it
+was sent, and one that does not fit those rules is replaced by `KNOWLEDGE_ACTOR` without a word.
+It is client-supplied: **a signature, not a permission, and not a proof of who wrote it.** Only
+`proxy` mode replaces it with an identity, and there an identity longer than 64 characters is
+refused rather than cut. An identity that is already an address is the commit's email as it is.
 
 ---
 
 ## Checking it
 
-`./check/auth-check.py` — 32 assertions, run in the web container because it needs fastapi and
+`./check/auth-check.py` — 43 assertions, run in the web container because it needs fastapi and
 uvicorn:
 
 ```sh

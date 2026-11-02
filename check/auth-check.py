@@ -90,12 +90,13 @@ def start(**env):
     return p, port, p
 
 
-def hit(port, path, method="GET", token=None, header=None, value=None):
+def hit(port, path, method="GET", token=None, header=None, value=None, extra=None):
     r = urllib.request.Request(f"http://127.0.0.1:{port}{path}",
                                data=b"{}" if method != "GET" else None, method=method)
     r.add_header("Content-Type", "application/json")
     if token: r.add_header("Authorization", f"Bearer {token}")
     if header: r.add_header(header, value or "")
+    for k, v in (extra or {}).items(): r.add_header(k, v)
     def low(h): return {k.lower(): v for k, v in dict(h).items()}   # HTTP header names are not case
     try:
         with urllib.request.urlopen(r, timeout=10) as x: return x.status, low(x.headers), x.read()
@@ -188,6 +189,66 @@ st, _, b = hit(port, "/healthz", token=SECRET)
 check("    and in full to whoever holds it", st == 200 and "errors" in json.loads(b or b"{}"))
 p.terminate(); time.sleep(0.3); _srv.shutdown()
 
+# ── what the relay carries across, with a fake ontology behind it ─────────────
+# Each of these is the web app being wrong about the ontology's answer — what it passed on, what it
+# dropped, what it let through — so the far end records what reached it and answers on cue.
+SEEN = {}
+class _Far(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *a): pass
+    def _answer(self, code, obj):
+        body = json.dumps(obj).encode()
+        self.send_response(code); self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+    def do_GET(self):
+        SEEN[self.path] = dict(self.headers)
+        if self.path.endswith("/body"):
+            return self._answer(404, {"error": "node shelf has no document yet — it is listed as `type: empty`"})
+        return self._answer(200, {"regions": []})
+    def do_POST(self):
+        # The connection dropped mid-answer, as a paused or restarting ontology does.
+        self.close_connection = True; self.connection.close()
+    def do_PUT(self):
+        SEEN[self.path] = {"length": self.headers.get("Content-Length")}
+        self.rfile.read(int(self.headers.get("Content-Length") or 0)); self._answer(200, {"ok": True})
+_far = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _Far); threading.Thread(target=_far.serve_forever, daemon=True).start()
+FAR = f"http://127.0.0.1:{_far.server_address[1]}"
+p, port, _ = start(KNOWLEDGE_API_URL=FAR)
+
+# The reader in the owner's access log is the socket's address. The relay appended it to whatever
+# X-Forwarded-For the caller sent, and the log records the first entry — so a reader could write
+# itself down as anybody (web audit WB-2, 2026-11-02).
+hit(port, "/v1/export/regions", extra={"X-Forwarded-For": "8.8.8.8"})
+xff = {k.lower(): v for k, v in (SEEN.get("/v1/export/regions") or {}).items()}.get("x-forwarded-for")
+check("relay: the export reader is recorded as the socket's address, not one it claimed",
+      xff == "127.0.0.1", repr(xff))
+# A far end that drops the connection is the JSON 502 the export read gives, not a plain-text 500
+# (web audit WB-3: the token POST, with the ontology paused).
+st, h, b = hit(port, "/v1/peers/token", "POST")
+check("  a token request the ontology drops is a JSON 502", st == 502 and "json" in (h.get("content-type") or ""),
+      f"{st} {b[:80]!r}")
+# The API's own reason for a 404, not "RouteMind API returned HTTP 404." — "nobody has written this
+# yet" and "no such address" are different answers, as the route's docstring says (web audit WB-5).
+st, _, b = hit(port, "/api/knowledge/nodes/shelf/body")
+check("  a document's 404 carries the API's reason", st == 404 and b"no document yet" in b, f"{st} {b[:120]!r}")
+
+# A document is bounded. 50 MB went through and was committed, and the popup then served all of it
+# (web audit WB-7, 2026-11-02). Refused here, before it is sent, with a sentence and the setting.
+big = json.dumps({"content": "x" * 1_200_000, "description": "big"}).encode()
+def put_big(port):
+    r = urllib.request.Request(f"http://127.0.0.1:{port}/api/knowledge/nodes/shelf/files/big.md", data=big,
+                               method="PUT", headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(r, timeout=20) as x: return x.status, x.read()
+    except urllib.error.HTTPError as e: return e.code, e.read()
+SEEN.pop("/v1/nodes/shelf/files/big.md", None)
+st, b = put_big(port)
+check("  a 1.2 MB document is refused with 413 and why", st == 413 and b"KNOWLEDGE_MAX_DOCUMENT_BYTES" in b, f"{st} {b[:160]!r}")
+check("    and nothing reached the ontology", "/v1/nodes/shelf/files/big.md" not in SEEN)
+p.terminate(); time.sleep(0.3)
+p, port, _ = start(KNOWLEDGE_API_URL=FAR, KNOWLEDGE_MAX_DOCUMENT_BYTES="2000000")
+check("  and the limit is a setting", put_big(port)[0] == 200)
+p.terminate(); time.sleep(0.3); _far.shutdown()
+
 # ── proxy: the only mode that produces an actor worth the name ───────────────
 HEAD = "X-Forwarded-Email"
 p, port, _ = start(KNOWLEDGE_AUTH="proxy", KNOWLEDGE_AUTH_TRUSTED_PROXY="any")
@@ -211,6 +272,29 @@ p.terminate(); time.sleep(0.3)
 p, port, _ = start(KNOWLEDGE_AUTH="proxy", KNOWLEDGE_AUTH_TRUSTED_PROXY="127.0.0.0/8")
 check("  and one from a declared range is", 
       hit(port, WRITE, "POST", header=HEAD, value="someone@example.com")[0] != 401)
+p.terminate(); time.sleep(0.3)
+
+# The address judged is the socket's, never X-Forwarded-For. uvicorn's default replaced the client
+# address with that header's for anything arriving from 127.0.0.1, so a same-host proxy that adds it
+# (oauth2-proxy, nginx and Caddy all do) was never believed, and any local process could name a
+# trusted address in it and be whoever it liked (web audit WB-1, 2026-11-02).
+p, port, _ = start(KNOWLEDGE_AUTH="proxy", KNOWLEDGE_AUTH_TRUSTED_PROXY="127.0.0.1")
+check("  a declared proxy that adds X-Forwarded-For is still believed",
+      hit(port, WRITE, "POST", header=HEAD, value="someone@example.com",
+          extra={"X-Forwarded-For": "203.0.113.5"})[0] != 401)
+p.terminate(); time.sleep(0.3)
+p, port, _ = start(KNOWLEDGE_AUTH="proxy", KNOWLEDGE_AUTH_TRUSTED_PROXY="10.255.255.1")
+check("  and X-Forwarded-For naming the declared address does not make a caller it",
+      hit(port, WRITE, "POST", header=HEAD, value="ceo@example.com",
+          extra={"X-Forwarded-For": "10.255.255.1"})[0] == 401, "from 127.0.0.1")
+p.terminate(); time.sleep(0.3)
+
+# An identity longer than a commit's name holds is refused, and says so. It was cut to 64 characters
+# without a word, so two long addresses sharing a prefix signed as one person (web audit WB-6).
+p, port, _ = start(KNOWLEDGE_AUTH="proxy", KNOWLEDGE_AUTH_TRUSTED_PROXY="any")
+st, _, b = hit(port, WRITE, "POST", header=HEAD, value="x" * 70 + "@example.com")
+check("  an identity too long to sign with is refused, with the reason",
+      st == 401 and b"64" in b, f"{st} {b[:160]!r}")
 p.terminate(); time.sleep(0.3)
 
 # ── and the actor itself ─────────────────────────────────────────────────────

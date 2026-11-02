@@ -60,6 +60,11 @@ say "  it committed, and the revision moved" "$( [ "$(published)" != "$BEFORE" ]
 say "  and it writes no CORE.md"          "$( [ -e "$T/repo/CORE.md" ] && echo written || echo none )" none
 say "  hop 0 lists it"                    "$(curl -s "$U/regions" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)["regions"]))')" 1
 say "  a non-ASCII actor reached git"     "$(git -C "$T/repo" log -1 --pretty=%an)" "천수"
+# An actor that is an address (what a proxy names) is the commit's email as it is — it was suffixed
+# into `boss@example.com@routemind.local` (web audit WB-6, 2026-11-02).
+curl -s -o /dev/null -H 'Content-Type: application/json' -H 'X-Actor: boss%40example.com' -X PUT "$U/nodes/alpha-core" \
+  -d '{"one_liner":"what alpha is, signed by an address"}'
+say "  an address actor is the email as it is" "$(git -C "$T/repo" log -1 --pretty=%ae)" "boss@example.com"
 
 # A refused write must leave nothing behind — not a file, not a commit, not a publish.
 HEAD_OK="$(git -C "$T/repo" rev-parse HEAD)"

@@ -404,7 +404,10 @@ class Writer:
                     _restore(self.root)
                     return {"ok": True, "dry_run": True, "revision": None, "message": msg, "warnings": list(res["warnings"]),
                             "stats": res["stats"], "impacted": impacted, **extra}
-                _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={actor}@routemind.local", "commit", "-q", "-m", msg)
+                # An actor that is already an address — what an authenticating proxy names — is the
+                # email; suffixing it built `boss@corp.com@routemind.local` (web audit WB-6, 2026-11-02).
+                email = actor if "@" in actor else f"{actor}@routemind.local"
+                _git(self.root, "-c", f"user.name={actor}", "-c", f"user.email={email}", "commit", "-q", "-m", msg)
             except WriteError:
                 _restore(self.root); raise
             except PermissionError as e:

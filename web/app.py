@@ -27,9 +27,11 @@ be read from.
 
 Only `proxy` produces an actor worth the name, and there it **replaces** what the client sent rather
 than falling back to it. Everywhere else the `actor` on a commit, a proposal and an approval is a
-signature and not a credential — the browser sends a name the person typed once, the server falls
-back to KNOWLEDGE_ACTOR, then to "web" — and `/healthz` says `names_the_actor: false` so nothing
-downstream has to guess which it is holding.
+signature and not a credential — the screen sends no name at all, so its changes are signed
+KNOWLEDGE_ACTOR ("web" unless set); another client may send `X-Knowledge-Actor`, which is taken as
+sent — and `/api/app-config` says `auth_names_the_actor: false` so nothing downstream has to guess
+which it is holding. (This said the browser sent "a name the person typed once": there is no such
+field, docs audit WB-D1, 2026-11-02.)
 
 The gate is on **writes**, and on reads too with `KNOWLEDGE_AUTH_READS=1`. Reads are what an agent
 does through the MCP, which has no session and did not ask for one; closing them by default would
@@ -121,7 +123,13 @@ def _authenticated(request: Request) -> str | None:
     # bytes, which landed in commits as mojibake ("ê¹ì² ì") (2026-10-10); read them back as UTF-8.
     try: who = who.encode("latin-1").decode("utf-8")
     except (UnicodeEncodeError, UnicodeDecodeError): pass
-    return who[:128] if who else None
+    # Whole, not cut: a commit holds 64 characters of name, and cutting here (to 128, then to 64 on
+    # the way to the ontology) signed two long addresses sharing a prefix as one person (WB-6,
+    # 2026-11-02). The door refuses one that does not fit, and says so.
+    return who if who else None
+
+
+ACTOR_MAX = 64
 
 app = FastAPI(title="RouteMind", docs_url=None, redoc_url=None, openapi_url=None)
 # Compressed answers: a large map's graph is over a megabyte and the screen loads it on every visit.
@@ -149,7 +157,10 @@ def _renderer():
 def _iris_route(method: str, path: str, **options: Any):
     """The same decorator the routes were written against, registering straight onto the app."""
     def decorator(endpoint):
-        app.add_api_route(path, endpoint, methods=[str(method).upper()], **options)
+        # HEAD wherever GET is, as plain Starlette routes have it: `curl -I` and every uptime monitor
+        # that probes with HEAD read 405 on `/` and `/healthz` as "down" (quickstart audit, 2026-11-02).
+        verb = str(method).upper()
+        app.add_api_route(path, endpoint, methods=[verb, "HEAD"] if verb == "GET" else [verb], **options)
         return endpoint
     return decorator
 
@@ -218,14 +229,36 @@ def _request_user(request: Request) -> dict[str, Any]:
 
 # Knowledge unit (docker/pi/ontology/SPEC-curator.md); Web only carries a person's decision to it. Server-side
 # proxy on the compose network, so the ontology API needs no published port and the browser never calls it.
-# The actor recorded there is the signed-in username, never a client-supplied value.
+# The actor recorded there is `_knowledge_actor`'s: the proxy's identity in `proxy` mode, and in `open`
+# and `token` mode a client-supplied signature or KNOWLEDGE_ACTOR (this line claimed "never a
+# client-supplied value", which only `proxy` mode makes true — WB-D2, 2026-11-02).
 ONTOLOGY_URL = _iris_playbook_os.environ.get("KNOWLEDGE_API_URL", "http://ontology:8100").rstrip("/")
 
 import http.client as _http_client
 from socket import timeout as _socket_timeout
 
 
+# How large one document may be. Nothing bounded it: a 50 MB body was committed, and the popup then
+# served all 52 MB of it back (web audit WB-7, 2026-11-02). A document an agent is meant to read whole
+# is far below this; the setting is for the install where that is not true.
+try: MAX_DOCUMENT_BYTES = max(1, int(_iris_playbook_os.environ.get("KNOWLEDGE_MAX_DOCUMENT_BYTES") or 1_000_000))
+except ValueError: MAX_DOCUMENT_BYTES = 1_000_000
+
+
+def _largest_text(value: Any) -> int:
+    """The longest string anywhere in a write, in bytes — a change set carries several documents."""
+    if isinstance(value, str): return len(value.encode("utf-8"))
+    if isinstance(value, dict): return max((_largest_text(v) for v in value.values()), default=0)
+    if isinstance(value, list): return max((_largest_text(v) for v in value), default=0)
+    return 0
+
+
 def _ontology_proxy(method: str, path: str, actor: str, payload: dict | None = None) -> dict:
+    if method in WRITE_METHODS and payload is not None and _largest_text(payload) > MAX_DOCUMENT_BYTES:
+        raise KnowledgeError(413, f"A document here is {_largest_text(payload):,} bytes, and this install takes "
+                                  f"at most {MAX_DOCUMENT_BYTES:,} — nothing was written. Split it, or raise "
+                                  "KNOWLEDGE_MAX_DOCUMENT_BYTES in .env and run ./install.sh.",
+                             reason="too_large", values={"bytes": _largest_text(payload), "limit": MAX_DOCUMENT_BYTES})
     body = _iris_playbook_json.dumps(payload).encode("utf-8") if payload is not None else None
     proxy_request = _IrisPlaybookURLRequest(
         ONTOLOGY_URL + path,
@@ -293,7 +326,14 @@ def _ontology_text(pathname: str, actor: str) -> str:
         with _iris_playbook_urlopen(proxy_request, timeout=60) as response:
             return response.read().decode("utf-8", "replace")
     except _IrisPlaybookHTTPError as exc:
-        raise _IrisPlaybookHTTPException(status_code=404 if exc.code == 404 else 502, detail=f"RouteMind API returned HTTP {exc.code}.") from exc
+        # The API's own sentence, and its own status where it meant one — the same rule as
+        # `_ontology_proxy`. "RouteMind API returned HTTP 404." made "nobody has written this yet"
+        # and "no such address" one answer, which the body route's docstring says they are not (WB-5).
+        detail = None
+        try: detail = _iris_playbook_json.loads(exc.read().decode("utf-8")).get("error")
+        except Exception: pass
+        status = exc.code if (400 <= exc.code < 500 or exc.code in (501, 503)) else 502
+        raise _IrisPlaybookHTTPException(status_code=status, detail=detail or f"RouteMind API returned HTTP {exc.code}.") from exc
     except (_IrisPlaybookURLError, TimeoutError) as exc:
         raise _IrisPlaybookHTTPException(status_code=503, detail=f"RouteMind API unavailable: {exc}") from exc
 
@@ -677,6 +717,33 @@ def api_knowledge_node_file(node_id: str, filename: str, request: Request) -> di
     return {"node": node_id, "name": filename, "content": body}
 
 
+# The addresses the tables print, at the place the map's "Copy for an agent" block says to fetch them:
+# `GET <origin>/api/knowledge<address>`. Every address an answer carries is a /v1 one, and this app
+# served none of them, so each URL the block printed answered 404 (docs audit DC-1, 2026-11-02).
+# A reader's alias and nothing more: GET only (any other verb is 405 here), only the shapes a table
+# prints, and inside the door like every other read. The export surface is not one of them — it has
+# its own path, its own key and its own relay below.
+_READER_SHAPES = (("regions",), ("regions", _KNOWLEDGE_ID), ("nodes",), ("nodes", _KNOWLEDGE_ID),
+                  ("nodes", _KNOWLEDGE_ID, "body"), ("nodes", _KNOWLEDGE_ID, "files", _KNOWLEDGE_FILE))
+
+
+def _reader_address(parts: list[str]) -> bool:
+    return any(len(parts) == len(shape) and all(
+        (p == s) if isinstance(s, str) else bool(s.match(p)) for p, s in zip(parts, shape))
+        for shape in _READER_SHAPES)
+
+
+@_iris_route("GET", "/api/knowledge/v1/{rest:path}")
+def api_knowledge_v1_read(rest: str, request: Request) -> Response:
+    parts = [p for p in (rest or "").split("/") if p]
+    if not _reader_address(parts):
+        return JSONResponse({"detail": f"/v1/{rest} is not an address a table prints — use one exactly as printed"},
+                            status_code=404)
+    headers = {"Accept": request.headers.get("accept") or "application/json",
+               "X-Actor": quote(_knowledge_actor(request)[:64], safe="")}
+    return _relay("GET", "/v1/" + "/".join(quote(p, safe="") for p in parts), headers, 60)
+
+
 @_iris_route("POST", "/api/knowledge/validate")
 def api_knowledge_validate(payload: dict, request: Request) -> dict[str, Any]:
     # Validation is read-only and free — the editor runs it before and after every write.
@@ -923,19 +990,28 @@ def _circuit_relay(method: str, path: str, request: Request) -> Response:
     if token: headers["X-Peer-Token"] = token
     # Where the reader is, for the owner's access log. Every relayed request otherwise reaches the
     # ontology from this container's address, and "who read what" could only ever say "?".
+    # The socket's address only. The caller's own X-Forwarded-For was passed on in front of it, and
+    # the log records the first entry, so a reader could write itself down as anybody (WB-2,
+    # 2026-11-02). Behind a proxy of your own this names the proxy, which is at least true.
     client = request.client.host if request.client else ""
-    prior = request.headers.get("x-forwarded-for") or ""
-    if client or prior: headers["X-Forwarded-For"] = ", ".join(x for x in (prior, client) if x)
+    if client: headers["X-Forwarded-For"] = client
+    return _relay(method, path, headers, 30)
+
+
+def _relay(method: str, path: str, headers: dict[str, str], timeout: float) -> Response:
+    """The ontology's answer, passed through as it came — status, body, type — or a JSON 502."""
     req = _IrisPlaybookURLRequest(ONTOLOGY_URL + path, data=(b"" if method == "POST" else None),
                                   method=method, headers=headers)
     try:
-        with _iris_playbook_urlopen(req, timeout=30) as r:
+        with _iris_playbook_urlopen(req, timeout=timeout) as r:
             return Response(r.read(), status_code=r.status,
                             media_type=r.headers.get("Content-Type") or "application/json")
     except _IrisPlaybookHTTPError as exc:
         return Response(exc.read(), status_code=exc.code,
                         media_type=exc.headers.get("Content-Type") or "application/json")
-    except _IrisPlaybookURLError:
+    # A timeout is not a URLError: with the ontology paused, POST /v1/peers/token waited 30 s and then
+    # answered a plain-text 500 while GET /v1/export answered this (web audit WB-3, 2026-11-02).
+    except (_IrisPlaybookURLError, TimeoutError, _socket_timeout, ConnectionError, _http_client.HTTPException):
         return JSONResponse({"error": "the ontology behind this install is not answering"}, status_code=502)
 
 
@@ -988,6 +1064,12 @@ async def _the_door(request: Request, call_next):
     if AUTH == "open": return await call_next(request)
     path = request.url.path
     guarded = path.startswith("/api/knowledge")
+    if guarded and AUTH == "proxy":
+        who = _authenticated(request)
+        if who and len(who) > ACTOR_MAX:
+            return JSONResponse({"detail": f"The identity in {AUTH_HEADER} is {len(who)} characters long, and a "
+                                           f"change is signed with at most {ACTOR_MAX} — nothing was done. "
+                                           "Have the proxy send a shorter one.", "auth": AUTH}, status_code=401)
     if guarded and path != "/healthz" and (request.method in WRITE_METHODS or AUTH_READS):
         if _authenticated(request) is None:
             return JSONResponse(
@@ -1034,7 +1116,11 @@ def main() -> None:
     if AUTH == "open":
         sys.stderr.write("  KNOWLEDGE_AUTH is open — anyone who can reach this port can call every "
                          "write API. Deliberate on a network where that is fine; see README.\n")
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+    # proxy_headers=False: the address the door judges is the socket's. uvicorn's default rewrote it
+    # from X-Forwarded-For for anything arriving from 127.0.0.1 — so a same-host proxy that adds that
+    # header was never believed, and any local process could name a trusted address in it and sign as
+    # anyone (web audit WB-1, 2026-11-02). Which hop to trust is KNOWLEDGE_AUTH_TRUSTED_PROXY's call.
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info", proxy_headers=False)
 
 
 if __name__ == "__main__":

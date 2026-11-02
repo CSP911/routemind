@@ -127,6 +127,30 @@ if (ctx === null) check("agentContext is exported for checking", false);
 else {
   check("the pasted block names every area", areas.every((a) => ctx.includes(a)));
   check("it carries a fetchable base URL", /\/api\/knowledge/.test(ctx));
+  // Fetched, not only matched. The block said `GET <origin>/api/knowledge<address>` with /v1/…
+  // addresses, the web app served none of them, and every URL it printed answered 404 while this
+  // check passed on the substring (docs audit DC-1, 2026-11-02). One printed row, then one address
+  // that row's answer prints — the block promises both work.
+  const printed = /^Fetch with: GET (\S+)<address>/m.exec(ctx);
+  const row = /^  (\/v1\/\S+)/m.exec(ctx);
+  if (!printed || (areas.length && !row)) {
+    check("the block prints a base and an address per area", false);
+  } else if (row) {
+    const base = printed[1].replace(BASE, "");
+    const a = await realFetch(BASE + base + row[1]);
+    check(`a printed address answers (${row[1]} → ${a.status})`, a.status === 200);
+    const inner = a.status === 200 ? (((await a.json()).entries || [])[0] || {}).fetch : null;
+    if (inner) {
+      const b = await realFetch(BASE + base + inner);
+      check(`  and so does an address its answer prints (${inner} → ${b.status})`, b.status === 200);
+    }
+    // A reader's door, and only that: a write verb is refused at it, and another backbone's export
+    // surface is not reachable through it (that one has its own key and its own path).
+    const w = await realFetch(BASE + base + "/v1/nodes/screen-check-no-such-entity", { method: "DELETE" });
+    check(`  and it takes no writes (DELETE → ${w.status})`, w.status === 405);
+    const x = await realFetch(BASE + base + "/v1/export/regions");
+    check(`  and it is not the export surface (→ ${x.status})`, x.status === 404);
+  }
   check("it repeats the absence rule, and only for the whole list",
     /grounds on which you may say/.test(ctx) && /no smaller table/.test(ctx));
   check("it tells the agent not to build addresses", /Never build one/.test(ctx));

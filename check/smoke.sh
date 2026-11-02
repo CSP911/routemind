@@ -50,6 +50,12 @@ curl -fsS "$BASE/api/app-config" >/dev/null && say "ok   config"
 curl -fsS "$BASE/healthz" | grep -q '"valid"' && say "ok   /healthz on the web port" || { say "FAIL /healthz on the web port"; exit 1; }
 curl -fsS "$BASE/api/knowledge/regions" >/dev/null && say "ok   hop 0"
 curl -fsS "$BASE/knowledge" >/dev/null && say "ok   the map page"
+# HEAD where GET works: uptime monitors probe with it, and `/` and `/healthz` answered 405 (2026-11-02).
+for u in / /healthz /knowledge; do
+  h=$(curl -s -o /dev/null -w '%{http_code}' -I "$BASE$u")
+  case "$h" in 2??|3??) ;; *) say "FAIL HEAD $u answered $h"; exit 1 ;; esac
+done
+say "ok   HEAD answers where GET does"
 for f in knowledge.js knowledge.css i18n.js theme.css theme.js iris_ui.css; do
   curl -fsS -o /dev/null "$BASE/static/$f" || { say "FAIL static/$f"; exit 1; }
 done

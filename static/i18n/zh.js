@@ -329,6 +329,7 @@ window.IRISI18N_DICTS.zh = {
   "knowledge.fp.out.session": "会话已结束",
   "knowledge.err.outcome_unknown": "RouteMind 未能及时响应。更改仍可能被保存 — 重试前请先刷新确认。",
   "knowledge.err.service_down": "RouteMind 服务目前没有响应。如果刚才在保存，请刷新查看是否已保存。",
+  "knowledge.err.too_large": "有一份文档为 {bytes} 字节，而此安装最多接受 {limit} 字节。什么都没有写入——请拆分，或在 .env 中调高 KNOWLEDGE_MAX_DOCUMENT_BYTES。",
   "knowledge.err.repo_unwritable": "RouteMind 无法写入数据文件夹。请检查 data/repo 是否属于 KNOWLEDGE_UID 指定的用户，且不是只读。",
   "knowledge.err.repo_replaced": "RouteMind 运行期间数据文件夹被替换了。请重启：docker compose restart ontology",
   "knowledge.auth.needToken": "保存需要本实例的写入密钥。请输入后再保存一次。",
