@@ -303,6 +303,7 @@ window.IRISI18N_DICTS.ja = {
   "knowledge.fp.out.session": "セッション終了",
   "knowledge.err.outcome_unknown": "RouteMind が時間内に応答しませんでした。変更はまだ保存される可能性があります — もう一度試す前に再読み込みして確認してください。",
   "knowledge.err.service_down": "RouteMind のサービスが今応答していません。保存中だった場合は、再読み込みして保存されたか確認してください。",
+  "knowledge.err.duplicate_pending": "同じ依頼がすでにレビュー待ちです ({id})。新しく登録したものはありません。そちらを決定してください。",
   "knowledge.err.too_large": "文書が {bytes} バイトあり、このインストールの上限は {limit} バイトです。何も書き込まれていません — 分割するか、.env の KNOWLEDGE_MAX_DOCUMENT_BYTES を上げてください。",
   "knowledge.err.repo_unwritable": "RouteMind がデータフォルダに書き込めません。data/repo の所有者が KNOWLEDGE_UID のユーザーか、読み取り専用でないかを確認してください。",
   "knowledge.err.repo_replaced": "RouteMind の実行中にデータフォルダが置き換えられました。再起動してください: docker compose restart ontology",

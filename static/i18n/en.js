@@ -305,6 +305,7 @@ window.IRISI18N_DICTS.en = {
   "knowledge.err.outcome_unknown": "RouteMind did not answer in time. The change may still be saved — reload before trying again.",
   "knowledge.err.service_down": "RouteMind's service is not answering right now. If you were saving, reload to see whether it was saved.",
   "knowledge.err.too_large": "A document here is {bytes} bytes, and this install takes at most {limit}. Nothing was written — split it, or raise KNOWLEDGE_MAX_DOCUMENT_BYTES in .env.",
+  "knowledge.err.duplicate_pending": "The same request is already waiting in the review queue ({id}) — nothing new was filed. Decide that one.",
   "knowledge.err.repo_unwritable": "RouteMind cannot write to its data folder. Check that data/repo belongs to the user in KNOWLEDGE_UID and is not read-only.",
   "knowledge.err.repo_replaced": "The data folder was replaced while RouteMind was running. Restart it: docker compose restart ontology",
   "knowledge.auth.needToken": "Saving needs this install's write secret. Enter it, then save again.",

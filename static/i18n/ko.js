@@ -304,6 +304,7 @@ window.IRISI18N_DICTS.ko = {
   "knowledge.fp.out.session": "세션 종료",
   "knowledge.err.outcome_unknown": "RouteMind가 제때 응답하지 않았습니다. 변경이 그래도 저장될 수 있으니, 다시 시도하기 전에 새로고침해 확인하세요.",
   "knowledge.err.service_down": "RouteMind 서비스가 지금 응답하지 않습니다. 저장 중이었다면 새로고침해서 저장됐는지 확인하세요.",
+  "knowledge.err.duplicate_pending": "같은 요청이 이미 검토 대기열에 있습니다 ({id}) — 새로 올린 것은 없습니다. 그 요청을 결정하세요.",
   "knowledge.err.too_large": "문서 하나가 {bytes}바이트인데, 이 설치는 최대 {limit}바이트까지 받습니다. 아무것도 쓰이지 않았습니다 — 나누거나 .env의 KNOWLEDGE_MAX_DOCUMENT_BYTES를 올리세요.",
   "knowledge.err.repo_unwritable": "RouteMind가 데이터 폴더에 쓸 수 없습니다. data/repo의 소유자가 KNOWLEDGE_UID의 사용자인지, 읽기 전용이 아닌지 확인하세요.",
   "knowledge.err.repo_replaced": "RouteMind가 실행 중일 때 데이터 폴더가 바뀌었습니다. 다시 시작하세요: docker compose restart ontology",
