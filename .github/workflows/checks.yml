@@ -40,8 +40,10 @@ jobs:
         run: python3 ontology/check.py
       - name: Services started per check
         run: |
-          for c in auth romanize circuit-client age tidy place change b2c robust drift walk same-answer transact follow hyphen footprint footprint-screen; do
+          for c in auth romanize circuit-client age tidy place change b2c robust drift walk same-answer transact follow hyphen footprint footprint-screen export mcp-edge write-guard overlay concurrency; do
             echo "== $c"; python3 check/$c-check.py
           done
       - name: Every write path
         run: sh check/write-paths.sh
+      - name: The routing table over a lifetime
+        run: python3 check/scenarios.py
