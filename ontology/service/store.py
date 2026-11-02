@@ -9,7 +9,7 @@ reader can catch half-finished. Layout it understands:
 no agent was ever shown either, and nothing on the map drew the edges. They can be deleted.
 """
 from __future__ import annotations
-import contextlib, json, os, re, tempfile, threading, time
+import contextlib, datetime, json, os, re, tempfile, threading, time
 from pathlib import Path
 import yaml
 
@@ -355,6 +355,10 @@ class Store:
                 rel = str(f.relative_to(self.root)) if f.is_relative_to(self.root) else str(f)
                 bad[rel] = f"is not UTF-8 text (byte {e.start}: {e.object[e.start:e.start + 1]!r}) — save it as UTF-8"
                 continue
+            # A byte-order mark is not part of the text. Windows PowerShell 5 writes one with every
+            # `-Encoding UTF8`, and a file saved that way was reported as having no frontmatter
+            # (audit, 2026-11-02); the writer saves it back without one.
+            if text.startswith("\ufeff"): text = text[1:]
             m = FM_RE.match(text)
             rel = str(f.relative_to(self.root)) if f.is_relative_to(self.root) else str(f)
             if not m:
@@ -384,6 +388,10 @@ class Store:
                     continue
                 for k in TEXT_FIELDS:
                     if isinstance(fm.get(k), (int, float)): fm[k] = str(fm[k])
+                    # A date is text that YAML recognised: `id: 2024-01-01` written by hand reached
+                    # json.dumps as a date and took /v1/nodes, /v1/graph and validation down with a
+                    # 500 (audit, 2026-11-02). Its ISO spelling is what was typed.
+                    elif isinstance(fm.get(k), (datetime.date, datetime.datetime)): fm[k] = fm[k].isoformat()
                 if len(_FM_CACHE) > 50000: _FM_CACHE.clear()
                 _FM_CACHE[head_text] = fm
             import copy as _copy
@@ -435,12 +443,15 @@ class Store:
         return None
 
     def node_file(self, node_id: str, name: str) -> str | None:
-        n = next((x for x in self._shared() if x["id"] == node_id), None)
-        if not n or name not in [f["name"] for f in n["files"]]: return None    # not listed → does not exist for the API
         # A file is a child entity, and its document is that entity's own file — the address
         # `nodes/<parent>/files/<name>.md` is the old spelling of `nodes/<name>`, kept while the
-        # screen and the agent prompt still use it.
-        kid = next((k for k in self._shared() if k.get("parent") == node_id and f"{k['id']}.md" == name), None)
+        # screen and the agent prompt still use it. `<name>` is also the name put_file was given when
+        # the stem was taken elsewhere and the child was stored as `<parent>-<stem>`: the document it
+        # had just written was a 404 here (audit, 2026-11-02). Not a child → does not exist for the API.
+        if not name.endswith(".md"): return None
+        kids = [k for k in self._shared() if k.get("parent") == node_id]
+        kid = (next((k for k in kids if k["id"] == name[:-3]), None)
+               or next((k for k in kids if k["id"] == f"{node_id}-{name[:-3]}"), None))
         if not kid: return None
         p = self.root / kid["path"]
         return p.read_text(encoding="utf-8") if p.exists() else None

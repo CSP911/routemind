@@ -680,9 +680,16 @@ class Handler(BaseHTTPRequestHandler):
         n = int(self.headers.get("Content-Length") or 0)
         raw = self.rfile.read(n) if n else b""
         if not raw: return {}
-        if self.headers.get("Content-Type", "").startswith("text/"): return {"content": raw.decode("utf-8")}
-        try: return json.loads(raw.decode("utf-8"))
-        except json.JSONDecodeError: raise WriteError(400, "body must be JSON")
+        # Each of these was a 500 (audit, 2026-11-02): bytes that are not UTF-8, a body that is JSON
+        # but not an object (`[1,2]`, `"x"`), and NaN — which Python's JSON reads and nothing else does.
+        try: text = raw.decode("utf-8")
+        except UnicodeDecodeError: raise WriteError(400, "body must be UTF-8 text")
+        if self.headers.get("Content-Type", "").startswith("text/"): return {"content": text}
+        def _no_constant(c): raise ValueError(f"{c} is not a JSON value")
+        try: body = json.loads(text, parse_constant=_no_constant)
+        except ValueError: raise WriteError(400, "body must be JSON")
+        if not isinstance(body, dict): raise WriteError(400, f"body must be a JSON object, not {type(body).__name__}")
+        return body
 
     def _actor(self):
         """The name that goes on the commit. Percent-decoded: HTTP headers are latin-1, so a name that
